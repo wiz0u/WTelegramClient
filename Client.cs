@@ -35,10 +35,13 @@ namespace WTelegram
 		{
 			_config = configProvider ?? DefaultConfigOrAsk;
 			_updateHandler = updateHandler;
-			_apiId = int.Parse(_config("api_id"));
-			_apiHash = _config("api_hash");
-			_session = Session.LoadOrCreate(_config("session_pathname"));
+			_apiId = int.Parse(Config("api_id"));
+			_apiHash = Config("api_hash");
+			_session = Session.LoadOrCreate(Config("session_pathname"));
 		}
+
+		public string Config(string config)
+			=> _config(config) ?? DefaultConfig(config) ?? throw new ApplicationException("You must provide a config value for " + config);
 
 		public static string DefaultConfig(string config) => config switch
 		{
@@ -56,10 +59,10 @@ namespace WTelegram
 			"system_lang_code" => CultureInfo.InstalledUICulture.TwoLetterISOLanguageName,
 			"lang_pack" => "",
 			"lang_code" => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
-			_ => null // api_id api_hash phone_number... it's up to you to reply to these correctly
+			_ => null // api_id api_hash phone_number verification_code... it's up to you to reply to these correctly
 		};
 
-		public static string DefaultConfigOrAsk(string config)
+		private static string DefaultConfigOrAsk(string config)
 		{
 			var value = DefaultConfig(config);
 			if (value != null) return value;
@@ -72,7 +75,7 @@ namespace WTelegram
 
 		public async Task ConnectAsync()
 		{
-			var endpoint = _session.DataCenter == null ? IPEndPoint.Parse(_config("server_address"))
+			var endpoint = _session.DataCenter == null ? IPEndPoint.Parse(Config("server_address"))
 				: new IPEndPoint(IPAddress.Parse(_session.DataCenter.ip_address), _session.DataCenter.port);
 			Helpers.Log(2, $"Connecting to {endpoint}...");
 			_tcpClient = new TcpClient(endpoint.AddressFamily);
@@ -89,12 +92,12 @@ namespace WTelegram
 				query = new InitConnection<Config>
 				{
 					api_id = _apiId,
-					device_model = _config("device_model"),
-					system_version = _config("system_version"),
-					app_version = _config("app_version"),
-					system_lang_code = _config("system_lang_code"),
-					lang_pack = _config("lang_pack"),
-					lang_code = _config("lang_code"),
+					device_model = Config("device_model"),
+					system_version = Config("system_version"),
+					app_version = Config("app_version"),
+					system_lang_code = Config("system_lang_code"),
+					lang_pack = Config("lang_pack"),
+					lang_code = Config("lang_code"),
 					query = new Help_GetConfig()
 				}
 			});
@@ -377,7 +380,7 @@ namespace WTelegram
 		{
 			if (_session.User != null)
 				return Schema.Deserialize<User>(_session.User);
-			string phone_number = _config("phone_number");
+			string phone_number = Config("phone_number");
 			var sentCode = await CallAsync(new Auth_SendCode
 			{
 				phone_number = phone_number,
@@ -386,7 +389,7 @@ namespace WTelegram
 				settings = settings ?? new()
 			});
 			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
-			var verification_code = _config("verification_code");
+			var verification_code = Config("verification_code");
 			var authorization = await CallAsync(new Auth_SignIn
 			{
 				phone_number = phone_number,
