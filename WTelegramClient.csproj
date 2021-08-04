@@ -4,11 +4,15 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>WTelegram</RootNamespace>
+    <Description>Telegram client library written 100% in C#</Description>
+    <Authors>Wizou</Authors>
+    <PackageProjectUrl>https://github.com/wiz0u/WTelegramClient</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove=".gitattributes" />
     <None Remove=".gitignore" />
+    <None Remove="azure-pipelines.yml" />
   </ItemGroup>
 
   <ItemGroup>
