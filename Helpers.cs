@@ -10,6 +10,17 @@ namespace WTelegram
 		public static V GetOrCreate<K, V>(this Dictionary<K, V> dictionary, K key) where V : new()
 			=> dictionary.TryGetValue(key, out V value) ? value : dictionary[key] = new V();
 
+		public static Action<int, string> Log { get; set; } = DefaultLogger;
+
+		private static readonly ConsoleColor[] LogLevelToColor = new[] { ConsoleColor.DarkGray, ConsoleColor.DarkCyan, ConsoleColor.Cyan,
+			ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.DarkBlue };
+		private static void DefaultLogger(int level, string message)
+		{
+			Console.ForegroundColor = LogLevelToColor[level];
+			Console.WriteLine(message);
+			Console.ResetColor();
+		}
+
 		public static void LittleEndian(byte[] buffer, int offset, int value)
 		{
 			buffer[offset + 0] = (byte)value;

@@ -28,7 +28,7 @@ namespace WTelegram
 			if (resPQ.nonce != reqPQ.nonce) throw new ApplicationException("Nonce mismatch");
 			var fingerprint = resPQ.server_public_key_fingerprints.FirstOrDefault(PublicKeys.ContainsKey);
 			if (fingerprint == 0) throw new ApplicationException("Couldn't match any server_public_key_fingerprints");
-			Console.WriteLine($"Selected public key with fingerprint {fingerprint:X}");
+			Helpers.Log(2, $"Selected public key with fingerprint {fingerprint:X}");
 			//3)
 			long retry_id = 0;
 			ulong pq = Helpers.FromBigEndian(resPQ.pq);
@@ -69,7 +69,7 @@ namespace WTelegram
 			var g_a = new BigInteger(serverDHinnerData.g_a, true, true);
 			var dh_prime = new BigInteger(serverDHinnerData.dh_prime, true, true);
 			ValidityChecks(dh_prime, serverDHinnerData.g);
-			Console.WriteLine($"Server time: {serverDHinnerData.server_time} UTC");
+			Helpers.Log(1, $"Server time: {serverDHinnerData.server_time} UTC");
 			session.ServerTicksOffset = (serverDHinnerData.server_time - localTime).Ticks;
 
 			//6)
@@ -210,7 +210,7 @@ namespace WTelegram
 			var bareData = Schema.Serialize(publicKey).AsSpan(4); // bare serialization
 			var fingerprint = BitConverter.ToInt64(SHA1.HashData(bareData), 12); // 64 lower-order bits of SHA1
 			PublicKeys[fingerprint] = publicKey;
-			Console.WriteLine($"Loaded a public key with fingerprint {fingerprint:X}");
+			Helpers.Log(1, $"Loaded a public key with fingerprint {fingerprint:X}");
 		}
 
 		private static void LoadDefaultPublicKey() // fingerprint C3B42B026CE86B21

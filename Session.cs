@@ -31,12 +31,12 @@ namespace WTelegram
 					var json = File.ReadAllText(pathname);
 					var session = JsonSerializer.Deserialize<Session>(json, Helpers.JsonOptions);
 					session._pathname = pathname;
-					Console.WriteLine("Loaded previous session");
+					Helpers.Log(2, "Loaded previous session");
 					return session;
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine($"Exception while reading session file: {ex.Message}");
+					Helpers.Log(4, $"Exception while reading session file: {ex.Message}");
 				}
 			}
 			var sessionId = new byte[8];

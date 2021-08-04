@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using WTelegram;
 
 namespace TL
 {
@@ -35,7 +36,7 @@ namespace TL
 			return memStream.ToArray();
 		}
 
-		internal static T Deserialize<T>(byte[] bytes)
+		internal static T Deserialize<T>(byte[] bytes) where T : ITLObject
 		{
 			using var memStream = new MemoryStream(bytes);
 			using var reader = new BinaryReader(memStream);
@@ -50,7 +51,7 @@ namespace TL
 			SerializeObject(writer, msg);
 		}
 
-		internal static T Deserialize<T>(BinaryReader reader)
+		internal static T Deserialize<T>(BinaryReader reader) where T : ITLObject
 		{
 			var ctorNb = reader.ReadUInt32();
 			if (!Mappings.TryGetValue(ctorNb, out var realType))
@@ -72,7 +73,7 @@ namespace TL
 			}
 		}
 
-		internal static object DeserializeObject(BinaryReader reader, Type type)
+		internal static ITLObject DeserializeObject(BinaryReader reader, Type type)
 		{
 			var obj = Activator.CreateInstance(type);
 			var fields = obj.GetType().GetFields().GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
@@ -85,7 +86,7 @@ namespace TL
 				field.SetValue(obj, value);
 				if (field.Name.Equals("Flags", StringComparison.OrdinalIgnoreCase)) flags = (int)value;
 			}
-			return type == typeof(GzipPacked) ? UnzipPacket((GzipPacked)obj) : obj;
+			return type == typeof(GzipPacked) ? UnzipPacket((GzipPacked)obj) : (ITLObject)obj;
 		}
 
 		internal static void SerializeValue(BinaryWriter writer, object value)
@@ -161,7 +162,7 @@ namespace TL
 					else if (type.IsValueType)
 						return DeserializeObject(reader, type);
 					else
-						return Deserialize<object>(reader);
+						return Deserialize<ITLObject>(reader);
 				default:
 					ShouldntBeHere();
 					return null;
@@ -239,18 +240,18 @@ namespace TL
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine(ex);
+					Helpers.Log(4, ex.ToString());
 				}
 				reader.BaseStream.Position = pos + array[i].bytes;
 			}
 			return array;
 		}
 
-		private static object UnzipPacket(GzipPacked obj)
+		private static ITLObject UnzipPacket(GzipPacked obj)
 		{
 			using var reader = new BinaryReader(new GZipStream(new MemoryStream(obj.packed_data), CompressionMode.Decompress));
-			var result = DeserializeValue(reader, typeof(object));
-			Console.WriteLine($"            → {result.GetType().Name}");
+			var result = Deserialize<ITLObject>(reader);
+			Helpers.Log(1, $"            → {result.GetType().Name}");
 			return result;
 		}
 

@@ -74,7 +74,7 @@ namespace WTelegram
 		{
 			var endpoint = _session.DataCenter == null ? IPEndPoint.Parse(_config("server_address"))
 				: new IPEndPoint(IPAddress.Parse(_session.DataCenter.ip_address), _session.DataCenter.port);
-			Console.WriteLine($"Connecting to {endpoint}...");
+			Helpers.Log(2, $"Connecting to {endpoint}...");
 			_tcpClient = new TcpClient(endpoint.AddressFamily);
 			await _tcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
 			_networkStream = _tcpClient.GetStream();
@@ -102,7 +102,7 @@ namespace WTelegram
 
 		private async Task MigrateDCAsync(int dcId)
 		{
-			Console.WriteLine($"Migrate to DC {dcId}...");
+			Helpers.Log(2, $"Migrate to DC {dcId}...");
 			//TODO: Export/Import client authorization?
 			var prevFamily = _tcpClient.Client.RemoteEndPoint.AddressFamily;
 			_tcpClient.Close();
@@ -137,7 +137,7 @@ namespace WTelegram
 
 			if (_session.AuthKeyID == 0) // send unencrypted message
 			{
-				Console.WriteLine($"Sending   {msg.GetType().Name}...");
+				Helpers.Log(1, $"Sending   {msg.GetType().Name}...");
 				writer.Write(0L);					// int64 auth_key_id = 0 (Unencrypted)
 				writer.Write(msgId);				// int64 message_id
 				writer.Write(0);					// int32 message_data_length (to be patched)
@@ -146,7 +146,7 @@ namespace WTelegram
 			}
 			else
 			{
-				Console.WriteLine($"Sending   {msg.GetType().Name}... (seqno {seqno})");
+				Helpers.Log(1, $"Sending   {msg.GetType().Name}... (seqno {seqno})");
 				//TODO: Implement MTProto 2.0
 				using var clearStream = new MemoryStream(1024);   //TODO: choose a useful capacity
 				using var clearWriter = new BinaryWriter(clearStream, Encoding.UTF8);
@@ -183,7 +183,7 @@ namespace WTelegram
 			_lastSentMsg = msg;
 		}
 
-		internal async Task<object> RecvInternalAsync()
+		internal async Task<ITLObject> RecvInternalAsync()
 		{
 			var data = await RecvFrameAsync();
 			if (data.Length == 4 && data[3] == 0xFF)
@@ -204,7 +204,7 @@ namespace WTelegram
 				var ctorNb = reader.ReadUInt32();
 				if (!Schema.Mappings.TryGetValue(ctorNb, out var realType))
 					throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
-				Console.WriteLine($"Receiving {realType.Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} unencrypted");
+				Helpers.Log(1, $"Receiving {realType.Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} unencrypted");
 				return Schema.DeserializeObject(reader, realType);
 			}
 			else if (authKeyId != _session.AuthKeyID)
@@ -234,7 +234,7 @@ namespace WTelegram
 				var ctorNb = reader.ReadUInt32();
 				if (!Schema.Mappings.TryGetValue(ctorNb, out var realType))
 					throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
-				Console.WriteLine($"Receiving {realType.Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} {(seqno == -1 ? "clearText" : "isContent")}={(seqno & 1) != 0}");
+				Helpers.Log(1, $"Receiving {realType.Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} {(seqno == -1 ? "clearText" : "isContent")}={(seqno & 1) != 0}");
 				if (realType == typeof(RpcResult))
 					return DeserializeRpcResult(reader); // hack necessary because some RPC return bare types like bool or int[]
 				else
@@ -282,14 +282,14 @@ namespace WTelegram
 			} 
 		}
 
-		private object DeserializeRpcResult(BinaryReader reader)
+		private RpcResult DeserializeRpcResult(BinaryReader reader)
 		{
 			long reqMsgId = reader.ReadInt64();
 			var rpcResult = new RpcResult { req_msg_id = reqMsgId };
 			if (reqMsgId == _session.LastSentMsgId)
 				rpcResult.result = Schema.DeserializeValue(reader, _lastRpcResultType);
 			else
-				rpcResult.result = Schema.Deserialize<object>(reader);
+				rpcResult.result = Schema.Deserialize<ITLObject>(reader);
 			return rpcResult;
 		}
 
@@ -343,15 +343,14 @@ namespace WTelegram
 				await SendAsync(msgsAck, false);
 		}
 
-		private async Task HandleMessageAsync(object obj)
+		private async Task HandleMessageAsync(ITLObject obj)
 		{
 			switch (obj)
 			{
 				case MsgContainer container:
 					foreach (var msg in container.messages)
 					{
-						Console.Write($"          → {msg.body?.GetType().Name}");
-						Console.WriteLine($"{new string(' ', Math.Max(0, 60 - Console.CursorLeft))} timestamp={_session.MsgIdToStamp(msg.msg_id)} isResponse={(msg.msg_id & 2) != 0} {(msg.seqno == -1 ? "clearText" : "isContent")}={(msg.seqno & 1) != 0}");
+						Helpers.Log(1, $"          → {msg.body?.GetType().Name,-48} timestamp={_session.MsgIdToStamp(msg.msg_id)} isResponse={(msg.msg_id & 2) != 0} {(msg.seqno == -1 ? "clearText" : "isContent")}={(msg.seqno & 1) != 0}");
 						if ((msg.seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msg.msg_id);
 						if (msg.body != null) await HandleMessageAsync(msg.body);
 					}
@@ -362,14 +361,14 @@ namespace WTelegram
 						await SendAsync(_lastSentMsg);
 					break;
 				case BadMsgNotification badMsgNotification:
-					Console.WriteLine($"BadMsgNotification {badMsgNotification.error_code} for msg {badMsgNotification.bad_msg_seqno}");
+					Helpers.Log(3, $"BadMsgNotification {badMsgNotification.error_code} for msg {badMsgNotification.bad_msg_seqno}");
 					break;
 				case RpcResult rpcResult:
 					if (_session.MsgIdToStamp(rpcResult.req_msg_id) >= _session.SessionStart)
 						throw new ApplicationException($"Got RpcResult({rpcResult.result.GetType().Name}) for unknown msgId {rpcResult.req_msg_id}");
 					break; // silently ignore results for msg_id from previous sessions
 				default:
-					//_updateHandler?.Invoke(obj);
+					_updateHandler?.Invoke(obj);
 					break;
 			}
 		}
@@ -386,7 +385,7 @@ namespace WTelegram
 				api_hash = _apiHash,
 				settings = settings ?? new()
 			});
-			Console.WriteLine($"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
+			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
 			var verification_code = _config("verification_code");
 			var authorization = await CallAsync(new Auth_SignIn
 			{
