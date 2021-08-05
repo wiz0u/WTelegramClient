@@ -5,12 +5,12 @@ namespace WTelegram
 {
 	public static class Helpers
 	{
+		public static Action<int, string> Log { get; set; } = DefaultLogger;
+
 		public static readonly System.Text.Json.JsonSerializerOptions JsonOptions = new(System.Text.Json.JsonSerializerDefaults.Web) { IncludeFields = true, WriteIndented = true };
 
 		public static V GetOrCreate<K, V>(this Dictionary<K, V> dictionary, K key) where V : new()
 			=> dictionary.TryGetValue(key, out V value) ? value : dictionary[key] = new V();
-
-		public static Action<int, string> Log { get; set; } = DefaultLogger;
 
 		private static readonly ConsoleColor[] LogLevelToColor = new[] { ConsoleColor.DarkGray, ConsoleColor.DarkCyan, ConsoleColor.Cyan,
 			ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.DarkBlue };
@@ -28,27 +28,7 @@ namespace WTelegram
 			return span[0];
 		}
 
-		public static void LittleEndian(byte[] buffer, int offset, int value)
-		{
-			buffer[offset + 0] = (byte)value;
-			buffer[offset + 1] = (byte)(value >> 8);
-			buffer[offset + 2] = (byte)(value >> 16);
-			buffer[offset + 3] = (byte)(value >> 24);
-		}
-
-		public static void LittleEndian(byte[] buffer, int offset, long value)
-		{
-			buffer[offset + 0] = (byte)value;
-			buffer[offset + 1] = (byte)(value >> 8);
-			buffer[offset + 2] = (byte)(value >> 16);
-			buffer[offset + 3] = (byte)(value >> 24);
-			buffer[offset + 4] = (byte)(value >> 32);
-			buffer[offset + 5] = (byte)(value >> 40);
-			buffer[offset + 6] = (byte)(value >> 48);
-			buffer[offset + 7] = (byte)(value >> 56);
-		}
-
-		public static byte[] ToBigEndian(ulong value)
+		public static byte[] ToBigEndian(ulong value) // variable-size buffer
 		{
 			int i;
 			var temp = value;
@@ -58,16 +38,16 @@ namespace WTelegram
 			return result;
 		}
 
-		public static ulong FromBigEndian(byte[] bytes)
+		public static ulong FromBigEndian(byte[] bytes) // variable-size buffer
 		{
-			if (bytes.Length > 8) throw new ArgumentException($"expected bytes length <=8 but got {bytes.Length}");
+			if (bytes.Length > 8) throw new ArgumentException($"expected bytes length <= 8 but got {bytes.Length}");
 			ulong result = 0;
 			foreach (byte b in bytes)
 				result = (result << 8) + b;
 			return result;
 		}
 
-		public static ulong PQFactorize(ulong pq)
+		public static ulong PQFactorize(ulong pq) // ported from https://github.com/tdlib/td/blob/master/tdutils/td/utils/crypto.cpp#L90
 		{
 			if (pq < 2) return 1;
 			var random = new Random();

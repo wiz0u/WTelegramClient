@@ -39,9 +39,7 @@ namespace WTelegram
 					Helpers.Log(4, $"Exception while reading session file: {ex.Message}");
 				}
 			}
-			var sessionId = new byte[8];
-			Encryption.RNG.GetBytes(sessionId);
-			return new Session { _pathname = pathname, Id = BitConverter.ToInt64(sessionId) };
+			return new Session { _pathname = pathname, Id = Helpers.RandomLong() };
 		}
 
 		internal void Save()

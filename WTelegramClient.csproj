@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>WTelegram</RootNamespace>
-    <Description>Telegram client library written 100% in C#</Description>
+    <Description>Telegram client library written 100% in C# and .NET Core</Description>
     <Authors>Wizou</Authors>
     <PackageProjectUrl>https://github.com/wiz0u/WTelegramClient</PackageProjectUrl>
   </PropertyGroup>

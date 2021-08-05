@@ -221,7 +221,7 @@ namespace WTelegram
 			}
 		}
 
-		static readonly HashSet<string> ctorNeedClone = new() { "User" };
+		static readonly HashSet<string> ctorNeedClone = new() { /*"User"*/ };
 
 		private static bool HasPrefix(Constructor ctor, IList<Param> prefixParams)
 		{

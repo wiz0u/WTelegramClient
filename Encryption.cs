@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -92,8 +93,8 @@ namespace WTelegram
 
 			//8)
 			var authKeyHash = SHA1.HashData(authKey);
-			retry_id = BitConverter.ToInt64(authKeyHash); // (auth_key_aux_hash)
-														  //9)
+			retry_id = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash); // (auth_key_aux_hash)
+			//9)
 			reply = await client.RecvInternalAsync();
 			if (reply is not SetClientDHParamsAnswer setClientDHparamsAnswer) throw new ApplicationException($"Expected SetClientDHParamsAnswer but got {reply.GetType().Name}");
 			if (setClientDHparamsAnswer is not DHGenOk) throw new ApplicationException("not dh_gen_ok");
@@ -106,9 +107,9 @@ namespace WTelegram
 			if (!Enumerable.SequenceEqual(setClientDHparamsAnswer.new_nonce_hashN.raw, SHA1.HashData(expected_new_nonceN).Skip(4)))
 				throw new ApplicationException("setClientDHparamsAnswer.new_nonce_hashN mismatch");
 
-			session.AuthKeyID = BitConverter.ToInt64(authKeyHash, 12);
+			session.AuthKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
 			session.AuthKey = authKey;
-			session.Salt = BitConverter.ToInt64(new_nonce, 0) ^ BitConverter.ToInt64(resPQ.server_nonce, 0);
+			session.Salt = BinaryPrimitives.ReadInt64LittleEndian(new_nonce.raw) ^ BinaryPrimitives.ReadInt64LittleEndian(resPQ.server_nonce.raw);
 			session.Save();
 
 			static (byte[] key, byte[] iv) ConstructTmpAESKeyIV(Int128 server_nonce, Int256 new_nonce)
@@ -208,7 +209,7 @@ namespace WTelegram
 			var rsaParam = rsa.ExportParameters(false);
 			var publicKey = new RSAPublicKey { n = rsaParam.Modulus, e = rsaParam.Exponent };
 			var bareData = Schema.Serialize(publicKey).AsSpan(4); // bare serialization
-			var fingerprint = BitConverter.ToInt64(SHA1.HashData(bareData), 12); // 64 lower-order bits of SHA1
+			var fingerprint = BinaryPrimitives.ReadInt64LittleEndian(SHA1.HashData(bareData).AsSpan(12)); // 64 lower-order bits of SHA1
 			PublicKeys[fingerprint] = publicKey;
 			Helpers.Log(1, $"Loaded a public key with fingerprint {fingerprint:X}");
 		}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -149,11 +150,11 @@ namespace WTelegram
 				writer.Write(msgId);				// int64 message_id
 				writer.Write(0);					// int32 message_data_length (to be patched)
 				Schema.Serialize(writer, msg);		// bytes message_data
-				Helpers.LittleEndian(memStream.GetBuffer(), 24, (int)memStream.Length - 28);    // patch message_data_length
+				BinaryPrimitives.WriteInt32LittleEndian(memStream.GetBuffer().AsSpan(24), (int)memStream.Length - 28);    // patch message_data_length
 			}
 			else
 			{
-				Helpers.Log(1, $"Sending   {msg.GetType().Name,-50} #{(short)msgId.GetHashCode():X4})");
+				Helpers.Log(1, $"Sending   {msg.GetType().Name,-50} #{(short)msgId.GetHashCode():X4}");
 				//TODO: Implement MTProto 2.0
 				using var clearStream = new MemoryStream(1024);   //TODO: choose a useful capacity
 				using var clearWriter = new BinaryWriter(clearStream, Encoding.UTF8);
@@ -167,7 +168,7 @@ namespace WTelegram
 				int padding = (0x7FFFFFF0 - clearLength) % 16;
 				clearStream.SetLength(clearLength + padding);
 				byte[] clearBuffer = clearStream.GetBuffer();
-				Helpers.LittleEndian(clearBuffer, 28, clearLength - 32);    // patch message_data_length
+				BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(28), clearLength - 32);    // patch message_data_length
 				RNG.GetBytes(clearBuffer, clearLength, padding);
 				var clearSha1 = SHA1.HashData(clearBuffer.AsSpan(0, clearLength)); // padding excluded from computation!
 				byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(0, clearLength + padding), true, _session.AuthKey, clearSha1);
@@ -180,7 +181,7 @@ namespace WTelegram
 			var buffer = memStream.GetBuffer();
 			int frameLength = (int)memStream.Length;
 			//TODO: support Quick Ack?
-			Helpers.LittleEndian(buffer, 0, frameLength + 4); // patch frame_len with correct value
+			BinaryPrimitives.WriteInt32LittleEndian(buffer, frameLength + 4); // patch frame_len with correct value
 			uint crc = Force.Crc32.Crc32Algorithm.Compute(buffer, 0, frameLength);
 			writer.Write(crc);              // int32 frame_crc
 			var frame = memStream.GetBuffer().AsMemory(0, frameLength + 4);
@@ -194,12 +195,12 @@ namespace WTelegram
 		{
 			var data = await RecvFrameAsync();
 			if (data.Length == 4 && data[3] == 0xFF)
-				throw new ApplicationException($"Server replied with error code: {TransportError(-BitConverter.ToInt32(data))}");
+				throw new ApplicationException($"Server replied with error code: {TransportError(-BinaryPrimitives.ReadInt32LittleEndian(data))}");
 			if (data.Length < 24) // authKeyId+msgId+length+ctorNb | authKeyId+msgKey
 				throw new ApplicationException($"Packet payload too small: {data.Length}");
 
 			//TODO: ignore msgId <= lastRecvMsgId, ignore MsgId >= 30 sec in the future or < 300 sec in the past
-			long authKeyId = BitConverter.ToInt64(data);
+			long authKeyId = BinaryPrimitives.ReadInt64LittleEndian(data);
 			if (authKeyId == 0) // Unencrypted message
 			{
 				using var reader = new BinaryReader(new MemoryStream(data, 8, data.Length - 8));
@@ -265,10 +266,10 @@ namespace WTelegram
 			byte[] frame = new byte[8];
 			if (await FullReadAsync(_networkStream, frame, 8) != 8)
 				throw new ApplicationException("Could not read frame prefix : Connection shut down");
-			int length = BitConverter.ToInt32(frame) - 12;
+			int length = BinaryPrimitives.ReadInt32LittleEndian(frame) - 12;
 			if (length <= 0 || length >= 0x10000)
 				throw new ApplicationException("Invalid frame_len");
-			int seqno = BitConverter.ToInt32(frame, 4);
+			int seqno = BinaryPrimitives.ReadInt32LittleEndian(frame.AsSpan(4));
 			if (seqno != _frame_seqRx++)
 			{
 				Trace.TraceWarning($"Unexpected frame_seq received: {seqno} instead of {_frame_seqRx}");
@@ -281,7 +282,7 @@ namespace WTelegram
 			crc32 = Force.Crc32.Crc32Algorithm.Append(crc32, payload);
 			if (await FullReadAsync(_networkStream, frame, 4) != 4)
 				throw new ApplicationException("Could not read frame CRC : Connection shut down");
-			if (crc32 != BitConverter.ToUInt32(frame))
+			if (crc32 != BinaryPrimitives.ReadUInt32LittleEndian(frame))
 				throw new ApplicationException("Invalid envelope CRC32");
 			return payload;
 		}
@@ -305,7 +306,7 @@ namespace WTelegram
 				rpcResult.result = Schema.DeserializeValue(reader, _lastRpcResultType);
 			else
 				rpcResult.result = Schema.Deserialize<ITLObject>(reader);
-			Helpers.Log(1, $"        → {rpcResult.result.GetType().Name,-50} #{(short)reqMsgId.GetHashCode():X4})");
+			Helpers.Log(1, $"        → {rpcResult.result.GetType().Name,-50} #{(short)reqMsgId.GetHashCode():X4}");
 			return rpcResult;
 		}
 

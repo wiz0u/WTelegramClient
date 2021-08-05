@@ -197,8 +197,7 @@ namespace TL
 				writer.Write((byte)length);
 			else
 			{
-				writer.Write((byte)254);
-				writer.Write(BitConverter.GetBytes(length)[0..3]);
+				writer.Write(length << 8 | 254);
 				length += 3;
 			}
 			writer.Write(bytes);
