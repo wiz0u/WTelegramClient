@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TL;
 using static WTelegram.Encryption;
@@ -62,7 +63,7 @@ namespace WTelegram
 			_ => null // api_id api_hash phone_number verification_code... it's up to you to reply to these correctly
 		};
 
-		private static string DefaultConfigOrAsk(string config)
+		public static string DefaultConfigOrAsk(string config)
 		{
 			var value = DefaultConfig(config);
 			if (value != null) return value;
@@ -225,8 +226,12 @@ namespace WTelegram
 				var length = reader.ReadInt32();		// int32 message_data_length
 
 				if (serverSalt != _session.Salt)
+				{
+					Helpers.Log(3, $"Server salt has changed: {_session.Salt:X8} -> {serverSalt:X8}");
+					_session.Salt = serverSalt;
 					if (++_unexpectedSaltChange >= 10)
 						throw new ApplicationException($"Server salt changed unexpectedly more than 10 times during this run");
+				}
 				if (sessionId != _session.Id) throw new ApplicationException($"Unexpected session ID {_session.Id} != {_session.Id}");
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				if ((seqno & 1) != 0) lock(_msgsToAck) _msgsToAck.Add(msgId);
@@ -255,7 +260,8 @@ namespace WTelegram
 		private async Task<byte[]> RecvFrameAsync()
 		{
 			byte[] frame = new byte[8];
-			await FullReadAsync(frame, 8);
+			if (await FullReadAsync(_networkStream, frame, 8) != 8)
+				throw new ApplicationException("Could not read frame prefix : Connection shut down");
 			int length = BitConverter.ToInt32(frame) - 12;
 			if (length <= 0 || length >= 0x10000)
 				throw new ApplicationException("Invalid frame_len");
@@ -266,23 +272,26 @@ namespace WTelegram
 				_frame_seqRx = seqno + 1;
 			}
 			var payload = new byte[length];
-			await FullReadAsync(payload, length);
+			if (await FullReadAsync(_networkStream, payload, length) != length)
+				throw new ApplicationException("Could not read frame data : Connection shut down");
 			uint crc32 = Force.Crc32.Crc32Algorithm.Compute(frame, 0, 8);
 			crc32 = Force.Crc32.Crc32Algorithm.Append(crc32, payload);
-			await FullReadAsync(frame, 4);
+			if (await FullReadAsync(_networkStream, frame, 4) != 4)
+				throw new ApplicationException("Could not read frame CRC : Connection shut down");
 			if (crc32 != BitConverter.ToUInt32(frame))
 				throw new ApplicationException("Invalid envelope CRC32");
 			return payload;
 		}
 
-		private async Task FullReadAsync(byte[] buffer, int length)
+		private static async Task<int> FullReadAsync(Stream stream, byte[] buffer, int length)
 		{
 			for (int offset = 0; offset != length;)
 			{
-				var read = await _networkStream.ReadAsync(buffer.AsMemory(offset, length - offset));
-				if (read == 0) throw new ApplicationException("Connection shut down");
+				var read = await stream.ReadAsync(buffer.AsMemory(offset, length - offset));
+				if (read == 0) return offset;
 				offset += read;
-			} 
+			}
+			return length;
 		}
 
 		private RpcResult DeserializeRpcResult(BinaryReader reader)
@@ -402,5 +411,110 @@ namespace WTelegram
 			_session.User = Schema.Serialize(user);
 			return user;
 		}
+
+		#region TL-Helpers
+
+		/// <summary>Helper function to upload a file to Telegram</summary>
+		/// <returns>an <see cref="InputFile"/> or <see cref="InputFileBig"/> than can be used in various requests</returns>
+		public Task<InputFileBase> UploadFileAsync(string pathname)
+			=> UploadFileAsync(File.OpenRead(pathname), Path.GetFileName(pathname));
+
+		public async Task<InputFileBase> UploadFileAsync(Stream stream, string filename)
+		{
+			using var md5 = MD5.Create();
+			using (stream)
+			{
+				long length = stream.Length;
+				var isBig = length >= 10 * 1024 * 1024;
+				const int partSize = 512 * 1024;
+				int file_total_parts = (int)((length - 1) / partSize) + 1;
+				long file_id = Helpers.RandomLong();
+				var bytes = new byte[Math.Min(partSize, length)];
+				int file_part = 0, read;
+				for (long bytesLeft = length; bytesLeft != 0; file_part++)
+				{
+					// TODO: parallelize several parts sending through a N-semaphore?
+					read = await FullReadAsync(stream, bytes, (int)Math.Min(partSize, bytesLeft));
+					await CallAsync<bool>(isBig
+						? new Upload_SaveBigFilePart { bytes = bytes, file_id = file_id, file_part = file_part, file_total_parts = file_total_parts }
+						: new Upload_SaveFilePart { bytes = bytes, file_id = file_id, file_part = file_part });
+					if (!isBig) md5.TransformBlock(bytes, 0, read, null, 0);
+					bytesLeft -= read;
+					if (read < partSize && bytesLeft != 0) throw new ApplicationException($"Failed to fully read stream ({read},{bytesLeft})");
+				}
+				if (!isBig) md5.TransformFinalBlock(bytes, 0, 0);
+				return isBig ? new InputFileBig { id = file_id, parts = file_total_parts, name = filename }
+					: new InputFile { id = file_id, parts = file_total_parts, name = filename, md5_checksum = md5.Hash };
+			}
+		}
+
+		/// <summary>Helper function to send a text or media message more easily</summary>
+		/// <param name="peer">destination of message</param>
+		/// <param name="caption">media caption</param>
+		/// <param name="mediaFile"><see langword="null"/> or a media file already uploaded to TG <i>(see <see cref="UploadFileAsync">UploadFileAsync</see>)</i></param>
+		/// <param name="mimeType"><see langword="null"/> for automatic detection, <c>"photo"</c> for an inline photo, or a MIME type to send as a document</param>
+		public Task<UpdatesBase> SendMediaAsync(InputPeer peer, string caption, InputFileBase mediaFile, string mimeType = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, bool disable_preview = false)
+		{
+			var filename = mediaFile is InputFile iFile ? iFile.name : (mediaFile as InputFileBig)?.name;
+			mimeType ??= Path.GetExtension(filename).ToLowerInvariant() switch
+			{
+				".jpg" or ".jpeg" or ".png" or ".bmp" => "photo",
+				".gif" => "image/gif",
+				".webp" => "image/webp",
+				".mp4" => "video/mp4",
+				".mp3" => "audio/mpeg",
+				".wav" => "audio/x-wav",
+				_ => "", // send as generic document with undefined MIME type
+			};
+			if (mimeType == "photo")
+				return SendMessageAsync(peer, caption, new InputMediaUploadedPhoto { file = mediaFile },
+					reply_to_msg_id, entities, schedule_date, disable_preview);
+			var attributes = filename == null ? Array.Empty<DocumentAttribute>() : new[] { new DocumentAttributeFilename { file_name = filename } };
+			return SendMessageAsync(peer, caption, new InputMediaUploadedDocument
+			{
+				file = mediaFile, mime_type = mimeType, attributes = attributes
+			}, reply_to_msg_id, entities, schedule_date, disable_preview);
+		}
+
+		/// <summary>Helper function to send a text or media message</summary>
+		/// <param name="peer">destination of message</param>
+		/// <param name="text">text, or media caption</param>
+		/// <param name="media">media specification or <see langword="null"/></param>
+		public Task<UpdatesBase> SendMessageAsync(InputPeer peer, string text, InputMedia media = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, bool disable_preview = false)
+		{
+			ITLFunction<UpdatesBase> request = (media == null)
+				? new Messages_SendMessage
+				{
+					flags = GetFlags(),
+					peer = peer,
+					reply_to_msg_id = reply_to_msg_id,
+					message = text,
+					random_id = Helpers.RandomLong(),
+					entities = entities,
+					schedule_date = schedule_date
+				}
+				: new Messages_SendMedia
+				{
+					flags = (Messages_SendMedia.Flags)GetFlags(),
+					peer = peer,
+					reply_to_msg_id = reply_to_msg_id,
+					media = media,
+					message = text,
+					random_id = Helpers.RandomLong(),
+					entities = entities,
+					schedule_date = schedule_date
+				};
+			return CallAsync(request);
+
+			Messages_SendMessage.Flags GetFlags()
+			{
+				return ((reply_to_msg_id != 0) ? Messages_SendMessage.Flags.has_reply_to_msg_id : 0)
+					| (disable_preview ? Messages_SendMessage.Flags.no_webpage : 0)
+				//	| (reply_markup != null ? Messages_SendMessage.Flags.has_reply_markup : 0)
+					| (entities != null ? Messages_SendMessage.Flags.has_entities : 0)
+					| (schedule_date != default ? Messages_SendMessage.Flags.has_schedule_date : 0);
+			}
+		}
+		#endregion
 	}
 }

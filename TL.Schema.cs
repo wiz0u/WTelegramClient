@@ -85,7 +85,7 @@ namespace TL
 		public long id;
 		public int parts;
 		public string name;
-		public string md5_checksum;
+		public byte[] md5_checksum;
 	}
 	[TLDef(0xFA4F0BB5, "inputFileBig#fa4f0bb5 id:long parts:int name:string = InputFile")]
 	public class InputFileBig : InputFileBase
@@ -2033,7 +2033,7 @@ namespace TL
 	{
 		public long id;
 		public int parts;
-		public string md5_checksum;
+		public byte[] md5_checksum;
 		public int key_fingerprint;
 	}
 	[TLDef(0x5A17B5E5, "inputEncryptedFile#5a17b5e5 id:long access_hash:long = InputEncryptedFile")]
@@ -4151,7 +4151,7 @@ namespace TL
 	{
 		public long id;
 		public int parts;
-		public string md5_checksum;
+		public byte[] md5_checksum;
 		public byte[] file_hash;
 		public byte[] secret;
 	}

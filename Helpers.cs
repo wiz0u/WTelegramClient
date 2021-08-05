@@ -21,6 +21,13 @@ namespace WTelegram
 			Console.ResetColor();
 		}
 
+		public static long RandomLong()
+		{
+			Span<long> span = stackalloc long[1];
+			System.Security.Cryptography.RandomNumberGenerator.Fill(System.Runtime.InteropServices.MemoryMarshal.AsBytes(span));
+			return span[0];
+		}
+
 		public static void LittleEndian(byte[] buffer, int offset, int value)
 		{
 			buffer[offset + 0] = (byte)value;

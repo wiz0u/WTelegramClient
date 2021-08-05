@@ -145,7 +145,7 @@ namespace WTelegram
 							sw.Write(str);
 							lineLen += str.Length;
 						}
-						sw.WriteLine(" }");
+						sw.WriteLine("}");
 					}
 					foreach (var parm in parms)
 					{
@@ -213,6 +213,8 @@ namespace WTelegram
 						else
 							return "int";
 					}
+					else if (type == "string")
+						return name.StartsWith("md5") ? "byte[]" : "string";
 					else
 						return type;
 				}
