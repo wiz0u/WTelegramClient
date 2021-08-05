@@ -5,7 +5,7 @@ namespace WTelegram
 {
 	public static class Helpers
 	{
-		public static readonly System.Text.Json.JsonSerializerOptions JsonOptions = new(System.Text.Json.JsonSerializerDefaults.Web) { IncludeFields = true };
+		public static readonly System.Text.Json.JsonSerializerOptions JsonOptions = new(System.Text.Json.JsonSerializerDefaults.Web) { IncludeFields = true, WriteIndented = true };
 
 		public static V GetOrCreate<K, V>(this Dictionary<K, V> dictionary, K key) where V : new()
 			=> dictionary.TryGetValue(key, out V value) ? value : dictionary[key] = new V();

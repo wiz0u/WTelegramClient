@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 using TL;
 using static WTelegram.Encryption;
 
+//TODO: include XML comments in nuget
+//TODO: make assembly versions match nuget package version
+
 namespace WTelegram
 {
 	public sealed class Client : IDisposable
@@ -150,7 +153,7 @@ namespace WTelegram
 			}
 			else
 			{
-				Helpers.Log(1, $"Sending   {msg.GetType().Name}... (seqno {seqno})");
+				Helpers.Log(1, $"Sending   {msg.GetType().Name,-50} #{(short)msgId.GetHashCode():X4})");
 				//TODO: Implement MTProto 2.0
 				using var clearStream = new MemoryStream(1024);   //TODO: choose a useful capacity
 				using var clearWriter = new BinaryWriter(clearStream, Encoding.UTF8);
@@ -302,6 +305,7 @@ namespace WTelegram
 				rpcResult.result = Schema.DeserializeValue(reader, _lastRpcResultType);
 			else
 				rpcResult.result = Schema.Deserialize<ITLObject>(reader);
+			Helpers.Log(1, $"        → {rpcResult.result.GetType().Name,-50} #{(short)reqMsgId.GetHashCode():X4})");
 			return rpcResult;
 		}
 
