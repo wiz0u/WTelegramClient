@@ -10,13 +10,11 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using TL;
 using static WTelegram.Encryption;
 
 //TODO: include XML comments in nuget
-//TODO: make assembly versions match nuget package version
 
 namespace WTelegram
 {

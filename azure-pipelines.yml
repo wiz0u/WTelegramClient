@@ -10,6 +10,18 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: Assembly-Info-NetCore@2
+  inputs:
+    Path: '$(Build.SourcesDirectory)'
+    FileNames: '**/*.csproj'
+    InsertAttributes: true
+    FileEncoding: 'auto'
+    WriteBOM: false
+    PackageVersion: '$(Build.BuildNumber)'
+    LogLevel: 'verbose'
+    FailOnWarning: false
+    DisableTelemetry: true
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
