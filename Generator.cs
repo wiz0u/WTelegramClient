@@ -20,6 +20,7 @@ namespace WTelegram
 			sw.WriteLine();
 			sw.WriteLine("namespace TL");
 			sw.WriteLine("{");
+			string tabIndent = "\t";
 			Dictionary<string, TypeInfo> typeInfos = new();
 			foreach (var ctor in schema.constructors)
 			{
@@ -69,8 +70,9 @@ namespace WTelegram
 			foreach (var typeInfo in typeInfos.Values)
 				WriteTypeInfo(sw, typeInfo);
 
-			sw.WriteLine("\t// ---functions---");
-			sw.WriteLine();
+			sw.WriteLine("\tpublic static partial class Fn // ---functions---");
+			sw.WriteLine("\t{");
+			tabIndent = "\t\t";
 			var methods = new List<TypeInfo>();
 			foreach (var method in schema.methods)
 			{
@@ -78,6 +80,7 @@ namespace WTelegram
 				typeInfo.Structs.Add(new Constructor { id = method.id, @params = method.@params, predicate = method.method, type = method.type });
 				WriteTypeInfo(sw, typeInfo, true);
 			}
+			sw.WriteLine("\t}");
 			sw.WriteLine("}");
 
 			void WriteTypeInfo(StreamWriter sw, TypeInfo typeInfo, bool isMethod = false)
@@ -87,21 +90,21 @@ namespace WTelegram
 				if (isMethod)
 					parentClass = $"ITLFunction<{MapType(typeInfo.ReturnName, "")}>";
 				if (typeInfo.NeedAbstract == -1)
-					sw.WriteLine($"\tpublic abstract class {parentClass} : ITLObject {{ }}");
+					sw.WriteLine($"{tabIndent}public abstract class {parentClass} : ITLObject {{ }}");
 				int skipParams = 0;
 				foreach (var ctor in typeInfo.Structs)
 				{
 					string className = CSharpName(ctor.predicate) + genericType;
 					if (ctor.id == null)
-						sw.Write($"\tpublic abstract class {className} : ITLObject");
+						sw.Write($"{tabIndent}public abstract class {className} : ITLObject");
 					else
 					{
 						int ctorId = int.Parse(ctor.id);
-						sw.Write($"\t[TLDef(0x{ctorId:X}, \"{ctor.predicate}#{ctorId:x8} ");
+						sw.Write($"{tabIndent}[TLDef(0x{ctorId:X}, \"{ctor.predicate}#{ctorId:x8} ");
 						if (genericType != null) sw.Write($"{{{typeInfo.ReturnName}:Type}} ");
 						foreach (var parm in ctor.@params) sw.Write($"{parm.name}:{parm.type} ");
 						sw.WriteLine($"= {ctor.type}\")]");
-						sw.Write($"\tpublic class {className} : ");
+						sw.Write($"{tabIndent}public class {className} : ");
 						sw.Write(skipParams == 0 && typeInfo.NeedAbstract > 0 ? "ITLObject" : parentClass);
 					}
 					var parms = ctor.@params.Skip(skipParams).ToArray();
@@ -110,14 +113,15 @@ namespace WTelegram
 						sw.WriteLine(" { }");
 						continue;
 					}
-					if (parms.Length == 1)
-						sw.Write(" { ");
-					else
+					var hasFlagEnum = parms.Any(p => p.type.StartsWith("flags."));
+					bool multiline = hasFlagEnum || parms.Length > 1;
+					if (multiline)
 					{
 						sw.WriteLine();
-						sw.WriteLine("\t{");
+						sw.WriteLine(tabIndent + "{");
 					}
-					var hasFlagEnum = parms.Any(p => p.type.StartsWith("flags."));
+					else
+						sw.Write(" { ");
 					if (hasFlagEnum)
 					{
 						var list = new SortedList<int, string>();
@@ -136,21 +140,19 @@ namespace WTelegram
 							if (list.Values.Contains(name)) name += "_field";
 							list[mask] = name;
 						}
-						sw.Write("\t\t[Flags] public enum Flags { ");
-						int lineLen = 36;
+						string line = tabIndent + "\t[Flags] public enum Flags { ";
 						foreach (var (mask, name) in list)
 						{
 							var str = $"{name} = 0x{mask:X}, ";
-							if (lineLen + str.Length >= 140) { sw.WriteLine(); sw.Write("\t\t\t"); lineLen = 12; }
-							sw.Write(str);
-							lineLen += str.Length;
+							if (line.Length + str.Length + tabIndent.Length * 3 >= 134) { sw.WriteLine(line); line = tabIndent + "\t\t"; }
+							line += str;
 						}
-						sw.WriteLine("}");
+						sw.WriteLine(line.TrimEnd(',', ' ') + " }");
 					}
 					foreach (var parm in parms)
 					{
 						if (parm.type.EndsWith("?true")) continue;
-						if (parms.Length > 1) sw.Write("\t\t");
+						if (multiline) sw.Write(tabIndent + "\t");
 						if (parm.type == "#")
 							sw.Write($"public {(hasFlagEnum ? "Flags" : "int")} {parm.name};");
 						else
@@ -163,15 +165,15 @@ namespace WTelegram
 							else
 								sw.Write($"public {MapType(parm.type, parm.name)} {MapName(parm.name)};");
 						}
-						if (parms.Length > 1) sw.WriteLine();
+						if (multiline) sw.WriteLine();
 					}
 
 					if (ctorNeedClone.Contains(className))
-						sw.WriteLine($"\t\tpublic {className} Clone() => ({className})MemberwiseClone();");
-					if (parms.Length == 1)
-						sw.WriteLine(" }");
+						sw.WriteLine($"{tabIndent}\tpublic {className} Clone() => ({className})MemberwiseClone();");
+					if (multiline)
+						sw.WriteLine(tabIndent + "}");
 					else
-						sw.WriteLine("\t}");
+						sw.WriteLine(" }");
 					skipParams = typeInfo.NeedAbstract;
 				}
 				sw.WriteLine();

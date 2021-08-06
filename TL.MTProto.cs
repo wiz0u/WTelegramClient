@@ -238,60 +238,61 @@ namespace TL
 	[TLDef(0xEA109B13, "destroy_auth_key_fail#ea109b13 = DestroyAuthKeyRes")]
 	public class DestroyAuthKeyFail : DestroyAuthKeyRes { }
 
-	// ---functions---
-
-	[TLDef(0X60469778, "req_pq#60469778 nonce:int128 = ResPQ")]
-	public class ReqPQ : ITLFunction<ResPQ> { public Int128 nonce; }
-	[TLDef(0xBE7E8EF1, "req_pq_multi#be7e8ef1 nonce:int128 = ResPQ")]
-	public class ReqPQmulti : ResPQ { }
-
-	[TLDef(0xD712E4BE, "req_DH_params#d712e4be nonce:int128 server_nonce:int128 p:bytes q:bytes public_key_fingerprint:long encrypted_data:bytes = Server_DH_Params")]
-	public class ReqDHParams : ITLFunction<ServerDHParams>
+	public static partial class Fn // ---functions---
 	{
-		public Int128 nonce;
-		public Int128 server_nonce;
-		public byte[] p;
-		public byte[] q;
-		public long public_key_fingerprint;
-		public byte[] encrypted_data;
+		[TLDef(0X60469778, "req_pq#60469778 nonce:int128 = ResPQ")]
+		public class ReqPQ : ITLFunction<ResPQ> { public Int128 nonce; }
+		[TLDef(0xBE7E8EF1, "req_pq_multi#be7e8ef1 nonce:int128 = ResPQ")]
+		public class ReqPQmulti : ResPQ { }
+
+		[TLDef(0xD712E4BE, "req_DH_params#d712e4be nonce:int128 server_nonce:int128 p:bytes q:bytes public_key_fingerprint:long encrypted_data:bytes = Server_DH_Params")]
+		public class ReqDHParams : ITLFunction<ServerDHParams>
+		{
+			public Int128 nonce;
+			public Int128 server_nonce;
+			public byte[] p;
+			public byte[] q;
+			public long public_key_fingerprint;
+			public byte[] encrypted_data;
+		}
+
+		[TLDef(0xF5045F1F, "set_client_DH_params#f5045f1f nonce:int128 server_nonce:int128 encrypted_data:bytes = Set_client_DH_params_answer")]
+		public class SetClientDHParams : ITLFunction<SetClientDHParamsAnswer>
+		{
+			public Int128 nonce;
+			public Int128 server_nonce;
+			public byte[] encrypted_data;
+		}
+
+		[TLDef(0x58E4A740, "rpc_drop_answer#58e4a740 req_msg_id:long = RpcDropAnswer")]
+		public class ReqRpcDropAnswer : ITLFunction<RpcDropAnswer> { public long req_msg_id; }
+
+		[TLDef(0xB921BD04, "get_future_salts#b921bd04 num:int = FutureSalts")]
+		public class GetFutureSalts : ITLFunction<FutureSalts> { public int num; }
+
+		[TLDef(0x7ABE77EC, "ping#7abe77ec ping_id:long = Pong")]
+		public class Ping : ITLFunction<Pong> { public long ping_id; }
+
+		[TLDef(0xF3427B8C, "ping_delay_disconnect#f3427b8c ping_id:long disconnect_delay:int = Pong")]
+		public class PingDelayDisconnect : ITLFunction<Pong>
+		{
+			public long ping_id;
+			public int disconnect_delay; // seconds
+		}
+
+		[TLDef(0xE7512126, "destroy_session#e7512126 session_id:long = DestroySessionRes")]
+		public class DestroySession : ITLFunction<DestroySessionRes> { public long session_id; }
+
+		[TLDef(0x9299359F, "http_wait#9299359f max_delay:int wait_after:int max_wait:int = HttpWait")]
+		public class HttpWait : ITLObject
+		{
+			public int max_delay;   // ms
+			public int wait_after;  // ms
+			public int max_wait;    // ms
+		}
+
+		[TLDef(0xD1435160, "destroy_auth_key#d1435160 = DestroyAuthKeyRes")]
+		public class DestroyAuthKey : ITLFunction<DestroyAuthKeyRes> { }
+
 	}
-
-	[TLDef(0xF5045F1F, "set_client_DH_params#f5045f1f nonce:int128 server_nonce:int128 encrypted_data:bytes = Set_client_DH_params_answer")]
-	public class SetClientDHParams : ITLFunction<SetClientDHParamsAnswer>
-	{
-		public Int128 nonce;
-		public Int128 server_nonce;
-		public byte[] encrypted_data;
-	}
-
-	[TLDef(0x58E4A740, "rpc_drop_answer#58e4a740 req_msg_id:long = RpcDropAnswer")]
-	public class ReqRpcDropAnswer : ITLFunction<RpcDropAnswer> { public long req_msg_id; }
-
-	[TLDef(0xB921BD04, "get_future_salts#b921bd04 num:int = FutureSalts")]
-	public class GetFutureSalts : ITLFunction<FutureSalts> { public int num; }
-
-	[TLDef(0x7ABE77EC, "ping#7abe77ec ping_id:long = Pong")]
-	public class Ping : ITLFunction<Pong> { public long ping_id; }
-
-	[TLDef(0xF3427B8C, "ping_delay_disconnect#f3427b8c ping_id:long disconnect_delay:int = Pong")]
-	public class PingDelayDisconnect : ITLFunction<Pong>
-	{
-		public long ping_id;
-		public int disconnect_delay; // seconds
-	}
-
-	[TLDef(0xE7512126, "destroy_session#e7512126 session_id:long = DestroySessionRes")]
-	public class DestroySession : ITLFunction<DestroySessionRes> { public long session_id; }
-
-	[TLDef(0x9299359F, "http_wait#9299359f max_delay:int wait_after:int max_wait:int = HttpWait")]
-	public class HttpWait : ITLObject
-	{
-		public int max_delay;	// ms
-		public int wait_after;	// ms
-		public int max_wait;	// ms
-	}
-
-	[TLDef(0xD1435160, "destroy_auth_key#d1435160 = DestroyAuthKeyRes")]
-	public class DestroyAuthKey : ITLFunction<DestroyAuthKeyRes> { }
-
 }

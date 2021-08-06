@@ -177,6 +177,7 @@ namespace TL
 		public long secret;
 	}
 
-	// ---functions---
-
+	public static partial class Fn // ---functions---
+	{
+	}
 }

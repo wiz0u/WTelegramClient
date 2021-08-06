@@ -101,7 +101,7 @@ namespace TL
 	[TLDef(0x1E287D04, "inputMediaUploadedPhoto#1e287d04 flags:# file:InputFile stickers:flags.0?Vector<InputDocument> ttl_seconds:flags.1?int = InputMedia")]
 	public class InputMediaUploadedPhoto : InputMedia
 	{
-		[Flags] public enum Flags { has_stickers = 0x1, has_ttl_seconds = 0x2,  }
+		[Flags] public enum Flags { has_stickers = 0x1, has_ttl_seconds = 0x2 }
 		public Flags flags;
 		public InputFileBase file;
 		[IfFlag(0)] public InputDocumentBase[] stickers;
@@ -110,7 +110,7 @@ namespace TL
 	[TLDef(0xB3BA0635, "inputMediaPhoto#b3ba0635 flags:# id:InputPhoto ttl_seconds:flags.0?int = InputMedia")]
 	public class InputMediaPhoto : InputMedia
 	{
-		[Flags] public enum Flags { has_ttl_seconds = 0x1,  }
+		[Flags] public enum Flags { has_ttl_seconds = 0x1 }
 		public Flags flags;
 		public InputPhotoBase id;
 		[IfFlag(0)] public int ttl_seconds;
@@ -128,7 +128,7 @@ namespace TL
 	[TLDef(0x5B38C6C1, "inputMediaUploadedDocument#5b38c6c1 flags:# nosound_video:flags.3?true force_file:flags.4?true file:InputFile thumb:flags.2?InputFile mime_type:string attributes:Vector<DocumentAttribute> stickers:flags.0?Vector<InputDocument> ttl_seconds:flags.1?int = InputMedia")]
 	public class InputMediaUploadedDocument : InputMedia
 	{
-		[Flags] public enum Flags { has_stickers = 0x1, has_ttl_seconds = 0x2, has_thumb = 0x4, nosound_video = 0x8, force_file = 0x10,  }
+		[Flags] public enum Flags { has_stickers = 0x1, has_ttl_seconds = 0x2, has_thumb = 0x4, nosound_video = 0x8, force_file = 0x10 }
 		public Flags flags;
 		public InputFileBase file;
 		[IfFlag(2)] public InputFileBase thumb;
@@ -140,7 +140,7 @@ namespace TL
 	[TLDef(0x23AB23D2, "inputMediaDocument#23ab23d2 flags:# id:InputDocument ttl_seconds:flags.0?int = InputMedia")]
 	public class InputMediaDocument : InputMedia
 	{
-		[Flags] public enum Flags { has_ttl_seconds = 0x1,  }
+		[Flags] public enum Flags { has_ttl_seconds = 0x1 }
 		public Flags flags;
 		public InputDocumentBase id;
 		[IfFlag(0)] public int ttl_seconds;
@@ -158,7 +158,7 @@ namespace TL
 	[TLDef(0xE5BBFE1A, "inputMediaPhotoExternal#e5bbfe1a flags:# url:string ttl_seconds:flags.0?int = InputMedia")]
 	public class InputMediaPhotoExternal : InputMedia
 	{
-		[Flags] public enum Flags { has_ttl_seconds = 0x1,  }
+		[Flags] public enum Flags { has_ttl_seconds = 0x1 }
 		public Flags flags;
 		public string url;
 		[IfFlag(0)] public int ttl_seconds;
@@ -166,7 +166,7 @@ namespace TL
 	[TLDef(0xFB52DC99, "inputMediaDocumentExternal#fb52dc99 flags:# url:string ttl_seconds:flags.0?int = InputMedia")]
 	public class InputMediaDocumentExternal : InputMedia
 	{
-		[Flags] public enum Flags { has_ttl_seconds = 0x1,  }
+		[Flags] public enum Flags { has_ttl_seconds = 0x1 }
 		public Flags flags;
 		public string url;
 		[IfFlag(0)] public int ttl_seconds;
@@ -176,7 +176,7 @@ namespace TL
 	[TLDef(0xF4E096C3, "inputMediaInvoice#f4e096c3 flags:# title:string description:string photo:flags.0?InputWebDocument invoice:Invoice payload:bytes provider:string provider_data:DataJSON start_param:string = InputMedia")]
 	public class InputMediaInvoice : InputMedia
 	{
-		[Flags] public enum Flags { has_photo = 0x1,  }
+		[Flags] public enum Flags { has_photo = 0x1 }
 		public Flags flags;
 		public string title;
 		public string description;
@@ -190,7 +190,7 @@ namespace TL
 	[TLDef(0x971FA843, "inputMediaGeoLive#971fa843 flags:# stopped:flags.0?true geo_point:InputGeoPoint heading:flags.2?int period:flags.1?int proximity_notification_radius:flags.3?int = InputMedia")]
 	public class InputMediaGeoLive : InputMedia
 	{
-		[Flags] public enum Flags { stopped = 0x1, has_period = 0x2, has_heading = 0x4, has_proximity_notification_radius = 0x8,  }
+		[Flags] public enum Flags { stopped = 0x1, has_period = 0x2, has_heading = 0x4, has_proximity_notification_radius = 0x8 }
 		public Flags flags;
 		public InputGeoPointBase geo_point;
 		[IfFlag(2)] public int heading;
@@ -200,7 +200,7 @@ namespace TL
 	[TLDef(0xF94E5F1, "inputMediaPoll#0f94e5f1 flags:# poll:Poll correct_answers:flags.0?Vector<bytes> solution:flags.1?string solution_entities:flags.1?Vector<MessageEntity> = InputMedia")]
 	public class InputMediaPoll : InputMedia
 	{
-		[Flags] public enum Flags { has_correct_answers = 0x1, has_solution = 0x2,  }
+		[Flags] public enum Flags { has_correct_answers = 0x1, has_solution = 0x2 }
 		public Flags flags;
 		public Poll poll;
 		[IfFlag(0)] public byte[][] correct_answers;
@@ -216,7 +216,7 @@ namespace TL
 	[TLDef(0xC642724E, "inputChatUploadedPhoto#c642724e flags:# file:flags.0?InputFile video:flags.1?InputFile video_start_ts:flags.2?double = InputChatPhoto")]
 	public class InputChatUploadedPhoto : InputChatPhotoBase
 	{
-		[Flags] public enum Flags { has_file = 0x1, has_video = 0x2, has_video_start_ts = 0x4,  }
+		[Flags] public enum Flags { has_file = 0x1, has_video = 0x2, has_video_start_ts = 0x4 }
 		public Flags flags;
 		[IfFlag(0)] public InputFileBase file;
 		[IfFlag(1)] public InputFileBase video;
@@ -231,7 +231,7 @@ namespace TL
 	[TLDef(0x48222FAF, "inputGeoPoint#48222faf flags:# lat:double long:double accuracy_radius:flags.0?int = InputGeoPoint")]
 	public class InputGeoPoint : InputGeoPointBase
 	{
-		[Flags] public enum Flags { has_accuracy_radius = 0x1,  }
+		[Flags] public enum Flags { has_accuracy_radius = 0x1 }
 		public Flags flags;
 		public double lat;
 		public double long_;
@@ -301,7 +301,7 @@ namespace TL
 	[TLDef(0x27D69997, "inputPeerPhotoFileLocation#27d69997 flags:# big:flags.0?true peer:InputPeer volume_id:long local_id:int = InputFileLocation")]
 	public class InputPeerPhotoFileLocation : InputFileLocationBase
 	{
-		[Flags] public enum Flags { big = 0x1,  }
+		[Flags] public enum Flags { big = 0x1 }
 		public Flags flags;
 		public InputPeer peer;
 		public long volume_id;
@@ -355,7 +355,7 @@ namespace TL
 			has_phone = 0x10, has_photo = 0x20, has_status = 0x40, self = 0x400, contact = 0x800, mutual_contact = 0x1000, 
 			deleted = 0x2000, bot = 0x4000, bot_chat_history = 0x8000, bot_nochats = 0x10000, verified = 0x20000, restricted = 0x40000, 
 			has_bot_inline_placeholder = 0x80000, min = 0x100000, bot_inline_geo = 0x200000, has_lang_code = 0x400000, support = 0x800000, 
-			scam = 0x1000000, apply_min_photo = 0x2000000,  }
+			scam = 0x1000000, apply_min_photo = 0x2000000 }
 		public Flags flags;
 		public int id;
 		[IfFlag(0)] public long access_hash;
@@ -369,7 +369,6 @@ namespace TL
 		[IfFlag(18)] public RestrictionReason[] restriction_reason;
 		[IfFlag(19)] public string bot_inline_placeholder;
 		[IfFlag(22)] public string lang_code;
-		public User Clone() => (User)MemberwiseClone();
 	}
 
 	public abstract class UserProfilePhotoBase : ITLObject { }
@@ -378,7 +377,7 @@ namespace TL
 	[TLDef(0x69D3AB26, "userProfilePhoto#69d3ab26 flags:# has_video:flags.0?true photo_id:long photo_small:FileLocation photo_big:FileLocation dc_id:int = UserProfilePhoto")]
 	public class UserProfilePhoto : UserProfilePhotoBase
 	{
-		[Flags] public enum Flags { has_video = 0x1,  }
+		[Flags] public enum Flags { has_video = 0x1 }
 		public Flags flags;
 		public long photo_id;
 		public FileLocation photo_small;
@@ -407,7 +406,7 @@ namespace TL
 	public class Chat : ChatBase
 	{
 		[Flags] public enum Flags { creator = 0x1, kicked = 0x2, left = 0x4, deactivated = 0x20, has_migrated_to = 0x40, 
-			has_admin_rights = 0x4000, has_default_banned_rights = 0x40000, call_active = 0x800000, call_not_empty = 0x1000000,  }
+			has_admin_rights = 0x4000, has_default_banned_rights = 0x40000, call_active = 0x800000, call_not_empty = 0x1000000 }
 		public Flags flags;
 		public int id;
 		public string title;
@@ -428,10 +427,10 @@ namespace TL
 	[TLDef(0xD31A961E, "channel#d31a961e flags:# creator:flags.0?true left:flags.2?true broadcast:flags.5?true verified:flags.7?true megagroup:flags.8?true restricted:flags.9?true signatures:flags.11?true min:flags.12?true scam:flags.19?true has_link:flags.20?true has_geo:flags.21?true slowmode_enabled:flags.22?true call_active:flags.23?true call_not_empty:flags.24?true id:int access_hash:flags.13?long title:string username:flags.6?string photo:ChatPhoto date:int version:int restriction_reason:flags.9?Vector<RestrictionReason> admin_rights:flags.14?ChatAdminRights banned_rights:flags.15?ChatBannedRights default_banned_rights:flags.18?ChatBannedRights participants_count:flags.17?int = Chat")]
 	public class Channel : ChatBase
 	{
-		[Flags] public enum Flags { creator = 0x1, left = 0x4, broadcast = 0x20, has_username = 0x40, verified = 0x80, megagroup = 0x100, 
-			restricted = 0x200, signatures = 0x800, min = 0x1000, has_access_hash = 0x2000, has_admin_rights = 0x4000, 
+		[Flags] public enum Flags { creator = 0x1, left = 0x4, broadcast = 0x20, has_username = 0x40, verified = 0x80, 
+			megagroup = 0x100, restricted = 0x200, signatures = 0x800, min = 0x1000, has_access_hash = 0x2000, has_admin_rights = 0x4000, 
 			has_banned_rights = 0x8000, has_participants_count = 0x20000, has_default_banned_rights = 0x40000, scam = 0x80000, 
-			has_link = 0x100000, has_geo = 0x200000, slowmode_enabled = 0x400000, call_active = 0x800000, call_not_empty = 0x1000000,  }
+			has_link = 0x100000, has_geo = 0x200000, slowmode_enabled = 0x400000, call_active = 0x800000, call_not_empty = 0x1000000 }
 		public Flags flags;
 		public int id;
 		[IfFlag(13)] public long access_hash;
@@ -449,7 +448,7 @@ namespace TL
 	[TLDef(0x289DA732, "channelForbidden#289da732 flags:# broadcast:flags.5?true megagroup:flags.8?true id:int access_hash:long title:string until_date:flags.16?int = Chat")]
 	public class ChannelForbidden : ChatBase
 	{
-		[Flags] public enum Flags { broadcast = 0x20, megagroup = 0x100, has_until_date = 0x10000,  }
+		[Flags] public enum Flags { broadcast = 0x20, megagroup = 0x100, has_until_date = 0x10000 }
 		public Flags flags;
 		public int id;
 		public long access_hash;
@@ -462,7 +461,7 @@ namespace TL
 	public class ChatFull : ChatFullBase
 	{
 		[Flags] public enum Flags { has_chat_photo = 0x4, has_bot_info = 0x8, has_pinned_msg_id = 0x40, can_set_username = 0x80, 
-			has_scheduled = 0x100, has_folder_id = 0x800,  }
+			has_scheduled = 0x100, has_folder_id = 0x800 }
 		public Flags flags;
 		public int id;
 		public string about;
@@ -482,7 +481,7 @@ namespace TL
 			can_set_stickers = 0x80, has_stickerset = 0x100, has_available_min_id = 0x200, hidden_prehistory = 0x400, 
 			has_folder_id = 0x800, has_stats_dc = 0x1000, has_online_count = 0x2000, has_linked_chat_id = 0x4000, has_location = 0x8000, 
 			can_set_location = 0x10000, has_slowmode_seconds = 0x20000, has_slowmode_next_send_date = 0x40000, has_scheduled = 0x80000, 
-			can_view_stats = 0x100000, blocked = 0x400000,  }
+			can_view_stats = 0x100000, blocked = 0x400000 }
 		public Flags flags;
 		public int id;
 		public string about;
@@ -534,7 +533,7 @@ namespace TL
 	[TLDef(0xFC900C2B, "chatParticipantsForbidden#fc900c2b flags:# chat_id:int self_participant:flags.0?ChatParticipant = ChatParticipants")]
 	public class ChatParticipantsForbidden : ChatParticipantsBase
 	{
-		[Flags] public enum Flags { has_self_participant = 0x1,  }
+		[Flags] public enum Flags { has_self_participant = 0x1 }
 		public Flags flags;
 		public int chat_id;
 		[IfFlag(0)] public ChatParticipantBase self_participant;
@@ -553,7 +552,7 @@ namespace TL
 	[TLDef(0xD20B9F3C, "chatPhoto#d20b9f3c flags:# has_video:flags.0?true photo_small:FileLocation photo_big:FileLocation dc_id:int = ChatPhoto")]
 	public class ChatPhoto : ChatPhotoBase
 	{
-		[Flags] public enum Flags { has_video = 0x1,  }
+		[Flags] public enum Flags { has_video = 0x1 }
 		public Flags flags;
 		public FileLocation photo_small;
 		public FileLocation photo_big;
@@ -570,7 +569,7 @@ namespace TL
 			has_reply_markup = 0x40, has_entities = 0x80, has_from_id = 0x100, has_media = 0x200, has_views = 0x400, 
 			has_via_bot_id = 0x800, silent = 0x2000, post = 0x4000, has_edit_date = 0x8000, has_post_author = 0x10000, 
 			has_grouped_id = 0x20000, from_scheduled = 0x40000, legacy = 0x80000, edit_hide = 0x200000, has_restriction_reason = 0x400000, 
-			has_replies = 0x800000, pinned = 0x1000000,  }
+			has_replies = 0x800000, pinned = 0x1000000 }
 		public Flags flags;
 		public int id;
 		[IfFlag(8)] public Peer from_id;
@@ -595,7 +594,7 @@ namespace TL
 	public class MessageService : MessageBase
 	{
 		[Flags] public enum Flags { out_ = 0x2, has_reply_to = 0x8, mentioned = 0x10, media_unread = 0x20, has_from_id = 0x100, 
-			silent = 0x2000, post = 0x4000, legacy = 0x80000,  }
+			silent = 0x2000, post = 0x4000, legacy = 0x80000 }
 		public Flags flags;
 		public int id;
 		[IfFlag(8)] public Peer from_id;
@@ -611,7 +610,7 @@ namespace TL
 	[TLDef(0x695150D7, "messageMediaPhoto#695150d7 flags:# photo:flags.0?Photo ttl_seconds:flags.2?int = MessageMedia")]
 	public class MessageMediaPhoto : MessageMedia
 	{
-		[Flags] public enum Flags { has_photo = 0x1, has_ttl_seconds = 0x4,  }
+		[Flags] public enum Flags { has_photo = 0x1, has_ttl_seconds = 0x4 }
 		public Flags flags;
 		[IfFlag(0)] public PhotoBase photo;
 		[IfFlag(2)] public int ttl_seconds;
@@ -632,7 +631,7 @@ namespace TL
 	[TLDef(0x9CB070D7, "messageMediaDocument#9cb070d7 flags:# document:flags.0?Document ttl_seconds:flags.2?int = MessageMedia")]
 	public class MessageMediaDocument : MessageMedia
 	{
-		[Flags] public enum Flags { has_document = 0x1, has_ttl_seconds = 0x4,  }
+		[Flags] public enum Flags { has_document = 0x1, has_ttl_seconds = 0x4 }
 		public Flags flags;
 		[IfFlag(0)] public DocumentBase document;
 		[IfFlag(2)] public int ttl_seconds;
@@ -654,7 +653,7 @@ namespace TL
 	[TLDef(0x84551347, "messageMediaInvoice#84551347 flags:# shipping_address_requested:flags.1?true test:flags.3?true title:string description:string photo:flags.0?WebDocument receipt_msg_id:flags.2?int currency:string total_amount:long start_param:string = MessageMedia")]
 	public class MessageMediaInvoice : MessageMedia
 	{
-		[Flags] public enum Flags { has_photo = 0x1, shipping_address_requested = 0x2, has_receipt_msg_id = 0x4, test = 0x8,  }
+		[Flags] public enum Flags { has_photo = 0x1, shipping_address_requested = 0x2, has_receipt_msg_id = 0x4, test = 0x8 }
 		public Flags flags;
 		public string title;
 		public string description;
@@ -667,7 +666,7 @@ namespace TL
 	[TLDef(0xB940C666, "messageMediaGeoLive#b940c666 flags:# geo:GeoPoint heading:flags.0?int period:int proximity_notification_radius:flags.1?int = MessageMedia")]
 	public class MessageMediaGeoLive : MessageMedia
 	{
-		[Flags] public enum Flags { has_heading = 0x1, has_proximity_notification_radius = 0x2,  }
+		[Flags] public enum Flags { has_heading = 0x1, has_proximity_notification_radius = 0x2 }
 		public Flags flags;
 		public GeoPointBase geo;
 		[IfFlag(0)] public int heading;
@@ -731,7 +730,7 @@ namespace TL
 	[TLDef(0x8F31B327, "messageActionPaymentSentMe#8f31b327 flags:# currency:string total_amount:long payload:bytes info:flags.0?PaymentRequestedInfo shipping_option_id:flags.1?string charge:PaymentCharge = MessageAction")]
 	public class MessageActionPaymentSentMe : MessageAction
 	{
-		[Flags] public enum Flags { has_info = 0x1, has_shipping_option_id = 0x2,  }
+		[Flags] public enum Flags { has_info = 0x1, has_shipping_option_id = 0x2 }
 		public Flags flags;
 		public string currency;
 		public long total_amount;
@@ -749,7 +748,7 @@ namespace TL
 	[TLDef(0x80E11A7F, "messageActionPhoneCall#80e11a7f flags:# video:flags.2?true call_id:long reason:flags.0?PhoneCallDiscardReason duration:flags.1?int = MessageAction")]
 	public class MessageActionPhoneCall : MessageAction
 	{
-		[Flags] public enum Flags { has_reason = 0x1, has_duration = 0x2, video = 0x4,  }
+		[Flags] public enum Flags { has_reason = 0x1, has_duration = 0x2, video = 0x4 }
 		public Flags flags;
 		public long call_id;
 		[IfFlag(0)] public PhoneCallDiscardReason reason;
@@ -783,7 +782,7 @@ namespace TL
 	[TLDef(0x2C171F72, "dialog#2c171f72 flags:# pinned:flags.2?true unread_mark:flags.3?true peer:Peer top_message:int read_inbox_max_id:int read_outbox_max_id:int unread_count:int unread_mentions_count:int notify_settings:PeerNotifySettings pts:flags.0?int draft:flags.1?DraftMessage folder_id:flags.4?int = Dialog")]
 	public class Dialog : DialogBase
 	{
-		[Flags] public enum Flags { has_pts = 0x1, has_draft = 0x2, pinned = 0x4, unread_mark = 0x8, has_folder_id = 0x10,  }
+		[Flags] public enum Flags { has_pts = 0x1, has_draft = 0x2, pinned = 0x4, unread_mark = 0x8, has_folder_id = 0x10 }
 		public Flags flags;
 		public Peer peer;
 		public int top_message;
@@ -799,7 +798,7 @@ namespace TL
 	[TLDef(0x71BD134C, "dialogFolder#71bd134c flags:# pinned:flags.2?true folder:Folder peer:Peer top_message:int unread_muted_peers_count:int unread_unmuted_peers_count:int unread_muted_messages_count:int unread_unmuted_messages_count:int = Dialog")]
 	public class DialogFolder : DialogBase
 	{
-		[Flags] public enum Flags { pinned = 0x4,  }
+		[Flags] public enum Flags { pinned = 0x4 }
 		public Flags flags;
 		public Folder folder;
 		public Peer peer;
@@ -816,7 +815,7 @@ namespace TL
 	[TLDef(0xFB197A65, "photo#fb197a65 flags:# has_stickers:flags.0?true id:long access_hash:long file_reference:bytes date:int sizes:Vector<PhotoSize> video_sizes:flags.1?Vector<VideoSize> dc_id:int = Photo")]
 	public class Photo : PhotoBase
 	{
-		[Flags] public enum Flags { has_stickers = 0x1, has_video_sizes = 0x2,  }
+		[Flags] public enum Flags { has_stickers = 0x1, has_video_sizes = 0x2 }
 		public Flags flags;
 		public long id;
 		public long access_hash;
@@ -876,7 +875,7 @@ namespace TL
 	[TLDef(0xB2A2F663, "geoPoint#b2a2f663 flags:# long:double lat:double access_hash:long accuracy_radius:flags.0?int = GeoPoint")]
 	public class GeoPoint : GeoPointBase
 	{
-		[Flags] public enum Flags { has_accuracy_radius = 0x1,  }
+		[Flags] public enum Flags { has_accuracy_radius = 0x1 }
 		public Flags flags;
 		public double long_;
 		public double lat;
@@ -887,7 +886,7 @@ namespace TL
 	[TLDef(0x5E002502, "auth.sentCode#5e002502 flags:# type:auth.SentCodeType phone_code_hash:string next_type:flags.1?auth.CodeType timeout:flags.2?int = auth.SentCode")]
 	public class Auth_SentCode : ITLObject
 	{
-		[Flags] public enum Flags { has_next_type = 0x2, has_timeout = 0x4,  }
+		[Flags] public enum Flags { has_next_type = 0x2, has_timeout = 0x4 }
 		public Flags flags;
 		public Auth_SentCodeType type;
 		public string phone_code_hash;
@@ -899,7 +898,7 @@ namespace TL
 	[TLDef(0xCD050916, "auth.authorization#cd050916 flags:# tmp_sessions:flags.0?int user:User = auth.Authorization")]
 	public class Auth_Authorization : Auth_AuthorizationBase
 	{
-		[Flags] public enum Flags { has_tmp_sessions = 0x1,  }
+		[Flags] public enum Flags { has_tmp_sessions = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public int tmp_sessions;
 		public UserBase user;
@@ -907,7 +906,7 @@ namespace TL
 	[TLDef(0x44747E9A, "auth.authorizationSignUpRequired#44747e9a flags:# terms_of_service:flags.0?help.TermsOfService = auth.Authorization")]
 	public class Auth_AuthorizationSignUpRequired : Auth_AuthorizationBase
 	{
-		[Flags] public enum Flags { has_terms_of_service = 0x1,  }
+		[Flags] public enum Flags { has_terms_of_service = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public Help_TermsOfService terms_of_service;
 	}
@@ -932,7 +931,7 @@ namespace TL
 	[TLDef(0x9C3D198E, "inputPeerNotifySettings#9c3d198e flags:# show_previews:flags.0?Bool silent:flags.1?Bool mute_until:flags.2?int sound:flags.3?string = InputPeerNotifySettings")]
 	public class InputPeerNotifySettings : ITLObject
 	{
-		[Flags] public enum Flags { has_show_previews = 0x1, has_silent = 0x2, has_mute_until = 0x4, has_sound = 0x8,  }
+		[Flags] public enum Flags { has_show_previews = 0x1, has_silent = 0x2, has_mute_until = 0x4, has_sound = 0x8 }
 		public Flags flags;
 		[IfFlag(0)] public bool show_previews;
 		[IfFlag(1)] public bool silent;
@@ -943,7 +942,7 @@ namespace TL
 	[TLDef(0xAF509D20, "peerNotifySettings#af509d20 flags:# show_previews:flags.0?Bool silent:flags.1?Bool mute_until:flags.2?int sound:flags.3?string = PeerNotifySettings")]
 	public class PeerNotifySettings : ITLObject
 	{
-		[Flags] public enum Flags { has_show_previews = 0x1, has_silent = 0x2, has_mute_until = 0x4, has_sound = 0x8,  }
+		[Flags] public enum Flags { has_show_previews = 0x1, has_silent = 0x2, has_mute_until = 0x4, has_sound = 0x8 }
 		public Flags flags;
 		[IfFlag(0)] public bool show_previews;
 		[IfFlag(1)] public bool silent;
@@ -955,7 +954,7 @@ namespace TL
 	public class PeerSettings : ITLObject
 	{
 		[Flags] public enum Flags { report_spam = 0x1, add_contact = 0x2, block_contact = 0x4, share_contact = 0x8, 
-			need_contacts_exception = 0x10, report_geo = 0x20, has_geo_distance = 0x40, autoarchived = 0x80, invite_members = 0x100,  }
+			need_contacts_exception = 0x10, report_geo = 0x20, has_geo_distance = 0x40, autoarchived = 0x80, invite_members = 0x100 }
 		public Flags flags;
 		[IfFlag(6)] public int geo_distance;
 	}
@@ -964,7 +963,7 @@ namespace TL
 	[TLDef(0xA437C3ED, "wallPaper#a437c3ed id:long flags:# creator:flags.0?true default:flags.1?true pattern:flags.3?true dark:flags.4?true access_hash:long slug:string document:Document settings:flags.2?WallPaperSettings = WallPaper")]
 	public class WallPaper : WallPaperBase
 	{
-		[Flags] public enum Flags { creator = 0x1, default_ = 0x2, has_settings = 0x4, pattern = 0x8, dark = 0x10,  }
+		[Flags] public enum Flags { creator = 0x1, default_ = 0x2, has_settings = 0x4, pattern = 0x8, dark = 0x10 }
 		public long id;
 		public Flags flags;
 		public long access_hash;
@@ -975,7 +974,7 @@ namespace TL
 	[TLDef(0x8AF40B25, "wallPaperNoFile#8af40b25 flags:# default:flags.1?true dark:flags.4?true settings:flags.2?WallPaperSettings = WallPaper")]
 	public class WallPaperNoFile : WallPaperBase
 	{
-		[Flags] public enum Flags { default_ = 0x2, has_settings = 0x4, dark = 0x10,  }
+		[Flags] public enum Flags { default_ = 0x2, has_settings = 0x4, dark = 0x10 }
 		public Flags flags;
 		[IfFlag(2)] public WallPaperSettings settings;
 	}
@@ -1001,7 +1000,7 @@ namespace TL
 	{
 		[Flags] public enum Flags { blocked = 0x1, has_about = 0x2, has_profile_photo = 0x4, has_bot_info = 0x8, 
 			phone_calls_available = 0x10, phone_calls_private = 0x20, has_pinned_msg_id = 0x40, can_pin_message = 0x80, 
-			has_folder_id = 0x800, has_scheduled = 0x1000, video_calls_available = 0x2000,  }
+			has_folder_id = 0x800, has_scheduled = 0x1000, video_calls_available = 0x2000 }
 		public Flags flags;
 		public UserBase user;
 		[IfFlag(1)] public string about;
@@ -1104,7 +1103,7 @@ namespace TL
 	[TLDef(0x3A54685E, "messages.messagesSlice#3a54685e flags:# inexact:flags.1?true count:int next_rate:flags.0?int offset_id_offset:flags.2?int messages:Vector<Message> chats:Vector<Chat> users:Vector<User> = messages.Messages")]
 	public class Messages_MessagesSlice : Messages_MessagesBase
 	{
-		[Flags] public enum Flags { has_next_rate = 0x1, inexact = 0x2, has_offset_id_offset = 0x4,  }
+		[Flags] public enum Flags { has_next_rate = 0x1, inexact = 0x2, has_offset_id_offset = 0x4 }
 		public Flags flags;
 		public int count;
 		[IfFlag(0)] public int next_rate;
@@ -1116,7 +1115,7 @@ namespace TL
 	[TLDef(0x64479808, "messages.channelMessages#64479808 flags:# inexact:flags.1?true pts:int count:int offset_id_offset:flags.2?int messages:Vector<Message> chats:Vector<Chat> users:Vector<User> = messages.Messages")]
 	public class Messages_ChannelMessages : Messages_MessagesBase
 	{
-		[Flags] public enum Flags { inexact = 0x2, has_offset_id_offset = 0x4,  }
+		[Flags] public enum Flags { inexact = 0x2, has_offset_id_offset = 0x4 }
 		public Flags flags;
 		public int pts;
 		public int count;
@@ -1178,7 +1177,7 @@ namespace TL
 	[TLDef(0x80C99768, "inputMessagesFilterPhoneCalls#80c99768 flags:# missed:flags.0?true = MessagesFilter")]
 	public class InputMessagesFilterPhoneCalls : MessagesFilter
 	{
-		[Flags] public enum Flags { missed = 0x1,  }
+		[Flags] public enum Flags { missed = 0x1 }
 		public Flags flags;
 	}
 	[TLDef(0x7A7C17A4, "inputMessagesFilterRoundVoice#7a7c17a4 = MessagesFilter")]
@@ -1300,7 +1299,7 @@ namespace TL
 	[TLDef(0xEBE46819, "updateServiceNotification#ebe46819 flags:# popup:flags.0?true inbox_date:flags.1?int type:string message:string media:MessageMedia entities:Vector<MessageEntity> = Update")]
 	public class UpdateServiceNotification : Update
 	{
-		[Flags] public enum Flags { popup = 0x1, has_inbox_date = 0x2,  }
+		[Flags] public enum Flags { popup = 0x1, has_inbox_date = 0x2 }
 		public Flags flags;
 		[IfFlag(1)] public DateTime inbox_date;
 		public string type;
@@ -1323,7 +1322,7 @@ namespace TL
 	[TLDef(0x9C974FDF, "updateReadHistoryInbox#9c974fdf flags:# folder_id:flags.0?int peer:Peer max_id:int still_unread_count:int pts:int pts_count:int = Update")]
 	public class UpdateReadHistoryInbox : Update
 	{
-		[Flags] public enum Flags { has_folder_id = 0x1,  }
+		[Flags] public enum Flags { has_folder_id = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public int folder_id;
 		public Peer peer;
@@ -1357,7 +1356,7 @@ namespace TL
 	[TLDef(0xEB0467FB, "updateChannelTooLong#eb0467fb flags:# channel_id:int pts:flags.0?int = Update")]
 	public class UpdateChannelTooLong : Update
 	{
-		[Flags] public enum Flags { has_pts = 0x1,  }
+		[Flags] public enum Flags { has_pts = 0x1 }
 		public Flags flags;
 		public int channel_id;
 		[IfFlag(0)] public int pts;
@@ -1374,7 +1373,7 @@ namespace TL
 	[TLDef(0x330B5424, "updateReadChannelInbox#330b5424 flags:# folder_id:flags.0?int channel_id:int max_id:int still_unread_count:int pts:int = Update")]
 	public class UpdateReadChannelInbox : Update
 	{
-		[Flags] public enum Flags { has_folder_id = 0x1,  }
+		[Flags] public enum Flags { has_folder_id = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public int folder_id;
 		public int channel_id;
@@ -1410,7 +1409,7 @@ namespace TL
 	[TLDef(0xBB2D201, "updateStickerSetsOrder#0bb2d201 flags:# masks:flags.0?true order:Vector<long> = Update")]
 	public class UpdateStickerSetsOrder : Update
 	{
-		[Flags] public enum Flags { masks = 0x1,  }
+		[Flags] public enum Flags { masks = 0x1 }
 		public Flags flags;
 		public long[] order;
 	}
@@ -1421,7 +1420,7 @@ namespace TL
 	[TLDef(0x54826690, "updateBotInlineQuery#54826690 flags:# query_id:long user_id:int query:string geo:flags.0?GeoPoint offset:string = Update")]
 	public class UpdateBotInlineQuery : Update
 	{
-		[Flags] public enum Flags { has_geo = 0x1,  }
+		[Flags] public enum Flags { has_geo = 0x1 }
 		public Flags flags;
 		public long query_id;
 		public int user_id;
@@ -1432,7 +1431,7 @@ namespace TL
 	[TLDef(0xE48F964, "updateBotInlineSend#0e48f964 flags:# user_id:int query:string geo:flags.0?GeoPoint id:string msg_id:flags.1?InputBotInlineMessageID = Update")]
 	public class UpdateBotInlineSend : Update
 	{
-		[Flags] public enum Flags { has_geo = 0x1, has_msg_id = 0x2,  }
+		[Flags] public enum Flags { has_geo = 0x1, has_msg_id = 0x2 }
 		public Flags flags;
 		public int user_id;
 		public string query;
@@ -1450,7 +1449,7 @@ namespace TL
 	[TLDef(0xE73547E1, "updateBotCallbackQuery#e73547e1 flags:# query_id:long user_id:int peer:Peer msg_id:int chat_instance:long data:flags.0?bytes game_short_name:flags.1?string = Update")]
 	public class UpdateBotCallbackQuery : Update
 	{
-		[Flags] public enum Flags { has_data = 0x1, has_game_short_name = 0x2,  }
+		[Flags] public enum Flags { has_data = 0x1, has_game_short_name = 0x2 }
 		public Flags flags;
 		public long query_id;
 		public int user_id;
@@ -1470,7 +1469,7 @@ namespace TL
 	[TLDef(0xF9D27A5A, "updateInlineBotCallbackQuery#f9d27a5a flags:# query_id:long user_id:int msg_id:InputBotInlineMessageID chat_instance:long data:flags.0?bytes game_short_name:flags.1?string = Update")]
 	public class UpdateInlineBotCallbackQuery : Update
 	{
-		[Flags] public enum Flags { has_data = 0x1, has_game_short_name = 0x2,  }
+		[Flags] public enum Flags { has_data = 0x1, has_game_short_name = 0x2 }
 		public Flags flags;
 		public long query_id;
 		public int user_id;
@@ -1510,7 +1509,7 @@ namespace TL
 	[TLDef(0x6E6FE51C, "updateDialogPinned#6e6fe51c flags:# pinned:flags.0?true folder_id:flags.1?int peer:DialogPeer = Update")]
 	public class UpdateDialogPinned : Update
 	{
-		[Flags] public enum Flags { pinned = 0x1, has_folder_id = 0x2,  }
+		[Flags] public enum Flags { pinned = 0x1, has_folder_id = 0x2 }
 		public Flags flags;
 		[IfFlag(1)] public int folder_id;
 		public DialogPeerBase peer;
@@ -1518,7 +1517,7 @@ namespace TL
 	[TLDef(0xFA0F3CA2, "updatePinnedDialogs#fa0f3ca2 flags:# folder_id:flags.1?int order:flags.0?Vector<DialogPeer> = Update")]
 	public class UpdatePinnedDialogs : Update
 	{
-		[Flags] public enum Flags { has_order = 0x1, has_folder_id = 0x2,  }
+		[Flags] public enum Flags { has_order = 0x1, has_folder_id = 0x2 }
 		public Flags flags;
 		[IfFlag(1)] public int folder_id;
 		[IfFlag(0)] public DialogPeerBase[] order;
@@ -1543,7 +1542,7 @@ namespace TL
 	[TLDef(0x5D2F3AA9, "updateBotPrecheckoutQuery#5d2f3aa9 flags:# query_id:long user_id:int payload:bytes info:flags.0?PaymentRequestedInfo shipping_option_id:flags.1?string currency:string total_amount:long = Update")]
 	public class UpdateBotPrecheckoutQuery : Update
 	{
-		[Flags] public enum Flags { has_info = 0x1, has_shipping_option_id = 0x2,  }
+		[Flags] public enum Flags { has_info = 0x1, has_shipping_option_id = 0x2 }
 		public Flags flags;
 		public long query_id;
 		public int user_id;
@@ -1578,14 +1577,14 @@ namespace TL
 	[TLDef(0xE16459C3, "updateDialogUnreadMark#e16459c3 flags:# unread:flags.0?true peer:DialogPeer = Update")]
 	public class UpdateDialogUnreadMark : Update
 	{
-		[Flags] public enum Flags { unread = 0x1,  }
+		[Flags] public enum Flags { unread = 0x1 }
 		public Flags flags;
 		public DialogPeerBase peer;
 	}
 	[TLDef(0xACA1657B, "updateMessagePoll#aca1657b flags:# poll_id:long poll:flags.0?Poll results:PollResults = Update")]
 	public class UpdateMessagePoll : Update
 	{
-		[Flags] public enum Flags { has_poll = 0x1,  }
+		[Flags] public enum Flags { has_poll = 0x1 }
 		public Flags flags;
 		public long poll_id;
 		[IfFlag(0)] public Poll poll;
@@ -1641,7 +1640,7 @@ namespace TL
 	[TLDef(0x26FFDE7D, "updateDialogFilter#26ffde7d flags:# id:int filter:flags.0?DialogFilter = Update")]
 	public class UpdateDialogFilter : Update
 	{
-		[Flags] public enum Flags { has_filter = 0x1,  }
+		[Flags] public enum Flags { has_filter = 0x1 }
 		public Flags flags;
 		public int id;
 		[IfFlag(0)] public DialogFilter filter;
@@ -1666,7 +1665,7 @@ namespace TL
 	[TLDef(0x1CC7DE54, "updateReadChannelDiscussionInbox#1cc7de54 flags:# channel_id:int top_msg_id:int read_max_id:int broadcast_id:flags.0?int broadcast_post:flags.0?int = Update")]
 	public class UpdateReadChannelDiscussionInbox : Update
 	{
-		[Flags] public enum Flags { has_broadcast_id = 0x1,  }
+		[Flags] public enum Flags { has_broadcast_id = 0x1 }
 		public Flags flags;
 		public int channel_id;
 		public int top_msg_id;
@@ -1690,7 +1689,7 @@ namespace TL
 	[TLDef(0xFF2ABE9F, "updateChannelUserTyping#ff2abe9f flags:# channel_id:int top_msg_id:flags.0?int user_id:int action:SendMessageAction = Update")]
 	public class UpdateChannelUserTyping : Update
 	{
-		[Flags] public enum Flags { has_top_msg_id = 0x1,  }
+		[Flags] public enum Flags { has_top_msg_id = 0x1 }
 		public Flags flags;
 		public int channel_id;
 		[IfFlag(0)] public int top_msg_id;
@@ -1700,7 +1699,7 @@ namespace TL
 	[TLDef(0xED85EAB5, "updatePinnedMessages#ed85eab5 flags:# pinned:flags.0?true peer:Peer messages:Vector<int> pts:int pts_count:int = Update")]
 	public class UpdatePinnedMessages : Update
 	{
-		[Flags] public enum Flags { pinned = 0x1,  }
+		[Flags] public enum Flags { pinned = 0x1 }
 		public Flags flags;
 		public Peer peer;
 		public int[] messages;
@@ -1710,7 +1709,7 @@ namespace TL
 	[TLDef(0x8588878B, "updatePinnedChannelMessages#8588878b flags:# pinned:flags.0?true channel_id:int messages:Vector<int> pts:int pts_count:int = Update")]
 	public class UpdatePinnedChannelMessages : Update
 	{
-		[Flags] public enum Flags { pinned = 0x1,  }
+		[Flags] public enum Flags { pinned = 0x1 }
 		public Flags flags;
 		public int channel_id;
 		public int[] messages;
@@ -1765,7 +1764,7 @@ namespace TL
 	public class UpdateShortMessage : UpdatesBase
 	{
 		[Flags] public enum Flags { out_ = 0x2, has_fwd_from = 0x4, has_reply_to = 0x8, mentioned = 0x10, media_unread = 0x20, 
-			has_entities = 0x80, has_via_bot_id = 0x800, silent = 0x2000,  }
+			has_entities = 0x80, has_via_bot_id = 0x800, silent = 0x2000 }
 		public Flags flags;
 		public int id;
 		public int user_id;
@@ -1782,7 +1781,7 @@ namespace TL
 	public class UpdateShortChatMessage : UpdatesBase
 	{
 		[Flags] public enum Flags { out_ = 0x2, has_fwd_from = 0x4, has_reply_to = 0x8, mentioned = 0x10, media_unread = 0x20, 
-			has_entities = 0x80, has_via_bot_id = 0x800, silent = 0x2000,  }
+			has_entities = 0x80, has_via_bot_id = 0x800, silent = 0x2000 }
 		public Flags flags;
 		public int id;
 		public int from_id;
@@ -1824,7 +1823,7 @@ namespace TL
 	[TLDef(0x11F1331C, "updateShortSentMessage#11f1331c flags:# out:flags.1?true id:int pts:int pts_count:int date:int media:flags.9?MessageMedia entities:flags.7?Vector<MessageEntity> = Updates")]
 	public class UpdateShortSentMessage : UpdatesBase
 	{
-		[Flags] public enum Flags { out_ = 0x2, has_entities = 0x80, has_media = 0x200,  }
+		[Flags] public enum Flags { out_ = 0x2, has_entities = 0x80, has_media = 0x200 }
 		public Flags flags;
 		public int id;
 		public int pts;
@@ -1877,7 +1876,7 @@ namespace TL
 	[TLDef(0x18B7A10D, "dcOption#18b7a10d flags:# ipv6:flags.0?true media_only:flags.1?true tcpo_only:flags.2?true cdn:flags.3?true static:flags.4?true id:int ip_address:string port:int secret:flags.10?bytes = DcOption")]
 	public class DcOption : ITLObject
 	{
-		[Flags] public enum Flags { ipv6 = 0x1, media_only = 0x2, tcpo_only = 0x4, cdn = 0x8, static_ = 0x10, has_secret = 0x400,  }
+		[Flags] public enum Flags { ipv6 = 0x1, media_only = 0x2, tcpo_only = 0x4, cdn = 0x8, static_ = 0x10, has_secret = 0x400 }
 		public Flags flags;
 		public int id;
 		public string ip_address;
@@ -1891,7 +1890,7 @@ namespace TL
 		[Flags] public enum Flags { has_tmp_sessions = 0x1, phonecalls_enabled = 0x2, has_suggested_lang_code = 0x4, 
 			default_p2p_contacts = 0x8, preload_featured_stickers = 0x10, ignore_phone_entities = 0x20, revoke_pm_inbox = 0x40, 
 			has_autoupdate_url_prefix = 0x80, blocked_mode = 0x100, has_gif_search_username = 0x200, has_venue_search_username = 0x400, 
-			has_img_search_username = 0x800, has_static_maps_provider = 0x1000, pfs_enabled = 0x2000,  }
+			has_img_search_username = 0x800, has_static_maps_provider = 0x1000, pfs_enabled = 0x2000 }
 		public Flags flags;
 		public DateTime date;
 		public DateTime expires;
@@ -1951,7 +1950,7 @@ namespace TL
 	[TLDef(0x1DA7158F, "help.appUpdate#1da7158f flags:# can_not_skip:flags.0?true id:int version:string text:string entities:Vector<MessageEntity> document:flags.1?Document url:flags.2?string = help.AppUpdate")]
 	public class Help_AppUpdate : Help_AppUpdateBase
 	{
-		[Flags] public enum Flags { can_not_skip = 0x1, has_document = 0x2, has_url = 0x4,  }
+		[Flags] public enum Flags { can_not_skip = 0x1, has_document = 0x2, has_url = 0x4 }
 		public Flags flags;
 		public int id;
 		public string version;
@@ -1981,7 +1980,7 @@ namespace TL
 	[TLDef(0x62718A82, "encryptedChatRequested#62718a82 flags:# folder_id:flags.0?int id:int access_hash:long date:int admin_id:int participant_id:int g_a:bytes = EncryptedChat")]
 	public class EncryptedChatRequested : EncryptedChatBase
 	{
-		[Flags] public enum Flags { has_folder_id = 0x1,  }
+		[Flags] public enum Flags { has_folder_id = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public int folder_id;
 		public int id;
@@ -2103,7 +2102,7 @@ namespace TL
 	[TLDef(0x1E87342B, "document#1e87342b flags:# id:long access_hash:long file_reference:bytes date:int mime_type:string size:int thumbs:flags.0?Vector<PhotoSize> video_thumbs:flags.1?Vector<VideoSize> dc_id:int attributes:Vector<DocumentAttribute> = Document")]
 	public class Document : DocumentBase
 	{
-		[Flags] public enum Flags { has_thumbs = 0x1, has_video_thumbs = 0x2,  }
+		[Flags] public enum Flags { has_thumbs = 0x1, has_video_thumbs = 0x2 }
 		public Flags flags;
 		public long id;
 		public long access_hash;
@@ -2266,7 +2265,7 @@ namespace TL
 	[TLDef(0x6319D612, "documentAttributeSticker#6319d612 flags:# mask:flags.1?true alt:string stickerset:InputStickerSet mask_coords:flags.0?MaskCoords = DocumentAttribute")]
 	public class DocumentAttributeSticker : DocumentAttribute
 	{
-		[Flags] public enum Flags { has_mask_coords = 0x1, mask = 0x2,  }
+		[Flags] public enum Flags { has_mask_coords = 0x1, mask = 0x2 }
 		public Flags flags;
 		public string alt;
 		public InputStickerSet stickerset;
@@ -2275,7 +2274,7 @@ namespace TL
 	[TLDef(0xEF02CE6, "documentAttributeVideo#0ef02ce6 flags:# round_message:flags.0?true supports_streaming:flags.1?true duration:int w:int h:int = DocumentAttribute")]
 	public class DocumentAttributeVideo : DocumentAttribute
 	{
-		[Flags] public enum Flags { round_message = 0x1, supports_streaming = 0x2,  }
+		[Flags] public enum Flags { round_message = 0x1, supports_streaming = 0x2 }
 		public Flags flags;
 		public int duration;
 		public int w;
@@ -2284,7 +2283,7 @@ namespace TL
 	[TLDef(0x9852F9C6, "documentAttributeAudio#9852f9c6 flags:# voice:flags.10?true duration:int title:flags.0?string performer:flags.1?string waveform:flags.2?bytes = DocumentAttribute")]
 	public class DocumentAttributeAudio : DocumentAttribute
 	{
-		[Flags] public enum Flags { has_title = 0x1, has_performer = 0x2, has_waveform = 0x4, voice = 0x400,  }
+		[Flags] public enum Flags { has_title = 0x1, has_performer = 0x2, has_waveform = 0x4, voice = 0x400 }
 		public Flags flags;
 		public int duration;
 		[IfFlag(0)] public string title;
@@ -2344,7 +2343,7 @@ namespace TL
 	{
 		[Flags] public enum Flags { has_type = 0x1, has_site_name = 0x2, has_title = 0x4, has_description = 0x8, has_photo = 0x10, 
 			has_embed_url = 0x20, has_embed_width = 0x40, has_duration = 0x80, has_author = 0x100, has_document = 0x200, 
-			has_cached_page = 0x400, has_attributes = 0x1000,  }
+			has_cached_page = 0x400, has_attributes = 0x1000 }
 		public Flags flags;
 		public long id;
 		public string url;
@@ -2368,7 +2367,7 @@ namespace TL
 	[TLDef(0x7311CA11, "webPageNotModified#7311ca11 flags:# cached_page_views:flags.0?int = WebPage")]
 	public class WebPageNotModified : WebPageBase
 	{
-		[Flags] public enum Flags { has_cached_page_views = 0x1,  }
+		[Flags] public enum Flags { has_cached_page_views = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public int cached_page_views;
 	}
@@ -2376,7 +2375,7 @@ namespace TL
 	[TLDef(0xAD01D61D, "authorization#ad01d61d flags:# current:flags.0?true official_app:flags.1?true password_pending:flags.2?true hash:long device_model:string platform:string system_version:string api_id:int app_name:string app_version:string date_created:int date_active:int ip:string country:string region:string = Authorization")]
 	public class Authorization : ITLObject
 	{
-		[Flags] public enum Flags { current = 0x1, official_app = 0x2, password_pending = 0x4,  }
+		[Flags] public enum Flags { current = 0x1, official_app = 0x2, password_pending = 0x4 }
 		public Flags flags;
 		public long hash;
 		public string device_model;
@@ -2399,7 +2398,7 @@ namespace TL
 	public class Account_Password : ITLObject
 	{
 		[Flags] public enum Flags { has_recovery = 0x1, has_secure_values = 0x2, has_password = 0x4, has_hint = 0x8, 
-			has_email_unconfirmed_pattern = 0x10,  }
+			has_email_unconfirmed_pattern = 0x10 }
 		public Flags flags;
 		[IfFlag(2)] public PasswordKdfAlgo current_algo;
 		[IfFlag(2)] public byte[] srp_B;
@@ -2414,7 +2413,7 @@ namespace TL
 	[TLDef(0x9A5C33E5, "account.passwordSettings#9a5c33e5 flags:# email:flags.0?string secure_settings:flags.1?SecureSecretSettings = account.PasswordSettings")]
 	public class Account_PasswordSettings : ITLObject
 	{
-		[Flags] public enum Flags { has_email = 0x1, has_secure_settings = 0x2,  }
+		[Flags] public enum Flags { has_email = 0x1, has_secure_settings = 0x2 }
 		public Flags flags;
 		[IfFlag(0)] public string email;
 		[IfFlag(1)] public SecureSecretSettings secure_settings;
@@ -2423,7 +2422,7 @@ namespace TL
 	[TLDef(0xC23727C9, "account.passwordInputSettings#c23727c9 flags:# new_algo:flags.0?PasswordKdfAlgo new_password_hash:flags.0?bytes hint:flags.0?string email:flags.1?string new_secure_settings:flags.2?SecureSecretSettings = account.PasswordInputSettings")]
 	public class Account_PasswordInputSettings : ITLObject
 	{
-		[Flags] public enum Flags { has_new_algo = 0x1, has_email = 0x2, has_new_secure_settings = 0x4,  }
+		[Flags] public enum Flags { has_new_algo = 0x1, has_email = 0x2, has_new_secure_settings = 0x4 }
 		public Flags flags;
 		[IfFlag(0)] public PasswordKdfAlgo new_algo;
 		[IfFlag(0)] public byte[] new_password_hash;
@@ -2454,7 +2453,7 @@ namespace TL
 	[TLDef(0xDFC2F58E, "chatInvite#dfc2f58e flags:# channel:flags.0?true broadcast:flags.1?true public:flags.2?true megagroup:flags.3?true title:string photo:Photo participants_count:int participants:flags.4?Vector<User> = ChatInvite")]
 	public class ChatInvite : ChatInviteBase
 	{
-		[Flags] public enum Flags { channel = 0x1, broadcast = 0x2, public_ = 0x4, megagroup = 0x8, has_participants = 0x10,  }
+		[Flags] public enum Flags { channel = 0x1, broadcast = 0x2, public_ = 0x4, megagroup = 0x8, has_participants = 0x10 }
 		public Flags flags;
 		public string title;
 		public PhotoBase photo;
@@ -2488,7 +2487,7 @@ namespace TL
 	public class StickerSet : ITLObject
 	{
 		[Flags] public enum Flags { has_installed_date = 0x1, archived = 0x2, official = 0x4, masks = 0x8, has_thumb = 0x10, 
-			animated = 0x20,  }
+			animated = 0x20 }
 		public Flags flags;
 		[IfFlag(0)] public DateTime installed_date;
 		public long id;
@@ -2536,7 +2535,7 @@ namespace TL
 	[TLDef(0x35BBDB6B, "keyboardButtonCallback#35bbdb6b flags:# requires_password:flags.0?true text:string data:bytes = KeyboardButton")]
 	public class KeyboardButtonCallback : KeyboardButtonBase
 	{
-		[Flags] public enum Flags { requires_password = 0x1,  }
+		[Flags] public enum Flags { requires_password = 0x1 }
 		public Flags flags;
 		public string text;
 		public byte[] data;
@@ -2548,7 +2547,7 @@ namespace TL
 	[TLDef(0x568A748, "keyboardButtonSwitchInline#0568a748 flags:# same_peer:flags.0?true text:string query:string = KeyboardButton")]
 	public class KeyboardButtonSwitchInline : KeyboardButtonBase
 	{
-		[Flags] public enum Flags { same_peer = 0x1,  }
+		[Flags] public enum Flags { same_peer = 0x1 }
 		public Flags flags;
 		public string text;
 		public string query;
@@ -2560,7 +2559,7 @@ namespace TL
 	[TLDef(0x10B78D29, "keyboardButtonUrlAuth#10b78d29 flags:# text:string fwd_text:flags.0?string url:string button_id:int = KeyboardButton")]
 	public class KeyboardButtonUrlAuth : KeyboardButtonBase
 	{
-		[Flags] public enum Flags { has_fwd_text = 0x1,  }
+		[Flags] public enum Flags { has_fwd_text = 0x1 }
 		public Flags flags;
 		public string text;
 		[IfFlag(0)] public string fwd_text;
@@ -2570,7 +2569,7 @@ namespace TL
 	[TLDef(0xD02E7FD4, "inputKeyboardButtonUrlAuth#d02e7fd4 flags:# request_write_access:flags.0?true text:string fwd_text:flags.1?string url:string bot:InputUser = KeyboardButton")]
 	public class InputKeyboardButtonUrlAuth : KeyboardButtonBase
 	{
-		[Flags] public enum Flags { request_write_access = 0x1, has_fwd_text = 0x2,  }
+		[Flags] public enum Flags { request_write_access = 0x1, has_fwd_text = 0x2 }
 		public Flags flags;
 		public string text;
 		[IfFlag(1)] public string fwd_text;
@@ -2580,7 +2579,7 @@ namespace TL
 	[TLDef(0xBBC7515D, "keyboardButtonRequestPoll#bbc7515d flags:# quiz:flags.0?Bool text:string = KeyboardButton")]
 	public class KeyboardButtonRequestPoll : KeyboardButtonBase
 	{
-		[Flags] public enum Flags { has_quiz = 0x1,  }
+		[Flags] public enum Flags { has_quiz = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public bool quiz;
 		public string text;
@@ -2593,19 +2592,19 @@ namespace TL
 	[TLDef(0xA03E5B85, "replyKeyboardHide#a03e5b85 flags:# selective:flags.2?true = ReplyMarkup")]
 	public class ReplyKeyboardHide : ReplyMarkup
 	{
-		[Flags] public enum Flags { selective = 0x4,  }
+		[Flags] public enum Flags { selective = 0x4 }
 		public Flags flags;
 	}
 	[TLDef(0xF4108AA0, "replyKeyboardForceReply#f4108aa0 flags:# single_use:flags.1?true selective:flags.2?true = ReplyMarkup")]
 	public class ReplyKeyboardForceReply : ReplyMarkup
 	{
-		[Flags] public enum Flags { single_use = 0x2, selective = 0x4,  }
+		[Flags] public enum Flags { single_use = 0x2, selective = 0x4 }
 		public Flags flags;
 	}
 	[TLDef(0x3502758C, "replyKeyboardMarkup#3502758c flags:# resize:flags.0?true single_use:flags.1?true selective:flags.2?true rows:Vector<KeyboardButtonRow> = ReplyMarkup")]
 	public class ReplyKeyboardMarkup : ReplyMarkup
 	{
-		[Flags] public enum Flags { resize = 0x1, single_use = 0x2, selective = 0x4,  }
+		[Flags] public enum Flags { resize = 0x1, single_use = 0x2, selective = 0x4 }
 		public Flags flags;
 		public KeyboardButtonRow[] rows;
 	}
@@ -2692,7 +2691,7 @@ namespace TL
 	[TLDef(0x3E11AFFB, "updates.channelDifferenceEmpty#3e11affb flags:# final:flags.0?true pts:int timeout:flags.1?int = updates.ChannelDifference")]
 	public class Updates_ChannelDifferenceEmpty : Updates_ChannelDifferenceBase
 	{
-		[Flags] public enum Flags { final = 0x1, has_timeout = 0x2,  }
+		[Flags] public enum Flags { final = 0x1, has_timeout = 0x2 }
 		public Flags flags;
 		public int pts;
 		[IfFlag(1)] public int timeout;
@@ -2700,7 +2699,7 @@ namespace TL
 	[TLDef(0xA4BCC6FE, "updates.channelDifferenceTooLong#a4bcc6fe flags:# final:flags.0?true timeout:flags.1?int dialog:Dialog messages:Vector<Message> chats:Vector<Chat> users:Vector<User> = updates.ChannelDifference")]
 	public class Updates_ChannelDifferenceTooLong : Updates_ChannelDifferenceBase
 	{
-		[Flags] public enum Flags { final = 0x1, has_timeout = 0x2,  }
+		[Flags] public enum Flags { final = 0x1, has_timeout = 0x2 }
 		public Flags flags;
 		[IfFlag(1)] public int timeout;
 		public DialogBase dialog;
@@ -2711,7 +2710,7 @@ namespace TL
 	[TLDef(0x2064674E, "updates.channelDifference#2064674e flags:# final:flags.0?true pts:int timeout:flags.1?int new_messages:Vector<Message> other_updates:Vector<Update> chats:Vector<Chat> users:Vector<User> = updates.ChannelDifference")]
 	public class Updates_ChannelDifference : Updates_ChannelDifferenceBase
 	{
-		[Flags] public enum Flags { final = 0x1, has_timeout = 0x2,  }
+		[Flags] public enum Flags { final = 0x1, has_timeout = 0x2 }
 		public Flags flags;
 		public int pts;
 		[IfFlag(1)] public int timeout;
@@ -2727,7 +2726,7 @@ namespace TL
 	[TLDef(0xCD77D957, "channelMessagesFilter#cd77d957 flags:# exclude_new_messages:flags.1?true ranges:Vector<MessageRange> = ChannelMessagesFilter")]
 	public class ChannelMessagesFilter : ChannelMessagesFilterBase
 	{
-		[Flags] public enum Flags { exclude_new_messages = 0x2,  }
+		[Flags] public enum Flags { exclude_new_messages = 0x2 }
 		public Flags flags;
 		public MessageRange[] ranges;
 	}
@@ -2749,7 +2748,7 @@ namespace TL
 	[TLDef(0x447DCA4B, "channelParticipantCreator#447dca4b flags:# user_id:int admin_rights:ChatAdminRights rank:flags.0?string = ChannelParticipant")]
 	public class ChannelParticipantCreator : ChannelParticipantBase
 	{
-		[Flags] public enum Flags { has_rank = 0x1,  }
+		[Flags] public enum Flags { has_rank = 0x1 }
 		public Flags flags;
 		public int user_id;
 		public ChatAdminRights admin_rights;
@@ -2758,7 +2757,7 @@ namespace TL
 	[TLDef(0xCCBEBBAF, "channelParticipantAdmin#ccbebbaf flags:# can_edit:flags.0?true self:flags.1?true user_id:int inviter_id:flags.1?int promoted_by:int date:int admin_rights:ChatAdminRights rank:flags.2?string = ChannelParticipant")]
 	public class ChannelParticipantAdmin : ChannelParticipantBase
 	{
-		[Flags] public enum Flags { can_edit = 0x1, self = 0x2, has_rank = 0x4,  }
+		[Flags] public enum Flags { can_edit = 0x1, self = 0x2, has_rank = 0x4 }
 		public Flags flags;
 		public int user_id;
 		[IfFlag(1)] public int inviter_id;
@@ -2770,7 +2769,7 @@ namespace TL
 	[TLDef(0x1C0FACAF, "channelParticipantBanned#1c0facaf flags:# left:flags.0?true user_id:int kicked_by:int date:int banned_rights:ChatBannedRights = ChannelParticipant")]
 	public class ChannelParticipantBanned : ChannelParticipantBase
 	{
-		[Flags] public enum Flags { left = 0x1,  }
+		[Flags] public enum Flags { left = 0x1 }
 		public Flags flags;
 		public int user_id;
 		public int kicked_by;
@@ -2798,7 +2797,7 @@ namespace TL
 	[TLDef(0xE04B5CEB, "channelParticipantsMentions#e04b5ceb flags:# q:flags.0?string top_msg_id:flags.1?int = ChannelParticipantsFilter")]
 	public class ChannelParticipantsMentions : ChannelParticipantsFilter
 	{
-		[Flags] public enum Flags { has_q = 0x1, has_top_msg_id = 0x2,  }
+		[Flags] public enum Flags { has_q = 0x1, has_top_msg_id = 0x2 }
 		public Flags flags;
 		[IfFlag(0)] public string q;
 		[IfFlag(1)] public int top_msg_id;
@@ -2825,7 +2824,7 @@ namespace TL
 	[TLDef(0x780A0310, "help.termsOfService#780a0310 flags:# popup:flags.0?true id:DataJSON text:string entities:Vector<MessageEntity> min_age_confirm:flags.1?int = help.TermsOfService")]
 	public class Help_TermsOfService : ITLObject
 	{
-		[Flags] public enum Flags { popup = 0x1, has_min_age_confirm = 0x2,  }
+		[Flags] public enum Flags { popup = 0x1, has_min_age_confirm = 0x2 }
 		public Flags flags;
 		public DataJSON id;
 		public string text;
@@ -2847,7 +2846,7 @@ namespace TL
 	[TLDef(0x3380C786, "inputBotInlineMessageMediaAuto#3380c786 flags:# message:string entities:flags.1?Vector<MessageEntity> reply_markup:flags.2?ReplyMarkup = InputBotInlineMessage")]
 	public class InputBotInlineMessageMediaAuto : InputBotInlineMessage
 	{
-		[Flags] public enum Flags { has_entities = 0x2, has_reply_markup = 0x4,  }
+		[Flags] public enum Flags { has_entities = 0x2, has_reply_markup = 0x4 }
 		public string message;
 		[IfFlag(1)] public MessageEntity[] entities;
 		[IfFlag(2)] public ReplyMarkup reply_markup;
@@ -2855,7 +2854,7 @@ namespace TL
 	[TLDef(0x3DCD7A87, "inputBotInlineMessageText#3dcd7a87 flags:# no_webpage:flags.0?true message:string entities:flags.1?Vector<MessageEntity> reply_markup:flags.2?ReplyMarkup = InputBotInlineMessage")]
 	public class InputBotInlineMessageText : InputBotInlineMessage
 	{
-		[Flags] public enum Flags { no_webpage = 0x1, has_entities = 0x2, has_reply_markup = 0x4,  }
+		[Flags] public enum Flags { no_webpage = 0x1, has_entities = 0x2, has_reply_markup = 0x4 }
 		public string message;
 		[IfFlag(1)] public MessageEntity[] entities;
 		[IfFlag(2)] public ReplyMarkup reply_markup;
@@ -2863,7 +2862,8 @@ namespace TL
 	[TLDef(0x96929A85, "inputBotInlineMessageMediaGeo#96929a85 flags:# geo_point:InputGeoPoint heading:flags.0?int period:flags.1?int proximity_notification_radius:flags.3?int reply_markup:flags.2?ReplyMarkup = InputBotInlineMessage")]
 	public class InputBotInlineMessageMediaGeo : InputBotInlineMessage
 	{
-		[Flags] public enum Flags { has_heading = 0x1, has_period = 0x2, has_reply_markup = 0x4, has_proximity_notification_radius = 0x8,  }
+		[Flags] public enum Flags { has_heading = 0x1, has_period = 0x2, has_reply_markup = 0x4, 
+			has_proximity_notification_radius = 0x8 }
 		public InputGeoPointBase geo_point;
 		[IfFlag(0)] public int heading;
 		[IfFlag(1)] public int period;
@@ -2873,7 +2873,7 @@ namespace TL
 	[TLDef(0x417BBF11, "inputBotInlineMessageMediaVenue#417bbf11 flags:# geo_point:InputGeoPoint title:string address:string provider:string venue_id:string venue_type:string reply_markup:flags.2?ReplyMarkup = InputBotInlineMessage")]
 	public class InputBotInlineMessageMediaVenue : InputBotInlineMessage
 	{
-		[Flags] public enum Flags { has_reply_markup = 0x4,  }
+		[Flags] public enum Flags { has_reply_markup = 0x4 }
 		public InputGeoPointBase geo_point;
 		public string title;
 		public string address;
@@ -2885,7 +2885,7 @@ namespace TL
 	[TLDef(0xA6EDBFFD, "inputBotInlineMessageMediaContact#a6edbffd flags:# phone_number:string first_name:string last_name:string vcard:string reply_markup:flags.2?ReplyMarkup = InputBotInlineMessage")]
 	public class InputBotInlineMessageMediaContact : InputBotInlineMessage
 	{
-		[Flags] public enum Flags { has_reply_markup = 0x4,  }
+		[Flags] public enum Flags { has_reply_markup = 0x4 }
 		public string phone_number;
 		public string first_name;
 		public string last_name;
@@ -2893,14 +2893,17 @@ namespace TL
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 	}
 	[TLDef(0x4B425864, "inputBotInlineMessageGame#4b425864 flags:# reply_markup:flags.2?ReplyMarkup = InputBotInlineMessage")]
-	public class InputBotInlineMessageGame : InputBotInlineMessage { 		[Flags] public enum Flags { has_reply_markup = 0x4,  }
-[IfFlag(2)] public ReplyMarkup reply_markup; }
+	public class InputBotInlineMessageGame : InputBotInlineMessage
+	{
+		[Flags] public enum Flags { has_reply_markup = 0x4 }
+		[IfFlag(2)] public ReplyMarkup reply_markup;
+	}
 
 	public abstract class InputBotInlineResultBase : ITLObject { }
 	[TLDef(0x88BF9319, "inputBotInlineResult#88bf9319 flags:# id:string type:string title:flags.1?string description:flags.2?string url:flags.3?string thumb:flags.4?InputWebDocument content:flags.5?InputWebDocument send_message:InputBotInlineMessage = InputBotInlineResult")]
 	public class InputBotInlineResult : InputBotInlineResultBase
 	{
-		[Flags] public enum Flags { has_title = 0x2, has_description = 0x4, has_url = 0x8, has_thumb = 0x10, has_content = 0x20,  }
+		[Flags] public enum Flags { has_title = 0x2, has_description = 0x4, has_url = 0x8, has_thumb = 0x10, has_content = 0x20 }
 		public Flags flags;
 		public string id;
 		public string type;
@@ -2922,7 +2925,7 @@ namespace TL
 	[TLDef(0xFFF8FDC4, "inputBotInlineResultDocument#fff8fdc4 flags:# id:string type:string title:flags.1?string description:flags.2?string document:InputDocument send_message:InputBotInlineMessage = InputBotInlineResult")]
 	public class InputBotInlineResultDocument : InputBotInlineResultBase
 	{
-		[Flags] public enum Flags { has_title = 0x2, has_description = 0x4,  }
+		[Flags] public enum Flags { has_title = 0x2, has_description = 0x4 }
 		public Flags flags;
 		public string id;
 		public string type;
@@ -2943,7 +2946,7 @@ namespace TL
 	[TLDef(0x764CF810, "botInlineMessageMediaAuto#764cf810 flags:# message:string entities:flags.1?Vector<MessageEntity> reply_markup:flags.2?ReplyMarkup = BotInlineMessage")]
 	public class BotInlineMessageMediaAuto : BotInlineMessage
 	{
-		[Flags] public enum Flags { has_entities = 0x2, has_reply_markup = 0x4,  }
+		[Flags] public enum Flags { has_entities = 0x2, has_reply_markup = 0x4 }
 		public string message;
 		[IfFlag(1)] public MessageEntity[] entities;
 		[IfFlag(2)] public ReplyMarkup reply_markup;
@@ -2951,7 +2954,7 @@ namespace TL
 	[TLDef(0x8C7F65E2, "botInlineMessageText#8c7f65e2 flags:# no_webpage:flags.0?true message:string entities:flags.1?Vector<MessageEntity> reply_markup:flags.2?ReplyMarkup = BotInlineMessage")]
 	public class BotInlineMessageText : BotInlineMessage
 	{
-		[Flags] public enum Flags { no_webpage = 0x1, has_entities = 0x2, has_reply_markup = 0x4,  }
+		[Flags] public enum Flags { no_webpage = 0x1, has_entities = 0x2, has_reply_markup = 0x4 }
 		public string message;
 		[IfFlag(1)] public MessageEntity[] entities;
 		[IfFlag(2)] public ReplyMarkup reply_markup;
@@ -2959,7 +2962,8 @@ namespace TL
 	[TLDef(0x51846FD, "botInlineMessageMediaGeo#051846fd flags:# geo:GeoPoint heading:flags.0?int period:flags.1?int proximity_notification_radius:flags.3?int reply_markup:flags.2?ReplyMarkup = BotInlineMessage")]
 	public class BotInlineMessageMediaGeo : BotInlineMessage
 	{
-		[Flags] public enum Flags { has_heading = 0x1, has_period = 0x2, has_reply_markup = 0x4, has_proximity_notification_radius = 0x8,  }
+		[Flags] public enum Flags { has_heading = 0x1, has_period = 0x2, has_reply_markup = 0x4, 
+			has_proximity_notification_radius = 0x8 }
 		public GeoPointBase geo;
 		[IfFlag(0)] public int heading;
 		[IfFlag(1)] public int period;
@@ -2969,7 +2973,7 @@ namespace TL
 	[TLDef(0x8A86659C, "botInlineMessageMediaVenue#8a86659c flags:# geo:GeoPoint title:string address:string provider:string venue_id:string venue_type:string reply_markup:flags.2?ReplyMarkup = BotInlineMessage")]
 	public class BotInlineMessageMediaVenue : BotInlineMessage
 	{
-		[Flags] public enum Flags { has_reply_markup = 0x4,  }
+		[Flags] public enum Flags { has_reply_markup = 0x4 }
 		public GeoPointBase geo;
 		public string title;
 		public string address;
@@ -2981,7 +2985,7 @@ namespace TL
 	[TLDef(0x18D1CDC2, "botInlineMessageMediaContact#18d1cdc2 flags:# phone_number:string first_name:string last_name:string vcard:string reply_markup:flags.2?ReplyMarkup = BotInlineMessage")]
 	public class BotInlineMessageMediaContact : BotInlineMessage
 	{
-		[Flags] public enum Flags { has_reply_markup = 0x4,  }
+		[Flags] public enum Flags { has_reply_markup = 0x4 }
 		public string phone_number;
 		public string first_name;
 		public string last_name;
@@ -2993,7 +2997,7 @@ namespace TL
 	[TLDef(0x11965F3A, "botInlineResult#11965f3a flags:# id:string type:string title:flags.1?string description:flags.2?string url:flags.3?string thumb:flags.4?WebDocument content:flags.5?WebDocument send_message:BotInlineMessage = BotInlineResult")]
 	public class BotInlineResult : BotInlineResultBase
 	{
-		[Flags] public enum Flags { has_title = 0x2, has_description = 0x4, has_url = 0x8, has_thumb = 0x10, has_content = 0x20,  }
+		[Flags] public enum Flags { has_title = 0x2, has_description = 0x4, has_url = 0x8, has_thumb = 0x10, has_content = 0x20 }
 		public Flags flags;
 		public string id;
 		public string type;
@@ -3007,7 +3011,7 @@ namespace TL
 	[TLDef(0x17DB940B, "botInlineMediaResult#17db940b flags:# id:string type:string photo:flags.0?Photo document:flags.1?Document title:flags.2?string description:flags.3?string send_message:BotInlineMessage = BotInlineResult")]
 	public class BotInlineMediaResult : BotInlineResultBase
 	{
-		[Flags] public enum Flags { has_photo = 0x1, has_document = 0x2, has_title = 0x4, has_description = 0x8,  }
+		[Flags] public enum Flags { has_photo = 0x1, has_document = 0x2, has_title = 0x4, has_description = 0x8 }
 		public Flags flags;
 		public string id;
 		public string type;
@@ -3021,7 +3025,7 @@ namespace TL
 	[TLDef(0x947CA848, "messages.botResults#947ca848 flags:# gallery:flags.0?true query_id:long next_offset:flags.1?string switch_pm:flags.2?InlineBotSwitchPM results:Vector<BotInlineResult> cache_time:int users:Vector<User> = messages.BotResults")]
 	public class Messages_BotResults : ITLObject
 	{
-		[Flags] public enum Flags { gallery = 0x1, has_next_offset = 0x2, has_switch_pm = 0x4,  }
+		[Flags] public enum Flags { gallery = 0x1, has_next_offset = 0x2, has_switch_pm = 0x4 }
 		public Flags flags;
 		public long query_id;
 		[IfFlag(1)] public string next_offset;
@@ -3042,7 +3046,7 @@ namespace TL
 	public class MessageFwdHeader : ITLObject
 	{
 		[Flags] public enum Flags { has_from_id = 0x1, has_channel_post = 0x4, has_post_author = 0x8, has_saved_from_peer = 0x10, 
-			has_from_name = 0x20, has_psa_type = 0x40, imported = 0x80,  }
+			has_from_name = 0x20, has_psa_type = 0x40, imported = 0x80 }
 		public Flags flags;
 		[IfFlag(0)] public Peer from_id;
 		[IfFlag(5)] public string from_name;
@@ -3075,7 +3079,7 @@ namespace TL
 	[TLDef(0x36585EA4, "messages.botCallbackAnswer#36585ea4 flags:# alert:flags.1?true has_url:flags.3?true native_ui:flags.4?true message:flags.0?string url:flags.2?string cache_time:int = messages.BotCallbackAnswer")]
 	public class Messages_BotCallbackAnswer : ITLObject
 	{
-		[Flags] public enum Flags { has_message = 0x1, alert = 0x2, has_url_field = 0x4, has_url = 0x8, native_ui = 0x10,  }
+		[Flags] public enum Flags { has_message = 0x1, alert = 0x2, has_url_field = 0x4, has_url = 0x8, native_ui = 0x10 }
 		public Flags flags;
 		[IfFlag(0)] public string message;
 		[IfFlag(2)] public string url;
@@ -3085,7 +3089,7 @@ namespace TL
 	[TLDef(0x26B5DDE6, "messages.messageEditData#26b5dde6 flags:# caption:flags.0?true = messages.MessageEditData")]
 	public class Messages_MessageEditData : ITLObject
 	{
-		[Flags] public enum Flags { caption = 0x1,  }
+		[Flags] public enum Flags { caption = 0x1 }
 		public Flags flags;
 	}
 
@@ -3164,14 +3168,14 @@ namespace TL
 	[TLDef(0x1B0C841A, "draftMessageEmpty#1b0c841a flags:# date:flags.0?int = DraftMessage")]
 	public class DraftMessageEmpty : DraftMessageBase
 	{
-		[Flags] public enum Flags { has_date = 0x1,  }
+		[Flags] public enum Flags { has_date = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public DateTime date;
 	}
 	[TLDef(0xFD8E711F, "draftMessage#fd8e711f flags:# no_webpage:flags.1?true reply_to_msg_id:flags.0?int message:string entities:flags.3?Vector<MessageEntity> date:int = DraftMessage")]
 	public class DraftMessage : DraftMessageBase
 	{
-		[Flags] public enum Flags { has_reply_to_msg_id = 0x1, no_webpage = 0x2, has_entities = 0x8,  }
+		[Flags] public enum Flags { has_reply_to_msg_id = 0x1, no_webpage = 0x2, has_entities = 0x8 }
 		public Flags flags;
 		[IfFlag(0)] public int reply_to_msg_id;
 		public string message;
@@ -3248,7 +3252,7 @@ namespace TL
 	[TLDef(0xBDF9653B, "game#bdf9653b flags:# id:long access_hash:long short_name:string title:string description:string photo:Photo document:flags.0?Document = Game")]
 	public class Game : ITLObject
 	{
-		[Flags] public enum Flags { has_document = 0x1,  }
+		[Flags] public enum Flags { has_document = 0x1 }
 		public Flags flags;
 		public long id;
 		public long access_hash;
@@ -3392,7 +3396,7 @@ namespace TL
 	[TLDef(0x1759C560, "pageBlockPhoto#1759c560 flags:# photo_id:long caption:PageCaption url:flags.0?string webpage_id:flags.0?long = PageBlock")]
 	public class PageBlockPhoto : PageBlock
 	{
-		[Flags] public enum Flags { has_url = 0x1,  }
+		[Flags] public enum Flags { has_url = 0x1 }
 		public Flags flags;
 		public long photo_id;
 		public PageCaption caption;
@@ -3402,7 +3406,7 @@ namespace TL
 	[TLDef(0x7C8FE7B6, "pageBlockVideo#7c8fe7b6 flags:# autoplay:flags.0?true loop:flags.1?true video_id:long caption:PageCaption = PageBlock")]
 	public class PageBlockVideo : PageBlock
 	{
-		[Flags] public enum Flags { autoplay = 0x1, loop = 0x2,  }
+		[Flags] public enum Flags { autoplay = 0x1, loop = 0x2 }
 		public Flags flags;
 		public long video_id;
 		public PageCaption caption;
@@ -3413,7 +3417,7 @@ namespace TL
 	public class PageBlockEmbed : PageBlock
 	{
 		[Flags] public enum Flags { full_width = 0x1, has_url = 0x2, has_html = 0x4, allow_scrolling = 0x8, has_poster_photo_id = 0x10, 
-			has_w = 0x20,  }
+			has_w = 0x20 }
 		public Flags flags;
 		[IfFlag(1)] public string url;
 		[IfFlag(2)] public string html;
@@ -3458,7 +3462,7 @@ namespace TL
 	[TLDef(0xBF4DEA82, "pageBlockTable#bf4dea82 flags:# bordered:flags.0?true striped:flags.1?true title:RichText rows:Vector<PageTableRow> = PageBlock")]
 	public class PageBlockTable : PageBlock
 	{
-		[Flags] public enum Flags { bordered = 0x1, striped = 0x2,  }
+		[Flags] public enum Flags { bordered = 0x1, striped = 0x2 }
 		public Flags flags;
 		public RichText title;
 		public PageTableRow[] rows;
@@ -3468,7 +3472,7 @@ namespace TL
 	[TLDef(0x76768BED, "pageBlockDetails#76768bed flags:# open:flags.0?true blocks:Vector<PageBlock> title:RichText = PageBlock")]
 	public class PageBlockDetails : PageBlock
 	{
-		[Flags] public enum Flags { open = 0x1,  }
+		[Flags] public enum Flags { open = 0x1 }
 		public Flags flags;
 		public PageBlock[] blocks;
 		public RichText title;
@@ -3513,7 +3517,7 @@ namespace TL
 	public class Invoice : ITLObject
 	{
 		[Flags] public enum Flags { test = 0x1, name_requested = 0x2, phone_requested = 0x4, email_requested = 0x8, 
-			shipping_address_requested = 0x10, flexible = 0x20, phone_to_provider = 0x40, email_to_provider = 0x80,  }
+			shipping_address_requested = 0x10, flexible = 0x20, phone_to_provider = 0x40, email_to_provider = 0x80 }
 		public Flags flags;
 		public string currency;
 		public LabeledPrice[] prices;
@@ -3540,7 +3544,7 @@ namespace TL
 	[TLDef(0x909C3F94, "paymentRequestedInfo#909c3f94 flags:# name:flags.0?string phone:flags.1?string email:flags.2?string shipping_address:flags.3?PostAddress = PaymentRequestedInfo")]
 	public class PaymentRequestedInfo : ITLObject
 	{
-		[Flags] public enum Flags { has_name = 0x1, has_phone = 0x2, has_email = 0x4, has_shipping_address = 0x8,  }
+		[Flags] public enum Flags { has_name = 0x1, has_phone = 0x2, has_email = 0x4, has_shipping_address = 0x8 }
 		public Flags flags;
 		[IfFlag(0)] public string name;
 		[IfFlag(1)] public string phone;
@@ -3615,8 +3619,8 @@ namespace TL
 	[TLDef(0x3F56AEA3, "payments.paymentForm#3f56aea3 flags:# can_save_credentials:flags.2?true password_missing:flags.3?true bot_id:int invoice:Invoice provider_id:int url:string native_provider:flags.4?string native_params:flags.4?DataJSON saved_info:flags.0?PaymentRequestedInfo saved_credentials:flags.1?PaymentSavedCredentials users:Vector<User> = payments.PaymentForm")]
 	public class Payments_PaymentForm : ITLObject
 	{
-		[Flags] public enum Flags { has_saved_info = 0x1, has_saved_credentials = 0x2, can_save_credentials = 0x4, password_missing = 0x8, 
-			has_native_provider = 0x10,  }
+		[Flags] public enum Flags { has_saved_info = 0x1, has_saved_credentials = 0x2, can_save_credentials = 0x4, 
+			password_missing = 0x8, has_native_provider = 0x10 }
 		public Flags flags;
 		public int bot_id;
 		public Invoice invoice;
@@ -3632,7 +3636,7 @@ namespace TL
 	[TLDef(0xD1451883, "payments.validatedRequestedInfo#d1451883 flags:# id:flags.0?string shipping_options:flags.1?Vector<ShippingOption> = payments.ValidatedRequestedInfo")]
 	public class Payments_ValidatedRequestedInfo : ITLObject
 	{
-		[Flags] public enum Flags { has_id = 0x1, has_shipping_options = 0x2,  }
+		[Flags] public enum Flags { has_id = 0x1, has_shipping_options = 0x2 }
 		public Flags flags;
 		[IfFlag(0)] public string id;
 		[IfFlag(1)] public ShippingOption[] shipping_options;
@@ -3647,7 +3651,7 @@ namespace TL
 	[TLDef(0x500911E1, "payments.paymentReceipt#500911e1 flags:# date:int bot_id:int invoice:Invoice provider_id:int info:flags.0?PaymentRequestedInfo shipping:flags.1?ShippingOption currency:string total_amount:long credentials_title:string users:Vector<User> = payments.PaymentReceipt")]
 	public class Payments_PaymentReceipt : ITLObject
 	{
-		[Flags] public enum Flags { has_info = 0x1, has_shipping = 0x2,  }
+		[Flags] public enum Flags { has_info = 0x1, has_shipping = 0x2 }
 		public Flags flags;
 		public DateTime date;
 		public int bot_id;
@@ -3664,7 +3668,7 @@ namespace TL
 	[TLDef(0xFB8FE43C, "payments.savedInfo#fb8fe43c flags:# has_saved_credentials:flags.1?true saved_info:flags.0?PaymentRequestedInfo = payments.SavedInfo")]
 	public class Payments_SavedInfo : ITLObject
 	{
-		[Flags] public enum Flags { has_saved_info = 0x1, has_saved_credentials = 0x2,  }
+		[Flags] public enum Flags { has_saved_info = 0x1, has_saved_credentials = 0x2 }
 		public Flags flags;
 		[IfFlag(0)] public PaymentRequestedInfo saved_info;
 	}
@@ -3679,7 +3683,7 @@ namespace TL
 	[TLDef(0x3417D728, "inputPaymentCredentials#3417d728 flags:# save:flags.0?true data:DataJSON = InputPaymentCredentials")]
 	public class InputPaymentCredentials : InputPaymentCredentialsBase
 	{
-		[Flags] public enum Flags { save = 0x1,  }
+		[Flags] public enum Flags { save = 0x1 }
 		public Flags flags;
 		public DataJSON data;
 	}
@@ -3710,7 +3714,7 @@ namespace TL
 	[TLDef(0xFFA0A496, "inputStickerSetItem#ffa0a496 flags:# document:InputDocument emoji:string mask_coords:flags.0?MaskCoords = InputStickerSetItem")]
 	public class InputStickerSetItem : ITLObject
 	{
-		[Flags] public enum Flags { has_mask_coords = 0x1,  }
+		[Flags] public enum Flags { has_mask_coords = 0x1 }
 		public Flags flags;
 		public InputDocumentBase document;
 		public string emoji;
@@ -3730,7 +3734,7 @@ namespace TL
 	[TLDef(0x1B8F4AD1, "phoneCallWaiting#1b8f4ad1 flags:# video:flags.6?true id:long access_hash:long date:int admin_id:int participant_id:int protocol:PhoneCallProtocol receive_date:flags.0?int = PhoneCall")]
 	public class PhoneCallWaiting : PhoneCallBase
 	{
-		[Flags] public enum Flags { has_receive_date = 0x1, video = 0x40,  }
+		[Flags] public enum Flags { has_receive_date = 0x1, video = 0x40 }
 		public Flags flags;
 		public long id;
 		public long access_hash;
@@ -3743,7 +3747,7 @@ namespace TL
 	[TLDef(0x87EABB53, "phoneCallRequested#87eabb53 flags:# video:flags.6?true id:long access_hash:long date:int admin_id:int participant_id:int g_a_hash:bytes protocol:PhoneCallProtocol = PhoneCall")]
 	public class PhoneCallRequested : PhoneCallBase
 	{
-		[Flags] public enum Flags { video = 0x40,  }
+		[Flags] public enum Flags { video = 0x40 }
 		public Flags flags;
 		public long id;
 		public long access_hash;
@@ -3756,7 +3760,7 @@ namespace TL
 	[TLDef(0x997C454A, "phoneCallAccepted#997c454a flags:# video:flags.6?true id:long access_hash:long date:int admin_id:int participant_id:int g_b:bytes protocol:PhoneCallProtocol = PhoneCall")]
 	public class PhoneCallAccepted : PhoneCallBase
 	{
-		[Flags] public enum Flags { video = 0x40,  }
+		[Flags] public enum Flags { video = 0x40 }
 		public Flags flags;
 		public long id;
 		public long access_hash;
@@ -3769,7 +3773,7 @@ namespace TL
 	[TLDef(0x8742AE7F, "phoneCall#8742ae7f flags:# p2p_allowed:flags.5?true video:flags.6?true id:long access_hash:long date:int admin_id:int participant_id:int g_a_or_b:bytes key_fingerprint:long protocol:PhoneCallProtocol connections:Vector<PhoneConnection> start_date:int = PhoneCall")]
 	public class PhoneCall : PhoneCallBase
 	{
-		[Flags] public enum Flags { p2p_allowed = 0x20, video = 0x40,  }
+		[Flags] public enum Flags { p2p_allowed = 0x20, video = 0x40 }
 		public Flags flags;
 		public long id;
 		public long access_hash;
@@ -3785,7 +3789,7 @@ namespace TL
 	[TLDef(0x50CA4DE1, "phoneCallDiscarded#50ca4de1 flags:# need_rating:flags.2?true need_debug:flags.3?true video:flags.6?true id:long reason:flags.0?PhoneCallDiscardReason duration:flags.1?int = PhoneCall")]
 	public class PhoneCallDiscarded : PhoneCallBase
 	{
-		[Flags] public enum Flags { has_reason = 0x1, has_duration = 0x2, need_rating = 0x4, need_debug = 0x8, video = 0x40,  }
+		[Flags] public enum Flags { has_reason = 0x1, has_duration = 0x2, need_rating = 0x4, need_debug = 0x8, video = 0x40 }
 		public Flags flags;
 		public long id;
 		[IfFlag(0)] public PhoneCallDiscardReason reason;
@@ -3805,7 +3809,7 @@ namespace TL
 	[TLDef(0x635FE375, "phoneConnectionWebrtc#635fe375 flags:# turn:flags.0?true stun:flags.1?true id:long ip:string ipv6:string port:int username:string password:string = PhoneConnection")]
 	public class PhoneConnectionWebrtc : PhoneConnectionBase
 	{
-		[Flags] public enum Flags { turn = 0x1, stun = 0x2,  }
+		[Flags] public enum Flags { turn = 0x1, stun = 0x2 }
 		public Flags flags;
 		public long id;
 		public string ip;
@@ -3818,7 +3822,7 @@ namespace TL
 	[TLDef(0xFC878FC8, "phoneCallProtocol#fc878fc8 flags:# udp_p2p:flags.0?true udp_reflector:flags.1?true min_layer:int max_layer:int library_versions:Vector<string> = PhoneCallProtocol")]
 	public class PhoneCallProtocol : ITLObject
 	{
-		[Flags] public enum Flags { udp_p2p = 0x1, udp_reflector = 0x2,  }
+		[Flags] public enum Flags { udp_p2p = 0x1, udp_reflector = 0x2 }
 		public Flags flags;
 		public int min_layer;
 		public int max_layer;
@@ -3859,7 +3863,7 @@ namespace TL
 	public class LangPackStringPluralized : LangPackStringBase
 	{
 		[Flags] public enum Flags { has_zero_value = 0x1, has_one_value = 0x2, has_two_value = 0x4, has_few_value = 0x8, 
-			has_many_value = 0x10,  }
+			has_many_value = 0x10 }
 		public Flags flags;
 		public string key;
 		[IfFlag(0)] public string zero_value;
@@ -3884,7 +3888,7 @@ namespace TL
 	[TLDef(0xEECA5CE3, "langPackLanguage#eeca5ce3 flags:# official:flags.0?true rtl:flags.2?true beta:flags.3?true name:string native_name:string lang_code:string base_lang_code:flags.1?string plural_code:string strings_count:int translated_count:int translations_url:string = LangPackLanguage")]
 	public class LangPackLanguage : ITLObject
 	{
-		[Flags] public enum Flags { official = 0x1, has_base_lang_code = 0x2, rtl = 0x4, beta = 0x8,  }
+		[Flags] public enum Flags { official = 0x1, has_base_lang_code = 0x2, rtl = 0x4, beta = 0x8 }
 		public Flags flags;
 		public string name;
 		public string native_name;
@@ -4010,7 +4014,7 @@ namespace TL
 	{
 		[Flags] public enum Flags { join = 0x1, leave = 0x2, invite = 0x4, ban = 0x8, unban = 0x10, kick = 0x20, unkick = 0x40, 
 			promote = 0x80, demote = 0x100, info = 0x200, settings = 0x400, pinned = 0x800, edit = 0x1000, delete = 0x2000, 
-			group_call = 0x4000, invites = 0x8000,  }
+			group_call = 0x4000, invites = 0x8000 }
 		public Flags flags;
 	}
 
@@ -4055,7 +4059,7 @@ namespace TL
 	[TLDef(0x1CC6E91F, "inputSingleMedia#1cc6e91f flags:# media:InputMedia random_id:long message:string entities:flags.0?Vector<MessageEntity> = InputSingleMedia")]
 	public class InputSingleMedia : ITLObject
 	{
-		[Flags] public enum Flags { has_entities = 0x1,  }
+		[Flags] public enum Flags { has_entities = 0x1 }
 		public Flags flags;
 		public InputMedia media;
 		public long random_id;
@@ -4223,7 +4227,7 @@ namespace TL
 	public class SecureValue : ITLObject
 	{
 		[Flags] public enum Flags { has_data = 0x1, has_front_side = 0x2, has_reverse_side = 0x4, has_selfie = 0x8, has_files = 0x10, 
-			has_plain_data = 0x20, has_translation = 0x40,  }
+			has_plain_data = 0x20, has_translation = 0x40 }
 		public Flags flags;
 		public SecureValueType type;
 		[IfFlag(0)] public SecureData data;
@@ -4240,7 +4244,7 @@ namespace TL
 	public class InputSecureValue : ITLObject
 	{
 		[Flags] public enum Flags { has_data = 0x1, has_front_side = 0x2, has_reverse_side = 0x4, has_selfie = 0x8, has_files = 0x10, 
-			has_plain_data = 0x20, has_translation = 0x40,  }
+			has_plain_data = 0x20, has_translation = 0x40 }
 		public Flags flags;
 		public SecureValueType type;
 		[IfFlag(0)] public SecureData data;
@@ -4336,7 +4340,7 @@ namespace TL
 	[TLDef(0xAD2E1CD8, "account.authorizationForm#ad2e1cd8 flags:# required_types:Vector<SecureRequiredType> values:Vector<SecureValue> errors:Vector<SecureValueError> users:Vector<User> privacy_policy_url:flags.0?string = account.AuthorizationForm")]
 	public class Account_AuthorizationForm : ITLObject
 	{
-		[Flags] public enum Flags { has_privacy_policy_url = 0x1,  }
+		[Flags] public enum Flags { has_privacy_policy_url = 0x1 }
 		public Flags flags;
 		public SecureRequiredTypeBase[] required_types;
 		public SecureValue[] values;
@@ -4358,7 +4362,7 @@ namespace TL
 	[TLDef(0x6A4EE832, "help.deepLinkInfo#6a4ee832 flags:# update_app:flags.0?true message:string entities:flags.1?Vector<MessageEntity> = help.DeepLinkInfo")]
 	public class Help_DeepLinkInfo : Help_DeepLinkInfoBase
 	{
-		[Flags] public enum Flags { update_app = 0x1, has_entities = 0x2,  }
+		[Flags] public enum Flags { update_app = 0x1, has_entities = 0x2 }
 		public Flags flags;
 		public string message;
 		[IfFlag(1)] public MessageEntity[] entities;
@@ -4420,7 +4424,7 @@ namespace TL
 	[TLDef(0x829D99DA, "secureRequiredType#829d99da flags:# native_names:flags.0?true selfie_required:flags.1?true translation_required:flags.2?true type:SecureValueType = SecureRequiredType")]
 	public class SecureRequiredType : SecureRequiredTypeBase
 	{
-		[Flags] public enum Flags { native_names = 0x1, selfie_required = 0x2, translation_required = 0x4,  }
+		[Flags] public enum Flags { native_names = 0x1, selfie_required = 0x2, translation_required = 0x4 }
 		public Flags flags;
 		public SecureValueType type;
 	}
@@ -4472,7 +4476,7 @@ namespace TL
 	public class PageTableCell : ITLObject
 	{
 		[Flags] public enum Flags { header = 0x1, has_colspan = 0x2, has_rowspan = 0x4, align_center = 0x8, align_right = 0x10, 
-			valign_middle = 0x20, valign_bottom = 0x40, has_text = 0x80,  }
+			valign_middle = 0x20, valign_bottom = 0x40, has_text = 0x80 }
 		public Flags flags;
 		[IfFlag(7)] public RichText text;
 		[IfFlag(1)] public int colspan;
@@ -4505,7 +4509,7 @@ namespace TL
 	public class PageRelatedArticle : ITLObject
 	{
 		[Flags] public enum Flags { has_title = 0x1, has_description = 0x2, has_photo_id = 0x4, has_author = 0x8, 
-			has_published_date = 0x10,  }
+			has_published_date = 0x10 }
 		public Flags flags;
 		public string url;
 		public long webpage_id;
@@ -4519,7 +4523,7 @@ namespace TL
 	[TLDef(0x98657F0D, "page#98657f0d flags:# part:flags.0?true rtl:flags.1?true v2:flags.2?true url:string blocks:Vector<PageBlock> photos:Vector<Photo> documents:Vector<Document> views:flags.3?int = Page")]
 	public class Page : ITLObject
 	{
-		[Flags] public enum Flags { part = 0x1, rtl = 0x2, v2 = 0x4, has_views = 0x8,  }
+		[Flags] public enum Flags { part = 0x1, rtl = 0x2, v2 = 0x4, has_views = 0x8 }
 		public Flags flags;
 		public string url;
 		public PageBlock[] blocks;
@@ -4554,7 +4558,7 @@ namespace TL
 	public class Poll : ITLObject
 	{
 		[Flags] public enum Flags { closed = 0x1, public_voters = 0x2, multiple_choice = 0x4, quiz = 0x8, has_close_period = 0x10, 
-			has_close_date = 0x20,  }
+			has_close_date = 0x20 }
 		public long id;
 		public Flags flags;
 		public string question;
@@ -4566,7 +4570,7 @@ namespace TL
 	[TLDef(0x3B6DDAD2, "pollAnswerVoters#3b6ddad2 flags:# chosen:flags.0?true correct:flags.1?true option:bytes voters:int = PollAnswerVoters")]
 	public class PollAnswerVoters : ITLObject
 	{
-		[Flags] public enum Flags { chosen = 0x1, correct = 0x2,  }
+		[Flags] public enum Flags { chosen = 0x1, correct = 0x2 }
 		public Flags flags;
 		public byte[] option;
 		public int voters;
@@ -4575,7 +4579,7 @@ namespace TL
 	[TLDef(0xBADCC1A3, "pollResults#badcc1a3 flags:# min:flags.0?true results:flags.1?Vector<PollAnswerVoters> total_voters:flags.2?int recent_voters:flags.3?Vector<int> solution:flags.4?string solution_entities:flags.4?Vector<MessageEntity> = PollResults")]
 	public class PollResults : ITLObject
 	{
-		[Flags] public enum Flags { min = 0x1, has_results = 0x2, has_total_voters = 0x4, has_recent_voters = 0x8, has_solution = 0x10,  }
+		[Flags] public enum Flags { min = 0x1, has_results = 0x2, has_total_voters = 0x4, has_recent_voters = 0x8, has_solution = 0x10 }
 		public Flags flags;
 		[IfFlag(1)] public PollAnswerVoters[] results;
 		[IfFlag(2)] public int total_voters;
@@ -4593,8 +4597,9 @@ namespace TL
 	[TLDef(0x5FB224D5, "chatAdminRights#5fb224d5 flags:# change_info:flags.0?true post_messages:flags.1?true edit_messages:flags.2?true delete_messages:flags.3?true ban_users:flags.4?true invite_users:flags.5?true pin_messages:flags.7?true add_admins:flags.9?true anonymous:flags.10?true manage_call:flags.11?true other:flags.12?true = ChatAdminRights")]
 	public class ChatAdminRights : ITLObject
 	{
-		[Flags] public enum Flags { change_info = 0x1, post_messages = 0x2, edit_messages = 0x4, delete_messages = 0x8, ban_users = 0x10, 
-			invite_users = 0x20, pin_messages = 0x80, add_admins = 0x200, anonymous = 0x400, manage_call = 0x800, other = 0x1000,  }
+		[Flags] public enum Flags { change_info = 0x1, post_messages = 0x2, edit_messages = 0x4, delete_messages = 0x8, 
+			ban_users = 0x10, invite_users = 0x20, pin_messages = 0x80, add_admins = 0x200, anonymous = 0x400, manage_call = 0x800, 
+			other = 0x1000 }
 		public Flags flags;
 	}
 
@@ -4603,7 +4608,7 @@ namespace TL
 	{
 		[Flags] public enum Flags { view_messages = 0x1, send_messages = 0x2, send_media = 0x4, send_stickers = 0x8, send_gifs = 0x10, 
 			send_games = 0x20, send_inline = 0x40, embed_links = 0x80, send_polls = 0x100, change_info = 0x400, invite_users = 0x8000, 
-			pin_messages = 0x20000,  }
+			pin_messages = 0x20000 }
 		public Flags flags;
 		public DateTime until_date;
 	}
@@ -4633,7 +4638,7 @@ namespace TL
 	[TLDef(0xDEBEBE83, "codeSettings#debebe83 flags:# allow_flashcall:flags.0?true current_number:flags.1?true allow_app_hash:flags.4?true = CodeSettings")]
 	public class CodeSettings : ITLObject
 	{
-		[Flags] public enum Flags { allow_flashcall = 0x1, current_number = 0x2, allow_app_hash = 0x10,  }
+		[Flags] public enum Flags { allow_flashcall = 0x1, current_number = 0x2, allow_app_hash = 0x10 }
 		public Flags flags;
 	}
 
@@ -4641,7 +4646,7 @@ namespace TL
 	public class WallPaperSettings : ITLObject
 	{
 		[Flags] public enum Flags { has_background_color = 0x1, blur = 0x2, motion = 0x4, has_intensity = 0x8, 
-			has_second_background_color = 0x10,  }
+			has_second_background_color = 0x10 }
 		public Flags flags;
 		[IfFlag(0)] public int background_color;
 		[IfFlag(4)] public int second_background_color;
@@ -4652,7 +4657,7 @@ namespace TL
 	[TLDef(0xE04232F3, "autoDownloadSettings#e04232f3 flags:# disabled:flags.0?true video_preload_large:flags.1?true audio_preload_next:flags.2?true phonecalls_less_data:flags.3?true photo_size_max:int video_size_max:int file_size_max:int video_upload_maxbitrate:int = AutoDownloadSettings")]
 	public class AutoDownloadSettings : ITLObject
 	{
-		[Flags] public enum Flags { disabled = 0x1, video_preload_large = 0x2, audio_preload_next = 0x4, phonecalls_less_data = 0x8,  }
+		[Flags] public enum Flags { disabled = 0x1, video_preload_large = 0x2, audio_preload_next = 0x4, phonecalls_less_data = 0x8 }
 		public Flags flags;
 		public int photo_size_max;
 		public int video_size_max;
@@ -4704,7 +4709,7 @@ namespace TL
 	public class Folder : ITLObject
 	{
 		[Flags] public enum Flags { autofill_new_broadcasts = 0x1, autofill_public_groups = 0x2, autofill_new_correspondents = 0x4, 
-			has_photo = 0x8,  }
+			has_photo = 0x8 }
 		public Flags flags;
 		public int id;
 		public string title;
@@ -4728,7 +4733,7 @@ namespace TL
 	[TLDef(0xE844EBFF, "messages.searchCounter#e844ebff flags:# inexact:flags.1?true filter:MessagesFilter count:int = messages.SearchCounter")]
 	public class Messages_SearchCounter : ITLObject
 	{
-		[Flags] public enum Flags { inexact = 0x2,  }
+		[Flags] public enum Flags { inexact = 0x2 }
 		public Flags flags;
 		public MessagesFilter filter;
 		public int count;
@@ -4738,7 +4743,7 @@ namespace TL
 	[TLDef(0x92D33A0E, "urlAuthResultRequest#92d33a0e flags:# request_write_access:flags.0?true bot:User domain:string = UrlAuthResult")]
 	public class UrlAuthResultRequest : UrlAuthResult
 	{
-		[Flags] public enum Flags { request_write_access = 0x1,  }
+		[Flags] public enum Flags { request_write_access = 0x1 }
 		public Flags flags;
 		public UserBase bot;
 		public string domain;
@@ -4790,7 +4795,7 @@ namespace TL
 	[TLDef(0x28F1114, "theme#028f1114 flags:# creator:flags.0?true default:flags.1?true id:long access_hash:long slug:string title:string document:flags.2?Document settings:flags.3?ThemeSettings installs_count:int = Theme")]
 	public class Theme : ITLObject
 	{
-		[Flags] public enum Flags { creator = 0x1, default_ = 0x2, has_document = 0x4, has_settings = 0x8,  }
+		[Flags] public enum Flags { creator = 0x1, default_ = 0x2, has_document = 0x4, has_settings = 0x8 }
 		public Flags flags;
 		public long id;
 		public long access_hash;
@@ -4830,7 +4835,7 @@ namespace TL
 	[TLDef(0x57E28221, "account.contentSettings#57e28221 flags:# sensitive_enabled:flags.0?true sensitive_can_change:flags.1?true = account.ContentSettings")]
 	public class Account_ContentSettings : ITLObject
 	{
-		[Flags] public enum Flags { sensitive_enabled = 0x1, sensitive_can_change = 0x2,  }
+		[Flags] public enum Flags { sensitive_enabled = 0x1, sensitive_can_change = 0x2 }
 		public Flags flags;
 	}
 
@@ -4857,7 +4862,7 @@ namespace TL
 	[TLDef(0xBD507CD1, "inputThemeSettings#bd507cd1 flags:# base_theme:BaseTheme accent_color:int message_top_color:flags.0?int message_bottom_color:flags.0?int wallpaper:flags.1?InputWallPaper wallpaper_settings:flags.1?WallPaperSettings = InputThemeSettings")]
 	public class InputThemeSettings : ITLObject
 	{
-		[Flags] public enum Flags { has_message_top_color = 0x1, has_wallpaper = 0x2,  }
+		[Flags] public enum Flags { has_message_top_color = 0x1, has_wallpaper = 0x2 }
 		public Flags flags;
 		public BaseTheme base_theme;
 		public int accent_color;
@@ -4870,7 +4875,7 @@ namespace TL
 	[TLDef(0x9C14984A, "themeSettings#9c14984a flags:# base_theme:BaseTheme accent_color:int message_top_color:flags.0?int message_bottom_color:flags.0?int wallpaper:flags.1?WallPaper = ThemeSettings")]
 	public class ThemeSettings : ITLObject
 	{
-		[Flags] public enum Flags { has_message_top_color = 0x1, has_wallpaper = 0x2,  }
+		[Flags] public enum Flags { has_message_top_color = 0x1, has_wallpaper = 0x2 }
 		public Flags flags;
 		public BaseTheme base_theme;
 		public int accent_color;
@@ -4883,7 +4888,7 @@ namespace TL
 	[TLDef(0x54B56617, "webPageAttributeTheme#54b56617 flags:# documents:flags.0?Vector<Document> settings:flags.1?ThemeSettings = WebPageAttribute")]
 	public class WebPageAttributeTheme : WebPageAttribute
 	{
-		[Flags] public enum Flags { has_documents = 0x1, has_settings = 0x2,  }
+		[Flags] public enum Flags { has_documents = 0x1, has_settings = 0x2 }
 		public Flags flags;
 		[IfFlag(0)] public DocumentBase[] documents;
 		[IfFlag(1)] public ThemeSettings settings;
@@ -4914,7 +4919,7 @@ namespace TL
 	[TLDef(0x823F649, "messages.votesList#0823f649 flags:# count:int votes:Vector<MessageUserVote> users:Vector<User> next_offset:flags.0?string = messages.VotesList")]
 	public class Messages_VotesList : ITLObject
 	{
-		[Flags] public enum Flags { has_next_offset = 0x1,  }
+		[Flags] public enum Flags { has_next_offset = 0x1 }
 		public Flags flags;
 		public int count;
 		public MessageUserVoteBase[] votes;
@@ -4940,7 +4945,7 @@ namespace TL
 	public class DialogFilter : ITLObject
 	{
 		[Flags] public enum Flags { contacts = 0x1, non_contacts = 0x2, groups = 0x4, broadcasts = 0x8, bots = 0x10, 
-			exclude_muted = 0x800, exclude_read = 0x1000, exclude_archived = 0x2000, has_emoticon = 0x2000000,  }
+			exclude_muted = 0x800, exclude_read = 0x1000, exclude_archived = 0x2000, has_emoticon = 0x2000000 }
 		public Flags flags;
 		public int id;
 		public string title;
@@ -4986,7 +4991,7 @@ namespace TL
 	[TLDef(0x8EA464B6, "statsGraph#8ea464b6 flags:# json:DataJSON zoom_token:flags.0?string = StatsGraph")]
 	public class StatsGraph : StatsGraphBase
 	{
-		[Flags] public enum Flags { has_zoom_token = 0x1,  }
+		[Flags] public enum Flags { has_zoom_token = 0x1 }
 		public Flags flags;
 		public DataJSON json;
 		[IfFlag(0)] public string zoom_token;
@@ -5026,7 +5031,7 @@ namespace TL
 	[TLDef(0x8C39793F, "help.promoData#8c39793f flags:# proxy:flags.0?true expires:int peer:Peer chats:Vector<Chat> users:Vector<User> psa_type:flags.1?string psa_message:flags.2?string = help.PromoData")]
 	public class Help_PromoData : Help_PromoDataBase
 	{
-		[Flags] public enum Flags { proxy = 0x1, has_psa_type = 0x2, has_psa_message = 0x4,  }
+		[Flags] public enum Flags { proxy = 0x1, has_psa_type = 0x2, has_psa_message = 0x4 }
 		public Flags flags;
 		public DateTime expires;
 		public Peer peer;
@@ -5039,7 +5044,7 @@ namespace TL
 	[TLDef(0xE831C556, "videoSize#e831c556 flags:# type:string location:FileLocation w:int h:int size:int video_start_ts:flags.0?double = VideoSize")]
 	public class VideoSize : ITLObject
 	{
-		[Flags] public enum Flags { has_video_start_ts = 0x1,  }
+		[Flags] public enum Flags { has_video_start_ts = 0x1 }
 		public Flags flags;
 		public string type;
 		public FileLocation location;
@@ -5098,7 +5103,7 @@ namespace TL
 	[TLDef(0xBEA2F424, "globalPrivacySettings#bea2f424 flags:# archive_and_mute_new_noncontact_peers:flags.0?Bool = GlobalPrivacySettings")]
 	public class GlobalPrivacySettings : ITLObject
 	{
-		[Flags] public enum Flags { has_archive_and_mute_new_noncontact_peers = 0x1,  }
+		[Flags] public enum Flags { has_archive_and_mute_new_noncontact_peers = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public bool archive_and_mute_new_noncontact_peers;
 	}
@@ -5106,7 +5111,7 @@ namespace TL
 	[TLDef(0x4203C5EF, "help.countryCode#4203c5ef flags:# country_code:string prefixes:flags.0?Vector<string> patterns:flags.1?Vector<string> = help.CountryCode")]
 	public class Help_CountryCode : ITLObject
 	{
-		[Flags] public enum Flags { has_prefixes = 0x1, has_patterns = 0x2,  }
+		[Flags] public enum Flags { has_prefixes = 0x1, has_patterns = 0x2 }
 		public Flags flags;
 		public string country_code;
 		[IfFlag(0)] public string[] prefixes;
@@ -5116,7 +5121,7 @@ namespace TL
 	[TLDef(0xC3878E23, "help.country#c3878e23 flags:# hidden:flags.0?true iso2:string default_name:string name:flags.1?string country_codes:Vector<help.CountryCode> = help.Country")]
 	public class Help_Country : ITLObject
 	{
-		[Flags] public enum Flags { hidden = 0x1, has_name = 0x2,  }
+		[Flags] public enum Flags { hidden = 0x1, has_name = 0x2 }
 		public Flags flags;
 		public string iso2;
 		public string default_name;
@@ -5137,7 +5142,7 @@ namespace TL
 	[TLDef(0x455B853D, "messageViews#455b853d flags:# views:flags.0?int forwards:flags.1?int replies:flags.2?MessageReplies = MessageViews")]
 	public class MessageViews : ITLObject
 	{
-		[Flags] public enum Flags { has_views = 0x1, has_forwards = 0x2, has_replies = 0x4,  }
+		[Flags] public enum Flags { has_views = 0x1, has_forwards = 0x2, has_replies = 0x4 }
 		public Flags flags;
 		[IfFlag(0)] public int views;
 		[IfFlag(1)] public int forwards;
@@ -5155,7 +5160,7 @@ namespace TL
 	[TLDef(0xF5DD8F9D, "messages.discussionMessage#f5dd8f9d flags:# messages:Vector<Message> max_id:flags.0?int read_inbox_max_id:flags.1?int read_outbox_max_id:flags.2?int chats:Vector<Chat> users:Vector<User> = messages.DiscussionMessage")]
 	public class Messages_DiscussionMessage : ITLObject
 	{
-		[Flags] public enum Flags { has_max_id = 0x1, has_read_inbox_max_id = 0x2, has_read_outbox_max_id = 0x4,  }
+		[Flags] public enum Flags { has_max_id = 0x1, has_read_inbox_max_id = 0x2, has_read_outbox_max_id = 0x4 }
 		public Flags flags;
 		public MessageBase[] messages;
 		[IfFlag(0)] public int max_id;
@@ -5168,7 +5173,7 @@ namespace TL
 	[TLDef(0xA6D57763, "messageReplyHeader#a6d57763 flags:# reply_to_msg_id:int reply_to_peer_id:flags.0?Peer reply_to_top_id:flags.1?int = MessageReplyHeader")]
 	public class MessageReplyHeader : ITLObject
 	{
-		[Flags] public enum Flags { has_reply_to_peer_id = 0x1, has_reply_to_top_id = 0x2,  }
+		[Flags] public enum Flags { has_reply_to_peer_id = 0x1, has_reply_to_top_id = 0x2 }
 		public Flags flags;
 		public int reply_to_msg_id;
 		[IfFlag(0)] public Peer reply_to_peer_id;
@@ -5178,7 +5183,7 @@ namespace TL
 	[TLDef(0x4128FAAC, "messageReplies#4128faac flags:# comments:flags.0?true replies:int replies_pts:int recent_repliers:flags.1?Vector<Peer> channel_id:flags.0?int max_id:flags.2?int read_max_id:flags.3?int = MessageReplies")]
 	public class MessageReplies : ITLObject
 	{
-		[Flags] public enum Flags { comments = 0x1, has_recent_repliers = 0x2, has_max_id = 0x4, has_read_max_id = 0x8,  }
+		[Flags] public enum Flags { comments = 0x1, has_recent_repliers = 0x2, has_max_id = 0x4, has_read_max_id = 0x8 }
 		public Flags flags;
 		public int replies;
 		public int replies_pts;
@@ -5198,2232 +5203,2234 @@ namespace TL
 	[TLDef(0x8999F295, "stats.messageStats#8999f295 views_graph:StatsGraph = stats.MessageStats")]
 	public class Stats_MessageStats : ITLObject { public StatsGraphBase views_graph; }
 
-	// ---functions---
+	public static partial class Fn // ---functions---
+	{
+		[TLDef(0xCB9F372D, "invokeAfterMsg#cb9f372d {X:Type} msg_id:long query:!X = X")]
+		public class InvokeAfterMsg<X> : ITLFunction<X>
+		{
+			public long msg_id;
+			public ITLFunction<X> query;
+		}
+
+		[TLDef(0x3DC4B4F0, "invokeAfterMsgs#3dc4b4f0 {X:Type} msg_ids:Vector<long> query:!X = X")]
+		public class InvokeAfterMsgs<X> : ITLFunction<X>
+		{
+			public long[] msg_ids;
+			public ITLFunction<X> query;
+		}
+
+		[TLDef(0xA677244F, "auth.sendCode#a677244f phone_number:string api_id:int api_hash:string settings:CodeSettings = auth.SentCode")]
+		public class Auth_SendCode : ITLFunction<Auth_SentCode>
+		{
+			public string phone_number;
+			public int api_id;
+			public string api_hash;
+			public CodeSettings settings;
+		}
+
+		[TLDef(0x80EEE427, "auth.signUp#80eee427 phone_number:string phone_code_hash:string first_name:string last_name:string = auth.Authorization")]
+		public class Auth_SignUp : ITLFunction<Auth_AuthorizationBase>
+		{
+			public string phone_number;
+			public string phone_code_hash;
+			public string first_name;
+			public string last_name;
+		}
+
+		[TLDef(0xBCD51581, "auth.signIn#bcd51581 phone_number:string phone_code_hash:string phone_code:string = auth.Authorization")]
+		public class Auth_SignIn : ITLFunction<Auth_AuthorizationBase>
+		{
+			public string phone_number;
+			public string phone_code_hash;
+			public string phone_code;
+		}
+
+		[TLDef(0x5717DA40, "auth.logOut#5717da40 = Bool")]
+		public class Auth_LogOut : ITLFunction<bool> { }
+
+		[TLDef(0x9FAB0D1A, "auth.resetAuthorizations#9fab0d1a = Bool")]
+		public class Auth_ResetAuthorizations : ITLFunction<bool> { }
+
+		[TLDef(0xE5BFFFCD, "auth.exportAuthorization#e5bfffcd dc_id:int = auth.ExportedAuthorization")]
+		public class Auth_ExportAuthorization : ITLFunction<Auth_ExportedAuthorization> { public int dc_id; }
+
+		[TLDef(0xE3EF9613, "auth.importAuthorization#e3ef9613 id:int bytes:bytes = auth.Authorization")]
+		public class Auth_ImportAuthorization : ITLFunction<Auth_AuthorizationBase>
+		{
+			public int id;
+			public byte[] bytes;
+		}
+
+		[TLDef(0xCDD42A05, "auth.bindTempAuthKey#cdd42a05 perm_auth_key_id:long nonce:long expires_at:int encrypted_message:bytes = Bool")]
+		public class Auth_BindTempAuthKey : ITLFunction<bool>
+		{
+			public long perm_auth_key_id;
+			public long nonce;
+			public int expires_at;
+			public byte[] encrypted_message;
+		}
+
+		[TLDef(0x68976C6F, "account.registerDevice#68976c6f flags:# no_muted:flags.0?true token_type:int token:string app_sandbox:Bool secret:bytes other_uids:Vector<int> = Bool")]
+		public class Account_RegisterDevice : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { no_muted = 0x1 }
+			public Flags flags;
+			public int token_type;
+			public string token;
+			public bool app_sandbox;
+			public byte[] secret;
+			public int[] other_uids;
+		}
+
+		[TLDef(0x3076C4BF, "account.unregisterDevice#3076c4bf token_type:int token:string other_uids:Vector<int> = Bool")]
+		public class Account_UnregisterDevice : ITLFunction<bool>
+		{
+			public int token_type;
+			public string token;
+			public int[] other_uids;
+		}
+
+		[TLDef(0x84BE5B93, "account.updateNotifySettings#84be5b93 peer:InputNotifyPeer settings:InputPeerNotifySettings = Bool")]
+		public class Account_UpdateNotifySettings : ITLFunction<bool>
+		{
+			public InputNotifyPeerBase peer;
+			public InputPeerNotifySettings settings;
+		}
+
+		[TLDef(0x12B3AD31, "account.getNotifySettings#12b3ad31 peer:InputNotifyPeer = PeerNotifySettings")]
+		public class Account_GetNotifySettings : ITLFunction<PeerNotifySettings> { public InputNotifyPeerBase peer; }
+
+		[TLDef(0xDB7E1747, "account.resetNotifySettings#db7e1747 = Bool")]
+		public class Account_ResetNotifySettings : ITLFunction<bool> { }
+
+		[TLDef(0x78515775, "account.updateProfile#78515775 flags:# first_name:flags.0?string last_name:flags.1?string about:flags.2?string = User")]
+		public class Account_UpdateProfile : ITLFunction<UserBase>
+		{
+			[Flags] public enum Flags { has_first_name = 0x1, has_last_name = 0x2, has_about = 0x4 }
+			public Flags flags;
+			[IfFlag(0)] public string first_name;
+			[IfFlag(1)] public string last_name;
+			[IfFlag(2)] public string about;
+		}
+
+		[TLDef(0x6628562C, "account.updateStatus#6628562c offline:Bool = Bool")]
+		public class Account_UpdateStatus : ITLFunction<bool> { public bool offline; }
+
+		[TLDef(0xAABB1763, "account.getWallPapers#aabb1763 hash:int = account.WallPapers")]
+		public class Account_GetWallPapers : ITLFunction<Account_WallPapersBase> { public int hash; }
+
+		[TLDef(0xAE189D5F, "account.reportPeer#ae189d5f peer:InputPeer reason:ReportReason = Bool")]
+		public class Account_ReportPeer : ITLFunction<bool>
+		{
+			public InputPeer peer;
+			public ReportReason reason;
+		}
+
+		[TLDef(0xD91A548, "users.getUsers#0d91a548 id:Vector<InputUser> = Vector<User>")]
+		public class Users_GetUsers : ITLFunction<UserBase[]> { public InputUserBase[] id; }
+
+		[TLDef(0xCA30A5B1, "users.getFullUser#ca30a5b1 id:InputUser = UserFull")]
+		public class Users_GetFullUser : ITLFunction<UserFull> { public InputUserBase id; }
+
+		[TLDef(0x2CAA4A42, "contacts.getContactIDs#2caa4a42 hash:int = Vector<int>")]
+		public class Contacts_GetContactIDs : ITLFunction<int[]> { public int hash; }
+
+		[TLDef(0xC4A353EE, "contacts.getStatuses#c4a353ee = Vector<ContactStatus>")]
+		public class Contacts_GetStatuses : ITLFunction<ContactStatus[]> { }
+
+		[TLDef(0xC023849F, "contacts.getContacts#c023849f hash:int = contacts.Contacts")]
+		public class Contacts_GetContacts : ITLFunction<Contacts_ContactsBase> { public int hash; }
+
+		[TLDef(0x2C800BE5, "contacts.importContacts#2c800be5 contacts:Vector<InputContact> = contacts.ImportedContacts")]
+		public class Contacts_ImportContacts : ITLFunction<Contacts_ImportedContacts> { public InputContact[] contacts; }
+
+		[TLDef(0x96A0E00, "contacts.deleteContacts#096a0e00 id:Vector<InputUser> = Updates")]
+		public class Contacts_DeleteContacts : ITLFunction<UpdatesBase> { public InputUserBase[] id; }
+
+		[TLDef(0x1013FD9E, "contacts.deleteByPhones#1013fd9e phones:Vector<string> = Bool")]
+		public class Contacts_DeleteByPhones : ITLFunction<bool> { public string[] phones; }
+
+		[TLDef(0x68CC1411, "contacts.block#68cc1411 id:InputPeer = Bool")]
+		public class Contacts_Block : ITLFunction<bool> { public InputPeer id; }
+
+		[TLDef(0xBEA65D50, "contacts.unblock#bea65d50 id:InputPeer = Bool")]
+		public class Contacts_Unblock : ITLFunction<bool> { public InputPeer id; }
+
+		[TLDef(0xF57C350F, "contacts.getBlocked#f57c350f offset:int limit:int = contacts.Blocked")]
+		public class Contacts_GetBlocked : ITLFunction<Contacts_BlockedBase>
+		{
+			public int offset;
+			public int limit;
+		}
+
+		[TLDef(0x63C66506, "messages.getMessages#63c66506 id:Vector<InputMessage> = messages.Messages")]
+		public class Messages_GetMessages : ITLFunction<Messages_MessagesBase> { public InputMessage[] id; }
+
+		[TLDef(0xA0EE3B73, "messages.getDialogs#a0ee3b73 flags:# exclude_pinned:flags.0?true folder_id:flags.1?int offset_date:int offset_id:int offset_peer:InputPeer limit:int hash:int = messages.Dialogs")]
+		public class Messages_GetDialogs : ITLFunction<Messages_DialogsBase>
+		{
+			[Flags] public enum Flags { exclude_pinned = 0x1, has_folder_id = 0x2 }
+			public Flags flags;
+			[IfFlag(1)] public int folder_id;
+			public DateTime offset_date;
+			public int offset_id;
+			public InputPeer offset_peer;
+			public int limit;
+			public int hash;
+		}
+
+		[TLDef(0xDCBB8260, "messages.getHistory#dcbb8260 peer:InputPeer offset_id:int offset_date:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages")]
+		public class Messages_GetHistory : ITLFunction<Messages_MessagesBase>
+		{
+			public InputPeer peer;
+			public int offset_id;
+			public DateTime offset_date;
+			public int add_offset;
+			public int limit;
+			public int max_id;
+			public int min_id;
+			public int hash;
+		}
+
+		[TLDef(0xC352EEC, "messages.search#0c352eec flags:# peer:InputPeer q:string from_id:flags.0?InputPeer top_msg_id:flags.1?int filter:MessagesFilter min_date:int max_date:int offset_id:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages")]
+		public class Messages_Search : ITLFunction<Messages_MessagesBase>
+		{
+			[Flags] public enum Flags { has_from_id = 0x1, has_top_msg_id = 0x2 }
+			public Flags flags;
+			public InputPeer peer;
+			public string q;
+			[IfFlag(0)] public InputPeer from_id;
+			[IfFlag(1)] public int top_msg_id;
+			public MessagesFilter filter;
+			public DateTime min_date;
+			public DateTime max_date;
+			public int offset_id;
+			public int add_offset;
+			public int limit;
+			public int max_id;
+			public int min_id;
+			public int hash;
+		}
+
+		[TLDef(0xE306D3A, "messages.readHistory#0e306d3a peer:InputPeer max_id:int = messages.AffectedMessages")]
+		public class Messages_ReadHistory : ITLFunction<Messages_AffectedMessages>
+		{
+			public InputPeer peer;
+			public int max_id;
+		}
+
+		[TLDef(0x1C015B09, "messages.deleteHistory#1c015b09 flags:# just_clear:flags.0?true revoke:flags.1?true peer:InputPeer max_id:int = messages.AffectedHistory")]
+		public class Messages_DeleteHistory : ITLFunction<Messages_AffectedHistory>
+		{
+			[Flags] public enum Flags { just_clear = 0x1, revoke = 0x2 }
+			public Flags flags;
+			public InputPeer peer;
+			public int max_id;
+		}
+
+		[TLDef(0xE58E95D2, "messages.deleteMessages#e58e95d2 flags:# revoke:flags.0?true id:Vector<int> = messages.AffectedMessages")]
+		public class Messages_DeleteMessages : ITLFunction<Messages_AffectedMessages>
+		{
+			[Flags] public enum Flags { revoke = 0x1 }
+			public Flags flags;
+			public int[] id;
+		}
+
+		[TLDef(0x5A954C0, "messages.receivedMessages#05a954c0 max_id:int = Vector<ReceivedNotifyMessage>")]
+		public class Messages_ReceivedMessages : ITLFunction<ReceivedNotifyMessage[]> { public int max_id; }
+
+		[TLDef(0x58943EE2, "messages.setTyping#58943ee2 flags:# peer:InputPeer top_msg_id:flags.0?int action:SendMessageAction = Bool")]
+		public class Messages_SetTyping : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { has_top_msg_id = 0x1 }
+			public Flags flags;
+			public InputPeer peer;
+			[IfFlag(0)] public int top_msg_id;
+			public SendMessageAction action;
+		}
+
+		[TLDef(0x520C3870, "messages.sendMessage#520c3870 flags:# no_webpage:flags.1?true silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int message:string random_id:long reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.10?int = Updates")]
+		public class Messages_SendMessage : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { has_reply_to_msg_id = 0x1, no_webpage = 0x2, has_reply_markup = 0x4, has_entities = 0x8, 
+				silent = 0x20, background = 0x40, clear_draft = 0x80, has_schedule_date = 0x400 }
+			public Flags flags;
+			public InputPeer peer;
+			[IfFlag(0)] public int reply_to_msg_id;
+			public string message;
+			public long random_id;
+			[IfFlag(2)] public ReplyMarkup reply_markup;
+			[IfFlag(3)] public MessageEntity[] entities;
+			[IfFlag(10)] public DateTime schedule_date;
+		}
+
+		[TLDef(0x3491EBA9, "messages.sendMedia#3491eba9 flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int media:InputMedia message:string random_id:long reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.10?int = Updates")]
+		public class Messages_SendMedia : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { has_reply_to_msg_id = 0x1, has_reply_markup = 0x4, has_entities = 0x8, silent = 0x20, 
+				background = 0x40, clear_draft = 0x80, has_schedule_date = 0x400 }
+			public Flags flags;
+			public InputPeer peer;
+			[IfFlag(0)] public int reply_to_msg_id;
+			public InputMedia media;
+			public string message;
+			public long random_id;
+			[IfFlag(2)] public ReplyMarkup reply_markup;
+			[IfFlag(3)] public MessageEntity[] entities;
+			[IfFlag(10)] public DateTime schedule_date;
+		}
+
+		[TLDef(0xD9FEE60E, "messages.forwardMessages#d9fee60e flags:# silent:flags.5?true background:flags.6?true with_my_score:flags.8?true from_peer:InputPeer id:Vector<int> random_id:Vector<long> to_peer:InputPeer schedule_date:flags.10?int = Updates")]
+		public class Messages_ForwardMessages : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { silent = 0x20, background = 0x40, with_my_score = 0x100, has_schedule_date = 0x400 }
+			public Flags flags;
+			public InputPeer from_peer;
+			public int[] id;
+			public long[] random_id;
+			public InputPeer to_peer;
+			[IfFlag(10)] public DateTime schedule_date;
+		}
+
+		[TLDef(0xCF1592DB, "messages.reportSpam#cf1592db peer:InputPeer = Bool")]
+		public class Messages_ReportSpam : ITLFunction<bool> { public InputPeer peer; }
+
+		[TLDef(0x3672E09C, "messages.getPeerSettings#3672e09c peer:InputPeer = PeerSettings")]
+		public class Messages_GetPeerSettings : ITLFunction<PeerSettings> { public InputPeer peer; }
+
+		[TLDef(0xBD82B658, "messages.report#bd82b658 peer:InputPeer id:Vector<int> reason:ReportReason = Bool")]
+		public class Messages_Report : ITLFunction<bool>
+		{
+			public InputPeer peer;
+			public int[] id;
+			public ReportReason reason;
+		}
+
+		[TLDef(0x3C6AA187, "messages.getChats#3c6aa187 id:Vector<int> = messages.Chats")]
+		public class Messages_GetChats : ITLFunction<Messages_ChatsBase> { public int[] id; }
+
+		[TLDef(0x3B831C66, "messages.getFullChat#3b831c66 chat_id:int = messages.ChatFull")]
+		public class Messages_GetFullChat : ITLFunction<Messages_ChatFull> { public int chat_id; }
+
+		[TLDef(0xDC452855, "messages.editChatTitle#dc452855 chat_id:int title:string = Updates")]
+		public class Messages_EditChatTitle : ITLFunction<UpdatesBase>
+		{
+			public int chat_id;
+			public string title;
+		}
+
+		[TLDef(0xCA4C79D8, "messages.editChatPhoto#ca4c79d8 chat_id:int photo:InputChatPhoto = Updates")]
+		public class Messages_EditChatPhoto : ITLFunction<UpdatesBase>
+		{
+			public int chat_id;
+			public InputChatPhotoBase photo;
+		}
+
+		[TLDef(0xF9A0AA09, "messages.addChatUser#f9a0aa09 chat_id:int user_id:InputUser fwd_limit:int = Updates")]
+		public class Messages_AddChatUser : ITLFunction<UpdatesBase>
+		{
+			public int chat_id;
+			public InputUserBase user_id;
+			public int fwd_limit;
+		}
+
+		[TLDef(0xE0611F16, "messages.deleteChatUser#e0611f16 chat_id:int user_id:InputUser = Updates")]
+		public class Messages_DeleteChatUser : ITLFunction<UpdatesBase>
+		{
+			public int chat_id;
+			public InputUserBase user_id;
+		}
+
+		[TLDef(0x9CB126E, "messages.createChat#09cb126e users:Vector<InputUser> title:string = Updates")]
+		public class Messages_CreateChat : ITLFunction<UpdatesBase>
+		{
+			public InputUserBase[] users;
+			public string title;
+		}
+
+		[TLDef(0xEDD4882A, "updates.getState#edd4882a = updates.State")]
+		public class Updates_GetState : ITLFunction<Updates_State> { }
+
+		[TLDef(0x25939651, "updates.getDifference#25939651 flags:# pts:int pts_total_limit:flags.0?int date:int qts:int = updates.Difference")]
+		public class Updates_GetDifference : ITLFunction<Updates_DifferenceBase>
+		{
+			[Flags] public enum Flags { has_pts_total_limit = 0x1 }
+			public Flags flags;
+			public int pts;
+			[IfFlag(0)] public int pts_total_limit;
+			public DateTime date;
+			public int qts;
+		}
+
+		[TLDef(0x72D4742C, "photos.updateProfilePhoto#72d4742c id:InputPhoto = photos.Photo")]
+		public class Photos_UpdateProfilePhoto : ITLFunction<Photos_Photo> { public InputPhotoBase id; }
+
+		[TLDef(0x89F30F69, "photos.uploadProfilePhoto#89f30f69 flags:# file:flags.0?InputFile video:flags.1?InputFile video_start_ts:flags.2?double = photos.Photo")]
+		public class Photos_UploadProfilePhoto : ITLFunction<Photos_Photo>
+		{
+			[Flags] public enum Flags { has_file = 0x1, has_video = 0x2, has_video_start_ts = 0x4 }
+			public Flags flags;
+			[IfFlag(0)] public InputFileBase file;
+			[IfFlag(1)] public InputFileBase video;
+			[IfFlag(2)] public double video_start_ts;
+		}
+
+		[TLDef(0x87CF7F2F, "photos.deletePhotos#87cf7f2f id:Vector<InputPhoto> = Vector<long>")]
+		public class Photos_DeletePhotos : ITLFunction<long[]> { public InputPhotoBase[] id; }
+
+		[TLDef(0xB304A621, "upload.saveFilePart#b304a621 file_id:long file_part:int bytes:bytes = Bool")]
+		public class Upload_SaveFilePart : ITLFunction<bool>
+		{
+			public long file_id;
+			public int file_part;
+			public byte[] bytes;
+		}
+
+		[TLDef(0xB15A9AFC, "upload.getFile#b15a9afc flags:# precise:flags.0?true cdn_supported:flags.1?true location:InputFileLocation offset:int limit:int = upload.File")]
+		public class Upload_GetFile : ITLFunction<Upload_FileBase>
+		{
+			[Flags] public enum Flags { precise = 0x1, cdn_supported = 0x2 }
+			public Flags flags;
+			public InputFileLocationBase location;
+			public int offset;
+			public int limit;
+		}
+
+		[TLDef(0xC4F9186B, "help.getConfig#c4f9186b = Config")]
+		public class Help_GetConfig : ITLFunction<Config> { }
+
+		[TLDef(0x1FB33026, "help.getNearestDc#1fb33026 = NearestDc")]
+		public class Help_GetNearestDc : ITLFunction<NearestDc> { }
+
+		[TLDef(0x522D5A7D, "help.getAppUpdate#522d5a7d source:string = help.AppUpdate")]
+		public class Help_GetAppUpdate : ITLFunction<Help_AppUpdateBase> { public string source; }
+
+		[TLDef(0x4D392343, "help.getInviteText#4d392343 = help.InviteText")]
+		public class Help_GetInviteText : ITLFunction<Help_InviteText> { }
+
+		[TLDef(0x91CD32A8, "photos.getUserPhotos#91cd32a8 user_id:InputUser offset:int max_id:long limit:int = photos.Photos")]
+		public class Photos_GetUserPhotos : ITLFunction<Photos_PhotosBase>
+		{
+			public InputUserBase user_id;
+			public int offset;
+			public long max_id;
+			public int limit;
+		}
+
+		[TLDef(0x26CF8950, "messages.getDhConfig#26cf8950 version:int random_length:int = messages.DhConfig")]
+		public class Messages_GetDhConfig : ITLFunction<Messages_DhConfigBase>
+		{
+			public int version;
+			public int random_length;
+		}
+
+		[TLDef(0xF64DAF43, "messages.requestEncryption#f64daf43 user_id:InputUser random_id:int g_a:bytes = EncryptedChat")]
+		public class Messages_RequestEncryption : ITLFunction<EncryptedChatBase>
+		{
+			public InputUserBase user_id;
+			public int random_id;
+			public byte[] g_a;
+		}
+
+		[TLDef(0x3DBC0415, "messages.acceptEncryption#3dbc0415 peer:InputEncryptedChat g_b:bytes key_fingerprint:long = EncryptedChat")]
+		public class Messages_AcceptEncryption : ITLFunction<EncryptedChatBase>
+		{
+			public InputEncryptedChat peer;
+			public byte[] g_b;
+			public long key_fingerprint;
+		}
+
+		[TLDef(0xEDD923C5, "messages.discardEncryption#edd923c5 chat_id:int = Bool")]
+		public class Messages_DiscardEncryption : ITLFunction<bool> { public int chat_id; }
+
+		[TLDef(0x791451ED, "messages.setEncryptedTyping#791451ed peer:InputEncryptedChat typing:Bool = Bool")]
+		public class Messages_SetEncryptedTyping : ITLFunction<bool>
+		{
+			public InputEncryptedChat peer;
+			public bool typing;
+		}
+
+		[TLDef(0x7F4B690A, "messages.readEncryptedHistory#7f4b690a peer:InputEncryptedChat max_date:int = Bool")]
+		public class Messages_ReadEncryptedHistory : ITLFunction<bool>
+		{
+			public InputEncryptedChat peer;
+			public DateTime max_date;
+		}
+
+		[TLDef(0x44FA7A15, "messages.sendEncrypted#44fa7a15 flags:# silent:flags.0?true peer:InputEncryptedChat random_id:long data:bytes = messages.SentEncryptedMessage")]
+		public class Messages_SendEncrypted : ITLFunction<Messages_SentEncryptedMessage>
+		{
+			[Flags] public enum Flags { silent = 0x1 }
+			public Flags flags;
+			public InputEncryptedChat peer;
+			public long random_id;
+			public byte[] data;
+		}
+
+		[TLDef(0x5559481D, "messages.sendEncryptedFile#5559481d flags:# silent:flags.0?true peer:InputEncryptedChat random_id:long data:bytes file:InputEncryptedFile = messages.SentEncryptedMessage")]
+		public class Messages_SendEncryptedFile : ITLFunction<Messages_SentEncryptedMessage>
+		{
+			[Flags] public enum Flags { silent = 0x1 }
+			public Flags flags;
+			public InputEncryptedChat peer;
+			public long random_id;
+			public byte[] data;
+			public InputEncryptedFileBase file;
+		}
+
+		[TLDef(0x32D439A4, "messages.sendEncryptedService#32d439a4 peer:InputEncryptedChat random_id:long data:bytes = messages.SentEncryptedMessage")]
+		public class Messages_SendEncryptedService : ITLFunction<Messages_SentEncryptedMessage>
+		{
+			public InputEncryptedChat peer;
+			public long random_id;
+			public byte[] data;
+		}
+
+		[TLDef(0x55A5BB66, "messages.receivedQueue#55a5bb66 max_qts:int = Vector<long>")]
+		public class Messages_ReceivedQueue : ITLFunction<long[]> { public int max_qts; }
+
+		[TLDef(0x4B0C8C0F, "messages.reportEncryptedSpam#4b0c8c0f peer:InputEncryptedChat = Bool")]
+		public class Messages_ReportEncryptedSpam : ITLFunction<bool> { public InputEncryptedChat peer; }
+
+		[TLDef(0xDE7B673D, "upload.saveBigFilePart#de7b673d file_id:long file_part:int file_total_parts:int bytes:bytes = Bool")]
+		public class Upload_SaveBigFilePart : ITLFunction<bool>
+		{
+			public long file_id;
+			public int file_part;
+			public int file_total_parts;
+			public byte[] bytes;
+		}
+
+		[TLDef(0xC1CD5EA9, "initConnection#c1cd5ea9 {X:Type} flags:# api_id:int device_model:string system_version:string app_version:string system_lang_code:string lang_pack:string lang_code:string proxy:flags.0?InputClientProxy params:flags.1?JSONValue query:!X = X")]
+		public class InitConnection<X> : ITLFunction<X>
+		{
+			[Flags] public enum Flags { has_proxy = 0x1, has_params = 0x2 }
+			public Flags flags;
+			public int api_id;
+			public string device_model;
+			public string system_version;
+			public string app_version;
+			public string system_lang_code;
+			public string lang_pack;
+			public string lang_code;
+			[IfFlag(0)] public InputClientProxy proxy;
+			[IfFlag(1)] public JSONValue params_;
+			public ITLFunction<X> query;
+		}
+
+		[TLDef(0x9CDF08CD, "help.getSupport#9cdf08cd = help.Support")]
+		public class Help_GetSupport : ITLFunction<Help_Support> { }
+
+		[TLDef(0x36A73F77, "messages.readMessageContents#36a73f77 id:Vector<int> = messages.AffectedMessages")]
+		public class Messages_ReadMessageContents : ITLFunction<Messages_AffectedMessages> { public int[] id; }
+
+		[TLDef(0x2714D86C, "account.checkUsername#2714d86c username:string = Bool")]
+		public class Account_CheckUsername : ITLFunction<bool> { public string username; }
+
+		[TLDef(0x3E0BDD7C, "account.updateUsername#3e0bdd7c username:string = User")]
+		public class Account_UpdateUsername : ITLFunction<UserBase> { public string username; }
+
+		[TLDef(0x11F812D8, "contacts.search#11f812d8 q:string limit:int = contacts.Found")]
+		public class Contacts_Search : ITLFunction<Contacts_Found>
+		{
+			public string q;
+			public int limit;
+		}
+
+		[TLDef(0xDADBC950, "account.getPrivacy#dadbc950 key:InputPrivacyKey = account.PrivacyRules")]
+		public class Account_GetPrivacy : ITLFunction<Account_PrivacyRules> { public InputPrivacyKey key; }
+
+		[TLDef(0xC9F81CE8, "account.setPrivacy#c9f81ce8 key:InputPrivacyKey rules:Vector<InputPrivacyRule> = account.PrivacyRules")]
+		public class Account_SetPrivacy : ITLFunction<Account_PrivacyRules>
+		{
+			public InputPrivacyKey key;
+			public InputPrivacyRule[] rules;
+		}
+
+		[TLDef(0x418D4E0B, "account.deleteAccount#418d4e0b reason:string = Bool")]
+		public class Account_DeleteAccount : ITLFunction<bool> { public string reason; }
+
+		[TLDef(0x8FC711D, "account.getAccountTTL#08fc711d = AccountDaysTTL")]
+		public class Account_GetAccountTTL : ITLFunction<AccountDaysTTL> { }
+
+		[TLDef(0x2442485E, "account.setAccountTTL#2442485e ttl:AccountDaysTTL = Bool")]
+		public class Account_SetAccountTTL : ITLFunction<bool> { public AccountDaysTTL ttl; }
+
+		[TLDef(0xDA9B0D0D, "invokeWithLayer#da9b0d0d {X:Type} layer:int query:!X = X")]
+		public class InvokeWithLayer<X> : ITLFunction<X>
+		{
+			public int layer;
+			public ITLFunction<X> query;
+		}
+
+		[TLDef(0xF93CCBA3, "contacts.resolveUsername#f93ccba3 username:string = contacts.ResolvedPeer")]
+		public class Contacts_ResolveUsername : ITLFunction<Contacts_ResolvedPeer> { public string username; }
+
+		[TLDef(0x82574AE5, "account.sendChangePhoneCode#82574ae5 phone_number:string settings:CodeSettings = auth.SentCode")]
+		public class Account_SendChangePhoneCode : ITLFunction<Auth_SentCode>
+		{
+			public string phone_number;
+			public CodeSettings settings;
+		}
+
+		[TLDef(0x70C32EDB, "account.changePhone#70c32edb phone_number:string phone_code_hash:string phone_code:string = User")]
+		public class Account_ChangePhone : ITLFunction<UserBase>
+		{
+			public string phone_number;
+			public string phone_code_hash;
+			public string phone_code;
+		}
+
+		[TLDef(0x43D4F2C, "messages.getStickers#043d4f2c emoticon:string hash:int = messages.Stickers")]
+		public class Messages_GetStickers : ITLFunction<Messages_StickersBase>
+		{
+			public string emoticon;
+			public int hash;
+		}
+
+		[TLDef(0x1C9618B1, "messages.getAllStickers#1c9618b1 hash:int = messages.AllStickers")]
+		public class Messages_GetAllStickers : ITLFunction<Messages_AllStickersBase> { public int hash; }
+
+		[TLDef(0x38DF3532, "account.updateDeviceLocked#38df3532 period:int = Bool")]
+		public class Account_UpdateDeviceLocked : ITLFunction<bool> { public int period; }
+
+		[TLDef(0x67A3FF2C, "auth.importBotAuthorization#67a3ff2c flags:int api_id:int api_hash:string bot_auth_token:string = auth.Authorization")]
+		public class Auth_ImportBotAuthorization : ITLFunction<Auth_AuthorizationBase>
+		{
+			public int flags;
+			public int api_id;
+			public string api_hash;
+			public string bot_auth_token;
+		}
+
+		[TLDef(0x8B68B0CC, "messages.getWebPagePreview#8b68b0cc flags:# message:string entities:flags.3?Vector<MessageEntity> = MessageMedia")]
+		public class Messages_GetWebPagePreview : ITLFunction<MessageMedia>
+		{
+			[Flags] public enum Flags { has_entities = 0x8 }
+			public Flags flags;
+			public string message;
+			[IfFlag(3)] public MessageEntity[] entities;
+		}
+
+		[TLDef(0xE320C158, "account.getAuthorizations#e320c158 = account.Authorizations")]
+		public class Account_GetAuthorizations : ITLFunction<Account_Authorizations> { }
+
+		[TLDef(0xDF77F3BC, "account.resetAuthorization#df77f3bc hash:long = Bool")]
+		public class Account_ResetAuthorization : ITLFunction<bool> { public long hash; }
+
+		[TLDef(0x548A30F5, "account.getPassword#548a30f5 = account.Password")]
+		public class Account_GetPassword : ITLFunction<Account_Password> { }
+
+		[TLDef(0x9CD4EAF9, "account.getPasswordSettings#9cd4eaf9 password:InputCheckPasswordSRP = account.PasswordSettings")]
+		public class Account_GetPasswordSettings : ITLFunction<Account_PasswordSettings> { public InputCheckPasswordSRPBase password; }
+
+		[TLDef(0xA59B102F, "account.updatePasswordSettings#a59b102f password:InputCheckPasswordSRP new_settings:account.PasswordInputSettings = Bool")]
+		public class Account_UpdatePasswordSettings : ITLFunction<bool>
+		{
+			public InputCheckPasswordSRPBase password;
+			public Account_PasswordInputSettings new_settings;
+		}
+
+		[TLDef(0xD18B4D16, "auth.checkPassword#d18b4d16 password:InputCheckPasswordSRP = auth.Authorization")]
+		public class Auth_CheckPassword : ITLFunction<Auth_AuthorizationBase> { public InputCheckPasswordSRPBase password; }
+
+		[TLDef(0xD897BC66, "auth.requestPasswordRecovery#d897bc66 = auth.PasswordRecovery")]
+		public class Auth_RequestPasswordRecovery : ITLFunction<Auth_PasswordRecovery> { }
+
+		[TLDef(0x4EA56E92, "auth.recoverPassword#4ea56e92 code:string = auth.Authorization")]
+		public class Auth_RecoverPassword : ITLFunction<Auth_AuthorizationBase> { public string code; }
+
+		[TLDef(0xBF9459B7, "invokeWithoutUpdates#bf9459b7 {X:Type} query:!X = X")]
+		public class InvokeWithoutUpdates<X> : ITLFunction<X> { public ITLFunction<X> query; }
+
+		[TLDef(0xDF7534C, "messages.exportChatInvite#0df7534c peer:InputPeer = ExportedChatInvite")]
+		public class Messages_ExportChatInvite : ITLFunction<ExportedChatInvite> { public InputPeer peer; }
+
+		[TLDef(0x3EADB1BB, "messages.checkChatInvite#3eadb1bb hash:string = ChatInvite")]
+		public class Messages_CheckChatInvite : ITLFunction<ChatInviteBase> { public string hash; }
+
+		[TLDef(0x6C50051C, "messages.importChatInvite#6c50051c hash:string = Updates")]
+		public class Messages_ImportChatInvite : ITLFunction<UpdatesBase> { public string hash; }
+
+		[TLDef(0x2619A90E, "messages.getStickerSet#2619a90e stickerset:InputStickerSet = messages.StickerSet")]
+		public class Messages_GetStickerSet : ITLFunction<Messages_StickerSet> { public InputStickerSet stickerset; }
+
+		[TLDef(0xC78FE460, "messages.installStickerSet#c78fe460 stickerset:InputStickerSet archived:Bool = messages.StickerSetInstallResult")]
+		public class Messages_InstallStickerSet : ITLFunction<Messages_StickerSetInstallResult>
+		{
+			public InputStickerSet stickerset;
+			public bool archived;
+		}
+
+		[TLDef(0xF96E55DE, "messages.uninstallStickerSet#f96e55de stickerset:InputStickerSet = Bool")]
+		public class Messages_UninstallStickerSet : ITLFunction<bool> { public InputStickerSet stickerset; }
+
+		[TLDef(0xE6DF7378, "messages.startBot#e6df7378 bot:InputUser peer:InputPeer random_id:long start_param:string = Updates")]
+		public class Messages_StartBot : ITLFunction<UpdatesBase>
+		{
+			public InputUserBase bot;
+			public InputPeer peer;
+			public long random_id;
+			public string start_param;
+		}
+
+		[TLDef(0x9010EF6F, "help.getAppChangelog#9010ef6f prev_app_version:string = Updates")]
+		public class Help_GetAppChangelog : ITLFunction<UpdatesBase> { public string prev_app_version; }
+
+		[TLDef(0x5784D3E1, "messages.getMessagesViews#5784d3e1 peer:InputPeer id:Vector<int> increment:Bool = messages.MessageViews")]
+		public class Messages_GetMessagesViews : ITLFunction<Messages_MessageViews>
+		{
+			public InputPeer peer;
+			public int[] id;
+			public bool increment;
+		}
+
+		[TLDef(0xCC104937, "channels.readHistory#cc104937 channel:InputChannel max_id:int = Bool")]
+		public class Channels_ReadHistory : ITLFunction<bool>
+		{
+			public InputChannelBase channel;
+			public int max_id;
+		}
+
+		[TLDef(0x84C1FD4E, "channels.deleteMessages#84c1fd4e channel:InputChannel id:Vector<int> = messages.AffectedMessages")]
+		public class Channels_DeleteMessages : ITLFunction<Messages_AffectedMessages>
+		{
+			public InputChannelBase channel;
+			public int[] id;
+		}
+
+		[TLDef(0xD10DD71B, "channels.deleteUserHistory#d10dd71b channel:InputChannel user_id:InputUser = messages.AffectedHistory")]
+		public class Channels_DeleteUserHistory : ITLFunction<Messages_AffectedHistory>
+		{
+			public InputChannelBase channel;
+			public InputUserBase user_id;
+		}
+
+		[TLDef(0xFE087810, "channels.reportSpam#fe087810 channel:InputChannel user_id:InputUser id:Vector<int> = Bool")]
+		public class Channels_ReportSpam : ITLFunction<bool>
+		{
+			public InputChannelBase channel;
+			public InputUserBase user_id;
+			public int[] id;
+		}
+
+		[TLDef(0xAD8C9A23, "channels.getMessages#ad8c9a23 channel:InputChannel id:Vector<InputMessage> = messages.Messages")]
+		public class Channels_GetMessages : ITLFunction<Messages_MessagesBase>
+		{
+			public InputChannelBase channel;
+			public InputMessage[] id;
+		}
+
+		[TLDef(0x123E05E9, "channels.getParticipants#123e05e9 channel:InputChannel filter:ChannelParticipantsFilter offset:int limit:int hash:int = channels.ChannelParticipants")]
+		public class Channels_GetParticipants : ITLFunction<Channels_ChannelParticipantsBase>
+		{
+			public InputChannelBase channel;
+			public ChannelParticipantsFilter filter;
+			public int offset;
+			public int limit;
+			public int hash;
+		}
+
+		[TLDef(0x546DD7A6, "channels.getParticipant#546dd7a6 channel:InputChannel user_id:InputUser = channels.ChannelParticipant")]
+		public class Channels_GetParticipant : ITLFunction<Channels_ChannelParticipant>
+		{
+			public InputChannelBase channel;
+			public InputUserBase user_id;
+		}
+
+		[TLDef(0xA7F6BBB, "channels.getChannels#0a7f6bbb id:Vector<InputChannel> = messages.Chats")]
+		public class Channels_GetChannels : ITLFunction<Messages_ChatsBase> { public InputChannelBase[] id; }
+
+		[TLDef(0x8736A09, "channels.getFullChannel#08736a09 channel:InputChannel = messages.ChatFull")]
+		public class Channels_GetFullChannel : ITLFunction<Messages_ChatFull> { public InputChannelBase channel; }
+
+		[TLDef(0x3D5FB10F, "channels.createChannel#3d5fb10f flags:# broadcast:flags.0?true megagroup:flags.1?true for_import:flags.3?true title:string about:string geo_point:flags.2?InputGeoPoint address:flags.2?string = Updates")]
+		public class Channels_CreateChannel : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { broadcast = 0x1, megagroup = 0x2, has_geo_point = 0x4, for_import = 0x8 }
+			public Flags flags;
+			public string title;
+			public string about;
+			[IfFlag(2)] public InputGeoPointBase geo_point;
+			[IfFlag(2)] public string address;
+		}
+
+		[TLDef(0xD33C8902, "channels.editAdmin#d33c8902 channel:InputChannel user_id:InputUser admin_rights:ChatAdminRights rank:string = Updates")]
+		public class Channels_EditAdmin : ITLFunction<UpdatesBase>
+		{
+			public InputChannelBase channel;
+			public InputUserBase user_id;
+			public ChatAdminRights admin_rights;
+			public string rank;
+		}
+
+		[TLDef(0x566DECD0, "channels.editTitle#566decd0 channel:InputChannel title:string = Updates")]
+		public class Channels_EditTitle : ITLFunction<UpdatesBase>
+		{
+			public InputChannelBase channel;
+			public string title;
+		}
+
+		[TLDef(0xF12E57C9, "channels.editPhoto#f12e57c9 channel:InputChannel photo:InputChatPhoto = Updates")]
+		public class Channels_EditPhoto : ITLFunction<UpdatesBase>
+		{
+			public InputChannelBase channel;
+			public InputChatPhotoBase photo;
+		}
+
+		[TLDef(0x10E6BD2C, "channels.checkUsername#10e6bd2c channel:InputChannel username:string = Bool")]
+		public class Channels_CheckUsername : ITLFunction<bool>
+		{
+			public InputChannelBase channel;
+			public string username;
+		}
+
+		[TLDef(0x3514B3DE, "channels.updateUsername#3514b3de channel:InputChannel username:string = Bool")]
+		public class Channels_UpdateUsername : ITLFunction<bool>
+		{
+			public InputChannelBase channel;
+			public string username;
+		}
+
+		[TLDef(0x24B524C5, "channels.joinChannel#24b524c5 channel:InputChannel = Updates")]
+		public class Channels_JoinChannel : ITLFunction<UpdatesBase> { public InputChannelBase channel; }
+
+		[TLDef(0xF836AA95, "channels.leaveChannel#f836aa95 channel:InputChannel = Updates")]
+		public class Channels_LeaveChannel : ITLFunction<UpdatesBase> { public InputChannelBase channel; }
+
+		[TLDef(0x199F3A6C, "channels.inviteToChannel#199f3a6c channel:InputChannel users:Vector<InputUser> = Updates")]
+		public class Channels_InviteToChannel : ITLFunction<UpdatesBase>
+		{
+			public InputChannelBase channel;
+			public InputUserBase[] users;
+		}
+
+		[TLDef(0xC0111FE3, "channels.deleteChannel#c0111fe3 channel:InputChannel = Updates")]
+		public class Channels_DeleteChannel : ITLFunction<UpdatesBase> { public InputChannelBase channel; }
+
+		[TLDef(0x3173D78, "updates.getChannelDifference#03173d78 flags:# force:flags.0?true channel:InputChannel filter:ChannelMessagesFilter pts:int limit:int = updates.ChannelDifference")]
+		public class Updates_GetChannelDifference : ITLFunction<Updates_ChannelDifferenceBase>
+		{
+			[Flags] public enum Flags { force = 0x1 }
+			public Flags flags;
+			public InputChannelBase channel;
+			public ChannelMessagesFilterBase filter;
+			public int pts;
+			public int limit;
+		}
+
+		[TLDef(0xA9E69F2E, "messages.editChatAdmin#a9e69f2e chat_id:int user_id:InputUser is_admin:Bool = Bool")]
+		public class Messages_EditChatAdmin : ITLFunction<bool>
+		{
+			public int chat_id;
+			public InputUserBase user_id;
+			public bool is_admin;
+		}
+
+		[TLDef(0x15A3B8E3, "messages.migrateChat#15a3b8e3 chat_id:int = Updates")]
+		public class Messages_MigrateChat : ITLFunction<UpdatesBase> { public int chat_id; }
+
+		[TLDef(0x4BC6589A, "messages.searchGlobal#4bc6589a flags:# folder_id:flags.0?int q:string filter:MessagesFilter min_date:int max_date:int offset_rate:int offset_peer:InputPeer offset_id:int limit:int = messages.Messages")]
+		public class Messages_SearchGlobal : ITLFunction<Messages_MessagesBase>
+		{
+			[Flags] public enum Flags { has_folder_id = 0x1 }
+			public Flags flags;
+			[IfFlag(0)] public int folder_id;
+			public string q;
+			public MessagesFilter filter;
+			public DateTime min_date;
+			public DateTime max_date;
+			public int offset_rate;
+			public InputPeer offset_peer;
+			public int offset_id;
+			public int limit;
+		}
+
+		[TLDef(0x78337739, "messages.reorderStickerSets#78337739 flags:# masks:flags.0?true order:Vector<long> = Bool")]
+		public class Messages_ReorderStickerSets : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { masks = 0x1 }
+			public Flags flags;
+			public long[] order;
+		}
+
+		[TLDef(0x338E2464, "messages.getDocumentByHash#338e2464 sha256:bytes size:int mime_type:string = Document")]
+		public class Messages_GetDocumentByHash : ITLFunction<DocumentBase>
+		{
+			public byte[] sha256;
+			public int size;
+			public string mime_type;
+		}
+
+		[TLDef(0x83BF3D52, "messages.getSavedGifs#83bf3d52 hash:int = messages.SavedGifs")]
+		public class Messages_GetSavedGifs : ITLFunction<Messages_SavedGifsBase> { public int hash; }
+
+		[TLDef(0x327A30CB, "messages.saveGif#327a30cb id:InputDocument unsave:Bool = Bool")]
+		public class Messages_SaveGif : ITLFunction<bool>
+		{
+			public InputDocumentBase id;
+			public bool unsave;
+		}
+
+		[TLDef(0x514E999D, "messages.getInlineBotResults#514e999d flags:# bot:InputUser peer:InputPeer geo_point:flags.0?InputGeoPoint query:string offset:string = messages.BotResults")]
+		public class Messages_GetInlineBotResults : ITLFunction<Messages_BotResults>
+		{
+			[Flags] public enum Flags { has_geo_point = 0x1 }
+			public Flags flags;
+			public InputUserBase bot;
+			public InputPeer peer;
+			[IfFlag(0)] public InputGeoPointBase geo_point;
+			public string query;
+			public string offset;
+		}
+
+		[TLDef(0xEB5EA206, "messages.setInlineBotResults#eb5ea206 flags:# gallery:flags.0?true private:flags.1?true query_id:long results:Vector<InputBotInlineResult> cache_time:int next_offset:flags.2?string switch_pm:flags.3?InlineBotSwitchPM = Bool")]
+		public class Messages_SetInlineBotResults : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { gallery = 0x1, private_ = 0x2, has_next_offset = 0x4, has_switch_pm = 0x8 }
+			public Flags flags;
+			public long query_id;
+			public InputBotInlineResultBase[] results;
+			public DateTime cache_time;
+			[IfFlag(2)] public string next_offset;
+			[IfFlag(3)] public InlineBotSwitchPM switch_pm;
+		}
+
+		[TLDef(0x220815B0, "messages.sendInlineBotResult#220815b0 flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true hide_via:flags.11?true peer:InputPeer reply_to_msg_id:flags.0?int random_id:long query_id:long id:string schedule_date:flags.10?int = Updates")]
+		public class Messages_SendInlineBotResult : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { has_reply_to_msg_id = 0x1, silent = 0x20, background = 0x40, clear_draft = 0x80, 
+				has_schedule_date = 0x400, hide_via = 0x800 }
+			public Flags flags;
+			public InputPeer peer;
+			[IfFlag(0)] public int reply_to_msg_id;
+			public long random_id;
+			public long query_id;
+			public string id;
+			[IfFlag(10)] public DateTime schedule_date;
+		}
+
+		[TLDef(0xE63FADEB, "channels.exportMessageLink#e63fadeb flags:# grouped:flags.0?true thread:flags.1?true channel:InputChannel id:int = ExportedMessageLink")]
+		public class Channels_ExportMessageLink : ITLFunction<ExportedMessageLink>
+		{
+			[Flags] public enum Flags { grouped = 0x1, thread = 0x2 }
+			public Flags flags;
+			public InputChannelBase channel;
+			public int id;
+		}
+
+		[TLDef(0x1F69B606, "channels.toggleSignatures#1f69b606 channel:InputChannel enabled:Bool = Updates")]
+		public class Channels_ToggleSignatures : ITLFunction<UpdatesBase>
+		{
+			public InputChannelBase channel;
+			public bool enabled;
+		}
+
+		[TLDef(0x3EF1A9BF, "auth.resendCode#3ef1a9bf phone_number:string phone_code_hash:string = auth.SentCode")]
+		public class Auth_ResendCode : ITLFunction<Auth_SentCode>
+		{
+			public string phone_number;
+			public string phone_code_hash;
+		}
+
+		[TLDef(0x1F040578, "auth.cancelCode#1f040578 phone_number:string phone_code_hash:string = Bool")]
+		public class Auth_CancelCode : ITLFunction<bool>
+		{
+			public string phone_number;
+			public string phone_code_hash;
+		}
+
+		[TLDef(0xFDA68D36, "messages.getMessageEditData#fda68d36 peer:InputPeer id:int = messages.MessageEditData")]
+		public class Messages_GetMessageEditData : ITLFunction<Messages_MessageEditData>
+		{
+			public InputPeer peer;
+			public int id;
+		}
+
+		[TLDef(0x48F71778, "messages.editMessage#48f71778 flags:# no_webpage:flags.1?true peer:InputPeer id:int message:flags.11?string media:flags.14?InputMedia reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.15?int = Updates")]
+		public class Messages_EditMessage : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { no_webpage = 0x2, has_reply_markup = 0x4, has_entities = 0x8, has_message = 0x800, 
+				has_media = 0x4000, has_schedule_date = 0x8000 }
+			public Flags flags;
+			public InputPeer peer;
+			public int id;
+			[IfFlag(11)] public string message;
+			[IfFlag(14)] public InputMedia media;
+			[IfFlag(2)] public ReplyMarkup reply_markup;
+			[IfFlag(3)] public MessageEntity[] entities;
+			[IfFlag(15)] public DateTime schedule_date;
+		}
+
+		[TLDef(0x83557DBA, "messages.editInlineBotMessage#83557dba flags:# no_webpage:flags.1?true id:InputBotInlineMessageID message:flags.11?string media:flags.14?InputMedia reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> = Bool")]
+		public class Messages_EditInlineBotMessage : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { no_webpage = 0x2, has_reply_markup = 0x4, has_entities = 0x8, has_message = 0x800, 
+				has_media = 0x4000 }
+			public Flags flags;
+			public InputBotInlineMessageID id;
+			[IfFlag(11)] public string message;
+			[IfFlag(14)] public InputMedia media;
+			[IfFlag(2)] public ReplyMarkup reply_markup;
+			[IfFlag(3)] public MessageEntity[] entities;
+		}
+
+		[TLDef(0x9342CA07, "messages.getBotCallbackAnswer#9342ca07 flags:# game:flags.1?true peer:InputPeer msg_id:int data:flags.0?bytes password:flags.2?InputCheckPasswordSRP = messages.BotCallbackAnswer")]
+		public class Messages_GetBotCallbackAnswer : ITLFunction<Messages_BotCallbackAnswer>
+		{
+			[Flags] public enum Flags { has_data = 0x1, game = 0x2, has_password = 0x4 }
+			public Flags flags;
+			public InputPeer peer;
+			public int msg_id;
+			[IfFlag(0)] public byte[] data;
+			[IfFlag(2)] public InputCheckPasswordSRPBase password;
+		}
+
+		[TLDef(0xD58F130A, "messages.setBotCallbackAnswer#d58f130a flags:# alert:flags.1?true query_id:long message:flags.0?string url:flags.2?string cache_time:int = Bool")]
+		public class Messages_SetBotCallbackAnswer : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { has_message = 0x1, alert = 0x2, has_url = 0x4 }
+			public Flags flags;
+			public long query_id;
+			[IfFlag(0)] public string message;
+			[IfFlag(2)] public string url;
+			public DateTime cache_time;
+		}
+
+		[TLDef(0xD4982DB5, "contacts.getTopPeers#d4982db5 flags:# correspondents:flags.0?true bots_pm:flags.1?true bots_inline:flags.2?true phone_calls:flags.3?true forward_users:flags.4?true forward_chats:flags.5?true groups:flags.10?true channels:flags.15?true offset:int limit:int hash:int = contacts.TopPeers")]
+		public class Contacts_GetTopPeers : ITLFunction<Contacts_TopPeersBase>
+		{
+			[Flags] public enum Flags { correspondents = 0x1, bots_pm = 0x2, bots_inline = 0x4, phone_calls = 0x8, 
+				forward_users = 0x10, forward_chats = 0x20, groups = 0x400, channels = 0x8000 }
+			public Flags flags;
+			public int offset;
+			public int limit;
+			public int hash;
+		}
+
+		[TLDef(0x1AE373AC, "contacts.resetTopPeerRating#1ae373ac category:TopPeerCategory peer:InputPeer = Bool")]
+		public class Contacts_ResetTopPeerRating : ITLFunction<bool>
+		{
+			public TopPeerCategory category;
+			public InputPeer peer;
+		}
+
+		[TLDef(0xE470BCFD, "messages.getPeerDialogs#e470bcfd peers:Vector<InputDialogPeer> = messages.PeerDialogs")]
+		public class Messages_GetPeerDialogs : ITLFunction<Messages_PeerDialogs> { public InputDialogPeerBase[] peers; }
+
+		[TLDef(0xBC39E14B, "messages.saveDraft#bc39e14b flags:# no_webpage:flags.1?true reply_to_msg_id:flags.0?int peer:InputPeer message:string entities:flags.3?Vector<MessageEntity> = Bool")]
+		public class Messages_SaveDraft : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { has_reply_to_msg_id = 0x1, no_webpage = 0x2, has_entities = 0x8 }
+			public Flags flags;
+			[IfFlag(0)] public int reply_to_msg_id;
+			public InputPeer peer;
+			public string message;
+			[IfFlag(3)] public MessageEntity[] entities;
+		}
+
+		[TLDef(0x6A3F8D65, "messages.getAllDrafts#6a3f8d65 = Updates")]
+		public class Messages_GetAllDrafts : ITLFunction<UpdatesBase> { }
+
+		[TLDef(0x2DACCA4F, "messages.getFeaturedStickers#2dacca4f hash:int = messages.FeaturedStickers")]
+		public class Messages_GetFeaturedStickers : ITLFunction<Messages_FeaturedStickersBase> { public int hash; }
+
+		[TLDef(0x5B118126, "messages.readFeaturedStickers#5b118126 id:Vector<long> = Bool")]
+		public class Messages_ReadFeaturedStickers : ITLFunction<bool> { public long[] id; }
+
+		[TLDef(0x5EA192C9, "messages.getRecentStickers#5ea192c9 flags:# attached:flags.0?true hash:int = messages.RecentStickers")]
+		public class Messages_GetRecentStickers : ITLFunction<Messages_RecentStickersBase>
+		{
+			[Flags] public enum Flags { attached = 0x1 }
+			public Flags flags;
+			public int hash;
+		}
+
+		[TLDef(0x392718F8, "messages.saveRecentSticker#392718f8 flags:# attached:flags.0?true id:InputDocument unsave:Bool = Bool")]
+		public class Messages_SaveRecentSticker : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { attached = 0x1 }
+			public Flags flags;
+			public InputDocumentBase id;
+			public bool unsave;
+		}
+
+		[TLDef(0x8999602D, "messages.clearRecentStickers#8999602d flags:# attached:flags.0?true = Bool")]
+		public class Messages_ClearRecentStickers : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { attached = 0x1 }
+			public Flags flags;
+		}
+
+		[TLDef(0x57F17692, "messages.getArchivedStickers#57f17692 flags:# masks:flags.0?true offset_id:long limit:int = messages.ArchivedStickers")]
+		public class Messages_GetArchivedStickers : ITLFunction<Messages_ArchivedStickers>
+		{
+			[Flags] public enum Flags { masks = 0x1 }
+			public Flags flags;
+			public long offset_id;
+			public int limit;
+		}
+
+		[TLDef(0x1B3FAA88, "account.sendConfirmPhoneCode#1b3faa88 hash:string settings:CodeSettings = auth.SentCode")]
+		public class Account_SendConfirmPhoneCode : ITLFunction<Auth_SentCode>
+		{
+			public string hash;
+			public CodeSettings settings;
+		}
+
+		[TLDef(0x5F2178C3, "account.confirmPhone#5f2178c3 phone_code_hash:string phone_code:string = Bool")]
+		public class Account_ConfirmPhone : ITLFunction<bool>
+		{
+			public string phone_code_hash;
+			public string phone_code;
+		}
+
+		[TLDef(0xF8B036AF, "channels.getAdminedPublicChannels#f8b036af flags:# by_location:flags.0?true check_limit:flags.1?true = messages.Chats")]
+		public class Channels_GetAdminedPublicChannels : ITLFunction<Messages_ChatsBase>
+		{
+			[Flags] public enum Flags { by_location = 0x1, check_limit = 0x2 }
+			public Flags flags;
+		}
+
+		[TLDef(0x65B8C79F, "messages.getMaskStickers#65b8c79f hash:int = messages.AllStickers")]
+		public class Messages_GetMaskStickers : ITLFunction<Messages_AllStickersBase> { public int hash; }
+
+		[TLDef(0xCC5B67CC, "messages.getAttachedStickers#cc5b67cc media:InputStickeredMedia = Vector<StickerSetCovered>")]
+		public class Messages_GetAttachedStickers : ITLFunction<StickerSetCoveredBase[]> { public InputStickeredMedia media; }
+
+		[TLDef(0x8E48A188, "auth.dropTempAuthKeys#8e48a188 except_auth_keys:Vector<long> = Bool")]
+		public class Auth_DropTempAuthKeys : ITLFunction<bool> { public long[] except_auth_keys; }
+
+		[TLDef(0x8EF8ECC0, "messages.setGameScore#8ef8ecc0 flags:# edit_message:flags.0?true force:flags.1?true peer:InputPeer id:int user_id:InputUser score:int = Updates")]
+		public class Messages_SetGameScore : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { edit_message = 0x1, force = 0x2 }
+			public Flags flags;
+			public InputPeer peer;
+			public int id;
+			public InputUserBase user_id;
+			public int score;
+		}
+
+		[TLDef(0x15AD9F64, "messages.setInlineGameScore#15ad9f64 flags:# edit_message:flags.0?true force:flags.1?true id:InputBotInlineMessageID user_id:InputUser score:int = Bool")]
+		public class Messages_SetInlineGameScore : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { edit_message = 0x1, force = 0x2 }
+			public Flags flags;
+			public InputBotInlineMessageID id;
+			public InputUserBase user_id;
+			public int score;
+		}
+
+		[TLDef(0xE822649D, "messages.getGameHighScores#e822649d peer:InputPeer id:int user_id:InputUser = messages.HighScores")]
+		public class Messages_GetGameHighScores : ITLFunction<Messages_HighScores>
+		{
+			public InputPeer peer;
+			public int id;
+			public InputUserBase user_id;
+		}
+
+		[TLDef(0xF635E1B, "messages.getInlineGameHighScores#0f635e1b id:InputBotInlineMessageID user_id:InputUser = messages.HighScores")]
+		public class Messages_GetInlineGameHighScores : ITLFunction<Messages_HighScores>
+		{
+			public InputBotInlineMessageID id;
+			public InputUserBase user_id;
+		}
+
+		[TLDef(0xD0A48C4, "messages.getCommonChats#0d0a48c4 user_id:InputUser max_id:int limit:int = messages.Chats")]
+		public class Messages_GetCommonChats : ITLFunction<Messages_ChatsBase>
+		{
+			public InputUserBase user_id;
+			public int max_id;
+			public int limit;
+		}
+
+		[TLDef(0xEBA80FF0, "messages.getAllChats#eba80ff0 except_ids:Vector<int> = messages.Chats")]
+		public class Messages_GetAllChats : ITLFunction<Messages_ChatsBase> { public int[] except_ids; }
+
+		[TLDef(0xEC22CFCD, "help.setBotUpdatesStatus#ec22cfcd pending_updates_count:int message:string = Bool")]
+		public class Help_SetBotUpdatesStatus : ITLFunction<bool>
+		{
+			public int pending_updates_count;
+			public string message;
+		}
+
+		[TLDef(0x32CA8F91, "messages.getWebPage#32ca8f91 url:string hash:int = WebPage")]
+		public class Messages_GetWebPage : ITLFunction<WebPageBase>
+		{
+			public string url;
+			public int hash;
+		}
+
+		[TLDef(0xA731E257, "messages.toggleDialogPin#a731e257 flags:# pinned:flags.0?true peer:InputDialogPeer = Bool")]
+		public class Messages_ToggleDialogPin : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { pinned = 0x1 }
+			public Flags flags;
+			public InputDialogPeerBase peer;
+		}
+
+		[TLDef(0x3B1ADF37, "messages.reorderPinnedDialogs#3b1adf37 flags:# force:flags.0?true folder_id:int order:Vector<InputDialogPeer> = Bool")]
+		public class Messages_ReorderPinnedDialogs : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { force = 0x1 }
+			public Flags flags;
+			public int folder_id;
+			public InputDialogPeerBase[] order;
+		}
+
+		[TLDef(0xD6B94DF2, "messages.getPinnedDialogs#d6b94df2 folder_id:int = messages.PeerDialogs")]
+		public class Messages_GetPinnedDialogs : ITLFunction<Messages_PeerDialogs> { public int folder_id; }
+
+		[TLDef(0xAA2769ED, "bots.sendCustomRequest#aa2769ed custom_method:string params:DataJSON = DataJSON")]
+		public class Bots_SendCustomRequest : ITLFunction<DataJSON>
+		{
+			public string custom_method;
+			public DataJSON params_;
+		}
+
+		[TLDef(0xE6213F4D, "bots.answerWebhookJSONQuery#e6213f4d query_id:long data:DataJSON = Bool")]
+		public class Bots_AnswerWebhookJSONQuery : ITLFunction<bool>
+		{
+			public long query_id;
+			public DataJSON data;
+		}
+
+		[TLDef(0x24E6818D, "upload.getWebFile#24e6818d location:InputWebFileLocation offset:int limit:int = upload.WebFile")]
+		public class Upload_GetWebFile : ITLFunction<Upload_WebFile>
+		{
+			public InputWebFileLocationBase location;
+			public int offset;
+			public int limit;
+		}
+
+		[TLDef(0x99F09745, "payments.getPaymentForm#99f09745 msg_id:int = payments.PaymentForm")]
+		public class Payments_GetPaymentForm : ITLFunction<Payments_PaymentForm> { public int msg_id; }
+
+		[TLDef(0xA092A980, "payments.getPaymentReceipt#a092a980 msg_id:int = payments.PaymentReceipt")]
+		public class Payments_GetPaymentReceipt : ITLFunction<Payments_PaymentReceipt> { public int msg_id; }
+
+		[TLDef(0x770A8E74, "payments.validateRequestedInfo#770a8e74 flags:# save:flags.0?true msg_id:int info:PaymentRequestedInfo = payments.ValidatedRequestedInfo")]
+		public class Payments_ValidateRequestedInfo : ITLFunction<Payments_ValidatedRequestedInfo>
+		{
+			[Flags] public enum Flags { save = 0x1 }
+			public Flags flags;
+			public int msg_id;
+			public PaymentRequestedInfo info;
+		}
+
+		[TLDef(0x2B8879B3, "payments.sendPaymentForm#2b8879b3 flags:# msg_id:int requested_info_id:flags.0?string shipping_option_id:flags.1?string credentials:InputPaymentCredentials = payments.PaymentResult")]
+		public class Payments_SendPaymentForm : ITLFunction<Payments_PaymentResultBase>
+		{
+			[Flags] public enum Flags { has_requested_info_id = 0x1, has_shipping_option_id = 0x2 }
+			public Flags flags;
+			public int msg_id;
+			[IfFlag(0)] public string requested_info_id;
+			[IfFlag(1)] public string shipping_option_id;
+			public InputPaymentCredentialsBase credentials;
+		}
+
+		[TLDef(0x449E0B51, "account.getTmpPassword#449e0b51 password:InputCheckPasswordSRP period:int = account.TmpPassword")]
+		public class Account_GetTmpPassword : ITLFunction<Account_TmpPassword>
+		{
+			public InputCheckPasswordSRPBase password;
+			public int period;
+		}
+
+		[TLDef(0x227D824B, "payments.getSavedInfo#227d824b = payments.SavedInfo")]
+		public class Payments_GetSavedInfo : ITLFunction<Payments_SavedInfo> { }
+
+		[TLDef(0xD83D70C1, "payments.clearSavedInfo#d83d70c1 flags:# credentials:flags.0?true info:flags.1?true = Bool")]
+		public class Payments_ClearSavedInfo : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { credentials = 0x1, info = 0x2 }
+			public Flags flags;
+		}
+
+		[TLDef(0xE5F672FA, "messages.setBotShippingResults#e5f672fa flags:# query_id:long error:flags.0?string shipping_options:flags.1?Vector<ShippingOption> = Bool")]
+		public class Messages_SetBotShippingResults : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { has_error = 0x1, has_shipping_options = 0x2 }
+			public Flags flags;
+			public long query_id;
+			[IfFlag(0)] public string error;
+			[IfFlag(1)] public ShippingOption[] shipping_options;
+		}
+
+		[TLDef(0x9C2DD95, "messages.setBotPrecheckoutResults#09c2dd95 flags:# success:flags.1?true query_id:long error:flags.0?string = Bool")]
+		public class Messages_SetBotPrecheckoutResults : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { has_error = 0x1, success = 0x2 }
+			public Flags flags;
+			public long query_id;
+			[IfFlag(0)] public string error;
+		}
+
+		[TLDef(0xF1036780, "stickers.createStickerSet#f1036780 flags:# masks:flags.0?true animated:flags.1?true user_id:InputUser title:string short_name:string thumb:flags.2?InputDocument stickers:Vector<InputStickerSetItem> = messages.StickerSet")]
+		public class Stickers_CreateStickerSet : ITLFunction<Messages_StickerSet>
+		{
+			[Flags] public enum Flags { masks = 0x1, animated = 0x2, has_thumb = 0x4 }
+			public Flags flags;
+			public InputUserBase user_id;
+			public string title;
+			public string short_name;
+			[IfFlag(2)] public InputDocumentBase thumb;
+			public InputStickerSetItem[] stickers;
+		}
+
+		[TLDef(0xF7760F51, "stickers.removeStickerFromSet#f7760f51 sticker:InputDocument = messages.StickerSet")]
+		public class Stickers_RemoveStickerFromSet : ITLFunction<Messages_StickerSet> { public InputDocumentBase sticker; }
+
+		[TLDef(0xFFB6D4CA, "stickers.changeStickerPosition#ffb6d4ca sticker:InputDocument position:int = messages.StickerSet")]
+		public class Stickers_ChangeStickerPosition : ITLFunction<Messages_StickerSet>
+		{
+			public InputDocumentBase sticker;
+			public int position;
+		}
+
+		[TLDef(0x8653FEBE, "stickers.addStickerToSet#8653febe stickerset:InputStickerSet sticker:InputStickerSetItem = messages.StickerSet")]
+		public class Stickers_AddStickerToSet : ITLFunction<Messages_StickerSet>
+		{
+			public InputStickerSet stickerset;
+			public InputStickerSetItem sticker;
+		}
+
+		[TLDef(0x519BC2B1, "messages.uploadMedia#519bc2b1 peer:InputPeer media:InputMedia = MessageMedia")]
+		public class Messages_UploadMedia : ITLFunction<MessageMedia>
+		{
+			public InputPeer peer;
+			public InputMedia media;
+		}
+
+		[TLDef(0x55451FA9, "phone.getCallConfig#55451fa9 = DataJSON")]
+		public class Phone_GetCallConfig : ITLFunction<DataJSON> { }
+
+		[TLDef(0x42FF96ED, "phone.requestCall#42ff96ed flags:# video:flags.0?true user_id:InputUser random_id:int g_a_hash:bytes protocol:PhoneCallProtocol = phone.PhoneCall")]
+		public class Phone_RequestCall : ITLFunction<Phone_PhoneCall>
+		{
+			[Flags] public enum Flags { video = 0x1 }
+			public Flags flags;
+			public InputUserBase user_id;
+			public int random_id;
+			public byte[] g_a_hash;
+			public PhoneCallProtocol protocol;
+		}
+
+		[TLDef(0x3BD2B4A0, "phone.acceptCall#3bd2b4a0 peer:InputPhoneCall g_b:bytes protocol:PhoneCallProtocol = phone.PhoneCall")]
+		public class Phone_AcceptCall : ITLFunction<Phone_PhoneCall>
+		{
+			public InputPhoneCall peer;
+			public byte[] g_b;
+			public PhoneCallProtocol protocol;
+		}
+
+		[TLDef(0x2EFE1722, "phone.confirmCall#2efe1722 peer:InputPhoneCall g_a:bytes key_fingerprint:long protocol:PhoneCallProtocol = phone.PhoneCall")]
+		public class Phone_ConfirmCall : ITLFunction<Phone_PhoneCall>
+		{
+			public InputPhoneCall peer;
+			public byte[] g_a;
+			public long key_fingerprint;
+			public PhoneCallProtocol protocol;
+		}
+
+		[TLDef(0x17D54F61, "phone.receivedCall#17d54f61 peer:InputPhoneCall = Bool")]
+		public class Phone_ReceivedCall : ITLFunction<bool> { public InputPhoneCall peer; }
+
+		[TLDef(0xB2CBC1C0, "phone.discardCall#b2cbc1c0 flags:# video:flags.0?true peer:InputPhoneCall duration:int reason:PhoneCallDiscardReason connection_id:long = Updates")]
+		public class Phone_DiscardCall : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { video = 0x1 }
+			public Flags flags;
+			public InputPhoneCall peer;
+			public int duration;
+			public PhoneCallDiscardReason reason;
+			public long connection_id;
+		}
+
+		[TLDef(0x59EAD627, "phone.setCallRating#59ead627 flags:# user_initiative:flags.0?true peer:InputPhoneCall rating:int comment:string = Updates")]
+		public class Phone_SetCallRating : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { user_initiative = 0x1 }
+			public Flags flags;
+			public InputPhoneCall peer;
+			public int rating;
+			public string comment;
+		}
+
+		[TLDef(0x277ADD7E, "phone.saveCallDebug#277add7e peer:InputPhoneCall debug:DataJSON = Bool")]
+		public class Phone_SaveCallDebug : ITLFunction<bool>
+		{
+			public InputPhoneCall peer;
+			public DataJSON debug;
+		}
+
+		[TLDef(0x2000BCC3, "upload.getCdnFile#2000bcc3 file_token:bytes offset:int limit:int = upload.CdnFile")]
+		public class Upload_GetCdnFile : ITLFunction<Upload_CdnFileBase>
+		{
+			public byte[] file_token;
+			public int offset;
+			public int limit;
+		}
+
+		[TLDef(0x9B2754A8, "upload.reuploadCdnFile#9b2754a8 file_token:bytes request_token:bytes = Vector<FileHash>")]
+		public class Upload_ReuploadCdnFile : ITLFunction<FileHash[]>
+		{
+			public byte[] file_token;
+			public byte[] request_token;
+		}
+
+		[TLDef(0x52029342, "help.getCdnConfig#52029342 = CdnConfig")]
+		public class Help_GetCdnConfig : ITLFunction<CdnConfig> { }
+
+		[TLDef(0xF2F2330A, "langpack.getLangPack#f2f2330a lang_pack:string lang_code:string = LangPackDifference")]
+		public class Langpack_GetLangPack : ITLFunction<LangPackDifference>
+		{
+			public string lang_pack;
+			public string lang_code;
+		}
+
+		[TLDef(0xEFEA3803, "langpack.getStrings#efea3803 lang_pack:string lang_code:string keys:Vector<string> = Vector<LangPackString>")]
+		public class Langpack_GetStrings : ITLFunction<LangPackStringBase[]>
+		{
+			public string lang_pack;
+			public string lang_code;
+			public string[] keys;
+		}
+
+		[TLDef(0xCD984AA5, "langpack.getDifference#cd984aa5 lang_pack:string lang_code:string from_version:int = LangPackDifference")]
+		public class Langpack_GetDifference : ITLFunction<LangPackDifference>
+		{
+			public string lang_pack;
+			public string lang_code;
+			public int from_version;
+		}
+
+		[TLDef(0x42C6978F, "langpack.getLanguages#42c6978f lang_pack:string = Vector<LangPackLanguage>")]
+		public class Langpack_GetLanguages : ITLFunction<LangPackLanguage[]> { public string lang_pack; }
+
+		[TLDef(0x72796912, "channels.editBanned#72796912 channel:InputChannel user_id:InputUser banned_rights:ChatBannedRights = Updates")]
+		public class Channels_EditBanned : ITLFunction<UpdatesBase>
+		{
+			public InputChannelBase channel;
+			public InputUserBase user_id;
+			public ChatBannedRights banned_rights;
+		}
+
+		[TLDef(0x33DDF480, "channels.getAdminLog#33ddf480 flags:# channel:InputChannel q:string events_filter:flags.0?ChannelAdminLogEventsFilter admins:flags.1?Vector<InputUser> max_id:long min_id:long limit:int = channels.AdminLogResults")]
+		public class Channels_GetAdminLog : ITLFunction<Channels_AdminLogResults>
+		{
+			[Flags] public enum Flags { has_events_filter = 0x1, has_admins = 0x2 }
+			public Flags flags;
+			public InputChannelBase channel;
+			public string q;
+			[IfFlag(0)] public ChannelAdminLogEventsFilter events_filter;
+			[IfFlag(1)] public InputUserBase[] admins;
+			public long max_id;
+			public long min_id;
+			public int limit;
+		}
+
+		[TLDef(0x4DA54231, "upload.getCdnFileHashes#4da54231 file_token:bytes offset:int = Vector<FileHash>")]
+		public class Upload_GetCdnFileHashes : ITLFunction<FileHash[]>
+		{
+			public byte[] file_token;
+			public int offset;
+		}
+
+		[TLDef(0xC97DF020, "messages.sendScreenshotNotification#c97df020 peer:InputPeer reply_to_msg_id:int random_id:long = Updates")]
+		public class Messages_SendScreenshotNotification : ITLFunction<UpdatesBase>
+		{
+			public InputPeer peer;
+			public int reply_to_msg_id;
+			public long random_id;
+		}
+
+		[TLDef(0xEA8CA4F9, "channels.setStickers#ea8ca4f9 channel:InputChannel stickerset:InputStickerSet = Bool")]
+		public class Channels_SetStickers : ITLFunction<bool>
+		{
+			public InputChannelBase channel;
+			public InputStickerSet stickerset;
+		}
+
+		[TLDef(0x21CE0B0E, "messages.getFavedStickers#21ce0b0e hash:int = messages.FavedStickers")]
+		public class Messages_GetFavedStickers : ITLFunction<Messages_FavedStickersBase> { public int hash; }
+
+		[TLDef(0xB9FFC55B, "messages.faveSticker#b9ffc55b id:InputDocument unfave:Bool = Bool")]
+		public class Messages_FaveSticker : ITLFunction<bool>
+		{
+			public InputDocumentBase id;
+			public bool unfave;
+		}
+
+		[TLDef(0xEAB5DC38, "channels.readMessageContents#eab5dc38 channel:InputChannel id:Vector<int> = Bool")]
+		public class Channels_ReadMessageContents : ITLFunction<bool>
+		{
+			public InputChannelBase channel;
+			public int[] id;
+		}
+
+		[TLDef(0x879537F1, "contacts.resetSaved#879537f1 = Bool")]
+		public class Contacts_ResetSaved : ITLFunction<bool> { }
+
+		[TLDef(0x46578472, "messages.getUnreadMentions#46578472 peer:InputPeer offset_id:int add_offset:int limit:int max_id:int min_id:int = messages.Messages")]
+		public class Messages_GetUnreadMentions : ITLFunction<Messages_MessagesBase>
+		{
+			public InputPeer peer;
+			public int offset_id;
+			public int add_offset;
+			public int limit;
+			public int max_id;
+			public int min_id;
+		}
+
+		[TLDef(0xAF369D42, "channels.deleteHistory#af369d42 channel:InputChannel max_id:int = Bool")]
+		public class Channels_DeleteHistory : ITLFunction<bool>
+		{
+			public InputChannelBase channel;
+			public int max_id;
+		}
+
+		[TLDef(0x3DC0F114, "help.getRecentMeUrls#3dc0f114 referer:string = help.RecentMeUrls")]
+		public class Help_GetRecentMeUrls : ITLFunction<Help_RecentMeUrls> { public string referer; }
+
+		[TLDef(0xEABBB94C, "channels.togglePreHistoryHidden#eabbb94c channel:InputChannel enabled:Bool = Updates")]
+		public class Channels_TogglePreHistoryHidden : ITLFunction<UpdatesBase>
+		{
+			public InputChannelBase channel;
+			public bool enabled;
+		}
+
+		[TLDef(0xF0189D3, "messages.readMentions#0f0189d3 peer:InputPeer = messages.AffectedHistory")]
+		public class Messages_ReadMentions : ITLFunction<Messages_AffectedHistory> { public InputPeer peer; }
+
+		[TLDef(0xBBC45B09, "messages.getRecentLocations#bbc45b09 peer:InputPeer limit:int hash:int = messages.Messages")]
+		public class Messages_GetRecentLocations : ITLFunction<Messages_MessagesBase>
+		{
+			public InputPeer peer;
+			public int limit;
+			public int hash;
+		}
+
+		[TLDef(0xCC0110CB, "messages.sendMultiMedia#cc0110cb flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int multi_media:Vector<InputSingleMedia> schedule_date:flags.10?int = Updates")]
+		public class Messages_SendMultiMedia : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { has_reply_to_msg_id = 0x1, silent = 0x20, background = 0x40, clear_draft = 0x80, 
+				has_schedule_date = 0x400 }
+			public Flags flags;
+			public InputPeer peer;
+			[IfFlag(0)] public int reply_to_msg_id;
+			public InputSingleMedia[] multi_media;
+			[IfFlag(10)] public DateTime schedule_date;
+		}
+
+		[TLDef(0x5057C497, "messages.uploadEncryptedFile#5057c497 peer:InputEncryptedChat file:InputEncryptedFile = EncryptedFile")]
+		public class Messages_UploadEncryptedFile : ITLFunction<EncryptedFileBase>
+		{
+			public InputEncryptedChat peer;
+			public InputEncryptedFileBase file;
+		}
+
+		[TLDef(0x182E6D6F, "account.getWebAuthorizations#182e6d6f = account.WebAuthorizations")]
+		public class Account_GetWebAuthorizations : ITLFunction<Account_WebAuthorizations> { }
+
+		[TLDef(0x2D01B9EF, "account.resetWebAuthorization#2d01b9ef hash:long = Bool")]
+		public class Account_ResetWebAuthorization : ITLFunction<bool> { public long hash; }
+
+		[TLDef(0x682D2594, "account.resetWebAuthorizations#682d2594 = Bool")]
+		public class Account_ResetWebAuthorizations : ITLFunction<bool> { }
+
+		[TLDef(0xC2B7D08B, "messages.searchStickerSets#c2b7d08b flags:# exclude_featured:flags.0?true q:string hash:int = messages.FoundStickerSets")]
+		public class Messages_SearchStickerSets : ITLFunction<Messages_FoundStickerSetsBase>
+		{
+			[Flags] public enum Flags { exclude_featured = 0x1 }
+			public Flags flags;
+			public string q;
+			public int hash;
+		}
+
+		[TLDef(0xC7025931, "upload.getFileHashes#c7025931 location:InputFileLocation offset:int = Vector<FileHash>")]
+		public class Upload_GetFileHashes : ITLFunction<FileHash[]>
+		{
+			public InputFileLocationBase location;
+			public int offset;
+		}
+
+		[TLDef(0x2CA51FD1, "help.getTermsOfServiceUpdate#2ca51fd1 = help.TermsOfServiceUpdate")]
+		public class Help_GetTermsOfServiceUpdate : ITLFunction<Help_TermsOfServiceUpdateBase> { }
+
+		[TLDef(0xEE72F79A, "help.acceptTermsOfService#ee72f79a id:DataJSON = Bool")]
+		public class Help_AcceptTermsOfService : ITLFunction<bool> { public DataJSON id; }
+
+		[TLDef(0xB288BC7D, "account.getAllSecureValues#b288bc7d = Vector<SecureValue>")]
+		public class Account_GetAllSecureValues : ITLFunction<SecureValue[]> { }
+
+		[TLDef(0x73665BC2, "account.getSecureValue#73665bc2 types:Vector<SecureValueType> = Vector<SecureValue>")]
+		public class Account_GetSecureValue : ITLFunction<SecureValue[]> { public SecureValueType[] types; }
+
+		[TLDef(0x899FE31D, "account.saveSecureValue#899fe31d value:InputSecureValue secure_secret_id:long = SecureValue")]
+		public class Account_SaveSecureValue : ITLFunction<SecureValue>
+		{
+			public InputSecureValue value;
+			public long secure_secret_id;
+		}
+
+		[TLDef(0xB880BC4B, "account.deleteSecureValue#b880bc4b types:Vector<SecureValueType> = Bool")]
+		public class Account_DeleteSecureValue : ITLFunction<bool> { public SecureValueType[] types; }
+
+		[TLDef(0x90C894B5, "users.setSecureValueErrors#90c894b5 id:InputUser errors:Vector<SecureValueError> = Bool")]
+		public class Users_SetSecureValueErrors : ITLFunction<bool>
+		{
+			public InputUserBase id;
+			public SecureValueErrorBase[] errors;
+		}
+
+		[TLDef(0xB86BA8E1, "account.getAuthorizationForm#b86ba8e1 bot_id:int scope:string public_key:string = account.AuthorizationForm")]
+		public class Account_GetAuthorizationForm : ITLFunction<Account_AuthorizationForm>
+		{
+			public int bot_id;
+			public string scope;
+			public string public_key;
+		}
+
+		[TLDef(0xE7027C94, "account.acceptAuthorization#e7027c94 bot_id:int scope:string public_key:string value_hashes:Vector<SecureValueHash> credentials:SecureCredentialsEncrypted = Bool")]
+		public class Account_AcceptAuthorization : ITLFunction<bool>
+		{
+			public int bot_id;
+			public string scope;
+			public string public_key;
+			public SecureValueHash[] value_hashes;
+			public SecureCredentialsEncrypted credentials;
+		}
+
+		[TLDef(0xA5A356F9, "account.sendVerifyPhoneCode#a5a356f9 phone_number:string settings:CodeSettings = auth.SentCode")]
+		public class Account_SendVerifyPhoneCode : ITLFunction<Auth_SentCode>
+		{
+			public string phone_number;
+			public CodeSettings settings;
+		}
+
+		[TLDef(0x4DD3A7F6, "account.verifyPhone#4dd3a7f6 phone_number:string phone_code_hash:string phone_code:string = Bool")]
+		public class Account_VerifyPhone : ITLFunction<bool>
+		{
+			public string phone_number;
+			public string phone_code_hash;
+			public string phone_code;
+		}
+
+		[TLDef(0x7011509F, "account.sendVerifyEmailCode#7011509f email:string = account.SentEmailCode")]
+		public class Account_SendVerifyEmailCode : ITLFunction<Account_SentEmailCode> { public string email; }
+
+		[TLDef(0xECBA39DB, "account.verifyEmail#ecba39db email:string code:string = Bool")]
+		public class Account_VerifyEmail : ITLFunction<bool>
+		{
+			public string email;
+			public string code;
+		}
+
+		[TLDef(0x3FEDC75F, "help.getDeepLinkInfo#3fedc75f path:string = help.DeepLinkInfo")]
+		public class Help_GetDeepLinkInfo : ITLFunction<Help_DeepLinkInfoBase> { public string path; }
+
+		[TLDef(0x82F1E39F, "contacts.getSaved#82f1e39f = Vector<SavedContact>")]
+		public class Contacts_GetSaved : ITLFunction<SavedContact[]> { }
+
+		[TLDef(0x8341ECC0, "channels.getLeftChannels#8341ecc0 offset:int = messages.Chats")]
+		public class Channels_GetLeftChannels : ITLFunction<Messages_ChatsBase> { public int offset; }
+
+		[TLDef(0xF05B4804, "account.initTakeoutSession#f05b4804 flags:# contacts:flags.0?true message_users:flags.1?true message_chats:flags.2?true message_megagroups:flags.3?true message_channels:flags.4?true files:flags.5?true file_max_size:flags.5?int = account.Takeout")]
+		public class Account_InitTakeoutSession : ITLFunction<Account_Takeout>
+		{
+			[Flags] public enum Flags { contacts = 0x1, message_users = 0x2, message_chats = 0x4, message_megagroups = 0x8, 
+				message_channels = 0x10, files = 0x20 }
+			public Flags flags;
+			[IfFlag(5)] public int file_max_size;
+		}
+
+		[TLDef(0x1D2652EE, "account.finishTakeoutSession#1d2652ee flags:# success:flags.0?true = Bool")]
+		public class Account_FinishTakeoutSession : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { success = 0x1 }
+			public Flags flags;
+		}
+
+		[TLDef(0x1CFF7E08, "messages.getSplitRanges#1cff7e08 = Vector<MessageRange>")]
+		public class Messages_GetSplitRanges : ITLFunction<MessageRange[]> { }
+
+		[TLDef(0x365275F2, "invokeWithMessagesRange#365275f2 {X:Type} range:MessageRange query:!X = X")]
+		public class InvokeWithMessagesRange<X> : ITLFunction<X>
+		{
+			public MessageRange range;
+			public ITLFunction<X> query;
+		}
+
+		[TLDef(0xACA9FD2E, "invokeWithTakeout#aca9fd2e {X:Type} takeout_id:long query:!X = X")]
+		public class InvokeWithTakeout<X> : ITLFunction<X>
+		{
+			public long takeout_id;
+			public ITLFunction<X> query;
+		}
+
+		[TLDef(0xC286D98F, "messages.markDialogUnread#c286d98f flags:# unread:flags.0?true peer:InputDialogPeer = Bool")]
+		public class Messages_MarkDialogUnread : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { unread = 0x1 }
+			public Flags flags;
+			public InputDialogPeerBase peer;
+		}
+
+		[TLDef(0x22E24E22, "messages.getDialogUnreadMarks#22e24e22 = Vector<DialogPeer>")]
+		public class Messages_GetDialogUnreadMarks : ITLFunction<DialogPeerBase[]> { }
+
+		[TLDef(0x8514BDDA, "contacts.toggleTopPeers#8514bdda enabled:Bool = Bool")]
+		public class Contacts_ToggleTopPeers : ITLFunction<bool> { public bool enabled; }
+
+		[TLDef(0x7E58EE9C, "messages.clearAllDrafts#7e58ee9c = Bool")]
+		public class Messages_ClearAllDrafts : ITLFunction<bool> { }
+
+		[TLDef(0x98914110, "help.getAppConfig#98914110 = JSONValue")]
+		public class Help_GetAppConfig : ITLFunction<JSONValue> { }
+
+		[TLDef(0x6F02F748, "help.saveAppLog#6f02f748 events:Vector<InputAppEvent> = Bool")]
+		public class Help_SaveAppLog : ITLFunction<bool> { public InputAppEvent[] events; }
+
+		[TLDef(0xC661AD08, "help.getPassportConfig#c661ad08 hash:int = help.PassportConfig")]
+		public class Help_GetPassportConfig : ITLFunction<Help_PassportConfigBase> { public int hash; }
+
+		[TLDef(0x6A596502, "langpack.getLanguage#6a596502 lang_pack:string lang_code:string = LangPackLanguage")]
+		public class Langpack_GetLanguage : ITLFunction<LangPackLanguage>
+		{
+			public string lang_pack;
+			public string lang_code;
+		}
+
+		[TLDef(0xD2AAF7EC, "messages.updatePinnedMessage#d2aaf7ec flags:# silent:flags.0?true unpin:flags.1?true pm_oneside:flags.2?true peer:InputPeer id:int = Updates")]
+		public class Messages_UpdatePinnedMessage : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { silent = 0x1, unpin = 0x2, pm_oneside = 0x4 }
+			public Flags flags;
+			public InputPeer peer;
+			public int id;
+		}
+
+		[TLDef(0x8FDF1920, "account.confirmPasswordEmail#8fdf1920 code:string = Bool")]
+		public class Account_ConfirmPasswordEmail : ITLFunction<bool> { public string code; }
+
+		[TLDef(0x7A7F2A15, "account.resendPasswordEmail#7a7f2a15 = Bool")]
+		public class Account_ResendPasswordEmail : ITLFunction<bool> { }
+
+		[TLDef(0xC1CBD5B6, "account.cancelPasswordEmail#c1cbd5b6 = Bool")]
+		public class Account_CancelPasswordEmail : ITLFunction<bool> { }
+
+		[TLDef(0xD360E72C, "help.getSupportName#d360e72c = help.SupportName")]
+		public class Help_GetSupportName : ITLFunction<Help_SupportName> { }
+
+		[TLDef(0x38A08D3, "help.getUserInfo#038a08d3 user_id:InputUser = help.UserInfo")]
+		public class Help_GetUserInfo : ITLFunction<Help_UserInfoBase> { public InputUserBase user_id; }
+
+		[TLDef(0x66B91B70, "help.editUserInfo#66b91b70 user_id:InputUser message:string entities:Vector<MessageEntity> = help.UserInfo")]
+		public class Help_EditUserInfo : ITLFunction<Help_UserInfoBase>
+		{
+			public InputUserBase user_id;
+			public string message;
+			public MessageEntity[] entities;
+		}
+
+		[TLDef(0x9F07C728, "account.getContactSignUpNotification#9f07c728 = Bool")]
+		public class Account_GetContactSignUpNotification : ITLFunction<bool> { }
+
+		[TLDef(0xCFF43F61, "account.setContactSignUpNotification#cff43f61 silent:Bool = Bool")]
+		public class Account_SetContactSignUpNotification : ITLFunction<bool> { public bool silent; }
+
+		[TLDef(0x53577479, "account.getNotifyExceptions#53577479 flags:# compare_sound:flags.1?true peer:flags.0?InputNotifyPeer = Updates")]
+		public class Account_GetNotifyExceptions : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { has_peer = 0x1, compare_sound = 0x2 }
+			public Flags flags;
+			[IfFlag(0)] public InputNotifyPeerBase peer;
+		}
+
+		[TLDef(0x10EA6184, "messages.sendVote#10ea6184 peer:InputPeer msg_id:int options:Vector<bytes> = Updates")]
+		public class Messages_SendVote : ITLFunction<UpdatesBase>
+		{
+			public InputPeer peer;
+			public int msg_id;
+			public byte[][] options;
+		}
+
+		[TLDef(0x73BB643B, "messages.getPollResults#73bb643b peer:InputPeer msg_id:int = Updates")]
+		public class Messages_GetPollResults : ITLFunction<UpdatesBase>
+		{
+			public InputPeer peer;
+			public int msg_id;
+		}
+
+		[TLDef(0x6E2BE050, "messages.getOnlines#6e2be050 peer:InputPeer = ChatOnlines")]
+		public class Messages_GetOnlines : ITLFunction<ChatOnlines> { public InputPeer peer; }
+
+		[TLDef(0x812C2AE6, "messages.getStatsURL#812c2ae6 flags:# dark:flags.0?true peer:InputPeer params:string = StatsURL")]
+		public class Messages_GetStatsURL : ITLFunction<StatsURL>
+		{
+			[Flags] public enum Flags { dark = 0x1 }
+			public Flags flags;
+			public InputPeer peer;
+			public string params_;
+		}
+
+		[TLDef(0xDEF60797, "messages.editChatAbout#def60797 peer:InputPeer about:string = Bool")]
+		public class Messages_EditChatAbout : ITLFunction<bool>
+		{
+			public InputPeer peer;
+			public string about;
+		}
+
+		[TLDef(0xA5866B41, "messages.editChatDefaultBannedRights#a5866b41 peer:InputPeer banned_rights:ChatBannedRights = Updates")]
+		public class Messages_EditChatDefaultBannedRights : ITLFunction<UpdatesBase>
+		{
+			public InputPeer peer;
+			public ChatBannedRights banned_rights;
+		}
+
+		[TLDef(0xFC8DDBEA, "account.getWallPaper#fc8ddbea wallpaper:InputWallPaper = WallPaper")]
+		public class Account_GetWallPaper : ITLFunction<WallPaperBase> { public InputWallPaperBase wallpaper; }
+
+		[TLDef(0xDD853661, "account.uploadWallPaper#dd853661 file:InputFile mime_type:string settings:WallPaperSettings = WallPaper")]
+		public class Account_UploadWallPaper : ITLFunction<WallPaperBase>
+		{
+			public InputFileBase file;
+			public string mime_type;
+			public WallPaperSettings settings;
+		}
+
+		[TLDef(0x6C5A5B37, "account.saveWallPaper#6c5a5b37 wallpaper:InputWallPaper unsave:Bool settings:WallPaperSettings = Bool")]
+		public class Account_SaveWallPaper : ITLFunction<bool>
+		{
+			public InputWallPaperBase wallpaper;
+			public bool unsave;
+			public WallPaperSettings settings;
+		}
+
+		[TLDef(0xFEED5769, "account.installWallPaper#feed5769 wallpaper:InputWallPaper settings:WallPaperSettings = Bool")]
+		public class Account_InstallWallPaper : ITLFunction<bool>
+		{
+			public InputWallPaperBase wallpaper;
+			public WallPaperSettings settings;
+		}
+
+		[TLDef(0xBB3B9804, "account.resetWallPapers#bb3b9804 = Bool")]
+		public class Account_ResetWallPapers : ITLFunction<bool> { }
+
+		[TLDef(0x56DA0B3F, "account.getAutoDownloadSettings#56da0b3f = account.AutoDownloadSettings")]
+		public class Account_GetAutoDownloadSettings : ITLFunction<Account_AutoDownloadSettings> { }
+
+		[TLDef(0x76F36233, "account.saveAutoDownloadSettings#76f36233 flags:# low:flags.0?true high:flags.1?true settings:AutoDownloadSettings = Bool")]
+		public class Account_SaveAutoDownloadSettings : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { low = 0x1, high = 0x2 }
+			public Flags flags;
+			public AutoDownloadSettings settings;
+		}
+
+		[TLDef(0x35A0E062, "messages.getEmojiKeywords#35a0e062 lang_code:string = EmojiKeywordsDifference")]
+		public class Messages_GetEmojiKeywords : ITLFunction<EmojiKeywordsDifference> { public string lang_code; }
+
+		[TLDef(0x1508B6AF, "messages.getEmojiKeywordsDifference#1508b6af lang_code:string from_version:int = EmojiKeywordsDifference")]
+		public class Messages_GetEmojiKeywordsDifference : ITLFunction<EmojiKeywordsDifference>
+		{
+			public string lang_code;
+			public int from_version;
+		}
+
+		[TLDef(0x4E9963B2, "messages.getEmojiKeywordsLanguages#4e9963b2 lang_codes:Vector<string> = Vector<EmojiLanguage>")]
+		public class Messages_GetEmojiKeywordsLanguages : ITLFunction<EmojiLanguage[]> { public string[] lang_codes; }
+
+		[TLDef(0xD5B10C26, "messages.getEmojiURL#d5b10c26 lang_code:string = EmojiURL")]
+		public class Messages_GetEmojiURL : ITLFunction<EmojiURL> { public string lang_code; }
+
+		[TLDef(0x6847D0AB, "folders.editPeerFolders#6847d0ab folder_peers:Vector<InputFolderPeer> = Updates")]
+		public class Folders_EditPeerFolders : ITLFunction<UpdatesBase> { public InputFolderPeer[] folder_peers; }
+
+		[TLDef(0x1C295881, "folders.deleteFolder#1c295881 folder_id:int = Updates")]
+		public class Folders_DeleteFolder : ITLFunction<UpdatesBase> { public int folder_id; }
+
+		[TLDef(0x732EEF00, "messages.getSearchCounters#732eef00 peer:InputPeer filters:Vector<MessagesFilter> = Vector<messages.SearchCounter>")]
+		public class Messages_GetSearchCounters : ITLFunction<Messages_SearchCounter[]>
+		{
+			public InputPeer peer;
+			public MessagesFilter[] filters;
+		}
+
+		[TLDef(0xF5DAD378, "channels.getGroupsForDiscussion#f5dad378 = messages.Chats")]
+		public class Channels_GetGroupsForDiscussion : ITLFunction<Messages_ChatsBase> { }
+
+		[TLDef(0x40582BB2, "channels.setDiscussionGroup#40582bb2 broadcast:InputChannel group:InputChannel = Bool")]
+		public class Channels_SetDiscussionGroup : ITLFunction<bool>
+		{
+			public InputChannelBase broadcast;
+			public InputChannelBase group;
+		}
+
+		[TLDef(0xE33F5613, "messages.requestUrlAuth#e33f5613 peer:InputPeer msg_id:int button_id:int = UrlAuthResult")]
+		public class Messages_RequestUrlAuth : ITLFunction<UrlAuthResult>
+		{
+			public InputPeer peer;
+			public int msg_id;
+			public int button_id;
+		}
+
+		[TLDef(0xF729EA98, "messages.acceptUrlAuth#f729ea98 flags:# write_allowed:flags.0?true peer:InputPeer msg_id:int button_id:int = UrlAuthResult")]
+		public class Messages_AcceptUrlAuth : ITLFunction<UrlAuthResult>
+		{
+			[Flags] public enum Flags { write_allowed = 0x1 }
+			public Flags flags;
+			public InputPeer peer;
+			public int msg_id;
+			public int button_id;
+		}
+
+		[TLDef(0x4FACB138, "messages.hidePeerSettingsBar#4facb138 peer:InputPeer = Bool")]
+		public class Messages_HidePeerSettingsBar : ITLFunction<bool> { public InputPeer peer; }
+
+		[TLDef(0xE8F463D0, "contacts.addContact#e8f463d0 flags:# add_phone_privacy_exception:flags.0?true id:InputUser first_name:string last_name:string phone:string = Updates")]
+		public class Contacts_AddContact : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { add_phone_privacy_exception = 0x1 }
+			public Flags flags;
+			public InputUserBase id;
+			public string first_name;
+			public string last_name;
+			public string phone;
+		}
+
+		[TLDef(0xF831A20F, "contacts.acceptContact#f831a20f id:InputUser = Updates")]
+		public class Contacts_AcceptContact : ITLFunction<UpdatesBase> { public InputUserBase id; }
+
+		[TLDef(0x8F38CD1F, "channels.editCreator#8f38cd1f channel:InputChannel user_id:InputUser password:InputCheckPasswordSRP = Updates")]
+		public class Channels_EditCreator : ITLFunction<UpdatesBase>
+		{
+			public InputChannelBase channel;
+			public InputUserBase user_id;
+			public InputCheckPasswordSRPBase password;
+		}
+
+		[TLDef(0xD348BC44, "contacts.getLocated#d348bc44 flags:# background:flags.1?true geo_point:InputGeoPoint self_expires:flags.0?int = Updates")]
+		public class Contacts_GetLocated : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { has_self_expires = 0x1, background = 0x2 }
+			public Flags flags;
+			public InputGeoPointBase geo_point;
+			[IfFlag(0)] public int self_expires;
+		}
+
+		[TLDef(0x58E63F6D, "channels.editLocation#58e63f6d channel:InputChannel geo_point:InputGeoPoint address:string = Bool")]
+		public class Channels_EditLocation : ITLFunction<bool>
+		{
+			public InputChannelBase channel;
+			public InputGeoPointBase geo_point;
+			public string address;
+		}
+
+		[TLDef(0xEDD49EF0, "channels.toggleSlowMode#edd49ef0 channel:InputChannel seconds:int = Updates")]
+		public class Channels_ToggleSlowMode : ITLFunction<UpdatesBase>
+		{
+			public InputChannelBase channel;
+			public int seconds;
+		}
+
+		[TLDef(0xE2C2685B, "messages.getScheduledHistory#e2c2685b peer:InputPeer hash:int = messages.Messages")]
+		public class Messages_GetScheduledHistory : ITLFunction<Messages_MessagesBase>
+		{
+			public InputPeer peer;
+			public int hash;
+		}
+
+		[TLDef(0xBDBB0464, "messages.getScheduledMessages#bdbb0464 peer:InputPeer id:Vector<int> = messages.Messages")]
+		public class Messages_GetScheduledMessages : ITLFunction<Messages_MessagesBase>
+		{
+			public InputPeer peer;
+			public int[] id;
+		}
+
+		[TLDef(0xBD38850A, "messages.sendScheduledMessages#bd38850a peer:InputPeer id:Vector<int> = Updates")]
+		public class Messages_SendScheduledMessages : ITLFunction<UpdatesBase>
+		{
+			public InputPeer peer;
+			public int[] id;
+		}
+
+		[TLDef(0x59AE2B16, "messages.deleteScheduledMessages#59ae2b16 peer:InputPeer id:Vector<int> = Updates")]
+		public class Messages_DeleteScheduledMessages : ITLFunction<UpdatesBase>
+		{
+			public InputPeer peer;
+			public int[] id;
+		}
+
+		[TLDef(0x1C3DB333, "account.uploadTheme#1c3db333 flags:# file:InputFile thumb:flags.0?InputFile file_name:string mime_type:string = Document")]
+		public class Account_UploadTheme : ITLFunction<DocumentBase>
+		{
+			[Flags] public enum Flags { has_thumb = 0x1 }
+			public Flags flags;
+			public InputFileBase file;
+			[IfFlag(0)] public InputFileBase thumb;
+			public string file_name;
+			public string mime_type;
+		}
+
+		[TLDef(0x8432C21F, "account.createTheme#8432c21f flags:# slug:string title:string document:flags.2?InputDocument settings:flags.3?InputThemeSettings = Theme")]
+		public class Account_CreateTheme : ITLFunction<Theme>
+		{
+			[Flags] public enum Flags { has_document = 0x4, has_settings = 0x8 }
+			public Flags flags;
+			public string slug;
+			public string title;
+			[IfFlag(2)] public InputDocumentBase document;
+			[IfFlag(3)] public InputThemeSettings settings;
+		}
+
+		[TLDef(0x5CB367D5, "account.updateTheme#5cb367d5 flags:# format:string theme:InputTheme slug:flags.0?string title:flags.1?string document:flags.2?InputDocument settings:flags.3?InputThemeSettings = Theme")]
+		public class Account_UpdateTheme : ITLFunction<Theme>
+		{
+			[Flags] public enum Flags { has_slug = 0x1, has_title = 0x2, has_document = 0x4, has_settings = 0x8 }
+			public Flags flags;
+			public string format;
+			public InputThemeBase theme;
+			[IfFlag(0)] public string slug;
+			[IfFlag(1)] public string title;
+			[IfFlag(2)] public InputDocumentBase document;
+			[IfFlag(3)] public InputThemeSettings settings;
+		}
+
+		[TLDef(0xF257106C, "account.saveTheme#f257106c theme:InputTheme unsave:Bool = Bool")]
+		public class Account_SaveTheme : ITLFunction<bool>
+		{
+			public InputThemeBase theme;
+			public bool unsave;
+		}
+
+		[TLDef(0x7AE43737, "account.installTheme#7ae43737 flags:# dark:flags.0?true format:flags.1?string theme:flags.1?InputTheme = Bool")]
+		public class Account_InstallTheme : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { dark = 0x1, has_format = 0x2 }
+			public Flags flags;
+			[IfFlag(1)] public string format;
+			[IfFlag(1)] public InputThemeBase theme;
+		}
+
+		[TLDef(0x8D9D742B, "account.getTheme#8d9d742b format:string theme:InputTheme document_id:long = Theme")]
+		public class Account_GetTheme : ITLFunction<Theme>
+		{
+			public string format;
+			public InputThemeBase theme;
+			public long document_id;
+		}
+
+		[TLDef(0x285946F8, "account.getThemes#285946f8 format:string hash:int = account.Themes")]
+		public class Account_GetThemes : ITLFunction<Account_ThemesBase>
+		{
+			public string format;
+			public int hash;
+		}
+
+		[TLDef(0xB1B41517, "auth.exportLoginToken#b1b41517 api_id:int api_hash:string except_ids:Vector<int> = auth.LoginToken")]
+		public class Auth_ExportLoginToken : ITLFunction<Auth_LoginTokenBase>
+		{
+			public int api_id;
+			public string api_hash;
+			public int[] except_ids;
+		}
+
+		[TLDef(0x95AC5CE4, "auth.importLoginToken#95ac5ce4 token:bytes = auth.LoginToken")]
+		public class Auth_ImportLoginToken : ITLFunction<Auth_LoginTokenBase> { public byte[] token; }
+
+		[TLDef(0xE894AD4D, "auth.acceptLoginToken#e894ad4d token:bytes = Authorization")]
+		public class Auth_AcceptLoginToken : ITLFunction<Authorization> { public byte[] token; }
+
+		[TLDef(0xB574B16B, "account.setContentSettings#b574b16b flags:# sensitive_enabled:flags.0?true = Bool")]
+		public class Account_SetContentSettings : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { sensitive_enabled = 0x1 }
+			public Flags flags;
+		}
+
+		[TLDef(0x8B9B4DAE, "account.getContentSettings#8b9b4dae = account.ContentSettings")]
+		public class Account_GetContentSettings : ITLFunction<Account_ContentSettings> { }
+
+		[TLDef(0x11E831EE, "channels.getInactiveChannels#11e831ee = messages.InactiveChats")]
+		public class Channels_GetInactiveChannels : ITLFunction<Messages_InactiveChats> { }
+
+		[TLDef(0x65AD71DC, "account.getMultiWallPapers#65ad71dc wallpapers:Vector<InputWallPaper> = Vector<WallPaper>")]
+		public class Account_GetMultiWallPapers : ITLFunction<WallPaperBase[]> { public InputWallPaperBase[] wallpapers; }
+
+		[TLDef(0xB86E380E, "messages.getPollVotes#b86e380e flags:# peer:InputPeer id:int option:flags.0?bytes offset:flags.1?string limit:int = messages.VotesList")]
+		public class Messages_GetPollVotes : ITLFunction<Messages_VotesList>
+		{
+			[Flags] public enum Flags { has_option = 0x1, has_offset = 0x2 }
+			public Flags flags;
+			public InputPeer peer;
+			public int id;
+			[IfFlag(0)] public byte[] option;
+			[IfFlag(1)] public string offset;
+			public int limit;
+		}
+
+		[TLDef(0xB5052FEA, "messages.toggleStickerSets#b5052fea flags:# uninstall:flags.0?true archive:flags.1?true unarchive:flags.2?true stickersets:Vector<InputStickerSet> = Bool")]
+		public class Messages_ToggleStickerSets : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { uninstall = 0x1, archive = 0x2, unarchive = 0x4 }
+			public Flags flags;
+			public InputStickerSet[] stickersets;
+		}
+
+		[TLDef(0x2E79D779, "payments.getBankCardData#2e79d779 number:string = payments.BankCardData")]
+		public class Payments_GetBankCardData : ITLFunction<Payments_BankCardData> { public string number; }
+
+		[TLDef(0xF19ED96D, "messages.getDialogFilters#f19ed96d = Vector<DialogFilter>")]
+		public class Messages_GetDialogFilters : ITLFunction<DialogFilter[]> { }
+
+		[TLDef(0xA29CD42C, "messages.getSuggestedDialogFilters#a29cd42c = Vector<DialogFilterSuggested>")]
+		public class Messages_GetSuggestedDialogFilters : ITLFunction<DialogFilterSuggested[]> { }
+
+		[TLDef(0x1AD4A04A, "messages.updateDialogFilter#1ad4a04a flags:# id:int filter:flags.0?DialogFilter = Bool")]
+		public class Messages_UpdateDialogFilter : ITLFunction<bool>
+		{
+			[Flags] public enum Flags { has_filter = 0x1 }
+			public Flags flags;
+			public int id;
+			[IfFlag(0)] public DialogFilter filter;
+		}
+
+		[TLDef(0xC563C1E4, "messages.updateDialogFiltersOrder#c563c1e4 order:Vector<int> = Bool")]
+		public class Messages_UpdateDialogFiltersOrder : ITLFunction<bool> { public int[] order; }
+
+		[TLDef(0xAB42441A, "stats.getBroadcastStats#ab42441a flags:# dark:flags.0?true channel:InputChannel = stats.BroadcastStats")]
+		public class Stats_GetBroadcastStats : ITLFunction<Stats_BroadcastStats>
+		{
+			[Flags] public enum Flags { dark = 0x1 }
+			public Flags flags;
+			public InputChannelBase channel;
+		}
+
+		[TLDef(0x621D5FA0, "stats.loadAsyncGraph#621d5fa0 flags:# token:string x:flags.0?long = StatsGraph")]
+		public class Stats_LoadAsyncGraph : ITLFunction<StatsGraphBase>
+		{
+			[Flags] public enum Flags { has_x = 0x1 }
+			public Flags flags;
+			public string token;
+			[IfFlag(0)] public long x;
+		}
+
+		[TLDef(0x9A364E30, "stickers.setStickerSetThumb#9a364e30 stickerset:InputStickerSet thumb:InputDocument = messages.StickerSet")]
+		public class Stickers_SetStickerSetThumb : ITLFunction<Messages_StickerSet>
+		{
+			public InputStickerSet stickerset;
+			public InputDocumentBase thumb;
+		}
+
+		[TLDef(0x805D46F6, "bots.setBotCommands#805d46f6 commands:Vector<BotCommand> = Bool")]
+		public class Bots_SetBotCommands : ITLFunction<bool> { public BotCommand[] commands; }
+
+		[TLDef(0x5FE7025B, "messages.getOldFeaturedStickers#5fe7025b offset:int limit:int hash:int = messages.FeaturedStickers")]
+		public class Messages_GetOldFeaturedStickers : ITLFunction<Messages_FeaturedStickersBase>
+		{
+			public int offset;
+			public int limit;
+			public int hash;
+		}
+
+		[TLDef(0xC0977421, "help.getPromoData#c0977421 = help.PromoData")]
+		public class Help_GetPromoData : ITLFunction<Help_PromoDataBase> { }
+
+		[TLDef(0x1E251C95, "help.hidePromoData#1e251c95 peer:InputPeer = Bool")]
+		public class Help_HidePromoData : ITLFunction<bool> { public InputPeer peer; }
+
+		[TLDef(0xFF7A9383, "phone.sendSignalingData#ff7a9383 peer:InputPhoneCall data:bytes = Bool")]
+		public class Phone_SendSignalingData : ITLFunction<bool>
+		{
+			public InputPhoneCall peer;
+			public byte[] data;
+		}
+
+		[TLDef(0xDCDF8607, "stats.getMegagroupStats#dcdf8607 flags:# dark:flags.0?true channel:InputChannel = stats.MegagroupStats")]
+		public class Stats_GetMegagroupStats : ITLFunction<Stats_MegagroupStats>
+		{
+			[Flags] public enum Flags { dark = 0x1 }
+			public Flags flags;
+			public InputChannelBase channel;
+		}
+
+		[TLDef(0xEB2B4CF6, "account.getGlobalPrivacySettings#eb2b4cf6 = GlobalPrivacySettings")]
+		public class Account_GetGlobalPrivacySettings : ITLFunction<GlobalPrivacySettings> { }
+
+		[TLDef(0x1EDAAAC2, "account.setGlobalPrivacySettings#1edaaac2 settings:GlobalPrivacySettings = GlobalPrivacySettings")]
+		public class Account_SetGlobalPrivacySettings : ITLFunction<GlobalPrivacySettings> { public GlobalPrivacySettings settings; }
+
+		[TLDef(0x77FA99F, "help.dismissSuggestion#077fa99f suggestion:string = Bool")]
+		public class Help_DismissSuggestion : ITLFunction<bool> { public string suggestion; }
+
+		[TLDef(0x735787A8, "help.getCountriesList#735787a8 lang_code:string hash:int = help.CountriesList")]
+		public class Help_GetCountriesList : ITLFunction<Help_CountriesListBase>
+		{
+			public string lang_code;
+			public int hash;
+		}
+
+		[TLDef(0x24B581BA, "messages.getReplies#24b581ba peer:InputPeer msg_id:int offset_id:int offset_date:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages")]
+		public class Messages_GetReplies : ITLFunction<Messages_MessagesBase>
+		{
+			public InputPeer peer;
+			public int msg_id;
+			public int offset_id;
+			public DateTime offset_date;
+			public int add_offset;
+			public int limit;
+			public int max_id;
+			public int min_id;
+			public int hash;
+		}
+
+		[TLDef(0x446972FD, "messages.getDiscussionMessage#446972fd peer:InputPeer msg_id:int = messages.DiscussionMessage")]
+		public class Messages_GetDiscussionMessage : ITLFunction<Messages_DiscussionMessage>
+		{
+			public InputPeer peer;
+			public int msg_id;
+		}
+
+		[TLDef(0xF731A9F4, "messages.readDiscussion#f731a9f4 peer:InputPeer msg_id:int read_max_id:int = Bool")]
+		public class Messages_ReadDiscussion : ITLFunction<bool>
+		{
+			public InputPeer peer;
+			public int msg_id;
+			public int read_max_id;
+		}
+
+		[TLDef(0x29A8962C, "contacts.blockFromReplies#29a8962c flags:# delete_message:flags.0?true delete_history:flags.1?true report_spam:flags.2?true msg_id:int = Updates")]
+		public class Contacts_BlockFromReplies : ITLFunction<UpdatesBase>
+		{
+			[Flags] public enum Flags { delete_message = 0x1, delete_history = 0x2, report_spam = 0x4 }
+			public Flags flags;
+			public int msg_id;
+		}
+
+		[TLDef(0x5630281B, "stats.getMessagePublicForwards#5630281b channel:InputChannel msg_id:int offset_rate:int offset_peer:InputPeer offset_id:int limit:int = messages.Messages")]
+		public class Stats_GetMessagePublicForwards : ITLFunction<Messages_MessagesBase>
+		{
+			public InputChannelBase channel;
+			public int msg_id;
+			public int offset_rate;
+			public InputPeer offset_peer;
+			public int offset_id;
+			public int limit;
+		}
+
+		[TLDef(0xB6E0A3F5, "stats.getMessageStats#b6e0a3f5 flags:# dark:flags.0?true channel:InputChannel msg_id:int = stats.MessageStats")]
+		public class Stats_GetMessageStats : ITLFunction<Stats_MessageStats>
+		{
+			[Flags] public enum Flags { dark = 0x1 }
+			public Flags flags;
+			public InputChannelBase channel;
+			public int msg_id;
+		}
+
+		[TLDef(0xF025BC8B, "messages.unpinAllMessages#f025bc8b peer:InputPeer = messages.AffectedHistory")]
+		public class Messages_UnpinAllMessages : ITLFunction<Messages_AffectedHistory> { public InputPeer peer; }
 
-	[TLDef(0xCB9F372D, "invokeAfterMsg#cb9f372d {X:Type} msg_id:long query:!X = X")]
-	public class InvokeAfterMsg<X> : ITLFunction<X>
-	{
-		public long msg_id;
-		public ITLFunction<X> query;
-	}
-
-	[TLDef(0x3DC4B4F0, "invokeAfterMsgs#3dc4b4f0 {X:Type} msg_ids:Vector<long> query:!X = X")]
-	public class InvokeAfterMsgs<X> : ITLFunction<X>
-	{
-		public long[] msg_ids;
-		public ITLFunction<X> query;
-	}
-
-	[TLDef(0xA677244F, "auth.sendCode#a677244f phone_number:string api_id:int api_hash:string settings:CodeSettings = auth.SentCode")]
-	public class Auth_SendCode : ITLFunction<Auth_SentCode>
-	{
-		public string phone_number;
-		public int api_id;
-		public string api_hash;
-		public CodeSettings settings;
-	}
-
-	[TLDef(0x80EEE427, "auth.signUp#80eee427 phone_number:string phone_code_hash:string first_name:string last_name:string = auth.Authorization")]
-	public class Auth_SignUp : ITLFunction<Auth_AuthorizationBase>
-	{
-		public string phone_number;
-		public string phone_code_hash;
-		public string first_name;
-		public string last_name;
-	}
-
-	[TLDef(0xBCD51581, "auth.signIn#bcd51581 phone_number:string phone_code_hash:string phone_code:string = auth.Authorization")]
-	public class Auth_SignIn : ITLFunction<Auth_AuthorizationBase>
-	{
-		public string phone_number;
-		public string phone_code_hash;
-		public string phone_code;
-	}
-
-	[TLDef(0x5717DA40, "auth.logOut#5717da40 = Bool")]
-	public class Auth_LogOut : ITLFunction<bool> { }
-
-	[TLDef(0x9FAB0D1A, "auth.resetAuthorizations#9fab0d1a = Bool")]
-	public class Auth_ResetAuthorizations : ITLFunction<bool> { }
-
-	[TLDef(0xE5BFFFCD, "auth.exportAuthorization#e5bfffcd dc_id:int = auth.ExportedAuthorization")]
-	public class Auth_ExportAuthorization : ITLFunction<Auth_ExportedAuthorization> { public int dc_id; }
-
-	[TLDef(0xE3EF9613, "auth.importAuthorization#e3ef9613 id:int bytes:bytes = auth.Authorization")]
-	public class Auth_ImportAuthorization : ITLFunction<Auth_AuthorizationBase>
-	{
-		public int id;
-		public byte[] bytes;
-	}
-
-	[TLDef(0xCDD42A05, "auth.bindTempAuthKey#cdd42a05 perm_auth_key_id:long nonce:long expires_at:int encrypted_message:bytes = Bool")]
-	public class Auth_BindTempAuthKey : ITLFunction<bool>
-	{
-		public long perm_auth_key_id;
-		public long nonce;
-		public int expires_at;
-		public byte[] encrypted_message;
-	}
-
-	[TLDef(0x68976C6F, "account.registerDevice#68976c6f flags:# no_muted:flags.0?true token_type:int token:string app_sandbox:Bool secret:bytes other_uids:Vector<int> = Bool")]
-	public class Account_RegisterDevice : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { no_muted = 0x1,  }
-		public Flags flags;
-		public int token_type;
-		public string token;
-		public bool app_sandbox;
-		public byte[] secret;
-		public int[] other_uids;
-	}
-
-	[TLDef(0x3076C4BF, "account.unregisterDevice#3076c4bf token_type:int token:string other_uids:Vector<int> = Bool")]
-	public class Account_UnregisterDevice : ITLFunction<bool>
-	{
-		public int token_type;
-		public string token;
-		public int[] other_uids;
-	}
-
-	[TLDef(0x84BE5B93, "account.updateNotifySettings#84be5b93 peer:InputNotifyPeer settings:InputPeerNotifySettings = Bool")]
-	public class Account_UpdateNotifySettings : ITLFunction<bool>
-	{
-		public InputNotifyPeerBase peer;
-		public InputPeerNotifySettings settings;
-	}
-
-	[TLDef(0x12B3AD31, "account.getNotifySettings#12b3ad31 peer:InputNotifyPeer = PeerNotifySettings")]
-	public class Account_GetNotifySettings : ITLFunction<PeerNotifySettings> { public InputNotifyPeerBase peer; }
-
-	[TLDef(0xDB7E1747, "account.resetNotifySettings#db7e1747 = Bool")]
-	public class Account_ResetNotifySettings : ITLFunction<bool> { }
-
-	[TLDef(0x78515775, "account.updateProfile#78515775 flags:# first_name:flags.0?string last_name:flags.1?string about:flags.2?string = User")]
-	public class Account_UpdateProfile : ITLFunction<UserBase>
-	{
-		[Flags] public enum Flags { has_first_name = 0x1, has_last_name = 0x2, has_about = 0x4,  }
-		public Flags flags;
-		[IfFlag(0)] public string first_name;
-		[IfFlag(1)] public string last_name;
-		[IfFlag(2)] public string about;
-	}
-
-	[TLDef(0x6628562C, "account.updateStatus#6628562c offline:Bool = Bool")]
-	public class Account_UpdateStatus : ITLFunction<bool> { public bool offline; }
-
-	[TLDef(0xAABB1763, "account.getWallPapers#aabb1763 hash:int = account.WallPapers")]
-	public class Account_GetWallPapers : ITLFunction<Account_WallPapersBase> { public int hash; }
-
-	[TLDef(0xAE189D5F, "account.reportPeer#ae189d5f peer:InputPeer reason:ReportReason = Bool")]
-	public class Account_ReportPeer : ITLFunction<bool>
-	{
-		public InputPeer peer;
-		public ReportReason reason;
-	}
-
-	[TLDef(0xD91A548, "users.getUsers#0d91a548 id:Vector<InputUser> = Vector<User>")]
-	public class Users_GetUsers : ITLFunction<UserBase[]> { public InputUserBase[] id; }
-
-	[TLDef(0xCA30A5B1, "users.getFullUser#ca30a5b1 id:InputUser = UserFull")]
-	public class Users_GetFullUser : ITLFunction<UserFull> { public InputUserBase id; }
-
-	[TLDef(0x2CAA4A42, "contacts.getContactIDs#2caa4a42 hash:int = Vector<int>")]
-	public class Contacts_GetContactIDs : ITLFunction<int[]> { public int hash; }
-
-	[TLDef(0xC4A353EE, "contacts.getStatuses#c4a353ee = Vector<ContactStatus>")]
-	public class Contacts_GetStatuses : ITLFunction<ContactStatus[]> { }
-
-	[TLDef(0xC023849F, "contacts.getContacts#c023849f hash:int = contacts.Contacts")]
-	public class Contacts_GetContacts : ITLFunction<Contacts_ContactsBase> { public int hash; }
-
-	[TLDef(0x2C800BE5, "contacts.importContacts#2c800be5 contacts:Vector<InputContact> = contacts.ImportedContacts")]
-	public class Contacts_ImportContacts : ITLFunction<Contacts_ImportedContacts> { public InputContact[] contacts; }
-
-	[TLDef(0x96A0E00, "contacts.deleteContacts#096a0e00 id:Vector<InputUser> = Updates")]
-	public class Contacts_DeleteContacts : ITLFunction<UpdatesBase> { public InputUserBase[] id; }
-
-	[TLDef(0x1013FD9E, "contacts.deleteByPhones#1013fd9e phones:Vector<string> = Bool")]
-	public class Contacts_DeleteByPhones : ITLFunction<bool> { public string[] phones; }
-
-	[TLDef(0x68CC1411, "contacts.block#68cc1411 id:InputPeer = Bool")]
-	public class Contacts_Block : ITLFunction<bool> { public InputPeer id; }
-
-	[TLDef(0xBEA65D50, "contacts.unblock#bea65d50 id:InputPeer = Bool")]
-	public class Contacts_Unblock : ITLFunction<bool> { public InputPeer id; }
-
-	[TLDef(0xF57C350F, "contacts.getBlocked#f57c350f offset:int limit:int = contacts.Blocked")]
-	public class Contacts_GetBlocked : ITLFunction<Contacts_BlockedBase>
-	{
-		public int offset;
-		public int limit;
-	}
-
-	[TLDef(0x63C66506, "messages.getMessages#63c66506 id:Vector<InputMessage> = messages.Messages")]
-	public class Messages_GetMessages : ITLFunction<Messages_MessagesBase> { public InputMessage[] id; }
-
-	[TLDef(0xA0EE3B73, "messages.getDialogs#a0ee3b73 flags:# exclude_pinned:flags.0?true folder_id:flags.1?int offset_date:int offset_id:int offset_peer:InputPeer limit:int hash:int = messages.Dialogs")]
-	public class Messages_GetDialogs : ITLFunction<Messages_DialogsBase>
-	{
-		[Flags] public enum Flags { exclude_pinned = 0x1, has_folder_id = 0x2,  }
-		public Flags flags;
-		[IfFlag(1)] public int folder_id;
-		public DateTime offset_date;
-		public int offset_id;
-		public InputPeer offset_peer;
-		public int limit;
-		public int hash;
-	}
-
-	[TLDef(0xDCBB8260, "messages.getHistory#dcbb8260 peer:InputPeer offset_id:int offset_date:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages")]
-	public class Messages_GetHistory : ITLFunction<Messages_MessagesBase>
-	{
-		public InputPeer peer;
-		public int offset_id;
-		public DateTime offset_date;
-		public int add_offset;
-		public int limit;
-		public int max_id;
-		public int min_id;
-		public int hash;
-	}
-
-	[TLDef(0xC352EEC, "messages.search#0c352eec flags:# peer:InputPeer q:string from_id:flags.0?InputPeer top_msg_id:flags.1?int filter:MessagesFilter min_date:int max_date:int offset_id:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages")]
-	public class Messages_Search : ITLFunction<Messages_MessagesBase>
-	{
-		[Flags] public enum Flags { has_from_id = 0x1, has_top_msg_id = 0x2,  }
-		public Flags flags;
-		public InputPeer peer;
-		public string q;
-		[IfFlag(0)] public InputPeer from_id;
-		[IfFlag(1)] public int top_msg_id;
-		public MessagesFilter filter;
-		public DateTime min_date;
-		public DateTime max_date;
-		public int offset_id;
-		public int add_offset;
-		public int limit;
-		public int max_id;
-		public int min_id;
-		public int hash;
-	}
-
-	[TLDef(0xE306D3A, "messages.readHistory#0e306d3a peer:InputPeer max_id:int = messages.AffectedMessages")]
-	public class Messages_ReadHistory : ITLFunction<Messages_AffectedMessages>
-	{
-		public InputPeer peer;
-		public int max_id;
-	}
-
-	[TLDef(0x1C015B09, "messages.deleteHistory#1c015b09 flags:# just_clear:flags.0?true revoke:flags.1?true peer:InputPeer max_id:int = messages.AffectedHistory")]
-	public class Messages_DeleteHistory : ITLFunction<Messages_AffectedHistory>
-	{
-		[Flags] public enum Flags { just_clear = 0x1, revoke = 0x2,  }
-		public Flags flags;
-		public InputPeer peer;
-		public int max_id;
-	}
-
-	[TLDef(0xE58E95D2, "messages.deleteMessages#e58e95d2 flags:# revoke:flags.0?true id:Vector<int> = messages.AffectedMessages")]
-	public class Messages_DeleteMessages : ITLFunction<Messages_AffectedMessages>
-	{
-		[Flags] public enum Flags { revoke = 0x1,  }
-		public Flags flags;
-		public int[] id;
-	}
-
-	[TLDef(0x5A954C0, "messages.receivedMessages#05a954c0 max_id:int = Vector<ReceivedNotifyMessage>")]
-	public class Messages_ReceivedMessages : ITLFunction<ReceivedNotifyMessage[]> { public int max_id; }
-
-	[TLDef(0x58943EE2, "messages.setTyping#58943ee2 flags:# peer:InputPeer top_msg_id:flags.0?int action:SendMessageAction = Bool")]
-	public class Messages_SetTyping : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { has_top_msg_id = 0x1,  }
-		public Flags flags;
-		public InputPeer peer;
-		[IfFlag(0)] public int top_msg_id;
-		public SendMessageAction action;
-	}
-
-	[TLDef(0x520C3870, "messages.sendMessage#520c3870 flags:# no_webpage:flags.1?true silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int message:string random_id:long reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.10?int = Updates")]
-	public class Messages_SendMessage : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { has_reply_to_msg_id = 0x1, no_webpage = 0x2, has_reply_markup = 0x4, has_entities = 0x8, 
-			silent = 0x20, background = 0x40, clear_draft = 0x80, has_schedule_date = 0x400,  }
-		public Flags flags;
-		public InputPeer peer;
-		[IfFlag(0)] public int reply_to_msg_id;
-		public string message;
-		public long random_id;
-		[IfFlag(2)] public ReplyMarkup reply_markup;
-		[IfFlag(3)] public MessageEntity[] entities;
-		[IfFlag(10)] public DateTime schedule_date;
-	}
-
-	[TLDef(0x3491EBA9, "messages.sendMedia#3491eba9 flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int media:InputMedia message:string random_id:long reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.10?int = Updates")]
-	public class Messages_SendMedia : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { has_reply_to_msg_id = 0x1, has_reply_markup = 0x4, has_entities = 0x8, silent = 0x20, 
-			background = 0x40, clear_draft = 0x80, has_schedule_date = 0x400,  }
-		public Flags flags;
-		public InputPeer peer;
-		[IfFlag(0)] public int reply_to_msg_id;
-		public InputMedia media;
-		public string message;
-		public long random_id;
-		[IfFlag(2)] public ReplyMarkup reply_markup;
-		[IfFlag(3)] public MessageEntity[] entities;
-		[IfFlag(10)] public DateTime schedule_date;
-	}
-
-	[TLDef(0xD9FEE60E, "messages.forwardMessages#d9fee60e flags:# silent:flags.5?true background:flags.6?true with_my_score:flags.8?true from_peer:InputPeer id:Vector<int> random_id:Vector<long> to_peer:InputPeer schedule_date:flags.10?int = Updates")]
-	public class Messages_ForwardMessages : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { silent = 0x20, background = 0x40, with_my_score = 0x100, has_schedule_date = 0x400,  }
-		public Flags flags;
-		public InputPeer from_peer;
-		public int[] id;
-		public long[] random_id;
-		public InputPeer to_peer;
-		[IfFlag(10)] public DateTime schedule_date;
-	}
-
-	[TLDef(0xCF1592DB, "messages.reportSpam#cf1592db peer:InputPeer = Bool")]
-	public class Messages_ReportSpam : ITLFunction<bool> { public InputPeer peer; }
-
-	[TLDef(0x3672E09C, "messages.getPeerSettings#3672e09c peer:InputPeer = PeerSettings")]
-	public class Messages_GetPeerSettings : ITLFunction<PeerSettings> { public InputPeer peer; }
-
-	[TLDef(0xBD82B658, "messages.report#bd82b658 peer:InputPeer id:Vector<int> reason:ReportReason = Bool")]
-	public class Messages_Report : ITLFunction<bool>
-	{
-		public InputPeer peer;
-		public int[] id;
-		public ReportReason reason;
-	}
-
-	[TLDef(0x3C6AA187, "messages.getChats#3c6aa187 id:Vector<int> = messages.Chats")]
-	public class Messages_GetChats : ITLFunction<Messages_ChatsBase> { public int[] id; }
-
-	[TLDef(0x3B831C66, "messages.getFullChat#3b831c66 chat_id:int = messages.ChatFull")]
-	public class Messages_GetFullChat : ITLFunction<Messages_ChatFull> { public int chat_id; }
-
-	[TLDef(0xDC452855, "messages.editChatTitle#dc452855 chat_id:int title:string = Updates")]
-	public class Messages_EditChatTitle : ITLFunction<UpdatesBase>
-	{
-		public int chat_id;
-		public string title;
-	}
-
-	[TLDef(0xCA4C79D8, "messages.editChatPhoto#ca4c79d8 chat_id:int photo:InputChatPhoto = Updates")]
-	public class Messages_EditChatPhoto : ITLFunction<UpdatesBase>
-	{
-		public int chat_id;
-		public InputChatPhotoBase photo;
-	}
-
-	[TLDef(0xF9A0AA09, "messages.addChatUser#f9a0aa09 chat_id:int user_id:InputUser fwd_limit:int = Updates")]
-	public class Messages_AddChatUser : ITLFunction<UpdatesBase>
-	{
-		public int chat_id;
-		public InputUserBase user_id;
-		public int fwd_limit;
-	}
-
-	[TLDef(0xE0611F16, "messages.deleteChatUser#e0611f16 chat_id:int user_id:InputUser = Updates")]
-	public class Messages_DeleteChatUser : ITLFunction<UpdatesBase>
-	{
-		public int chat_id;
-		public InputUserBase user_id;
-	}
-
-	[TLDef(0x9CB126E, "messages.createChat#09cb126e users:Vector<InputUser> title:string = Updates")]
-	public class Messages_CreateChat : ITLFunction<UpdatesBase>
-	{
-		public InputUserBase[] users;
-		public string title;
-	}
-
-	[TLDef(0xEDD4882A, "updates.getState#edd4882a = updates.State")]
-	public class Updates_GetState : ITLFunction<Updates_State> { }
-
-	[TLDef(0x25939651, "updates.getDifference#25939651 flags:# pts:int pts_total_limit:flags.0?int date:int qts:int = updates.Difference")]
-	public class Updates_GetDifference : ITLFunction<Updates_DifferenceBase>
-	{
-		[Flags] public enum Flags { has_pts_total_limit = 0x1,  }
-		public Flags flags;
-		public int pts;
-		[IfFlag(0)] public int pts_total_limit;
-		public DateTime date;
-		public int qts;
-	}
-
-	[TLDef(0x72D4742C, "photos.updateProfilePhoto#72d4742c id:InputPhoto = photos.Photo")]
-	public class Photos_UpdateProfilePhoto : ITLFunction<Photos_Photo> { public InputPhotoBase id; }
-
-	[TLDef(0x89F30F69, "photos.uploadProfilePhoto#89f30f69 flags:# file:flags.0?InputFile video:flags.1?InputFile video_start_ts:flags.2?double = photos.Photo")]
-	public class Photos_UploadProfilePhoto : ITLFunction<Photos_Photo>
-	{
-		[Flags] public enum Flags { has_file = 0x1, has_video = 0x2, has_video_start_ts = 0x4,  }
-		public Flags flags;
-		[IfFlag(0)] public InputFileBase file;
-		[IfFlag(1)] public InputFileBase video;
-		[IfFlag(2)] public double video_start_ts;
-	}
-
-	[TLDef(0x87CF7F2F, "photos.deletePhotos#87cf7f2f id:Vector<InputPhoto> = Vector<long>")]
-	public class Photos_DeletePhotos : ITLFunction<long[]> { public InputPhotoBase[] id; }
-
-	[TLDef(0xB304A621, "upload.saveFilePart#b304a621 file_id:long file_part:int bytes:bytes = Bool")]
-	public class Upload_SaveFilePart : ITLFunction<bool>
-	{
-		public long file_id;
-		public int file_part;
-		public byte[] bytes;
-	}
-
-	[TLDef(0xB15A9AFC, "upload.getFile#b15a9afc flags:# precise:flags.0?true cdn_supported:flags.1?true location:InputFileLocation offset:int limit:int = upload.File")]
-	public class Upload_GetFile : ITLFunction<Upload_FileBase>
-	{
-		[Flags] public enum Flags { precise = 0x1, cdn_supported = 0x2,  }
-		public Flags flags;
-		public InputFileLocationBase location;
-		public int offset;
-		public int limit;
-	}
-
-	[TLDef(0xC4F9186B, "help.getConfig#c4f9186b = Config")]
-	public class Help_GetConfig : ITLFunction<Config> { }
-
-	[TLDef(0x1FB33026, "help.getNearestDc#1fb33026 = NearestDc")]
-	public class Help_GetNearestDc : ITLFunction<NearestDc> { }
-
-	[TLDef(0x522D5A7D, "help.getAppUpdate#522d5a7d source:string = help.AppUpdate")]
-	public class Help_GetAppUpdate : ITLFunction<Help_AppUpdateBase> { public string source; }
-
-	[TLDef(0x4D392343, "help.getInviteText#4d392343 = help.InviteText")]
-	public class Help_GetInviteText : ITLFunction<Help_InviteText> { }
-
-	[TLDef(0x91CD32A8, "photos.getUserPhotos#91cd32a8 user_id:InputUser offset:int max_id:long limit:int = photos.Photos")]
-	public class Photos_GetUserPhotos : ITLFunction<Photos_PhotosBase>
-	{
-		public InputUserBase user_id;
-		public int offset;
-		public long max_id;
-		public int limit;
-	}
-
-	[TLDef(0x26CF8950, "messages.getDhConfig#26cf8950 version:int random_length:int = messages.DhConfig")]
-	public class Messages_GetDhConfig : ITLFunction<Messages_DhConfigBase>
-	{
-		public int version;
-		public int random_length;
-	}
-
-	[TLDef(0xF64DAF43, "messages.requestEncryption#f64daf43 user_id:InputUser random_id:int g_a:bytes = EncryptedChat")]
-	public class Messages_RequestEncryption : ITLFunction<EncryptedChatBase>
-	{
-		public InputUserBase user_id;
-		public int random_id;
-		public byte[] g_a;
-	}
-
-	[TLDef(0x3DBC0415, "messages.acceptEncryption#3dbc0415 peer:InputEncryptedChat g_b:bytes key_fingerprint:long = EncryptedChat")]
-	public class Messages_AcceptEncryption : ITLFunction<EncryptedChatBase>
-	{
-		public InputEncryptedChat peer;
-		public byte[] g_b;
-		public long key_fingerprint;
-	}
-
-	[TLDef(0xEDD923C5, "messages.discardEncryption#edd923c5 chat_id:int = Bool")]
-	public class Messages_DiscardEncryption : ITLFunction<bool> { public int chat_id; }
-
-	[TLDef(0x791451ED, "messages.setEncryptedTyping#791451ed peer:InputEncryptedChat typing:Bool = Bool")]
-	public class Messages_SetEncryptedTyping : ITLFunction<bool>
-	{
-		public InputEncryptedChat peer;
-		public bool typing;
-	}
-
-	[TLDef(0x7F4B690A, "messages.readEncryptedHistory#7f4b690a peer:InputEncryptedChat max_date:int = Bool")]
-	public class Messages_ReadEncryptedHistory : ITLFunction<bool>
-	{
-		public InputEncryptedChat peer;
-		public DateTime max_date;
-	}
-
-	[TLDef(0x44FA7A15, "messages.sendEncrypted#44fa7a15 flags:# silent:flags.0?true peer:InputEncryptedChat random_id:long data:bytes = messages.SentEncryptedMessage")]
-	public class Messages_SendEncrypted : ITLFunction<Messages_SentEncryptedMessage>
-	{
-		[Flags] public enum Flags { silent = 0x1,  }
-		public Flags flags;
-		public InputEncryptedChat peer;
-		public long random_id;
-		public byte[] data;
-	}
-
-	[TLDef(0x5559481D, "messages.sendEncryptedFile#5559481d flags:# silent:flags.0?true peer:InputEncryptedChat random_id:long data:bytes file:InputEncryptedFile = messages.SentEncryptedMessage")]
-	public class Messages_SendEncryptedFile : ITLFunction<Messages_SentEncryptedMessage>
-	{
-		[Flags] public enum Flags { silent = 0x1,  }
-		public Flags flags;
-		public InputEncryptedChat peer;
-		public long random_id;
-		public byte[] data;
-		public InputEncryptedFileBase file;
-	}
-
-	[TLDef(0x32D439A4, "messages.sendEncryptedService#32d439a4 peer:InputEncryptedChat random_id:long data:bytes = messages.SentEncryptedMessage")]
-	public class Messages_SendEncryptedService : ITLFunction<Messages_SentEncryptedMessage>
-	{
-		public InputEncryptedChat peer;
-		public long random_id;
-		public byte[] data;
-	}
-
-	[TLDef(0x55A5BB66, "messages.receivedQueue#55a5bb66 max_qts:int = Vector<long>")]
-	public class Messages_ReceivedQueue : ITLFunction<long[]> { public int max_qts; }
-
-	[TLDef(0x4B0C8C0F, "messages.reportEncryptedSpam#4b0c8c0f peer:InputEncryptedChat = Bool")]
-	public class Messages_ReportEncryptedSpam : ITLFunction<bool> { public InputEncryptedChat peer; }
-
-	[TLDef(0xDE7B673D, "upload.saveBigFilePart#de7b673d file_id:long file_part:int file_total_parts:int bytes:bytes = Bool")]
-	public class Upload_SaveBigFilePart : ITLFunction<bool>
-	{
-		public long file_id;
-		public int file_part;
-		public int file_total_parts;
-		public byte[] bytes;
-	}
-
-	[TLDef(0xC1CD5EA9, "initConnection#c1cd5ea9 {X:Type} flags:# api_id:int device_model:string system_version:string app_version:string system_lang_code:string lang_pack:string lang_code:string proxy:flags.0?InputClientProxy params:flags.1?JSONValue query:!X = X")]
-	public class InitConnection<X> : ITLFunction<X>
-	{
-		[Flags] public enum Flags { has_proxy = 0x1, has_params = 0x2,  }
-		public Flags flags;
-		public int api_id;
-		public string device_model;
-		public string system_version;
-		public string app_version;
-		public string system_lang_code;
-		public string lang_pack;
-		public string lang_code;
-		[IfFlag(0)] public InputClientProxy proxy;
-		[IfFlag(1)] public JSONValue params_;
-		public ITLFunction<X> query;
-	}
-
-	[TLDef(0x9CDF08CD, "help.getSupport#9cdf08cd = help.Support")]
-	public class Help_GetSupport : ITLFunction<Help_Support> { }
-
-	[TLDef(0x36A73F77, "messages.readMessageContents#36a73f77 id:Vector<int> = messages.AffectedMessages")]
-	public class Messages_ReadMessageContents : ITLFunction<Messages_AffectedMessages> { public int[] id; }
-
-	[TLDef(0x2714D86C, "account.checkUsername#2714d86c username:string = Bool")]
-	public class Account_CheckUsername : ITLFunction<bool> { public string username; }
-
-	[TLDef(0x3E0BDD7C, "account.updateUsername#3e0bdd7c username:string = User")]
-	public class Account_UpdateUsername : ITLFunction<UserBase> { public string username; }
-
-	[TLDef(0x11F812D8, "contacts.search#11f812d8 q:string limit:int = contacts.Found")]
-	public class Contacts_Search : ITLFunction<Contacts_Found>
-	{
-		public string q;
-		public int limit;
-	}
-
-	[TLDef(0xDADBC950, "account.getPrivacy#dadbc950 key:InputPrivacyKey = account.PrivacyRules")]
-	public class Account_GetPrivacy : ITLFunction<Account_PrivacyRules> { public InputPrivacyKey key; }
-
-	[TLDef(0xC9F81CE8, "account.setPrivacy#c9f81ce8 key:InputPrivacyKey rules:Vector<InputPrivacyRule> = account.PrivacyRules")]
-	public class Account_SetPrivacy : ITLFunction<Account_PrivacyRules>
-	{
-		public InputPrivacyKey key;
-		public InputPrivacyRule[] rules;
-	}
-
-	[TLDef(0x418D4E0B, "account.deleteAccount#418d4e0b reason:string = Bool")]
-	public class Account_DeleteAccount : ITLFunction<bool> { public string reason; }
-
-	[TLDef(0x8FC711D, "account.getAccountTTL#08fc711d = AccountDaysTTL")]
-	public class Account_GetAccountTTL : ITLFunction<AccountDaysTTL> { }
-
-	[TLDef(0x2442485E, "account.setAccountTTL#2442485e ttl:AccountDaysTTL = Bool")]
-	public class Account_SetAccountTTL : ITLFunction<bool> { public AccountDaysTTL ttl; }
-
-	[TLDef(0xDA9B0D0D, "invokeWithLayer#da9b0d0d {X:Type} layer:int query:!X = X")]
-	public class InvokeWithLayer<X> : ITLFunction<X>
-	{
-		public int layer;
-		public ITLFunction<X> query;
-	}
-
-	[TLDef(0xF93CCBA3, "contacts.resolveUsername#f93ccba3 username:string = contacts.ResolvedPeer")]
-	public class Contacts_ResolveUsername : ITLFunction<Contacts_ResolvedPeer> { public string username; }
-
-	[TLDef(0x82574AE5, "account.sendChangePhoneCode#82574ae5 phone_number:string settings:CodeSettings = auth.SentCode")]
-	public class Account_SendChangePhoneCode : ITLFunction<Auth_SentCode>
-	{
-		public string phone_number;
-		public CodeSettings settings;
-	}
-
-	[TLDef(0x70C32EDB, "account.changePhone#70c32edb phone_number:string phone_code_hash:string phone_code:string = User")]
-	public class Account_ChangePhone : ITLFunction<UserBase>
-	{
-		public string phone_number;
-		public string phone_code_hash;
-		public string phone_code;
-	}
-
-	[TLDef(0x43D4F2C, "messages.getStickers#043d4f2c emoticon:string hash:int = messages.Stickers")]
-	public class Messages_GetStickers : ITLFunction<Messages_StickersBase>
-	{
-		public string emoticon;
-		public int hash;
-	}
-
-	[TLDef(0x1C9618B1, "messages.getAllStickers#1c9618b1 hash:int = messages.AllStickers")]
-	public class Messages_GetAllStickers : ITLFunction<Messages_AllStickersBase> { public int hash; }
-
-	[TLDef(0x38DF3532, "account.updateDeviceLocked#38df3532 period:int = Bool")]
-	public class Account_UpdateDeviceLocked : ITLFunction<bool> { public int period; }
-
-	[TLDef(0x67A3FF2C, "auth.importBotAuthorization#67a3ff2c flags:int api_id:int api_hash:string bot_auth_token:string = auth.Authorization")]
-	public class Auth_ImportBotAuthorization : ITLFunction<Auth_AuthorizationBase>
-	{
-		public int flags;
-		public int api_id;
-		public string api_hash;
-		public string bot_auth_token;
-	}
-
-	[TLDef(0x8B68B0CC, "messages.getWebPagePreview#8b68b0cc flags:# message:string entities:flags.3?Vector<MessageEntity> = MessageMedia")]
-	public class Messages_GetWebPagePreview : ITLFunction<MessageMedia>
-	{
-		[Flags] public enum Flags { has_entities = 0x8,  }
-		public Flags flags;
-		public string message;
-		[IfFlag(3)] public MessageEntity[] entities;
-	}
-
-	[TLDef(0xE320C158, "account.getAuthorizations#e320c158 = account.Authorizations")]
-	public class Account_GetAuthorizations : ITLFunction<Account_Authorizations> { }
-
-	[TLDef(0xDF77F3BC, "account.resetAuthorization#df77f3bc hash:long = Bool")]
-	public class Account_ResetAuthorization : ITLFunction<bool> { public long hash; }
-
-	[TLDef(0x548A30F5, "account.getPassword#548a30f5 = account.Password")]
-	public class Account_GetPassword : ITLFunction<Account_Password> { }
-
-	[TLDef(0x9CD4EAF9, "account.getPasswordSettings#9cd4eaf9 password:InputCheckPasswordSRP = account.PasswordSettings")]
-	public class Account_GetPasswordSettings : ITLFunction<Account_PasswordSettings> { public InputCheckPasswordSRPBase password; }
-
-	[TLDef(0xA59B102F, "account.updatePasswordSettings#a59b102f password:InputCheckPasswordSRP new_settings:account.PasswordInputSettings = Bool")]
-	public class Account_UpdatePasswordSettings : ITLFunction<bool>
-	{
-		public InputCheckPasswordSRPBase password;
-		public Account_PasswordInputSettings new_settings;
-	}
-
-	[TLDef(0xD18B4D16, "auth.checkPassword#d18b4d16 password:InputCheckPasswordSRP = auth.Authorization")]
-	public class Auth_CheckPassword : ITLFunction<Auth_AuthorizationBase> { public InputCheckPasswordSRPBase password; }
-
-	[TLDef(0xD897BC66, "auth.requestPasswordRecovery#d897bc66 = auth.PasswordRecovery")]
-	public class Auth_RequestPasswordRecovery : ITLFunction<Auth_PasswordRecovery> { }
-
-	[TLDef(0x4EA56E92, "auth.recoverPassword#4ea56e92 code:string = auth.Authorization")]
-	public class Auth_RecoverPassword : ITLFunction<Auth_AuthorizationBase> { public string code; }
-
-	[TLDef(0xBF9459B7, "invokeWithoutUpdates#bf9459b7 {X:Type} query:!X = X")]
-	public class InvokeWithoutUpdates<X> : ITLFunction<X> { public ITLFunction<X> query; }
-
-	[TLDef(0xDF7534C, "messages.exportChatInvite#0df7534c peer:InputPeer = ExportedChatInvite")]
-	public class Messages_ExportChatInvite : ITLFunction<ExportedChatInvite> { public InputPeer peer; }
-
-	[TLDef(0x3EADB1BB, "messages.checkChatInvite#3eadb1bb hash:string = ChatInvite")]
-	public class Messages_CheckChatInvite : ITLFunction<ChatInviteBase> { public string hash; }
-
-	[TLDef(0x6C50051C, "messages.importChatInvite#6c50051c hash:string = Updates")]
-	public class Messages_ImportChatInvite : ITLFunction<UpdatesBase> { public string hash; }
-
-	[TLDef(0x2619A90E, "messages.getStickerSet#2619a90e stickerset:InputStickerSet = messages.StickerSet")]
-	public class Messages_GetStickerSet : ITLFunction<Messages_StickerSet> { public InputStickerSet stickerset; }
-
-	[TLDef(0xC78FE460, "messages.installStickerSet#c78fe460 stickerset:InputStickerSet archived:Bool = messages.StickerSetInstallResult")]
-	public class Messages_InstallStickerSet : ITLFunction<Messages_StickerSetInstallResult>
-	{
-		public InputStickerSet stickerset;
-		public bool archived;
-	}
-
-	[TLDef(0xF96E55DE, "messages.uninstallStickerSet#f96e55de stickerset:InputStickerSet = Bool")]
-	public class Messages_UninstallStickerSet : ITLFunction<bool> { public InputStickerSet stickerset; }
-
-	[TLDef(0xE6DF7378, "messages.startBot#e6df7378 bot:InputUser peer:InputPeer random_id:long start_param:string = Updates")]
-	public class Messages_StartBot : ITLFunction<UpdatesBase>
-	{
-		public InputUserBase bot;
-		public InputPeer peer;
-		public long random_id;
-		public string start_param;
-	}
-
-	[TLDef(0x9010EF6F, "help.getAppChangelog#9010ef6f prev_app_version:string = Updates")]
-	public class Help_GetAppChangelog : ITLFunction<UpdatesBase> { public string prev_app_version; }
-
-	[TLDef(0x5784D3E1, "messages.getMessagesViews#5784d3e1 peer:InputPeer id:Vector<int> increment:Bool = messages.MessageViews")]
-	public class Messages_GetMessagesViews : ITLFunction<Messages_MessageViews>
-	{
-		public InputPeer peer;
-		public int[] id;
-		public bool increment;
-	}
-
-	[TLDef(0xCC104937, "channels.readHistory#cc104937 channel:InputChannel max_id:int = Bool")]
-	public class Channels_ReadHistory : ITLFunction<bool>
-	{
-		public InputChannelBase channel;
-		public int max_id;
-	}
-
-	[TLDef(0x84C1FD4E, "channels.deleteMessages#84c1fd4e channel:InputChannel id:Vector<int> = messages.AffectedMessages")]
-	public class Channels_DeleteMessages : ITLFunction<Messages_AffectedMessages>
-	{
-		public InputChannelBase channel;
-		public int[] id;
-	}
-
-	[TLDef(0xD10DD71B, "channels.deleteUserHistory#d10dd71b channel:InputChannel user_id:InputUser = messages.AffectedHistory")]
-	public class Channels_DeleteUserHistory : ITLFunction<Messages_AffectedHistory>
-	{
-		public InputChannelBase channel;
-		public InputUserBase user_id;
-	}
-
-	[TLDef(0xFE087810, "channels.reportSpam#fe087810 channel:InputChannel user_id:InputUser id:Vector<int> = Bool")]
-	public class Channels_ReportSpam : ITLFunction<bool>
-	{
-		public InputChannelBase channel;
-		public InputUserBase user_id;
-		public int[] id;
-	}
-
-	[TLDef(0xAD8C9A23, "channels.getMessages#ad8c9a23 channel:InputChannel id:Vector<InputMessage> = messages.Messages")]
-	public class Channels_GetMessages : ITLFunction<Messages_MessagesBase>
-	{
-		public InputChannelBase channel;
-		public InputMessage[] id;
-	}
-
-	[TLDef(0x123E05E9, "channels.getParticipants#123e05e9 channel:InputChannel filter:ChannelParticipantsFilter offset:int limit:int hash:int = channels.ChannelParticipants")]
-	public class Channels_GetParticipants : ITLFunction<Channels_ChannelParticipantsBase>
-	{
-		public InputChannelBase channel;
-		public ChannelParticipantsFilter filter;
-		public int offset;
-		public int limit;
-		public int hash;
-	}
-
-	[TLDef(0x546DD7A6, "channels.getParticipant#546dd7a6 channel:InputChannel user_id:InputUser = channels.ChannelParticipant")]
-	public class Channels_GetParticipant : ITLFunction<Channels_ChannelParticipant>
-	{
-		public InputChannelBase channel;
-		public InputUserBase user_id;
-	}
-
-	[TLDef(0xA7F6BBB, "channels.getChannels#0a7f6bbb id:Vector<InputChannel> = messages.Chats")]
-	public class Channels_GetChannels : ITLFunction<Messages_ChatsBase> { public InputChannelBase[] id; }
-
-	[TLDef(0x8736A09, "channels.getFullChannel#08736a09 channel:InputChannel = messages.ChatFull")]
-	public class Channels_GetFullChannel : ITLFunction<Messages_ChatFull> { public InputChannelBase channel; }
-
-	[TLDef(0x3D5FB10F, "channels.createChannel#3d5fb10f flags:# broadcast:flags.0?true megagroup:flags.1?true for_import:flags.3?true title:string about:string geo_point:flags.2?InputGeoPoint address:flags.2?string = Updates")]
-	public class Channels_CreateChannel : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { broadcast = 0x1, megagroup = 0x2, has_geo_point = 0x4, for_import = 0x8,  }
-		public Flags flags;
-		public string title;
-		public string about;
-		[IfFlag(2)] public InputGeoPointBase geo_point;
-		[IfFlag(2)] public string address;
-	}
-
-	[TLDef(0xD33C8902, "channels.editAdmin#d33c8902 channel:InputChannel user_id:InputUser admin_rights:ChatAdminRights rank:string = Updates")]
-	public class Channels_EditAdmin : ITLFunction<UpdatesBase>
-	{
-		public InputChannelBase channel;
-		public InputUserBase user_id;
-		public ChatAdminRights admin_rights;
-		public string rank;
-	}
-
-	[TLDef(0x566DECD0, "channels.editTitle#566decd0 channel:InputChannel title:string = Updates")]
-	public class Channels_EditTitle : ITLFunction<UpdatesBase>
-	{
-		public InputChannelBase channel;
-		public string title;
-	}
-
-	[TLDef(0xF12E57C9, "channels.editPhoto#f12e57c9 channel:InputChannel photo:InputChatPhoto = Updates")]
-	public class Channels_EditPhoto : ITLFunction<UpdatesBase>
-	{
-		public InputChannelBase channel;
-		public InputChatPhotoBase photo;
-	}
-
-	[TLDef(0x10E6BD2C, "channels.checkUsername#10e6bd2c channel:InputChannel username:string = Bool")]
-	public class Channels_CheckUsername : ITLFunction<bool>
-	{
-		public InputChannelBase channel;
-		public string username;
-	}
-
-	[TLDef(0x3514B3DE, "channels.updateUsername#3514b3de channel:InputChannel username:string = Bool")]
-	public class Channels_UpdateUsername : ITLFunction<bool>
-	{
-		public InputChannelBase channel;
-		public string username;
-	}
-
-	[TLDef(0x24B524C5, "channels.joinChannel#24b524c5 channel:InputChannel = Updates")]
-	public class Channels_JoinChannel : ITLFunction<UpdatesBase> { public InputChannelBase channel; }
-
-	[TLDef(0xF836AA95, "channels.leaveChannel#f836aa95 channel:InputChannel = Updates")]
-	public class Channels_LeaveChannel : ITLFunction<UpdatesBase> { public InputChannelBase channel; }
-
-	[TLDef(0x199F3A6C, "channels.inviteToChannel#199f3a6c channel:InputChannel users:Vector<InputUser> = Updates")]
-	public class Channels_InviteToChannel : ITLFunction<UpdatesBase>
-	{
-		public InputChannelBase channel;
-		public InputUserBase[] users;
-	}
-
-	[TLDef(0xC0111FE3, "channels.deleteChannel#c0111fe3 channel:InputChannel = Updates")]
-	public class Channels_DeleteChannel : ITLFunction<UpdatesBase> { public InputChannelBase channel; }
-
-	[TLDef(0x3173D78, "updates.getChannelDifference#03173d78 flags:# force:flags.0?true channel:InputChannel filter:ChannelMessagesFilter pts:int limit:int = updates.ChannelDifference")]
-	public class Updates_GetChannelDifference : ITLFunction<Updates_ChannelDifferenceBase>
-	{
-		[Flags] public enum Flags { force = 0x1,  }
-		public Flags flags;
-		public InputChannelBase channel;
-		public ChannelMessagesFilterBase filter;
-		public int pts;
-		public int limit;
-	}
-
-	[TLDef(0xA9E69F2E, "messages.editChatAdmin#a9e69f2e chat_id:int user_id:InputUser is_admin:Bool = Bool")]
-	public class Messages_EditChatAdmin : ITLFunction<bool>
-	{
-		public int chat_id;
-		public InputUserBase user_id;
-		public bool is_admin;
-	}
-
-	[TLDef(0x15A3B8E3, "messages.migrateChat#15a3b8e3 chat_id:int = Updates")]
-	public class Messages_MigrateChat : ITLFunction<UpdatesBase> { public int chat_id; }
-
-	[TLDef(0x4BC6589A, "messages.searchGlobal#4bc6589a flags:# folder_id:flags.0?int q:string filter:MessagesFilter min_date:int max_date:int offset_rate:int offset_peer:InputPeer offset_id:int limit:int = messages.Messages")]
-	public class Messages_SearchGlobal : ITLFunction<Messages_MessagesBase>
-	{
-		[Flags] public enum Flags { has_folder_id = 0x1,  }
-		public Flags flags;
-		[IfFlag(0)] public int folder_id;
-		public string q;
-		public MessagesFilter filter;
-		public DateTime min_date;
-		public DateTime max_date;
-		public int offset_rate;
-		public InputPeer offset_peer;
-		public int offset_id;
-		public int limit;
-	}
-
-	[TLDef(0x78337739, "messages.reorderStickerSets#78337739 flags:# masks:flags.0?true order:Vector<long> = Bool")]
-	public class Messages_ReorderStickerSets : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { masks = 0x1,  }
-		public Flags flags;
-		public long[] order;
-	}
-
-	[TLDef(0x338E2464, "messages.getDocumentByHash#338e2464 sha256:bytes size:int mime_type:string = Document")]
-	public class Messages_GetDocumentByHash : ITLFunction<DocumentBase>
-	{
-		public byte[] sha256;
-		public int size;
-		public string mime_type;
-	}
-
-	[TLDef(0x83BF3D52, "messages.getSavedGifs#83bf3d52 hash:int = messages.SavedGifs")]
-	public class Messages_GetSavedGifs : ITLFunction<Messages_SavedGifsBase> { public int hash; }
-
-	[TLDef(0x327A30CB, "messages.saveGif#327a30cb id:InputDocument unsave:Bool = Bool")]
-	public class Messages_SaveGif : ITLFunction<bool>
-	{
-		public InputDocumentBase id;
-		public bool unsave;
-	}
-
-	[TLDef(0x514E999D, "messages.getInlineBotResults#514e999d flags:# bot:InputUser peer:InputPeer geo_point:flags.0?InputGeoPoint query:string offset:string = messages.BotResults")]
-	public class Messages_GetInlineBotResults : ITLFunction<Messages_BotResults>
-	{
-		[Flags] public enum Flags { has_geo_point = 0x1,  }
-		public Flags flags;
-		public InputUserBase bot;
-		public InputPeer peer;
-		[IfFlag(0)] public InputGeoPointBase geo_point;
-		public string query;
-		public string offset;
-	}
-
-	[TLDef(0xEB5EA206, "messages.setInlineBotResults#eb5ea206 flags:# gallery:flags.0?true private:flags.1?true query_id:long results:Vector<InputBotInlineResult> cache_time:int next_offset:flags.2?string switch_pm:flags.3?InlineBotSwitchPM = Bool")]
-	public class Messages_SetInlineBotResults : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { gallery = 0x1, private_ = 0x2, has_next_offset = 0x4, has_switch_pm = 0x8,  }
-		public Flags flags;
-		public long query_id;
-		public InputBotInlineResultBase[] results;
-		public DateTime cache_time;
-		[IfFlag(2)] public string next_offset;
-		[IfFlag(3)] public InlineBotSwitchPM switch_pm;
-	}
-
-	[TLDef(0x220815B0, "messages.sendInlineBotResult#220815b0 flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true hide_via:flags.11?true peer:InputPeer reply_to_msg_id:flags.0?int random_id:long query_id:long id:string schedule_date:flags.10?int = Updates")]
-	public class Messages_SendInlineBotResult : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { has_reply_to_msg_id = 0x1, silent = 0x20, background = 0x40, clear_draft = 0x80, 
-			has_schedule_date = 0x400, hide_via = 0x800,  }
-		public Flags flags;
-		public InputPeer peer;
-		[IfFlag(0)] public int reply_to_msg_id;
-		public long random_id;
-		public long query_id;
-		public string id;
-		[IfFlag(10)] public DateTime schedule_date;
-	}
-
-	[TLDef(0xE63FADEB, "channels.exportMessageLink#e63fadeb flags:# grouped:flags.0?true thread:flags.1?true channel:InputChannel id:int = ExportedMessageLink")]
-	public class Channels_ExportMessageLink : ITLFunction<ExportedMessageLink>
-	{
-		[Flags] public enum Flags { grouped = 0x1, thread = 0x2,  }
-		public Flags flags;
-		public InputChannelBase channel;
-		public int id;
-	}
-
-	[TLDef(0x1F69B606, "channels.toggleSignatures#1f69b606 channel:InputChannel enabled:Bool = Updates")]
-	public class Channels_ToggleSignatures : ITLFunction<UpdatesBase>
-	{
-		public InputChannelBase channel;
-		public bool enabled;
-	}
-
-	[TLDef(0x3EF1A9BF, "auth.resendCode#3ef1a9bf phone_number:string phone_code_hash:string = auth.SentCode")]
-	public class Auth_ResendCode : ITLFunction<Auth_SentCode>
-	{
-		public string phone_number;
-		public string phone_code_hash;
-	}
-
-	[TLDef(0x1F040578, "auth.cancelCode#1f040578 phone_number:string phone_code_hash:string = Bool")]
-	public class Auth_CancelCode : ITLFunction<bool>
-	{
-		public string phone_number;
-		public string phone_code_hash;
-	}
-
-	[TLDef(0xFDA68D36, "messages.getMessageEditData#fda68d36 peer:InputPeer id:int = messages.MessageEditData")]
-	public class Messages_GetMessageEditData : ITLFunction<Messages_MessageEditData>
-	{
-		public InputPeer peer;
-		public int id;
-	}
-
-	[TLDef(0x48F71778, "messages.editMessage#48f71778 flags:# no_webpage:flags.1?true peer:InputPeer id:int message:flags.11?string media:flags.14?InputMedia reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.15?int = Updates")]
-	public class Messages_EditMessage : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { no_webpage = 0x2, has_reply_markup = 0x4, has_entities = 0x8, has_message = 0x800, has_media = 0x4000, 
-			has_schedule_date = 0x8000,  }
-		public Flags flags;
-		public InputPeer peer;
-		public int id;
-		[IfFlag(11)] public string message;
-		[IfFlag(14)] public InputMedia media;
-		[IfFlag(2)] public ReplyMarkup reply_markup;
-		[IfFlag(3)] public MessageEntity[] entities;
-		[IfFlag(15)] public DateTime schedule_date;
-	}
-
-	[TLDef(0x83557DBA, "messages.editInlineBotMessage#83557dba flags:# no_webpage:flags.1?true id:InputBotInlineMessageID message:flags.11?string media:flags.14?InputMedia reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> = Bool")]
-	public class Messages_EditInlineBotMessage : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { no_webpage = 0x2, has_reply_markup = 0x4, has_entities = 0x8, has_message = 0x800, has_media = 0x4000,  }
-		public Flags flags;
-		public InputBotInlineMessageID id;
-		[IfFlag(11)] public string message;
-		[IfFlag(14)] public InputMedia media;
-		[IfFlag(2)] public ReplyMarkup reply_markup;
-		[IfFlag(3)] public MessageEntity[] entities;
-	}
-
-	[TLDef(0x9342CA07, "messages.getBotCallbackAnswer#9342ca07 flags:# game:flags.1?true peer:InputPeer msg_id:int data:flags.0?bytes password:flags.2?InputCheckPasswordSRP = messages.BotCallbackAnswer")]
-	public class Messages_GetBotCallbackAnswer : ITLFunction<Messages_BotCallbackAnswer>
-	{
-		[Flags] public enum Flags { has_data = 0x1, game = 0x2, has_password = 0x4,  }
-		public Flags flags;
-		public InputPeer peer;
-		public int msg_id;
-		[IfFlag(0)] public byte[] data;
-		[IfFlag(2)] public InputCheckPasswordSRPBase password;
-	}
-
-	[TLDef(0xD58F130A, "messages.setBotCallbackAnswer#d58f130a flags:# alert:flags.1?true query_id:long message:flags.0?string url:flags.2?string cache_time:int = Bool")]
-	public class Messages_SetBotCallbackAnswer : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { has_message = 0x1, alert = 0x2, has_url = 0x4,  }
-		public Flags flags;
-		public long query_id;
-		[IfFlag(0)] public string message;
-		[IfFlag(2)] public string url;
-		public DateTime cache_time;
-	}
-
-	[TLDef(0xD4982DB5, "contacts.getTopPeers#d4982db5 flags:# correspondents:flags.0?true bots_pm:flags.1?true bots_inline:flags.2?true phone_calls:flags.3?true forward_users:flags.4?true forward_chats:flags.5?true groups:flags.10?true channels:flags.15?true offset:int limit:int hash:int = contacts.TopPeers")]
-	public class Contacts_GetTopPeers : ITLFunction<Contacts_TopPeersBase>
-	{
-		[Flags] public enum Flags { correspondents = 0x1, bots_pm = 0x2, bots_inline = 0x4, phone_calls = 0x8, forward_users = 0x10, 
-			forward_chats = 0x20, groups = 0x400, channels = 0x8000,  }
-		public Flags flags;
-		public int offset;
-		public int limit;
-		public int hash;
-	}
-
-	[TLDef(0x1AE373AC, "contacts.resetTopPeerRating#1ae373ac category:TopPeerCategory peer:InputPeer = Bool")]
-	public class Contacts_ResetTopPeerRating : ITLFunction<bool>
-	{
-		public TopPeerCategory category;
-		public InputPeer peer;
-	}
-
-	[TLDef(0xE470BCFD, "messages.getPeerDialogs#e470bcfd peers:Vector<InputDialogPeer> = messages.PeerDialogs")]
-	public class Messages_GetPeerDialogs : ITLFunction<Messages_PeerDialogs> { public InputDialogPeerBase[] peers; }
-
-	[TLDef(0xBC39E14B, "messages.saveDraft#bc39e14b flags:# no_webpage:flags.1?true reply_to_msg_id:flags.0?int peer:InputPeer message:string entities:flags.3?Vector<MessageEntity> = Bool")]
-	public class Messages_SaveDraft : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { has_reply_to_msg_id = 0x1, no_webpage = 0x2, has_entities = 0x8,  }
-		public Flags flags;
-		[IfFlag(0)] public int reply_to_msg_id;
-		public InputPeer peer;
-		public string message;
-		[IfFlag(3)] public MessageEntity[] entities;
-	}
-
-	[TLDef(0x6A3F8D65, "messages.getAllDrafts#6a3f8d65 = Updates")]
-	public class Messages_GetAllDrafts : ITLFunction<UpdatesBase> { }
-
-	[TLDef(0x2DACCA4F, "messages.getFeaturedStickers#2dacca4f hash:int = messages.FeaturedStickers")]
-	public class Messages_GetFeaturedStickers : ITLFunction<Messages_FeaturedStickersBase> { public int hash; }
-
-	[TLDef(0x5B118126, "messages.readFeaturedStickers#5b118126 id:Vector<long> = Bool")]
-	public class Messages_ReadFeaturedStickers : ITLFunction<bool> { public long[] id; }
-
-	[TLDef(0x5EA192C9, "messages.getRecentStickers#5ea192c9 flags:# attached:flags.0?true hash:int = messages.RecentStickers")]
-	public class Messages_GetRecentStickers : ITLFunction<Messages_RecentStickersBase>
-	{
-		[Flags] public enum Flags { attached = 0x1,  }
-		public Flags flags;
-		public int hash;
-	}
-
-	[TLDef(0x392718F8, "messages.saveRecentSticker#392718f8 flags:# attached:flags.0?true id:InputDocument unsave:Bool = Bool")]
-	public class Messages_SaveRecentSticker : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { attached = 0x1,  }
-		public Flags flags;
-		public InputDocumentBase id;
-		public bool unsave;
-	}
-
-	[TLDef(0x8999602D, "messages.clearRecentStickers#8999602d flags:# attached:flags.0?true = Bool")]
-	public class Messages_ClearRecentStickers : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { attached = 0x1,  }
-		public Flags flags;
-	}
-
-	[TLDef(0x57F17692, "messages.getArchivedStickers#57f17692 flags:# masks:flags.0?true offset_id:long limit:int = messages.ArchivedStickers")]
-	public class Messages_GetArchivedStickers : ITLFunction<Messages_ArchivedStickers>
-	{
-		[Flags] public enum Flags { masks = 0x1,  }
-		public Flags flags;
-		public long offset_id;
-		public int limit;
-	}
-
-	[TLDef(0x1B3FAA88, "account.sendConfirmPhoneCode#1b3faa88 hash:string settings:CodeSettings = auth.SentCode")]
-	public class Account_SendConfirmPhoneCode : ITLFunction<Auth_SentCode>
-	{
-		public string hash;
-		public CodeSettings settings;
-	}
-
-	[TLDef(0x5F2178C3, "account.confirmPhone#5f2178c3 phone_code_hash:string phone_code:string = Bool")]
-	public class Account_ConfirmPhone : ITLFunction<bool>
-	{
-		public string phone_code_hash;
-		public string phone_code;
-	}
-
-	[TLDef(0xF8B036AF, "channels.getAdminedPublicChannels#f8b036af flags:# by_location:flags.0?true check_limit:flags.1?true = messages.Chats")]
-	public class Channels_GetAdminedPublicChannels : ITLFunction<Messages_ChatsBase>
-	{
-		[Flags] public enum Flags { by_location = 0x1, check_limit = 0x2,  }
-		public Flags flags;
-	}
-
-	[TLDef(0x65B8C79F, "messages.getMaskStickers#65b8c79f hash:int = messages.AllStickers")]
-	public class Messages_GetMaskStickers : ITLFunction<Messages_AllStickersBase> { public int hash; }
-
-	[TLDef(0xCC5B67CC, "messages.getAttachedStickers#cc5b67cc media:InputStickeredMedia = Vector<StickerSetCovered>")]
-	public class Messages_GetAttachedStickers : ITLFunction<StickerSetCoveredBase[]> { public InputStickeredMedia media; }
-
-	[TLDef(0x8E48A188, "auth.dropTempAuthKeys#8e48a188 except_auth_keys:Vector<long> = Bool")]
-	public class Auth_DropTempAuthKeys : ITLFunction<bool> { public long[] except_auth_keys; }
-
-	[TLDef(0x8EF8ECC0, "messages.setGameScore#8ef8ecc0 flags:# edit_message:flags.0?true force:flags.1?true peer:InputPeer id:int user_id:InputUser score:int = Updates")]
-	public class Messages_SetGameScore : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { edit_message = 0x1, force = 0x2,  }
-		public Flags flags;
-		public InputPeer peer;
-		public int id;
-		public InputUserBase user_id;
-		public int score;
-	}
-
-	[TLDef(0x15AD9F64, "messages.setInlineGameScore#15ad9f64 flags:# edit_message:flags.0?true force:flags.1?true id:InputBotInlineMessageID user_id:InputUser score:int = Bool")]
-	public class Messages_SetInlineGameScore : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { edit_message = 0x1, force = 0x2,  }
-		public Flags flags;
-		public InputBotInlineMessageID id;
-		public InputUserBase user_id;
-		public int score;
-	}
-
-	[TLDef(0xE822649D, "messages.getGameHighScores#e822649d peer:InputPeer id:int user_id:InputUser = messages.HighScores")]
-	public class Messages_GetGameHighScores : ITLFunction<Messages_HighScores>
-	{
-		public InputPeer peer;
-		public int id;
-		public InputUserBase user_id;
-	}
-
-	[TLDef(0xF635E1B, "messages.getInlineGameHighScores#0f635e1b id:InputBotInlineMessageID user_id:InputUser = messages.HighScores")]
-	public class Messages_GetInlineGameHighScores : ITLFunction<Messages_HighScores>
-	{
-		public InputBotInlineMessageID id;
-		public InputUserBase user_id;
-	}
-
-	[TLDef(0xD0A48C4, "messages.getCommonChats#0d0a48c4 user_id:InputUser max_id:int limit:int = messages.Chats")]
-	public class Messages_GetCommonChats : ITLFunction<Messages_ChatsBase>
-	{
-		public InputUserBase user_id;
-		public int max_id;
-		public int limit;
-	}
-
-	[TLDef(0xEBA80FF0, "messages.getAllChats#eba80ff0 except_ids:Vector<int> = messages.Chats")]
-	public class Messages_GetAllChats : ITLFunction<Messages_ChatsBase> { public int[] except_ids; }
-
-	[TLDef(0xEC22CFCD, "help.setBotUpdatesStatus#ec22cfcd pending_updates_count:int message:string = Bool")]
-	public class Help_SetBotUpdatesStatus : ITLFunction<bool>
-	{
-		public int pending_updates_count;
-		public string message;
-	}
-
-	[TLDef(0x32CA8F91, "messages.getWebPage#32ca8f91 url:string hash:int = WebPage")]
-	public class Messages_GetWebPage : ITLFunction<WebPageBase>
-	{
-		public string url;
-		public int hash;
-	}
-
-	[TLDef(0xA731E257, "messages.toggleDialogPin#a731e257 flags:# pinned:flags.0?true peer:InputDialogPeer = Bool")]
-	public class Messages_ToggleDialogPin : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { pinned = 0x1,  }
-		public Flags flags;
-		public InputDialogPeerBase peer;
-	}
-
-	[TLDef(0x3B1ADF37, "messages.reorderPinnedDialogs#3b1adf37 flags:# force:flags.0?true folder_id:int order:Vector<InputDialogPeer> = Bool")]
-	public class Messages_ReorderPinnedDialogs : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { force = 0x1,  }
-		public Flags flags;
-		public int folder_id;
-		public InputDialogPeerBase[] order;
-	}
-
-	[TLDef(0xD6B94DF2, "messages.getPinnedDialogs#d6b94df2 folder_id:int = messages.PeerDialogs")]
-	public class Messages_GetPinnedDialogs : ITLFunction<Messages_PeerDialogs> { public int folder_id; }
-
-	[TLDef(0xAA2769ED, "bots.sendCustomRequest#aa2769ed custom_method:string params:DataJSON = DataJSON")]
-	public class Bots_SendCustomRequest : ITLFunction<DataJSON>
-	{
-		public string custom_method;
-		public DataJSON params_;
-	}
-
-	[TLDef(0xE6213F4D, "bots.answerWebhookJSONQuery#e6213f4d query_id:long data:DataJSON = Bool")]
-	public class Bots_AnswerWebhookJSONQuery : ITLFunction<bool>
-	{
-		public long query_id;
-		public DataJSON data;
-	}
-
-	[TLDef(0x24E6818D, "upload.getWebFile#24e6818d location:InputWebFileLocation offset:int limit:int = upload.WebFile")]
-	public class Upload_GetWebFile : ITLFunction<Upload_WebFile>
-	{
-		public InputWebFileLocationBase location;
-		public int offset;
-		public int limit;
-	}
-
-	[TLDef(0x99F09745, "payments.getPaymentForm#99f09745 msg_id:int = payments.PaymentForm")]
-	public class Payments_GetPaymentForm : ITLFunction<Payments_PaymentForm> { public int msg_id; }
-
-	[TLDef(0xA092A980, "payments.getPaymentReceipt#a092a980 msg_id:int = payments.PaymentReceipt")]
-	public class Payments_GetPaymentReceipt : ITLFunction<Payments_PaymentReceipt> { public int msg_id; }
-
-	[TLDef(0x770A8E74, "payments.validateRequestedInfo#770a8e74 flags:# save:flags.0?true msg_id:int info:PaymentRequestedInfo = payments.ValidatedRequestedInfo")]
-	public class Payments_ValidateRequestedInfo : ITLFunction<Payments_ValidatedRequestedInfo>
-	{
-		[Flags] public enum Flags { save = 0x1,  }
-		public Flags flags;
-		public int msg_id;
-		public PaymentRequestedInfo info;
-	}
-
-	[TLDef(0x2B8879B3, "payments.sendPaymentForm#2b8879b3 flags:# msg_id:int requested_info_id:flags.0?string shipping_option_id:flags.1?string credentials:InputPaymentCredentials = payments.PaymentResult")]
-	public class Payments_SendPaymentForm : ITLFunction<Payments_PaymentResultBase>
-	{
-		[Flags] public enum Flags { has_requested_info_id = 0x1, has_shipping_option_id = 0x2,  }
-		public Flags flags;
-		public int msg_id;
-		[IfFlag(0)] public string requested_info_id;
-		[IfFlag(1)] public string shipping_option_id;
-		public InputPaymentCredentialsBase credentials;
-	}
-
-	[TLDef(0x449E0B51, "account.getTmpPassword#449e0b51 password:InputCheckPasswordSRP period:int = account.TmpPassword")]
-	public class Account_GetTmpPassword : ITLFunction<Account_TmpPassword>
-	{
-		public InputCheckPasswordSRPBase password;
-		public int period;
-	}
-
-	[TLDef(0x227D824B, "payments.getSavedInfo#227d824b = payments.SavedInfo")]
-	public class Payments_GetSavedInfo : ITLFunction<Payments_SavedInfo> { }
-
-	[TLDef(0xD83D70C1, "payments.clearSavedInfo#d83d70c1 flags:# credentials:flags.0?true info:flags.1?true = Bool")]
-	public class Payments_ClearSavedInfo : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { credentials = 0x1, info = 0x2,  }
-		public Flags flags;
-	}
-
-	[TLDef(0xE5F672FA, "messages.setBotShippingResults#e5f672fa flags:# query_id:long error:flags.0?string shipping_options:flags.1?Vector<ShippingOption> = Bool")]
-	public class Messages_SetBotShippingResults : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { has_error = 0x1, has_shipping_options = 0x2,  }
-		public Flags flags;
-		public long query_id;
-		[IfFlag(0)] public string error;
-		[IfFlag(1)] public ShippingOption[] shipping_options;
-	}
-
-	[TLDef(0x9C2DD95, "messages.setBotPrecheckoutResults#09c2dd95 flags:# success:flags.1?true query_id:long error:flags.0?string = Bool")]
-	public class Messages_SetBotPrecheckoutResults : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { has_error = 0x1, success = 0x2,  }
-		public Flags flags;
-		public long query_id;
-		[IfFlag(0)] public string error;
-	}
-
-	[TLDef(0xF1036780, "stickers.createStickerSet#f1036780 flags:# masks:flags.0?true animated:flags.1?true user_id:InputUser title:string short_name:string thumb:flags.2?InputDocument stickers:Vector<InputStickerSetItem> = messages.StickerSet")]
-	public class Stickers_CreateStickerSet : ITLFunction<Messages_StickerSet>
-	{
-		[Flags] public enum Flags { masks = 0x1, animated = 0x2, has_thumb = 0x4,  }
-		public Flags flags;
-		public InputUserBase user_id;
-		public string title;
-		public string short_name;
-		[IfFlag(2)] public InputDocumentBase thumb;
-		public InputStickerSetItem[] stickers;
-	}
-
-	[TLDef(0xF7760F51, "stickers.removeStickerFromSet#f7760f51 sticker:InputDocument = messages.StickerSet")]
-	public class Stickers_RemoveStickerFromSet : ITLFunction<Messages_StickerSet> { public InputDocumentBase sticker; }
-
-	[TLDef(0xFFB6D4CA, "stickers.changeStickerPosition#ffb6d4ca sticker:InputDocument position:int = messages.StickerSet")]
-	public class Stickers_ChangeStickerPosition : ITLFunction<Messages_StickerSet>
-	{
-		public InputDocumentBase sticker;
-		public int position;
-	}
-
-	[TLDef(0x8653FEBE, "stickers.addStickerToSet#8653febe stickerset:InputStickerSet sticker:InputStickerSetItem = messages.StickerSet")]
-	public class Stickers_AddStickerToSet : ITLFunction<Messages_StickerSet>
-	{
-		public InputStickerSet stickerset;
-		public InputStickerSetItem sticker;
-	}
-
-	[TLDef(0x519BC2B1, "messages.uploadMedia#519bc2b1 peer:InputPeer media:InputMedia = MessageMedia")]
-	public class Messages_UploadMedia : ITLFunction<MessageMedia>
-	{
-		public InputPeer peer;
-		public InputMedia media;
-	}
-
-	[TLDef(0x55451FA9, "phone.getCallConfig#55451fa9 = DataJSON")]
-	public class Phone_GetCallConfig : ITLFunction<DataJSON> { }
-
-	[TLDef(0x42FF96ED, "phone.requestCall#42ff96ed flags:# video:flags.0?true user_id:InputUser random_id:int g_a_hash:bytes protocol:PhoneCallProtocol = phone.PhoneCall")]
-	public class Phone_RequestCall : ITLFunction<Phone_PhoneCall>
-	{
-		[Flags] public enum Flags { video = 0x1,  }
-		public Flags flags;
-		public InputUserBase user_id;
-		public int random_id;
-		public byte[] g_a_hash;
-		public PhoneCallProtocol protocol;
-	}
-
-	[TLDef(0x3BD2B4A0, "phone.acceptCall#3bd2b4a0 peer:InputPhoneCall g_b:bytes protocol:PhoneCallProtocol = phone.PhoneCall")]
-	public class Phone_AcceptCall : ITLFunction<Phone_PhoneCall>
-	{
-		public InputPhoneCall peer;
-		public byte[] g_b;
-		public PhoneCallProtocol protocol;
-	}
-
-	[TLDef(0x2EFE1722, "phone.confirmCall#2efe1722 peer:InputPhoneCall g_a:bytes key_fingerprint:long protocol:PhoneCallProtocol = phone.PhoneCall")]
-	public class Phone_ConfirmCall : ITLFunction<Phone_PhoneCall>
-	{
-		public InputPhoneCall peer;
-		public byte[] g_a;
-		public long key_fingerprint;
-		public PhoneCallProtocol protocol;
-	}
-
-	[TLDef(0x17D54F61, "phone.receivedCall#17d54f61 peer:InputPhoneCall = Bool")]
-	public class Phone_ReceivedCall : ITLFunction<bool> { public InputPhoneCall peer; }
-
-	[TLDef(0xB2CBC1C0, "phone.discardCall#b2cbc1c0 flags:# video:flags.0?true peer:InputPhoneCall duration:int reason:PhoneCallDiscardReason connection_id:long = Updates")]
-	public class Phone_DiscardCall : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { video = 0x1,  }
-		public Flags flags;
-		public InputPhoneCall peer;
-		public int duration;
-		public PhoneCallDiscardReason reason;
-		public long connection_id;
-	}
-
-	[TLDef(0x59EAD627, "phone.setCallRating#59ead627 flags:# user_initiative:flags.0?true peer:InputPhoneCall rating:int comment:string = Updates")]
-	public class Phone_SetCallRating : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { user_initiative = 0x1,  }
-		public Flags flags;
-		public InputPhoneCall peer;
-		public int rating;
-		public string comment;
-	}
-
-	[TLDef(0x277ADD7E, "phone.saveCallDebug#277add7e peer:InputPhoneCall debug:DataJSON = Bool")]
-	public class Phone_SaveCallDebug : ITLFunction<bool>
-	{
-		public InputPhoneCall peer;
-		public DataJSON debug;
-	}
-
-	[TLDef(0x2000BCC3, "upload.getCdnFile#2000bcc3 file_token:bytes offset:int limit:int = upload.CdnFile")]
-	public class Upload_GetCdnFile : ITLFunction<Upload_CdnFileBase>
-	{
-		public byte[] file_token;
-		public int offset;
-		public int limit;
-	}
-
-	[TLDef(0x9B2754A8, "upload.reuploadCdnFile#9b2754a8 file_token:bytes request_token:bytes = Vector<FileHash>")]
-	public class Upload_ReuploadCdnFile : ITLFunction<FileHash[]>
-	{
-		public byte[] file_token;
-		public byte[] request_token;
-	}
-
-	[TLDef(0x52029342, "help.getCdnConfig#52029342 = CdnConfig")]
-	public class Help_GetCdnConfig : ITLFunction<CdnConfig> { }
-
-	[TLDef(0xF2F2330A, "langpack.getLangPack#f2f2330a lang_pack:string lang_code:string = LangPackDifference")]
-	public class Langpack_GetLangPack : ITLFunction<LangPackDifference>
-	{
-		public string lang_pack;
-		public string lang_code;
-	}
-
-	[TLDef(0xEFEA3803, "langpack.getStrings#efea3803 lang_pack:string lang_code:string keys:Vector<string> = Vector<LangPackString>")]
-	public class Langpack_GetStrings : ITLFunction<LangPackStringBase[]>
-	{
-		public string lang_pack;
-		public string lang_code;
-		public string[] keys;
-	}
-
-	[TLDef(0xCD984AA5, "langpack.getDifference#cd984aa5 lang_pack:string lang_code:string from_version:int = LangPackDifference")]
-	public class Langpack_GetDifference : ITLFunction<LangPackDifference>
-	{
-		public string lang_pack;
-		public string lang_code;
-		public int from_version;
-	}
-
-	[TLDef(0x42C6978F, "langpack.getLanguages#42c6978f lang_pack:string = Vector<LangPackLanguage>")]
-	public class Langpack_GetLanguages : ITLFunction<LangPackLanguage[]> { public string lang_pack; }
-
-	[TLDef(0x72796912, "channels.editBanned#72796912 channel:InputChannel user_id:InputUser banned_rights:ChatBannedRights = Updates")]
-	public class Channels_EditBanned : ITLFunction<UpdatesBase>
-	{
-		public InputChannelBase channel;
-		public InputUserBase user_id;
-		public ChatBannedRights banned_rights;
-	}
-
-	[TLDef(0x33DDF480, "channels.getAdminLog#33ddf480 flags:# channel:InputChannel q:string events_filter:flags.0?ChannelAdminLogEventsFilter admins:flags.1?Vector<InputUser> max_id:long min_id:long limit:int = channels.AdminLogResults")]
-	public class Channels_GetAdminLog : ITLFunction<Channels_AdminLogResults>
-	{
-		[Flags] public enum Flags { has_events_filter = 0x1, has_admins = 0x2,  }
-		public Flags flags;
-		public InputChannelBase channel;
-		public string q;
-		[IfFlag(0)] public ChannelAdminLogEventsFilter events_filter;
-		[IfFlag(1)] public InputUserBase[] admins;
-		public long max_id;
-		public long min_id;
-		public int limit;
-	}
-
-	[TLDef(0x4DA54231, "upload.getCdnFileHashes#4da54231 file_token:bytes offset:int = Vector<FileHash>")]
-	public class Upload_GetCdnFileHashes : ITLFunction<FileHash[]>
-	{
-		public byte[] file_token;
-		public int offset;
-	}
-
-	[TLDef(0xC97DF020, "messages.sendScreenshotNotification#c97df020 peer:InputPeer reply_to_msg_id:int random_id:long = Updates")]
-	public class Messages_SendScreenshotNotification : ITLFunction<UpdatesBase>
-	{
-		public InputPeer peer;
-		public int reply_to_msg_id;
-		public long random_id;
-	}
-
-	[TLDef(0xEA8CA4F9, "channels.setStickers#ea8ca4f9 channel:InputChannel stickerset:InputStickerSet = Bool")]
-	public class Channels_SetStickers : ITLFunction<bool>
-	{
-		public InputChannelBase channel;
-		public InputStickerSet stickerset;
-	}
-
-	[TLDef(0x21CE0B0E, "messages.getFavedStickers#21ce0b0e hash:int = messages.FavedStickers")]
-	public class Messages_GetFavedStickers : ITLFunction<Messages_FavedStickersBase> { public int hash; }
-
-	[TLDef(0xB9FFC55B, "messages.faveSticker#b9ffc55b id:InputDocument unfave:Bool = Bool")]
-	public class Messages_FaveSticker : ITLFunction<bool>
-	{
-		public InputDocumentBase id;
-		public bool unfave;
-	}
-
-	[TLDef(0xEAB5DC38, "channels.readMessageContents#eab5dc38 channel:InputChannel id:Vector<int> = Bool")]
-	public class Channels_ReadMessageContents : ITLFunction<bool>
-	{
-		public InputChannelBase channel;
-		public int[] id;
-	}
-
-	[TLDef(0x879537F1, "contacts.resetSaved#879537f1 = Bool")]
-	public class Contacts_ResetSaved : ITLFunction<bool> { }
-
-	[TLDef(0x46578472, "messages.getUnreadMentions#46578472 peer:InputPeer offset_id:int add_offset:int limit:int max_id:int min_id:int = messages.Messages")]
-	public class Messages_GetUnreadMentions : ITLFunction<Messages_MessagesBase>
-	{
-		public InputPeer peer;
-		public int offset_id;
-		public int add_offset;
-		public int limit;
-		public int max_id;
-		public int min_id;
-	}
-
-	[TLDef(0xAF369D42, "channels.deleteHistory#af369d42 channel:InputChannel max_id:int = Bool")]
-	public class Channels_DeleteHistory : ITLFunction<bool>
-	{
-		public InputChannelBase channel;
-		public int max_id;
-	}
-
-	[TLDef(0x3DC0F114, "help.getRecentMeUrls#3dc0f114 referer:string = help.RecentMeUrls")]
-	public class Help_GetRecentMeUrls : ITLFunction<Help_RecentMeUrls> { public string referer; }
-
-	[TLDef(0xEABBB94C, "channels.togglePreHistoryHidden#eabbb94c channel:InputChannel enabled:Bool = Updates")]
-	public class Channels_TogglePreHistoryHidden : ITLFunction<UpdatesBase>
-	{
-		public InputChannelBase channel;
-		public bool enabled;
-	}
-
-	[TLDef(0xF0189D3, "messages.readMentions#0f0189d3 peer:InputPeer = messages.AffectedHistory")]
-	public class Messages_ReadMentions : ITLFunction<Messages_AffectedHistory> { public InputPeer peer; }
-
-	[TLDef(0xBBC45B09, "messages.getRecentLocations#bbc45b09 peer:InputPeer limit:int hash:int = messages.Messages")]
-	public class Messages_GetRecentLocations : ITLFunction<Messages_MessagesBase>
-	{
-		public InputPeer peer;
-		public int limit;
-		public int hash;
-	}
-
-	[TLDef(0xCC0110CB, "messages.sendMultiMedia#cc0110cb flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int multi_media:Vector<InputSingleMedia> schedule_date:flags.10?int = Updates")]
-	public class Messages_SendMultiMedia : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { has_reply_to_msg_id = 0x1, silent = 0x20, background = 0x40, clear_draft = 0x80, 
-			has_schedule_date = 0x400,  }
-		public Flags flags;
-		public InputPeer peer;
-		[IfFlag(0)] public int reply_to_msg_id;
-		public InputSingleMedia[] multi_media;
-		[IfFlag(10)] public DateTime schedule_date;
-	}
-
-	[TLDef(0x5057C497, "messages.uploadEncryptedFile#5057c497 peer:InputEncryptedChat file:InputEncryptedFile = EncryptedFile")]
-	public class Messages_UploadEncryptedFile : ITLFunction<EncryptedFileBase>
-	{
-		public InputEncryptedChat peer;
-		public InputEncryptedFileBase file;
-	}
-
-	[TLDef(0x182E6D6F, "account.getWebAuthorizations#182e6d6f = account.WebAuthorizations")]
-	public class Account_GetWebAuthorizations : ITLFunction<Account_WebAuthorizations> { }
-
-	[TLDef(0x2D01B9EF, "account.resetWebAuthorization#2d01b9ef hash:long = Bool")]
-	public class Account_ResetWebAuthorization : ITLFunction<bool> { public long hash; }
-
-	[TLDef(0x682D2594, "account.resetWebAuthorizations#682d2594 = Bool")]
-	public class Account_ResetWebAuthorizations : ITLFunction<bool> { }
-
-	[TLDef(0xC2B7D08B, "messages.searchStickerSets#c2b7d08b flags:# exclude_featured:flags.0?true q:string hash:int = messages.FoundStickerSets")]
-	public class Messages_SearchStickerSets : ITLFunction<Messages_FoundStickerSetsBase>
-	{
-		[Flags] public enum Flags { exclude_featured = 0x1,  }
-		public Flags flags;
-		public string q;
-		public int hash;
-	}
-
-	[TLDef(0xC7025931, "upload.getFileHashes#c7025931 location:InputFileLocation offset:int = Vector<FileHash>")]
-	public class Upload_GetFileHashes : ITLFunction<FileHash[]>
-	{
-		public InputFileLocationBase location;
-		public int offset;
-	}
-
-	[TLDef(0x2CA51FD1, "help.getTermsOfServiceUpdate#2ca51fd1 = help.TermsOfServiceUpdate")]
-	public class Help_GetTermsOfServiceUpdate : ITLFunction<Help_TermsOfServiceUpdateBase> { }
-
-	[TLDef(0xEE72F79A, "help.acceptTermsOfService#ee72f79a id:DataJSON = Bool")]
-	public class Help_AcceptTermsOfService : ITLFunction<bool> { public DataJSON id; }
-
-	[TLDef(0xB288BC7D, "account.getAllSecureValues#b288bc7d = Vector<SecureValue>")]
-	public class Account_GetAllSecureValues : ITLFunction<SecureValue[]> { }
-
-	[TLDef(0x73665BC2, "account.getSecureValue#73665bc2 types:Vector<SecureValueType> = Vector<SecureValue>")]
-	public class Account_GetSecureValue : ITLFunction<SecureValue[]> { public SecureValueType[] types; }
-
-	[TLDef(0x899FE31D, "account.saveSecureValue#899fe31d value:InputSecureValue secure_secret_id:long = SecureValue")]
-	public class Account_SaveSecureValue : ITLFunction<SecureValue>
-	{
-		public InputSecureValue value;
-		public long secure_secret_id;
-	}
-
-	[TLDef(0xB880BC4B, "account.deleteSecureValue#b880bc4b types:Vector<SecureValueType> = Bool")]
-	public class Account_DeleteSecureValue : ITLFunction<bool> { public SecureValueType[] types; }
-
-	[TLDef(0x90C894B5, "users.setSecureValueErrors#90c894b5 id:InputUser errors:Vector<SecureValueError> = Bool")]
-	public class Users_SetSecureValueErrors : ITLFunction<bool>
-	{
-		public InputUserBase id;
-		public SecureValueErrorBase[] errors;
-	}
-
-	[TLDef(0xB86BA8E1, "account.getAuthorizationForm#b86ba8e1 bot_id:int scope:string public_key:string = account.AuthorizationForm")]
-	public class Account_GetAuthorizationForm : ITLFunction<Account_AuthorizationForm>
-	{
-		public int bot_id;
-		public string scope;
-		public string public_key;
-	}
-
-	[TLDef(0xE7027C94, "account.acceptAuthorization#e7027c94 bot_id:int scope:string public_key:string value_hashes:Vector<SecureValueHash> credentials:SecureCredentialsEncrypted = Bool")]
-	public class Account_AcceptAuthorization : ITLFunction<bool>
-	{
-		public int bot_id;
-		public string scope;
-		public string public_key;
-		public SecureValueHash[] value_hashes;
-		public SecureCredentialsEncrypted credentials;
-	}
-
-	[TLDef(0xA5A356F9, "account.sendVerifyPhoneCode#a5a356f9 phone_number:string settings:CodeSettings = auth.SentCode")]
-	public class Account_SendVerifyPhoneCode : ITLFunction<Auth_SentCode>
-	{
-		public string phone_number;
-		public CodeSettings settings;
-	}
-
-	[TLDef(0x4DD3A7F6, "account.verifyPhone#4dd3a7f6 phone_number:string phone_code_hash:string phone_code:string = Bool")]
-	public class Account_VerifyPhone : ITLFunction<bool>
-	{
-		public string phone_number;
-		public string phone_code_hash;
-		public string phone_code;
-	}
-
-	[TLDef(0x7011509F, "account.sendVerifyEmailCode#7011509f email:string = account.SentEmailCode")]
-	public class Account_SendVerifyEmailCode : ITLFunction<Account_SentEmailCode> { public string email; }
-
-	[TLDef(0xECBA39DB, "account.verifyEmail#ecba39db email:string code:string = Bool")]
-	public class Account_VerifyEmail : ITLFunction<bool>
-	{
-		public string email;
-		public string code;
-	}
-
-	[TLDef(0x3FEDC75F, "help.getDeepLinkInfo#3fedc75f path:string = help.DeepLinkInfo")]
-	public class Help_GetDeepLinkInfo : ITLFunction<Help_DeepLinkInfoBase> { public string path; }
-
-	[TLDef(0x82F1E39F, "contacts.getSaved#82f1e39f = Vector<SavedContact>")]
-	public class Contacts_GetSaved : ITLFunction<SavedContact[]> { }
-
-	[TLDef(0x8341ECC0, "channels.getLeftChannels#8341ecc0 offset:int = messages.Chats")]
-	public class Channels_GetLeftChannels : ITLFunction<Messages_ChatsBase> { public int offset; }
-
-	[TLDef(0xF05B4804, "account.initTakeoutSession#f05b4804 flags:# contacts:flags.0?true message_users:flags.1?true message_chats:flags.2?true message_megagroups:flags.3?true message_channels:flags.4?true files:flags.5?true file_max_size:flags.5?int = account.Takeout")]
-	public class Account_InitTakeoutSession : ITLFunction<Account_Takeout>
-	{
-		[Flags] public enum Flags { contacts = 0x1, message_users = 0x2, message_chats = 0x4, message_megagroups = 0x8, 
-			message_channels = 0x10, files = 0x20,  }
-		public Flags flags;
-		[IfFlag(5)] public int file_max_size;
-	}
-
-	[TLDef(0x1D2652EE, "account.finishTakeoutSession#1d2652ee flags:# success:flags.0?true = Bool")]
-	public class Account_FinishTakeoutSession : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { success = 0x1,  }
-		public Flags flags;
-	}
-
-	[TLDef(0x1CFF7E08, "messages.getSplitRanges#1cff7e08 = Vector<MessageRange>")]
-	public class Messages_GetSplitRanges : ITLFunction<MessageRange[]> { }
-
-	[TLDef(0x365275F2, "invokeWithMessagesRange#365275f2 {X:Type} range:MessageRange query:!X = X")]
-	public class InvokeWithMessagesRange<X> : ITLFunction<X>
-	{
-		public MessageRange range;
-		public ITLFunction<X> query;
-	}
-
-	[TLDef(0xACA9FD2E, "invokeWithTakeout#aca9fd2e {X:Type} takeout_id:long query:!X = X")]
-	public class InvokeWithTakeout<X> : ITLFunction<X>
-	{
-		public long takeout_id;
-		public ITLFunction<X> query;
-	}
-
-	[TLDef(0xC286D98F, "messages.markDialogUnread#c286d98f flags:# unread:flags.0?true peer:InputDialogPeer = Bool")]
-	public class Messages_MarkDialogUnread : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { unread = 0x1,  }
-		public Flags flags;
-		public InputDialogPeerBase peer;
-	}
-
-	[TLDef(0x22E24E22, "messages.getDialogUnreadMarks#22e24e22 = Vector<DialogPeer>")]
-	public class Messages_GetDialogUnreadMarks : ITLFunction<DialogPeerBase[]> { }
-
-	[TLDef(0x8514BDDA, "contacts.toggleTopPeers#8514bdda enabled:Bool = Bool")]
-	public class Contacts_ToggleTopPeers : ITLFunction<bool> { public bool enabled; }
-
-	[TLDef(0x7E58EE9C, "messages.clearAllDrafts#7e58ee9c = Bool")]
-	public class Messages_ClearAllDrafts : ITLFunction<bool> { }
-
-	[TLDef(0x98914110, "help.getAppConfig#98914110 = JSONValue")]
-	public class Help_GetAppConfig : ITLFunction<JSONValue> { }
-
-	[TLDef(0x6F02F748, "help.saveAppLog#6f02f748 events:Vector<InputAppEvent> = Bool")]
-	public class Help_SaveAppLog : ITLFunction<bool> { public InputAppEvent[] events; }
-
-	[TLDef(0xC661AD08, "help.getPassportConfig#c661ad08 hash:int = help.PassportConfig")]
-	public class Help_GetPassportConfig : ITLFunction<Help_PassportConfigBase> { public int hash; }
-
-	[TLDef(0x6A596502, "langpack.getLanguage#6a596502 lang_pack:string lang_code:string = LangPackLanguage")]
-	public class Langpack_GetLanguage : ITLFunction<LangPackLanguage>
-	{
-		public string lang_pack;
-		public string lang_code;
-	}
-
-	[TLDef(0xD2AAF7EC, "messages.updatePinnedMessage#d2aaf7ec flags:# silent:flags.0?true unpin:flags.1?true pm_oneside:flags.2?true peer:InputPeer id:int = Updates")]
-	public class Messages_UpdatePinnedMessage : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { silent = 0x1, unpin = 0x2, pm_oneside = 0x4,  }
-		public Flags flags;
-		public InputPeer peer;
-		public int id;
-	}
-
-	[TLDef(0x8FDF1920, "account.confirmPasswordEmail#8fdf1920 code:string = Bool")]
-	public class Account_ConfirmPasswordEmail : ITLFunction<bool> { public string code; }
-
-	[TLDef(0x7A7F2A15, "account.resendPasswordEmail#7a7f2a15 = Bool")]
-	public class Account_ResendPasswordEmail : ITLFunction<bool> { }
-
-	[TLDef(0xC1CBD5B6, "account.cancelPasswordEmail#c1cbd5b6 = Bool")]
-	public class Account_CancelPasswordEmail : ITLFunction<bool> { }
-
-	[TLDef(0xD360E72C, "help.getSupportName#d360e72c = help.SupportName")]
-	public class Help_GetSupportName : ITLFunction<Help_SupportName> { }
-
-	[TLDef(0x38A08D3, "help.getUserInfo#038a08d3 user_id:InputUser = help.UserInfo")]
-	public class Help_GetUserInfo : ITLFunction<Help_UserInfoBase> { public InputUserBase user_id; }
-
-	[TLDef(0x66B91B70, "help.editUserInfo#66b91b70 user_id:InputUser message:string entities:Vector<MessageEntity> = help.UserInfo")]
-	public class Help_EditUserInfo : ITLFunction<Help_UserInfoBase>
-	{
-		public InputUserBase user_id;
-		public string message;
-		public MessageEntity[] entities;
-	}
-
-	[TLDef(0x9F07C728, "account.getContactSignUpNotification#9f07c728 = Bool")]
-	public class Account_GetContactSignUpNotification : ITLFunction<bool> { }
-
-	[TLDef(0xCFF43F61, "account.setContactSignUpNotification#cff43f61 silent:Bool = Bool")]
-	public class Account_SetContactSignUpNotification : ITLFunction<bool> { public bool silent; }
-
-	[TLDef(0x53577479, "account.getNotifyExceptions#53577479 flags:# compare_sound:flags.1?true peer:flags.0?InputNotifyPeer = Updates")]
-	public class Account_GetNotifyExceptions : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { has_peer = 0x1, compare_sound = 0x2,  }
-		public Flags flags;
-		[IfFlag(0)] public InputNotifyPeerBase peer;
-	}
-
-	[TLDef(0x10EA6184, "messages.sendVote#10ea6184 peer:InputPeer msg_id:int options:Vector<bytes> = Updates")]
-	public class Messages_SendVote : ITLFunction<UpdatesBase>
-	{
-		public InputPeer peer;
-		public int msg_id;
-		public byte[][] options;
-	}
-
-	[TLDef(0x73BB643B, "messages.getPollResults#73bb643b peer:InputPeer msg_id:int = Updates")]
-	public class Messages_GetPollResults : ITLFunction<UpdatesBase>
-	{
-		public InputPeer peer;
-		public int msg_id;
-	}
-
-	[TLDef(0x6E2BE050, "messages.getOnlines#6e2be050 peer:InputPeer = ChatOnlines")]
-	public class Messages_GetOnlines : ITLFunction<ChatOnlines> { public InputPeer peer; }
-
-	[TLDef(0x812C2AE6, "messages.getStatsURL#812c2ae6 flags:# dark:flags.0?true peer:InputPeer params:string = StatsURL")]
-	public class Messages_GetStatsURL : ITLFunction<StatsURL>
-	{
-		[Flags] public enum Flags { dark = 0x1,  }
-		public Flags flags;
-		public InputPeer peer;
-		public string params_;
-	}
-
-	[TLDef(0xDEF60797, "messages.editChatAbout#def60797 peer:InputPeer about:string = Bool")]
-	public class Messages_EditChatAbout : ITLFunction<bool>
-	{
-		public InputPeer peer;
-		public string about;
-	}
-
-	[TLDef(0xA5866B41, "messages.editChatDefaultBannedRights#a5866b41 peer:InputPeer banned_rights:ChatBannedRights = Updates")]
-	public class Messages_EditChatDefaultBannedRights : ITLFunction<UpdatesBase>
-	{
-		public InputPeer peer;
-		public ChatBannedRights banned_rights;
-	}
-
-	[TLDef(0xFC8DDBEA, "account.getWallPaper#fc8ddbea wallpaper:InputWallPaper = WallPaper")]
-	public class Account_GetWallPaper : ITLFunction<WallPaperBase> { public InputWallPaperBase wallpaper; }
-
-	[TLDef(0xDD853661, "account.uploadWallPaper#dd853661 file:InputFile mime_type:string settings:WallPaperSettings = WallPaper")]
-	public class Account_UploadWallPaper : ITLFunction<WallPaperBase>
-	{
-		public InputFileBase file;
-		public string mime_type;
-		public WallPaperSettings settings;
-	}
-
-	[TLDef(0x6C5A5B37, "account.saveWallPaper#6c5a5b37 wallpaper:InputWallPaper unsave:Bool settings:WallPaperSettings = Bool")]
-	public class Account_SaveWallPaper : ITLFunction<bool>
-	{
-		public InputWallPaperBase wallpaper;
-		public bool unsave;
-		public WallPaperSettings settings;
-	}
-
-	[TLDef(0xFEED5769, "account.installWallPaper#feed5769 wallpaper:InputWallPaper settings:WallPaperSettings = Bool")]
-	public class Account_InstallWallPaper : ITLFunction<bool>
-	{
-		public InputWallPaperBase wallpaper;
-		public WallPaperSettings settings;
-	}
-
-	[TLDef(0xBB3B9804, "account.resetWallPapers#bb3b9804 = Bool")]
-	public class Account_ResetWallPapers : ITLFunction<bool> { }
-
-	[TLDef(0x56DA0B3F, "account.getAutoDownloadSettings#56da0b3f = account.AutoDownloadSettings")]
-	public class Account_GetAutoDownloadSettings : ITLFunction<Account_AutoDownloadSettings> { }
-
-	[TLDef(0x76F36233, "account.saveAutoDownloadSettings#76f36233 flags:# low:flags.0?true high:flags.1?true settings:AutoDownloadSettings = Bool")]
-	public class Account_SaveAutoDownloadSettings : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { low = 0x1, high = 0x2,  }
-		public Flags flags;
-		public AutoDownloadSettings settings;
-	}
-
-	[TLDef(0x35A0E062, "messages.getEmojiKeywords#35a0e062 lang_code:string = EmojiKeywordsDifference")]
-	public class Messages_GetEmojiKeywords : ITLFunction<EmojiKeywordsDifference> { public string lang_code; }
-
-	[TLDef(0x1508B6AF, "messages.getEmojiKeywordsDifference#1508b6af lang_code:string from_version:int = EmojiKeywordsDifference")]
-	public class Messages_GetEmojiKeywordsDifference : ITLFunction<EmojiKeywordsDifference>
-	{
-		public string lang_code;
-		public int from_version;
-	}
-
-	[TLDef(0x4E9963B2, "messages.getEmojiKeywordsLanguages#4e9963b2 lang_codes:Vector<string> = Vector<EmojiLanguage>")]
-	public class Messages_GetEmojiKeywordsLanguages : ITLFunction<EmojiLanguage[]> { public string[] lang_codes; }
-
-	[TLDef(0xD5B10C26, "messages.getEmojiURL#d5b10c26 lang_code:string = EmojiURL")]
-	public class Messages_GetEmojiURL : ITLFunction<EmojiURL> { public string lang_code; }
-
-	[TLDef(0x6847D0AB, "folders.editPeerFolders#6847d0ab folder_peers:Vector<InputFolderPeer> = Updates")]
-	public class Folders_EditPeerFolders : ITLFunction<UpdatesBase> { public InputFolderPeer[] folder_peers; }
-
-	[TLDef(0x1C295881, "folders.deleteFolder#1c295881 folder_id:int = Updates")]
-	public class Folders_DeleteFolder : ITLFunction<UpdatesBase> { public int folder_id; }
-
-	[TLDef(0x732EEF00, "messages.getSearchCounters#732eef00 peer:InputPeer filters:Vector<MessagesFilter> = Vector<messages.SearchCounter>")]
-	public class Messages_GetSearchCounters : ITLFunction<Messages_SearchCounter[]>
-	{
-		public InputPeer peer;
-		public MessagesFilter[] filters;
-	}
-
-	[TLDef(0xF5DAD378, "channels.getGroupsForDiscussion#f5dad378 = messages.Chats")]
-	public class Channels_GetGroupsForDiscussion : ITLFunction<Messages_ChatsBase> { }
-
-	[TLDef(0x40582BB2, "channels.setDiscussionGroup#40582bb2 broadcast:InputChannel group:InputChannel = Bool")]
-	public class Channels_SetDiscussionGroup : ITLFunction<bool>
-	{
-		public InputChannelBase broadcast;
-		public InputChannelBase group;
-	}
-
-	[TLDef(0xE33F5613, "messages.requestUrlAuth#e33f5613 peer:InputPeer msg_id:int button_id:int = UrlAuthResult")]
-	public class Messages_RequestUrlAuth : ITLFunction<UrlAuthResult>
-	{
-		public InputPeer peer;
-		public int msg_id;
-		public int button_id;
-	}
-
-	[TLDef(0xF729EA98, "messages.acceptUrlAuth#f729ea98 flags:# write_allowed:flags.0?true peer:InputPeer msg_id:int button_id:int = UrlAuthResult")]
-	public class Messages_AcceptUrlAuth : ITLFunction<UrlAuthResult>
-	{
-		[Flags] public enum Flags { write_allowed = 0x1,  }
-		public Flags flags;
-		public InputPeer peer;
-		public int msg_id;
-		public int button_id;
-	}
-
-	[TLDef(0x4FACB138, "messages.hidePeerSettingsBar#4facb138 peer:InputPeer = Bool")]
-	public class Messages_HidePeerSettingsBar : ITLFunction<bool> { public InputPeer peer; }
-
-	[TLDef(0xE8F463D0, "contacts.addContact#e8f463d0 flags:# add_phone_privacy_exception:flags.0?true id:InputUser first_name:string last_name:string phone:string = Updates")]
-	public class Contacts_AddContact : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { add_phone_privacy_exception = 0x1,  }
-		public Flags flags;
-		public InputUserBase id;
-		public string first_name;
-		public string last_name;
-		public string phone;
-	}
-
-	[TLDef(0xF831A20F, "contacts.acceptContact#f831a20f id:InputUser = Updates")]
-	public class Contacts_AcceptContact : ITLFunction<UpdatesBase> { public InputUserBase id; }
-
-	[TLDef(0x8F38CD1F, "channels.editCreator#8f38cd1f channel:InputChannel user_id:InputUser password:InputCheckPasswordSRP = Updates")]
-	public class Channels_EditCreator : ITLFunction<UpdatesBase>
-	{
-		public InputChannelBase channel;
-		public InputUserBase user_id;
-		public InputCheckPasswordSRPBase password;
-	}
-
-	[TLDef(0xD348BC44, "contacts.getLocated#d348bc44 flags:# background:flags.1?true geo_point:InputGeoPoint self_expires:flags.0?int = Updates")]
-	public class Contacts_GetLocated : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { has_self_expires = 0x1, background = 0x2,  }
-		public Flags flags;
-		public InputGeoPointBase geo_point;
-		[IfFlag(0)] public int self_expires;
-	}
-
-	[TLDef(0x58E63F6D, "channels.editLocation#58e63f6d channel:InputChannel geo_point:InputGeoPoint address:string = Bool")]
-	public class Channels_EditLocation : ITLFunction<bool>
-	{
-		public InputChannelBase channel;
-		public InputGeoPointBase geo_point;
-		public string address;
-	}
-
-	[TLDef(0xEDD49EF0, "channels.toggleSlowMode#edd49ef0 channel:InputChannel seconds:int = Updates")]
-	public class Channels_ToggleSlowMode : ITLFunction<UpdatesBase>
-	{
-		public InputChannelBase channel;
-		public int seconds;
-	}
-
-	[TLDef(0xE2C2685B, "messages.getScheduledHistory#e2c2685b peer:InputPeer hash:int = messages.Messages")]
-	public class Messages_GetScheduledHistory : ITLFunction<Messages_MessagesBase>
-	{
-		public InputPeer peer;
-		public int hash;
-	}
-
-	[TLDef(0xBDBB0464, "messages.getScheduledMessages#bdbb0464 peer:InputPeer id:Vector<int> = messages.Messages")]
-	public class Messages_GetScheduledMessages : ITLFunction<Messages_MessagesBase>
-	{
-		public InputPeer peer;
-		public int[] id;
-	}
-
-	[TLDef(0xBD38850A, "messages.sendScheduledMessages#bd38850a peer:InputPeer id:Vector<int> = Updates")]
-	public class Messages_SendScheduledMessages : ITLFunction<UpdatesBase>
-	{
-		public InputPeer peer;
-		public int[] id;
-	}
-
-	[TLDef(0x59AE2B16, "messages.deleteScheduledMessages#59ae2b16 peer:InputPeer id:Vector<int> = Updates")]
-	public class Messages_DeleteScheduledMessages : ITLFunction<UpdatesBase>
-	{
-		public InputPeer peer;
-		public int[] id;
-	}
-
-	[TLDef(0x1C3DB333, "account.uploadTheme#1c3db333 flags:# file:InputFile thumb:flags.0?InputFile file_name:string mime_type:string = Document")]
-	public class Account_UploadTheme : ITLFunction<DocumentBase>
-	{
-		[Flags] public enum Flags { has_thumb = 0x1,  }
-		public Flags flags;
-		public InputFileBase file;
-		[IfFlag(0)] public InputFileBase thumb;
-		public string file_name;
-		public string mime_type;
-	}
-
-	[TLDef(0x8432C21F, "account.createTheme#8432c21f flags:# slug:string title:string document:flags.2?InputDocument settings:flags.3?InputThemeSettings = Theme")]
-	public class Account_CreateTheme : ITLFunction<Theme>
-	{
-		[Flags] public enum Flags { has_document = 0x4, has_settings = 0x8,  }
-		public Flags flags;
-		public string slug;
-		public string title;
-		[IfFlag(2)] public InputDocumentBase document;
-		[IfFlag(3)] public InputThemeSettings settings;
-	}
-
-	[TLDef(0x5CB367D5, "account.updateTheme#5cb367d5 flags:# format:string theme:InputTheme slug:flags.0?string title:flags.1?string document:flags.2?InputDocument settings:flags.3?InputThemeSettings = Theme")]
-	public class Account_UpdateTheme : ITLFunction<Theme>
-	{
-		[Flags] public enum Flags { has_slug = 0x1, has_title = 0x2, has_document = 0x4, has_settings = 0x8,  }
-		public Flags flags;
-		public string format;
-		public InputThemeBase theme;
-		[IfFlag(0)] public string slug;
-		[IfFlag(1)] public string title;
-		[IfFlag(2)] public InputDocumentBase document;
-		[IfFlag(3)] public InputThemeSettings settings;
-	}
-
-	[TLDef(0xF257106C, "account.saveTheme#f257106c theme:InputTheme unsave:Bool = Bool")]
-	public class Account_SaveTheme : ITLFunction<bool>
-	{
-		public InputThemeBase theme;
-		public bool unsave;
-	}
-
-	[TLDef(0x7AE43737, "account.installTheme#7ae43737 flags:# dark:flags.0?true format:flags.1?string theme:flags.1?InputTheme = Bool")]
-	public class Account_InstallTheme : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { dark = 0x1, has_format = 0x2,  }
-		public Flags flags;
-		[IfFlag(1)] public string format;
-		[IfFlag(1)] public InputThemeBase theme;
-	}
-
-	[TLDef(0x8D9D742B, "account.getTheme#8d9d742b format:string theme:InputTheme document_id:long = Theme")]
-	public class Account_GetTheme : ITLFunction<Theme>
-	{
-		public string format;
-		public InputThemeBase theme;
-		public long document_id;
-	}
-
-	[TLDef(0x285946F8, "account.getThemes#285946f8 format:string hash:int = account.Themes")]
-	public class Account_GetThemes : ITLFunction<Account_ThemesBase>
-	{
-		public string format;
-		public int hash;
-	}
-
-	[TLDef(0xB1B41517, "auth.exportLoginToken#b1b41517 api_id:int api_hash:string except_ids:Vector<int> = auth.LoginToken")]
-	public class Auth_ExportLoginToken : ITLFunction<Auth_LoginTokenBase>
-	{
-		public int api_id;
-		public string api_hash;
-		public int[] except_ids;
-	}
-
-	[TLDef(0x95AC5CE4, "auth.importLoginToken#95ac5ce4 token:bytes = auth.LoginToken")]
-	public class Auth_ImportLoginToken : ITLFunction<Auth_LoginTokenBase> { public byte[] token; }
-
-	[TLDef(0xE894AD4D, "auth.acceptLoginToken#e894ad4d token:bytes = Authorization")]
-	public class Auth_AcceptLoginToken : ITLFunction<Authorization> { public byte[] token; }
-
-	[TLDef(0xB574B16B, "account.setContentSettings#b574b16b flags:# sensitive_enabled:flags.0?true = Bool")]
-	public class Account_SetContentSettings : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { sensitive_enabled = 0x1,  }
-		public Flags flags;
-	}
-
-	[TLDef(0x8B9B4DAE, "account.getContentSettings#8b9b4dae = account.ContentSettings")]
-	public class Account_GetContentSettings : ITLFunction<Account_ContentSettings> { }
-
-	[TLDef(0x11E831EE, "channels.getInactiveChannels#11e831ee = messages.InactiveChats")]
-	public class Channels_GetInactiveChannels : ITLFunction<Messages_InactiveChats> { }
-
-	[TLDef(0x65AD71DC, "account.getMultiWallPapers#65ad71dc wallpapers:Vector<InputWallPaper> = Vector<WallPaper>")]
-	public class Account_GetMultiWallPapers : ITLFunction<WallPaperBase[]> { public InputWallPaperBase[] wallpapers; }
-
-	[TLDef(0xB86E380E, "messages.getPollVotes#b86e380e flags:# peer:InputPeer id:int option:flags.0?bytes offset:flags.1?string limit:int = messages.VotesList")]
-	public class Messages_GetPollVotes : ITLFunction<Messages_VotesList>
-	{
-		[Flags] public enum Flags { has_option = 0x1, has_offset = 0x2,  }
-		public Flags flags;
-		public InputPeer peer;
-		public int id;
-		[IfFlag(0)] public byte[] option;
-		[IfFlag(1)] public string offset;
-		public int limit;
-	}
-
-	[TLDef(0xB5052FEA, "messages.toggleStickerSets#b5052fea flags:# uninstall:flags.0?true archive:flags.1?true unarchive:flags.2?true stickersets:Vector<InputStickerSet> = Bool")]
-	public class Messages_ToggleStickerSets : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { uninstall = 0x1, archive = 0x2, unarchive = 0x4,  }
-		public Flags flags;
-		public InputStickerSet[] stickersets;
-	}
-
-	[TLDef(0x2E79D779, "payments.getBankCardData#2e79d779 number:string = payments.BankCardData")]
-	public class Payments_GetBankCardData : ITLFunction<Payments_BankCardData> { public string number; }
-
-	[TLDef(0xF19ED96D, "messages.getDialogFilters#f19ed96d = Vector<DialogFilter>")]
-	public class Messages_GetDialogFilters : ITLFunction<DialogFilter[]> { }
-
-	[TLDef(0xA29CD42C, "messages.getSuggestedDialogFilters#a29cd42c = Vector<DialogFilterSuggested>")]
-	public class Messages_GetSuggestedDialogFilters : ITLFunction<DialogFilterSuggested[]> { }
-
-	[TLDef(0x1AD4A04A, "messages.updateDialogFilter#1ad4a04a flags:# id:int filter:flags.0?DialogFilter = Bool")]
-	public class Messages_UpdateDialogFilter : ITLFunction<bool>
-	{
-		[Flags] public enum Flags { has_filter = 0x1,  }
-		public Flags flags;
-		public int id;
-		[IfFlag(0)] public DialogFilter filter;
-	}
-
-	[TLDef(0xC563C1E4, "messages.updateDialogFiltersOrder#c563c1e4 order:Vector<int> = Bool")]
-	public class Messages_UpdateDialogFiltersOrder : ITLFunction<bool> { public int[] order; }
-
-	[TLDef(0xAB42441A, "stats.getBroadcastStats#ab42441a flags:# dark:flags.0?true channel:InputChannel = stats.BroadcastStats")]
-	public class Stats_GetBroadcastStats : ITLFunction<Stats_BroadcastStats>
-	{
-		[Flags] public enum Flags { dark = 0x1,  }
-		public Flags flags;
-		public InputChannelBase channel;
-	}
-
-	[TLDef(0x621D5FA0, "stats.loadAsyncGraph#621d5fa0 flags:# token:string x:flags.0?long = StatsGraph")]
-	public class Stats_LoadAsyncGraph : ITLFunction<StatsGraphBase>
-	{
-		[Flags] public enum Flags { has_x = 0x1,  }
-		public Flags flags;
-		public string token;
-		[IfFlag(0)] public long x;
-	}
-
-	[TLDef(0x9A364E30, "stickers.setStickerSetThumb#9a364e30 stickerset:InputStickerSet thumb:InputDocument = messages.StickerSet")]
-	public class Stickers_SetStickerSetThumb : ITLFunction<Messages_StickerSet>
-	{
-		public InputStickerSet stickerset;
-		public InputDocumentBase thumb;
-	}
-
-	[TLDef(0x805D46F6, "bots.setBotCommands#805d46f6 commands:Vector<BotCommand> = Bool")]
-	public class Bots_SetBotCommands : ITLFunction<bool> { public BotCommand[] commands; }
-
-	[TLDef(0x5FE7025B, "messages.getOldFeaturedStickers#5fe7025b offset:int limit:int hash:int = messages.FeaturedStickers")]
-	public class Messages_GetOldFeaturedStickers : ITLFunction<Messages_FeaturedStickersBase>
-	{
-		public int offset;
-		public int limit;
-		public int hash;
-	}
-
-	[TLDef(0xC0977421, "help.getPromoData#c0977421 = help.PromoData")]
-	public class Help_GetPromoData : ITLFunction<Help_PromoDataBase> { }
-
-	[TLDef(0x1E251C95, "help.hidePromoData#1e251c95 peer:InputPeer = Bool")]
-	public class Help_HidePromoData : ITLFunction<bool> { public InputPeer peer; }
-
-	[TLDef(0xFF7A9383, "phone.sendSignalingData#ff7a9383 peer:InputPhoneCall data:bytes = Bool")]
-	public class Phone_SendSignalingData : ITLFunction<bool>
-	{
-		public InputPhoneCall peer;
-		public byte[] data;
-	}
-
-	[TLDef(0xDCDF8607, "stats.getMegagroupStats#dcdf8607 flags:# dark:flags.0?true channel:InputChannel = stats.MegagroupStats")]
-	public class Stats_GetMegagroupStats : ITLFunction<Stats_MegagroupStats>
-	{
-		[Flags] public enum Flags { dark = 0x1,  }
-		public Flags flags;
-		public InputChannelBase channel;
-	}
-
-	[TLDef(0xEB2B4CF6, "account.getGlobalPrivacySettings#eb2b4cf6 = GlobalPrivacySettings")]
-	public class Account_GetGlobalPrivacySettings : ITLFunction<GlobalPrivacySettings> { }
-
-	[TLDef(0x1EDAAAC2, "account.setGlobalPrivacySettings#1edaaac2 settings:GlobalPrivacySettings = GlobalPrivacySettings")]
-	public class Account_SetGlobalPrivacySettings : ITLFunction<GlobalPrivacySettings> { public GlobalPrivacySettings settings; }
-
-	[TLDef(0x77FA99F, "help.dismissSuggestion#077fa99f suggestion:string = Bool")]
-	public class Help_DismissSuggestion : ITLFunction<bool> { public string suggestion; }
-
-	[TLDef(0x735787A8, "help.getCountriesList#735787a8 lang_code:string hash:int = help.CountriesList")]
-	public class Help_GetCountriesList : ITLFunction<Help_CountriesListBase>
-	{
-		public string lang_code;
-		public int hash;
-	}
-
-	[TLDef(0x24B581BA, "messages.getReplies#24b581ba peer:InputPeer msg_id:int offset_id:int offset_date:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages")]
-	public class Messages_GetReplies : ITLFunction<Messages_MessagesBase>
-	{
-		public InputPeer peer;
-		public int msg_id;
-		public int offset_id;
-		public DateTime offset_date;
-		public int add_offset;
-		public int limit;
-		public int max_id;
-		public int min_id;
-		public int hash;
 	}
-
-	[TLDef(0x446972FD, "messages.getDiscussionMessage#446972fd peer:InputPeer msg_id:int = messages.DiscussionMessage")]
-	public class Messages_GetDiscussionMessage : ITLFunction<Messages_DiscussionMessage>
-	{
-		public InputPeer peer;
-		public int msg_id;
-	}
-
-	[TLDef(0xF731A9F4, "messages.readDiscussion#f731a9f4 peer:InputPeer msg_id:int read_max_id:int = Bool")]
-	public class Messages_ReadDiscussion : ITLFunction<bool>
-	{
-		public InputPeer peer;
-		public int msg_id;
-		public int read_max_id;
-	}
-
-	[TLDef(0x29A8962C, "contacts.blockFromReplies#29a8962c flags:# delete_message:flags.0?true delete_history:flags.1?true report_spam:flags.2?true msg_id:int = Updates")]
-	public class Contacts_BlockFromReplies : ITLFunction<UpdatesBase>
-	{
-		[Flags] public enum Flags { delete_message = 0x1, delete_history = 0x2, report_spam = 0x4,  }
-		public Flags flags;
-		public int msg_id;
-	}
-
-	[TLDef(0x5630281B, "stats.getMessagePublicForwards#5630281b channel:InputChannel msg_id:int offset_rate:int offset_peer:InputPeer offset_id:int limit:int = messages.Messages")]
-	public class Stats_GetMessagePublicForwards : ITLFunction<Messages_MessagesBase>
-	{
-		public InputChannelBase channel;
-		public int msg_id;
-		public int offset_rate;
-		public InputPeer offset_peer;
-		public int offset_id;
-		public int limit;
-	}
-
-	[TLDef(0xB6E0A3F5, "stats.getMessageStats#b6e0a3f5 flags:# dark:flags.0?true channel:InputChannel msg_id:int = stats.MessageStats")]
-	public class Stats_GetMessageStats : ITLFunction<Stats_MessageStats>
-	{
-		[Flags] public enum Flags { dark = 0x1,  }
-		public Flags flags;
-		public InputChannelBase channel;
-		public int msg_id;
-	}
-
-	[TLDef(0xF025BC8B, "messages.unpinAllMessages#f025bc8b peer:InputPeer = messages.AffectedHistory")]
-	public class Messages_UnpinAllMessages : ITLFunction<Messages_AffectedHistory> { public InputPeer peer; }
-
 }

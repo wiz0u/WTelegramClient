@@ -14,8 +14,6 @@ using System.Threading.Tasks;
 using TL;
 using static WTelegram.Encryption;
 
-//TODO: include XML comments in nuget
-
 namespace WTelegram
 {
 	public sealed class Client : IDisposable
@@ -40,7 +38,7 @@ namespace WTelegram
 			_updateHandler = updateHandler;
 			_apiId = int.Parse(Config("api_id"));
 			_apiHash = Config("api_hash");
-			_session = Session.LoadOrCreate(Config("session_pathname"));
+			_session = Session.LoadOrCreate(Config("session_pathname"), Convert.FromHexString(_apiHash));
 		}
 
 		public string Config(string config)
@@ -76,6 +74,12 @@ namespace WTelegram
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822")]
 		public void LoadPublicKey(string pem) => Encryption.LoadPublicKey(pem);
 
+		public void Reset() // disconnect and reset session (forget server address, current user and authkey)
+		{
+			_tcpClient.Close();
+			_session.Reset();
+		}
+
 		public async Task ConnectAsync()
 		{
 			var endpoint = _session.DataCenter == null ? IPEndPoint.Parse(Config("server_address"))
@@ -89,10 +93,10 @@ namespace WTelegram
 			if (_session.AuthKey == null)
 				await CreateAuthorizationKey(this, _session);
 
-			TLConfig = await CallAsync(new InvokeWithLayer<Config>
+			TLConfig = await CallAsync(new Fn.InvokeWithLayer<Config>
 			{
 				layer = Schema.Layer,
-				query = new InitConnection<Config>
+				query = new Fn.InitConnection<Config>
 				{
 					api_id = _apiId,
 					device_model = Config("device_model"),
@@ -101,7 +105,7 @@ namespace WTelegram
 					system_lang_code = Config("system_lang_code"),
 					lang_pack = Config("lang_pack"),
 					lang_code = Config("lang_code"),
-					query = new Help_GetConfig()
+					query = new Fn.Help_GetConfig()
 				}
 			});
 		}
@@ -109,7 +113,9 @@ namespace WTelegram
 		private async Task MigrateDCAsync(int dcId)
 		{
 			Helpers.Log(2, $"Migrate to DC {dcId}...");
-			//TODO: Export/Import client authorization?
+			Auth_ExportedAuthorization exported = null;
+			if (_session.User != null)
+				exported = await CallAsync(new Fn.Auth_ExportAuthorization { dc_id = dcId });
 			var prevFamily = _tcpClient.Client.RemoteEndPoint.AddressFamily;
 			_tcpClient.Close();
 			var dcOptions = TLConfig.dc_options.Where(dc => dc.id == dcId && (dc.flags & (DcOption.Flags.media_only | DcOption.Flags.cdn)) == 0);
@@ -118,10 +124,15 @@ namespace WTelegram
 			else
 				dcOptions = dcOptions.OrderBy(dc => dc.flags & DcOption.Flags.ipv6);                // list ipv4 first
 			var dcOption = dcOptions.FirstOrDefault();
-			_session.DataCenter = dcOption ?? throw new ApplicationException($"Could not find adequate dcOption for DC {dcId}");
-			_session.AuthKeyID = _session.Salt = _session.Seqno = 0;
-			_session.AuthKey = null;
+			_session.Reset(dcOption ?? throw new ApplicationException($"Could not find adequate dcOption for DC {dcId}"));
 			await ConnectAsync();
+			if (exported != null)
+			{
+				var authorization = await CallAsync(new Fn.Auth_ImportAuthorization { id = exported.id, bytes = exported.bytes });
+				if (authorization is not Auth_Authorization { user: User user })
+					throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
+				_session.User = Schema.Serialize(user);
+			}
 		}
 
 		public void Dispose()
@@ -134,7 +145,7 @@ namespace WTelegram
 		public async Task SendAsync(ITLObject msg, bool isContent = true)
 		{
 			if (_session.AuthKeyID != 0) await CheckMsgsToAck();
-			using var memStream = new MemoryStream(1024);   //TODO: choose a useful capacity
+			using var memStream = new MemoryStream(1024);
 			using var writer = new BinaryWriter(memStream, Encoding.UTF8);
 			writer.Write(0);                // int32 frame_len (to be patched with full frame length)
 			writer.Write(_frame_seqTx++);   // int32 frame_seq
@@ -153,8 +164,8 @@ namespace WTelegram
 			else
 			{
 				Helpers.Log(1, $"Sending   {msg.GetType().Name,-50} #{(short)msgId.GetHashCode():X4}");
-				//TODO: Implement MTProto 2.0
-				using var clearStream = new MemoryStream(1024);   //TODO: choose a useful capacity
+				//TODO: implement MTProto 2.0
+				using var clearStream = new MemoryStream(1024);
 				using var clearWriter = new BinaryWriter(clearStream, Encoding.UTF8);
 				clearWriter.Write(_session.Salt);		// int64 salt
 				clearWriter.Write(_session.Id);			// int64 session_id
@@ -193,7 +204,10 @@ namespace WTelegram
 		{
 			var data = await RecvFrameAsync();
 			if (data.Length == 4 && data[3] == 0xFF)
-				throw new ApplicationException($"Server replied with error code: {TransportError(-BinaryPrimitives.ReadInt32LittleEndian(data))}");
+			{
+				int error_code = -BinaryPrimitives.ReadInt32LittleEndian(data);
+				throw new RpcException(error_code, TransportError(error_code));
+			}
 			if (data.Length < 24) // authKeyId+msgId+length+ctorNb | authKeyId+msgKey
 				throw new ApplicationException($"Packet payload too small: {data.Length}");
 
@@ -246,7 +260,7 @@ namespace WTelegram
 					throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 				Helpers.Log(1, $"Receiving {realType.Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} {(seqno == -1 ? "clearText" : "isContent")}={(seqno & 1) != 0}");
 				if (realType == typeof(RpcResult))
-					return DeserializeRpcResult(reader); // hack necessary because some RPC return bare types like bool or int[]
+					return DeserializeRpcResult(reader); // necessary hack because some RPC return bare types like bool or int[]
 				else
 					return Schema.DeserializeObject(reader, realType);
 			}
@@ -317,6 +331,8 @@ namespace WTelegram
 		public async Task<X> CallAsync<X>(ITLFunction<X> request) 
 		{
 			await SendAsync(request);
+			// TODO: create a background reactor system that handles incoming packets and wake up awaiting tasks when their result has arrived
+			// This would allow parallelization of Send task and avoid the risk of calling RecvInternal concurrently
 			_lastRpcResultType = typeof(X);
 			for (; ;)
 			{
@@ -383,7 +399,7 @@ namespace WTelegram
 						throw new ApplicationException($"Got RpcResult({rpcResult.result.GetType().Name}) for unknown msgId {rpcResult.req_msg_id}");
 					break; // silently ignore results for msg_id from previous sessions
 				default:
-					_updateHandler?.Invoke(obj);
+					if (_updateHandler != null) await _updateHandler?.Invoke(obj);
 					break;
 			}
 		}
@@ -393,7 +409,7 @@ namespace WTelegram
 			if (_session.User != null)
 				return Schema.Deserialize<User>(_session.User);
 			string phone_number = Config("phone_number");
-			var sentCode = await CallAsync(new Auth_SendCode
+			var sentCode = await CallAsync(new Fn.Auth_SendCode
 			{
 				phone_number = phone_number,
 				api_id = _apiId,
@@ -402,16 +418,36 @@ namespace WTelegram
 			});
 			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
 			var verification_code = Config("verification_code");
-			var authorization = await CallAsync(new Auth_SignIn
+			Auth_AuthorizationBase authorization;
+			try
 			{
-				phone_number = phone_number,
-				phone_code_hash = sentCode.phone_code_hash,
-				phone_code = verification_code
-			});
-			if (authorization is not Auth_Authorization { user: User user } auth_success)
+				authorization = await CallAsync(new Fn.Auth_SignIn
+				{
+					phone_number = phone_number,
+					phone_code_hash = sentCode.phone_code_hash,
+					phone_code = verification_code
+				});
+			}
+			catch (RpcException e) when (e.Code == 400 && e.Message == "SESSION_PASSWORD_NEEDED")
+			{
+				throw new NotImplementedException("Library does not support 2FA yet"); //TODO: support 2FA
+			}
+			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
+			{
+				if (signUpRequired.terms_of_service != null && _updateHandler != null)
+					await _updateHandler?.Invoke(signUpRequired.terms_of_service); // give caller the possibility to read and accept TOS
+				authorization = await CallAsync(new Fn.Auth_SignUp
+				{
+					phone_number = phone_number,
+					phone_code_hash = sentCode.phone_code_hash,
+					first_name = Config("first_name"),
+					last_name = Config("last_name"),
+				});
+			}
+			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
-			//TODO: support Auth_AuthorizationSignUpRequired?
 			_session.User = Schema.Serialize(user);
+			_session.Save();
 			return user;
 		}
 
@@ -436,11 +472,11 @@ namespace WTelegram
 				int file_part = 0, read;
 				for (long bytesLeft = length; bytesLeft != 0; file_part++)
 				{
-					// TODO: parallelize several parts sending through a N-semaphore?
+					//TODO: parallelize several parts sending through a N-semaphore? (needs a reactor first)
 					read = await FullReadAsync(stream, bytes, (int)Math.Min(partSize, bytesLeft));
 					await CallAsync<bool>(isBig
-						? new Upload_SaveBigFilePart { bytes = bytes, file_id = file_id, file_part = file_part, file_total_parts = file_total_parts }
-						: new Upload_SaveFilePart { bytes = bytes, file_id = file_id, file_part = file_part });
+						? new Fn.Upload_SaveBigFilePart { bytes = bytes, file_id = file_id, file_part = file_part, file_total_parts = file_total_parts }
+						: new Fn.Upload_SaveFilePart { bytes = bytes, file_id = file_id, file_part = file_part });
 					if (!isBig) md5.TransformBlock(bytes, 0, read, null, 0);
 					bytesLeft -= read;
 					if (read < partSize && bytesLeft != 0) throw new ApplicationException($"Failed to fully read stream ({read},{bytesLeft})");
@@ -450,6 +486,8 @@ namespace WTelegram
 					: new InputFile { id = file_id, parts = file_total_parts, name = filename, md5_checksum = md5.Hash };
 			}
 		}
+
+		//TODO: include XML comments in nuget?
 
 		/// <summary>Helper function to send a text or media message more easily</summary>
 		/// <param name="peer">destination of message</param>
@@ -486,7 +524,7 @@ namespace WTelegram
 		public Task<UpdatesBase> SendMessageAsync(InputPeer peer, string text, InputMedia media = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, bool disable_preview = false)
 		{
 			ITLFunction<UpdatesBase> request = (media == null)
-				? new Messages_SendMessage
+				? new Fn.Messages_SendMessage
 				{
 					flags = GetFlags(),
 					peer = peer,
@@ -496,9 +534,9 @@ namespace WTelegram
 					entities = entities,
 					schedule_date = schedule_date
 				}
-				: new Messages_SendMedia
+				: new Fn.Messages_SendMedia
 				{
-					flags = (Messages_SendMedia.Flags)GetFlags(),
+					flags = (Fn.Messages_SendMedia.Flags)GetFlags(),
 					peer = peer,
 					reply_to_msg_id = reply_to_msg_id,
 					media = media,
@@ -509,13 +547,13 @@ namespace WTelegram
 				};
 			return CallAsync(request);
 
-			Messages_SendMessage.Flags GetFlags()
+			Fn.Messages_SendMessage.Flags GetFlags()
 			{
-				return ((reply_to_msg_id != 0) ? Messages_SendMessage.Flags.has_reply_to_msg_id : 0)
-					| (disable_preview ? Messages_SendMessage.Flags.no_webpage : 0)
+				return ((reply_to_msg_id != 0) ? Fn.Messages_SendMessage.Flags.has_reply_to_msg_id : 0)
+					| (disable_preview ? Fn.Messages_SendMessage.Flags.no_webpage : 0)
 				//	| (reply_markup != null ? Messages_SendMessage.Flags.has_reply_markup : 0)
-					| (entities != null ? Messages_SendMessage.Flags.has_entities : 0)
-					| (schedule_date != default ? Messages_SendMessage.Flags.has_schedule_date : 0);
+					| (entities != null ? Fn.Messages_SendMessage.Flags.has_entities : 0)
+					| (schedule_date != default ? Fn.Messages_SendMessage.Flags.has_schedule_date : 0);
 			}
 		}
 		#endregion

@@ -21,7 +21,7 @@ namespace WTelegram
 			if (PublicKeys.Count == 0) LoadDefaultPublicKey();
 
 			//1)
-			var reqPQ = new ReqPQ() { nonce = new Int128(RNG) };
+			var reqPQ = new Fn.ReqPQ() { nonce = new Int128(RNG) };
 			await client.SendAsync(reqPQ, false);
 			//2)
 			var reply = await client.RecvInternalAsync();
@@ -153,7 +153,7 @@ namespace WTelegram
 			// We recommend checking that g_a and g_b are between 2^{2048-64} and dh_prime - 2^{2048-64} as well.
 		}
 
-		private static ReqDHParams MakeReqDHparam(long publicKey_fingerprint, RSAPublicKey publicKey, PQInnerData pqInnerData)
+		private static Fn.ReqDHParams MakeReqDHparam(long publicKey_fingerprint, RSAPublicKey publicKey, PQInnerData pqInnerData)
 		{
 			// the following code was the way TDLib did it (and seems still accepted) until they changed on 8 July 2021
 			using var clearStream = new MemoryStream(255);
@@ -168,7 +168,7 @@ namespace WTelegram
 
 			var encrypted_data = BigInteger.ModPow(new BigInteger(clearBuffer, true, true), // encrypt with RSA key
 				new BigInteger(publicKey.e, true, true), new BigInteger(publicKey.n, true, true)).ToByteArray(true, true);
-			return new ReqDHParams
+			return new Fn.ReqDHParams
 			{
 				nonce = pqInnerData.nonce,
 				server_nonce = pqInnerData.server_nonce,
@@ -179,10 +179,10 @@ namespace WTelegram
 			};
 		}
 
-		private static SetClientDHParams MakeClientDHparams(byte[] tmp_aes_key, byte[] tmp_aes_iv, ClientDHInnerData clientDHinnerData)
+		private static Fn.SetClientDHParams MakeClientDHparams(byte[] tmp_aes_key, byte[] tmp_aes_iv, ClientDHInnerData clientDHinnerData)
 		{
 			// the following code was the way TDLib did it (and seems still accepted) until they changed on 8 July 2021
-			using var clearStream = new MemoryStream(512);  //TODO: choose a useful capacity
+			using var clearStream = new MemoryStream(384);
 			clearStream.Position = 20; // skip SHA1 area (to be patched)
 			using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
 			Schema.Serialize(writer, clientDHinnerData);
@@ -194,7 +194,7 @@ namespace WTelegram
 			SHA1.HashData(clearBuffer.AsSpan(20..clearLength), clearBuffer);
 
 			var encrypted_data = AES_IGE_EncryptDecrypt(clearBuffer.AsSpan(0, clearLength + padding), tmp_aes_key, tmp_aes_iv, true);
-			return new SetClientDHParams
+			return new Fn.SetClientDHParams
 			{
 				nonce = clientDHinnerData.nonce,
 				server_nonce = clientDHinnerData.server_nonce,
