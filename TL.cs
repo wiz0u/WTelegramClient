@@ -13,20 +13,10 @@ namespace TL
 	public interface ITLObject { }
 	public interface ITLFunction<R> : ITLObject { }
 
-	public static class Schema
+	public static partial class Schema
 	{
 		public const int Layer = 121;
-		public readonly static Dictionary<uint, Type> Mappings = new();
-		public const int VectorCtor = 0X1CB5C415;
-
-		static Schema()
-		{
-			foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
-			{
-				var tlDef = type.GetCustomAttribute<TLDefAttribute>(false);
-				if (tlDef != null) Mappings[tlDef.CtorNb] = type;
-			}
-		}
+		public const int VectorCtor = 0x1CB5C415;
 
 		internal static byte[] Serialize(ITLObject msg)
 		{
@@ -54,7 +44,7 @@ namespace TL
 		internal static T Deserialize<T>(BinaryReader reader) where T : ITLObject
 		{
 			var ctorNb = reader.ReadUInt32();
-			if (!Mappings.TryGetValue(ctorNb, out var realType))
+			if (!Table.TryGetValue(ctorNb, out var realType))
 				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 			return (T)DeserializeObject(reader, realType);
 		}
@@ -265,7 +255,7 @@ namespace TL
 	public class TLDefAttribute : Attribute
 	{
 		public readonly uint CtorNb;
-		public TLDefAttribute(uint ctorNb, string _) => CtorNb = ctorNb;
+		public TLDefAttribute(uint ctorNb) => CtorNb = ctorNb;
 		/*public TLDefAttribute(string def)
 		{
 			var hash = def.IndexOfAny(new[] { '#', ' ' });

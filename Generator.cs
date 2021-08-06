@@ -8,18 +8,17 @@ namespace WTelegram
 {
 	public static class Generator
 	{
-		//TODO: generate/merge ctor mapping table to avoid creating those at runtime from TLDefAttribute
 		//TODO: generate BinaryReader/Writer serialization directly to avoid using Reflection
-		//TODO: generate partial class with methods for functions to avoid using request classes
+		//TODO: generate partial class with methods for functions instead of exposing request classes
 
-		public static void FromJson(string jsonPath, string outputCs)
+		public static void FromJson(string jsonPath, string outputCs, string tableCs = null)
 		{
 			var schema = JsonSerializer.Deserialize<SchemaJson>(File.ReadAllText(jsonPath));
 			using var sw = File.CreateText(outputCs);
 			sw.WriteLine("using System;");
 			sw.WriteLine();
 			sw.WriteLine("namespace TL");
-			sw.WriteLine("{");
+			sw.Write("{");
 			string tabIndent = "\t";
 			Dictionary<string, TypeInfo> typeInfos = new();
 			foreach (var ctor in schema.constructors)
@@ -70,18 +69,22 @@ namespace WTelegram
 			foreach (var typeInfo in typeInfos.Values)
 				WriteTypeInfo(sw, typeInfo);
 
+			sw.WriteLine();
 			sw.WriteLine("\tpublic static partial class Fn // ---functions---");
-			sw.WriteLine("\t{");
+			sw.Write("\t{");
 			tabIndent = "\t\t";
 			var methods = new List<TypeInfo>();
 			foreach (var method in schema.methods)
 			{
 				var typeInfo = new TypeInfo { ReturnName = method.type };
 				typeInfo.Structs.Add(new Constructor { id = method.id, @params = method.@params, predicate = method.method, type = method.type });
+				methods.Add(typeInfo);
 				WriteTypeInfo(sw, typeInfo, true);
 			}
 			sw.WriteLine("\t}");
 			sw.WriteLine("}");
+
+			if (tableCs != null) UpdateTable();
 
 			void WriteTypeInfo(StreamWriter sw, TypeInfo typeInfo, bool isMethod = false)
 			{
@@ -89,6 +92,7 @@ namespace WTelegram
 				var genericType = typeInfo.ReturnName.Length == 1 ? $"<{typeInfo.ReturnName}>" : null;
 				if (isMethod)
 					parentClass = $"ITLFunction<{MapType(typeInfo.ReturnName, "")}>";
+				sw.WriteLine();
 				if (typeInfo.NeedAbstract == -1)
 					sw.WriteLine($"{tabIndent}public abstract class {parentClass} : ITLObject {{ }}");
 				int skipParams = 0;
@@ -100,10 +104,10 @@ namespace WTelegram
 					else
 					{
 						int ctorId = int.Parse(ctor.id);
-						sw.Write($"{tabIndent}[TLDef(0x{ctorId:X}, \"{ctor.predicate}#{ctorId:x8} ");
+						sw.Write($"{tabIndent}[TLDef(0x{ctorId:X8})] //{ctor.predicate}#{ctorId:x8} ");
 						if (genericType != null) sw.Write($"{{{typeInfo.ReturnName}:Type}} ");
 						foreach (var parm in ctor.@params) sw.Write($"{parm.name}:{parm.type} ");
-						sw.WriteLine($"= {ctor.type}\")]");
+						sw.WriteLine($"= {ctor.type}");
 						sw.Write($"{tabIndent}public class {className} : ");
 						sw.Write(skipParams == 0 && typeInfo.NeedAbstract > 0 ? "ITLObject" : parentClass);
 					}
@@ -176,7 +180,6 @@ namespace WTelegram
 						sw.WriteLine(" }");
 					skipParams = typeInfo.NeedAbstract;
 				}
-				sw.WriteLine();
 				string MapName(string name) => name switch
 				{
 					"out" => "out_",
@@ -220,6 +223,38 @@ namespace WTelegram
 					else
 						return type;
 				}
+			}
+
+			void UpdateTable()
+			{
+				var myTag = $"\t\t\t// from {Path.GetFileNameWithoutExtension(jsonPath)}:";
+				using (var sr = new StreamReader(tableCs))
+				using (var sw = new StreamWriter(tableCs + ".new"))
+				{
+					string line;
+					while ((line = sr.ReadLine()) != null)
+					{
+						sw.WriteLine(line);
+						if (line == myTag)
+						{
+							foreach (var typeInfo in typeInfos.Values)
+								foreach (var ctor in typeInfo.Structs)
+									if (ctor.id != null)
+										sw.WriteLine($"\t\t\t[0x{int.Parse(ctor.id):X8}] = typeof({CSharpName(ctor.predicate)}),");
+							foreach (var typeInfo in methods)
+								foreach (var ctor in typeInfo.Structs)
+								{
+									var generic = typeInfo.ReturnName.Length == 1 ? "<>" : "";
+									sw.WriteLine($"\t\t\t[0x{int.Parse(ctor.id):X8}] = typeof(Fn.{CSharpName(ctor.predicate)}{generic}),");
+								}
+							while ((line = sr.ReadLine()) != null)
+								if (line.StartsWith("\t\t\t// "))
+									break;
+							sw.WriteLine(line);
+						}
+					}
+				}
+				File.Replace(tableCs + ".new", tableCs, null);
 			}
 		}
 

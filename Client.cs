@@ -222,7 +222,7 @@ namespace WTelegram
 				if (length != data.Length - 20) throw new ApplicationException($"Unexpected unencrypted length {length} != {data.Length - 20}");
 
 				var ctorNb = reader.ReadUInt32();
-				if (!Schema.Mappings.TryGetValue(ctorNb, out var realType))
+				if (!Schema.Table.TryGetValue(ctorNb, out var realType))
 					throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 				Helpers.Log(1, $"Receiving {realType.Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} unencrypted");
 				return Schema.DeserializeObject(reader, realType);
@@ -256,7 +256,7 @@ namespace WTelegram
 					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
 
 				var ctorNb = reader.ReadUInt32();
-				if (!Schema.Mappings.TryGetValue(ctorNb, out var realType))
+				if (!Schema.Table.TryGetValue(ctorNb, out var realType))
 					throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 				Helpers.Log(1, $"Receiving {realType.Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} {(seqno == -1 ? "clearText" : "isContent")}={(seqno & 1) != 0}");
 				if (realType == typeof(RpcResult))
@@ -434,15 +434,19 @@ namespace WTelegram
 			}
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
 			{
+				var waitUntil = DateTime.UtcNow.AddSeconds(3);
 				if (signUpRequired.terms_of_service != null && _updateHandler != null)
 					await _updateHandler?.Invoke(signUpRequired.terms_of_service); // give caller the possibility to read and accept TOS
-				authorization = await CallAsync(new Fn.Auth_SignUp
+				var signUp = new Fn.Auth_SignUp
 				{
 					phone_number = phone_number,
 					phone_code_hash = sentCode.phone_code_hash,
 					first_name = Config("first_name"),
 					last_name = Config("last_name"),
-				});
+				};
+				var wait = waitUntil - DateTime.UtcNow;
+				if (wait > TimeSpan.Zero) await Task.Delay(wait); // we get a FLOOD_WAIT_3 if we SignUp too fast
+				authorization = await CallAsync(signUp);
 			}
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
