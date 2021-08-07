@@ -15,9 +15,6 @@ namespace TL
 
 	public static partial class Schema
 	{
-		public const int Layer = 121;
-		public const int VectorCtor = 0x1CB5C415;
-
 		internal static byte[] Serialize(ITLObject msg)
 		{
 			using var memStream = new MemoryStream(1024);

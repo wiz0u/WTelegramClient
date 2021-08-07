@@ -113,7 +113,7 @@ namespace TL
 		public int bytes;
 	}
 
-	[TLDef(0x949D9DC)] //future_salt#0949d9dc valid_since:int valid_until:int salt:long = FutureSalt
+	[TLDef(0x0949D9DC)] //future_salt#0949d9dc valid_since:int valid_until:int salt:long = FutureSalt
 	public class FutureSalt : ITLObject
 	{
 		public DateTime valid_since;
