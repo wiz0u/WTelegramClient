@@ -61,7 +61,7 @@ The first `int` parameter is the log severity, compatible with the classic [LogL
 
 :information_source: The Telegram API makes extensive usage of base and derived classes, so be ready to use the various syntax C# offers to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
 
-To find which derived classes are available for a given base class, the fastest is to check our [TL.Schema.cs](TL.Schema.cs) source file as they appear in groups.
+To find which derived classes are available for a given base class, the fastest is to check our [TL.Schema.cs](src/TL.Schema.cs) source file as they appear in groups.
 
 Below is an example of calling the [messages.getAllChats](https://core.telegram.org/method/messages.getAllChats) API and enumerating the various groups/channels the users is into:
 ```csharp

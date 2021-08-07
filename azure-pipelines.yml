@@ -1,7 +1,7 @@
 trigger:
 - master
 
-name: 0.5.$(Rev:r)
+name: 0.7.$(Rev:r)
 
 pool:
   vmImage: ubuntu-latest
