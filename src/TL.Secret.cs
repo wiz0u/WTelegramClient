@@ -1,3 +1,4 @@
+// This file is (mainly) generated automatically using the Generator class
 using System;
 
 namespace TL

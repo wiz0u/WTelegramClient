@@ -1,9 +1,9 @@
 ﻿# WTelegramClient
-## _Telegram client library written 100% in C# and .NET Core_
+### _Telegram client library written 100% in C# and .NET Core_
 
 ## How to use
 
-:warning: This library makes heavy use of asynchronous C# programming (`async/await`) so make sure you are familiar with this before attempting to use it.
+:warning: This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this before proceeding.
 
 After installing WTelegramClient through Nuget, your first Console program will be as simple as:
 ```csharp
@@ -21,12 +21,12 @@ Then it will attempt to sign-in as a user for which you must enter the **phone_n
 
 If the verification succeeds but the phone number is unknown to Telegram, the user might be prompted to sign-up (accepting the Terms of Service) and enter their **first_name** and **last_name**.
 
-And that's it, you have now access to the full range of Telegram services, mainly through calls to `await client.CallAsync(...)`
+And that's it, you now have access to the full range of Telegram services, mainly through calls to `await client.CallAsync(...)`
 
 # Saved session
 If you run this program again, you will notice that the previous prompts are gone and you are automatically logged-on and ready to go.
 
-This is because WTelegramClient saves (typically in the encrypted file **bin\WTelegram.session**) its state and the authentication keys that were negociated with Telegram so that you needn't sign-in again every time before using the Telegram API.
+This is because WTelegramClient saves (typically in the encrypted file **bin\WTelegram.session**) its state and the authentication keys that were negociated with Telegram so that you needn't sign-in again every time.
 
 That file path is configurable, and under various circumstances (changing user or server address) you may want to change it or simply delete the existing session file in order to restart the authentification process.
 
@@ -50,24 +50,28 @@ using var client = new WTelegram.Client(Config);
 ```
 There are other configuration items that are queried to your method but returning `null` let WTelegramClient choose a default adequate value.
 
-The configuration items shown above are the only one that have no default values and are required to be provided by your method.
+The configuration items shown above are the only ones that have no default values and are required to be provided by your method.
 
-The constructor also takes another delegate parameter that will be called for any other Update and other information/status messages that Telegram sends unsollicited, independently of your API requests.
+The constructor also takes another optional delegate parameter that will be called for any other Update and other information/status/service messages that Telegram sends unsollicited, independently of your API requests.
 
 Finally, if you want to redirect the library logs to your logger instead of the Console, you can install a delegate in the `WTelegram.Helpers.Log` static property.
-The first `int` parameter is the log severity, compatible with the classic [LogLevel enum](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel)
+Its `int` argument is the log severity, compatible with the classic [LogLevel enum](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel)
 
 # Example of API call
 
-:information_source: The Telegram API makes extensive usage of base and derived classes, so be ready to use the various syntax C# offers to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
+:information_source: The Telegram API makes extensive usage of base and derived classes, so be ready to use the various syntaxes C# offer to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
 
-To find which derived classes are available for a given base class, the fastest is to check our [TL.Schema.cs](src/TL.Schema.cs) source file as they appear in groups.
+To find which derived classes are available for a given base class, the fastest is to check our [TL.Schema.cs](src/TL.Schema.cs) source file as they are listed in groups.
 
-Below is an example of calling the [messages.getAllChats](https://core.telegram.org/method/messages.getAllChats) API and enumerating the various groups/channels the users is into:
+The Telegram [API object classes](https://core.telegram.org/schema) are defined in the `TL` namespace, and the request classes ([API functions](https://core.telegram.org/methods)) usable with `client.CallAsync` are under the `TL.Fn` static class.
+
+Below is an example of calling the [messages.getAllChats](https://core.telegram.org/method/messages.getAllChats) API function and enumerating the various groups/channels the user is in:
 ```csharp
+using TL;
+...
 var chatsBase = await client.CallAsync(new Fn.Messages_GetAllChats { });
-if (chatsBase is not Messages_Chats { chats: var chats }) return;
-Console.WriteLine("This person has joined the following:");
+if (chatsBase is not Messages_Chats { chats: var chats }) throw new Exception("hu?");
+Console.WriteLine("This user has joined the following:");
 foreach (var chat in chats)
     switch (chat)
     {
@@ -83,4 +87,28 @@ foreach (var chat in chats)
     }
 ```
 
+# Other things to know
+
+An invalid API request can result in a RpcException being raised, reflecting the [error code and status text](https://core.telegram.org/api/errors) of the problem.
+
+Beyond CallAsync, the Client class offers a few other methods to simplify the sending of files, medias or messages.
+
+The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code**
+
+# Development status
+The library is already well usable for many scenarios involving automated steps based on API requests/responses.
+
+Here are the main expected developments:
+- [x] Encrypt session file
+- [x] Support SignUp of unregistered users
+- [x] Improve code Generator (import of TL-schema JSONs)
+- [ ] Improve Nuget deployment experience (debug symbols? XML documentation?)
+- [ ] Convert API functions classes to real methods and serialize structures without using Reflection
+- [ ] Separate task/thread for reading/handling update messages independently from CallAsync
+- [ ] Support MTProto 2.0
+- [ ] Support users with 2FA enabled
+- [ ] Support secret chats end-to-end encryption & PFS
+- [ ] Support all service messages
+
+------------
 [![Build Status](https://dev.azure.com/wiz0u/WTelegramClient/_apis/build/status/wiz0u.WTelegramClient?branchName=master)](https://dev.azure.com/wiz0u/WTelegramClient/_build/latest?definitionId=7&branchName=master)

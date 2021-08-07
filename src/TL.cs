@@ -214,9 +214,9 @@ namespace TL
 		{
 			if (!type.IsArray)
 				writer.Write(NullCtor);
-			else if (type != typeof(byte[]))	// null arrays are serialized as empty
+			else if (type != typeof(byte[]))
 				writer.Write(VectorCtor);
-			writer.Write(0);
+			writer.Write(0);    // null arrays are serialized as empty
 		}
 
 		private static _Message[] DeserializeMessages(BinaryReader reader)

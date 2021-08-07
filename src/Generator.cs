@@ -40,6 +40,7 @@ namespace WTelegram
 			Console.WriteLine("Parsing " + jsonPath);
 			var schema = JsonSerializer.Deserialize<SchemaJson>(File.ReadAllText(jsonPath));
 			using var sw = File.CreateText(outputCs);
+			sw.WriteLine("// This file is (mainly) generated automatically using the Generator class");
 			sw.WriteLine("using System;");
 			sw.WriteLine();
 			sw.WriteLine("namespace TL");

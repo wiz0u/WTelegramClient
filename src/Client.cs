@@ -456,7 +456,6 @@ namespace WTelegram
 		}
 
 		#region TL-Helpers
-
 		/// <summary>Helper function to upload a file to Telegram</summary>
 		/// <returns>an <see cref="InputFile"/> or <see cref="InputFileBig"/> than can be used in various requests</returns>
 		public Task<InputFileBase> UploadFileAsync(string pathname)
