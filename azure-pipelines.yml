@@ -26,7 +26,8 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
-    versioningScheme: 'byBuildNumber'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: '$(Build.BuildNumber)'
 
 - task: NuGetCommand@2
   inputs:
@@ -34,6 +35,6 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.*upkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.*upkg'
     publishPackageMetadata: true
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'wiz0u3'
+    publishVstsFeed: 'wiz0u'
 
 
