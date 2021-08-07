@@ -293,7 +293,7 @@ namespace WTelegram
 				while ((line = sr.ReadLine()) != null)
 				{
 					if (currentLayer != 0 && line.StartsWith("\t\tpublic const int Layer"))
-						sw.WriteLine($"\t\tpublic const int Layer = {currentLayer};\t\t\t\t// fetched {DateTime.UtcNow}");
+						sw.WriteLine($"\t\tpublic const int Layer = {currentLayer};\t\t\t\t\t// fetched {DateTime.UtcNow}");
 					else
 						sw.WriteLine(line);
 					if (line == myTag)

@@ -7,6 +7,7 @@ namespace TL
 	{
 		public const int Layer = 121;				// fetched 07/08/2021 01:34:33
 		public const int VectorCtor = 0x1CB5C415;
+		public const int NullCtor = 0x56730BCC;
 
 		internal readonly static Dictionary<uint, Type> Table = new()
 		{

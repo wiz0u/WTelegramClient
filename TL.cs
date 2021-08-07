@@ -55,7 +55,10 @@ namespace TL
 			{
 				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1 << ifFlag.Bit)) == 0) continue;
 				object value = field.GetValue(obj);
-				SerializeValue(writer, value);
+				if (value == null)
+					SerializeNull(writer, field.FieldType);
+				else
+					SerializeValue(writer, value);
 				if (field.Name.Equals("Flags", StringComparison.OrdinalIgnoreCase)) flags = (int)value;
 			}
 		}
@@ -205,6 +208,15 @@ namespace TL
 			}
 			while (++length % 4 != 0) reader.ReadByte();
 			return bytes;
+		}
+
+		internal static void SerializeNull(BinaryWriter writer, Type type)
+		{
+			if (!type.IsArray)
+				writer.Write(NullCtor);
+			else if (type != typeof(byte[]))	// null arrays are serialized as empty
+				writer.Write(VectorCtor);
+			writer.Write(0);
 		}
 
 		private static _Message[] DeserializeMessages(BinaryReader reader)

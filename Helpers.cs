@@ -47,7 +47,7 @@ namespace WTelegram
 			return result;
 		}
 
-		public static ulong PQFactorize(ulong pq) // ported from https://github.com/tdlib/td/blob/master/tdutils/td/utils/crypto.cpp#L90
+		internal static ulong PQFactorize(ulong pq) // ported from https://github.com/tdlib/td/blob/master/tdutils/td/utils/crypto.cpp#L90
 		{
 			if (pq < 2) return 1;
 			var random = new Random();
