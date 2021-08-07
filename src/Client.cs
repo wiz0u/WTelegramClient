@@ -490,12 +490,10 @@ namespace WTelegram
 			}
 		}
 
-		//TODO: include XML comments in nuget?
-
 		/// <summary>Helper function to send a text or media message more easily</summary>
 		/// <param name="peer">destination of message</param>
 		/// <param name="caption">media caption</param>
-		/// <param name="mediaFile"><see langword="null"/> or a media file already uploaded to TG <i>(see <see cref="UploadFileAsync">UploadFileAsync</see>)</i></param>
+		/// <param name="mediaFile">media file already uploaded to TG <i>(see <see cref="UploadFileAsync"/>)</i></param>
 		/// <param name="mimeType"><see langword="null"/> for automatic detection, <c>"photo"</c> for an inline photo, or a MIME type to send as a document</param>
 		public Task<UpdatesBase> SendMediaAsync(InputPeer peer, string caption, InputFileBase mediaFile, string mimeType = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, bool disable_preview = false)
 		{

@@ -1,7 +1,7 @@
 trigger:
 - master
 
-name: 0.7.$(Rev:r)
+name: 0.7-alpha.$(Rev:r)
 
 pool:
   vmImage: ubuntu-latest
@@ -31,7 +31,8 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.*upkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.*upkg'
+    publishPackageMetadata: true
     nuGetFeedType: 'internal'
     publishVstsFeed: 'wiz0u'
 

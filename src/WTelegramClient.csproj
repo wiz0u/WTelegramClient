@@ -4,9 +4,23 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>WTelegram</RootNamespace>
+    <Deterministic>true</Deterministic>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageId>WTelegramClient</PackageId>
     <Description>Telegram client library written 100% in C# and .NET Core</Description>
     <Authors>Wizou</Authors>
+    <Copyright>Copyright © Olivier Marcoux 2021</Copyright>
+    <PackageTags>Telegram;Client;Api;UserBot;MTProto</PackageTags>
     <PackageProjectUrl>https://github.com/wiz0u/WTelegramClient</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/wiz0u/WTelegramClient.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1573;1591;0419</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +31,7 @@
 
   <ItemGroup>
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
