@@ -26,6 +26,6 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.*upkg'
     publishPackageMetadata: true
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'WTelegramClient'
+    publishVstsFeed: 'WTelegramClient/WTelegramClient'
 
 
