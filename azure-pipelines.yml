@@ -10,18 +10,6 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: Assembly-Info-NetCore@2
-  inputs:
-    Path: '$(Build.SourcesDirectory)'
-    FileNames: '**/*.csproj'
-    InsertAttributes: true
-    FileEncoding: 'auto'
-    WriteBOM: false
-    PackageVersion: '$(Build.BuildNumber)'
-    LogLevel: 'verbose'
-    FailOnWarning: false
-    DisableTelemetry: true
-
 - task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
@@ -29,7 +17,7 @@ steps:
     includesymbols: true
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'Build.BuildNumber'
-    buildProperties: 'NoWarn="1573;1591;0419"'
+    buildProperties: 'NoWarn="1573;1591;0419";Version=$(Build.BuildNumber)'
 #   buildProperties: 'NoWarn="1573;1591;0419";AllowedOutputExtensionsInPackageBuildOutputFolder=".dll;.xml;.pdb"'
 
 - task: NuGetCommand@2
