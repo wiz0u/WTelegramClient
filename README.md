@@ -102,7 +102,7 @@ Here are the main expected developments:
 - [x] Encrypt session file
 - [x] Support SignUp of unregistered users
 - [x] Improve code Generator (import of TL-schema JSONs)
-- [ ] Improve Nuget deployment experience (debug symbols? XML documentation?)
+- [x] Nuget deployment & public CI feed
 - [ ] Convert API functions classes to real methods and serialize structures without using Reflection
 - [ ] Separate task/thread for reading/handling update messages independently from CallAsync
 - [ ] Support MTProto 2.0
