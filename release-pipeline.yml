@@ -1,0 +1,28 @@
+trigger: none
+
+name: 0.7.$(Rev:r)
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/*.csproj'
+    includesymbols: true
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'Build.BuildNumber'
+    buildProperties: 'NoWarn="1573;1591;0419";Version=$(Build.BuildNumber)'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.*upkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'nuget.org'
+
+
