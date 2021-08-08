@@ -63,7 +63,7 @@ namespace WTelegram
 			if (answerObj is not ServerDHInnerData serverDHinnerData) throw new ApplicationException("not server_DH_inner_data");
 			long padding = encryptedReader.BaseStream.Length - encryptedReader.BaseStream.Position;
 			if (padding >= 16) throw new ApplicationException("Too much pad");
-			if (!Enumerable.SequenceEqual(SHA1.HashData(answer.AsSpan(20..^(int)padding)), answerHash))
+			if (!Enumerable.SequenceEqual(SHA.SHA1.ComputeHash(answer, 20, answer.Length - (int)padding), answerHash))
 				throw new ApplicationException("Answer SHA1 mismatch");
 			if (serverDHinnerData.nonce != resPQ.nonce) throw new ApplicationException("Nonce mismatch");
 			if (serverDHinnerData.server_nonce != resPQ.server_nonce) throw new ApplicationException("Server Nonce mismatch");
@@ -92,7 +92,7 @@ namespace WTelegram
 			var authKey = gab.ToByteArray(true, true);
 
 			//8)
-			var authKeyHash = SHA1.HashData(authKey);
+			var authKeyHash = SHA.SHA1.ComputeHash(authKey);
 			retry_id = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash); // (auth_key_aux_hash)
 			//9)
 			reply = await client.RecvInternalAsync();
@@ -104,7 +104,7 @@ namespace WTelegram
 			new_nonce.raw.CopyTo(expected_new_nonceN, 0);
 			expected_new_nonceN[32] = 1;
 			Array.Copy(authKeyHash, 0, expected_new_nonceN, 33, 8); // (auth_key_aux_hash)
-			if (!Enumerable.SequenceEqual(setClientDHparamsAnswer.new_nonce_hashN.raw, SHA1.HashData(expected_new_nonceN).Skip(4)))
+			if (!Enumerable.SequenceEqual(setClientDHparamsAnswer.new_nonce_hashN.raw, SHA.SHA1.ComputeHash(expected_new_nonceN).Skip(4)))
 				throw new ApplicationException("setClientDHparamsAnswer.new_nonce_hashN mismatch");
 
 			session.AuthKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
@@ -164,7 +164,7 @@ namespace WTelegram
 			if (clearLength > 255) throw new ApplicationException("PQInnerData too big");
 			byte[] clearBuffer = clearStream.GetBuffer();
 			RNG.GetBytes(clearBuffer, clearLength, 255 - clearLength);
-			SHA1.HashData(clearBuffer.AsSpan(20..clearLength), clearBuffer); // patch with SHA1
+			clearBuffer = SHA.SHA1.ComputeHash(clearBuffer, 20, clearLength); // patch with SHA1
 
 			var encrypted_data = BigInteger.ModPow(new BigInteger(clearBuffer, true, true), // encrypt with RSA key
 				new BigInteger(publicKey.e, true, true), new BigInteger(publicKey.n, true, true)).ToByteArray(true, true);
@@ -191,7 +191,7 @@ namespace WTelegram
 			clearStream.SetLength(clearLength + padding);
 			byte[] clearBuffer = clearStream.GetBuffer();
 			RNG.GetBytes(clearBuffer, clearLength, padding);
-			SHA1.HashData(clearBuffer.AsSpan(20..clearLength), clearBuffer);
+			clearBuffer = SHA.SHA1.ComputeHash(clearBuffer, 20, clearLength);
 
 			var encrypted_data = AES_IGE_EncryptDecrypt(clearBuffer.AsSpan(0, clearLength + padding), tmp_aes_key, tmp_aes_iv, true);
 			return new Fn.SetClientDHParams
@@ -208,8 +208,8 @@ namespace WTelegram
 			rsa.ImportFromPem(pem);
 			var rsaParam = rsa.ExportParameters(false);
 			var publicKey = new RSAPublicKey { n = rsaParam.Modulus, e = rsaParam.Exponent };
-			var bareData = Schema.Serialize(publicKey).AsSpan(4); // bare serialization
-			var fingerprint = BinaryPrimitives.ReadInt64LittleEndian(SHA1.HashData(bareData).AsSpan(12)); // 64 lower-order bits of SHA1
+			var bareData = Schema.Serialize(publicKey); // bare serialization
+			var fingerprint = BinaryPrimitives.ReadInt64LittleEndian(SHA.SHA1.ComputeHash(bareData, 4, bareData.Length - 4).AsSpan(12)); // 64 lower-order bits of SHA1
 			PublicKeys[fingerprint] = publicKey;
 			Helpers.Log(1, $"Loaded a public key with fingerprint {fingerprint:X}");
 		}

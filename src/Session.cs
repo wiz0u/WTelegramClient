@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 
 namespace WTelegram
@@ -49,20 +50,20 @@ namespace WTelegram
 			using var aes = Aes.Create();
 			using var decryptor = aes.CreateDecryptor(apiHash, input[0..16]);
 			var utf8Json = decryptor.TransformFinalBlock(input, 16, input.Length - 16);
-			if (!SHA256.HashData(utf8Json.AsSpan(32)).SequenceEqual(utf8Json[0..32]))
+			if (!SHA.SHA256.ComputeHash(utf8Json, 32, utf8Json.Length - 32).SequenceEqual(utf8Json[0..32]))
 				throw new ApplicationException("Integrity check failed in session loading");
 			return JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), Helpers.JsonOptions);
 		}
 
 		internal void Save()
 		{
-			var utf8Json = JsonSerializer.SerializeToUtf8Bytes(this, Helpers.JsonOptions);
+			var utf8Json = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(this, Helpers.JsonOptions));
 			var finalBlock = new byte[16];
 			var output = new byte[(16 + 32 + utf8Json.Length + 15) & ~15];
 			Encryption.RNG.GetBytes(output, 0, 16);
 			using var aes = Aes.Create();
 			using var encryptor = aes.CreateEncryptor(_apiHash, output[0..16]);
-			encryptor.TransformBlock(SHA256.HashData(utf8Json), 0, 32, output, 16);
+			encryptor.TransformBlock(SHA.SHA256.ComputeHash(utf8Json), 0, 32, output, 16);
 			encryptor.TransformBlock(utf8Json, 0, utf8Json.Length & ~15, output, 48);
 			utf8Json.AsSpan(utf8Json.Length & ~15).CopyTo(finalBlock);
 			encryptor.TransformFinalBlock(finalBlock, 0, utf8Json.Length & 15).CopyTo(output.AsMemory(48 + utf8Json.Length & ~15));

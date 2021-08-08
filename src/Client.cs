@@ -82,7 +82,8 @@ namespace WTelegram
 
 		public async Task ConnectAsync()
 		{
-			var endpoint = _session.DataCenter == null ? IPEndPoint.Parse(Config("server_address"))
+			var serverAddress = Config("server_address").Split(':');
+			var endpoint = _session.DataCenter == null ? new IPEndPoint(IPAddress.Parse(serverAddress[0]), int.Parse(serverAddress[1]))
 				: new IPEndPoint(IPAddress.Parse(_session.DataCenter.ip_address), _session.DataCenter.port);
 			Helpers.Log(2, $"Connecting to {endpoint}...");
 			_tcpClient = new TcpClient(endpoint.AddressFamily);
@@ -179,7 +180,7 @@ namespace WTelegram
 				byte[] clearBuffer = clearStream.GetBuffer();
 				BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(28), clearLength - 32);    // patch message_data_length
 				RNG.GetBytes(clearBuffer, clearLength, padding);
-				var clearSha1 = SHA1.HashData(clearBuffer.AsSpan(0, clearLength)); // padding excluded from computation!
+				var clearSha1 = SHA.SHA1.ComputeHash(clearBuffer, 0, clearLength); // padding excluded from computation!
 				byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(0, clearLength + padding), true, _session.AuthKey, clearSha1);
 
 				writer.Write(_session.AuthKeyID);	// int64 auth_key_id
@@ -193,10 +194,10 @@ namespace WTelegram
 			BinaryPrimitives.WriteInt32LittleEndian(buffer, frameLength + 4); // patch frame_len with correct value
 			uint crc = Force.Crc32.Crc32Algorithm.Compute(buffer, 0, frameLength);
 			writer.Write(crc);              // int32 frame_crc
-			var frame = memStream.GetBuffer().AsMemory(0, frameLength + 4);
+			var frame = memStream.GetBuffer()[..(frameLength + 4)];
 			//TODO: support Transport obfuscation?
 
-			await _networkStream.WriteAsync(frame);
+			await _networkStream.WriteAsync(frame, 0, frame.Length);
 			_lastSentMsg = msg;
 		}
 
@@ -252,7 +253,7 @@ namespace WTelegram
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				if ((seqno & 1) != 0) lock(_msgsToAck) _msgsToAck.Add(msgId);
 				if (decrypted_data.Length - 32 - length is < 0 or > 15) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
-				if (!data.AsSpan(8, 16).SequenceEqual(SHA1.HashData(decrypted_data.AsSpan(0, 32 + length)).AsSpan(4)))
+				if (!data.AsSpan(8, 16).SequenceEqual(SHA.SHA1.ComputeHash(decrypted_data, 0, 32 + length).AsSpan(4)))
 					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
 
 				var ctorNb = reader.ReadUInt32();
@@ -303,7 +304,7 @@ namespace WTelegram
 		{
 			for (int offset = 0; offset != length;)
 			{
-				var read = await stream.ReadAsync(buffer.AsMemory(offset, length - offset));
+				var read = await stream.ReadAsync(buffer, offset, length - offset);
 				if (read == 0) return offset;
 				offset += read;
 			}

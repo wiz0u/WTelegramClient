@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>WTelegram</RootNamespace>
     <Deterministic>true</Deterministic>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -10,7 +11,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageId>WTelegramClient</PackageId>
-    <Description>Telegram client library written 100% in C# and .NET Core</Description>
+    <Description>Telegram client library written 100% in C# and .NET Standard</Description>
     <Authors>Wizou</Authors>
     <Copyright>Copyright © Olivier Marcoux 2021</Copyright>
     <PackageTags>Telegram;Client;Api;UserBot;MTProto</PackageTags>
@@ -18,7 +19,6 @@
     <PackageProjectUrl>https://github.com/wiz0u/WTelegramClient</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wiz0u/WTelegramClient.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <!--<PackageReadmeFile>README.md</PackageReadmeFile> see https://github.com/NuGet/Home/issues/10791 -->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -28,12 +28,24 @@
   <ItemGroup>
     <None Remove=".gitattributes" />
     <None Remove=".gitignore" />
-    <!--<None Include="..\README.md" Pack="true" PackagePath=""/>-->
+    <None Remove="azure-pipelines.yml" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ArrayDeconstructors.Source" Version="1.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
+    <PackageReference Include="IndexRange" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray" Version="1.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
