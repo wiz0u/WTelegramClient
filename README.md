@@ -1,4 +1,7 @@
-﻿# WTelegramClient
+﻿[![NuGet version](https://badge.fury.io/nu/WTelegramClient.svg)](https://badge.fury.io/nu/WTelegramClient)
+[![Build Status](https://dev.azure.com/wiz0u/WTelegramClient/_apis/build/status/wiz0u.WTelegramClient?branchName=master)](https://dev.azure.com/wiz0u/WTelegramClient/_build/latest?definitionId=7&branchName=master)
+
+# WTelegramClient
 ### _Telegram client library written 100% in C# and .NET Core_
 
 ## How to use
@@ -95,6 +98,8 @@ Beyond CallAsync, the Client class offers a few other methods to simplify the se
 
 The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code**
 
+This library requires .NET 5.0 minimum.
+
 # Development status
 The library is already well usable for many scenarios involving automated steps based on API requests/responses.
 
@@ -109,7 +114,3 @@ Here are the main expected developments:
 - [ ] Support users with 2FA enabled
 - [ ] Support secret chats end-to-end encryption & PFS
 - [ ] Support all service messages
-
-------------
-[![Build Status](https://dev.azure.com/wiz0u/WTelegramClient/_apis/build/status/wiz0u.WTelegramClient?branchName=master)](https://dev.azure.com/wiz0u/WTelegramClient/_build/latest?definitionId=7&branchName=master)
-[![NuGet version](https://badge.fury.io/nu/WTelegramClient.svg)](https://badge.fury.io/nu/WTelegramClient)

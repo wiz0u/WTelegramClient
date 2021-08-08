@@ -18,6 +18,7 @@
     <PackageProjectUrl>https://github.com/wiz0u/WTelegramClient</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wiz0u/WTelegramClient.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <!--<PackageReadmeFile>README.md</PackageReadmeFile> see https://github.com/NuGet/Home/issues/10791 -->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,7 +28,7 @@
   <ItemGroup>
     <None Remove=".gitattributes" />
     <None Remove=".gitignore" />
-    <None Remove="azure-pipelines.yml" />
+    <!--<None Include="..\README.md" Pack="true" PackagePath=""/>-->
   </ItemGroup>
 
   <ItemGroup>
