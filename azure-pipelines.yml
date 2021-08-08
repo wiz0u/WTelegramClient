@@ -29,7 +29,7 @@ steps:
     includesymbols: true
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'Build.BuildNumber'
-    buildProperties: '/p:NoWarn=1591;AllowedOutputExtensionsInPackageBuildOutputFolder=".dll;.pdb;.xml"'
+    buildProperties: '/p:NoWarn=1591 /p:AllowedOutputExtensionsInPackageBuildOutputFolder=.dll;.pdb;.xml'
 
 - task: NuGetCommand@2
   inputs:
