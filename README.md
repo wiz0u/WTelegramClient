@@ -112,3 +112,4 @@ Here are the main expected developments:
 
 ------------
 [![Build Status](https://dev.azure.com/wiz0u/WTelegramClient/_apis/build/status/wiz0u.WTelegramClient?branchName=master)](https://dev.azure.com/wiz0u/WTelegramClient/_build/latest?definitionId=7&branchName=master)
+[![NuGet version](https://badge.fury.io/nu/WTelegramClient.svg)](https://badge.fury.io/nu/WTelegramClient)
