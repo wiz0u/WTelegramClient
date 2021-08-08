@@ -36,6 +36,6 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.*upkg'
     publishPackageMetadata: true
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'wiz0u2'
+    publishVstsFeed: 'wiz0u'
 
 
