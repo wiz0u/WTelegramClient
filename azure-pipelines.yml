@@ -29,7 +29,8 @@ steps:
     includesymbols: true
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'Build.BuildNumber'
-    buildProperties: 'NoWarn="1573;1591;0419";AllowedOutputExtensionsInPackageBuildOutputFolder="$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb"'
+    buildProperties: 'NoWarn="1573;1591;0419"'
+#   buildProperties: 'NoWarn="1573;1591;0419";AllowedOutputExtensionsInPackageBuildOutputFolder=".dll;.xml;.pdb"'
 
 - task: NuGetCommand@2
   inputs:
