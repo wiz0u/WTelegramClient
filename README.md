@@ -25,7 +25,7 @@ Then it will attempt to sign-in as a user for which you must enter the **phone_n
 
 If the verification succeeds but the phone number is unknown to Telegram, the user might be prompted to sign-up (accepting the Terms of Service) and enter their **first_name** and **last_name**.
 
-And that's it, you now have access to the full range of Telegram services, mainly through calls to `await client.CallAsync(...)`
+And that's it, you now have access to the full range of Telegram services, mainly through calls to `await client.Some_TL_Method(...)`
 
 # Saved session
 If you run this program again, you will notice that the previous prompts are gone and you are automatically logged-on and ready to go.
@@ -67,13 +67,13 @@ Its `int` argument is the log severity, compatible with the classic [LogLevel en
 
 To find which derived classes are available for a given base class, the fastest is to check our [TL.Schema.cs](src/TL.Schema.cs) source file as they are listed in groups.
 
-The Telegram [API object classes](https://core.telegram.org/schema) are defined in the `TL` namespace, and the request classes ([API functions](https://core.telegram.org/methods)) usable with `client.CallAsync` are under the `TL.Fn` static class.
+The Telegram [API object classes](https://core.telegram.org/schema) are defined in the `TL` namespace, and the [API functions](https://core.telegram.org/methods) are available as async methods of `Client`.
 
 Below is an example of calling the [messages.getAllChats](https://core.telegram.org/method/messages.getAllChats) API function and enumerating the various groups/channels the user is in:
 ```csharp
 using TL;
 ...
-var chatsBase = await client.CallAsync(new Fn.Messages_GetAllChats { });
+var chatsBase = await client.Messages_GetAllChats(null);
 if (chatsBase is not Messages_Chats { chats: var chats }) throw new Exception("hu?");
 Console.WriteLine("This user has joined the following:");
 foreach (var chat in chats)
@@ -95,7 +95,7 @@ foreach (var chat in chats)
 
 An invalid API request can result in a RpcException being raised, reflecting the [error code and status text](https://core.telegram.org/api/errors) of the problem.
 
-Beyond CallAsync, the Client class offers a few other methods to simplify the sending of files, medias or messages.
+Beyond the TL async methods, the Client class offers a few other methods to simplify the sending of files, medias or messages.
 
 The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code**
 
