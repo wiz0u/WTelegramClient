@@ -1,5 +1,5 @@
-trigger:
-- master
+trigger: master
+pr: none
 
 name: 0.7.1-alpha.$(Rev:r)
 
