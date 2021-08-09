@@ -11,15 +11,15 @@ using WTelegram;
 namespace TL
 {
 	public interface ITLObject { }
-	public interface ITLFunction<R> : ITLObject { }
+	public delegate string ITLFunction<out X>(BinaryWriter writer);
 
 	public static partial class Schema
 	{
-		internal static byte[] Serialize(ITLObject msg)
+		internal static byte[] Serialize(this ITLObject msg)
 		{
 			using var memStream = new MemoryStream(1024);
 			using (var writer = new BinaryWriter(memStream))
-				Serialize(writer, msg);
+				WriteTLObject(writer, msg);
 			return memStream.ToArray();
 		}
 
@@ -27,27 +27,15 @@ namespace TL
 		{
 			using var memStream = new MemoryStream(bytes);
 			using var reader = new BinaryReader(memStream);
-			return Deserialize<T>(reader);
+			return (T)reader.ReadTLObject();
 		}
 
-		internal static void Serialize(BinaryWriter writer, ITLObject msg)
+		internal static void WriteTLObject(this BinaryWriter writer, ITLObject obj)
 		{
-			var type = msg.GetType();
+			if (obj == null) { writer.Write(NullCtor); return; }
+			var type = obj.GetType();
 			var ctorNb = type.GetCustomAttribute<TLDefAttribute>().CtorNb;
 			writer.Write(ctorNb);
-			SerializeObject(writer, msg);
-		}
-
-		internal static T Deserialize<T>(BinaryReader reader) where T : ITLObject
-		{
-			var ctorNb = reader.ReadUInt32();
-			if (!Table.TryGetValue(ctorNb, out var realType))
-				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
-			return (T)DeserializeObject(reader, realType);
-		}
-
-		internal static void SerializeObject(BinaryWriter writer, object obj)
-		{
 			var fields = obj.GetType().GetFields().GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
@@ -56,30 +44,35 @@ namespace TL
 				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1 << ifFlag.Bit)) == 0) continue;
 				object value = field.GetValue(obj);
 				if (value == null)
-					SerializeNull(writer, field.FieldType);
+					writer.WriteTLNull(field.FieldType);
 				else
-					SerializeValue(writer, value);
+					writer.WriteTLValue(value);
 				if (field.Name.Equals("Flags", StringComparison.OrdinalIgnoreCase)) flags = (int)value;
 			}
 		}
 
-		internal static ITLObject DeserializeObject(BinaryReader reader, Type type)
+		internal static ITLObject ReadTLObject(this BinaryReader reader, Action<Type, object> notifyType = null)
 		{
+			var ctorNb = reader.ReadUInt32();
+			if (ctorNb == NullCtor) return null;
+			if (!Table.TryGetValue(ctorNb, out var type))
+				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 			var obj = Activator.CreateInstance(type);
+			notifyType?.Invoke(type, obj);
 			var fields = obj.GetType().GetFields().GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
 			{
 				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1 << ifFlag.Bit)) == 0) continue;
-				object value = DeserializeValue(reader, field.FieldType);
+				object value = reader.ReadTLValue(field.FieldType);
 				field.SetValue(obj, value);
 				if (field.Name.Equals("Flags", StringComparison.OrdinalIgnoreCase)) flags = (int)value;
 			}
 			return type == typeof(GzipPacked) ? UnzipPacket((GzipPacked)obj) : (ITLObject)obj;
 		}
 
-		internal static void SerializeValue(BinaryWriter writer, object value)
+		internal static void WriteTLValue(this BinaryWriter writer, object value)
 		{
 			var type = value.GetType();
 			switch (Type.GetTypeCode(type))
@@ -89,25 +82,21 @@ namespace TL
 				case TypeCode.Int64: writer.Write((long)value); break;
 				case TypeCode.UInt64: writer.Write((ulong)value); break;
 				case TypeCode.Double: writer.Write((double)value); break;
-				case TypeCode.String: SerializeBytes(writer, Encoding.UTF8.GetBytes((string)value)); break;
-				case TypeCode.DateTime: writer.Write((uint)(((DateTime)value).ToUniversalTime().Ticks / 10000000 - 62135596800L)); break;
-				case TypeCode.Boolean: writer.Write((bool)value ? 0x997275b5 : 0xbc799737); break;
+				case TypeCode.String: writer.WriteTLString((string)value); break;
+				case TypeCode.DateTime: writer.WriteTLStamp((DateTime)value); break;
+				case TypeCode.Boolean: writer.Write((bool)value ? 0x997275B5 : 0xBC799737); break;
 				case TypeCode.Object:
 					if (type.IsArray)
-					{
 						if (value is byte[] bytes)
-							SerializeBytes(writer, bytes);
+							writer.WriteTLBytes(bytes);
 						else
-							SerializeVector(writer, (Array)value);
-					}
+							writer.WriteTLVector((Array)value);
 					else if (value is Int128 int128)
 						writer.Write(int128);
 					else if (value is Int256 int256)
 						writer.Write(int256);
-					else if (type.IsValueType)
-						SerializeObject(writer, value);
 					else if (value is ITLObject tlObject)
-						Serialize(writer, tlObject);
+						WriteTLObject(writer, tlObject);
 					else
 						ShouldntBeHere();
 					break;
@@ -117,7 +106,7 @@ namespace TL
 			}
 		}
 
-		internal static object DeserializeValue(BinaryReader reader, Type type)
+		internal static object ReadTLValue(this BinaryReader reader, Type type)
 		{
 			switch (Type.GetTypeCode(type))
 			{
@@ -126,8 +115,8 @@ namespace TL
 				case TypeCode.Int64: return reader.ReadInt64();
 				case TypeCode.UInt64: return reader.ReadUInt64();
 				case TypeCode.Double: return reader.ReadDouble();
-				case TypeCode.String: return Encoding.UTF8.GetString(DeserializeBytes(reader));
-				case TypeCode.DateTime: return new DateTime((reader.ReadUInt32() + 62135596800L) * 10000000, DateTimeKind.Utc);
+				case TypeCode.String: return reader.ReadTLString();
+				case TypeCode.DateTime: return reader.ReadTLStamp();
 				case TypeCode.Boolean:
 					return reader.ReadUInt32() switch
 					{
@@ -139,36 +128,35 @@ namespace TL
 					if (type.IsArray)
 					{
 						if (type == typeof(byte[]))
-							return DeserializeBytes(reader);
+							return reader.ReadTLBytes();
 						else if (type == typeof(_Message[]))
-							return DeserializeMessages(reader);
+							return reader.ReadTLMessages();
 						else
-							return DeserializeVector(reader, type);
+							return reader.ReadTLVector(type);
 					}
 					else if (type == typeof(Int128))
 						return new Int128(reader);
 					else if (type == typeof(Int256))
 						return new Int256(reader);
-					else if (type.IsValueType)
-						return DeserializeObject(reader, type);
 					else
-						return Deserialize<ITLObject>(reader);
+						return ReadTLObject(reader);
 				default:
 					ShouldntBeHere();
 					return null;
 			}
 		}
 
-		private static void SerializeVector(BinaryWriter writer, Array array)
+		internal static void WriteTLVector(this BinaryWriter writer, Array array)
 		{
 			writer.Write(VectorCtor);
+			if (array == null) { writer.Write(0); return; }
 			int count = array.Length;
 			writer.Write(count);
 			for (int i = 0; i < count; i++)
-				SerializeValue(writer, array.GetValue(i));
+				writer.WriteTLValue(array.GetValue(i));
 		}
 
-		private static object DeserializeVector(BinaryReader reader, Type type)
+		internal static Array ReadTLVector(this BinaryReader reader, Type type)
 		{
 			var ctorNb = reader.ReadInt32();
 			if (ctorNb != VectorCtor) throw new ApplicationException($"Cannot deserialize {type.Name} with ctor #{ctorNb:x}");
@@ -176,12 +164,30 @@ namespace TL
 			int count = reader.ReadInt32();
 			Array array = (Array)Activator.CreateInstance(type, count);
 			for (int i = 0; i < count; i++)
-				array.SetValue(DeserializeValue(reader, elementType), i);
+				array.SetValue(reader.ReadTLValue(elementType), i);
 			return array;
 		}
 
-		private static void SerializeBytes(BinaryWriter writer, byte[] bytes)
+		internal static void WriteTLStamp(this BinaryWriter writer, DateTime datetime)
+			=> writer.Write((uint)(datetime.ToUniversalTime().Ticks / 10000000 - 62135596800L));
+
+		internal static DateTime ReadTLStamp(this BinaryReader reader)
+			=> new((reader.ReadUInt32() + 62135596800L) * 10000000, DateTimeKind.Utc);
+
+		internal static void WriteTLString(this BinaryWriter writer, string str)
 		{
+			if (str == null)
+				writer.Write(0);
+			else
+				writer.WriteTLBytes(Encoding.UTF8.GetBytes(str));
+		}
+
+		internal static string ReadTLString(this BinaryReader reader)
+			=> Encoding.UTF8.GetString(reader.ReadTLBytes());
+
+		internal static void WriteTLBytes(this BinaryWriter writer, byte[] bytes)
+		{
+			if (bytes == null) { writer.Write(0); return; }
 			int length = bytes.Length;
 			if (length < 254)
 				writer.Write((byte)length);
@@ -194,7 +200,7 @@ namespace TL
 			while (++length % 4 != 0) writer.Write((byte)0);
 		}
 
-		private static byte[] DeserializeBytes(BinaryReader reader)
+		internal static byte[] ReadTLBytes(this BinaryReader reader)
 		{
 			byte[] bytes;
 			int length = reader.ReadByte();
@@ -210,7 +216,7 @@ namespace TL
 			return bytes;
 		}
 
-		internal static void SerializeNull(BinaryWriter writer, Type type)
+		internal static void WriteTLNull(this BinaryWriter writer, Type type)
 		{
 			if (!type.IsArray)
 				writer.Write(NullCtor);
@@ -219,7 +225,7 @@ namespace TL
 			writer.Write(0);    // null arrays are serialized as empty
 		}
 
-		private static _Message[] DeserializeMessages(BinaryReader reader)
+		internal static _Message[] ReadTLMessages(this BinaryReader reader)
 		{
 			int count = reader.ReadInt32();
 			var array = new _Message[count];
@@ -234,7 +240,7 @@ namespace TL
 				var pos = reader.BaseStream.Position;
 				try
 				{
-					array[i].body = (ITLObject)DeserializeValue(reader, typeof(ITLObject));
+					array[i].body = reader.ReadTLObject();
 				}
 				catch (Exception ex)
 				{
@@ -245,10 +251,10 @@ namespace TL
 			return array;
 		}
 
-		private static ITLObject UnzipPacket(GzipPacked obj)
+		internal static ITLObject UnzipPacket(GzipPacked obj)
 		{
 			using var reader = new BinaryReader(new GZipStream(new MemoryStream(obj.packed_data), CompressionMode.Decompress));
-			var result = Deserialize<ITLObject>(reader);
+			var result = ReadTLObject(reader);
 			Helpers.Log(1, $"            → {result.GetType().Name}");
 			return result;
 		}

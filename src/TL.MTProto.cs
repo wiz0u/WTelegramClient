@@ -1,5 +1,6 @@
 ﻿// This file is (mainly) generated automatically using the Generator class
 using System;
+using System.Threading.Tasks;
 
 namespace TL
 {
@@ -12,7 +13,7 @@ namespace TL
 		public long[] server_public_key_fingerprints;
 	}
 
-	[TLDef(0x83C95AEC)] //p_q_inner_data# pq:string p:string q:string nonce:int128 server_nonce:int128 new_nonce:int256 = P_Q_inner_data
+	[TLDef(0x83C95AEC)] //p_q_inner_data#83c95aec pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 = P_Q_inner_data
 	public class PQInnerData : ITLObject
 	{
 		public byte[] pq;
@@ -22,12 +23,9 @@ namespace TL
 		public Int128 server_nonce;
 		public Int256 new_nonce;
 	}
-	[TLDef(0xA9F55F95)] //p_q_inner_data_dc#a9f55f95 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int = P_Q_inner_data
-	public class PQInnerDataDC : PQInnerData
-	{
-		public int dc;
-	}
-	[TLDef(0x56FDDF88)] //p_q_inner_data_temp_dc#56fddf88 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int expires_in:int = P_Q_inner_data
+	[TLDef(0xA9F55F95)] //p_q_inner_data_DC#a9f55f95 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int = P_Q_inner_data
+	public class PQInnerDataDC : PQInnerData { public int dc; }
+	[TLDef(0x56FDDF88)] //p_q_inner_data_temp_DC#56fddf88 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int expires_in:int = P_Q_inner_data
 	public class PQInnerDataTempDC : PQInnerData
 	{
 		public int dc;
@@ -70,11 +68,11 @@ namespace TL
 		public Int128 server_nonce;
 		public Int128 new_nonce_hashN; // 16 low order bytes from SHA1(new_nonce + (01=ok, 02=retry, 03=fail) + 8 high order bytes from SHA1(auth_key))
 	}
-	[TLDef(0x3BCBF734)] //dh_gen_ok#3bcbf734 nonce:int128 server_nonce:int128 new_nonce_hash1:int128 = Set_client_DH_params_answer
+	[TLDef(0x3BCBF734)] //DH_gen_ok#3bcbf734 nonce:int128 server_nonce:int128 new_nonce_hashN:int128 = Set_client_DH_params_answer
 	public class DHGenOk : SetClientDHParamsAnswer { }
-	[TLDef(0x46DC1FB9)] //dh_gen_retry#46dc1fb9 nonce:int128 server_nonce:int128 new_nonce_hash2:int128 = Set_client_DH_params_answer
+	[TLDef(0x46DC1FB9)] //DH_gen_retry#46dc1fb9 nonce:int128 server_nonce:int128 new_nonce_hashN:int128 = Set_client_DH_params_answer
 	public class DHGenRetry : SetClientDHParamsAnswer { }
-	[TLDef(0xA69DAE02)] //dh_gen_fail#a69dae02 nonce:int128 server_nonce:int128 new_nonce_hash3:int128 = Set_client_DH_params_answer
+	[TLDef(0xA69DAE02)] //DH_gen_fail#a69dae02 nonce:int128 server_nonce:int128 new_nonce_hashN:int128 = Set_client_DH_params_answer
 	public class DHGenFail : SetClientDHParamsAnswer { }
 
 	[TLDef(0x75A3F765)] //bind_auth_key_inner#75a3f765 nonce:long temp_auth_key_id:long perm_auth_key_id:long temp_session_id:long expires_at:int = BindAuthKeyInner
@@ -90,8 +88,8 @@ namespace TL
 	[TLDef(0xF35C6D01)] //rpc_result#f35c6d01 req_msg_id:long result:Object = RpcResult
 	public class RpcResult : ITLObject
 	{
-		public long req_msg_id;
-		public object result;
+		internal long req_msg_id;
+		internal object result;
 	}
 
 	[TLDef(0x2144CA19)] //rpc_error#2144ca19 error_code:int error_message:string = RpcError
@@ -122,7 +120,7 @@ namespace TL
 		public long salt;
 	}
 
-	[TLDef(0xAE500895)] //future_salts#ae500895 req_msg_id:long now:int salts:vector<future_salt> = FutureSalts
+	[TLDef(0xAE500895)] //future_salts#ae500895 req_msg_id:long now:int salts:Vector<FutureSalt> = FutureSalts
 	public class FutureSalts : ITLObject
 	{
 		public long req_msg_id;
@@ -156,8 +154,8 @@ namespace TL
 	[TLDef(0x73F1F8DC)] //msg_container#73f1f8dc messages:vector<%Message> = MessageContainer
 	public class MsgContainer : MessageContainer { public _Message[] messages; }
 
-#pragma warning disable IDE1006 // Naming Styles
-	//[TLDef(0x5BB8E511)] //message#5bb8e511 msg_id:long seqno:int bytes:int body:Object = Message
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006")]
+	[TLDef(0x5BB8E511)] //message#5bb8e511 msg_id:long seqno:int bytes:int body:Object = Message
 	public class _Message
 	{
 		public long msg_id;
@@ -165,7 +163,6 @@ namespace TL
 		public int bytes;
 		public ITLObject body;
 	}
-#pragma warning restore IDE1006 // Naming Styles
 
 	public abstract class MessageCopy : ITLObject { }
 	[TLDef(0xE06046B2)] //msg_copy#e06046b2 orig_message:Message = MessageCopy
@@ -224,7 +221,7 @@ namespace TL
 		public int status;
 	}
 
-	[TLDef(0x7A19CB76)] //rsa_public_key n:string e:string = RSAPublicKey
+	[TLDef(0x7A19CB76)] //RSA_public_key#7a19cb76 n:bytes e:bytes = RSAPublicKey
 	public class RSAPublicKey : ITLObject
 	{
 		public byte[] n;
@@ -238,61 +235,110 @@ namespace TL
 	public class DestroyAuthKeyNone : DestroyAuthKeyRes { }
 	[TLDef(0xEA109B13)] //destroy_auth_key_fail#ea109b13 = DestroyAuthKeyRes
 	public class DestroyAuthKeyFail : DestroyAuthKeyRes { }
+}
 
-	public static partial class Fn // ---functions---
+namespace WTelegram		// ---functions---
+{
+	using System.IO;
+	using TL;
+
+	public partial class Client
 	{
-		[TLDef(0x60469778)] //req_pq#60469778 nonce:int128 = ResPQ
-		public class ReqPQ : ITLFunction<ResPQ> { public Int128 nonce; }
-		[TLDef(0xBE7E8EF1)] //req_pq_multi#be7e8ef1 nonce:int128 = ResPQ
-		public class ReqPQmulti : ResPQ { }
+		//req_PQ#60469778 nonce:int128 = ResPQ
+		public Task<ResPQ> ReqPQ(Int128 nonce)
+			=> CallAsync<ResPQ>(writer =>
+			{
+				writer.Write(0x60469778);
+				writer.Write(nonce);
+				return "ReqPQ";
+			});
 
-		[TLDef(0xD712E4BE)] //req_DH_params#d712e4be nonce:int128 server_nonce:int128 p:bytes q:bytes public_key_fingerprint:long encrypted_data:bytes = Server_DH_Params
-		public class ReqDHParams : ITLFunction<ServerDHParams>
-		{
-			public Int128 nonce;
-			public Int128 server_nonce;
-			public byte[] p;
-			public byte[] q;
-			public long public_key_fingerprint;
-			public byte[] encrypted_data;
-		}
+		//req_pq_multi#be7e8ef1 nonce:int128 = ResPQ
+		public Task<ResPQ> ReqPqMulti(Int128 nonce)
+			=> CallAsync<ResPQ>(writer =>
+			{
+				writer.Write(0xBE7E8EF1);
+				writer.Write(nonce);
+				return "ReqPqMulti";
+			});
 
-		[TLDef(0xF5045F1F)] //set_client_DH_params#f5045f1f nonce:int128 server_nonce:int128 encrypted_data:bytes = Set_client_DH_params_answer
-		public class SetClientDHParams : ITLFunction<SetClientDHParamsAnswer>
-		{
-			public Int128 nonce;
-			public Int128 server_nonce;
-			public byte[] encrypted_data;
-		}
+		//req_DH_params#d712e4be nonce:int128 server_nonce:int128 p:bytes q:bytes public_key_fingerprint:long encrypted_data:bytes = Server_DH_Params
+		public Task<ServerDHParams> ReqDHParams(Int128 nonce, Int128 server_nonce, byte[] p, byte[] q, long public_key_fingerprint, byte[] encrypted_data)
+			=> CallAsync<ServerDHParams>(writer =>
+			{
+				writer.Write(0xD712E4BE);
+				writer.Write(nonce);
+				writer.Write(server_nonce);
+				writer.WriteTLBytes(p);
+				writer.WriteTLBytes(q);
+				writer.Write(public_key_fingerprint);
+				writer.WriteTLBytes(encrypted_data);
+				return "ReqDHParams";
+			});
 
-		[TLDef(0x58E4A740)] //rpc_drop_answer#58e4a740 req_msg_id:long = RpcDropAnswer
-		public class ReqRpcDropAnswer : ITLFunction<RpcDropAnswer> { public long req_msg_id; }
+		//set_client_DH_params#f5045f1f nonce:int128 server_nonce:int128 encrypted_data:bytes = Set_client_DH_params_answer
+		public Task<SetClientDHParamsAnswer> SetClientDHParams(Int128 nonce, Int128 server_nonce, byte[] encrypted_data)
+			=> CallAsync<SetClientDHParamsAnswer>(writer =>
+			{
+				writer.Write(0xF5045F1F);
+				writer.Write(nonce);
+				writer.Write(server_nonce);
+				writer.WriteTLBytes(encrypted_data);
+				return "SetClientDHParams";
+			});
 
-		[TLDef(0xB921BD04)] //get_future_salts#b921bd04 num:int = FutureSalts
-		public class GetFutureSalts : ITLFunction<FutureSalts> { public int num; }
+		//rpc_drop_answer#58e4a740 req_msg_id:long = RpcDropAnswer
+		public Task<RpcDropAnswer> RpcDropAnswer(long req_msg_id)
+			=> CallAsync<RpcDropAnswer>(writer =>
+			{
+				writer.Write(0x58E4A740);
+				writer.Write(req_msg_id);
+				return "RpcDropAnswer";
+			});
 
-		[TLDef(0x7ABE77EC)] //ping#7abe77ec ping_id:long = Pong
-		public class Ping : ITLFunction<Pong> { public long ping_id; }
+		//get_future_salts#b921bd04 num:int = FutureSalts
+		public Task<FutureSalts> GetFutureSalts(int num)
+			=> CallAsync<FutureSalts>(writer =>
+			{
+				writer.Write(0xB921BD04);
+				writer.Write(num);
+				return "GetFutureSalts";
+			});
 
-		[TLDef(0xF3427B8C)] //ping_delay_disconnect#f3427b8c ping_id:long disconnect_delay:int = Pong
-		public class PingDelayDisconnect : ITLFunction<Pong>
-		{
-			public long ping_id;
-			public int disconnect_delay; // seconds
-		}
+		//ping#7abe77ec ping_id:long = Pong
+		public Task<Pong> Ping(long ping_id)
+			=> CallAsync<Pong>(writer =>
+			{
+				writer.Write(0x7ABE77EC);
+				writer.Write(ping_id);
+				return "Ping";
+			});
 
-		[TLDef(0xE7512126)] //destroy_session#e7512126 session_id:long = DestroySessionRes
-		public class DestroySession : ITLFunction<DestroySessionRes> { public long session_id; }
+		//ping_delay_disconnect#f3427b8c ping_id:long disconnect_delay:int = Pong
+		public Task<Pong> PingDelayDisconnect(long ping_id, int disconnect_delay)
+			=> CallAsync<Pong>(writer =>
+			{
+				writer.Write(0xF3427B8C);
+				writer.Write(ping_id);
+				writer.Write(disconnect_delay);
+				return "PingDelayDisconnect";
+			});
 
-		[TLDef(0x9299359F)] //http_wait#9299359f max_delay:int wait_after:int max_wait:int = HttpWait
-		public class HttpWait : ITLObject
-		{
-			public int max_delay;   // ms
-			public int wait_after;  // ms
-			public int max_wait;    // ms
-		}
+		//destroy_session#e7512126 session_id:long = DestroySessionRes
+		public Task<DestroySessionRes> DestroySession(long session_id)
+			=> CallAsync<DestroySessionRes>(writer =>
+			{
+				writer.Write(0xE7512126);
+				writer.Write(session_id);
+				return "DestroySession";
+			});
 
-		[TLDef(0xD1435160)] //destroy_auth_key#d1435160 = DestroyAuthKeyRes
-		public class DestroyAuthKey : ITLFunction<DestroyAuthKeyRes> { }
+		//destroy_auth_key#d1435160 = DestroyAuthKeyRes
+		public Task<DestroyAuthKeyRes> DestroyAuthKey()
+			=> CallAsync<DestroyAuthKeyRes>(writer =>
+			{
+				writer.Write(0xD1435160);
+				return "DestroyAuthKey";
+			});
 	}
 }

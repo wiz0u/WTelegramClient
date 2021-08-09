@@ -16,6 +16,7 @@ namespace WTelegram
 		readonly Dictionary<int, string> ctorToTypes = new();
 		readonly HashSet<string> allTypes = new();
 		readonly Dictionary<int, Dictionary<string, TypeInfo>> typeInfosByLayer = new();
+		readonly Dictionary<string, int> knownStyles = new() { ["InitConnection"] = 1, ["Help_GetConfig"] = 0, ["HttpWait"] = -1 };
 		Dictionary<string, TypeInfo> typeInfos;
 		int currentLayer;
 		string tabIndent;
@@ -30,18 +31,20 @@ namespace WTelegram
 			//await File.WriteAllBytesAsync("TL.MTProto.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/mtproto-json"));
 			//await File.WriteAllBytesAsync("TL.Schema.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/json"));
 			//await File.WriteAllBytesAsync("TL.Secret.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/end-to-end-json"));
-			FromJson("TL.MTProto.json", "TL.MTProto.cs", @"TL.Table.cs");
+			FromJson("TL.MTProto.json", "TL.MTProto.cs", @"TL.Table.cs", true);
 			FromJson("TL.Schema.json", "TL.Schema.cs", @"TL.Table.cs");
 			FromJson("TL.Secret.json", "TL.Secret.cs", @"TL.Table.cs");
 		}
 
-		public void FromJson(string jsonPath, string outputCs, string tableCs = null)
+		public void FromJson(string jsonPath, string outputCs, string tableCs = null, bool legacy = false)
 		{
 			Console.WriteLine("Parsing " + jsonPath);
 			var schema = JsonSerializer.Deserialize<SchemaJson>(File.ReadAllText(jsonPath));
+			if (legacy) InjectLegacy(schema);
 			using var sw = File.CreateText(outputCs);
 			sw.WriteLine("// This file is (mainly) generated automatically using the Generator class");
 			sw.WriteLine("using System;");
+			if (schema.methods.Count != 0) sw.WriteLine("using System.Threading.Tasks;");
 			sw.WriteLine();
 			sw.WriteLine("namespace TL");
 			sw.Write("{");
@@ -107,7 +110,7 @@ namespace WTelegram
 					}
 				}
 				foreach (var typeInfo in typeInfos.Values)
-					WriteTypeInfo(sw, typeInfo, jsonPath, layerPrefix, false);
+					WriteTypeInfo(sw, typeInfo, layerPrefix, false);
 				if (layer.Key != 0)
 				{
 					sw.WriteLine("\t}");
@@ -116,20 +119,28 @@ namespace WTelegram
 			}
 			if (typeInfosByLayer[0]["Message"].SameName.ID == 0x5BB8E511) typeInfosByLayer[0].Remove("Message");
 
-			sw.WriteLine();
 			var methods = new List<TypeInfo>();
-			if (schema.methods.Length != 0)
+			if (schema.methods.Count != 0)
 			{
 				typeInfos = typeInfosByLayer[0];
-				sw.WriteLine("\tpublic static partial class Fn // ---functions---");
+				sw.WriteLine("}");
+				sw.WriteLine("");
+				sw.WriteLine("namespace WTelegram\t\t// ---functions---");
+				sw.WriteLine("{");
+				sw.WriteLine("\tusing System.IO;");
+				sw.WriteLine("\tusing TL;");
+				sw.WriteLine();
+				sw.WriteLine("\tpublic partial class Client");
+				//sw.WriteLine("\tpublic static partial class Fn // ---functions---");
 				sw.Write("\t{");
 				tabIndent = "\t\t";
 				foreach (var method in schema.methods)
 				{
-					var typeInfo = new TypeInfo { ReturnName = method.type };
-					typeInfo.Structs.Add(new Constructor { id = method.id, @params = method.@params, predicate = method.method, type = method.type });
-					methods.Add(typeInfo);
-					WriteTypeInfo(sw, typeInfo, jsonPath, "", true);
+					WriteMethod(sw, method);
+					//var typeInfo = new TypeInfo { ReturnName = method.type };
+					//typeInfo.Structs.Add(new Constructor { id = method.id, @params = method.@params, predicate = method.method, type = method.type });
+					//methods.Add(typeInfo);
+					//WriteTypeInfo(sw, typeInfo, "", true);
 				}
 				sw.WriteLine("\t}");
 			}
@@ -138,7 +149,35 @@ namespace WTelegram
 			if (tableCs != null) UpdateTable(jsonPath, tableCs, methods);
 		}
 
-		void WriteTypeInfo(StreamWriter sw, TypeInfo typeInfo, string definedIn, string layerPrefix, bool isMethod)
+		private static void InjectLegacy(SchemaJson schema)
+		{
+			foreach (var c in schema.constructors.Where(c => c.type == "P_Q_inner_data"))
+				c.predicate = c.predicate[..^2] + "DC";
+			var add = new Constructor { id = ID(0x83C95AEC), predicate = "p_q_inner_data", type = "P_Q_inner_data",
+				@params = Params("pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256") };
+			schema.constructors.Insert(schema.constructors.FindIndex(c => c.type == add.type), add);
+			add = new Constructor { id = ID(0x79CB045D), predicate = "server_DH_params_fail", type = "Server_DH_Params",
+				@params = Params("nonce:int128 server_nonce:int128 new_nonce_hash:int128") };
+			schema.constructors.Insert(schema.constructors.FindIndex(c => c.type == add.type), add);
+			add = new Constructor { id = ID(0x7A19CB76), predicate = "RSA_public_key", type = "RSAPublicKey",
+				@params = Params("n:bytes e:bytes") };
+			schema.constructors.Insert(schema.constructors.FindIndex(c => c.type == "DestroyAuthKeyRes"), add);
+			foreach (var c in schema.constructors.Where(c => c.type == "Set_client_DH_params_answer"))
+			{
+				c.predicate = "DH" + c.predicate[2..];
+				c.@params[2].name = "new_nonce_hashN";
+			}
+			schema.constructors.Find(c => c.predicate == "future_salts").@params[2].type = "Vector<FutureSalt>";
+			var addm = new Method { id = ID(0x60469778), method= "req_PQ", type = "ResPQ",
+				@params = Params("nonce:int128") };
+			schema.methods.Insert(0, addm);
+
+			static string ID(uint id) => ((int)id).ToString();
+			static Param[] Params(string args)
+				=> args.Split(' ').Select(s => { var nt = s.Split(':'); return new Param { name = nt[0], type = nt[1] }; }).ToArray();
+		}
+
+		void WriteTypeInfo(StreamWriter sw, TypeInfo typeInfo, string layerPrefix, bool isMethod)
 		{
 			var parentClass = typeInfo.NeedAbstract != 0 ? typeInfo.ReturnName : "ITLObject";
 			var genericType = typeInfo.ReturnName.Length == 1 ? $"<{typeInfo.ReturnName}>" : null;
@@ -238,49 +277,185 @@ namespace WTelegram
 					sw.WriteLine(" }");
 				skipParams = typeInfo.NeedAbstract;
 			}
-			string MapName(string name) => name switch
-			{
-				"out" => "out_",
-				"static" => "static_",
-				"long" => "long_",
-				"default" => "default_",
-				"public" => "public_",
-				"params" => "params_",
-				"private" => "private_",
-				_ => name
-			};
+		}
 
-			string MapType(string type, string name)
+		private static string MapName(string name) => name switch
+		{
+			"out" => "out_",
+			"static" => "static_",
+			"long" => "long_",
+			"default" => "default_",
+			"public" => "public_",
+			"params" => "params_",
+			"private" => "private_",
+			_ => name
+		};
+
+		private string MapType(string type, string name)
+		{
+			if (type.StartsWith("Vector<", StringComparison.OrdinalIgnoreCase))
+				return MapType(type[7..^1], name) + "[]";
+			else if (type == "Bool")
+				return "bool";
+			else if (type == "bytes")
+				return "byte[]";
+			else if (type == "int128")
+				return "Int128";
+			else if (type == "int256")
+				return "Int256";
+			else if (type == "Object")
+				return "ITLObject";
+			else if (type == "!X")
+				return "ITLFunction<X>";
+			else if (typeInfos.TryGetValue(type, out var typeInfo))
+				return typeInfo.ReturnName;
+			else if (type == "int")
 			{
-				if (type.StartsWith("Vector<", StringComparison.OrdinalIgnoreCase))
-					return MapType(type[7..^1], name) + "[]";
-				else if (type == "Bool")
-					return "bool";
-				else if (type == "bytes")
-					return "byte[]";
-				else if (type == "int128")
-					return "Int128";
-				else if (type == "int256")
-					return "Int256";
-				else if (type == "Object")
-					return "ITLObject";
-				else if (type == "!X")
-					return "ITLFunction<X>";
-				else if (typeInfos.TryGetValue(type, out var typeInfo))
-					return typeInfo.ReturnName;
-				else if (type == "int")
-				{
-					var name2 = '_' + name + '_';
-					if (name2.EndsWith("_date_") || name2.EndsWith("_time_") || name2 == "_expires_" || name2 == "_now_" || name2.StartsWith("_valid_"))
-						return "DateTime";
-					else
-						return "int";
-				}
-				else if (type == "string")
-					return name.StartsWith("md5") ? "byte[]" : "string";
+				var name2 = '_' + name + '_';
+				if (name2.EndsWith("_date_") || name2.EndsWith("_time_") || name2.StartsWith("_valid_") ||
+					name2 == "_expires_" || name2 == "_expires_at_" || name2 == "_now_")
+					return "DateTime";
 				else
-					return type;
+					return "int";
 			}
+			else if (type == "string")
+				return name.StartsWith("md5") ? "byte[]" : "string";
+			else
+				return type;
+		}
+
+		private string MapOptionalType(string type, string name)
+		{
+			if (type == "Bool")
+				return "bool?";
+			else if (type == "long")
+				return "long?";
+			else if (type == "double")
+				return "double?";
+			else if (type == "int128")
+				return "Int128?";
+			else if (type == "int256")
+				return "Int256?";
+			else if (type == "int")
+			{
+				var name2 = '_' + name + '_';
+				if (name2.EndsWith("_date_") || name2.EndsWith("_time_") || name2 == "_expires_" || name2 == "_now_" || name2.StartsWith("_valid_"))
+					return "DateTime?";
+				else
+					return "int?";
+			}
+			else
+				return MapType(type, name);
+		}
+
+		private void WriteMethod(StreamWriter sw, Method method)
+		{
+			int ctorNb = int.Parse(method.id);
+			var funcName = CSharpName(method.method);
+			string returnType = MapType(method.type, "");
+			int style = knownStyles.GetValueOrDefault(funcName, 2);
+			// styles: 0 = static string, 1 = static ITLFunction<>, 2 = Task<>, -1 = skip method
+			if (style == -1) return;
+			sw.WriteLine();
+
+			sw.Write($"{tabIndent}//{method.method}#{ctorNb:x8} ");
+			if (method.type.Length == 1) { sw.Write($"{{{method.type}:Type}} "); funcName += $"<{returnType}>"; }
+			foreach (var parm in method.@params) sw.Write($"{parm.name}:{parm.type} ");
+			sw.WriteLine($"= {method.type}");
+
+			if (style == 0) sw.WriteLine($"{tabIndent}public Task<{returnType}> {funcName}() => CallAsync<{returnType}>({funcName});");
+			if (style == 0) sw.Write($"{tabIndent}public static string {funcName}(BinaryWriter writer");
+			if (style == 1) sw.Write($"{tabIndent}public static ITLFunction<{returnType}> {funcName}(");
+			if (style == 2) sw.Write($"{tabIndent}public Task<{returnType}> {funcName}(");
+			bool first = style != 0;
+			foreach (var parm in method.@params) // output non-optional parameters
+			{
+				if (parm.type == "#" || parm.type.StartsWith("flags.")) continue;
+				if (first) first = false; else sw.Write(", ");
+				sw.Write($"{MapType(parm.type, parm.name)} {MapName(parm.name)}");
+			}
+			string flagExpr = null;
+			foreach (var parm in method.@params) // output optional parameters
+			{
+				if (!parm.type.StartsWith("flags.")) continue;
+				var parmName = MapName(parm.name);
+				int qm = parm.type.IndexOf('?');
+				int bit = int.Parse(parm.type[6..qm]);
+				if (first) first = false; else sw.Write(", ");
+				if (parm.type.EndsWith("?true"))
+				{
+					sw.Write($"bool {parmName} = false");
+					flagExpr += $" | ({parmName} ? 0x{1 << bit:X} : 0)";
+				}
+				else
+				{
+					sw.Write($"{MapOptionalType(parm.type[(qm + 1)..], parm.name)} {parmName} = null");
+					flagExpr += $" | ({parmName} != null ? 0x{1 << bit:X} : 0)";
+				}
+			}
+			if (flagExpr != null) flagExpr = flagExpr.IndexOf('|', 3) >= 0 ? flagExpr[3..] : flagExpr[4..^1];
+			sw.WriteLine(")");
+			if (style != 0) tabIndent += "\t";
+			if (style == 1) sw.WriteLine($"{tabIndent}=> writer =>");
+			if (style == 2) sw.WriteLine($"{tabIndent}=> CallAsync<{returnType}>(writer =>");
+			sw.WriteLine(tabIndent + "{");
+			sw.WriteLine($"{tabIndent}\twriter.Write(0x{ctorNb:X8});");
+			foreach (var parm in method.@params) // serialize request
+			{
+				var parmName = MapName(parm.name);
+				var parmType = parm.type;
+				if (parmType.StartsWith("flags."))
+				{
+					if (parmType.EndsWith("?true")) continue;
+					int qm = parmType.IndexOf('?');
+					parmType = parmType[(qm + 1)..];
+					sw.WriteLine($"{tabIndent}\tif ({parmName} != null)");
+					sw.Write('\t');
+					if (MapOptionalType(parmType, parm.name).EndsWith('?'))
+						parmName += ".Value";
+				}
+				switch (parmType)
+				{
+					case "Bool":
+						sw.WriteLine($"{tabIndent}\twriter.Write({parmName} ? 0x997275B5 : 0xBC799737);");
+						break;
+					case "bytes":
+						sw.WriteLine($"{tabIndent}\twriter.WriteTLBytes({parmName});");
+						break;
+					case "long": case "int128": case "int256": case "double":
+						sw.WriteLine($"{tabIndent}\twriter.Write({parmName});");
+						break;
+					case "int":
+						if (MapType(parmType, parm.name) == "int")
+							sw.WriteLine($"{tabIndent}\twriter.Write({parmName});");
+						else
+							sw.WriteLine($"{tabIndent}\twriter.WriteTLStamp({parmName});");
+						break;
+					case "string":
+						if (parm.name.StartsWith("md5"))
+							sw.WriteLine($"{tabIndent}\twriter.WriteTLBytes({parmName});");
+						else
+							sw.WriteLine($"{tabIndent}\twriter.WriteTLString({parmName});");
+						break;
+					case "#":
+						sw.WriteLine($"{tabIndent}\twriter.Write({flagExpr});");
+						break;
+					case "!X":
+						sw.WriteLine($"{tabIndent}\t{parmName}(writer);");
+						break;
+					default:
+						if (parmType.StartsWith("Vector<", StringComparison.OrdinalIgnoreCase))
+							sw.WriteLine($"{tabIndent}\twriter.WriteTLVector({parmName});");
+						else
+							sw.WriteLine($"{tabIndent}\twriter.WriteTLObject({parmName});");
+						break;
+				}
+			}
+			sw.WriteLine($"{tabIndent}\treturn \"{funcName}\";");
+			if (style == 0) sw.WriteLine(tabIndent + "}");
+			if (style == 1) sw.WriteLine(tabIndent + "};");
+			if (style == 2) sw.WriteLine(tabIndent + "});");
+			if (style != 0) tabIndent = tabIndent[0..^1];
 		}
 
 		void UpdateTable(string jsonPath, string tableCs, List<TypeInfo> methods)
@@ -347,8 +522,8 @@ namespace WTelegram
 #pragma warning disable IDE1006 // Naming Styles
 		public class SchemaJson
 		{
-			public Constructor[] constructors { get; set; }
-			public Method[] methods { get; set; }
+			public List<Constructor> constructors { get; set; }
+			public List<Method> methods { get; set; }
 		}
 
 		public class Constructor

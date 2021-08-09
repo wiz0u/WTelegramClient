@@ -21,14 +21,13 @@ namespace WTelegram
 			if (PublicKeys.Count == 0) LoadDefaultPublicKey();
 
 			//1)
-			var reqPQ = new Fn.ReqPQ() { nonce = new Int128(RNG) };
-			await client.SendAsync(reqPQ, false);
+			var nonce = new Int128(RNG);
+			var resPQ = await client.ReqPQ(nonce);
 			//2)
-			var reply = await client.RecvInternalAsync();
-			if (reply is not ResPQ resPQ) throw new ApplicationException($"Expected ResPQ but got {reply.GetType().Name}");
-			if (resPQ.nonce != reqPQ.nonce) throw new ApplicationException("Nonce mismatch");
+			if (resPQ.nonce != nonce) throw new ApplicationException("Nonce mismatch");
 			var fingerprint = resPQ.server_public_key_fingerprints.FirstOrDefault(PublicKeys.ContainsKey);
 			if (fingerprint == 0) throw new ApplicationException("Couldn't match any server_public_key_fingerprints");
+			var publicKey = PublicKeys[fingerprint];
 			Helpers.Log(2, $"Selected public key with fingerprint {fingerprint:X}");
 			//3)
 			long retry_id = 0;
@@ -36,72 +35,92 @@ namespace WTelegram
 			ulong p = Helpers.PQFactorize(pq);
 			ulong q = pq / p;
 			//4)
-			var new_nonce = new Int256(RNG);
-			var reqDHparams = MakeReqDHparam(fingerprint, PublicKeys[fingerprint], new PQInnerData
+			var pqInnerData = new PQInnerData
 			{
 				pq = resPQ.pq,
 				p = Helpers.ToBigEndian(p),
 				q = Helpers.ToBigEndian(q),
-				nonce = resPQ.nonce,
+				nonce = nonce,
 				server_nonce = resPQ.server_nonce,
-				new_nonce = new_nonce,
-			});
-			await client.SendAsync(reqDHparams, false);
+				new_nonce = new Int256(RNG),
+			};
+			byte[] encrypted_data;
+			{ // the following code was the way TDLib did it (and seems still accepted) until they changed on 8 July 2021
+				using var clearStream = new MemoryStream(255);
+				clearStream.Position = 20; // skip SHA1 area (to be patched)
+				using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
+				writer.WriteTLObject(pqInnerData);
+				int clearLength = (int)clearStream.Length;  // length before padding (= 20 + message_data_length)
+				if (clearLength > 255) throw new ApplicationException("PQInnerData too big");
+				byte[] clearBuffer = clearStream.GetBuffer();
+				RNG.GetBytes(clearBuffer, clearLength, 255 - clearLength);
+				SHA1.HashData(clearBuffer.AsSpan(20..clearLength), clearBuffer); // patch with SHA1
+				encrypted_data = BigInteger.ModPow(new BigInteger(clearBuffer, true, true), // encrypt with RSA key
+					new BigInteger(publicKey.e, true, true), new BigInteger(publicKey.n, true, true)).ToByteArray(true, true);
+			}
+			var serverDHparams = await client.ReqDHParams(pqInnerData.nonce, pqInnerData.server_nonce, pqInnerData.p, pqInnerData.q, fingerprint, encrypted_data);
 			//5)
-			reply = await client.RecvInternalAsync();
-			if (reply is not ServerDHParams serverDHparams) throw new ApplicationException($"Expected ServerDHParams but got {reply.GetType().Name}");
 			var localTime = DateTimeOffset.UtcNow;
 			if (serverDHparams is not ServerDHParamsOk serverDHparamsOk) throw new ApplicationException("not server_DH_params_ok");
-			if (serverDHparamsOk.nonce != resPQ.nonce) throw new ApplicationException("Nonce mismatch");
+			if (serverDHparamsOk.nonce != nonce) throw new ApplicationException("Nonce mismatch");
 			if (serverDHparamsOk.server_nonce != resPQ.server_nonce) throw new ApplicationException("Server Nonce mismatch");
-			var (tmp_aes_key, tmp_aes_iv) = ConstructTmpAESKeyIV(resPQ.server_nonce, new_nonce);
+			var (tmp_aes_key, tmp_aes_iv) = ConstructTmpAESKeyIV(resPQ.server_nonce, pqInnerData.new_nonce);
 			var answer = AES_IGE_EncryptDecrypt(serverDHparamsOk.encrypted_answer, tmp_aes_key, tmp_aes_iv, false);
 
 			using var encryptedReader = new BinaryReader(new MemoryStream(answer));
 			var answerHash = encryptedReader.ReadBytes(20);
-			var answerObj = Schema.DeserializeValue(encryptedReader, typeof(object));
+			var answerObj = encryptedReader.ReadTLObject();
 			if (answerObj is not ServerDHInnerData serverDHinnerData) throw new ApplicationException("not server_DH_inner_data");
 			long padding = encryptedReader.BaseStream.Length - encryptedReader.BaseStream.Position;
 			if (padding >= 16) throw new ApplicationException("Too much pad");
 			if (!Enumerable.SequenceEqual(SHA1.HashData(answer.AsSpan(20..^(int)padding)), answerHash))
 				throw new ApplicationException("Answer SHA1 mismatch");
-			if (serverDHinnerData.nonce != resPQ.nonce) throw new ApplicationException("Nonce mismatch");
+			if (serverDHinnerData.nonce != nonce) throw new ApplicationException("Nonce mismatch");
 			if (serverDHinnerData.server_nonce != resPQ.server_nonce) throw new ApplicationException("Server Nonce mismatch");
 			var g_a = new BigInteger(serverDHinnerData.g_a, true, true);
 			var dh_prime = new BigInteger(serverDHinnerData.dh_prime, true, true);
 			ValidityChecks(dh_prime, serverDHinnerData.g);
 			Helpers.Log(1, $"Server time: {serverDHinnerData.server_time} UTC");
 			session.ServerTicksOffset = (serverDHinnerData.server_time - localTime).Ticks;
-
 			//6)
 			var bData = new byte[256];
 			RNG.GetBytes(bData);
 			var b = new BigInteger(bData, true, true);
 			var g_b = BigInteger.ModPow(serverDHinnerData.g, b, dh_prime);
-			var setClientDHparams = MakeClientDHparams(tmp_aes_key, tmp_aes_iv, new ClientDHInnerData
+			var clientDHinnerData = new ClientDHInnerData
 			{
-				nonce = resPQ.nonce,
+				nonce = nonce,
 				server_nonce = resPQ.server_nonce,
 				retry_id = retry_id,
 				g_b = g_b.ToByteArray(true, true)
-			});
-			await client.SendAsync(setClientDHparams, false);
+			};
+			{ // the following code was the way TDLib did it (and seems still accepted) until they changed on 8 July 2021
+				using var clearStream = new MemoryStream(384);
+				clearStream.Position = 20; // skip SHA1 area (to be patched)
+				using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
+				writer.WriteTLObject(clientDHinnerData);
+				int clearLength = (int)clearStream.Length;  // length before padding (= 20 + message_data_length)
+				int paddingToAdd = (0x7FFFFFF0 - clearLength) % 16;
+				clearStream.SetLength(clearLength + paddingToAdd);
+				byte[] clearBuffer = clearStream.GetBuffer();
+				RNG.GetBytes(clearBuffer, clearLength, paddingToAdd);
+				SHA1.HashData(clearBuffer.AsSpan(20..clearLength), clearBuffer);
 
+				encrypted_data = AES_IGE_EncryptDecrypt(clearBuffer.AsSpan(0, clearLength + paddingToAdd), tmp_aes_key, tmp_aes_iv, true);
+			}
+			var setClientDHparamsAnswer = await client.SetClientDHParams(clientDHinnerData.nonce, clientDHinnerData.server_nonce, encrypted_data);
 			//7)
 			var gab = BigInteger.ModPow(g_a, b, dh_prime);
 			var authKey = gab.ToByteArray(true, true);
-
 			//8)
 			var authKeyHash = SHA1.HashData(authKey);
 			retry_id = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash); // (auth_key_aux_hash)
 			//9)
-			reply = await client.RecvInternalAsync();
-			if (reply is not SetClientDHParamsAnswer setClientDHparamsAnswer) throw new ApplicationException($"Expected SetClientDHParamsAnswer but got {reply.GetType().Name}");
 			if (setClientDHparamsAnswer is not DHGenOk) throw new ApplicationException("not dh_gen_ok");
-			if (setClientDHparamsAnswer.nonce != resPQ.nonce) throw new ApplicationException("Nonce mismatch");
+			if (setClientDHparamsAnswer.nonce != nonce) throw new ApplicationException("Nonce mismatch");
 			if (setClientDHparamsAnswer.server_nonce != resPQ.server_nonce) throw new ApplicationException("Server Nonce mismatch");
 			var expected_new_nonceN = new byte[32 + 1 + 8];
-			new_nonce.raw.CopyTo(expected_new_nonceN, 0);
+			pqInnerData.new_nonce.raw.CopyTo(expected_new_nonceN, 0);
 			expected_new_nonceN[32] = 1;
 			Array.Copy(authKeyHash, 0, expected_new_nonceN, 33, 8); // (auth_key_aux_hash)
 			if (!Enumerable.SequenceEqual(setClientDHparamsAnswer.new_nonce_hashN.raw, SHA1.HashData(expected_new_nonceN).Skip(4)))
@@ -109,7 +128,7 @@ namespace WTelegram
 
 			session.AuthKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
 			session.AuthKey = authKey;
-			session.Salt = BinaryPrimitives.ReadInt64LittleEndian(new_nonce.raw) ^ BinaryPrimitives.ReadInt64LittleEndian(resPQ.server_nonce.raw);
+			session.Salt = BinaryPrimitives.ReadInt64LittleEndian(pqInnerData.new_nonce.raw) ^ BinaryPrimitives.ReadInt64LittleEndian(resPQ.server_nonce.raw);
 			session.Save();
 
 			static (byte[] key, byte[] iv) ConstructTmpAESKeyIV(Int128 server_nonce, Int256 new_nonce)
@@ -153,62 +172,13 @@ namespace WTelegram
 			// We recommend checking that g_a and g_b are between 2^{2048-64} and dh_prime - 2^{2048-64} as well.
 		}
 
-		private static Fn.ReqDHParams MakeReqDHparam(long publicKey_fingerprint, RSAPublicKey publicKey, PQInnerData pqInnerData)
-		{
-			// the following code was the way TDLib did it (and seems still accepted) until they changed on 8 July 2021
-			using var clearStream = new MemoryStream(255);
-			clearStream.Position = 20; // skip SHA1 area (to be patched)
-			using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
-			Schema.Serialize(writer, pqInnerData);
-			int clearLength = (int)clearStream.Length;  // length before padding (= 20 + message_data_length)
-			if (clearLength > 255) throw new ApplicationException("PQInnerData too big");
-			byte[] clearBuffer = clearStream.GetBuffer();
-			RNG.GetBytes(clearBuffer, clearLength, 255 - clearLength);
-			SHA1.HashData(clearBuffer.AsSpan(20..clearLength), clearBuffer); // patch with SHA1
-
-			var encrypted_data = BigInteger.ModPow(new BigInteger(clearBuffer, true, true), // encrypt with RSA key
-				new BigInteger(publicKey.e, true, true), new BigInteger(publicKey.n, true, true)).ToByteArray(true, true);
-			return new Fn.ReqDHParams
-			{
-				nonce = pqInnerData.nonce,
-				server_nonce = pqInnerData.server_nonce,
-				p = pqInnerData.p,
-				q = pqInnerData.q,
-				public_key_fingerprint = publicKey_fingerprint,
-				encrypted_data = encrypted_data
-			};
-		}
-
-		private static Fn.SetClientDHParams MakeClientDHparams(byte[] tmp_aes_key, byte[] tmp_aes_iv, ClientDHInnerData clientDHinnerData)
-		{
-			// the following code was the way TDLib did it (and seems still accepted) until they changed on 8 July 2021
-			using var clearStream = new MemoryStream(384);
-			clearStream.Position = 20; // skip SHA1 area (to be patched)
-			using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
-			Schema.Serialize(writer, clientDHinnerData);
-			int clearLength = (int)clearStream.Length;  // length before padding (= 20 + message_data_length)
-			int padding = (0x7FFFFFF0 - clearLength) % 16;
-			clearStream.SetLength(clearLength + padding);
-			byte[] clearBuffer = clearStream.GetBuffer();
-			RNG.GetBytes(clearBuffer, clearLength, padding);
-			SHA1.HashData(clearBuffer.AsSpan(20..clearLength), clearBuffer);
-
-			var encrypted_data = AES_IGE_EncryptDecrypt(clearBuffer.AsSpan(0, clearLength + padding), tmp_aes_key, tmp_aes_iv, true);
-			return new Fn.SetClientDHParams
-			{
-				nonce = clientDHinnerData.nonce,
-				server_nonce = clientDHinnerData.server_nonce,
-				encrypted_data = encrypted_data
-			};
-		}
-
 		public static void LoadPublicKey(string pem)
 		{
 			using var rsa = RSA.Create();
 			rsa.ImportFromPem(pem);
 			var rsaParam = rsa.ExportParameters(false);
 			var publicKey = new RSAPublicKey { n = rsaParam.Modulus, e = rsaParam.Exponent };
-			var bareData = Schema.Serialize(publicKey).AsSpan(4); // bare serialization
+			var bareData = publicKey.Serialize().AsSpan(4); // bare serialization
 			var fingerprint = BinaryPrimitives.ReadInt64LittleEndian(SHA1.HashData(bareData).AsSpan(12)); // 64 lower-order bits of SHA1
 			PublicKeys[fingerprint] = publicKey;
 			Helpers.Log(1, $"Loaded a public key with fingerprint {fingerprint:X}");

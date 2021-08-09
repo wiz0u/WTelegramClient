@@ -1,5 +1,5 @@
 ﻿[![NuGet version](https://badge.fury.io/nu/WTelegramClient.svg)](https://badge.fury.io/nu/WTelegramClient)
-[![Build Status](https://dev.azure.com/wiz0u/WTelegramClient/_apis/build/status/wiz0u.WTelegramClient?branchName=master)](https://dev.azure.com/wiz0u/WTelegramClient/_build/latest?definitionId=7&branchName=master)
+[![Build Status](https://dev.azure.com/wiz0u/WTelegramClient/_apis/build/status/wiz0u.WTelegramClient?branchName=master)](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
 
 # WTelegramClient
 ### _Telegram client library written 100% in C# and .NET Core_
@@ -108,7 +108,7 @@ Here are the main expected developments:
 - [x] Support SignUp of unregistered users
 - [x] Improve code Generator (import of TL-schema JSONs)
 - [x] Nuget deployment & public CI feed
-- [ ] Convert API functions classes to real methods and serialize structures without using Reflection
+- [x] Convert API functions classes to real methods and serialize structures without using Reflection
 - [ ] Separate task/thread for reading/handling update messages independently from CallAsync
 - [ ] Support MTProto 2.0
 - [ ] Support users with 2FA enabled

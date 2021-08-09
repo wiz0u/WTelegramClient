@@ -1,5 +1,6 @@
 // This file is (mainly) generated automatically using the Generator class
 using System;
+using System.Threading.Tasks;
 
 namespace TL
 {
@@ -5203,2234 +5204,3659 @@ namespace TL
 
 	[TLDef(0x8999F295)] //stats.messageStats#8999f295 views_graph:StatsGraph = stats.MessageStats
 	public class Stats_MessageStats : ITLObject { public StatsGraphBase views_graph; }
+}
 
-	public static partial class Fn // ---functions---
+namespace WTelegram		// ---functions---
+{
+	using System.IO;
+	using TL;
+
+	public partial class Client
 	{
-		[TLDef(0xCB9F372D)] //invokeAfterMsg#cb9f372d {X:Type} msg_id:long query:!X = X
-		public class InvokeAfterMsg<X> : ITLFunction<X>
-		{
-			public long msg_id;
-			public ITLFunction<X> query;
-		}
-
-		[TLDef(0x3DC4B4F0)] //invokeAfterMsgs#3dc4b4f0 {X:Type} msg_ids:Vector<long> query:!X = X
-		public class InvokeAfterMsgs<X> : ITLFunction<X>
-		{
-			public long[] msg_ids;
-			public ITLFunction<X> query;
-		}
-
-		[TLDef(0xA677244F)] //auth.sendCode#a677244f phone_number:string api_id:int api_hash:string settings:CodeSettings = auth.SentCode
-		public class Auth_SendCode : ITLFunction<Auth_SentCode>
-		{
-			public string phone_number;
-			public int api_id;
-			public string api_hash;
-			public CodeSettings settings;
-		}
-
-		[TLDef(0x80EEE427)] //auth.signUp#80eee427 phone_number:string phone_code_hash:string first_name:string last_name:string = auth.Authorization
-		public class Auth_SignUp : ITLFunction<Auth_AuthorizationBase>
-		{
-			public string phone_number;
-			public string phone_code_hash;
-			public string first_name;
-			public string last_name;
-		}
-
-		[TLDef(0xBCD51581)] //auth.signIn#bcd51581 phone_number:string phone_code_hash:string phone_code:string = auth.Authorization
-		public class Auth_SignIn : ITLFunction<Auth_AuthorizationBase>
-		{
-			public string phone_number;
-			public string phone_code_hash;
-			public string phone_code;
-		}
-
-		[TLDef(0x5717DA40)] //auth.logOut#5717da40 = Bool
-		public class Auth_LogOut : ITLFunction<bool> { }
-
-		[TLDef(0x9FAB0D1A)] //auth.resetAuthorizations#9fab0d1a = Bool
-		public class Auth_ResetAuthorizations : ITLFunction<bool> { }
-
-		[TLDef(0xE5BFFFCD)] //auth.exportAuthorization#e5bfffcd dc_id:int = auth.ExportedAuthorization
-		public class Auth_ExportAuthorization : ITLFunction<Auth_ExportedAuthorization> { public int dc_id; }
-
-		[TLDef(0xE3EF9613)] //auth.importAuthorization#e3ef9613 id:int bytes:bytes = auth.Authorization
-		public class Auth_ImportAuthorization : ITLFunction<Auth_AuthorizationBase>
-		{
-			public int id;
-			public byte[] bytes;
-		}
-
-		[TLDef(0xCDD42A05)] //auth.bindTempAuthKey#cdd42a05 perm_auth_key_id:long nonce:long expires_at:int encrypted_message:bytes = Bool
-		public class Auth_BindTempAuthKey : ITLFunction<bool>
-		{
-			public long perm_auth_key_id;
-			public long nonce;
-			public int expires_at;
-			public byte[] encrypted_message;
-		}
-
-		[TLDef(0x68976C6F)] //account.registerDevice#68976c6f flags:# no_muted:flags.0?true token_type:int token:string app_sandbox:Bool secret:bytes other_uids:Vector<int> = Bool
-		public class Account_RegisterDevice : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { no_muted = 0x1 }
-			public Flags flags;
-			public int token_type;
-			public string token;
-			public bool app_sandbox;
-			public byte[] secret;
-			public int[] other_uids;
-		}
-
-		[TLDef(0x3076C4BF)] //account.unregisterDevice#3076c4bf token_type:int token:string other_uids:Vector<int> = Bool
-		public class Account_UnregisterDevice : ITLFunction<bool>
-		{
-			public int token_type;
-			public string token;
-			public int[] other_uids;
-		}
-
-		[TLDef(0x84BE5B93)] //account.updateNotifySettings#84be5b93 peer:InputNotifyPeer settings:InputPeerNotifySettings = Bool
-		public class Account_UpdateNotifySettings : ITLFunction<bool>
-		{
-			public InputNotifyPeerBase peer;
-			public InputPeerNotifySettings settings;
-		}
-
-		[TLDef(0x12B3AD31)] //account.getNotifySettings#12b3ad31 peer:InputNotifyPeer = PeerNotifySettings
-		public class Account_GetNotifySettings : ITLFunction<PeerNotifySettings> { public InputNotifyPeerBase peer; }
-
-		[TLDef(0xDB7E1747)] //account.resetNotifySettings#db7e1747 = Bool
-		public class Account_ResetNotifySettings : ITLFunction<bool> { }
-
-		[TLDef(0x78515775)] //account.updateProfile#78515775 flags:# first_name:flags.0?string last_name:flags.1?string about:flags.2?string = User
-		public class Account_UpdateProfile : ITLFunction<UserBase>
-		{
-			[Flags] public enum Flags { has_first_name = 0x1, has_last_name = 0x2, has_about = 0x4 }
-			public Flags flags;
-			[IfFlag(0)] public string first_name;
-			[IfFlag(1)] public string last_name;
-			[IfFlag(2)] public string about;
-		}
-
-		[TLDef(0x6628562C)] //account.updateStatus#6628562c offline:Bool = Bool
-		public class Account_UpdateStatus : ITLFunction<bool> { public bool offline; }
-
-		[TLDef(0xAABB1763)] //account.getWallPapers#aabb1763 hash:int = account.WallPapers
-		public class Account_GetWallPapers : ITLFunction<Account_WallPapersBase> { public int hash; }
-
-		[TLDef(0xAE189D5F)] //account.reportPeer#ae189d5f peer:InputPeer reason:ReportReason = Bool
-		public class Account_ReportPeer : ITLFunction<bool>
-		{
-			public InputPeer peer;
-			public ReportReason reason;
-		}
-
-		[TLDef(0x0D91A548)] //users.getUsers#0d91a548 id:Vector<InputUser> = Vector<User>
-		public class Users_GetUsers : ITLFunction<UserBase[]> { public InputUserBase[] id; }
-
-		[TLDef(0xCA30A5B1)] //users.getFullUser#ca30a5b1 id:InputUser = UserFull
-		public class Users_GetFullUser : ITLFunction<UserFull> { public InputUserBase id; }
-
-		[TLDef(0x2CAA4A42)] //contacts.getContactIDs#2caa4a42 hash:int = Vector<int>
-		public class Contacts_GetContactIDs : ITLFunction<int[]> { public int hash; }
-
-		[TLDef(0xC4A353EE)] //contacts.getStatuses#c4a353ee = Vector<ContactStatus>
-		public class Contacts_GetStatuses : ITLFunction<ContactStatus[]> { }
-
-		[TLDef(0xC023849F)] //contacts.getContacts#c023849f hash:int = contacts.Contacts
-		public class Contacts_GetContacts : ITLFunction<Contacts_ContactsBase> { public int hash; }
-
-		[TLDef(0x2C800BE5)] //contacts.importContacts#2c800be5 contacts:Vector<InputContact> = contacts.ImportedContacts
-		public class Contacts_ImportContacts : ITLFunction<Contacts_ImportedContacts> { public InputContact[] contacts; }
-
-		[TLDef(0x096A0E00)] //contacts.deleteContacts#096a0e00 id:Vector<InputUser> = Updates
-		public class Contacts_DeleteContacts : ITLFunction<UpdatesBase> { public InputUserBase[] id; }
-
-		[TLDef(0x1013FD9E)] //contacts.deleteByPhones#1013fd9e phones:Vector<string> = Bool
-		public class Contacts_DeleteByPhones : ITLFunction<bool> { public string[] phones; }
-
-		[TLDef(0x68CC1411)] //contacts.block#68cc1411 id:InputPeer = Bool
-		public class Contacts_Block : ITLFunction<bool> { public InputPeer id; }
-
-		[TLDef(0xBEA65D50)] //contacts.unblock#bea65d50 id:InputPeer = Bool
-		public class Contacts_Unblock : ITLFunction<bool> { public InputPeer id; }
-
-		[TLDef(0xF57C350F)] //contacts.getBlocked#f57c350f offset:int limit:int = contacts.Blocked
-		public class Contacts_GetBlocked : ITLFunction<Contacts_BlockedBase>
-		{
-			public int offset;
-			public int limit;
-		}
-
-		[TLDef(0x63C66506)] //messages.getMessages#63c66506 id:Vector<InputMessage> = messages.Messages
-		public class Messages_GetMessages : ITLFunction<Messages_MessagesBase> { public InputMessage[] id; }
-
-		[TLDef(0xA0EE3B73)] //messages.getDialogs#a0ee3b73 flags:# exclude_pinned:flags.0?true folder_id:flags.1?int offset_date:int offset_id:int offset_peer:InputPeer limit:int hash:int = messages.Dialogs
-		public class Messages_GetDialogs : ITLFunction<Messages_DialogsBase>
-		{
-			[Flags] public enum Flags { exclude_pinned = 0x1, has_folder_id = 0x2 }
-			public Flags flags;
-			[IfFlag(1)] public int folder_id;
-			public DateTime offset_date;
-			public int offset_id;
-			public InputPeer offset_peer;
-			public int limit;
-			public int hash;
-		}
-
-		[TLDef(0xDCBB8260)] //messages.getHistory#dcbb8260 peer:InputPeer offset_id:int offset_date:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages
-		public class Messages_GetHistory : ITLFunction<Messages_MessagesBase>
-		{
-			public InputPeer peer;
-			public int offset_id;
-			public DateTime offset_date;
-			public int add_offset;
-			public int limit;
-			public int max_id;
-			public int min_id;
-			public int hash;
-		}
-
-		[TLDef(0x0C352EEC)] //messages.search#0c352eec flags:# peer:InputPeer q:string from_id:flags.0?InputPeer top_msg_id:flags.1?int filter:MessagesFilter min_date:int max_date:int offset_id:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages
-		public class Messages_Search : ITLFunction<Messages_MessagesBase>
-		{
-			[Flags] public enum Flags { has_from_id = 0x1, has_top_msg_id = 0x2 }
-			public Flags flags;
-			public InputPeer peer;
-			public string q;
-			[IfFlag(0)] public InputPeer from_id;
-			[IfFlag(1)] public int top_msg_id;
-			public MessagesFilter filter;
-			public DateTime min_date;
-			public DateTime max_date;
-			public int offset_id;
-			public int add_offset;
-			public int limit;
-			public int max_id;
-			public int min_id;
-			public int hash;
-		}
-
-		[TLDef(0x0E306D3A)] //messages.readHistory#0e306d3a peer:InputPeer max_id:int = messages.AffectedMessages
-		public class Messages_ReadHistory : ITLFunction<Messages_AffectedMessages>
-		{
-			public InputPeer peer;
-			public int max_id;
-		}
-
-		[TLDef(0x1C015B09)] //messages.deleteHistory#1c015b09 flags:# just_clear:flags.0?true revoke:flags.1?true peer:InputPeer max_id:int = messages.AffectedHistory
-		public class Messages_DeleteHistory : ITLFunction<Messages_AffectedHistory>
-		{
-			[Flags] public enum Flags { just_clear = 0x1, revoke = 0x2 }
-			public Flags flags;
-			public InputPeer peer;
-			public int max_id;
-		}
-
-		[TLDef(0xE58E95D2)] //messages.deleteMessages#e58e95d2 flags:# revoke:flags.0?true id:Vector<int> = messages.AffectedMessages
-		public class Messages_DeleteMessages : ITLFunction<Messages_AffectedMessages>
-		{
-			[Flags] public enum Flags { revoke = 0x1 }
-			public Flags flags;
-			public int[] id;
-		}
-
-		[TLDef(0x05A954C0)] //messages.receivedMessages#05a954c0 max_id:int = Vector<ReceivedNotifyMessage>
-		public class Messages_ReceivedMessages : ITLFunction<ReceivedNotifyMessage[]> { public int max_id; }
-
-		[TLDef(0x58943EE2)] //messages.setTyping#58943ee2 flags:# peer:InputPeer top_msg_id:flags.0?int action:SendMessageAction = Bool
-		public class Messages_SetTyping : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { has_top_msg_id = 0x1 }
-			public Flags flags;
-			public InputPeer peer;
-			[IfFlag(0)] public int top_msg_id;
-			public SendMessageAction action;
-		}
-
-		[TLDef(0x520C3870)] //messages.sendMessage#520c3870 flags:# no_webpage:flags.1?true silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int message:string random_id:long reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.10?int = Updates
-		public class Messages_SendMessage : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { has_reply_to_msg_id = 0x1, no_webpage = 0x2, has_reply_markup = 0x4, has_entities = 0x8, 
-				silent = 0x20, background = 0x40, clear_draft = 0x80, has_schedule_date = 0x400 }
-			public Flags flags;
-			public InputPeer peer;
-			[IfFlag(0)] public int reply_to_msg_id;
-			public string message;
-			public long random_id;
-			[IfFlag(2)] public ReplyMarkup reply_markup;
-			[IfFlag(3)] public MessageEntity[] entities;
-			[IfFlag(10)] public DateTime schedule_date;
-		}
-
-		[TLDef(0x3491EBA9)] //messages.sendMedia#3491eba9 flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int media:InputMedia message:string random_id:long reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.10?int = Updates
-		public class Messages_SendMedia : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { has_reply_to_msg_id = 0x1, has_reply_markup = 0x4, has_entities = 0x8, silent = 0x20, 
-				background = 0x40, clear_draft = 0x80, has_schedule_date = 0x400 }
-			public Flags flags;
-			public InputPeer peer;
-			[IfFlag(0)] public int reply_to_msg_id;
-			public InputMedia media;
-			public string message;
-			public long random_id;
-			[IfFlag(2)] public ReplyMarkup reply_markup;
-			[IfFlag(3)] public MessageEntity[] entities;
-			[IfFlag(10)] public DateTime schedule_date;
-		}
-
-		[TLDef(0xD9FEE60E)] //messages.forwardMessages#d9fee60e flags:# silent:flags.5?true background:flags.6?true with_my_score:flags.8?true from_peer:InputPeer id:Vector<int> random_id:Vector<long> to_peer:InputPeer schedule_date:flags.10?int = Updates
-		public class Messages_ForwardMessages : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { silent = 0x20, background = 0x40, with_my_score = 0x100, has_schedule_date = 0x400 }
-			public Flags flags;
-			public InputPeer from_peer;
-			public int[] id;
-			public long[] random_id;
-			public InputPeer to_peer;
-			[IfFlag(10)] public DateTime schedule_date;
-		}
-
-		[TLDef(0xCF1592DB)] //messages.reportSpam#cf1592db peer:InputPeer = Bool
-		public class Messages_ReportSpam : ITLFunction<bool> { public InputPeer peer; }
-
-		[TLDef(0x3672E09C)] //messages.getPeerSettings#3672e09c peer:InputPeer = PeerSettings
-		public class Messages_GetPeerSettings : ITLFunction<PeerSettings> { public InputPeer peer; }
-
-		[TLDef(0xBD82B658)] //messages.report#bd82b658 peer:InputPeer id:Vector<int> reason:ReportReason = Bool
-		public class Messages_Report : ITLFunction<bool>
-		{
-			public InputPeer peer;
-			public int[] id;
-			public ReportReason reason;
-		}
-
-		[TLDef(0x3C6AA187)] //messages.getChats#3c6aa187 id:Vector<int> = messages.Chats
-		public class Messages_GetChats : ITLFunction<Messages_ChatsBase> { public int[] id; }
-
-		[TLDef(0x3B831C66)] //messages.getFullChat#3b831c66 chat_id:int = messages.ChatFull
-		public class Messages_GetFullChat : ITLFunction<Messages_ChatFull> { public int chat_id; }
-
-		[TLDef(0xDC452855)] //messages.editChatTitle#dc452855 chat_id:int title:string = Updates
-		public class Messages_EditChatTitle : ITLFunction<UpdatesBase>
-		{
-			public int chat_id;
-			public string title;
-		}
-
-		[TLDef(0xCA4C79D8)] //messages.editChatPhoto#ca4c79d8 chat_id:int photo:InputChatPhoto = Updates
-		public class Messages_EditChatPhoto : ITLFunction<UpdatesBase>
-		{
-			public int chat_id;
-			public InputChatPhotoBase photo;
-		}
-
-		[TLDef(0xF9A0AA09)] //messages.addChatUser#f9a0aa09 chat_id:int user_id:InputUser fwd_limit:int = Updates
-		public class Messages_AddChatUser : ITLFunction<UpdatesBase>
-		{
-			public int chat_id;
-			public InputUserBase user_id;
-			public int fwd_limit;
-		}
-
-		[TLDef(0xE0611F16)] //messages.deleteChatUser#e0611f16 chat_id:int user_id:InputUser = Updates
-		public class Messages_DeleteChatUser : ITLFunction<UpdatesBase>
-		{
-			public int chat_id;
-			public InputUserBase user_id;
-		}
-
-		[TLDef(0x09CB126E)] //messages.createChat#09cb126e users:Vector<InputUser> title:string = Updates
-		public class Messages_CreateChat : ITLFunction<UpdatesBase>
-		{
-			public InputUserBase[] users;
-			public string title;
-		}
-
-		[TLDef(0xEDD4882A)] //updates.getState#edd4882a = updates.State
-		public class Updates_GetState : ITLFunction<Updates_State> { }
-
-		[TLDef(0x25939651)] //updates.getDifference#25939651 flags:# pts:int pts_total_limit:flags.0?int date:int qts:int = updates.Difference
-		public class Updates_GetDifference : ITLFunction<Updates_DifferenceBase>
-		{
-			[Flags] public enum Flags { has_pts_total_limit = 0x1 }
-			public Flags flags;
-			public int pts;
-			[IfFlag(0)] public int pts_total_limit;
-			public DateTime date;
-			public int qts;
-		}
-
-		[TLDef(0x72D4742C)] //photos.updateProfilePhoto#72d4742c id:InputPhoto = photos.Photo
-		public class Photos_UpdateProfilePhoto : ITLFunction<Photos_Photo> { public InputPhotoBase id; }
-
-		[TLDef(0x89F30F69)] //photos.uploadProfilePhoto#89f30f69 flags:# file:flags.0?InputFile video:flags.1?InputFile video_start_ts:flags.2?double = photos.Photo
-		public class Photos_UploadProfilePhoto : ITLFunction<Photos_Photo>
-		{
-			[Flags] public enum Flags { has_file = 0x1, has_video = 0x2, has_video_start_ts = 0x4 }
-			public Flags flags;
-			[IfFlag(0)] public InputFileBase file;
-			[IfFlag(1)] public InputFileBase video;
-			[IfFlag(2)] public double video_start_ts;
-		}
-
-		[TLDef(0x87CF7F2F)] //photos.deletePhotos#87cf7f2f id:Vector<InputPhoto> = Vector<long>
-		public class Photos_DeletePhotos : ITLFunction<long[]> { public InputPhotoBase[] id; }
-
-		[TLDef(0xB304A621)] //upload.saveFilePart#b304a621 file_id:long file_part:int bytes:bytes = Bool
-		public class Upload_SaveFilePart : ITLFunction<bool>
-		{
-			public long file_id;
-			public int file_part;
-			public byte[] bytes;
-		}
-
-		[TLDef(0xB15A9AFC)] //upload.getFile#b15a9afc flags:# precise:flags.0?true cdn_supported:flags.1?true location:InputFileLocation offset:int limit:int = upload.File
-		public class Upload_GetFile : ITLFunction<Upload_FileBase>
-		{
-			[Flags] public enum Flags { precise = 0x1, cdn_supported = 0x2 }
-			public Flags flags;
-			public InputFileLocationBase location;
-			public int offset;
-			public int limit;
-		}
-
-		[TLDef(0xC4F9186B)] //help.getConfig#c4f9186b = Config
-		public class Help_GetConfig : ITLFunction<Config> { }
-
-		[TLDef(0x1FB33026)] //help.getNearestDc#1fb33026 = NearestDc
-		public class Help_GetNearestDc : ITLFunction<NearestDc> { }
-
-		[TLDef(0x522D5A7D)] //help.getAppUpdate#522d5a7d source:string = help.AppUpdate
-		public class Help_GetAppUpdate : ITLFunction<Help_AppUpdateBase> { public string source; }
-
-		[TLDef(0x4D392343)] //help.getInviteText#4d392343 = help.InviteText
-		public class Help_GetInviteText : ITLFunction<Help_InviteText> { }
-
-		[TLDef(0x91CD32A8)] //photos.getUserPhotos#91cd32a8 user_id:InputUser offset:int max_id:long limit:int = photos.Photos
-		public class Photos_GetUserPhotos : ITLFunction<Photos_PhotosBase>
-		{
-			public InputUserBase user_id;
-			public int offset;
-			public long max_id;
-			public int limit;
-		}
-
-		[TLDef(0x26CF8950)] //messages.getDhConfig#26cf8950 version:int random_length:int = messages.DhConfig
-		public class Messages_GetDhConfig : ITLFunction<Messages_DhConfigBase>
-		{
-			public int version;
-			public int random_length;
-		}
-
-		[TLDef(0xF64DAF43)] //messages.requestEncryption#f64daf43 user_id:InputUser random_id:int g_a:bytes = EncryptedChat
-		public class Messages_RequestEncryption : ITLFunction<EncryptedChatBase>
-		{
-			public InputUserBase user_id;
-			public int random_id;
-			public byte[] g_a;
-		}
-
-		[TLDef(0x3DBC0415)] //messages.acceptEncryption#3dbc0415 peer:InputEncryptedChat g_b:bytes key_fingerprint:long = EncryptedChat
-		public class Messages_AcceptEncryption : ITLFunction<EncryptedChatBase>
-		{
-			public InputEncryptedChat peer;
-			public byte[] g_b;
-			public long key_fingerprint;
-		}
-
-		[TLDef(0xEDD923C5)] //messages.discardEncryption#edd923c5 chat_id:int = Bool
-		public class Messages_DiscardEncryption : ITLFunction<bool> { public int chat_id; }
-
-		[TLDef(0x791451ED)] //messages.setEncryptedTyping#791451ed peer:InputEncryptedChat typing:Bool = Bool
-		public class Messages_SetEncryptedTyping : ITLFunction<bool>
-		{
-			public InputEncryptedChat peer;
-			public bool typing;
-		}
-
-		[TLDef(0x7F4B690A)] //messages.readEncryptedHistory#7f4b690a peer:InputEncryptedChat max_date:int = Bool
-		public class Messages_ReadEncryptedHistory : ITLFunction<bool>
-		{
-			public InputEncryptedChat peer;
-			public DateTime max_date;
-		}
-
-		[TLDef(0x44FA7A15)] //messages.sendEncrypted#44fa7a15 flags:# silent:flags.0?true peer:InputEncryptedChat random_id:long data:bytes = messages.SentEncryptedMessage
-		public class Messages_SendEncrypted : ITLFunction<Messages_SentEncryptedMessage>
-		{
-			[Flags] public enum Flags { silent = 0x1 }
-			public Flags flags;
-			public InputEncryptedChat peer;
-			public long random_id;
-			public byte[] data;
-		}
-
-		[TLDef(0x5559481D)] //messages.sendEncryptedFile#5559481d flags:# silent:flags.0?true peer:InputEncryptedChat random_id:long data:bytes file:InputEncryptedFile = messages.SentEncryptedMessage
-		public class Messages_SendEncryptedFile : ITLFunction<Messages_SentEncryptedMessage>
-		{
-			[Flags] public enum Flags { silent = 0x1 }
-			public Flags flags;
-			public InputEncryptedChat peer;
-			public long random_id;
-			public byte[] data;
-			public InputEncryptedFileBase file;
-		}
-
-		[TLDef(0x32D439A4)] //messages.sendEncryptedService#32d439a4 peer:InputEncryptedChat random_id:long data:bytes = messages.SentEncryptedMessage
-		public class Messages_SendEncryptedService : ITLFunction<Messages_SentEncryptedMessage>
-		{
-			public InputEncryptedChat peer;
-			public long random_id;
-			public byte[] data;
-		}
-
-		[TLDef(0x55A5BB66)] //messages.receivedQueue#55a5bb66 max_qts:int = Vector<long>
-		public class Messages_ReceivedQueue : ITLFunction<long[]> { public int max_qts; }
-
-		[TLDef(0x4B0C8C0F)] //messages.reportEncryptedSpam#4b0c8c0f peer:InputEncryptedChat = Bool
-		public class Messages_ReportEncryptedSpam : ITLFunction<bool> { public InputEncryptedChat peer; }
-
-		[TLDef(0xDE7B673D)] //upload.saveBigFilePart#de7b673d file_id:long file_part:int file_total_parts:int bytes:bytes = Bool
-		public class Upload_SaveBigFilePart : ITLFunction<bool>
-		{
-			public long file_id;
-			public int file_part;
-			public int file_total_parts;
-			public byte[] bytes;
-		}
-
-		[TLDef(0xC1CD5EA9)] //initConnection#c1cd5ea9 {X:Type} flags:# api_id:int device_model:string system_version:string app_version:string system_lang_code:string lang_pack:string lang_code:string proxy:flags.0?InputClientProxy params:flags.1?JSONValue query:!X = X
-		public class InitConnection<X> : ITLFunction<X>
-		{
-			[Flags] public enum Flags { has_proxy = 0x1, has_params = 0x2 }
-			public Flags flags;
-			public int api_id;
-			public string device_model;
-			public string system_version;
-			public string app_version;
-			public string system_lang_code;
-			public string lang_pack;
-			public string lang_code;
-			[IfFlag(0)] public InputClientProxy proxy;
-			[IfFlag(1)] public JSONValue params_;
-			public ITLFunction<X> query;
-		}
-
-		[TLDef(0x9CDF08CD)] //help.getSupport#9cdf08cd = help.Support
-		public class Help_GetSupport : ITLFunction<Help_Support> { }
-
-		[TLDef(0x36A73F77)] //messages.readMessageContents#36a73f77 id:Vector<int> = messages.AffectedMessages
-		public class Messages_ReadMessageContents : ITLFunction<Messages_AffectedMessages> { public int[] id; }
-
-		[TLDef(0x2714D86C)] //account.checkUsername#2714d86c username:string = Bool
-		public class Account_CheckUsername : ITLFunction<bool> { public string username; }
-
-		[TLDef(0x3E0BDD7C)] //account.updateUsername#3e0bdd7c username:string = User
-		public class Account_UpdateUsername : ITLFunction<UserBase> { public string username; }
-
-		[TLDef(0x11F812D8)] //contacts.search#11f812d8 q:string limit:int = contacts.Found
-		public class Contacts_Search : ITLFunction<Contacts_Found>
-		{
-			public string q;
-			public int limit;
-		}
-
-		[TLDef(0xDADBC950)] //account.getPrivacy#dadbc950 key:InputPrivacyKey = account.PrivacyRules
-		public class Account_GetPrivacy : ITLFunction<Account_PrivacyRules> { public InputPrivacyKey key; }
-
-		[TLDef(0xC9F81CE8)] //account.setPrivacy#c9f81ce8 key:InputPrivacyKey rules:Vector<InputPrivacyRule> = account.PrivacyRules
-		public class Account_SetPrivacy : ITLFunction<Account_PrivacyRules>
-		{
-			public InputPrivacyKey key;
-			public InputPrivacyRule[] rules;
-		}
-
-		[TLDef(0x418D4E0B)] //account.deleteAccount#418d4e0b reason:string = Bool
-		public class Account_DeleteAccount : ITLFunction<bool> { public string reason; }
-
-		[TLDef(0x08FC711D)] //account.getAccountTTL#08fc711d = AccountDaysTTL
-		public class Account_GetAccountTTL : ITLFunction<AccountDaysTTL> { }
-
-		[TLDef(0x2442485E)] //account.setAccountTTL#2442485e ttl:AccountDaysTTL = Bool
-		public class Account_SetAccountTTL : ITLFunction<bool> { public AccountDaysTTL ttl; }
-
-		[TLDef(0xDA9B0D0D)] //invokeWithLayer#da9b0d0d {X:Type} layer:int query:!X = X
-		public class InvokeWithLayer<X> : ITLFunction<X>
-		{
-			public int layer;
-			public ITLFunction<X> query;
-		}
-
-		[TLDef(0xF93CCBA3)] //contacts.resolveUsername#f93ccba3 username:string = contacts.ResolvedPeer
-		public class Contacts_ResolveUsername : ITLFunction<Contacts_ResolvedPeer> { public string username; }
-
-		[TLDef(0x82574AE5)] //account.sendChangePhoneCode#82574ae5 phone_number:string settings:CodeSettings = auth.SentCode
-		public class Account_SendChangePhoneCode : ITLFunction<Auth_SentCode>
-		{
-			public string phone_number;
-			public CodeSettings settings;
-		}
-
-		[TLDef(0x70C32EDB)] //account.changePhone#70c32edb phone_number:string phone_code_hash:string phone_code:string = User
-		public class Account_ChangePhone : ITLFunction<UserBase>
-		{
-			public string phone_number;
-			public string phone_code_hash;
-			public string phone_code;
-		}
-
-		[TLDef(0x043D4F2C)] //messages.getStickers#043d4f2c emoticon:string hash:int = messages.Stickers
-		public class Messages_GetStickers : ITLFunction<Messages_StickersBase>
-		{
-			public string emoticon;
-			public int hash;
-		}
-
-		[TLDef(0x1C9618B1)] //messages.getAllStickers#1c9618b1 hash:int = messages.AllStickers
-		public class Messages_GetAllStickers : ITLFunction<Messages_AllStickersBase> { public int hash; }
-
-		[TLDef(0x38DF3532)] //account.updateDeviceLocked#38df3532 period:int = Bool
-		public class Account_UpdateDeviceLocked : ITLFunction<bool> { public int period; }
-
-		[TLDef(0x67A3FF2C)] //auth.importBotAuthorization#67a3ff2c flags:int api_id:int api_hash:string bot_auth_token:string = auth.Authorization
-		public class Auth_ImportBotAuthorization : ITLFunction<Auth_AuthorizationBase>
-		{
-			public int flags;
-			public int api_id;
-			public string api_hash;
-			public string bot_auth_token;
-		}
-
-		[TLDef(0x8B68B0CC)] //messages.getWebPagePreview#8b68b0cc flags:# message:string entities:flags.3?Vector<MessageEntity> = MessageMedia
-		public class Messages_GetWebPagePreview : ITLFunction<MessageMedia>
-		{
-			[Flags] public enum Flags { has_entities = 0x8 }
-			public Flags flags;
-			public string message;
-			[IfFlag(3)] public MessageEntity[] entities;
-		}
-
-		[TLDef(0xE320C158)] //account.getAuthorizations#e320c158 = account.Authorizations
-		public class Account_GetAuthorizations : ITLFunction<Account_Authorizations> { }
-
-		[TLDef(0xDF77F3BC)] //account.resetAuthorization#df77f3bc hash:long = Bool
-		public class Account_ResetAuthorization : ITLFunction<bool> { public long hash; }
-
-		[TLDef(0x548A30F5)] //account.getPassword#548a30f5 = account.Password
-		public class Account_GetPassword : ITLFunction<Account_Password> { }
-
-		[TLDef(0x9CD4EAF9)] //account.getPasswordSettings#9cd4eaf9 password:InputCheckPasswordSRP = account.PasswordSettings
-		public class Account_GetPasswordSettings : ITLFunction<Account_PasswordSettings> { public InputCheckPasswordSRPBase password; }
-
-		[TLDef(0xA59B102F)] //account.updatePasswordSettings#a59b102f password:InputCheckPasswordSRP new_settings:account.PasswordInputSettings = Bool
-		public class Account_UpdatePasswordSettings : ITLFunction<bool>
-		{
-			public InputCheckPasswordSRPBase password;
-			public Account_PasswordInputSettings new_settings;
-		}
-
-		[TLDef(0xD18B4D16)] //auth.checkPassword#d18b4d16 password:InputCheckPasswordSRP = auth.Authorization
-		public class Auth_CheckPassword : ITLFunction<Auth_AuthorizationBase> { public InputCheckPasswordSRPBase password; }
-
-		[TLDef(0xD897BC66)] //auth.requestPasswordRecovery#d897bc66 = auth.PasswordRecovery
-		public class Auth_RequestPasswordRecovery : ITLFunction<Auth_PasswordRecovery> { }
-
-		[TLDef(0x4EA56E92)] //auth.recoverPassword#4ea56e92 code:string = auth.Authorization
-		public class Auth_RecoverPassword : ITLFunction<Auth_AuthorizationBase> { public string code; }
-
-		[TLDef(0xBF9459B7)] //invokeWithoutUpdates#bf9459b7 {X:Type} query:!X = X
-		public class InvokeWithoutUpdates<X> : ITLFunction<X> { public ITLFunction<X> query; }
-
-		[TLDef(0x0DF7534C)] //messages.exportChatInvite#0df7534c peer:InputPeer = ExportedChatInvite
-		public class Messages_ExportChatInvite : ITLFunction<ExportedChatInvite> { public InputPeer peer; }
-
-		[TLDef(0x3EADB1BB)] //messages.checkChatInvite#3eadb1bb hash:string = ChatInvite
-		public class Messages_CheckChatInvite : ITLFunction<ChatInviteBase> { public string hash; }
-
-		[TLDef(0x6C50051C)] //messages.importChatInvite#6c50051c hash:string = Updates
-		public class Messages_ImportChatInvite : ITLFunction<UpdatesBase> { public string hash; }
-
-		[TLDef(0x2619A90E)] //messages.getStickerSet#2619a90e stickerset:InputStickerSet = messages.StickerSet
-		public class Messages_GetStickerSet : ITLFunction<Messages_StickerSet> { public InputStickerSet stickerset; }
-
-		[TLDef(0xC78FE460)] //messages.installStickerSet#c78fe460 stickerset:InputStickerSet archived:Bool = messages.StickerSetInstallResult
-		public class Messages_InstallStickerSet : ITLFunction<Messages_StickerSetInstallResult>
-		{
-			public InputStickerSet stickerset;
-			public bool archived;
-		}
-
-		[TLDef(0xF96E55DE)] //messages.uninstallStickerSet#f96e55de stickerset:InputStickerSet = Bool
-		public class Messages_UninstallStickerSet : ITLFunction<bool> { public InputStickerSet stickerset; }
-
-		[TLDef(0xE6DF7378)] //messages.startBot#e6df7378 bot:InputUser peer:InputPeer random_id:long start_param:string = Updates
-		public class Messages_StartBot : ITLFunction<UpdatesBase>
-		{
-			public InputUserBase bot;
-			public InputPeer peer;
-			public long random_id;
-			public string start_param;
-		}
-
-		[TLDef(0x9010EF6F)] //help.getAppChangelog#9010ef6f prev_app_version:string = Updates
-		public class Help_GetAppChangelog : ITLFunction<UpdatesBase> { public string prev_app_version; }
-
-		[TLDef(0x5784D3E1)] //messages.getMessagesViews#5784d3e1 peer:InputPeer id:Vector<int> increment:Bool = messages.MessageViews
-		public class Messages_GetMessagesViews : ITLFunction<Messages_MessageViews>
-		{
-			public InputPeer peer;
-			public int[] id;
-			public bool increment;
-		}
-
-		[TLDef(0xCC104937)] //channels.readHistory#cc104937 channel:InputChannel max_id:int = Bool
-		public class Channels_ReadHistory : ITLFunction<bool>
-		{
-			public InputChannelBase channel;
-			public int max_id;
-		}
-
-		[TLDef(0x84C1FD4E)] //channels.deleteMessages#84c1fd4e channel:InputChannel id:Vector<int> = messages.AffectedMessages
-		public class Channels_DeleteMessages : ITLFunction<Messages_AffectedMessages>
-		{
-			public InputChannelBase channel;
-			public int[] id;
-		}
-
-		[TLDef(0xD10DD71B)] //channels.deleteUserHistory#d10dd71b channel:InputChannel user_id:InputUser = messages.AffectedHistory
-		public class Channels_DeleteUserHistory : ITLFunction<Messages_AffectedHistory>
-		{
-			public InputChannelBase channel;
-			public InputUserBase user_id;
-		}
-
-		[TLDef(0xFE087810)] //channels.reportSpam#fe087810 channel:InputChannel user_id:InputUser id:Vector<int> = Bool
-		public class Channels_ReportSpam : ITLFunction<bool>
-		{
-			public InputChannelBase channel;
-			public InputUserBase user_id;
-			public int[] id;
-		}
-
-		[TLDef(0xAD8C9A23)] //channels.getMessages#ad8c9a23 channel:InputChannel id:Vector<InputMessage> = messages.Messages
-		public class Channels_GetMessages : ITLFunction<Messages_MessagesBase>
-		{
-			public InputChannelBase channel;
-			public InputMessage[] id;
-		}
-
-		[TLDef(0x123E05E9)] //channels.getParticipants#123e05e9 channel:InputChannel filter:ChannelParticipantsFilter offset:int limit:int hash:int = channels.ChannelParticipants
-		public class Channels_GetParticipants : ITLFunction<Channels_ChannelParticipantsBase>
-		{
-			public InputChannelBase channel;
-			public ChannelParticipantsFilter filter;
-			public int offset;
-			public int limit;
-			public int hash;
-		}
-
-		[TLDef(0x546DD7A6)] //channels.getParticipant#546dd7a6 channel:InputChannel user_id:InputUser = channels.ChannelParticipant
-		public class Channels_GetParticipant : ITLFunction<Channels_ChannelParticipant>
-		{
-			public InputChannelBase channel;
-			public InputUserBase user_id;
-		}
-
-		[TLDef(0x0A7F6BBB)] //channels.getChannels#0a7f6bbb id:Vector<InputChannel> = messages.Chats
-		public class Channels_GetChannels : ITLFunction<Messages_ChatsBase> { public InputChannelBase[] id; }
-
-		[TLDef(0x08736A09)] //channels.getFullChannel#08736a09 channel:InputChannel = messages.ChatFull
-		public class Channels_GetFullChannel : ITLFunction<Messages_ChatFull> { public InputChannelBase channel; }
-
-		[TLDef(0x3D5FB10F)] //channels.createChannel#3d5fb10f flags:# broadcast:flags.0?true megagroup:flags.1?true for_import:flags.3?true title:string about:string geo_point:flags.2?InputGeoPoint address:flags.2?string = Updates
-		public class Channels_CreateChannel : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { broadcast = 0x1, megagroup = 0x2, has_geo_point = 0x4, for_import = 0x8 }
-			public Flags flags;
-			public string title;
-			public string about;
-			[IfFlag(2)] public InputGeoPointBase geo_point;
-			[IfFlag(2)] public string address;
-		}
-
-		[TLDef(0xD33C8902)] //channels.editAdmin#d33c8902 channel:InputChannel user_id:InputUser admin_rights:ChatAdminRights rank:string = Updates
-		public class Channels_EditAdmin : ITLFunction<UpdatesBase>
-		{
-			public InputChannelBase channel;
-			public InputUserBase user_id;
-			public ChatAdminRights admin_rights;
-			public string rank;
-		}
-
-		[TLDef(0x566DECD0)] //channels.editTitle#566decd0 channel:InputChannel title:string = Updates
-		public class Channels_EditTitle : ITLFunction<UpdatesBase>
-		{
-			public InputChannelBase channel;
-			public string title;
-		}
-
-		[TLDef(0xF12E57C9)] //channels.editPhoto#f12e57c9 channel:InputChannel photo:InputChatPhoto = Updates
-		public class Channels_EditPhoto : ITLFunction<UpdatesBase>
-		{
-			public InputChannelBase channel;
-			public InputChatPhotoBase photo;
-		}
-
-		[TLDef(0x10E6BD2C)] //channels.checkUsername#10e6bd2c channel:InputChannel username:string = Bool
-		public class Channels_CheckUsername : ITLFunction<bool>
-		{
-			public InputChannelBase channel;
-			public string username;
-		}
-
-		[TLDef(0x3514B3DE)] //channels.updateUsername#3514b3de channel:InputChannel username:string = Bool
-		public class Channels_UpdateUsername : ITLFunction<bool>
-		{
-			public InputChannelBase channel;
-			public string username;
-		}
-
-		[TLDef(0x24B524C5)] //channels.joinChannel#24b524c5 channel:InputChannel = Updates
-		public class Channels_JoinChannel : ITLFunction<UpdatesBase> { public InputChannelBase channel; }
-
-		[TLDef(0xF836AA95)] //channels.leaveChannel#f836aa95 channel:InputChannel = Updates
-		public class Channels_LeaveChannel : ITLFunction<UpdatesBase> { public InputChannelBase channel; }
-
-		[TLDef(0x199F3A6C)] //channels.inviteToChannel#199f3a6c channel:InputChannel users:Vector<InputUser> = Updates
-		public class Channels_InviteToChannel : ITLFunction<UpdatesBase>
-		{
-			public InputChannelBase channel;
-			public InputUserBase[] users;
-		}
-
-		[TLDef(0xC0111FE3)] //channels.deleteChannel#c0111fe3 channel:InputChannel = Updates
-		public class Channels_DeleteChannel : ITLFunction<UpdatesBase> { public InputChannelBase channel; }
-
-		[TLDef(0x03173D78)] //updates.getChannelDifference#03173d78 flags:# force:flags.0?true channel:InputChannel filter:ChannelMessagesFilter pts:int limit:int = updates.ChannelDifference
-		public class Updates_GetChannelDifference : ITLFunction<Updates_ChannelDifferenceBase>
-		{
-			[Flags] public enum Flags { force = 0x1 }
-			public Flags flags;
-			public InputChannelBase channel;
-			public ChannelMessagesFilterBase filter;
-			public int pts;
-			public int limit;
-		}
-
-		[TLDef(0xA9E69F2E)] //messages.editChatAdmin#a9e69f2e chat_id:int user_id:InputUser is_admin:Bool = Bool
-		public class Messages_EditChatAdmin : ITLFunction<bool>
-		{
-			public int chat_id;
-			public InputUserBase user_id;
-			public bool is_admin;
-		}
-
-		[TLDef(0x15A3B8E3)] //messages.migrateChat#15a3b8e3 chat_id:int = Updates
-		public class Messages_MigrateChat : ITLFunction<UpdatesBase> { public int chat_id; }
-
-		[TLDef(0x4BC6589A)] //messages.searchGlobal#4bc6589a flags:# folder_id:flags.0?int q:string filter:MessagesFilter min_date:int max_date:int offset_rate:int offset_peer:InputPeer offset_id:int limit:int = messages.Messages
-		public class Messages_SearchGlobal : ITLFunction<Messages_MessagesBase>
-		{
-			[Flags] public enum Flags { has_folder_id = 0x1 }
-			public Flags flags;
-			[IfFlag(0)] public int folder_id;
-			public string q;
-			public MessagesFilter filter;
-			public DateTime min_date;
-			public DateTime max_date;
-			public int offset_rate;
-			public InputPeer offset_peer;
-			public int offset_id;
-			public int limit;
-		}
-
-		[TLDef(0x78337739)] //messages.reorderStickerSets#78337739 flags:# masks:flags.0?true order:Vector<long> = Bool
-		public class Messages_ReorderStickerSets : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { masks = 0x1 }
-			public Flags flags;
-			public long[] order;
-		}
-
-		[TLDef(0x338E2464)] //messages.getDocumentByHash#338e2464 sha256:bytes size:int mime_type:string = Document
-		public class Messages_GetDocumentByHash : ITLFunction<DocumentBase>
-		{
-			public byte[] sha256;
-			public int size;
-			public string mime_type;
-		}
-
-		[TLDef(0x83BF3D52)] //messages.getSavedGifs#83bf3d52 hash:int = messages.SavedGifs
-		public class Messages_GetSavedGifs : ITLFunction<Messages_SavedGifsBase> { public int hash; }
-
-		[TLDef(0x327A30CB)] //messages.saveGif#327a30cb id:InputDocument unsave:Bool = Bool
-		public class Messages_SaveGif : ITLFunction<bool>
-		{
-			public InputDocumentBase id;
-			public bool unsave;
-		}
-
-		[TLDef(0x514E999D)] //messages.getInlineBotResults#514e999d flags:# bot:InputUser peer:InputPeer geo_point:flags.0?InputGeoPoint query:string offset:string = messages.BotResults
-		public class Messages_GetInlineBotResults : ITLFunction<Messages_BotResults>
-		{
-			[Flags] public enum Flags { has_geo_point = 0x1 }
-			public Flags flags;
-			public InputUserBase bot;
-			public InputPeer peer;
-			[IfFlag(0)] public InputGeoPointBase geo_point;
-			public string query;
-			public string offset;
-		}
-
-		[TLDef(0xEB5EA206)] //messages.setInlineBotResults#eb5ea206 flags:# gallery:flags.0?true private:flags.1?true query_id:long results:Vector<InputBotInlineResult> cache_time:int next_offset:flags.2?string switch_pm:flags.3?InlineBotSwitchPM = Bool
-		public class Messages_SetInlineBotResults : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { gallery = 0x1, private_ = 0x2, has_next_offset = 0x4, has_switch_pm = 0x8 }
-			public Flags flags;
-			public long query_id;
-			public InputBotInlineResultBase[] results;
-			public DateTime cache_time;
-			[IfFlag(2)] public string next_offset;
-			[IfFlag(3)] public InlineBotSwitchPM switch_pm;
-		}
-
-		[TLDef(0x220815B0)] //messages.sendInlineBotResult#220815b0 flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true hide_via:flags.11?true peer:InputPeer reply_to_msg_id:flags.0?int random_id:long query_id:long id:string schedule_date:flags.10?int = Updates
-		public class Messages_SendInlineBotResult : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { has_reply_to_msg_id = 0x1, silent = 0x20, background = 0x40, clear_draft = 0x80, 
-				has_schedule_date = 0x400, hide_via = 0x800 }
-			public Flags flags;
-			public InputPeer peer;
-			[IfFlag(0)] public int reply_to_msg_id;
-			public long random_id;
-			public long query_id;
-			public string id;
-			[IfFlag(10)] public DateTime schedule_date;
-		}
-
-		[TLDef(0xE63FADEB)] //channels.exportMessageLink#e63fadeb flags:# grouped:flags.0?true thread:flags.1?true channel:InputChannel id:int = ExportedMessageLink
-		public class Channels_ExportMessageLink : ITLFunction<ExportedMessageLink>
-		{
-			[Flags] public enum Flags { grouped = 0x1, thread = 0x2 }
-			public Flags flags;
-			public InputChannelBase channel;
-			public int id;
-		}
-
-		[TLDef(0x1F69B606)] //channels.toggleSignatures#1f69b606 channel:InputChannel enabled:Bool = Updates
-		public class Channels_ToggleSignatures : ITLFunction<UpdatesBase>
-		{
-			public InputChannelBase channel;
-			public bool enabled;
-		}
-
-		[TLDef(0x3EF1A9BF)] //auth.resendCode#3ef1a9bf phone_number:string phone_code_hash:string = auth.SentCode
-		public class Auth_ResendCode : ITLFunction<Auth_SentCode>
-		{
-			public string phone_number;
-			public string phone_code_hash;
-		}
-
-		[TLDef(0x1F040578)] //auth.cancelCode#1f040578 phone_number:string phone_code_hash:string = Bool
-		public class Auth_CancelCode : ITLFunction<bool>
-		{
-			public string phone_number;
-			public string phone_code_hash;
-		}
-
-		[TLDef(0xFDA68D36)] //messages.getMessageEditData#fda68d36 peer:InputPeer id:int = messages.MessageEditData
-		public class Messages_GetMessageEditData : ITLFunction<Messages_MessageEditData>
-		{
-			public InputPeer peer;
-			public int id;
-		}
-
-		[TLDef(0x48F71778)] //messages.editMessage#48f71778 flags:# no_webpage:flags.1?true peer:InputPeer id:int message:flags.11?string media:flags.14?InputMedia reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.15?int = Updates
-		public class Messages_EditMessage : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { no_webpage = 0x2, has_reply_markup = 0x4, has_entities = 0x8, has_message = 0x800, 
-				has_media = 0x4000, has_schedule_date = 0x8000 }
-			public Flags flags;
-			public InputPeer peer;
-			public int id;
-			[IfFlag(11)] public string message;
-			[IfFlag(14)] public InputMedia media;
-			[IfFlag(2)] public ReplyMarkup reply_markup;
-			[IfFlag(3)] public MessageEntity[] entities;
-			[IfFlag(15)] public DateTime schedule_date;
-		}
-
-		[TLDef(0x83557DBA)] //messages.editInlineBotMessage#83557dba flags:# no_webpage:flags.1?true id:InputBotInlineMessageID message:flags.11?string media:flags.14?InputMedia reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> = Bool
-		public class Messages_EditInlineBotMessage : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { no_webpage = 0x2, has_reply_markup = 0x4, has_entities = 0x8, has_message = 0x800, 
-				has_media = 0x4000 }
-			public Flags flags;
-			public InputBotInlineMessageID id;
-			[IfFlag(11)] public string message;
-			[IfFlag(14)] public InputMedia media;
-			[IfFlag(2)] public ReplyMarkup reply_markup;
-			[IfFlag(3)] public MessageEntity[] entities;
-		}
-
-		[TLDef(0x9342CA07)] //messages.getBotCallbackAnswer#9342ca07 flags:# game:flags.1?true peer:InputPeer msg_id:int data:flags.0?bytes password:flags.2?InputCheckPasswordSRP = messages.BotCallbackAnswer
-		public class Messages_GetBotCallbackAnswer : ITLFunction<Messages_BotCallbackAnswer>
-		{
-			[Flags] public enum Flags { has_data = 0x1, game = 0x2, has_password = 0x4 }
-			public Flags flags;
-			public InputPeer peer;
-			public int msg_id;
-			[IfFlag(0)] public byte[] data;
-			[IfFlag(2)] public InputCheckPasswordSRPBase password;
-		}
-
-		[TLDef(0xD58F130A)] //messages.setBotCallbackAnswer#d58f130a flags:# alert:flags.1?true query_id:long message:flags.0?string url:flags.2?string cache_time:int = Bool
-		public class Messages_SetBotCallbackAnswer : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { has_message = 0x1, alert = 0x2, has_url = 0x4 }
-			public Flags flags;
-			public long query_id;
-			[IfFlag(0)] public string message;
-			[IfFlag(2)] public string url;
-			public DateTime cache_time;
-		}
-
-		[TLDef(0xD4982DB5)] //contacts.getTopPeers#d4982db5 flags:# correspondents:flags.0?true bots_pm:flags.1?true bots_inline:flags.2?true phone_calls:flags.3?true forward_users:flags.4?true forward_chats:flags.5?true groups:flags.10?true channels:flags.15?true offset:int limit:int hash:int = contacts.TopPeers
-		public class Contacts_GetTopPeers : ITLFunction<Contacts_TopPeersBase>
-		{
-			[Flags] public enum Flags { correspondents = 0x1, bots_pm = 0x2, bots_inline = 0x4, phone_calls = 0x8, 
-				forward_users = 0x10, forward_chats = 0x20, groups = 0x400, channels = 0x8000 }
-			public Flags flags;
-			public int offset;
-			public int limit;
-			public int hash;
-		}
-
-		[TLDef(0x1AE373AC)] //contacts.resetTopPeerRating#1ae373ac category:TopPeerCategory peer:InputPeer = Bool
-		public class Contacts_ResetTopPeerRating : ITLFunction<bool>
-		{
-			public TopPeerCategory category;
-			public InputPeer peer;
-		}
-
-		[TLDef(0xE470BCFD)] //messages.getPeerDialogs#e470bcfd peers:Vector<InputDialogPeer> = messages.PeerDialogs
-		public class Messages_GetPeerDialogs : ITLFunction<Messages_PeerDialogs> { public InputDialogPeerBase[] peers; }
-
-		[TLDef(0xBC39E14B)] //messages.saveDraft#bc39e14b flags:# no_webpage:flags.1?true reply_to_msg_id:flags.0?int peer:InputPeer message:string entities:flags.3?Vector<MessageEntity> = Bool
-		public class Messages_SaveDraft : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { has_reply_to_msg_id = 0x1, no_webpage = 0x2, has_entities = 0x8 }
-			public Flags flags;
-			[IfFlag(0)] public int reply_to_msg_id;
-			public InputPeer peer;
-			public string message;
-			[IfFlag(3)] public MessageEntity[] entities;
-		}
-
-		[TLDef(0x6A3F8D65)] //messages.getAllDrafts#6a3f8d65 = Updates
-		public class Messages_GetAllDrafts : ITLFunction<UpdatesBase> { }
-
-		[TLDef(0x2DACCA4F)] //messages.getFeaturedStickers#2dacca4f hash:int = messages.FeaturedStickers
-		public class Messages_GetFeaturedStickers : ITLFunction<Messages_FeaturedStickersBase> { public int hash; }
-
-		[TLDef(0x5B118126)] //messages.readFeaturedStickers#5b118126 id:Vector<long> = Bool
-		public class Messages_ReadFeaturedStickers : ITLFunction<bool> { public long[] id; }
-
-		[TLDef(0x5EA192C9)] //messages.getRecentStickers#5ea192c9 flags:# attached:flags.0?true hash:int = messages.RecentStickers
-		public class Messages_GetRecentStickers : ITLFunction<Messages_RecentStickersBase>
-		{
-			[Flags] public enum Flags { attached = 0x1 }
-			public Flags flags;
-			public int hash;
-		}
-
-		[TLDef(0x392718F8)] //messages.saveRecentSticker#392718f8 flags:# attached:flags.0?true id:InputDocument unsave:Bool = Bool
-		public class Messages_SaveRecentSticker : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { attached = 0x1 }
-			public Flags flags;
-			public InputDocumentBase id;
-			public bool unsave;
-		}
-
-		[TLDef(0x8999602D)] //messages.clearRecentStickers#8999602d flags:# attached:flags.0?true = Bool
-		public class Messages_ClearRecentStickers : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { attached = 0x1 }
-			public Flags flags;
-		}
-
-		[TLDef(0x57F17692)] //messages.getArchivedStickers#57f17692 flags:# masks:flags.0?true offset_id:long limit:int = messages.ArchivedStickers
-		public class Messages_GetArchivedStickers : ITLFunction<Messages_ArchivedStickers>
-		{
-			[Flags] public enum Flags { masks = 0x1 }
-			public Flags flags;
-			public long offset_id;
-			public int limit;
-		}
-
-		[TLDef(0x1B3FAA88)] //account.sendConfirmPhoneCode#1b3faa88 hash:string settings:CodeSettings = auth.SentCode
-		public class Account_SendConfirmPhoneCode : ITLFunction<Auth_SentCode>
-		{
-			public string hash;
-			public CodeSettings settings;
-		}
-
-		[TLDef(0x5F2178C3)] //account.confirmPhone#5f2178c3 phone_code_hash:string phone_code:string = Bool
-		public class Account_ConfirmPhone : ITLFunction<bool>
-		{
-			public string phone_code_hash;
-			public string phone_code;
-		}
-
-		[TLDef(0xF8B036AF)] //channels.getAdminedPublicChannels#f8b036af flags:# by_location:flags.0?true check_limit:flags.1?true = messages.Chats
-		public class Channels_GetAdminedPublicChannels : ITLFunction<Messages_ChatsBase>
-		{
-			[Flags] public enum Flags { by_location = 0x1, check_limit = 0x2 }
-			public Flags flags;
-		}
-
-		[TLDef(0x65B8C79F)] //messages.getMaskStickers#65b8c79f hash:int = messages.AllStickers
-		public class Messages_GetMaskStickers : ITLFunction<Messages_AllStickersBase> { public int hash; }
-
-		[TLDef(0xCC5B67CC)] //messages.getAttachedStickers#cc5b67cc media:InputStickeredMedia = Vector<StickerSetCovered>
-		public class Messages_GetAttachedStickers : ITLFunction<StickerSetCoveredBase[]> { public InputStickeredMedia media; }
-
-		[TLDef(0x8E48A188)] //auth.dropTempAuthKeys#8e48a188 except_auth_keys:Vector<long> = Bool
-		public class Auth_DropTempAuthKeys : ITLFunction<bool> { public long[] except_auth_keys; }
-
-		[TLDef(0x8EF8ECC0)] //messages.setGameScore#8ef8ecc0 flags:# edit_message:flags.0?true force:flags.1?true peer:InputPeer id:int user_id:InputUser score:int = Updates
-		public class Messages_SetGameScore : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { edit_message = 0x1, force = 0x2 }
-			public Flags flags;
-			public InputPeer peer;
-			public int id;
-			public InputUserBase user_id;
-			public int score;
-		}
-
-		[TLDef(0x15AD9F64)] //messages.setInlineGameScore#15ad9f64 flags:# edit_message:flags.0?true force:flags.1?true id:InputBotInlineMessageID user_id:InputUser score:int = Bool
-		public class Messages_SetInlineGameScore : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { edit_message = 0x1, force = 0x2 }
-			public Flags flags;
-			public InputBotInlineMessageID id;
-			public InputUserBase user_id;
-			public int score;
-		}
-
-		[TLDef(0xE822649D)] //messages.getGameHighScores#e822649d peer:InputPeer id:int user_id:InputUser = messages.HighScores
-		public class Messages_GetGameHighScores : ITLFunction<Messages_HighScores>
-		{
-			public InputPeer peer;
-			public int id;
-			public InputUserBase user_id;
-		}
-
-		[TLDef(0x0F635E1B)] //messages.getInlineGameHighScores#0f635e1b id:InputBotInlineMessageID user_id:InputUser = messages.HighScores
-		public class Messages_GetInlineGameHighScores : ITLFunction<Messages_HighScores>
-		{
-			public InputBotInlineMessageID id;
-			public InputUserBase user_id;
-		}
-
-		[TLDef(0x0D0A48C4)] //messages.getCommonChats#0d0a48c4 user_id:InputUser max_id:int limit:int = messages.Chats
-		public class Messages_GetCommonChats : ITLFunction<Messages_ChatsBase>
-		{
-			public InputUserBase user_id;
-			public int max_id;
-			public int limit;
-		}
-
-		[TLDef(0xEBA80FF0)] //messages.getAllChats#eba80ff0 except_ids:Vector<int> = messages.Chats
-		public class Messages_GetAllChats : ITLFunction<Messages_ChatsBase> { public int[] except_ids; }
-
-		[TLDef(0xEC22CFCD)] //help.setBotUpdatesStatus#ec22cfcd pending_updates_count:int message:string = Bool
-		public class Help_SetBotUpdatesStatus : ITLFunction<bool>
-		{
-			public int pending_updates_count;
-			public string message;
-		}
-
-		[TLDef(0x32CA8F91)] //messages.getWebPage#32ca8f91 url:string hash:int = WebPage
-		public class Messages_GetWebPage : ITLFunction<WebPageBase>
-		{
-			public string url;
-			public int hash;
-		}
-
-		[TLDef(0xA731E257)] //messages.toggleDialogPin#a731e257 flags:# pinned:flags.0?true peer:InputDialogPeer = Bool
-		public class Messages_ToggleDialogPin : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { pinned = 0x1 }
-			public Flags flags;
-			public InputDialogPeerBase peer;
-		}
-
-		[TLDef(0x3B1ADF37)] //messages.reorderPinnedDialogs#3b1adf37 flags:# force:flags.0?true folder_id:int order:Vector<InputDialogPeer> = Bool
-		public class Messages_ReorderPinnedDialogs : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { force = 0x1 }
-			public Flags flags;
-			public int folder_id;
-			public InputDialogPeerBase[] order;
-		}
-
-		[TLDef(0xD6B94DF2)] //messages.getPinnedDialogs#d6b94df2 folder_id:int = messages.PeerDialogs
-		public class Messages_GetPinnedDialogs : ITLFunction<Messages_PeerDialogs> { public int folder_id; }
-
-		[TLDef(0xAA2769ED)] //bots.sendCustomRequest#aa2769ed custom_method:string params:DataJSON = DataJSON
-		public class Bots_SendCustomRequest : ITLFunction<DataJSON>
-		{
-			public string custom_method;
-			public DataJSON params_;
-		}
-
-		[TLDef(0xE6213F4D)] //bots.answerWebhookJSONQuery#e6213f4d query_id:long data:DataJSON = Bool
-		public class Bots_AnswerWebhookJSONQuery : ITLFunction<bool>
-		{
-			public long query_id;
-			public DataJSON data;
-		}
-
-		[TLDef(0x24E6818D)] //upload.getWebFile#24e6818d location:InputWebFileLocation offset:int limit:int = upload.WebFile
-		public class Upload_GetWebFile : ITLFunction<Upload_WebFile>
-		{
-			public InputWebFileLocationBase location;
-			public int offset;
-			public int limit;
-		}
-
-		[TLDef(0x99F09745)] //payments.getPaymentForm#99f09745 msg_id:int = payments.PaymentForm
-		public class Payments_GetPaymentForm : ITLFunction<Payments_PaymentForm> { public int msg_id; }
-
-		[TLDef(0xA092A980)] //payments.getPaymentReceipt#a092a980 msg_id:int = payments.PaymentReceipt
-		public class Payments_GetPaymentReceipt : ITLFunction<Payments_PaymentReceipt> { public int msg_id; }
-
-		[TLDef(0x770A8E74)] //payments.validateRequestedInfo#770a8e74 flags:# save:flags.0?true msg_id:int info:PaymentRequestedInfo = payments.ValidatedRequestedInfo
-		public class Payments_ValidateRequestedInfo : ITLFunction<Payments_ValidatedRequestedInfo>
-		{
-			[Flags] public enum Flags { save = 0x1 }
-			public Flags flags;
-			public int msg_id;
-			public PaymentRequestedInfo info;
-		}
-
-		[TLDef(0x2B8879B3)] //payments.sendPaymentForm#2b8879b3 flags:# msg_id:int requested_info_id:flags.0?string shipping_option_id:flags.1?string credentials:InputPaymentCredentials = payments.PaymentResult
-		public class Payments_SendPaymentForm : ITLFunction<Payments_PaymentResultBase>
-		{
-			[Flags] public enum Flags { has_requested_info_id = 0x1, has_shipping_option_id = 0x2 }
-			public Flags flags;
-			public int msg_id;
-			[IfFlag(0)] public string requested_info_id;
-			[IfFlag(1)] public string shipping_option_id;
-			public InputPaymentCredentialsBase credentials;
-		}
-
-		[TLDef(0x449E0B51)] //account.getTmpPassword#449e0b51 password:InputCheckPasswordSRP period:int = account.TmpPassword
-		public class Account_GetTmpPassword : ITLFunction<Account_TmpPassword>
-		{
-			public InputCheckPasswordSRPBase password;
-			public int period;
-		}
-
-		[TLDef(0x227D824B)] //payments.getSavedInfo#227d824b = payments.SavedInfo
-		public class Payments_GetSavedInfo : ITLFunction<Payments_SavedInfo> { }
-
-		[TLDef(0xD83D70C1)] //payments.clearSavedInfo#d83d70c1 flags:# credentials:flags.0?true info:flags.1?true = Bool
-		public class Payments_ClearSavedInfo : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { credentials = 0x1, info = 0x2 }
-			public Flags flags;
-		}
-
-		[TLDef(0xE5F672FA)] //messages.setBotShippingResults#e5f672fa flags:# query_id:long error:flags.0?string shipping_options:flags.1?Vector<ShippingOption> = Bool
-		public class Messages_SetBotShippingResults : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { has_error = 0x1, has_shipping_options = 0x2 }
-			public Flags flags;
-			public long query_id;
-			[IfFlag(0)] public string error;
-			[IfFlag(1)] public ShippingOption[] shipping_options;
-		}
-
-		[TLDef(0x09C2DD95)] //messages.setBotPrecheckoutResults#09c2dd95 flags:# success:flags.1?true query_id:long error:flags.0?string = Bool
-		public class Messages_SetBotPrecheckoutResults : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { has_error = 0x1, success = 0x2 }
-			public Flags flags;
-			public long query_id;
-			[IfFlag(0)] public string error;
-		}
-
-		[TLDef(0xF1036780)] //stickers.createStickerSet#f1036780 flags:# masks:flags.0?true animated:flags.1?true user_id:InputUser title:string short_name:string thumb:flags.2?InputDocument stickers:Vector<InputStickerSetItem> = messages.StickerSet
-		public class Stickers_CreateStickerSet : ITLFunction<Messages_StickerSet>
-		{
-			[Flags] public enum Flags { masks = 0x1, animated = 0x2, has_thumb = 0x4 }
-			public Flags flags;
-			public InputUserBase user_id;
-			public string title;
-			public string short_name;
-			[IfFlag(2)] public InputDocumentBase thumb;
-			public InputStickerSetItem[] stickers;
-		}
-
-		[TLDef(0xF7760F51)] //stickers.removeStickerFromSet#f7760f51 sticker:InputDocument = messages.StickerSet
-		public class Stickers_RemoveStickerFromSet : ITLFunction<Messages_StickerSet> { public InputDocumentBase sticker; }
-
-		[TLDef(0xFFB6D4CA)] //stickers.changeStickerPosition#ffb6d4ca sticker:InputDocument position:int = messages.StickerSet
-		public class Stickers_ChangeStickerPosition : ITLFunction<Messages_StickerSet>
-		{
-			public InputDocumentBase sticker;
-			public int position;
-		}
-
-		[TLDef(0x8653FEBE)] //stickers.addStickerToSet#8653febe stickerset:InputStickerSet sticker:InputStickerSetItem = messages.StickerSet
-		public class Stickers_AddStickerToSet : ITLFunction<Messages_StickerSet>
-		{
-			public InputStickerSet stickerset;
-			public InputStickerSetItem sticker;
-		}
-
-		[TLDef(0x519BC2B1)] //messages.uploadMedia#519bc2b1 peer:InputPeer media:InputMedia = MessageMedia
-		public class Messages_UploadMedia : ITLFunction<MessageMedia>
-		{
-			public InputPeer peer;
-			public InputMedia media;
-		}
-
-		[TLDef(0x55451FA9)] //phone.getCallConfig#55451fa9 = DataJSON
-		public class Phone_GetCallConfig : ITLFunction<DataJSON> { }
-
-		[TLDef(0x42FF96ED)] //phone.requestCall#42ff96ed flags:# video:flags.0?true user_id:InputUser random_id:int g_a_hash:bytes protocol:PhoneCallProtocol = phone.PhoneCall
-		public class Phone_RequestCall : ITLFunction<Phone_PhoneCall>
-		{
-			[Flags] public enum Flags { video = 0x1 }
-			public Flags flags;
-			public InputUserBase user_id;
-			public int random_id;
-			public byte[] g_a_hash;
-			public PhoneCallProtocol protocol;
-		}
-
-		[TLDef(0x3BD2B4A0)] //phone.acceptCall#3bd2b4a0 peer:InputPhoneCall g_b:bytes protocol:PhoneCallProtocol = phone.PhoneCall
-		public class Phone_AcceptCall : ITLFunction<Phone_PhoneCall>
-		{
-			public InputPhoneCall peer;
-			public byte[] g_b;
-			public PhoneCallProtocol protocol;
-		}
-
-		[TLDef(0x2EFE1722)] //phone.confirmCall#2efe1722 peer:InputPhoneCall g_a:bytes key_fingerprint:long protocol:PhoneCallProtocol = phone.PhoneCall
-		public class Phone_ConfirmCall : ITLFunction<Phone_PhoneCall>
-		{
-			public InputPhoneCall peer;
-			public byte[] g_a;
-			public long key_fingerprint;
-			public PhoneCallProtocol protocol;
-		}
-
-		[TLDef(0x17D54F61)] //phone.receivedCall#17d54f61 peer:InputPhoneCall = Bool
-		public class Phone_ReceivedCall : ITLFunction<bool> { public InputPhoneCall peer; }
-
-		[TLDef(0xB2CBC1C0)] //phone.discardCall#b2cbc1c0 flags:# video:flags.0?true peer:InputPhoneCall duration:int reason:PhoneCallDiscardReason connection_id:long = Updates
-		public class Phone_DiscardCall : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { video = 0x1 }
-			public Flags flags;
-			public InputPhoneCall peer;
-			public int duration;
-			public PhoneCallDiscardReason reason;
-			public long connection_id;
-		}
-
-		[TLDef(0x59EAD627)] //phone.setCallRating#59ead627 flags:# user_initiative:flags.0?true peer:InputPhoneCall rating:int comment:string = Updates
-		public class Phone_SetCallRating : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { user_initiative = 0x1 }
-			public Flags flags;
-			public InputPhoneCall peer;
-			public int rating;
-			public string comment;
-		}
-
-		[TLDef(0x277ADD7E)] //phone.saveCallDebug#277add7e peer:InputPhoneCall debug:DataJSON = Bool
-		public class Phone_SaveCallDebug : ITLFunction<bool>
-		{
-			public InputPhoneCall peer;
-			public DataJSON debug;
-		}
-
-		[TLDef(0x2000BCC3)] //upload.getCdnFile#2000bcc3 file_token:bytes offset:int limit:int = upload.CdnFile
-		public class Upload_GetCdnFile : ITLFunction<Upload_CdnFileBase>
-		{
-			public byte[] file_token;
-			public int offset;
-			public int limit;
-		}
-
-		[TLDef(0x9B2754A8)] //upload.reuploadCdnFile#9b2754a8 file_token:bytes request_token:bytes = Vector<FileHash>
-		public class Upload_ReuploadCdnFile : ITLFunction<FileHash[]>
-		{
-			public byte[] file_token;
-			public byte[] request_token;
-		}
-
-		[TLDef(0x52029342)] //help.getCdnConfig#52029342 = CdnConfig
-		public class Help_GetCdnConfig : ITLFunction<CdnConfig> { }
-
-		[TLDef(0xF2F2330A)] //langpack.getLangPack#f2f2330a lang_pack:string lang_code:string = LangPackDifference
-		public class Langpack_GetLangPack : ITLFunction<LangPackDifference>
-		{
-			public string lang_pack;
-			public string lang_code;
-		}
-
-		[TLDef(0xEFEA3803)] //langpack.getStrings#efea3803 lang_pack:string lang_code:string keys:Vector<string> = Vector<LangPackString>
-		public class Langpack_GetStrings : ITLFunction<LangPackStringBase[]>
-		{
-			public string lang_pack;
-			public string lang_code;
-			public string[] keys;
-		}
-
-		[TLDef(0xCD984AA5)] //langpack.getDifference#cd984aa5 lang_pack:string lang_code:string from_version:int = LangPackDifference
-		public class Langpack_GetDifference : ITLFunction<LangPackDifference>
-		{
-			public string lang_pack;
-			public string lang_code;
-			public int from_version;
-		}
-
-		[TLDef(0x42C6978F)] //langpack.getLanguages#42c6978f lang_pack:string = Vector<LangPackLanguage>
-		public class Langpack_GetLanguages : ITLFunction<LangPackLanguage[]> { public string lang_pack; }
-
-		[TLDef(0x72796912)] //channels.editBanned#72796912 channel:InputChannel user_id:InputUser banned_rights:ChatBannedRights = Updates
-		public class Channels_EditBanned : ITLFunction<UpdatesBase>
-		{
-			public InputChannelBase channel;
-			public InputUserBase user_id;
-			public ChatBannedRights banned_rights;
-		}
-
-		[TLDef(0x33DDF480)] //channels.getAdminLog#33ddf480 flags:# channel:InputChannel q:string events_filter:flags.0?ChannelAdminLogEventsFilter admins:flags.1?Vector<InputUser> max_id:long min_id:long limit:int = channels.AdminLogResults
-		public class Channels_GetAdminLog : ITLFunction<Channels_AdminLogResults>
-		{
-			[Flags] public enum Flags { has_events_filter = 0x1, has_admins = 0x2 }
-			public Flags flags;
-			public InputChannelBase channel;
-			public string q;
-			[IfFlag(0)] public ChannelAdminLogEventsFilter events_filter;
-			[IfFlag(1)] public InputUserBase[] admins;
-			public long max_id;
-			public long min_id;
-			public int limit;
-		}
-
-		[TLDef(0x4DA54231)] //upload.getCdnFileHashes#4da54231 file_token:bytes offset:int = Vector<FileHash>
-		public class Upload_GetCdnFileHashes : ITLFunction<FileHash[]>
-		{
-			public byte[] file_token;
-			public int offset;
-		}
-
-		[TLDef(0xC97DF020)] //messages.sendScreenshotNotification#c97df020 peer:InputPeer reply_to_msg_id:int random_id:long = Updates
-		public class Messages_SendScreenshotNotification : ITLFunction<UpdatesBase>
-		{
-			public InputPeer peer;
-			public int reply_to_msg_id;
-			public long random_id;
-		}
-
-		[TLDef(0xEA8CA4F9)] //channels.setStickers#ea8ca4f9 channel:InputChannel stickerset:InputStickerSet = Bool
-		public class Channels_SetStickers : ITLFunction<bool>
-		{
-			public InputChannelBase channel;
-			public InputStickerSet stickerset;
-		}
-
-		[TLDef(0x21CE0B0E)] //messages.getFavedStickers#21ce0b0e hash:int = messages.FavedStickers
-		public class Messages_GetFavedStickers : ITLFunction<Messages_FavedStickersBase> { public int hash; }
-
-		[TLDef(0xB9FFC55B)] //messages.faveSticker#b9ffc55b id:InputDocument unfave:Bool = Bool
-		public class Messages_FaveSticker : ITLFunction<bool>
-		{
-			public InputDocumentBase id;
-			public bool unfave;
-		}
-
-		[TLDef(0xEAB5DC38)] //channels.readMessageContents#eab5dc38 channel:InputChannel id:Vector<int> = Bool
-		public class Channels_ReadMessageContents : ITLFunction<bool>
-		{
-			public InputChannelBase channel;
-			public int[] id;
-		}
-
-		[TLDef(0x879537F1)] //contacts.resetSaved#879537f1 = Bool
-		public class Contacts_ResetSaved : ITLFunction<bool> { }
-
-		[TLDef(0x46578472)] //messages.getUnreadMentions#46578472 peer:InputPeer offset_id:int add_offset:int limit:int max_id:int min_id:int = messages.Messages
-		public class Messages_GetUnreadMentions : ITLFunction<Messages_MessagesBase>
-		{
-			public InputPeer peer;
-			public int offset_id;
-			public int add_offset;
-			public int limit;
-			public int max_id;
-			public int min_id;
-		}
-
-		[TLDef(0xAF369D42)] //channels.deleteHistory#af369d42 channel:InputChannel max_id:int = Bool
-		public class Channels_DeleteHistory : ITLFunction<bool>
-		{
-			public InputChannelBase channel;
-			public int max_id;
-		}
-
-		[TLDef(0x3DC0F114)] //help.getRecentMeUrls#3dc0f114 referer:string = help.RecentMeUrls
-		public class Help_GetRecentMeUrls : ITLFunction<Help_RecentMeUrls> { public string referer; }
-
-		[TLDef(0xEABBB94C)] //channels.togglePreHistoryHidden#eabbb94c channel:InputChannel enabled:Bool = Updates
-		public class Channels_TogglePreHistoryHidden : ITLFunction<UpdatesBase>
-		{
-			public InputChannelBase channel;
-			public bool enabled;
-		}
-
-		[TLDef(0x0F0189D3)] //messages.readMentions#0f0189d3 peer:InputPeer = messages.AffectedHistory
-		public class Messages_ReadMentions : ITLFunction<Messages_AffectedHistory> { public InputPeer peer; }
-
-		[TLDef(0xBBC45B09)] //messages.getRecentLocations#bbc45b09 peer:InputPeer limit:int hash:int = messages.Messages
-		public class Messages_GetRecentLocations : ITLFunction<Messages_MessagesBase>
-		{
-			public InputPeer peer;
-			public int limit;
-			public int hash;
-		}
-
-		[TLDef(0xCC0110CB)] //messages.sendMultiMedia#cc0110cb flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int multi_media:Vector<InputSingleMedia> schedule_date:flags.10?int = Updates
-		public class Messages_SendMultiMedia : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { has_reply_to_msg_id = 0x1, silent = 0x20, background = 0x40, clear_draft = 0x80, 
-				has_schedule_date = 0x400 }
-			public Flags flags;
-			public InputPeer peer;
-			[IfFlag(0)] public int reply_to_msg_id;
-			public InputSingleMedia[] multi_media;
-			[IfFlag(10)] public DateTime schedule_date;
-		}
-
-		[TLDef(0x5057C497)] //messages.uploadEncryptedFile#5057c497 peer:InputEncryptedChat file:InputEncryptedFile = EncryptedFile
-		public class Messages_UploadEncryptedFile : ITLFunction<EncryptedFileBase>
-		{
-			public InputEncryptedChat peer;
-			public InputEncryptedFileBase file;
-		}
-
-		[TLDef(0x182E6D6F)] //account.getWebAuthorizations#182e6d6f = account.WebAuthorizations
-		public class Account_GetWebAuthorizations : ITLFunction<Account_WebAuthorizations> { }
-
-		[TLDef(0x2D01B9EF)] //account.resetWebAuthorization#2d01b9ef hash:long = Bool
-		public class Account_ResetWebAuthorization : ITLFunction<bool> { public long hash; }
-
-		[TLDef(0x682D2594)] //account.resetWebAuthorizations#682d2594 = Bool
-		public class Account_ResetWebAuthorizations : ITLFunction<bool> { }
-
-		[TLDef(0xC2B7D08B)] //messages.searchStickerSets#c2b7d08b flags:# exclude_featured:flags.0?true q:string hash:int = messages.FoundStickerSets
-		public class Messages_SearchStickerSets : ITLFunction<Messages_FoundStickerSetsBase>
-		{
-			[Flags] public enum Flags { exclude_featured = 0x1 }
-			public Flags flags;
-			public string q;
-			public int hash;
-		}
-
-		[TLDef(0xC7025931)] //upload.getFileHashes#c7025931 location:InputFileLocation offset:int = Vector<FileHash>
-		public class Upload_GetFileHashes : ITLFunction<FileHash[]>
-		{
-			public InputFileLocationBase location;
-			public int offset;
-		}
-
-		[TLDef(0x2CA51FD1)] //help.getTermsOfServiceUpdate#2ca51fd1 = help.TermsOfServiceUpdate
-		public class Help_GetTermsOfServiceUpdate : ITLFunction<Help_TermsOfServiceUpdateBase> { }
-
-		[TLDef(0xEE72F79A)] //help.acceptTermsOfService#ee72f79a id:DataJSON = Bool
-		public class Help_AcceptTermsOfService : ITLFunction<bool> { public DataJSON id; }
-
-		[TLDef(0xB288BC7D)] //account.getAllSecureValues#b288bc7d = Vector<SecureValue>
-		public class Account_GetAllSecureValues : ITLFunction<SecureValue[]> { }
-
-		[TLDef(0x73665BC2)] //account.getSecureValue#73665bc2 types:Vector<SecureValueType> = Vector<SecureValue>
-		public class Account_GetSecureValue : ITLFunction<SecureValue[]> { public SecureValueType[] types; }
-
-		[TLDef(0x899FE31D)] //account.saveSecureValue#899fe31d value:InputSecureValue secure_secret_id:long = SecureValue
-		public class Account_SaveSecureValue : ITLFunction<SecureValue>
-		{
-			public InputSecureValue value;
-			public long secure_secret_id;
-		}
-
-		[TLDef(0xB880BC4B)] //account.deleteSecureValue#b880bc4b types:Vector<SecureValueType> = Bool
-		public class Account_DeleteSecureValue : ITLFunction<bool> { public SecureValueType[] types; }
-
-		[TLDef(0x90C894B5)] //users.setSecureValueErrors#90c894b5 id:InputUser errors:Vector<SecureValueError> = Bool
-		public class Users_SetSecureValueErrors : ITLFunction<bool>
-		{
-			public InputUserBase id;
-			public SecureValueErrorBase[] errors;
-		}
-
-		[TLDef(0xB86BA8E1)] //account.getAuthorizationForm#b86ba8e1 bot_id:int scope:string public_key:string = account.AuthorizationForm
-		public class Account_GetAuthorizationForm : ITLFunction<Account_AuthorizationForm>
-		{
-			public int bot_id;
-			public string scope;
-			public string public_key;
-		}
-
-		[TLDef(0xE7027C94)] //account.acceptAuthorization#e7027c94 bot_id:int scope:string public_key:string value_hashes:Vector<SecureValueHash> credentials:SecureCredentialsEncrypted = Bool
-		public class Account_AcceptAuthorization : ITLFunction<bool>
-		{
-			public int bot_id;
-			public string scope;
-			public string public_key;
-			public SecureValueHash[] value_hashes;
-			public SecureCredentialsEncrypted credentials;
-		}
-
-		[TLDef(0xA5A356F9)] //account.sendVerifyPhoneCode#a5a356f9 phone_number:string settings:CodeSettings = auth.SentCode
-		public class Account_SendVerifyPhoneCode : ITLFunction<Auth_SentCode>
-		{
-			public string phone_number;
-			public CodeSettings settings;
-		}
-
-		[TLDef(0x4DD3A7F6)] //account.verifyPhone#4dd3a7f6 phone_number:string phone_code_hash:string phone_code:string = Bool
-		public class Account_VerifyPhone : ITLFunction<bool>
-		{
-			public string phone_number;
-			public string phone_code_hash;
-			public string phone_code;
-		}
-
-		[TLDef(0x7011509F)] //account.sendVerifyEmailCode#7011509f email:string = account.SentEmailCode
-		public class Account_SendVerifyEmailCode : ITLFunction<Account_SentEmailCode> { public string email; }
-
-		[TLDef(0xECBA39DB)] //account.verifyEmail#ecba39db email:string code:string = Bool
-		public class Account_VerifyEmail : ITLFunction<bool>
-		{
-			public string email;
-			public string code;
-		}
-
-		[TLDef(0x3FEDC75F)] //help.getDeepLinkInfo#3fedc75f path:string = help.DeepLinkInfo
-		public class Help_GetDeepLinkInfo : ITLFunction<Help_DeepLinkInfoBase> { public string path; }
-
-		[TLDef(0x82F1E39F)] //contacts.getSaved#82f1e39f = Vector<SavedContact>
-		public class Contacts_GetSaved : ITLFunction<SavedContact[]> { }
-
-		[TLDef(0x8341ECC0)] //channels.getLeftChannels#8341ecc0 offset:int = messages.Chats
-		public class Channels_GetLeftChannels : ITLFunction<Messages_ChatsBase> { public int offset; }
-
-		[TLDef(0xF05B4804)] //account.initTakeoutSession#f05b4804 flags:# contacts:flags.0?true message_users:flags.1?true message_chats:flags.2?true message_megagroups:flags.3?true message_channels:flags.4?true files:flags.5?true file_max_size:flags.5?int = account.Takeout
-		public class Account_InitTakeoutSession : ITLFunction<Account_Takeout>
-		{
-			[Flags] public enum Flags { contacts = 0x1, message_users = 0x2, message_chats = 0x4, message_megagroups = 0x8, 
-				message_channels = 0x10, files = 0x20 }
-			public Flags flags;
-			[IfFlag(5)] public int file_max_size;
-		}
-
-		[TLDef(0x1D2652EE)] //account.finishTakeoutSession#1d2652ee flags:# success:flags.0?true = Bool
-		public class Account_FinishTakeoutSession : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { success = 0x1 }
-			public Flags flags;
-		}
-
-		[TLDef(0x1CFF7E08)] //messages.getSplitRanges#1cff7e08 = Vector<MessageRange>
-		public class Messages_GetSplitRanges : ITLFunction<MessageRange[]> { }
-
-		[TLDef(0x365275F2)] //invokeWithMessagesRange#365275f2 {X:Type} range:MessageRange query:!X = X
-		public class InvokeWithMessagesRange<X> : ITLFunction<X>
-		{
-			public MessageRange range;
-			public ITLFunction<X> query;
-		}
-
-		[TLDef(0xACA9FD2E)] //invokeWithTakeout#aca9fd2e {X:Type} takeout_id:long query:!X = X
-		public class InvokeWithTakeout<X> : ITLFunction<X>
-		{
-			public long takeout_id;
-			public ITLFunction<X> query;
-		}
-
-		[TLDef(0xC286D98F)] //messages.markDialogUnread#c286d98f flags:# unread:flags.0?true peer:InputDialogPeer = Bool
-		public class Messages_MarkDialogUnread : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { unread = 0x1 }
-			public Flags flags;
-			public InputDialogPeerBase peer;
-		}
-
-		[TLDef(0x22E24E22)] //messages.getDialogUnreadMarks#22e24e22 = Vector<DialogPeer>
-		public class Messages_GetDialogUnreadMarks : ITLFunction<DialogPeerBase[]> { }
-
-		[TLDef(0x8514BDDA)] //contacts.toggleTopPeers#8514bdda enabled:Bool = Bool
-		public class Contacts_ToggleTopPeers : ITLFunction<bool> { public bool enabled; }
-
-		[TLDef(0x7E58EE9C)] //messages.clearAllDrafts#7e58ee9c = Bool
-		public class Messages_ClearAllDrafts : ITLFunction<bool> { }
-
-		[TLDef(0x98914110)] //help.getAppConfig#98914110 = JSONValue
-		public class Help_GetAppConfig : ITLFunction<JSONValue> { }
-
-		[TLDef(0x6F02F748)] //help.saveAppLog#6f02f748 events:Vector<InputAppEvent> = Bool
-		public class Help_SaveAppLog : ITLFunction<bool> { public InputAppEvent[] events; }
-
-		[TLDef(0xC661AD08)] //help.getPassportConfig#c661ad08 hash:int = help.PassportConfig
-		public class Help_GetPassportConfig : ITLFunction<Help_PassportConfigBase> { public int hash; }
-
-		[TLDef(0x6A596502)] //langpack.getLanguage#6a596502 lang_pack:string lang_code:string = LangPackLanguage
-		public class Langpack_GetLanguage : ITLFunction<LangPackLanguage>
-		{
-			public string lang_pack;
-			public string lang_code;
-		}
-
-		[TLDef(0xD2AAF7EC)] //messages.updatePinnedMessage#d2aaf7ec flags:# silent:flags.0?true unpin:flags.1?true pm_oneside:flags.2?true peer:InputPeer id:int = Updates
-		public class Messages_UpdatePinnedMessage : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { silent = 0x1, unpin = 0x2, pm_oneside = 0x4 }
-			public Flags flags;
-			public InputPeer peer;
-			public int id;
-		}
-
-		[TLDef(0x8FDF1920)] //account.confirmPasswordEmail#8fdf1920 code:string = Bool
-		public class Account_ConfirmPasswordEmail : ITLFunction<bool> { public string code; }
-
-		[TLDef(0x7A7F2A15)] //account.resendPasswordEmail#7a7f2a15 = Bool
-		public class Account_ResendPasswordEmail : ITLFunction<bool> { }
-
-		[TLDef(0xC1CBD5B6)] //account.cancelPasswordEmail#c1cbd5b6 = Bool
-		public class Account_CancelPasswordEmail : ITLFunction<bool> { }
-
-		[TLDef(0xD360E72C)] //help.getSupportName#d360e72c = help.SupportName
-		public class Help_GetSupportName : ITLFunction<Help_SupportName> { }
-
-		[TLDef(0x038A08D3)] //help.getUserInfo#038a08d3 user_id:InputUser = help.UserInfo
-		public class Help_GetUserInfo : ITLFunction<Help_UserInfoBase> { public InputUserBase user_id; }
-
-		[TLDef(0x66B91B70)] //help.editUserInfo#66b91b70 user_id:InputUser message:string entities:Vector<MessageEntity> = help.UserInfo
-		public class Help_EditUserInfo : ITLFunction<Help_UserInfoBase>
-		{
-			public InputUserBase user_id;
-			public string message;
-			public MessageEntity[] entities;
-		}
-
-		[TLDef(0x9F07C728)] //account.getContactSignUpNotification#9f07c728 = Bool
-		public class Account_GetContactSignUpNotification : ITLFunction<bool> { }
-
-		[TLDef(0xCFF43F61)] //account.setContactSignUpNotification#cff43f61 silent:Bool = Bool
-		public class Account_SetContactSignUpNotification : ITLFunction<bool> { public bool silent; }
-
-		[TLDef(0x53577479)] //account.getNotifyExceptions#53577479 flags:# compare_sound:flags.1?true peer:flags.0?InputNotifyPeer = Updates
-		public class Account_GetNotifyExceptions : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { has_peer = 0x1, compare_sound = 0x2 }
-			public Flags flags;
-			[IfFlag(0)] public InputNotifyPeerBase peer;
-		}
-
-		[TLDef(0x10EA6184)] //messages.sendVote#10ea6184 peer:InputPeer msg_id:int options:Vector<bytes> = Updates
-		public class Messages_SendVote : ITLFunction<UpdatesBase>
-		{
-			public InputPeer peer;
-			public int msg_id;
-			public byte[][] options;
-		}
-
-		[TLDef(0x73BB643B)] //messages.getPollResults#73bb643b peer:InputPeer msg_id:int = Updates
-		public class Messages_GetPollResults : ITLFunction<UpdatesBase>
-		{
-			public InputPeer peer;
-			public int msg_id;
-		}
-
-		[TLDef(0x6E2BE050)] //messages.getOnlines#6e2be050 peer:InputPeer = ChatOnlines
-		public class Messages_GetOnlines : ITLFunction<ChatOnlines> { public InputPeer peer; }
-
-		[TLDef(0x812C2AE6)] //messages.getStatsURL#812c2ae6 flags:# dark:flags.0?true peer:InputPeer params:string = StatsURL
-		public class Messages_GetStatsURL : ITLFunction<StatsURL>
-		{
-			[Flags] public enum Flags { dark = 0x1 }
-			public Flags flags;
-			public InputPeer peer;
-			public string params_;
-		}
-
-		[TLDef(0xDEF60797)] //messages.editChatAbout#def60797 peer:InputPeer about:string = Bool
-		public class Messages_EditChatAbout : ITLFunction<bool>
-		{
-			public InputPeer peer;
-			public string about;
-		}
-
-		[TLDef(0xA5866B41)] //messages.editChatDefaultBannedRights#a5866b41 peer:InputPeer banned_rights:ChatBannedRights = Updates
-		public class Messages_EditChatDefaultBannedRights : ITLFunction<UpdatesBase>
-		{
-			public InputPeer peer;
-			public ChatBannedRights banned_rights;
-		}
-
-		[TLDef(0xFC8DDBEA)] //account.getWallPaper#fc8ddbea wallpaper:InputWallPaper = WallPaper
-		public class Account_GetWallPaper : ITLFunction<WallPaperBase> { public InputWallPaperBase wallpaper; }
-
-		[TLDef(0xDD853661)] //account.uploadWallPaper#dd853661 file:InputFile mime_type:string settings:WallPaperSettings = WallPaper
-		public class Account_UploadWallPaper : ITLFunction<WallPaperBase>
-		{
-			public InputFileBase file;
-			public string mime_type;
-			public WallPaperSettings settings;
-		}
-
-		[TLDef(0x6C5A5B37)] //account.saveWallPaper#6c5a5b37 wallpaper:InputWallPaper unsave:Bool settings:WallPaperSettings = Bool
-		public class Account_SaveWallPaper : ITLFunction<bool>
-		{
-			public InputWallPaperBase wallpaper;
-			public bool unsave;
-			public WallPaperSettings settings;
-		}
-
-		[TLDef(0xFEED5769)] //account.installWallPaper#feed5769 wallpaper:InputWallPaper settings:WallPaperSettings = Bool
-		public class Account_InstallWallPaper : ITLFunction<bool>
-		{
-			public InputWallPaperBase wallpaper;
-			public WallPaperSettings settings;
-		}
-
-		[TLDef(0xBB3B9804)] //account.resetWallPapers#bb3b9804 = Bool
-		public class Account_ResetWallPapers : ITLFunction<bool> { }
-
-		[TLDef(0x56DA0B3F)] //account.getAutoDownloadSettings#56da0b3f = account.AutoDownloadSettings
-		public class Account_GetAutoDownloadSettings : ITLFunction<Account_AutoDownloadSettings> { }
-
-		[TLDef(0x76F36233)] //account.saveAutoDownloadSettings#76f36233 flags:# low:flags.0?true high:flags.1?true settings:AutoDownloadSettings = Bool
-		public class Account_SaveAutoDownloadSettings : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { low = 0x1, high = 0x2 }
-			public Flags flags;
-			public AutoDownloadSettings settings;
-		}
-
-		[TLDef(0x35A0E062)] //messages.getEmojiKeywords#35a0e062 lang_code:string = EmojiKeywordsDifference
-		public class Messages_GetEmojiKeywords : ITLFunction<EmojiKeywordsDifference> { public string lang_code; }
-
-		[TLDef(0x1508B6AF)] //messages.getEmojiKeywordsDifference#1508b6af lang_code:string from_version:int = EmojiKeywordsDifference
-		public class Messages_GetEmojiKeywordsDifference : ITLFunction<EmojiKeywordsDifference>
-		{
-			public string lang_code;
-			public int from_version;
-		}
-
-		[TLDef(0x4E9963B2)] //messages.getEmojiKeywordsLanguages#4e9963b2 lang_codes:Vector<string> = Vector<EmojiLanguage>
-		public class Messages_GetEmojiKeywordsLanguages : ITLFunction<EmojiLanguage[]> { public string[] lang_codes; }
-
-		[TLDef(0xD5B10C26)] //messages.getEmojiURL#d5b10c26 lang_code:string = EmojiURL
-		public class Messages_GetEmojiURL : ITLFunction<EmojiURL> { public string lang_code; }
-
-		[TLDef(0x6847D0AB)] //folders.editPeerFolders#6847d0ab folder_peers:Vector<InputFolderPeer> = Updates
-		public class Folders_EditPeerFolders : ITLFunction<UpdatesBase> { public InputFolderPeer[] folder_peers; }
-
-		[TLDef(0x1C295881)] //folders.deleteFolder#1c295881 folder_id:int = Updates
-		public class Folders_DeleteFolder : ITLFunction<UpdatesBase> { public int folder_id; }
-
-		[TLDef(0x732EEF00)] //messages.getSearchCounters#732eef00 peer:InputPeer filters:Vector<MessagesFilter> = Vector<messages.SearchCounter>
-		public class Messages_GetSearchCounters : ITLFunction<Messages_SearchCounter[]>
-		{
-			public InputPeer peer;
-			public MessagesFilter[] filters;
-		}
-
-		[TLDef(0xF5DAD378)] //channels.getGroupsForDiscussion#f5dad378 = messages.Chats
-		public class Channels_GetGroupsForDiscussion : ITLFunction<Messages_ChatsBase> { }
-
-		[TLDef(0x40582BB2)] //channels.setDiscussionGroup#40582bb2 broadcast:InputChannel group:InputChannel = Bool
-		public class Channels_SetDiscussionGroup : ITLFunction<bool>
-		{
-			public InputChannelBase broadcast;
-			public InputChannelBase group;
-		}
-
-		[TLDef(0xE33F5613)] //messages.requestUrlAuth#e33f5613 peer:InputPeer msg_id:int button_id:int = UrlAuthResult
-		public class Messages_RequestUrlAuth : ITLFunction<UrlAuthResult>
-		{
-			public InputPeer peer;
-			public int msg_id;
-			public int button_id;
-		}
-
-		[TLDef(0xF729EA98)] //messages.acceptUrlAuth#f729ea98 flags:# write_allowed:flags.0?true peer:InputPeer msg_id:int button_id:int = UrlAuthResult
-		public class Messages_AcceptUrlAuth : ITLFunction<UrlAuthResult>
-		{
-			[Flags] public enum Flags { write_allowed = 0x1 }
-			public Flags flags;
-			public InputPeer peer;
-			public int msg_id;
-			public int button_id;
-		}
-
-		[TLDef(0x4FACB138)] //messages.hidePeerSettingsBar#4facb138 peer:InputPeer = Bool
-		public class Messages_HidePeerSettingsBar : ITLFunction<bool> { public InputPeer peer; }
-
-		[TLDef(0xE8F463D0)] //contacts.addContact#e8f463d0 flags:# add_phone_privacy_exception:flags.0?true id:InputUser first_name:string last_name:string phone:string = Updates
-		public class Contacts_AddContact : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { add_phone_privacy_exception = 0x1 }
-			public Flags flags;
-			public InputUserBase id;
-			public string first_name;
-			public string last_name;
-			public string phone;
-		}
-
-		[TLDef(0xF831A20F)] //contacts.acceptContact#f831a20f id:InputUser = Updates
-		public class Contacts_AcceptContact : ITLFunction<UpdatesBase> { public InputUserBase id; }
-
-		[TLDef(0x8F38CD1F)] //channels.editCreator#8f38cd1f channel:InputChannel user_id:InputUser password:InputCheckPasswordSRP = Updates
-		public class Channels_EditCreator : ITLFunction<UpdatesBase>
-		{
-			public InputChannelBase channel;
-			public InputUserBase user_id;
-			public InputCheckPasswordSRPBase password;
-		}
-
-		[TLDef(0xD348BC44)] //contacts.getLocated#d348bc44 flags:# background:flags.1?true geo_point:InputGeoPoint self_expires:flags.0?int = Updates
-		public class Contacts_GetLocated : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { has_self_expires = 0x1, background = 0x2 }
-			public Flags flags;
-			public InputGeoPointBase geo_point;
-			[IfFlag(0)] public int self_expires;
-		}
-
-		[TLDef(0x58E63F6D)] //channels.editLocation#58e63f6d channel:InputChannel geo_point:InputGeoPoint address:string = Bool
-		public class Channels_EditLocation : ITLFunction<bool>
-		{
-			public InputChannelBase channel;
-			public InputGeoPointBase geo_point;
-			public string address;
-		}
-
-		[TLDef(0xEDD49EF0)] //channels.toggleSlowMode#edd49ef0 channel:InputChannel seconds:int = Updates
-		public class Channels_ToggleSlowMode : ITLFunction<UpdatesBase>
-		{
-			public InputChannelBase channel;
-			public int seconds;
-		}
-
-		[TLDef(0xE2C2685B)] //messages.getScheduledHistory#e2c2685b peer:InputPeer hash:int = messages.Messages
-		public class Messages_GetScheduledHistory : ITLFunction<Messages_MessagesBase>
-		{
-			public InputPeer peer;
-			public int hash;
-		}
-
-		[TLDef(0xBDBB0464)] //messages.getScheduledMessages#bdbb0464 peer:InputPeer id:Vector<int> = messages.Messages
-		public class Messages_GetScheduledMessages : ITLFunction<Messages_MessagesBase>
-		{
-			public InputPeer peer;
-			public int[] id;
-		}
-
-		[TLDef(0xBD38850A)] //messages.sendScheduledMessages#bd38850a peer:InputPeer id:Vector<int> = Updates
-		public class Messages_SendScheduledMessages : ITLFunction<UpdatesBase>
-		{
-			public InputPeer peer;
-			public int[] id;
-		}
-
-		[TLDef(0x59AE2B16)] //messages.deleteScheduledMessages#59ae2b16 peer:InputPeer id:Vector<int> = Updates
-		public class Messages_DeleteScheduledMessages : ITLFunction<UpdatesBase>
-		{
-			public InputPeer peer;
-			public int[] id;
-		}
-
-		[TLDef(0x1C3DB333)] //account.uploadTheme#1c3db333 flags:# file:InputFile thumb:flags.0?InputFile file_name:string mime_type:string = Document
-		public class Account_UploadTheme : ITLFunction<DocumentBase>
-		{
-			[Flags] public enum Flags { has_thumb = 0x1 }
-			public Flags flags;
-			public InputFileBase file;
-			[IfFlag(0)] public InputFileBase thumb;
-			public string file_name;
-			public string mime_type;
-		}
-
-		[TLDef(0x8432C21F)] //account.createTheme#8432c21f flags:# slug:string title:string document:flags.2?InputDocument settings:flags.3?InputThemeSettings = Theme
-		public class Account_CreateTheme : ITLFunction<Theme>
-		{
-			[Flags] public enum Flags { has_document = 0x4, has_settings = 0x8 }
-			public Flags flags;
-			public string slug;
-			public string title;
-			[IfFlag(2)] public InputDocumentBase document;
-			[IfFlag(3)] public InputThemeSettings settings;
-		}
-
-		[TLDef(0x5CB367D5)] //account.updateTheme#5cb367d5 flags:# format:string theme:InputTheme slug:flags.0?string title:flags.1?string document:flags.2?InputDocument settings:flags.3?InputThemeSettings = Theme
-		public class Account_UpdateTheme : ITLFunction<Theme>
-		{
-			[Flags] public enum Flags { has_slug = 0x1, has_title = 0x2, has_document = 0x4, has_settings = 0x8 }
-			public Flags flags;
-			public string format;
-			public InputThemeBase theme;
-			[IfFlag(0)] public string slug;
-			[IfFlag(1)] public string title;
-			[IfFlag(2)] public InputDocumentBase document;
-			[IfFlag(3)] public InputThemeSettings settings;
-		}
-
-		[TLDef(0xF257106C)] //account.saveTheme#f257106c theme:InputTheme unsave:Bool = Bool
-		public class Account_SaveTheme : ITLFunction<bool>
-		{
-			public InputThemeBase theme;
-			public bool unsave;
-		}
-
-		[TLDef(0x7AE43737)] //account.installTheme#7ae43737 flags:# dark:flags.0?true format:flags.1?string theme:flags.1?InputTheme = Bool
-		public class Account_InstallTheme : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { dark = 0x1, has_format = 0x2 }
-			public Flags flags;
-			[IfFlag(1)] public string format;
-			[IfFlag(1)] public InputThemeBase theme;
-		}
-
-		[TLDef(0x8D9D742B)] //account.getTheme#8d9d742b format:string theme:InputTheme document_id:long = Theme
-		public class Account_GetTheme : ITLFunction<Theme>
-		{
-			public string format;
-			public InputThemeBase theme;
-			public long document_id;
-		}
-
-		[TLDef(0x285946F8)] //account.getThemes#285946f8 format:string hash:int = account.Themes
-		public class Account_GetThemes : ITLFunction<Account_ThemesBase>
-		{
-			public string format;
-			public int hash;
-		}
-
-		[TLDef(0xB1B41517)] //auth.exportLoginToken#b1b41517 api_id:int api_hash:string except_ids:Vector<int> = auth.LoginToken
-		public class Auth_ExportLoginToken : ITLFunction<Auth_LoginTokenBase>
-		{
-			public int api_id;
-			public string api_hash;
-			public int[] except_ids;
-		}
-
-		[TLDef(0x95AC5CE4)] //auth.importLoginToken#95ac5ce4 token:bytes = auth.LoginToken
-		public class Auth_ImportLoginToken : ITLFunction<Auth_LoginTokenBase> { public byte[] token; }
-
-		[TLDef(0xE894AD4D)] //auth.acceptLoginToken#e894ad4d token:bytes = Authorization
-		public class Auth_AcceptLoginToken : ITLFunction<Authorization> { public byte[] token; }
-
-		[TLDef(0xB574B16B)] //account.setContentSettings#b574b16b flags:# sensitive_enabled:flags.0?true = Bool
-		public class Account_SetContentSettings : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { sensitive_enabled = 0x1 }
-			public Flags flags;
-		}
-
-		[TLDef(0x8B9B4DAE)] //account.getContentSettings#8b9b4dae = account.ContentSettings
-		public class Account_GetContentSettings : ITLFunction<Account_ContentSettings> { }
-
-		[TLDef(0x11E831EE)] //channels.getInactiveChannels#11e831ee = messages.InactiveChats
-		public class Channels_GetInactiveChannels : ITLFunction<Messages_InactiveChats> { }
-
-		[TLDef(0x65AD71DC)] //account.getMultiWallPapers#65ad71dc wallpapers:Vector<InputWallPaper> = Vector<WallPaper>
-		public class Account_GetMultiWallPapers : ITLFunction<WallPaperBase[]> { public InputWallPaperBase[] wallpapers; }
-
-		[TLDef(0xB86E380E)] //messages.getPollVotes#b86e380e flags:# peer:InputPeer id:int option:flags.0?bytes offset:flags.1?string limit:int = messages.VotesList
-		public class Messages_GetPollVotes : ITLFunction<Messages_VotesList>
-		{
-			[Flags] public enum Flags { has_option = 0x1, has_offset = 0x2 }
-			public Flags flags;
-			public InputPeer peer;
-			public int id;
-			[IfFlag(0)] public byte[] option;
-			[IfFlag(1)] public string offset;
-			public int limit;
-		}
-
-		[TLDef(0xB5052FEA)] //messages.toggleStickerSets#b5052fea flags:# uninstall:flags.0?true archive:flags.1?true unarchive:flags.2?true stickersets:Vector<InputStickerSet> = Bool
-		public class Messages_ToggleStickerSets : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { uninstall = 0x1, archive = 0x2, unarchive = 0x4 }
-			public Flags flags;
-			public InputStickerSet[] stickersets;
-		}
-
-		[TLDef(0x2E79D779)] //payments.getBankCardData#2e79d779 number:string = payments.BankCardData
-		public class Payments_GetBankCardData : ITLFunction<Payments_BankCardData> { public string number; }
-
-		[TLDef(0xF19ED96D)] //messages.getDialogFilters#f19ed96d = Vector<DialogFilter>
-		public class Messages_GetDialogFilters : ITLFunction<DialogFilter[]> { }
-
-		[TLDef(0xA29CD42C)] //messages.getSuggestedDialogFilters#a29cd42c = Vector<DialogFilterSuggested>
-		public class Messages_GetSuggestedDialogFilters : ITLFunction<DialogFilterSuggested[]> { }
-
-		[TLDef(0x1AD4A04A)] //messages.updateDialogFilter#1ad4a04a flags:# id:int filter:flags.0?DialogFilter = Bool
-		public class Messages_UpdateDialogFilter : ITLFunction<bool>
-		{
-			[Flags] public enum Flags { has_filter = 0x1 }
-			public Flags flags;
-			public int id;
-			[IfFlag(0)] public DialogFilter filter;
-		}
-
-		[TLDef(0xC563C1E4)] //messages.updateDialogFiltersOrder#c563c1e4 order:Vector<int> = Bool
-		public class Messages_UpdateDialogFiltersOrder : ITLFunction<bool> { public int[] order; }
-
-		[TLDef(0xAB42441A)] //stats.getBroadcastStats#ab42441a flags:# dark:flags.0?true channel:InputChannel = stats.BroadcastStats
-		public class Stats_GetBroadcastStats : ITLFunction<Stats_BroadcastStats>
-		{
-			[Flags] public enum Flags { dark = 0x1 }
-			public Flags flags;
-			public InputChannelBase channel;
-		}
-
-		[TLDef(0x621D5FA0)] //stats.loadAsyncGraph#621d5fa0 flags:# token:string x:flags.0?long = StatsGraph
-		public class Stats_LoadAsyncGraph : ITLFunction<StatsGraphBase>
-		{
-			[Flags] public enum Flags { has_x = 0x1 }
-			public Flags flags;
-			public string token;
-			[IfFlag(0)] public long x;
-		}
-
-		[TLDef(0x9A364E30)] //stickers.setStickerSetThumb#9a364e30 stickerset:InputStickerSet thumb:InputDocument = messages.StickerSet
-		public class Stickers_SetStickerSetThumb : ITLFunction<Messages_StickerSet>
-		{
-			public InputStickerSet stickerset;
-			public InputDocumentBase thumb;
-		}
-
-		[TLDef(0x805D46F6)] //bots.setBotCommands#805d46f6 commands:Vector<BotCommand> = Bool
-		public class Bots_SetBotCommands : ITLFunction<bool> { public BotCommand[] commands; }
-
-		[TLDef(0x5FE7025B)] //messages.getOldFeaturedStickers#5fe7025b offset:int limit:int hash:int = messages.FeaturedStickers
-		public class Messages_GetOldFeaturedStickers : ITLFunction<Messages_FeaturedStickersBase>
-		{
-			public int offset;
-			public int limit;
-			public int hash;
-		}
-
-		[TLDef(0xC0977421)] //help.getPromoData#c0977421 = help.PromoData
-		public class Help_GetPromoData : ITLFunction<Help_PromoDataBase> { }
-
-		[TLDef(0x1E251C95)] //help.hidePromoData#1e251c95 peer:InputPeer = Bool
-		public class Help_HidePromoData : ITLFunction<bool> { public InputPeer peer; }
-
-		[TLDef(0xFF7A9383)] //phone.sendSignalingData#ff7a9383 peer:InputPhoneCall data:bytes = Bool
-		public class Phone_SendSignalingData : ITLFunction<bool>
-		{
-			public InputPhoneCall peer;
-			public byte[] data;
-		}
-
-		[TLDef(0xDCDF8607)] //stats.getMegagroupStats#dcdf8607 flags:# dark:flags.0?true channel:InputChannel = stats.MegagroupStats
-		public class Stats_GetMegagroupStats : ITLFunction<Stats_MegagroupStats>
-		{
-			[Flags] public enum Flags { dark = 0x1 }
-			public Flags flags;
-			public InputChannelBase channel;
-		}
-
-		[TLDef(0xEB2B4CF6)] //account.getGlobalPrivacySettings#eb2b4cf6 = GlobalPrivacySettings
-		public class Account_GetGlobalPrivacySettings : ITLFunction<GlobalPrivacySettings> { }
-
-		[TLDef(0x1EDAAAC2)] //account.setGlobalPrivacySettings#1edaaac2 settings:GlobalPrivacySettings = GlobalPrivacySettings
-		public class Account_SetGlobalPrivacySettings : ITLFunction<GlobalPrivacySettings> { public GlobalPrivacySettings settings; }
-
-		[TLDef(0x077FA99F)] //help.dismissSuggestion#077fa99f suggestion:string = Bool
-		public class Help_DismissSuggestion : ITLFunction<bool> { public string suggestion; }
-
-		[TLDef(0x735787A8)] //help.getCountriesList#735787a8 lang_code:string hash:int = help.CountriesList
-		public class Help_GetCountriesList : ITLFunction<Help_CountriesListBase>
-		{
-			public string lang_code;
-			public int hash;
-		}
-
-		[TLDef(0x24B581BA)] //messages.getReplies#24b581ba peer:InputPeer msg_id:int offset_id:int offset_date:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages
-		public class Messages_GetReplies : ITLFunction<Messages_MessagesBase>
-		{
-			public InputPeer peer;
-			public int msg_id;
-			public int offset_id;
-			public DateTime offset_date;
-			public int add_offset;
-			public int limit;
-			public int max_id;
-			public int min_id;
-			public int hash;
-		}
-
-		[TLDef(0x446972FD)] //messages.getDiscussionMessage#446972fd peer:InputPeer msg_id:int = messages.DiscussionMessage
-		public class Messages_GetDiscussionMessage : ITLFunction<Messages_DiscussionMessage>
-		{
-			public InputPeer peer;
-			public int msg_id;
-		}
-
-		[TLDef(0xF731A9F4)] //messages.readDiscussion#f731a9f4 peer:InputPeer msg_id:int read_max_id:int = Bool
-		public class Messages_ReadDiscussion : ITLFunction<bool>
-		{
-			public InputPeer peer;
-			public int msg_id;
-			public int read_max_id;
-		}
-
-		[TLDef(0x29A8962C)] //contacts.blockFromReplies#29a8962c flags:# delete_message:flags.0?true delete_history:flags.1?true report_spam:flags.2?true msg_id:int = Updates
-		public class Contacts_BlockFromReplies : ITLFunction<UpdatesBase>
-		{
-			[Flags] public enum Flags { delete_message = 0x1, delete_history = 0x2, report_spam = 0x4 }
-			public Flags flags;
-			public int msg_id;
-		}
-
-		[TLDef(0x5630281B)] //stats.getMessagePublicForwards#5630281b channel:InputChannel msg_id:int offset_rate:int offset_peer:InputPeer offset_id:int limit:int = messages.Messages
-		public class Stats_GetMessagePublicForwards : ITLFunction<Messages_MessagesBase>
-		{
-			public InputChannelBase channel;
-			public int msg_id;
-			public int offset_rate;
-			public InputPeer offset_peer;
-			public int offset_id;
-			public int limit;
-		}
-
-		[TLDef(0xB6E0A3F5)] //stats.getMessageStats#b6e0a3f5 flags:# dark:flags.0?true channel:InputChannel msg_id:int = stats.MessageStats
-		public class Stats_GetMessageStats : ITLFunction<Stats_MessageStats>
-		{
-			[Flags] public enum Flags { dark = 0x1 }
-			public Flags flags;
-			public InputChannelBase channel;
-			public int msg_id;
-		}
-
-		[TLDef(0xF025BC8B)] //messages.unpinAllMessages#f025bc8b peer:InputPeer = messages.AffectedHistory
-		public class Messages_UnpinAllMessages : ITLFunction<Messages_AffectedHistory> { public InputPeer peer; }
+		//invokeAfterMsg#cb9f372d {X:Type} msg_id:long query:!X = X
+		public Task<X> InvokeAfterMsg<X>(long msg_id, ITLFunction<X> query)
+			=> CallAsync<X>(writer =>
+			{
+				writer.Write(0xCB9F372D);
+				writer.Write(msg_id);
+				query(writer);
+				return "InvokeAfterMsg<X>";
+			});
+
+		//invokeAfterMsgs#3dc4b4f0 {X:Type} msg_ids:Vector<long> query:!X = X
+		public Task<X> InvokeAfterMsgs<X>(long[] msg_ids, ITLFunction<X> query)
+			=> CallAsync<X>(writer =>
+			{
+				writer.Write(0x3DC4B4F0);
+				writer.WriteTLVector(msg_ids);
+				query(writer);
+				return "InvokeAfterMsgs<X>";
+			});
+
+		//auth.sendCode#a677244f phone_number:string api_id:int api_hash:string settings:CodeSettings = auth.SentCode
+		public Task<Auth_SentCode> Auth_SendCode(string phone_number, int api_id, string api_hash, CodeSettings settings)
+			=> CallAsync<Auth_SentCode>(writer =>
+			{
+				writer.Write(0xA677244F);
+				writer.WriteTLString(phone_number);
+				writer.Write(api_id);
+				writer.WriteTLString(api_hash);
+				writer.WriteTLObject(settings);
+				return "Auth_SendCode";
+			});
+
+		//auth.signUp#80eee427 phone_number:string phone_code_hash:string first_name:string last_name:string = auth.Authorization
+		public Task<Auth_AuthorizationBase> Auth_SignUp(string phone_number, string phone_code_hash, string first_name, string last_name)
+			=> CallAsync<Auth_AuthorizationBase>(writer =>
+			{
+				writer.Write(0x80EEE427);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLString(phone_code_hash);
+				writer.WriteTLString(first_name);
+				writer.WriteTLString(last_name);
+				return "Auth_SignUp";
+			});
+
+		//auth.signIn#bcd51581 phone_number:string phone_code_hash:string phone_code:string = auth.Authorization
+		public Task<Auth_AuthorizationBase> Auth_SignIn(string phone_number, string phone_code_hash, string phone_code)
+			=> CallAsync<Auth_AuthorizationBase>(writer =>
+			{
+				writer.Write(0xBCD51581);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLString(phone_code_hash);
+				writer.WriteTLString(phone_code);
+				return "Auth_SignIn";
+			});
+
+		//auth.logOut#5717da40 = Bool
+		public Task<bool> Auth_LogOut()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x5717DA40);
+				return "Auth_LogOut";
+			});
+
+		//auth.resetAuthorizations#9fab0d1a = Bool
+		public Task<bool> Auth_ResetAuthorizations()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x9FAB0D1A);
+				return "Auth_ResetAuthorizations";
+			});
+
+		//auth.exportAuthorization#e5bfffcd dc_id:int = auth.ExportedAuthorization
+		public Task<Auth_ExportedAuthorization> Auth_ExportAuthorization(int dc_id)
+			=> CallAsync<Auth_ExportedAuthorization>(writer =>
+			{
+				writer.Write(0xE5BFFFCD);
+				writer.Write(dc_id);
+				return "Auth_ExportAuthorization";
+			});
+
+		//auth.importAuthorization#e3ef9613 id:int bytes:bytes = auth.Authorization
+		public Task<Auth_AuthorizationBase> Auth_ImportAuthorization(int id, byte[] bytes)
+			=> CallAsync<Auth_AuthorizationBase>(writer =>
+			{
+				writer.Write(0xE3EF9613);
+				writer.Write(id);
+				writer.WriteTLBytes(bytes);
+				return "Auth_ImportAuthorization";
+			});
+
+		//auth.bindTempAuthKey#cdd42a05 perm_auth_key_id:long nonce:long expires_at:int encrypted_message:bytes = Bool
+		public Task<bool> Auth_BindTempAuthKey(long perm_auth_key_id, long nonce, DateTime expires_at, byte[] encrypted_message)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xCDD42A05);
+				writer.Write(perm_auth_key_id);
+				writer.Write(nonce);
+				writer.WriteTLStamp(expires_at);
+				writer.WriteTLBytes(encrypted_message);
+				return "Auth_BindTempAuthKey";
+			});
+
+		//account.registerDevice#68976c6f flags:# no_muted:flags.0?true token_type:int token:string app_sandbox:Bool secret:bytes other_uids:Vector<int> = Bool
+		public Task<bool> Account_RegisterDevice(int token_type, string token, bool app_sandbox, byte[] secret, int[] other_uids, bool no_muted = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x68976C6F);
+				writer.Write(no_muted ? 0x1 : 0);
+				writer.Write(token_type);
+				writer.WriteTLString(token);
+				writer.Write(app_sandbox ? 0x997275B5 : 0xBC799737);
+				writer.WriteTLBytes(secret);
+				writer.WriteTLVector(other_uids);
+				return "Account_RegisterDevice";
+			});
+
+		//account.unregisterDevice#3076c4bf token_type:int token:string other_uids:Vector<int> = Bool
+		public Task<bool> Account_UnregisterDevice(int token_type, string token, int[] other_uids)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x3076C4BF);
+				writer.Write(token_type);
+				writer.WriteTLString(token);
+				writer.WriteTLVector(other_uids);
+				return "Account_UnregisterDevice";
+			});
+
+		//account.updateNotifySettings#84be5b93 peer:InputNotifyPeer settings:InputPeerNotifySettings = Bool
+		public Task<bool> Account_UpdateNotifySettings(InputNotifyPeerBase peer, InputPeerNotifySettings settings)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x84BE5B93);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(settings);
+				return "Account_UpdateNotifySettings";
+			});
+
+		//account.getNotifySettings#12b3ad31 peer:InputNotifyPeer = PeerNotifySettings
+		public Task<PeerNotifySettings> Account_GetNotifySettings(InputNotifyPeerBase peer)
+			=> CallAsync<PeerNotifySettings>(writer =>
+			{
+				writer.Write(0x12B3AD31);
+				writer.WriteTLObject(peer);
+				return "Account_GetNotifySettings";
+			});
+
+		//account.resetNotifySettings#db7e1747 = Bool
+		public Task<bool> Account_ResetNotifySettings()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xDB7E1747);
+				return "Account_ResetNotifySettings";
+			});
+
+		//account.updateProfile#78515775 flags:# first_name:flags.0?string last_name:flags.1?string about:flags.2?string = User
+		public Task<UserBase> Account_UpdateProfile(string first_name = null, string last_name = null, string about = null)
+			=> CallAsync<UserBase>(writer =>
+			{
+				writer.Write(0x78515775);
+				writer.Write((first_name != null ? 0x1 : 0) | (last_name != null ? 0x2 : 0) | (about != null ? 0x4 : 0));
+				if (first_name != null)
+					writer.WriteTLString(first_name);
+				if (last_name != null)
+					writer.WriteTLString(last_name);
+				if (about != null)
+					writer.WriteTLString(about);
+				return "Account_UpdateProfile";
+			});
+
+		//account.updateStatus#6628562c offline:Bool = Bool
+		public Task<bool> Account_UpdateStatus(bool offline)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x6628562C);
+				writer.Write(offline ? 0x997275B5 : 0xBC799737);
+				return "Account_UpdateStatus";
+			});
+
+		//account.getWallPapers#aabb1763 hash:int = account.WallPapers
+		public Task<Account_WallPapersBase> Account_GetWallPapers(int hash)
+			=> CallAsync<Account_WallPapersBase>(writer =>
+			{
+				writer.Write(0xAABB1763);
+				writer.Write(hash);
+				return "Account_GetWallPapers";
+			});
+
+		//account.reportPeer#ae189d5f peer:InputPeer reason:ReportReason = Bool
+		public Task<bool> Account_ReportPeer(InputPeer peer, ReportReason reason)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xAE189D5F);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(reason);
+				return "Account_ReportPeer";
+			});
+
+		//users.getUsers#0d91a548 id:Vector<InputUser> = Vector<User>
+		public Task<UserBase[]> Users_GetUsers(InputUserBase[] id)
+			=> CallAsync<UserBase[]>(writer =>
+			{
+				writer.Write(0x0D91A548);
+				writer.WriteTLVector(id);
+				return "Users_GetUsers";
+			});
+
+		//users.getFullUser#ca30a5b1 id:InputUser = UserFull
+		public Task<UserFull> Users_GetFullUser(InputUserBase id)
+			=> CallAsync<UserFull>(writer =>
+			{
+				writer.Write(0xCA30A5B1);
+				writer.WriteTLObject(id);
+				return "Users_GetFullUser";
+			});
+
+		//contacts.getContactIDs#2caa4a42 hash:int = Vector<int>
+		public Task<int[]> Contacts_GetContactIDs(int hash)
+			=> CallAsync<int[]>(writer =>
+			{
+				writer.Write(0x2CAA4A42);
+				writer.Write(hash);
+				return "Contacts_GetContactIDs";
+			});
+
+		//contacts.getStatuses#c4a353ee = Vector<ContactStatus>
+		public Task<ContactStatus[]> Contacts_GetStatuses()
+			=> CallAsync<ContactStatus[]>(writer =>
+			{
+				writer.Write(0xC4A353EE);
+				return "Contacts_GetStatuses";
+			});
+
+		//contacts.getContacts#c023849f hash:int = contacts.Contacts
+		public Task<Contacts_ContactsBase> Contacts_GetContacts(int hash)
+			=> CallAsync<Contacts_ContactsBase>(writer =>
+			{
+				writer.Write(0xC023849F);
+				writer.Write(hash);
+				return "Contacts_GetContacts";
+			});
+
+		//contacts.importContacts#2c800be5 contacts:Vector<InputContact> = contacts.ImportedContacts
+		public Task<Contacts_ImportedContacts> Contacts_ImportContacts(InputContact[] contacts)
+			=> CallAsync<Contacts_ImportedContacts>(writer =>
+			{
+				writer.Write(0x2C800BE5);
+				writer.WriteTLVector(contacts);
+				return "Contacts_ImportContacts";
+			});
+
+		//contacts.deleteContacts#096a0e00 id:Vector<InputUser> = Updates
+		public Task<UpdatesBase> Contacts_DeleteContacts(InputUserBase[] id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x096A0E00);
+				writer.WriteTLVector(id);
+				return "Contacts_DeleteContacts";
+			});
+
+		//contacts.deleteByPhones#1013fd9e phones:Vector<string> = Bool
+		public Task<bool> Contacts_DeleteByPhones(string[] phones)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x1013FD9E);
+				writer.WriteTLVector(phones);
+				return "Contacts_DeleteByPhones";
+			});
+
+		//contacts.block#68cc1411 id:InputPeer = Bool
+		public Task<bool> Contacts_Block(InputPeer id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x68CC1411);
+				writer.WriteTLObject(id);
+				return "Contacts_Block";
+			});
+
+		//contacts.unblock#bea65d50 id:InputPeer = Bool
+		public Task<bool> Contacts_Unblock(InputPeer id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xBEA65D50);
+				writer.WriteTLObject(id);
+				return "Contacts_Unblock";
+			});
+
+		//contacts.getBlocked#f57c350f offset:int limit:int = contacts.Blocked
+		public Task<Contacts_BlockedBase> Contacts_GetBlocked(int offset, int limit)
+			=> CallAsync<Contacts_BlockedBase>(writer =>
+			{
+				writer.Write(0xF57C350F);
+				writer.Write(offset);
+				writer.Write(limit);
+				return "Contacts_GetBlocked";
+			});
+
+		//messages.getMessages#63c66506 id:Vector<InputMessage> = messages.Messages
+		public Task<Messages_MessagesBase> Messages_GetMessages(InputMessage[] id)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0x63C66506);
+				writer.WriteTLVector(id);
+				return "Messages_GetMessages";
+			});
+
+		//messages.getDialogs#a0ee3b73 flags:# exclude_pinned:flags.0?true folder_id:flags.1?int offset_date:int offset_id:int offset_peer:InputPeer limit:int hash:int = messages.Dialogs
+		public Task<Messages_DialogsBase> Messages_GetDialogs(DateTime offset_date, int offset_id, InputPeer offset_peer, int limit, int hash, bool exclude_pinned = false, int? folder_id = null)
+			=> CallAsync<Messages_DialogsBase>(writer =>
+			{
+				writer.Write(0xA0EE3B73);
+				writer.Write((exclude_pinned ? 0x1 : 0) | (folder_id != null ? 0x2 : 0));
+				if (folder_id != null)
+					writer.Write(folder_id.Value);
+				writer.WriteTLStamp(offset_date);
+				writer.Write(offset_id);
+				writer.WriteTLObject(offset_peer);
+				writer.Write(limit);
+				writer.Write(hash);
+				return "Messages_GetDialogs";
+			});
+
+		//messages.getHistory#dcbb8260 peer:InputPeer offset_id:int offset_date:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages
+		public Task<Messages_MessagesBase> Messages_GetHistory(InputPeer peer, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, int hash)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0xDCBB8260);
+				writer.WriteTLObject(peer);
+				writer.Write(offset_id);
+				writer.WriteTLStamp(offset_date);
+				writer.Write(add_offset);
+				writer.Write(limit);
+				writer.Write(max_id);
+				writer.Write(min_id);
+				writer.Write(hash);
+				return "Messages_GetHistory";
+			});
+
+		//messages.search#0c352eec flags:# peer:InputPeer q:string from_id:flags.0?InputPeer top_msg_id:flags.1?int filter:MessagesFilter min_date:int max_date:int offset_id:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages
+		public Task<Messages_MessagesBase> Messages_Search(InputPeer peer, string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_id, int add_offset, int limit, int max_id, int min_id, int hash, InputPeer from_id = null, int? top_msg_id = null)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0x0C352EEC);
+				writer.Write((from_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x2 : 0));
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(q);
+				if (from_id != null)
+					writer.WriteTLObject(from_id);
+				if (top_msg_id != null)
+					writer.Write(top_msg_id.Value);
+				writer.WriteTLObject(filter);
+				writer.WriteTLStamp(min_date);
+				writer.WriteTLStamp(max_date);
+				writer.Write(offset_id);
+				writer.Write(add_offset);
+				writer.Write(limit);
+				writer.Write(max_id);
+				writer.Write(min_id);
+				writer.Write(hash);
+				return "Messages_Search";
+			});
+
+		//messages.readHistory#0e306d3a peer:InputPeer max_id:int = messages.AffectedMessages
+		public Task<Messages_AffectedMessages> Messages_ReadHistory(InputPeer peer, int max_id)
+			=> CallAsync<Messages_AffectedMessages>(writer =>
+			{
+				writer.Write(0x0E306D3A);
+				writer.WriteTLObject(peer);
+				writer.Write(max_id);
+				return "Messages_ReadHistory";
+			});
+
+		//messages.deleteHistory#1c015b09 flags:# just_clear:flags.0?true revoke:flags.1?true peer:InputPeer max_id:int = messages.AffectedHistory
+		public Task<Messages_AffectedHistory> Messages_DeleteHistory(InputPeer peer, int max_id, bool just_clear = false, bool revoke = false)
+			=> CallAsync<Messages_AffectedHistory>(writer =>
+			{
+				writer.Write(0x1C015B09);
+				writer.Write((just_clear ? 0x1 : 0) | (revoke ? 0x2 : 0));
+				writer.WriteTLObject(peer);
+				writer.Write(max_id);
+				return "Messages_DeleteHistory";
+			});
+
+		//messages.deleteMessages#e58e95d2 flags:# revoke:flags.0?true id:Vector<int> = messages.AffectedMessages
+		public Task<Messages_AffectedMessages> Messages_DeleteMessages(int[] id, bool revoke = false)
+			=> CallAsync<Messages_AffectedMessages>(writer =>
+			{
+				writer.Write(0xE58E95D2);
+				writer.Write(revoke ? 0x1 : 0);
+				writer.WriteTLVector(id);
+				return "Messages_DeleteMessages";
+			});
+
+		//messages.receivedMessages#05a954c0 max_id:int = Vector<ReceivedNotifyMessage>
+		public Task<ReceivedNotifyMessage[]> Messages_ReceivedMessages(int max_id)
+			=> CallAsync<ReceivedNotifyMessage[]>(writer =>
+			{
+				writer.Write(0x05A954C0);
+				writer.Write(max_id);
+				return "Messages_ReceivedMessages";
+			});
+
+		//messages.setTyping#58943ee2 flags:# peer:InputPeer top_msg_id:flags.0?int action:SendMessageAction = Bool
+		public Task<bool> Messages_SetTyping(InputPeer peer, SendMessageAction action, int? top_msg_id = null)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x58943EE2);
+				writer.Write(top_msg_id != null ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				if (top_msg_id != null)
+					writer.Write(top_msg_id.Value);
+				writer.WriteTLObject(action);
+				return "Messages_SetTyping";
+			});
+
+		//messages.sendMessage#520c3870 flags:# no_webpage:flags.1?true silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int message:string random_id:long reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.10?int = Updates
+		public Task<UpdatesBase> Messages_SendMessage(InputPeer peer, string message, long random_id, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x520C3870);
+				writer.Write((no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0));
+				writer.WriteTLObject(peer);
+				if (reply_to_msg_id != null)
+					writer.Write(reply_to_msg_id.Value);
+				writer.WriteTLString(message);
+				writer.Write(random_id);
+				if (reply_markup != null)
+					writer.WriteTLObject(reply_markup);
+				if (entities != null)
+					writer.WriteTLVector(entities);
+				if (schedule_date != null)
+					writer.WriteTLStamp(schedule_date.Value);
+				return "Messages_SendMessage";
+			});
+
+		//messages.sendMedia#3491eba9 flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int media:InputMedia message:string random_id:long reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.10?int = Updates
+		public Task<UpdatesBase> Messages_SendMedia(InputPeer peer, InputMedia media, string message, long random_id, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x3491EBA9);
+				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0));
+				writer.WriteTLObject(peer);
+				if (reply_to_msg_id != null)
+					writer.Write(reply_to_msg_id.Value);
+				writer.WriteTLObject(media);
+				writer.WriteTLString(message);
+				writer.Write(random_id);
+				if (reply_markup != null)
+					writer.WriteTLObject(reply_markup);
+				if (entities != null)
+					writer.WriteTLVector(entities);
+				if (schedule_date != null)
+					writer.WriteTLStamp(schedule_date.Value);
+				return "Messages_SendMedia";
+			});
+
+		//messages.forwardMessages#d9fee60e flags:# silent:flags.5?true background:flags.6?true with_my_score:flags.8?true from_peer:InputPeer id:Vector<int> random_id:Vector<long> to_peer:InputPeer schedule_date:flags.10?int = Updates
+		public Task<UpdatesBase> Messages_ForwardMessages(InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, bool silent = false, bool background = false, bool with_my_score = false, DateTime? schedule_date = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xD9FEE60E);
+				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (schedule_date != null ? 0x400 : 0));
+				writer.WriteTLObject(from_peer);
+				writer.WriteTLVector(id);
+				writer.WriteTLVector(random_id);
+				writer.WriteTLObject(to_peer);
+				if (schedule_date != null)
+					writer.WriteTLStamp(schedule_date.Value);
+				return "Messages_ForwardMessages";
+			});
+
+		//messages.reportSpam#cf1592db peer:InputPeer = Bool
+		public Task<bool> Messages_ReportSpam(InputPeer peer)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xCF1592DB);
+				writer.WriteTLObject(peer);
+				return "Messages_ReportSpam";
+			});
+
+		//messages.getPeerSettings#3672e09c peer:InputPeer = PeerSettings
+		public Task<PeerSettings> Messages_GetPeerSettings(InputPeer peer)
+			=> CallAsync<PeerSettings>(writer =>
+			{
+				writer.Write(0x3672E09C);
+				writer.WriteTLObject(peer);
+				return "Messages_GetPeerSettings";
+			});
+
+		//messages.report#bd82b658 peer:InputPeer id:Vector<int> reason:ReportReason = Bool
+		public Task<bool> Messages_Report(InputPeer peer, int[] id, ReportReason reason)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xBD82B658);
+				writer.WriteTLObject(peer);
+				writer.WriteTLVector(id);
+				writer.WriteTLObject(reason);
+				return "Messages_Report";
+			});
+
+		//messages.getChats#3c6aa187 id:Vector<int> = messages.Chats
+		public Task<Messages_ChatsBase> Messages_GetChats(int[] id)
+			=> CallAsync<Messages_ChatsBase>(writer =>
+			{
+				writer.Write(0x3C6AA187);
+				writer.WriteTLVector(id);
+				return "Messages_GetChats";
+			});
+
+		//messages.getFullChat#3b831c66 chat_id:int = messages.ChatFull
+		public Task<Messages_ChatFull> Messages_GetFullChat(int chat_id)
+			=> CallAsync<Messages_ChatFull>(writer =>
+			{
+				writer.Write(0x3B831C66);
+				writer.Write(chat_id);
+				return "Messages_GetFullChat";
+			});
+
+		//messages.editChatTitle#dc452855 chat_id:int title:string = Updates
+		public Task<UpdatesBase> Messages_EditChatTitle(int chat_id, string title)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xDC452855);
+				writer.Write(chat_id);
+				writer.WriteTLString(title);
+				return "Messages_EditChatTitle";
+			});
+
+		//messages.editChatPhoto#ca4c79d8 chat_id:int photo:InputChatPhoto = Updates
+		public Task<UpdatesBase> Messages_EditChatPhoto(int chat_id, InputChatPhotoBase photo)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xCA4C79D8);
+				writer.Write(chat_id);
+				writer.WriteTLObject(photo);
+				return "Messages_EditChatPhoto";
+			});
+
+		//messages.addChatUser#f9a0aa09 chat_id:int user_id:InputUser fwd_limit:int = Updates
+		public Task<UpdatesBase> Messages_AddChatUser(int chat_id, InputUserBase user_id, int fwd_limit)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xF9A0AA09);
+				writer.Write(chat_id);
+				writer.WriteTLObject(user_id);
+				writer.Write(fwd_limit);
+				return "Messages_AddChatUser";
+			});
+
+		//messages.deleteChatUser#e0611f16 chat_id:int user_id:InputUser = Updates
+		public Task<UpdatesBase> Messages_DeleteChatUser(int chat_id, InputUserBase user_id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xE0611F16);
+				writer.Write(chat_id);
+				writer.WriteTLObject(user_id);
+				return "Messages_DeleteChatUser";
+			});
+
+		//messages.createChat#09cb126e users:Vector<InputUser> title:string = Updates
+		public Task<UpdatesBase> Messages_CreateChat(InputUserBase[] users, string title)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x09CB126E);
+				writer.WriteTLVector(users);
+				writer.WriteTLString(title);
+				return "Messages_CreateChat";
+			});
+
+		//updates.getState#edd4882a = updates.State
+		public Task<Updates_State> Updates_GetState()
+			=> CallAsync<Updates_State>(writer =>
+			{
+				writer.Write(0xEDD4882A);
+				return "Updates_GetState";
+			});
+
+		//updates.getDifference#25939651 flags:# pts:int pts_total_limit:flags.0?int date:int qts:int = updates.Difference
+		public Task<Updates_DifferenceBase> Updates_GetDifference(int pts, DateTime date, int qts, int? pts_total_limit = null)
+			=> CallAsync<Updates_DifferenceBase>(writer =>
+			{
+				writer.Write(0x25939651);
+				writer.Write(pts_total_limit != null ? 0x1 : 0);
+				writer.Write(pts);
+				if (pts_total_limit != null)
+					writer.Write(pts_total_limit.Value);
+				writer.WriteTLStamp(date);
+				writer.Write(qts);
+				return "Updates_GetDifference";
+			});
+
+		//photos.updateProfilePhoto#72d4742c id:InputPhoto = photos.Photo
+		public Task<Photos_Photo> Photos_UpdateProfilePhoto(InputPhotoBase id)
+			=> CallAsync<Photos_Photo>(writer =>
+			{
+				writer.Write(0x72D4742C);
+				writer.WriteTLObject(id);
+				return "Photos_UpdateProfilePhoto";
+			});
+
+		//photos.uploadProfilePhoto#89f30f69 flags:# file:flags.0?InputFile video:flags.1?InputFile video_start_ts:flags.2?double = photos.Photo
+		public Task<Photos_Photo> Photos_UploadProfilePhoto(InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null)
+			=> CallAsync<Photos_Photo>(writer =>
+			{
+				writer.Write(0x89F30F69);
+				writer.Write((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0));
+				if (file != null)
+					writer.WriteTLObject(file);
+				if (video != null)
+					writer.WriteTLObject(video);
+				if (video_start_ts != null)
+					writer.Write(video_start_ts.Value);
+				return "Photos_UploadProfilePhoto";
+			});
+
+		//photos.deletePhotos#87cf7f2f id:Vector<InputPhoto> = Vector<long>
+		public Task<long[]> Photos_DeletePhotos(InputPhotoBase[] id)
+			=> CallAsync<long[]>(writer =>
+			{
+				writer.Write(0x87CF7F2F);
+				writer.WriteTLVector(id);
+				return "Photos_DeletePhotos";
+			});
+
+		//upload.saveFilePart#b304a621 file_id:long file_part:int bytes:bytes = Bool
+		public Task<bool> Upload_SaveFilePart(long file_id, int file_part, byte[] bytes)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xB304A621);
+				writer.Write(file_id);
+				writer.Write(file_part);
+				writer.WriteTLBytes(bytes);
+				return "Upload_SaveFilePart";
+			});
+
+		//upload.getFile#b15a9afc flags:# precise:flags.0?true cdn_supported:flags.1?true location:InputFileLocation offset:int limit:int = upload.File
+		public Task<Upload_FileBase> Upload_GetFile(InputFileLocationBase location, int offset, int limit, bool precise = false, bool cdn_supported = false)
+			=> CallAsync<Upload_FileBase>(writer =>
+			{
+				writer.Write(0xB15A9AFC);
+				writer.Write((precise ? 0x1 : 0) | (cdn_supported ? 0x2 : 0));
+				writer.WriteTLObject(location);
+				writer.Write(offset);
+				writer.Write(limit);
+				return "Upload_GetFile";
+			});
+
+		//help.getConfig#c4f9186b = Config
+		public Task<Config> Help_GetConfig() => CallAsync<Config>(Help_GetConfig);
+		public static string Help_GetConfig(BinaryWriter writer)
+		{
+			writer.Write(0xC4F9186B);
+			return "Help_GetConfig";
+		}
+
+		//help.getNearestDc#1fb33026 = NearestDc
+		public Task<NearestDc> Help_GetNearestDc()
+			=> CallAsync<NearestDc>(writer =>
+			{
+				writer.Write(0x1FB33026);
+				return "Help_GetNearestDc";
+			});
+
+		//help.getAppUpdate#522d5a7d source:string = help.AppUpdate
+		public Task<Help_AppUpdateBase> Help_GetAppUpdate(string source)
+			=> CallAsync<Help_AppUpdateBase>(writer =>
+			{
+				writer.Write(0x522D5A7D);
+				writer.WriteTLString(source);
+				return "Help_GetAppUpdate";
+			});
+
+		//help.getInviteText#4d392343 = help.InviteText
+		public Task<Help_InviteText> Help_GetInviteText()
+			=> CallAsync<Help_InviteText>(writer =>
+			{
+				writer.Write(0x4D392343);
+				return "Help_GetInviteText";
+			});
+
+		//photos.getUserPhotos#91cd32a8 user_id:InputUser offset:int max_id:long limit:int = photos.Photos
+		public Task<Photos_PhotosBase> Photos_GetUserPhotos(InputUserBase user_id, int offset, long max_id, int limit)
+			=> CallAsync<Photos_PhotosBase>(writer =>
+			{
+				writer.Write(0x91CD32A8);
+				writer.WriteTLObject(user_id);
+				writer.Write(offset);
+				writer.Write(max_id);
+				writer.Write(limit);
+				return "Photos_GetUserPhotos";
+			});
+
+		//messages.getDhConfig#26cf8950 version:int random_length:int = messages.DhConfig
+		public Task<Messages_DhConfigBase> Messages_GetDhConfig(int version, int random_length)
+			=> CallAsync<Messages_DhConfigBase>(writer =>
+			{
+				writer.Write(0x26CF8950);
+				writer.Write(version);
+				writer.Write(random_length);
+				return "Messages_GetDhConfig";
+			});
+
+		//messages.requestEncryption#f64daf43 user_id:InputUser random_id:int g_a:bytes = EncryptedChat
+		public Task<EncryptedChatBase> Messages_RequestEncryption(InputUserBase user_id, int random_id, byte[] g_a)
+			=> CallAsync<EncryptedChatBase>(writer =>
+			{
+				writer.Write(0xF64DAF43);
+				writer.WriteTLObject(user_id);
+				writer.Write(random_id);
+				writer.WriteTLBytes(g_a);
+				return "Messages_RequestEncryption";
+			});
+
+		//messages.acceptEncryption#3dbc0415 peer:InputEncryptedChat g_b:bytes key_fingerprint:long = EncryptedChat
+		public Task<EncryptedChatBase> Messages_AcceptEncryption(InputEncryptedChat peer, byte[] g_b, long key_fingerprint)
+			=> CallAsync<EncryptedChatBase>(writer =>
+			{
+				writer.Write(0x3DBC0415);
+				writer.WriteTLObject(peer);
+				writer.WriteTLBytes(g_b);
+				writer.Write(key_fingerprint);
+				return "Messages_AcceptEncryption";
+			});
+
+		//messages.discardEncryption#edd923c5 chat_id:int = Bool
+		public Task<bool> Messages_DiscardEncryption(int chat_id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xEDD923C5);
+				writer.Write(chat_id);
+				return "Messages_DiscardEncryption";
+			});
+
+		//messages.setEncryptedTyping#791451ed peer:InputEncryptedChat typing:Bool = Bool
+		public Task<bool> Messages_SetEncryptedTyping(InputEncryptedChat peer, bool typing)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x791451ED);
+				writer.WriteTLObject(peer);
+				writer.Write(typing ? 0x997275B5 : 0xBC799737);
+				return "Messages_SetEncryptedTyping";
+			});
+
+		//messages.readEncryptedHistory#7f4b690a peer:InputEncryptedChat max_date:int = Bool
+		public Task<bool> Messages_ReadEncryptedHistory(InputEncryptedChat peer, DateTime max_date)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x7F4B690A);
+				writer.WriteTLObject(peer);
+				writer.WriteTLStamp(max_date);
+				return "Messages_ReadEncryptedHistory";
+			});
+
+		//messages.sendEncrypted#44fa7a15 flags:# silent:flags.0?true peer:InputEncryptedChat random_id:long data:bytes = messages.SentEncryptedMessage
+		public Task<Messages_SentEncryptedMessage> Messages_SendEncrypted(InputEncryptedChat peer, long random_id, byte[] data, bool silent = false)
+			=> CallAsync<Messages_SentEncryptedMessage>(writer =>
+			{
+				writer.Write(0x44FA7A15);
+				writer.Write(silent ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				writer.Write(random_id);
+				writer.WriteTLBytes(data);
+				return "Messages_SendEncrypted";
+			});
+
+		//messages.sendEncryptedFile#5559481d flags:# silent:flags.0?true peer:InputEncryptedChat random_id:long data:bytes file:InputEncryptedFile = messages.SentEncryptedMessage
+		public Task<Messages_SentEncryptedMessage> Messages_SendEncryptedFile(InputEncryptedChat peer, long random_id, byte[] data, InputEncryptedFileBase file, bool silent = false)
+			=> CallAsync<Messages_SentEncryptedMessage>(writer =>
+			{
+				writer.Write(0x5559481D);
+				writer.Write(silent ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				writer.Write(random_id);
+				writer.WriteTLBytes(data);
+				writer.WriteTLObject(file);
+				return "Messages_SendEncryptedFile";
+			});
+
+		//messages.sendEncryptedService#32d439a4 peer:InputEncryptedChat random_id:long data:bytes = messages.SentEncryptedMessage
+		public Task<Messages_SentEncryptedMessage> Messages_SendEncryptedService(InputEncryptedChat peer, long random_id, byte[] data)
+			=> CallAsync<Messages_SentEncryptedMessage>(writer =>
+			{
+				writer.Write(0x32D439A4);
+				writer.WriteTLObject(peer);
+				writer.Write(random_id);
+				writer.WriteTLBytes(data);
+				return "Messages_SendEncryptedService";
+			});
+
+		//messages.receivedQueue#55a5bb66 max_qts:int = Vector<long>
+		public Task<long[]> Messages_ReceivedQueue(int max_qts)
+			=> CallAsync<long[]>(writer =>
+			{
+				writer.Write(0x55A5BB66);
+				writer.Write(max_qts);
+				return "Messages_ReceivedQueue";
+			});
+
+		//messages.reportEncryptedSpam#4b0c8c0f peer:InputEncryptedChat = Bool
+		public Task<bool> Messages_ReportEncryptedSpam(InputEncryptedChat peer)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x4B0C8C0F);
+				writer.WriteTLObject(peer);
+				return "Messages_ReportEncryptedSpam";
+			});
+
+		//upload.saveBigFilePart#de7b673d file_id:long file_part:int file_total_parts:int bytes:bytes = Bool
+		public Task<bool> Upload_SaveBigFilePart(long file_id, int file_part, int file_total_parts, byte[] bytes)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xDE7B673D);
+				writer.Write(file_id);
+				writer.Write(file_part);
+				writer.Write(file_total_parts);
+				writer.WriteTLBytes(bytes);
+				return "Upload_SaveBigFilePart";
+			});
+
+		//initConnection#c1cd5ea9 {X:Type} flags:# api_id:int device_model:string system_version:string app_version:string system_lang_code:string lang_pack:string lang_code:string proxy:flags.0?InputClientProxy params:flags.1?JSONValue query:!X = X
+		public static ITLFunction<X> InitConnection<X>(int api_id, string device_model, string system_version, string app_version, string system_lang_code, string lang_pack, string lang_code, ITLFunction<X> query, InputClientProxy proxy = null, JSONValue params_ = null)
+			=> writer =>
+			{
+				writer.Write(0xC1CD5EA9);
+				writer.Write((proxy != null ? 0x1 : 0) | (params_ != null ? 0x2 : 0));
+				writer.Write(api_id);
+				writer.WriteTLString(device_model);
+				writer.WriteTLString(system_version);
+				writer.WriteTLString(app_version);
+				writer.WriteTLString(system_lang_code);
+				writer.WriteTLString(lang_pack);
+				writer.WriteTLString(lang_code);
+				if (proxy != null)
+					writer.WriteTLObject(proxy);
+				if (params_ != null)
+					writer.WriteTLObject(params_);
+				query(writer);
+				return "InitConnection<X>";
+			};
+
+		//help.getSupport#9cdf08cd = help.Support
+		public Task<Help_Support> Help_GetSupport()
+			=> CallAsync<Help_Support>(writer =>
+			{
+				writer.Write(0x9CDF08CD);
+				return "Help_GetSupport";
+			});
+
+		//messages.readMessageContents#36a73f77 id:Vector<int> = messages.AffectedMessages
+		public Task<Messages_AffectedMessages> Messages_ReadMessageContents(int[] id)
+			=> CallAsync<Messages_AffectedMessages>(writer =>
+			{
+				writer.Write(0x36A73F77);
+				writer.WriteTLVector(id);
+				return "Messages_ReadMessageContents";
+			});
+
+		//account.checkUsername#2714d86c username:string = Bool
+		public Task<bool> Account_CheckUsername(string username)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x2714D86C);
+				writer.WriteTLString(username);
+				return "Account_CheckUsername";
+			});
+
+		//account.updateUsername#3e0bdd7c username:string = User
+		public Task<UserBase> Account_UpdateUsername(string username)
+			=> CallAsync<UserBase>(writer =>
+			{
+				writer.Write(0x3E0BDD7C);
+				writer.WriteTLString(username);
+				return "Account_UpdateUsername";
+			});
+
+		//contacts.search#11f812d8 q:string limit:int = contacts.Found
+		public Task<Contacts_Found> Contacts_Search(string q, int limit)
+			=> CallAsync<Contacts_Found>(writer =>
+			{
+				writer.Write(0x11F812D8);
+				writer.WriteTLString(q);
+				writer.Write(limit);
+				return "Contacts_Search";
+			});
+
+		//account.getPrivacy#dadbc950 key:InputPrivacyKey = account.PrivacyRules
+		public Task<Account_PrivacyRules> Account_GetPrivacy(InputPrivacyKey key)
+			=> CallAsync<Account_PrivacyRules>(writer =>
+			{
+				writer.Write(0xDADBC950);
+				writer.WriteTLObject(key);
+				return "Account_GetPrivacy";
+			});
+
+		//account.setPrivacy#c9f81ce8 key:InputPrivacyKey rules:Vector<InputPrivacyRule> = account.PrivacyRules
+		public Task<Account_PrivacyRules> Account_SetPrivacy(InputPrivacyKey key, InputPrivacyRule[] rules)
+			=> CallAsync<Account_PrivacyRules>(writer =>
+			{
+				writer.Write(0xC9F81CE8);
+				writer.WriteTLObject(key);
+				writer.WriteTLVector(rules);
+				return "Account_SetPrivacy";
+			});
+
+		//account.deleteAccount#418d4e0b reason:string = Bool
+		public Task<bool> Account_DeleteAccount(string reason)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x418D4E0B);
+				writer.WriteTLString(reason);
+				return "Account_DeleteAccount";
+			});
+
+		//account.getAccountTTL#08fc711d = AccountDaysTTL
+		public Task<AccountDaysTTL> Account_GetAccountTTL()
+			=> CallAsync<AccountDaysTTL>(writer =>
+			{
+				writer.Write(0x08FC711D);
+				return "Account_GetAccountTTL";
+			});
+
+		//account.setAccountTTL#2442485e ttl:AccountDaysTTL = Bool
+		public Task<bool> Account_SetAccountTTL(AccountDaysTTL ttl)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x2442485E);
+				writer.WriteTLObject(ttl);
+				return "Account_SetAccountTTL";
+			});
+
+		//invokeWithLayer#da9b0d0d {X:Type} layer:int query:!X = X
+		public Task<X> InvokeWithLayer<X>(int layer, ITLFunction<X> query)
+			=> CallAsync<X>(writer =>
+			{
+				writer.Write(0xDA9B0D0D);
+				writer.Write(layer);
+				query(writer);
+				return "InvokeWithLayer<X>";
+			});
+
+		//contacts.resolveUsername#f93ccba3 username:string = contacts.ResolvedPeer
+		public Task<Contacts_ResolvedPeer> Contacts_ResolveUsername(string username)
+			=> CallAsync<Contacts_ResolvedPeer>(writer =>
+			{
+				writer.Write(0xF93CCBA3);
+				writer.WriteTLString(username);
+				return "Contacts_ResolveUsername";
+			});
+
+		//account.sendChangePhoneCode#82574ae5 phone_number:string settings:CodeSettings = auth.SentCode
+		public Task<Auth_SentCode> Account_SendChangePhoneCode(string phone_number, CodeSettings settings)
+			=> CallAsync<Auth_SentCode>(writer =>
+			{
+				writer.Write(0x82574AE5);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLObject(settings);
+				return "Account_SendChangePhoneCode";
+			});
+
+		//account.changePhone#70c32edb phone_number:string phone_code_hash:string phone_code:string = User
+		public Task<UserBase> Account_ChangePhone(string phone_number, string phone_code_hash, string phone_code)
+			=> CallAsync<UserBase>(writer =>
+			{
+				writer.Write(0x70C32EDB);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLString(phone_code_hash);
+				writer.WriteTLString(phone_code);
+				return "Account_ChangePhone";
+			});
+
+		//messages.getStickers#043d4f2c emoticon:string hash:int = messages.Stickers
+		public Task<Messages_StickersBase> Messages_GetStickers(string emoticon, int hash)
+			=> CallAsync<Messages_StickersBase>(writer =>
+			{
+				writer.Write(0x043D4F2C);
+				writer.WriteTLString(emoticon);
+				writer.Write(hash);
+				return "Messages_GetStickers";
+			});
+
+		//messages.getAllStickers#1c9618b1 hash:int = messages.AllStickers
+		public Task<Messages_AllStickersBase> Messages_GetAllStickers(int hash)
+			=> CallAsync<Messages_AllStickersBase>(writer =>
+			{
+				writer.Write(0x1C9618B1);
+				writer.Write(hash);
+				return "Messages_GetAllStickers";
+			});
+
+		//account.updateDeviceLocked#38df3532 period:int = Bool
+		public Task<bool> Account_UpdateDeviceLocked(int period)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x38DF3532);
+				writer.Write(period);
+				return "Account_UpdateDeviceLocked";
+			});
+
+		//auth.importBotAuthorization#67a3ff2c flags:int api_id:int api_hash:string bot_auth_token:string = auth.Authorization
+		public Task<Auth_AuthorizationBase> Auth_ImportBotAuthorization(int flags, int api_id, string api_hash, string bot_auth_token)
+			=> CallAsync<Auth_AuthorizationBase>(writer =>
+			{
+				writer.Write(0x67A3FF2C);
+				writer.Write(flags);
+				writer.Write(api_id);
+				writer.WriteTLString(api_hash);
+				writer.WriteTLString(bot_auth_token);
+				return "Auth_ImportBotAuthorization";
+			});
+
+		//messages.getWebPagePreview#8b68b0cc flags:# message:string entities:flags.3?Vector<MessageEntity> = MessageMedia
+		public Task<MessageMedia> Messages_GetWebPagePreview(string message, MessageEntity[] entities = null)
+			=> CallAsync<MessageMedia>(writer =>
+			{
+				writer.Write(0x8B68B0CC);
+				writer.Write(entities != null ? 0x8 : 0);
+				writer.WriteTLString(message);
+				if (entities != null)
+					writer.WriteTLVector(entities);
+				return "Messages_GetWebPagePreview";
+			});
+
+		//account.getAuthorizations#e320c158 = account.Authorizations
+		public Task<Account_Authorizations> Account_GetAuthorizations()
+			=> CallAsync<Account_Authorizations>(writer =>
+			{
+				writer.Write(0xE320C158);
+				return "Account_GetAuthorizations";
+			});
+
+		//account.resetAuthorization#df77f3bc hash:long = Bool
+		public Task<bool> Account_ResetAuthorization(long hash)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xDF77F3BC);
+				writer.Write(hash);
+				return "Account_ResetAuthorization";
+			});
+
+		//account.getPassword#548a30f5 = account.Password
+		public Task<Account_Password> Account_GetPassword()
+			=> CallAsync<Account_Password>(writer =>
+			{
+				writer.Write(0x548A30F5);
+				return "Account_GetPassword";
+			});
+
+		//account.getPasswordSettings#9cd4eaf9 password:InputCheckPasswordSRP = account.PasswordSettings
+		public Task<Account_PasswordSettings> Account_GetPasswordSettings(InputCheckPasswordSRPBase password)
+			=> CallAsync<Account_PasswordSettings>(writer =>
+			{
+				writer.Write(0x9CD4EAF9);
+				writer.WriteTLObject(password);
+				return "Account_GetPasswordSettings";
+			});
+
+		//account.updatePasswordSettings#a59b102f password:InputCheckPasswordSRP new_settings:account.PasswordInputSettings = Bool
+		public Task<bool> Account_UpdatePasswordSettings(InputCheckPasswordSRPBase password, Account_PasswordInputSettings new_settings)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xA59B102F);
+				writer.WriteTLObject(password);
+				writer.WriteTLObject(new_settings);
+				return "Account_UpdatePasswordSettings";
+			});
+
+		//auth.checkPassword#d18b4d16 password:InputCheckPasswordSRP = auth.Authorization
+		public Task<Auth_AuthorizationBase> Auth_CheckPassword(InputCheckPasswordSRPBase password)
+			=> CallAsync<Auth_AuthorizationBase>(writer =>
+			{
+				writer.Write(0xD18B4D16);
+				writer.WriteTLObject(password);
+				return "Auth_CheckPassword";
+			});
+
+		//auth.requestPasswordRecovery#d897bc66 = auth.PasswordRecovery
+		public Task<Auth_PasswordRecovery> Auth_RequestPasswordRecovery()
+			=> CallAsync<Auth_PasswordRecovery>(writer =>
+			{
+				writer.Write(0xD897BC66);
+				return "Auth_RequestPasswordRecovery";
+			});
+
+		//auth.recoverPassword#4ea56e92 code:string = auth.Authorization
+		public Task<Auth_AuthorizationBase> Auth_RecoverPassword(string code)
+			=> CallAsync<Auth_AuthorizationBase>(writer =>
+			{
+				writer.Write(0x4EA56E92);
+				writer.WriteTLString(code);
+				return "Auth_RecoverPassword";
+			});
+
+		//invokeWithoutUpdates#bf9459b7 {X:Type} query:!X = X
+		public Task<X> InvokeWithoutUpdates<X>(ITLFunction<X> query)
+			=> CallAsync<X>(writer =>
+			{
+				writer.Write(0xBF9459B7);
+				query(writer);
+				return "InvokeWithoutUpdates<X>";
+			});
+
+		//messages.exportChatInvite#0df7534c peer:InputPeer = ExportedChatInvite
+		public Task<ExportedChatInvite> Messages_ExportChatInvite(InputPeer peer)
+			=> CallAsync<ExportedChatInvite>(writer =>
+			{
+				writer.Write(0x0DF7534C);
+				writer.WriteTLObject(peer);
+				return "Messages_ExportChatInvite";
+			});
+
+		//messages.checkChatInvite#3eadb1bb hash:string = ChatInvite
+		public Task<ChatInviteBase> Messages_CheckChatInvite(string hash)
+			=> CallAsync<ChatInviteBase>(writer =>
+			{
+				writer.Write(0x3EADB1BB);
+				writer.WriteTLString(hash);
+				return "Messages_CheckChatInvite";
+			});
+
+		//messages.importChatInvite#6c50051c hash:string = Updates
+		public Task<UpdatesBase> Messages_ImportChatInvite(string hash)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x6C50051C);
+				writer.WriteTLString(hash);
+				return "Messages_ImportChatInvite";
+			});
+
+		//messages.getStickerSet#2619a90e stickerset:InputStickerSet = messages.StickerSet
+		public Task<Messages_StickerSet> Messages_GetStickerSet(InputStickerSet stickerset)
+			=> CallAsync<Messages_StickerSet>(writer =>
+			{
+				writer.Write(0x2619A90E);
+				writer.WriteTLObject(stickerset);
+				return "Messages_GetStickerSet";
+			});
+
+		//messages.installStickerSet#c78fe460 stickerset:InputStickerSet archived:Bool = messages.StickerSetInstallResult
+		public Task<Messages_StickerSetInstallResult> Messages_InstallStickerSet(InputStickerSet stickerset, bool archived)
+			=> CallAsync<Messages_StickerSetInstallResult>(writer =>
+			{
+				writer.Write(0xC78FE460);
+				writer.WriteTLObject(stickerset);
+				writer.Write(archived ? 0x997275B5 : 0xBC799737);
+				return "Messages_InstallStickerSet";
+			});
+
+		//messages.uninstallStickerSet#f96e55de stickerset:InputStickerSet = Bool
+		public Task<bool> Messages_UninstallStickerSet(InputStickerSet stickerset)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xF96E55DE);
+				writer.WriteTLObject(stickerset);
+				return "Messages_UninstallStickerSet";
+			});
+
+		//messages.startBot#e6df7378 bot:InputUser peer:InputPeer random_id:long start_param:string = Updates
+		public Task<UpdatesBase> Messages_StartBot(InputUserBase bot, InputPeer peer, long random_id, string start_param)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xE6DF7378);
+				writer.WriteTLObject(bot);
+				writer.WriteTLObject(peer);
+				writer.Write(random_id);
+				writer.WriteTLString(start_param);
+				return "Messages_StartBot";
+			});
+
+		//help.getAppChangelog#9010ef6f prev_app_version:string = Updates
+		public Task<UpdatesBase> Help_GetAppChangelog(string prev_app_version)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x9010EF6F);
+				writer.WriteTLString(prev_app_version);
+				return "Help_GetAppChangelog";
+			});
+
+		//messages.getMessagesViews#5784d3e1 peer:InputPeer id:Vector<int> increment:Bool = messages.MessageViews
+		public Task<Messages_MessageViews> Messages_GetMessagesViews(InputPeer peer, int[] id, bool increment)
+			=> CallAsync<Messages_MessageViews>(writer =>
+			{
+				writer.Write(0x5784D3E1);
+				writer.WriteTLObject(peer);
+				writer.WriteTLVector(id);
+				writer.Write(increment ? 0x997275B5 : 0xBC799737);
+				return "Messages_GetMessagesViews";
+			});
+
+		//channels.readHistory#cc104937 channel:InputChannel max_id:int = Bool
+		public Task<bool> Channels_ReadHistory(InputChannelBase channel, int max_id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xCC104937);
+				writer.WriteTLObject(channel);
+				writer.Write(max_id);
+				return "Channels_ReadHistory";
+			});
+
+		//channels.deleteMessages#84c1fd4e channel:InputChannel id:Vector<int> = messages.AffectedMessages
+		public Task<Messages_AffectedMessages> Channels_DeleteMessages(InputChannelBase channel, int[] id)
+			=> CallAsync<Messages_AffectedMessages>(writer =>
+			{
+				writer.Write(0x84C1FD4E);
+				writer.WriteTLObject(channel);
+				writer.WriteTLVector(id);
+				return "Channels_DeleteMessages";
+			});
+
+		//channels.deleteUserHistory#d10dd71b channel:InputChannel user_id:InputUser = messages.AffectedHistory
+		public Task<Messages_AffectedHistory> Channels_DeleteUserHistory(InputChannelBase channel, InputUserBase user_id)
+			=> CallAsync<Messages_AffectedHistory>(writer =>
+			{
+				writer.Write(0xD10DD71B);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(user_id);
+				return "Channels_DeleteUserHistory";
+			});
+
+		//channels.reportSpam#fe087810 channel:InputChannel user_id:InputUser id:Vector<int> = Bool
+		public Task<bool> Channels_ReportSpam(InputChannelBase channel, InputUserBase user_id, int[] id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xFE087810);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(user_id);
+				writer.WriteTLVector(id);
+				return "Channels_ReportSpam";
+			});
+
+		//channels.getMessages#ad8c9a23 channel:InputChannel id:Vector<InputMessage> = messages.Messages
+		public Task<Messages_MessagesBase> Channels_GetMessages(InputChannelBase channel, InputMessage[] id)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0xAD8C9A23);
+				writer.WriteTLObject(channel);
+				writer.WriteTLVector(id);
+				return "Channels_GetMessages";
+			});
+
+		//channels.getParticipants#123e05e9 channel:InputChannel filter:ChannelParticipantsFilter offset:int limit:int hash:int = channels.ChannelParticipants
+		public Task<Channels_ChannelParticipantsBase> Channels_GetParticipants(InputChannelBase channel, ChannelParticipantsFilter filter, int offset, int limit, int hash)
+			=> CallAsync<Channels_ChannelParticipantsBase>(writer =>
+			{
+				writer.Write(0x123E05E9);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(filter);
+				writer.Write(offset);
+				writer.Write(limit);
+				writer.Write(hash);
+				return "Channels_GetParticipants";
+			});
+
+		//channels.getParticipant#546dd7a6 channel:InputChannel user_id:InputUser = channels.ChannelParticipant
+		public Task<Channels_ChannelParticipant> Channels_GetParticipant(InputChannelBase channel, InputUserBase user_id)
+			=> CallAsync<Channels_ChannelParticipant>(writer =>
+			{
+				writer.Write(0x546DD7A6);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(user_id);
+				return "Channels_GetParticipant";
+			});
+
+		//channels.getChannels#0a7f6bbb id:Vector<InputChannel> = messages.Chats
+		public Task<Messages_ChatsBase> Channels_GetChannels(InputChannelBase[] id)
+			=> CallAsync<Messages_ChatsBase>(writer =>
+			{
+				writer.Write(0x0A7F6BBB);
+				writer.WriteTLVector(id);
+				return "Channels_GetChannels";
+			});
+
+		//channels.getFullChannel#08736a09 channel:InputChannel = messages.ChatFull
+		public Task<Messages_ChatFull> Channels_GetFullChannel(InputChannelBase channel)
+			=> CallAsync<Messages_ChatFull>(writer =>
+			{
+				writer.Write(0x08736A09);
+				writer.WriteTLObject(channel);
+				return "Channels_GetFullChannel";
+			});
+
+		//channels.createChannel#3d5fb10f flags:# broadcast:flags.0?true megagroup:flags.1?true for_import:flags.3?true title:string about:string geo_point:flags.2?InputGeoPoint address:flags.2?string = Updates
+		public Task<UpdatesBase> Channels_CreateChannel(string title, string about, bool broadcast = false, bool megagroup = false, bool for_import = false, InputGeoPointBase geo_point = null, string address = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x3D5FB10F);
+				writer.Write((broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0) | (geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0));
+				writer.WriteTLString(title);
+				writer.WriteTLString(about);
+				if (geo_point != null)
+					writer.WriteTLObject(geo_point);
+				if (address != null)
+					writer.WriteTLString(address);
+				return "Channels_CreateChannel";
+			});
+
+		//channels.editAdmin#d33c8902 channel:InputChannel user_id:InputUser admin_rights:ChatAdminRights rank:string = Updates
+		public Task<UpdatesBase> Channels_EditAdmin(InputChannelBase channel, InputUserBase user_id, ChatAdminRights admin_rights, string rank)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xD33C8902);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(user_id);
+				writer.WriteTLObject(admin_rights);
+				writer.WriteTLString(rank);
+				return "Channels_EditAdmin";
+			});
+
+		//channels.editTitle#566decd0 channel:InputChannel title:string = Updates
+		public Task<UpdatesBase> Channels_EditTitle(InputChannelBase channel, string title)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x566DECD0);
+				writer.WriteTLObject(channel);
+				writer.WriteTLString(title);
+				return "Channels_EditTitle";
+			});
+
+		//channels.editPhoto#f12e57c9 channel:InputChannel photo:InputChatPhoto = Updates
+		public Task<UpdatesBase> Channels_EditPhoto(InputChannelBase channel, InputChatPhotoBase photo)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xF12E57C9);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(photo);
+				return "Channels_EditPhoto";
+			});
+
+		//channels.checkUsername#10e6bd2c channel:InputChannel username:string = Bool
+		public Task<bool> Channels_CheckUsername(InputChannelBase channel, string username)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x10E6BD2C);
+				writer.WriteTLObject(channel);
+				writer.WriteTLString(username);
+				return "Channels_CheckUsername";
+			});
+
+		//channels.updateUsername#3514b3de channel:InputChannel username:string = Bool
+		public Task<bool> Channels_UpdateUsername(InputChannelBase channel, string username)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x3514B3DE);
+				writer.WriteTLObject(channel);
+				writer.WriteTLString(username);
+				return "Channels_UpdateUsername";
+			});
+
+		//channels.joinChannel#24b524c5 channel:InputChannel = Updates
+		public Task<UpdatesBase> Channels_JoinChannel(InputChannelBase channel)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x24B524C5);
+				writer.WriteTLObject(channel);
+				return "Channels_JoinChannel";
+			});
+
+		//channels.leaveChannel#f836aa95 channel:InputChannel = Updates
+		public Task<UpdatesBase> Channels_LeaveChannel(InputChannelBase channel)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xF836AA95);
+				writer.WriteTLObject(channel);
+				return "Channels_LeaveChannel";
+			});
+
+		//channels.inviteToChannel#199f3a6c channel:InputChannel users:Vector<InputUser> = Updates
+		public Task<UpdatesBase> Channels_InviteToChannel(InputChannelBase channel, InputUserBase[] users)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x199F3A6C);
+				writer.WriteTLObject(channel);
+				writer.WriteTLVector(users);
+				return "Channels_InviteToChannel";
+			});
+
+		//channels.deleteChannel#c0111fe3 channel:InputChannel = Updates
+		public Task<UpdatesBase> Channels_DeleteChannel(InputChannelBase channel)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xC0111FE3);
+				writer.WriteTLObject(channel);
+				return "Channels_DeleteChannel";
+			});
+
+		//updates.getChannelDifference#03173d78 flags:# force:flags.0?true channel:InputChannel filter:ChannelMessagesFilter pts:int limit:int = updates.ChannelDifference
+		public Task<Updates_ChannelDifferenceBase> Updates_GetChannelDifference(InputChannelBase channel, ChannelMessagesFilterBase filter, int pts, int limit, bool force = false)
+			=> CallAsync<Updates_ChannelDifferenceBase>(writer =>
+			{
+				writer.Write(0x03173D78);
+				writer.Write(force ? 0x1 : 0);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(filter);
+				writer.Write(pts);
+				writer.Write(limit);
+				return "Updates_GetChannelDifference";
+			});
+
+		//messages.editChatAdmin#a9e69f2e chat_id:int user_id:InputUser is_admin:Bool = Bool
+		public Task<bool> Messages_EditChatAdmin(int chat_id, InputUserBase user_id, bool is_admin)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xA9E69F2E);
+				writer.Write(chat_id);
+				writer.WriteTLObject(user_id);
+				writer.Write(is_admin ? 0x997275B5 : 0xBC799737);
+				return "Messages_EditChatAdmin";
+			});
+
+		//messages.migrateChat#15a3b8e3 chat_id:int = Updates
+		public Task<UpdatesBase> Messages_MigrateChat(int chat_id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x15A3B8E3);
+				writer.Write(chat_id);
+				return "Messages_MigrateChat";
+			});
+
+		//messages.searchGlobal#4bc6589a flags:# folder_id:flags.0?int q:string filter:MessagesFilter min_date:int max_date:int offset_rate:int offset_peer:InputPeer offset_id:int limit:int = messages.Messages
+		public Task<Messages_MessagesBase> Messages_SearchGlobal(string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_rate, InputPeer offset_peer, int offset_id, int limit, int? folder_id = null)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0x4BC6589A);
+				writer.Write(folder_id != null ? 0x1 : 0);
+				if (folder_id != null)
+					writer.Write(folder_id.Value);
+				writer.WriteTLString(q);
+				writer.WriteTLObject(filter);
+				writer.WriteTLStamp(min_date);
+				writer.WriteTLStamp(max_date);
+				writer.Write(offset_rate);
+				writer.WriteTLObject(offset_peer);
+				writer.Write(offset_id);
+				writer.Write(limit);
+				return "Messages_SearchGlobal";
+			});
+
+		//messages.reorderStickerSets#78337739 flags:# masks:flags.0?true order:Vector<long> = Bool
+		public Task<bool> Messages_ReorderStickerSets(long[] order, bool masks = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x78337739);
+				writer.Write(masks ? 0x1 : 0);
+				writer.WriteTLVector(order);
+				return "Messages_ReorderStickerSets";
+			});
+
+		//messages.getDocumentByHash#338e2464 sha256:bytes size:int mime_type:string = Document
+		public Task<DocumentBase> Messages_GetDocumentByHash(byte[] sha256, int size, string mime_type)
+			=> CallAsync<DocumentBase>(writer =>
+			{
+				writer.Write(0x338E2464);
+				writer.WriteTLBytes(sha256);
+				writer.Write(size);
+				writer.WriteTLString(mime_type);
+				return "Messages_GetDocumentByHash";
+			});
+
+		//messages.getSavedGifs#83bf3d52 hash:int = messages.SavedGifs
+		public Task<Messages_SavedGifsBase> Messages_GetSavedGifs(int hash)
+			=> CallAsync<Messages_SavedGifsBase>(writer =>
+			{
+				writer.Write(0x83BF3D52);
+				writer.Write(hash);
+				return "Messages_GetSavedGifs";
+			});
+
+		//messages.saveGif#327a30cb id:InputDocument unsave:Bool = Bool
+		public Task<bool> Messages_SaveGif(InputDocumentBase id, bool unsave)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x327A30CB);
+				writer.WriteTLObject(id);
+				writer.Write(unsave ? 0x997275B5 : 0xBC799737);
+				return "Messages_SaveGif";
+			});
+
+		//messages.getInlineBotResults#514e999d flags:# bot:InputUser peer:InputPeer geo_point:flags.0?InputGeoPoint query:string offset:string = messages.BotResults
+		public Task<Messages_BotResults> Messages_GetInlineBotResults(InputUserBase bot, InputPeer peer, string query, string offset, InputGeoPointBase geo_point = null)
+			=> CallAsync<Messages_BotResults>(writer =>
+			{
+				writer.Write(0x514E999D);
+				writer.Write(geo_point != null ? 0x1 : 0);
+				writer.WriteTLObject(bot);
+				writer.WriteTLObject(peer);
+				if (geo_point != null)
+					writer.WriteTLObject(geo_point);
+				writer.WriteTLString(query);
+				writer.WriteTLString(offset);
+				return "Messages_GetInlineBotResults";
+			});
+
+		//messages.setInlineBotResults#eb5ea206 flags:# gallery:flags.0?true private:flags.1?true query_id:long results:Vector<InputBotInlineResult> cache_time:int next_offset:flags.2?string switch_pm:flags.3?InlineBotSwitchPM = Bool
+		public Task<bool> Messages_SetInlineBotResults(long query_id, InputBotInlineResultBase[] results, DateTime cache_time, bool gallery = false, bool private_ = false, string next_offset = null, InlineBotSwitchPM switch_pm = null)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xEB5EA206);
+				writer.Write((gallery ? 0x1 : 0) | (private_ ? 0x2 : 0) | (next_offset != null ? 0x4 : 0) | (switch_pm != null ? 0x8 : 0));
+				writer.Write(query_id);
+				writer.WriteTLVector(results);
+				writer.WriteTLStamp(cache_time);
+				if (next_offset != null)
+					writer.WriteTLString(next_offset);
+				if (switch_pm != null)
+					writer.WriteTLObject(switch_pm);
+				return "Messages_SetInlineBotResults";
+			});
+
+		//messages.sendInlineBotResult#220815b0 flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true hide_via:flags.11?true peer:InputPeer reply_to_msg_id:flags.0?int random_id:long query_id:long id:string schedule_date:flags.10?int = Updates
+		public Task<UpdatesBase> Messages_SendInlineBotResult(InputPeer peer, long random_id, long query_id, string id, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false, int? reply_to_msg_id = null, DateTime? schedule_date = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x220815B0);
+				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0));
+				writer.WriteTLObject(peer);
+				if (reply_to_msg_id != null)
+					writer.Write(reply_to_msg_id.Value);
+				writer.Write(random_id);
+				writer.Write(query_id);
+				writer.WriteTLString(id);
+				if (schedule_date != null)
+					writer.WriteTLStamp(schedule_date.Value);
+				return "Messages_SendInlineBotResult";
+			});
+
+		//channels.exportMessageLink#e63fadeb flags:# grouped:flags.0?true thread:flags.1?true channel:InputChannel id:int = ExportedMessageLink
+		public Task<ExportedMessageLink> Channels_ExportMessageLink(InputChannelBase channel, int id, bool grouped = false, bool thread = false)
+			=> CallAsync<ExportedMessageLink>(writer =>
+			{
+				writer.Write(0xE63FADEB);
+				writer.Write((grouped ? 0x1 : 0) | (thread ? 0x2 : 0));
+				writer.WriteTLObject(channel);
+				writer.Write(id);
+				return "Channels_ExportMessageLink";
+			});
+
+		//channels.toggleSignatures#1f69b606 channel:InputChannel enabled:Bool = Updates
+		public Task<UpdatesBase> Channels_ToggleSignatures(InputChannelBase channel, bool enabled)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x1F69B606);
+				writer.WriteTLObject(channel);
+				writer.Write(enabled ? 0x997275B5 : 0xBC799737);
+				return "Channels_ToggleSignatures";
+			});
+
+		//auth.resendCode#3ef1a9bf phone_number:string phone_code_hash:string = auth.SentCode
+		public Task<Auth_SentCode> Auth_ResendCode(string phone_number, string phone_code_hash)
+			=> CallAsync<Auth_SentCode>(writer =>
+			{
+				writer.Write(0x3EF1A9BF);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLString(phone_code_hash);
+				return "Auth_ResendCode";
+			});
+
+		//auth.cancelCode#1f040578 phone_number:string phone_code_hash:string = Bool
+		public Task<bool> Auth_CancelCode(string phone_number, string phone_code_hash)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x1F040578);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLString(phone_code_hash);
+				return "Auth_CancelCode";
+			});
+
+		//messages.getMessageEditData#fda68d36 peer:InputPeer id:int = messages.MessageEditData
+		public Task<Messages_MessageEditData> Messages_GetMessageEditData(InputPeer peer, int id)
+			=> CallAsync<Messages_MessageEditData>(writer =>
+			{
+				writer.Write(0xFDA68D36);
+				writer.WriteTLObject(peer);
+				writer.Write(id);
+				return "Messages_GetMessageEditData";
+			});
+
+		//messages.editMessage#48f71778 flags:# no_webpage:flags.1?true peer:InputPeer id:int message:flags.11?string media:flags.14?InputMedia reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> schedule_date:flags.15?int = Updates
+		public Task<UpdatesBase> Messages_EditMessage(InputPeer peer, int id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x48F71778);
+				writer.Write((no_webpage ? 0x2 : 0) | (message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x8000 : 0));
+				writer.WriteTLObject(peer);
+				writer.Write(id);
+				if (message != null)
+					writer.WriteTLString(message);
+				if (media != null)
+					writer.WriteTLObject(media);
+				if (reply_markup != null)
+					writer.WriteTLObject(reply_markup);
+				if (entities != null)
+					writer.WriteTLVector(entities);
+				if (schedule_date != null)
+					writer.WriteTLStamp(schedule_date.Value);
+				return "Messages_EditMessage";
+			});
+
+		//messages.editInlineBotMessage#83557dba flags:# no_webpage:flags.1?true id:InputBotInlineMessageID message:flags.11?string media:flags.14?InputMedia reply_markup:flags.2?ReplyMarkup entities:flags.3?Vector<MessageEntity> = Bool
+		public Task<bool> Messages_EditInlineBotMessage(InputBotInlineMessageID id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x83557DBA);
+				writer.Write((no_webpage ? 0x2 : 0) | (message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0));
+				writer.WriteTLObject(id);
+				if (message != null)
+					writer.WriteTLString(message);
+				if (media != null)
+					writer.WriteTLObject(media);
+				if (reply_markup != null)
+					writer.WriteTLObject(reply_markup);
+				if (entities != null)
+					writer.WriteTLVector(entities);
+				return "Messages_EditInlineBotMessage";
+			});
+
+		//messages.getBotCallbackAnswer#9342ca07 flags:# game:flags.1?true peer:InputPeer msg_id:int data:flags.0?bytes password:flags.2?InputCheckPasswordSRP = messages.BotCallbackAnswer
+		public Task<Messages_BotCallbackAnswer> Messages_GetBotCallbackAnswer(InputPeer peer, int msg_id, bool game = false, byte[] data = null, InputCheckPasswordSRPBase password = null)
+			=> CallAsync<Messages_BotCallbackAnswer>(writer =>
+			{
+				writer.Write(0x9342CA07);
+				writer.Write((game ? 0x2 : 0) | (data != null ? 0x1 : 0) | (password != null ? 0x4 : 0));
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				if (data != null)
+					writer.WriteTLBytes(data);
+				if (password != null)
+					writer.WriteTLObject(password);
+				return "Messages_GetBotCallbackAnswer";
+			});
+
+		//messages.setBotCallbackAnswer#d58f130a flags:# alert:flags.1?true query_id:long message:flags.0?string url:flags.2?string cache_time:int = Bool
+		public Task<bool> Messages_SetBotCallbackAnswer(long query_id, DateTime cache_time, bool alert = false, string message = null, string url = null)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xD58F130A);
+				writer.Write((alert ? 0x2 : 0) | (message != null ? 0x1 : 0) | (url != null ? 0x4 : 0));
+				writer.Write(query_id);
+				if (message != null)
+					writer.WriteTLString(message);
+				if (url != null)
+					writer.WriteTLString(url);
+				writer.WriteTLStamp(cache_time);
+				return "Messages_SetBotCallbackAnswer";
+			});
+
+		//contacts.getTopPeers#d4982db5 flags:# correspondents:flags.0?true bots_pm:flags.1?true bots_inline:flags.2?true phone_calls:flags.3?true forward_users:flags.4?true forward_chats:flags.5?true groups:flags.10?true channels:flags.15?true offset:int limit:int hash:int = contacts.TopPeers
+		public Task<Contacts_TopPeersBase> Contacts_GetTopPeers(int offset, int limit, int hash, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false)
+			=> CallAsync<Contacts_TopPeersBase>(writer =>
+			{
+				writer.Write(0xD4982DB5);
+				writer.Write((correspondents ? 0x1 : 0) | (bots_pm ? 0x2 : 0) | (bots_inline ? 0x4 : 0) | (phone_calls ? 0x8 : 0) | (forward_users ? 0x10 : 0) | (forward_chats ? 0x20 : 0) | (groups ? 0x400 : 0) | (channels ? 0x8000 : 0));
+				writer.Write(offset);
+				writer.Write(limit);
+				writer.Write(hash);
+				return "Contacts_GetTopPeers";
+			});
+
+		//contacts.resetTopPeerRating#1ae373ac category:TopPeerCategory peer:InputPeer = Bool
+		public Task<bool> Contacts_ResetTopPeerRating(TopPeerCategory category, InputPeer peer)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x1AE373AC);
+				writer.WriteTLObject(category);
+				writer.WriteTLObject(peer);
+				return "Contacts_ResetTopPeerRating";
+			});
+
+		//messages.getPeerDialogs#e470bcfd peers:Vector<InputDialogPeer> = messages.PeerDialogs
+		public Task<Messages_PeerDialogs> Messages_GetPeerDialogs(InputDialogPeerBase[] peers)
+			=> CallAsync<Messages_PeerDialogs>(writer =>
+			{
+				writer.Write(0xE470BCFD);
+				writer.WriteTLVector(peers);
+				return "Messages_GetPeerDialogs";
+			});
+
+		//messages.saveDraft#bc39e14b flags:# no_webpage:flags.1?true reply_to_msg_id:flags.0?int peer:InputPeer message:string entities:flags.3?Vector<MessageEntity> = Bool
+		public Task<bool> Messages_SaveDraft(InputPeer peer, string message, bool no_webpage = false, int? reply_to_msg_id = null, MessageEntity[] entities = null)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xBC39E14B);
+				writer.Write((no_webpage ? 0x2 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (entities != null ? 0x8 : 0));
+				if (reply_to_msg_id != null)
+					writer.Write(reply_to_msg_id.Value);
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(message);
+				if (entities != null)
+					writer.WriteTLVector(entities);
+				return "Messages_SaveDraft";
+			});
+
+		//messages.getAllDrafts#6a3f8d65 = Updates
+		public Task<UpdatesBase> Messages_GetAllDrafts()
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x6A3F8D65);
+				return "Messages_GetAllDrafts";
+			});
+
+		//messages.getFeaturedStickers#2dacca4f hash:int = messages.FeaturedStickers
+		public Task<Messages_FeaturedStickersBase> Messages_GetFeaturedStickers(int hash)
+			=> CallAsync<Messages_FeaturedStickersBase>(writer =>
+			{
+				writer.Write(0x2DACCA4F);
+				writer.Write(hash);
+				return "Messages_GetFeaturedStickers";
+			});
+
+		//messages.readFeaturedStickers#5b118126 id:Vector<long> = Bool
+		public Task<bool> Messages_ReadFeaturedStickers(long[] id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x5B118126);
+				writer.WriteTLVector(id);
+				return "Messages_ReadFeaturedStickers";
+			});
+
+		//messages.getRecentStickers#5ea192c9 flags:# attached:flags.0?true hash:int = messages.RecentStickers
+		public Task<Messages_RecentStickersBase> Messages_GetRecentStickers(int hash, bool attached = false)
+			=> CallAsync<Messages_RecentStickersBase>(writer =>
+			{
+				writer.Write(0x5EA192C9);
+				writer.Write(attached ? 0x1 : 0);
+				writer.Write(hash);
+				return "Messages_GetRecentStickers";
+			});
+
+		//messages.saveRecentSticker#392718f8 flags:# attached:flags.0?true id:InputDocument unsave:Bool = Bool
+		public Task<bool> Messages_SaveRecentSticker(InputDocumentBase id, bool unsave, bool attached = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x392718F8);
+				writer.Write(attached ? 0x1 : 0);
+				writer.WriteTLObject(id);
+				writer.Write(unsave ? 0x997275B5 : 0xBC799737);
+				return "Messages_SaveRecentSticker";
+			});
+
+		//messages.clearRecentStickers#8999602d flags:# attached:flags.0?true = Bool
+		public Task<bool> Messages_ClearRecentStickers(bool attached = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x8999602D);
+				writer.Write(attached ? 0x1 : 0);
+				return "Messages_ClearRecentStickers";
+			});
+
+		//messages.getArchivedStickers#57f17692 flags:# masks:flags.0?true offset_id:long limit:int = messages.ArchivedStickers
+		public Task<Messages_ArchivedStickers> Messages_GetArchivedStickers(long offset_id, int limit, bool masks = false)
+			=> CallAsync<Messages_ArchivedStickers>(writer =>
+			{
+				writer.Write(0x57F17692);
+				writer.Write(masks ? 0x1 : 0);
+				writer.Write(offset_id);
+				writer.Write(limit);
+				return "Messages_GetArchivedStickers";
+			});
+
+		//account.sendConfirmPhoneCode#1b3faa88 hash:string settings:CodeSettings = auth.SentCode
+		public Task<Auth_SentCode> Account_SendConfirmPhoneCode(string hash, CodeSettings settings)
+			=> CallAsync<Auth_SentCode>(writer =>
+			{
+				writer.Write(0x1B3FAA88);
+				writer.WriteTLString(hash);
+				writer.WriteTLObject(settings);
+				return "Account_SendConfirmPhoneCode";
+			});
+
+		//account.confirmPhone#5f2178c3 phone_code_hash:string phone_code:string = Bool
+		public Task<bool> Account_ConfirmPhone(string phone_code_hash, string phone_code)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x5F2178C3);
+				writer.WriteTLString(phone_code_hash);
+				writer.WriteTLString(phone_code);
+				return "Account_ConfirmPhone";
+			});
+
+		//channels.getAdminedPublicChannels#f8b036af flags:# by_location:flags.0?true check_limit:flags.1?true = messages.Chats
+		public Task<Messages_ChatsBase> Channels_GetAdminedPublicChannels(bool by_location = false, bool check_limit = false)
+			=> CallAsync<Messages_ChatsBase>(writer =>
+			{
+				writer.Write(0xF8B036AF);
+				writer.Write((by_location ? 0x1 : 0) | (check_limit ? 0x2 : 0));
+				return "Channels_GetAdminedPublicChannels";
+			});
+
+		//messages.getMaskStickers#65b8c79f hash:int = messages.AllStickers
+		public Task<Messages_AllStickersBase> Messages_GetMaskStickers(int hash)
+			=> CallAsync<Messages_AllStickersBase>(writer =>
+			{
+				writer.Write(0x65B8C79F);
+				writer.Write(hash);
+				return "Messages_GetMaskStickers";
+			});
+
+		//messages.getAttachedStickers#cc5b67cc media:InputStickeredMedia = Vector<StickerSetCovered>
+		public Task<StickerSetCoveredBase[]> Messages_GetAttachedStickers(InputStickeredMedia media)
+			=> CallAsync<StickerSetCoveredBase[]>(writer =>
+			{
+				writer.Write(0xCC5B67CC);
+				writer.WriteTLObject(media);
+				return "Messages_GetAttachedStickers";
+			});
+
+		//auth.dropTempAuthKeys#8e48a188 except_auth_keys:Vector<long> = Bool
+		public Task<bool> Auth_DropTempAuthKeys(long[] except_auth_keys)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x8E48A188);
+				writer.WriteTLVector(except_auth_keys);
+				return "Auth_DropTempAuthKeys";
+			});
+
+		//messages.setGameScore#8ef8ecc0 flags:# edit_message:flags.0?true force:flags.1?true peer:InputPeer id:int user_id:InputUser score:int = Updates
+		public Task<UpdatesBase> Messages_SetGameScore(InputPeer peer, int id, InputUserBase user_id, int score, bool edit_message = false, bool force = false)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x8EF8ECC0);
+				writer.Write((edit_message ? 0x1 : 0) | (force ? 0x2 : 0));
+				writer.WriteTLObject(peer);
+				writer.Write(id);
+				writer.WriteTLObject(user_id);
+				writer.Write(score);
+				return "Messages_SetGameScore";
+			});
+
+		//messages.setInlineGameScore#15ad9f64 flags:# edit_message:flags.0?true force:flags.1?true id:InputBotInlineMessageID user_id:InputUser score:int = Bool
+		public Task<bool> Messages_SetInlineGameScore(InputBotInlineMessageID id, InputUserBase user_id, int score, bool edit_message = false, bool force = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x15AD9F64);
+				writer.Write((edit_message ? 0x1 : 0) | (force ? 0x2 : 0));
+				writer.WriteTLObject(id);
+				writer.WriteTLObject(user_id);
+				writer.Write(score);
+				return "Messages_SetInlineGameScore";
+			});
+
+		//messages.getGameHighScores#e822649d peer:InputPeer id:int user_id:InputUser = messages.HighScores
+		public Task<Messages_HighScores> Messages_GetGameHighScores(InputPeer peer, int id, InputUserBase user_id)
+			=> CallAsync<Messages_HighScores>(writer =>
+			{
+				writer.Write(0xE822649D);
+				writer.WriteTLObject(peer);
+				writer.Write(id);
+				writer.WriteTLObject(user_id);
+				return "Messages_GetGameHighScores";
+			});
+
+		//messages.getInlineGameHighScores#0f635e1b id:InputBotInlineMessageID user_id:InputUser = messages.HighScores
+		public Task<Messages_HighScores> Messages_GetInlineGameHighScores(InputBotInlineMessageID id, InputUserBase user_id)
+			=> CallAsync<Messages_HighScores>(writer =>
+			{
+				writer.Write(0x0F635E1B);
+				writer.WriteTLObject(id);
+				writer.WriteTLObject(user_id);
+				return "Messages_GetInlineGameHighScores";
+			});
+
+		//messages.getCommonChats#0d0a48c4 user_id:InputUser max_id:int limit:int = messages.Chats
+		public Task<Messages_ChatsBase> Messages_GetCommonChats(InputUserBase user_id, int max_id, int limit)
+			=> CallAsync<Messages_ChatsBase>(writer =>
+			{
+				writer.Write(0x0D0A48C4);
+				writer.WriteTLObject(user_id);
+				writer.Write(max_id);
+				writer.Write(limit);
+				return "Messages_GetCommonChats";
+			});
+
+		//messages.getAllChats#eba80ff0 except_ids:Vector<int> = messages.Chats
+		public Task<Messages_ChatsBase> Messages_GetAllChats(int[] except_ids)
+			=> CallAsync<Messages_ChatsBase>(writer =>
+			{
+				writer.Write(0xEBA80FF0);
+				writer.WriteTLVector(except_ids);
+				return "Messages_GetAllChats";
+			});
+
+		//help.setBotUpdatesStatus#ec22cfcd pending_updates_count:int message:string = Bool
+		public Task<bool> Help_SetBotUpdatesStatus(int pending_updates_count, string message)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xEC22CFCD);
+				writer.Write(pending_updates_count);
+				writer.WriteTLString(message);
+				return "Help_SetBotUpdatesStatus";
+			});
+
+		//messages.getWebPage#32ca8f91 url:string hash:int = WebPage
+		public Task<WebPageBase> Messages_GetWebPage(string url, int hash)
+			=> CallAsync<WebPageBase>(writer =>
+			{
+				writer.Write(0x32CA8F91);
+				writer.WriteTLString(url);
+				writer.Write(hash);
+				return "Messages_GetWebPage";
+			});
+
+		//messages.toggleDialogPin#a731e257 flags:# pinned:flags.0?true peer:InputDialogPeer = Bool
+		public Task<bool> Messages_ToggleDialogPin(InputDialogPeerBase peer, bool pinned = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xA731E257);
+				writer.Write(pinned ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				return "Messages_ToggleDialogPin";
+			});
+
+		//messages.reorderPinnedDialogs#3b1adf37 flags:# force:flags.0?true folder_id:int order:Vector<InputDialogPeer> = Bool
+		public Task<bool> Messages_ReorderPinnedDialogs(int folder_id, InputDialogPeerBase[] order, bool force = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x3B1ADF37);
+				writer.Write(force ? 0x1 : 0);
+				writer.Write(folder_id);
+				writer.WriteTLVector(order);
+				return "Messages_ReorderPinnedDialogs";
+			});
+
+		//messages.getPinnedDialogs#d6b94df2 folder_id:int = messages.PeerDialogs
+		public Task<Messages_PeerDialogs> Messages_GetPinnedDialogs(int folder_id)
+			=> CallAsync<Messages_PeerDialogs>(writer =>
+			{
+				writer.Write(0xD6B94DF2);
+				writer.Write(folder_id);
+				return "Messages_GetPinnedDialogs";
+			});
+
+		//bots.sendCustomRequest#aa2769ed custom_method:string params:DataJSON = DataJSON
+		public Task<DataJSON> Bots_SendCustomRequest(string custom_method, DataJSON params_)
+			=> CallAsync<DataJSON>(writer =>
+			{
+				writer.Write(0xAA2769ED);
+				writer.WriteTLString(custom_method);
+				writer.WriteTLObject(params_);
+				return "Bots_SendCustomRequest";
+			});
+
+		//bots.answerWebhookJSONQuery#e6213f4d query_id:long data:DataJSON = Bool
+		public Task<bool> Bots_AnswerWebhookJSONQuery(long query_id, DataJSON data)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xE6213F4D);
+				writer.Write(query_id);
+				writer.WriteTLObject(data);
+				return "Bots_AnswerWebhookJSONQuery";
+			});
+
+		//upload.getWebFile#24e6818d location:InputWebFileLocation offset:int limit:int = upload.WebFile
+		public Task<Upload_WebFile> Upload_GetWebFile(InputWebFileLocationBase location, int offset, int limit)
+			=> CallAsync<Upload_WebFile>(writer =>
+			{
+				writer.Write(0x24E6818D);
+				writer.WriteTLObject(location);
+				writer.Write(offset);
+				writer.Write(limit);
+				return "Upload_GetWebFile";
+			});
+
+		//payments.getPaymentForm#99f09745 msg_id:int = payments.PaymentForm
+		public Task<Payments_PaymentForm> Payments_GetPaymentForm(int msg_id)
+			=> CallAsync<Payments_PaymentForm>(writer =>
+			{
+				writer.Write(0x99F09745);
+				writer.Write(msg_id);
+				return "Payments_GetPaymentForm";
+			});
+
+		//payments.getPaymentReceipt#a092a980 msg_id:int = payments.PaymentReceipt
+		public Task<Payments_PaymentReceipt> Payments_GetPaymentReceipt(int msg_id)
+			=> CallAsync<Payments_PaymentReceipt>(writer =>
+			{
+				writer.Write(0xA092A980);
+				writer.Write(msg_id);
+				return "Payments_GetPaymentReceipt";
+			});
+
+		//payments.validateRequestedInfo#770a8e74 flags:# save:flags.0?true msg_id:int info:PaymentRequestedInfo = payments.ValidatedRequestedInfo
+		public Task<Payments_ValidatedRequestedInfo> Payments_ValidateRequestedInfo(int msg_id, PaymentRequestedInfo info, bool save = false)
+			=> CallAsync<Payments_ValidatedRequestedInfo>(writer =>
+			{
+				writer.Write(0x770A8E74);
+				writer.Write(save ? 0x1 : 0);
+				writer.Write(msg_id);
+				writer.WriteTLObject(info);
+				return "Payments_ValidateRequestedInfo";
+			});
+
+		//payments.sendPaymentForm#2b8879b3 flags:# msg_id:int requested_info_id:flags.0?string shipping_option_id:flags.1?string credentials:InputPaymentCredentials = payments.PaymentResult
+		public Task<Payments_PaymentResultBase> Payments_SendPaymentForm(int msg_id, InputPaymentCredentialsBase credentials, string requested_info_id = null, string shipping_option_id = null)
+			=> CallAsync<Payments_PaymentResultBase>(writer =>
+			{
+				writer.Write(0x2B8879B3);
+				writer.Write((requested_info_id != null ? 0x1 : 0) | (shipping_option_id != null ? 0x2 : 0));
+				writer.Write(msg_id);
+				if (requested_info_id != null)
+					writer.WriteTLString(requested_info_id);
+				if (shipping_option_id != null)
+					writer.WriteTLString(shipping_option_id);
+				writer.WriteTLObject(credentials);
+				return "Payments_SendPaymentForm";
+			});
+
+		//account.getTmpPassword#449e0b51 password:InputCheckPasswordSRP period:int = account.TmpPassword
+		public Task<Account_TmpPassword> Account_GetTmpPassword(InputCheckPasswordSRPBase password, int period)
+			=> CallAsync<Account_TmpPassword>(writer =>
+			{
+				writer.Write(0x449E0B51);
+				writer.WriteTLObject(password);
+				writer.Write(period);
+				return "Account_GetTmpPassword";
+			});
+
+		//payments.getSavedInfo#227d824b = payments.SavedInfo
+		public Task<Payments_SavedInfo> Payments_GetSavedInfo()
+			=> CallAsync<Payments_SavedInfo>(writer =>
+			{
+				writer.Write(0x227D824B);
+				return "Payments_GetSavedInfo";
+			});
+
+		//payments.clearSavedInfo#d83d70c1 flags:# credentials:flags.0?true info:flags.1?true = Bool
+		public Task<bool> Payments_ClearSavedInfo(bool credentials = false, bool info = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xD83D70C1);
+				writer.Write((credentials ? 0x1 : 0) | (info ? 0x2 : 0));
+				return "Payments_ClearSavedInfo";
+			});
+
+		//messages.setBotShippingResults#e5f672fa flags:# query_id:long error:flags.0?string shipping_options:flags.1?Vector<ShippingOption> = Bool
+		public Task<bool> Messages_SetBotShippingResults(long query_id, string error = null, ShippingOption[] shipping_options = null)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xE5F672FA);
+				writer.Write((error != null ? 0x1 : 0) | (shipping_options != null ? 0x2 : 0));
+				writer.Write(query_id);
+				if (error != null)
+					writer.WriteTLString(error);
+				if (shipping_options != null)
+					writer.WriteTLVector(shipping_options);
+				return "Messages_SetBotShippingResults";
+			});
+
+		//messages.setBotPrecheckoutResults#09c2dd95 flags:# success:flags.1?true query_id:long error:flags.0?string = Bool
+		public Task<bool> Messages_SetBotPrecheckoutResults(long query_id, bool success = false, string error = null)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x09C2DD95);
+				writer.Write((success ? 0x2 : 0) | (error != null ? 0x1 : 0));
+				writer.Write(query_id);
+				if (error != null)
+					writer.WriteTLString(error);
+				return "Messages_SetBotPrecheckoutResults";
+			});
+
+		//stickers.createStickerSet#f1036780 flags:# masks:flags.0?true animated:flags.1?true user_id:InputUser title:string short_name:string thumb:flags.2?InputDocument stickers:Vector<InputStickerSetItem> = messages.StickerSet
+		public Task<Messages_StickerSet> Stickers_CreateStickerSet(InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, bool masks = false, bool animated = false, InputDocumentBase thumb = null)
+			=> CallAsync<Messages_StickerSet>(writer =>
+			{
+				writer.Write(0xF1036780);
+				writer.Write((masks ? 0x1 : 0) | (animated ? 0x2 : 0) | (thumb != null ? 0x4 : 0));
+				writer.WriteTLObject(user_id);
+				writer.WriteTLString(title);
+				writer.WriteTLString(short_name);
+				if (thumb != null)
+					writer.WriteTLObject(thumb);
+				writer.WriteTLVector(stickers);
+				return "Stickers_CreateStickerSet";
+			});
+
+		//stickers.removeStickerFromSet#f7760f51 sticker:InputDocument = messages.StickerSet
+		public Task<Messages_StickerSet> Stickers_RemoveStickerFromSet(InputDocumentBase sticker)
+			=> CallAsync<Messages_StickerSet>(writer =>
+			{
+				writer.Write(0xF7760F51);
+				writer.WriteTLObject(sticker);
+				return "Stickers_RemoveStickerFromSet";
+			});
+
+		//stickers.changeStickerPosition#ffb6d4ca sticker:InputDocument position:int = messages.StickerSet
+		public Task<Messages_StickerSet> Stickers_ChangeStickerPosition(InputDocumentBase sticker, int position)
+			=> CallAsync<Messages_StickerSet>(writer =>
+			{
+				writer.Write(0xFFB6D4CA);
+				writer.WriteTLObject(sticker);
+				writer.Write(position);
+				return "Stickers_ChangeStickerPosition";
+			});
+
+		//stickers.addStickerToSet#8653febe stickerset:InputStickerSet sticker:InputStickerSetItem = messages.StickerSet
+		public Task<Messages_StickerSet> Stickers_AddStickerToSet(InputStickerSet stickerset, InputStickerSetItem sticker)
+			=> CallAsync<Messages_StickerSet>(writer =>
+			{
+				writer.Write(0x8653FEBE);
+				writer.WriteTLObject(stickerset);
+				writer.WriteTLObject(sticker);
+				return "Stickers_AddStickerToSet";
+			});
+
+		//messages.uploadMedia#519bc2b1 peer:InputPeer media:InputMedia = MessageMedia
+		public Task<MessageMedia> Messages_UploadMedia(InputPeer peer, InputMedia media)
+			=> CallAsync<MessageMedia>(writer =>
+			{
+				writer.Write(0x519BC2B1);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(media);
+				return "Messages_UploadMedia";
+			});
+
+		//phone.getCallConfig#55451fa9 = DataJSON
+		public Task<DataJSON> Phone_GetCallConfig()
+			=> CallAsync<DataJSON>(writer =>
+			{
+				writer.Write(0x55451FA9);
+				return "Phone_GetCallConfig";
+			});
+
+		//phone.requestCall#42ff96ed flags:# video:flags.0?true user_id:InputUser random_id:int g_a_hash:bytes protocol:PhoneCallProtocol = phone.PhoneCall
+		public Task<Phone_PhoneCall> Phone_RequestCall(InputUserBase user_id, int random_id, byte[] g_a_hash, PhoneCallProtocol protocol, bool video = false)
+			=> CallAsync<Phone_PhoneCall>(writer =>
+			{
+				writer.Write(0x42FF96ED);
+				writer.Write(video ? 0x1 : 0);
+				writer.WriteTLObject(user_id);
+				writer.Write(random_id);
+				writer.WriteTLBytes(g_a_hash);
+				writer.WriteTLObject(protocol);
+				return "Phone_RequestCall";
+			});
+
+		//phone.acceptCall#3bd2b4a0 peer:InputPhoneCall g_b:bytes protocol:PhoneCallProtocol = phone.PhoneCall
+		public Task<Phone_PhoneCall> Phone_AcceptCall(InputPhoneCall peer, byte[] g_b, PhoneCallProtocol protocol)
+			=> CallAsync<Phone_PhoneCall>(writer =>
+			{
+				writer.Write(0x3BD2B4A0);
+				writer.WriteTLObject(peer);
+				writer.WriteTLBytes(g_b);
+				writer.WriteTLObject(protocol);
+				return "Phone_AcceptCall";
+			});
+
+		//phone.confirmCall#2efe1722 peer:InputPhoneCall g_a:bytes key_fingerprint:long protocol:PhoneCallProtocol = phone.PhoneCall
+		public Task<Phone_PhoneCall> Phone_ConfirmCall(InputPhoneCall peer, byte[] g_a, long key_fingerprint, PhoneCallProtocol protocol)
+			=> CallAsync<Phone_PhoneCall>(writer =>
+			{
+				writer.Write(0x2EFE1722);
+				writer.WriteTLObject(peer);
+				writer.WriteTLBytes(g_a);
+				writer.Write(key_fingerprint);
+				writer.WriteTLObject(protocol);
+				return "Phone_ConfirmCall";
+			});
+
+		//phone.receivedCall#17d54f61 peer:InputPhoneCall = Bool
+		public Task<bool> Phone_ReceivedCall(InputPhoneCall peer)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x17D54F61);
+				writer.WriteTLObject(peer);
+				return "Phone_ReceivedCall";
+			});
+
+		//phone.discardCall#b2cbc1c0 flags:# video:flags.0?true peer:InputPhoneCall duration:int reason:PhoneCallDiscardReason connection_id:long = Updates
+		public Task<UpdatesBase> Phone_DiscardCall(InputPhoneCall peer, int duration, PhoneCallDiscardReason reason, long connection_id, bool video = false)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xB2CBC1C0);
+				writer.Write(video ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				writer.Write(duration);
+				writer.WriteTLObject(reason);
+				writer.Write(connection_id);
+				return "Phone_DiscardCall";
+			});
+
+		//phone.setCallRating#59ead627 flags:# user_initiative:flags.0?true peer:InputPhoneCall rating:int comment:string = Updates
+		public Task<UpdatesBase> Phone_SetCallRating(InputPhoneCall peer, int rating, string comment, bool user_initiative = false)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x59EAD627);
+				writer.Write(user_initiative ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				writer.Write(rating);
+				writer.WriteTLString(comment);
+				return "Phone_SetCallRating";
+			});
+
+		//phone.saveCallDebug#277add7e peer:InputPhoneCall debug:DataJSON = Bool
+		public Task<bool> Phone_SaveCallDebug(InputPhoneCall peer, DataJSON debug)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x277ADD7E);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(debug);
+				return "Phone_SaveCallDebug";
+			});
+
+		//upload.getCdnFile#2000bcc3 file_token:bytes offset:int limit:int = upload.CdnFile
+		public Task<Upload_CdnFileBase> Upload_GetCdnFile(byte[] file_token, int offset, int limit)
+			=> CallAsync<Upload_CdnFileBase>(writer =>
+			{
+				writer.Write(0x2000BCC3);
+				writer.WriteTLBytes(file_token);
+				writer.Write(offset);
+				writer.Write(limit);
+				return "Upload_GetCdnFile";
+			});
+
+		//upload.reuploadCdnFile#9b2754a8 file_token:bytes request_token:bytes = Vector<FileHash>
+		public Task<FileHash[]> Upload_ReuploadCdnFile(byte[] file_token, byte[] request_token)
+			=> CallAsync<FileHash[]>(writer =>
+			{
+				writer.Write(0x9B2754A8);
+				writer.WriteTLBytes(file_token);
+				writer.WriteTLBytes(request_token);
+				return "Upload_ReuploadCdnFile";
+			});
+
+		//help.getCdnConfig#52029342 = CdnConfig
+		public Task<CdnConfig> Help_GetCdnConfig()
+			=> CallAsync<CdnConfig>(writer =>
+			{
+				writer.Write(0x52029342);
+				return "Help_GetCdnConfig";
+			});
+
+		//langpack.getLangPack#f2f2330a lang_pack:string lang_code:string = LangPackDifference
+		public Task<LangPackDifference> Langpack_GetLangPack(string lang_pack, string lang_code)
+			=> CallAsync<LangPackDifference>(writer =>
+			{
+				writer.Write(0xF2F2330A);
+				writer.WriteTLString(lang_pack);
+				writer.WriteTLString(lang_code);
+				return "Langpack_GetLangPack";
+			});
+
+		//langpack.getStrings#efea3803 lang_pack:string lang_code:string keys:Vector<string> = Vector<LangPackString>
+		public Task<LangPackStringBase[]> Langpack_GetStrings(string lang_pack, string lang_code, string[] keys)
+			=> CallAsync<LangPackStringBase[]>(writer =>
+			{
+				writer.Write(0xEFEA3803);
+				writer.WriteTLString(lang_pack);
+				writer.WriteTLString(lang_code);
+				writer.WriteTLVector(keys);
+				return "Langpack_GetStrings";
+			});
+
+		//langpack.getDifference#cd984aa5 lang_pack:string lang_code:string from_version:int = LangPackDifference
+		public Task<LangPackDifference> Langpack_GetDifference(string lang_pack, string lang_code, int from_version)
+			=> CallAsync<LangPackDifference>(writer =>
+			{
+				writer.Write(0xCD984AA5);
+				writer.WriteTLString(lang_pack);
+				writer.WriteTLString(lang_code);
+				writer.Write(from_version);
+				return "Langpack_GetDifference";
+			});
+
+		//langpack.getLanguages#42c6978f lang_pack:string = Vector<LangPackLanguage>
+		public Task<LangPackLanguage[]> Langpack_GetLanguages(string lang_pack)
+			=> CallAsync<LangPackLanguage[]>(writer =>
+			{
+				writer.Write(0x42C6978F);
+				writer.WriteTLString(lang_pack);
+				return "Langpack_GetLanguages";
+			});
+
+		//channels.editBanned#72796912 channel:InputChannel user_id:InputUser banned_rights:ChatBannedRights = Updates
+		public Task<UpdatesBase> Channels_EditBanned(InputChannelBase channel, InputUserBase user_id, ChatBannedRights banned_rights)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x72796912);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(user_id);
+				writer.WriteTLObject(banned_rights);
+				return "Channels_EditBanned";
+			});
+
+		//channels.getAdminLog#33ddf480 flags:# channel:InputChannel q:string events_filter:flags.0?ChannelAdminLogEventsFilter admins:flags.1?Vector<InputUser> max_id:long min_id:long limit:int = channels.AdminLogResults
+		public Task<Channels_AdminLogResults> Channels_GetAdminLog(InputChannelBase channel, string q, long max_id, long min_id, int limit, ChannelAdminLogEventsFilter events_filter = null, InputUserBase[] admins = null)
+			=> CallAsync<Channels_AdminLogResults>(writer =>
+			{
+				writer.Write(0x33DDF480);
+				writer.Write((events_filter != null ? 0x1 : 0) | (admins != null ? 0x2 : 0));
+				writer.WriteTLObject(channel);
+				writer.WriteTLString(q);
+				if (events_filter != null)
+					writer.WriteTLObject(events_filter);
+				if (admins != null)
+					writer.WriteTLVector(admins);
+				writer.Write(max_id);
+				writer.Write(min_id);
+				writer.Write(limit);
+				return "Channels_GetAdminLog";
+			});
+
+		//upload.getCdnFileHashes#4da54231 file_token:bytes offset:int = Vector<FileHash>
+		public Task<FileHash[]> Upload_GetCdnFileHashes(byte[] file_token, int offset)
+			=> CallAsync<FileHash[]>(writer =>
+			{
+				writer.Write(0x4DA54231);
+				writer.WriteTLBytes(file_token);
+				writer.Write(offset);
+				return "Upload_GetCdnFileHashes";
+			});
+
+		//messages.sendScreenshotNotification#c97df020 peer:InputPeer reply_to_msg_id:int random_id:long = Updates
+		public Task<UpdatesBase> Messages_SendScreenshotNotification(InputPeer peer, int reply_to_msg_id, long random_id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xC97DF020);
+				writer.WriteTLObject(peer);
+				writer.Write(reply_to_msg_id);
+				writer.Write(random_id);
+				return "Messages_SendScreenshotNotification";
+			});
+
+		//channels.setStickers#ea8ca4f9 channel:InputChannel stickerset:InputStickerSet = Bool
+		public Task<bool> Channels_SetStickers(InputChannelBase channel, InputStickerSet stickerset)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xEA8CA4F9);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(stickerset);
+				return "Channels_SetStickers";
+			});
+
+		//messages.getFavedStickers#21ce0b0e hash:int = messages.FavedStickers
+		public Task<Messages_FavedStickersBase> Messages_GetFavedStickers(int hash)
+			=> CallAsync<Messages_FavedStickersBase>(writer =>
+			{
+				writer.Write(0x21CE0B0E);
+				writer.Write(hash);
+				return "Messages_GetFavedStickers";
+			});
+
+		//messages.faveSticker#b9ffc55b id:InputDocument unfave:Bool = Bool
+		public Task<bool> Messages_FaveSticker(InputDocumentBase id, bool unfave)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xB9FFC55B);
+				writer.WriteTLObject(id);
+				writer.Write(unfave ? 0x997275B5 : 0xBC799737);
+				return "Messages_FaveSticker";
+			});
+
+		//channels.readMessageContents#eab5dc38 channel:InputChannel id:Vector<int> = Bool
+		public Task<bool> Channels_ReadMessageContents(InputChannelBase channel, int[] id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xEAB5DC38);
+				writer.WriteTLObject(channel);
+				writer.WriteTLVector(id);
+				return "Channels_ReadMessageContents";
+			});
+
+		//contacts.resetSaved#879537f1 = Bool
+		public Task<bool> Contacts_ResetSaved()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x879537F1);
+				return "Contacts_ResetSaved";
+			});
+
+		//messages.getUnreadMentions#46578472 peer:InputPeer offset_id:int add_offset:int limit:int max_id:int min_id:int = messages.Messages
+		public Task<Messages_MessagesBase> Messages_GetUnreadMentions(InputPeer peer, int offset_id, int add_offset, int limit, int max_id, int min_id)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0x46578472);
+				writer.WriteTLObject(peer);
+				writer.Write(offset_id);
+				writer.Write(add_offset);
+				writer.Write(limit);
+				writer.Write(max_id);
+				writer.Write(min_id);
+				return "Messages_GetUnreadMentions";
+			});
+
+		//channels.deleteHistory#af369d42 channel:InputChannel max_id:int = Bool
+		public Task<bool> Channels_DeleteHistory(InputChannelBase channel, int max_id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xAF369D42);
+				writer.WriteTLObject(channel);
+				writer.Write(max_id);
+				return "Channels_DeleteHistory";
+			});
+
+		//help.getRecentMeUrls#3dc0f114 referer:string = help.RecentMeUrls
+		public Task<Help_RecentMeUrls> Help_GetRecentMeUrls(string referer)
+			=> CallAsync<Help_RecentMeUrls>(writer =>
+			{
+				writer.Write(0x3DC0F114);
+				writer.WriteTLString(referer);
+				return "Help_GetRecentMeUrls";
+			});
+
+		//channels.togglePreHistoryHidden#eabbb94c channel:InputChannel enabled:Bool = Updates
+		public Task<UpdatesBase> Channels_TogglePreHistoryHidden(InputChannelBase channel, bool enabled)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xEABBB94C);
+				writer.WriteTLObject(channel);
+				writer.Write(enabled ? 0x997275B5 : 0xBC799737);
+				return "Channels_TogglePreHistoryHidden";
+			});
+
+		//messages.readMentions#0f0189d3 peer:InputPeer = messages.AffectedHistory
+		public Task<Messages_AffectedHistory> Messages_ReadMentions(InputPeer peer)
+			=> CallAsync<Messages_AffectedHistory>(writer =>
+			{
+				writer.Write(0x0F0189D3);
+				writer.WriteTLObject(peer);
+				return "Messages_ReadMentions";
+			});
+
+		//messages.getRecentLocations#bbc45b09 peer:InputPeer limit:int hash:int = messages.Messages
+		public Task<Messages_MessagesBase> Messages_GetRecentLocations(InputPeer peer, int limit, int hash)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0xBBC45B09);
+				writer.WriteTLObject(peer);
+				writer.Write(limit);
+				writer.Write(hash);
+				return "Messages_GetRecentLocations";
+			});
+
+		//messages.sendMultiMedia#cc0110cb flags:# silent:flags.5?true background:flags.6?true clear_draft:flags.7?true peer:InputPeer reply_to_msg_id:flags.0?int multi_media:Vector<InputSingleMedia> schedule_date:flags.10?int = Updates
+		public Task<UpdatesBase> Messages_SendMultiMedia(InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, DateTime? schedule_date = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xCC0110CB);
+				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0));
+				writer.WriteTLObject(peer);
+				if (reply_to_msg_id != null)
+					writer.Write(reply_to_msg_id.Value);
+				writer.WriteTLVector(multi_media);
+				if (schedule_date != null)
+					writer.WriteTLStamp(schedule_date.Value);
+				return "Messages_SendMultiMedia";
+			});
+
+		//messages.uploadEncryptedFile#5057c497 peer:InputEncryptedChat file:InputEncryptedFile = EncryptedFile
+		public Task<EncryptedFileBase> Messages_UploadEncryptedFile(InputEncryptedChat peer, InputEncryptedFileBase file)
+			=> CallAsync<EncryptedFileBase>(writer =>
+			{
+				writer.Write(0x5057C497);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(file);
+				return "Messages_UploadEncryptedFile";
+			});
+
+		//account.getWebAuthorizations#182e6d6f = account.WebAuthorizations
+		public Task<Account_WebAuthorizations> Account_GetWebAuthorizations()
+			=> CallAsync<Account_WebAuthorizations>(writer =>
+			{
+				writer.Write(0x182E6D6F);
+				return "Account_GetWebAuthorizations";
+			});
+
+		//account.resetWebAuthorization#2d01b9ef hash:long = Bool
+		public Task<bool> Account_ResetWebAuthorization(long hash)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x2D01B9EF);
+				writer.Write(hash);
+				return "Account_ResetWebAuthorization";
+			});
+
+		//account.resetWebAuthorizations#682d2594 = Bool
+		public Task<bool> Account_ResetWebAuthorizations()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x682D2594);
+				return "Account_ResetWebAuthorizations";
+			});
+
+		//messages.searchStickerSets#c2b7d08b flags:# exclude_featured:flags.0?true q:string hash:int = messages.FoundStickerSets
+		public Task<Messages_FoundStickerSetsBase> Messages_SearchStickerSets(string q, int hash, bool exclude_featured = false)
+			=> CallAsync<Messages_FoundStickerSetsBase>(writer =>
+			{
+				writer.Write(0xC2B7D08B);
+				writer.Write(exclude_featured ? 0x1 : 0);
+				writer.WriteTLString(q);
+				writer.Write(hash);
+				return "Messages_SearchStickerSets";
+			});
+
+		//upload.getFileHashes#c7025931 location:InputFileLocation offset:int = Vector<FileHash>
+		public Task<FileHash[]> Upload_GetFileHashes(InputFileLocationBase location, int offset)
+			=> CallAsync<FileHash[]>(writer =>
+			{
+				writer.Write(0xC7025931);
+				writer.WriteTLObject(location);
+				writer.Write(offset);
+				return "Upload_GetFileHashes";
+			});
+
+		//help.getTermsOfServiceUpdate#2ca51fd1 = help.TermsOfServiceUpdate
+		public Task<Help_TermsOfServiceUpdateBase> Help_GetTermsOfServiceUpdate()
+			=> CallAsync<Help_TermsOfServiceUpdateBase>(writer =>
+			{
+				writer.Write(0x2CA51FD1);
+				return "Help_GetTermsOfServiceUpdate";
+			});
+
+		//help.acceptTermsOfService#ee72f79a id:DataJSON = Bool
+		public Task<bool> Help_AcceptTermsOfService(DataJSON id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xEE72F79A);
+				writer.WriteTLObject(id);
+				return "Help_AcceptTermsOfService";
+			});
+
+		//account.getAllSecureValues#b288bc7d = Vector<SecureValue>
+		public Task<SecureValue[]> Account_GetAllSecureValues()
+			=> CallAsync<SecureValue[]>(writer =>
+			{
+				writer.Write(0xB288BC7D);
+				return "Account_GetAllSecureValues";
+			});
+
+		//account.getSecureValue#73665bc2 types:Vector<SecureValueType> = Vector<SecureValue>
+		public Task<SecureValue[]> Account_GetSecureValue(SecureValueType[] types)
+			=> CallAsync<SecureValue[]>(writer =>
+			{
+				writer.Write(0x73665BC2);
+				writer.WriteTLVector(types);
+				return "Account_GetSecureValue";
+			});
+
+		//account.saveSecureValue#899fe31d value:InputSecureValue secure_secret_id:long = SecureValue
+		public Task<SecureValue> Account_SaveSecureValue(InputSecureValue value, long secure_secret_id)
+			=> CallAsync<SecureValue>(writer =>
+			{
+				writer.Write(0x899FE31D);
+				writer.WriteTLObject(value);
+				writer.Write(secure_secret_id);
+				return "Account_SaveSecureValue";
+			});
+
+		//account.deleteSecureValue#b880bc4b types:Vector<SecureValueType> = Bool
+		public Task<bool> Account_DeleteSecureValue(SecureValueType[] types)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xB880BC4B);
+				writer.WriteTLVector(types);
+				return "Account_DeleteSecureValue";
+			});
+
+		//users.setSecureValueErrors#90c894b5 id:InputUser errors:Vector<SecureValueError> = Bool
+		public Task<bool> Users_SetSecureValueErrors(InputUserBase id, SecureValueErrorBase[] errors)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x90C894B5);
+				writer.WriteTLObject(id);
+				writer.WriteTLVector(errors);
+				return "Users_SetSecureValueErrors";
+			});
+
+		//account.getAuthorizationForm#b86ba8e1 bot_id:int scope:string public_key:string = account.AuthorizationForm
+		public Task<Account_AuthorizationForm> Account_GetAuthorizationForm(int bot_id, string scope, string public_key)
+			=> CallAsync<Account_AuthorizationForm>(writer =>
+			{
+				writer.Write(0xB86BA8E1);
+				writer.Write(bot_id);
+				writer.WriteTLString(scope);
+				writer.WriteTLString(public_key);
+				return "Account_GetAuthorizationForm";
+			});
+
+		//account.acceptAuthorization#e7027c94 bot_id:int scope:string public_key:string value_hashes:Vector<SecureValueHash> credentials:SecureCredentialsEncrypted = Bool
+		public Task<bool> Account_AcceptAuthorization(int bot_id, string scope, string public_key, SecureValueHash[] value_hashes, SecureCredentialsEncrypted credentials)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xE7027C94);
+				writer.Write(bot_id);
+				writer.WriteTLString(scope);
+				writer.WriteTLString(public_key);
+				writer.WriteTLVector(value_hashes);
+				writer.WriteTLObject(credentials);
+				return "Account_AcceptAuthorization";
+			});
+
+		//account.sendVerifyPhoneCode#a5a356f9 phone_number:string settings:CodeSettings = auth.SentCode
+		public Task<Auth_SentCode> Account_SendVerifyPhoneCode(string phone_number, CodeSettings settings)
+			=> CallAsync<Auth_SentCode>(writer =>
+			{
+				writer.Write(0xA5A356F9);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLObject(settings);
+				return "Account_SendVerifyPhoneCode";
+			});
+
+		//account.verifyPhone#4dd3a7f6 phone_number:string phone_code_hash:string phone_code:string = Bool
+		public Task<bool> Account_VerifyPhone(string phone_number, string phone_code_hash, string phone_code)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x4DD3A7F6);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLString(phone_code_hash);
+				writer.WriteTLString(phone_code);
+				return "Account_VerifyPhone";
+			});
+
+		//account.sendVerifyEmailCode#7011509f email:string = account.SentEmailCode
+		public Task<Account_SentEmailCode> Account_SendVerifyEmailCode(string email)
+			=> CallAsync<Account_SentEmailCode>(writer =>
+			{
+				writer.Write(0x7011509F);
+				writer.WriteTLString(email);
+				return "Account_SendVerifyEmailCode";
+			});
+
+		//account.verifyEmail#ecba39db email:string code:string = Bool
+		public Task<bool> Account_VerifyEmail(string email, string code)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xECBA39DB);
+				writer.WriteTLString(email);
+				writer.WriteTLString(code);
+				return "Account_VerifyEmail";
+			});
+
+		//help.getDeepLinkInfo#3fedc75f path:string = help.DeepLinkInfo
+		public Task<Help_DeepLinkInfoBase> Help_GetDeepLinkInfo(string path)
+			=> CallAsync<Help_DeepLinkInfoBase>(writer =>
+			{
+				writer.Write(0x3FEDC75F);
+				writer.WriteTLString(path);
+				return "Help_GetDeepLinkInfo";
+			});
+
+		//contacts.getSaved#82f1e39f = Vector<SavedContact>
+		public Task<SavedContact[]> Contacts_GetSaved()
+			=> CallAsync<SavedContact[]>(writer =>
+			{
+				writer.Write(0x82F1E39F);
+				return "Contacts_GetSaved";
+			});
+
+		//channels.getLeftChannels#8341ecc0 offset:int = messages.Chats
+		public Task<Messages_ChatsBase> Channels_GetLeftChannels(int offset)
+			=> CallAsync<Messages_ChatsBase>(writer =>
+			{
+				writer.Write(0x8341ECC0);
+				writer.Write(offset);
+				return "Channels_GetLeftChannels";
+			});
+
+		//account.initTakeoutSession#f05b4804 flags:# contacts:flags.0?true message_users:flags.1?true message_chats:flags.2?true message_megagroups:flags.3?true message_channels:flags.4?true files:flags.5?true file_max_size:flags.5?int = account.Takeout
+		public Task<Account_Takeout> Account_InitTakeoutSession(bool contacts = false, bool message_users = false, bool message_chats = false, bool message_megagroups = false, bool message_channels = false, bool files = false, int? file_max_size = null)
+			=> CallAsync<Account_Takeout>(writer =>
+			{
+				writer.Write(0xF05B4804);
+				writer.Write((contacts ? 0x1 : 0) | (message_users ? 0x2 : 0) | (message_chats ? 0x4 : 0) | (message_megagroups ? 0x8 : 0) | (message_channels ? 0x10 : 0) | (files ? 0x20 : 0) | (file_max_size != null ? 0x20 : 0));
+				if (file_max_size != null)
+					writer.Write(file_max_size.Value);
+				return "Account_InitTakeoutSession";
+			});
+
+		//account.finishTakeoutSession#1d2652ee flags:# success:flags.0?true = Bool
+		public Task<bool> Account_FinishTakeoutSession(bool success = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x1D2652EE);
+				writer.Write(success ? 0x1 : 0);
+				return "Account_FinishTakeoutSession";
+			});
+
+		//messages.getSplitRanges#1cff7e08 = Vector<MessageRange>
+		public Task<MessageRange[]> Messages_GetSplitRanges()
+			=> CallAsync<MessageRange[]>(writer =>
+			{
+				writer.Write(0x1CFF7E08);
+				return "Messages_GetSplitRanges";
+			});
+
+		//invokeWithMessagesRange#365275f2 {X:Type} range:MessageRange query:!X = X
+		public Task<X> InvokeWithMessagesRange<X>(MessageRange range, ITLFunction<X> query)
+			=> CallAsync<X>(writer =>
+			{
+				writer.Write(0x365275F2);
+				writer.WriteTLObject(range);
+				query(writer);
+				return "InvokeWithMessagesRange<X>";
+			});
+
+		//invokeWithTakeout#aca9fd2e {X:Type} takeout_id:long query:!X = X
+		public Task<X> InvokeWithTakeout<X>(long takeout_id, ITLFunction<X> query)
+			=> CallAsync<X>(writer =>
+			{
+				writer.Write(0xACA9FD2E);
+				writer.Write(takeout_id);
+				query(writer);
+				return "InvokeWithTakeout<X>";
+			});
+
+		//messages.markDialogUnread#c286d98f flags:# unread:flags.0?true peer:InputDialogPeer = Bool
+		public Task<bool> Messages_MarkDialogUnread(InputDialogPeerBase peer, bool unread = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xC286D98F);
+				writer.Write(unread ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				return "Messages_MarkDialogUnread";
+			});
+
+		//messages.getDialogUnreadMarks#22e24e22 = Vector<DialogPeer>
+		public Task<DialogPeerBase[]> Messages_GetDialogUnreadMarks()
+			=> CallAsync<DialogPeerBase[]>(writer =>
+			{
+				writer.Write(0x22E24E22);
+				return "Messages_GetDialogUnreadMarks";
+			});
+
+		//contacts.toggleTopPeers#8514bdda enabled:Bool = Bool
+		public Task<bool> Contacts_ToggleTopPeers(bool enabled)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x8514BDDA);
+				writer.Write(enabled ? 0x997275B5 : 0xBC799737);
+				return "Contacts_ToggleTopPeers";
+			});
+
+		//messages.clearAllDrafts#7e58ee9c = Bool
+		public Task<bool> Messages_ClearAllDrafts()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x7E58EE9C);
+				return "Messages_ClearAllDrafts";
+			});
+
+		//help.getAppConfig#98914110 = JSONValue
+		public Task<JSONValue> Help_GetAppConfig()
+			=> CallAsync<JSONValue>(writer =>
+			{
+				writer.Write(0x98914110);
+				return "Help_GetAppConfig";
+			});
+
+		//help.saveAppLog#6f02f748 events:Vector<InputAppEvent> = Bool
+		public Task<bool> Help_SaveAppLog(InputAppEvent[] events)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x6F02F748);
+				writer.WriteTLVector(events);
+				return "Help_SaveAppLog";
+			});
+
+		//help.getPassportConfig#c661ad08 hash:int = help.PassportConfig
+		public Task<Help_PassportConfigBase> Help_GetPassportConfig(int hash)
+			=> CallAsync<Help_PassportConfigBase>(writer =>
+			{
+				writer.Write(0xC661AD08);
+				writer.Write(hash);
+				return "Help_GetPassportConfig";
+			});
+
+		//langpack.getLanguage#6a596502 lang_pack:string lang_code:string = LangPackLanguage
+		public Task<LangPackLanguage> Langpack_GetLanguage(string lang_pack, string lang_code)
+			=> CallAsync<LangPackLanguage>(writer =>
+			{
+				writer.Write(0x6A596502);
+				writer.WriteTLString(lang_pack);
+				writer.WriteTLString(lang_code);
+				return "Langpack_GetLanguage";
+			});
+
+		//messages.updatePinnedMessage#d2aaf7ec flags:# silent:flags.0?true unpin:flags.1?true pm_oneside:flags.2?true peer:InputPeer id:int = Updates
+		public Task<UpdatesBase> Messages_UpdatePinnedMessage(InputPeer peer, int id, bool silent = false, bool unpin = false, bool pm_oneside = false)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xD2AAF7EC);
+				writer.Write((silent ? 0x1 : 0) | (unpin ? 0x2 : 0) | (pm_oneside ? 0x4 : 0));
+				writer.WriteTLObject(peer);
+				writer.Write(id);
+				return "Messages_UpdatePinnedMessage";
+			});
+
+		//account.confirmPasswordEmail#8fdf1920 code:string = Bool
+		public Task<bool> Account_ConfirmPasswordEmail(string code)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x8FDF1920);
+				writer.WriteTLString(code);
+				return "Account_ConfirmPasswordEmail";
+			});
+
+		//account.resendPasswordEmail#7a7f2a15 = Bool
+		public Task<bool> Account_ResendPasswordEmail()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x7A7F2A15);
+				return "Account_ResendPasswordEmail";
+			});
+
+		//account.cancelPasswordEmail#c1cbd5b6 = Bool
+		public Task<bool> Account_CancelPasswordEmail()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xC1CBD5B6);
+				return "Account_CancelPasswordEmail";
+			});
+
+		//help.getSupportName#d360e72c = help.SupportName
+		public Task<Help_SupportName> Help_GetSupportName()
+			=> CallAsync<Help_SupportName>(writer =>
+			{
+				writer.Write(0xD360E72C);
+				return "Help_GetSupportName";
+			});
+
+		//help.getUserInfo#038a08d3 user_id:InputUser = help.UserInfo
+		public Task<Help_UserInfoBase> Help_GetUserInfo(InputUserBase user_id)
+			=> CallAsync<Help_UserInfoBase>(writer =>
+			{
+				writer.Write(0x038A08D3);
+				writer.WriteTLObject(user_id);
+				return "Help_GetUserInfo";
+			});
+
+		//help.editUserInfo#66b91b70 user_id:InputUser message:string entities:Vector<MessageEntity> = help.UserInfo
+		public Task<Help_UserInfoBase> Help_EditUserInfo(InputUserBase user_id, string message, MessageEntity[] entities)
+			=> CallAsync<Help_UserInfoBase>(writer =>
+			{
+				writer.Write(0x66B91B70);
+				writer.WriteTLObject(user_id);
+				writer.WriteTLString(message);
+				writer.WriteTLVector(entities);
+				return "Help_EditUserInfo";
+			});
+
+		//account.getContactSignUpNotification#9f07c728 = Bool
+		public Task<bool> Account_GetContactSignUpNotification()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x9F07C728);
+				return "Account_GetContactSignUpNotification";
+			});
+
+		//account.setContactSignUpNotification#cff43f61 silent:Bool = Bool
+		public Task<bool> Account_SetContactSignUpNotification(bool silent)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xCFF43F61);
+				writer.Write(silent ? 0x997275B5 : 0xBC799737);
+				return "Account_SetContactSignUpNotification";
+			});
+
+		//account.getNotifyExceptions#53577479 flags:# compare_sound:flags.1?true peer:flags.0?InputNotifyPeer = Updates
+		public Task<UpdatesBase> Account_GetNotifyExceptions(bool compare_sound = false, InputNotifyPeerBase peer = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x53577479);
+				writer.Write((compare_sound ? 0x2 : 0) | (peer != null ? 0x1 : 0));
+				if (peer != null)
+					writer.WriteTLObject(peer);
+				return "Account_GetNotifyExceptions";
+			});
+
+		//messages.sendVote#10ea6184 peer:InputPeer msg_id:int options:Vector<bytes> = Updates
+		public Task<UpdatesBase> Messages_SendVote(InputPeer peer, int msg_id, byte[][] options)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x10EA6184);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				writer.WriteTLVector(options);
+				return "Messages_SendVote";
+			});
+
+		//messages.getPollResults#73bb643b peer:InputPeer msg_id:int = Updates
+		public Task<UpdatesBase> Messages_GetPollResults(InputPeer peer, int msg_id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x73BB643B);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				return "Messages_GetPollResults";
+			});
+
+		//messages.getOnlines#6e2be050 peer:InputPeer = ChatOnlines
+		public Task<ChatOnlines> Messages_GetOnlines(InputPeer peer)
+			=> CallAsync<ChatOnlines>(writer =>
+			{
+				writer.Write(0x6E2BE050);
+				writer.WriteTLObject(peer);
+				return "Messages_GetOnlines";
+			});
+
+		//messages.getStatsURL#812c2ae6 flags:# dark:flags.0?true peer:InputPeer params:string = StatsURL
+		public Task<StatsURL> Messages_GetStatsURL(InputPeer peer, string params_, bool dark = false)
+			=> CallAsync<StatsURL>(writer =>
+			{
+				writer.Write(0x812C2AE6);
+				writer.Write(dark ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(params_);
+				return "Messages_GetStatsURL";
+			});
+
+		//messages.editChatAbout#def60797 peer:InputPeer about:string = Bool
+		public Task<bool> Messages_EditChatAbout(InputPeer peer, string about)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xDEF60797);
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(about);
+				return "Messages_EditChatAbout";
+			});
+
+		//messages.editChatDefaultBannedRights#a5866b41 peer:InputPeer banned_rights:ChatBannedRights = Updates
+		public Task<UpdatesBase> Messages_EditChatDefaultBannedRights(InputPeer peer, ChatBannedRights banned_rights)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xA5866B41);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(banned_rights);
+				return "Messages_EditChatDefaultBannedRights";
+			});
+
+		//account.getWallPaper#fc8ddbea wallpaper:InputWallPaper = WallPaper
+		public Task<WallPaperBase> Account_GetWallPaper(InputWallPaperBase wallpaper)
+			=> CallAsync<WallPaperBase>(writer =>
+			{
+				writer.Write(0xFC8DDBEA);
+				writer.WriteTLObject(wallpaper);
+				return "Account_GetWallPaper";
+			});
+
+		//account.uploadWallPaper#dd853661 file:InputFile mime_type:string settings:WallPaperSettings = WallPaper
+		public Task<WallPaperBase> Account_UploadWallPaper(InputFileBase file, string mime_type, WallPaperSettings settings)
+			=> CallAsync<WallPaperBase>(writer =>
+			{
+				writer.Write(0xDD853661);
+				writer.WriteTLObject(file);
+				writer.WriteTLString(mime_type);
+				writer.WriteTLObject(settings);
+				return "Account_UploadWallPaper";
+			});
+
+		//account.saveWallPaper#6c5a5b37 wallpaper:InputWallPaper unsave:Bool settings:WallPaperSettings = Bool
+		public Task<bool> Account_SaveWallPaper(InputWallPaperBase wallpaper, bool unsave, WallPaperSettings settings)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x6C5A5B37);
+				writer.WriteTLObject(wallpaper);
+				writer.Write(unsave ? 0x997275B5 : 0xBC799737);
+				writer.WriteTLObject(settings);
+				return "Account_SaveWallPaper";
+			});
+
+		//account.installWallPaper#feed5769 wallpaper:InputWallPaper settings:WallPaperSettings = Bool
+		public Task<bool> Account_InstallWallPaper(InputWallPaperBase wallpaper, WallPaperSettings settings)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xFEED5769);
+				writer.WriteTLObject(wallpaper);
+				writer.WriteTLObject(settings);
+				return "Account_InstallWallPaper";
+			});
+
+		//account.resetWallPapers#bb3b9804 = Bool
+		public Task<bool> Account_ResetWallPapers()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xBB3B9804);
+				return "Account_ResetWallPapers";
+			});
+
+		//account.getAutoDownloadSettings#56da0b3f = account.AutoDownloadSettings
+		public Task<Account_AutoDownloadSettings> Account_GetAutoDownloadSettings()
+			=> CallAsync<Account_AutoDownloadSettings>(writer =>
+			{
+				writer.Write(0x56DA0B3F);
+				return "Account_GetAutoDownloadSettings";
+			});
+
+		//account.saveAutoDownloadSettings#76f36233 flags:# low:flags.0?true high:flags.1?true settings:AutoDownloadSettings = Bool
+		public Task<bool> Account_SaveAutoDownloadSettings(AutoDownloadSettings settings, bool low = false, bool high = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x76F36233);
+				writer.Write((low ? 0x1 : 0) | (high ? 0x2 : 0));
+				writer.WriteTLObject(settings);
+				return "Account_SaveAutoDownloadSettings";
+			});
+
+		//messages.getEmojiKeywords#35a0e062 lang_code:string = EmojiKeywordsDifference
+		public Task<EmojiKeywordsDifference> Messages_GetEmojiKeywords(string lang_code)
+			=> CallAsync<EmojiKeywordsDifference>(writer =>
+			{
+				writer.Write(0x35A0E062);
+				writer.WriteTLString(lang_code);
+				return "Messages_GetEmojiKeywords";
+			});
+
+		//messages.getEmojiKeywordsDifference#1508b6af lang_code:string from_version:int = EmojiKeywordsDifference
+		public Task<EmojiKeywordsDifference> Messages_GetEmojiKeywordsDifference(string lang_code, int from_version)
+			=> CallAsync<EmojiKeywordsDifference>(writer =>
+			{
+				writer.Write(0x1508B6AF);
+				writer.WriteTLString(lang_code);
+				writer.Write(from_version);
+				return "Messages_GetEmojiKeywordsDifference";
+			});
+
+		//messages.getEmojiKeywordsLanguages#4e9963b2 lang_codes:Vector<string> = Vector<EmojiLanguage>
+		public Task<EmojiLanguage[]> Messages_GetEmojiKeywordsLanguages(string[] lang_codes)
+			=> CallAsync<EmojiLanguage[]>(writer =>
+			{
+				writer.Write(0x4E9963B2);
+				writer.WriteTLVector(lang_codes);
+				return "Messages_GetEmojiKeywordsLanguages";
+			});
+
+		//messages.getEmojiURL#d5b10c26 lang_code:string = EmojiURL
+		public Task<EmojiURL> Messages_GetEmojiURL(string lang_code)
+			=> CallAsync<EmojiURL>(writer =>
+			{
+				writer.Write(0xD5B10C26);
+				writer.WriteTLString(lang_code);
+				return "Messages_GetEmojiURL";
+			});
+
+		//folders.editPeerFolders#6847d0ab folder_peers:Vector<InputFolderPeer> = Updates
+		public Task<UpdatesBase> Folders_EditPeerFolders(InputFolderPeer[] folder_peers)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x6847D0AB);
+				writer.WriteTLVector(folder_peers);
+				return "Folders_EditPeerFolders";
+			});
+
+		//folders.deleteFolder#1c295881 folder_id:int = Updates
+		public Task<UpdatesBase> Folders_DeleteFolder(int folder_id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x1C295881);
+				writer.Write(folder_id);
+				return "Folders_DeleteFolder";
+			});
+
+		//messages.getSearchCounters#732eef00 peer:InputPeer filters:Vector<MessagesFilter> = Vector<messages.SearchCounter>
+		public Task<Messages_SearchCounter[]> Messages_GetSearchCounters(InputPeer peer, MessagesFilter[] filters)
+			=> CallAsync<Messages_SearchCounter[]>(writer =>
+			{
+				writer.Write(0x732EEF00);
+				writer.WriteTLObject(peer);
+				writer.WriteTLVector(filters);
+				return "Messages_GetSearchCounters";
+			});
+
+		//channels.getGroupsForDiscussion#f5dad378 = messages.Chats
+		public Task<Messages_ChatsBase> Channels_GetGroupsForDiscussion()
+			=> CallAsync<Messages_ChatsBase>(writer =>
+			{
+				writer.Write(0xF5DAD378);
+				return "Channels_GetGroupsForDiscussion";
+			});
+
+		//channels.setDiscussionGroup#40582bb2 broadcast:InputChannel group:InputChannel = Bool
+		public Task<bool> Channels_SetDiscussionGroup(InputChannelBase broadcast, InputChannelBase group)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x40582BB2);
+				writer.WriteTLObject(broadcast);
+				writer.WriteTLObject(group);
+				return "Channels_SetDiscussionGroup";
+			});
+
+		//messages.requestUrlAuth#e33f5613 peer:InputPeer msg_id:int button_id:int = UrlAuthResult
+		public Task<UrlAuthResult> Messages_RequestUrlAuth(InputPeer peer, int msg_id, int button_id)
+			=> CallAsync<UrlAuthResult>(writer =>
+			{
+				writer.Write(0xE33F5613);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				writer.Write(button_id);
+				return "Messages_RequestUrlAuth";
+			});
+
+		//messages.acceptUrlAuth#f729ea98 flags:# write_allowed:flags.0?true peer:InputPeer msg_id:int button_id:int = UrlAuthResult
+		public Task<UrlAuthResult> Messages_AcceptUrlAuth(InputPeer peer, int msg_id, int button_id, bool write_allowed = false)
+			=> CallAsync<UrlAuthResult>(writer =>
+			{
+				writer.Write(0xF729EA98);
+				writer.Write(write_allowed ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				writer.Write(button_id);
+				return "Messages_AcceptUrlAuth";
+			});
+
+		//messages.hidePeerSettingsBar#4facb138 peer:InputPeer = Bool
+		public Task<bool> Messages_HidePeerSettingsBar(InputPeer peer)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x4FACB138);
+				writer.WriteTLObject(peer);
+				return "Messages_HidePeerSettingsBar";
+			});
+
+		//contacts.addContact#e8f463d0 flags:# add_phone_privacy_exception:flags.0?true id:InputUser first_name:string last_name:string phone:string = Updates
+		public Task<UpdatesBase> Contacts_AddContact(InputUserBase id, string first_name, string last_name, string phone, bool add_phone_privacy_exception = false)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xE8F463D0);
+				writer.Write(add_phone_privacy_exception ? 0x1 : 0);
+				writer.WriteTLObject(id);
+				writer.WriteTLString(first_name);
+				writer.WriteTLString(last_name);
+				writer.WriteTLString(phone);
+				return "Contacts_AddContact";
+			});
+
+		//contacts.acceptContact#f831a20f id:InputUser = Updates
+		public Task<UpdatesBase> Contacts_AcceptContact(InputUserBase id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xF831A20F);
+				writer.WriteTLObject(id);
+				return "Contacts_AcceptContact";
+			});
+
+		//channels.editCreator#8f38cd1f channel:InputChannel user_id:InputUser password:InputCheckPasswordSRP = Updates
+		public Task<UpdatesBase> Channels_EditCreator(InputChannelBase channel, InputUserBase user_id, InputCheckPasswordSRPBase password)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x8F38CD1F);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(user_id);
+				writer.WriteTLObject(password);
+				return "Channels_EditCreator";
+			});
+
+		//contacts.getLocated#d348bc44 flags:# background:flags.1?true geo_point:InputGeoPoint self_expires:flags.0?int = Updates
+		public Task<UpdatesBase> Contacts_GetLocated(InputGeoPointBase geo_point, bool background = false, int? self_expires = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xD348BC44);
+				writer.Write((background ? 0x2 : 0) | (self_expires != null ? 0x1 : 0));
+				writer.WriteTLObject(geo_point);
+				if (self_expires != null)
+					writer.Write(self_expires.Value);
+				return "Contacts_GetLocated";
+			});
+
+		//channels.editLocation#58e63f6d channel:InputChannel geo_point:InputGeoPoint address:string = Bool
+		public Task<bool> Channels_EditLocation(InputChannelBase channel, InputGeoPointBase geo_point, string address)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x58E63F6D);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(geo_point);
+				writer.WriteTLString(address);
+				return "Channels_EditLocation";
+			});
+
+		//channels.toggleSlowMode#edd49ef0 channel:InputChannel seconds:int = Updates
+		public Task<UpdatesBase> Channels_ToggleSlowMode(InputChannelBase channel, int seconds)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xEDD49EF0);
+				writer.WriteTLObject(channel);
+				writer.Write(seconds);
+				return "Channels_ToggleSlowMode";
+			});
+
+		//messages.getScheduledHistory#e2c2685b peer:InputPeer hash:int = messages.Messages
+		public Task<Messages_MessagesBase> Messages_GetScheduledHistory(InputPeer peer, int hash)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0xE2C2685B);
+				writer.WriteTLObject(peer);
+				writer.Write(hash);
+				return "Messages_GetScheduledHistory";
+			});
+
+		//messages.getScheduledMessages#bdbb0464 peer:InputPeer id:Vector<int> = messages.Messages
+		public Task<Messages_MessagesBase> Messages_GetScheduledMessages(InputPeer peer, int[] id)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0xBDBB0464);
+				writer.WriteTLObject(peer);
+				writer.WriteTLVector(id);
+				return "Messages_GetScheduledMessages";
+			});
+
+		//messages.sendScheduledMessages#bd38850a peer:InputPeer id:Vector<int> = Updates
+		public Task<UpdatesBase> Messages_SendScheduledMessages(InputPeer peer, int[] id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xBD38850A);
+				writer.WriteTLObject(peer);
+				writer.WriteTLVector(id);
+				return "Messages_SendScheduledMessages";
+			});
+
+		//messages.deleteScheduledMessages#59ae2b16 peer:InputPeer id:Vector<int> = Updates
+		public Task<UpdatesBase> Messages_DeleteScheduledMessages(InputPeer peer, int[] id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x59AE2B16);
+				writer.WriteTLObject(peer);
+				writer.WriteTLVector(id);
+				return "Messages_DeleteScheduledMessages";
+			});
+
+		//account.uploadTheme#1c3db333 flags:# file:InputFile thumb:flags.0?InputFile file_name:string mime_type:string = Document
+		public Task<DocumentBase> Account_UploadTheme(InputFileBase file, string file_name, string mime_type, InputFileBase thumb = null)
+			=> CallAsync<DocumentBase>(writer =>
+			{
+				writer.Write(0x1C3DB333);
+				writer.Write(thumb != null ? 0x1 : 0);
+				writer.WriteTLObject(file);
+				if (thumb != null)
+					writer.WriteTLObject(thumb);
+				writer.WriteTLString(file_name);
+				writer.WriteTLString(mime_type);
+				return "Account_UploadTheme";
+			});
+
+		//account.createTheme#8432c21f flags:# slug:string title:string document:flags.2?InputDocument settings:flags.3?InputThemeSettings = Theme
+		public Task<Theme> Account_CreateTheme(string slug, string title, InputDocumentBase document = null, InputThemeSettings settings = null)
+			=> CallAsync<Theme>(writer =>
+			{
+				writer.Write(0x8432C21F);
+				writer.Write((document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0));
+				writer.WriteTLString(slug);
+				writer.WriteTLString(title);
+				if (document != null)
+					writer.WriteTLObject(document);
+				if (settings != null)
+					writer.WriteTLObject(settings);
+				return "Account_CreateTheme";
+			});
+
+		//account.updateTheme#5cb367d5 flags:# format:string theme:InputTheme slug:flags.0?string title:flags.1?string document:flags.2?InputDocument settings:flags.3?InputThemeSettings = Theme
+		public Task<Theme> Account_UpdateTheme(string format, InputThemeBase theme, string slug = null, string title = null, InputDocumentBase document = null, InputThemeSettings settings = null)
+			=> CallAsync<Theme>(writer =>
+			{
+				writer.Write(0x5CB367D5);
+				writer.Write((slug != null ? 0x1 : 0) | (title != null ? 0x2 : 0) | (document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0));
+				writer.WriteTLString(format);
+				writer.WriteTLObject(theme);
+				if (slug != null)
+					writer.WriteTLString(slug);
+				if (title != null)
+					writer.WriteTLString(title);
+				if (document != null)
+					writer.WriteTLObject(document);
+				if (settings != null)
+					writer.WriteTLObject(settings);
+				return "Account_UpdateTheme";
+			});
+
+		//account.saveTheme#f257106c theme:InputTheme unsave:Bool = Bool
+		public Task<bool> Account_SaveTheme(InputThemeBase theme, bool unsave)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xF257106C);
+				writer.WriteTLObject(theme);
+				writer.Write(unsave ? 0x997275B5 : 0xBC799737);
+				return "Account_SaveTheme";
+			});
+
+		//account.installTheme#7ae43737 flags:# dark:flags.0?true format:flags.1?string theme:flags.1?InputTheme = Bool
+		public Task<bool> Account_InstallTheme(bool dark = false, string format = null, InputThemeBase theme = null)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x7AE43737);
+				writer.Write((dark ? 0x1 : 0) | (format != null ? 0x2 : 0) | (theme != null ? 0x2 : 0));
+				if (format != null)
+					writer.WriteTLString(format);
+				if (theme != null)
+					writer.WriteTLObject(theme);
+				return "Account_InstallTheme";
+			});
+
+		//account.getTheme#8d9d742b format:string theme:InputTheme document_id:long = Theme
+		public Task<Theme> Account_GetTheme(string format, InputThemeBase theme, long document_id)
+			=> CallAsync<Theme>(writer =>
+			{
+				writer.Write(0x8D9D742B);
+				writer.WriteTLString(format);
+				writer.WriteTLObject(theme);
+				writer.Write(document_id);
+				return "Account_GetTheme";
+			});
+
+		//account.getThemes#285946f8 format:string hash:int = account.Themes
+		public Task<Account_ThemesBase> Account_GetThemes(string format, int hash)
+			=> CallAsync<Account_ThemesBase>(writer =>
+			{
+				writer.Write(0x285946F8);
+				writer.WriteTLString(format);
+				writer.Write(hash);
+				return "Account_GetThemes";
+			});
+
+		//auth.exportLoginToken#b1b41517 api_id:int api_hash:string except_ids:Vector<int> = auth.LoginToken
+		public Task<Auth_LoginTokenBase> Auth_ExportLoginToken(int api_id, string api_hash, int[] except_ids)
+			=> CallAsync<Auth_LoginTokenBase>(writer =>
+			{
+				writer.Write(0xB1B41517);
+				writer.Write(api_id);
+				writer.WriteTLString(api_hash);
+				writer.WriteTLVector(except_ids);
+				return "Auth_ExportLoginToken";
+			});
+
+		//auth.importLoginToken#95ac5ce4 token:bytes = auth.LoginToken
+		public Task<Auth_LoginTokenBase> Auth_ImportLoginToken(byte[] token)
+			=> CallAsync<Auth_LoginTokenBase>(writer =>
+			{
+				writer.Write(0x95AC5CE4);
+				writer.WriteTLBytes(token);
+				return "Auth_ImportLoginToken";
+			});
+
+		//auth.acceptLoginToken#e894ad4d token:bytes = Authorization
+		public Task<Authorization> Auth_AcceptLoginToken(byte[] token)
+			=> CallAsync<Authorization>(writer =>
+			{
+				writer.Write(0xE894AD4D);
+				writer.WriteTLBytes(token);
+				return "Auth_AcceptLoginToken";
+			});
+
+		//account.setContentSettings#b574b16b flags:# sensitive_enabled:flags.0?true = Bool
+		public Task<bool> Account_SetContentSettings(bool sensitive_enabled = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xB574B16B);
+				writer.Write(sensitive_enabled ? 0x1 : 0);
+				return "Account_SetContentSettings";
+			});
+
+		//account.getContentSettings#8b9b4dae = account.ContentSettings
+		public Task<Account_ContentSettings> Account_GetContentSettings()
+			=> CallAsync<Account_ContentSettings>(writer =>
+			{
+				writer.Write(0x8B9B4DAE);
+				return "Account_GetContentSettings";
+			});
+
+		//channels.getInactiveChannels#11e831ee = messages.InactiveChats
+		public Task<Messages_InactiveChats> Channels_GetInactiveChannels()
+			=> CallAsync<Messages_InactiveChats>(writer =>
+			{
+				writer.Write(0x11E831EE);
+				return "Channels_GetInactiveChannels";
+			});
+
+		//account.getMultiWallPapers#65ad71dc wallpapers:Vector<InputWallPaper> = Vector<WallPaper>
+		public Task<WallPaperBase[]> Account_GetMultiWallPapers(InputWallPaperBase[] wallpapers)
+			=> CallAsync<WallPaperBase[]>(writer =>
+			{
+				writer.Write(0x65AD71DC);
+				writer.WriteTLVector(wallpapers);
+				return "Account_GetMultiWallPapers";
+			});
+
+		//messages.getPollVotes#b86e380e flags:# peer:InputPeer id:int option:flags.0?bytes offset:flags.1?string limit:int = messages.VotesList
+		public Task<Messages_VotesList> Messages_GetPollVotes(InputPeer peer, int id, int limit, byte[] option = null, string offset = null)
+			=> CallAsync<Messages_VotesList>(writer =>
+			{
+				writer.Write(0xB86E380E);
+				writer.Write((option != null ? 0x1 : 0) | (offset != null ? 0x2 : 0));
+				writer.WriteTLObject(peer);
+				writer.Write(id);
+				if (option != null)
+					writer.WriteTLBytes(option);
+				if (offset != null)
+					writer.WriteTLString(offset);
+				writer.Write(limit);
+				return "Messages_GetPollVotes";
+			});
+
+		//messages.toggleStickerSets#b5052fea flags:# uninstall:flags.0?true archive:flags.1?true unarchive:flags.2?true stickersets:Vector<InputStickerSet> = Bool
+		public Task<bool> Messages_ToggleStickerSets(InputStickerSet[] stickersets, bool uninstall = false, bool archive = false, bool unarchive = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xB5052FEA);
+				writer.Write((uninstall ? 0x1 : 0) | (archive ? 0x2 : 0) | (unarchive ? 0x4 : 0));
+				writer.WriteTLVector(stickersets);
+				return "Messages_ToggleStickerSets";
+			});
+
+		//payments.getBankCardData#2e79d779 number:string = payments.BankCardData
+		public Task<Payments_BankCardData> Payments_GetBankCardData(string number)
+			=> CallAsync<Payments_BankCardData>(writer =>
+			{
+				writer.Write(0x2E79D779);
+				writer.WriteTLString(number);
+				return "Payments_GetBankCardData";
+			});
+
+		//messages.getDialogFilters#f19ed96d = Vector<DialogFilter>
+		public Task<DialogFilter[]> Messages_GetDialogFilters()
+			=> CallAsync<DialogFilter[]>(writer =>
+			{
+				writer.Write(0xF19ED96D);
+				return "Messages_GetDialogFilters";
+			});
+
+		//messages.getSuggestedDialogFilters#a29cd42c = Vector<DialogFilterSuggested>
+		public Task<DialogFilterSuggested[]> Messages_GetSuggestedDialogFilters()
+			=> CallAsync<DialogFilterSuggested[]>(writer =>
+			{
+				writer.Write(0xA29CD42C);
+				return "Messages_GetSuggestedDialogFilters";
+			});
+
+		//messages.updateDialogFilter#1ad4a04a flags:# id:int filter:flags.0?DialogFilter = Bool
+		public Task<bool> Messages_UpdateDialogFilter(int id, DialogFilter filter = null)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x1AD4A04A);
+				writer.Write(filter != null ? 0x1 : 0);
+				writer.Write(id);
+				if (filter != null)
+					writer.WriteTLObject(filter);
+				return "Messages_UpdateDialogFilter";
+			});
+
+		//messages.updateDialogFiltersOrder#c563c1e4 order:Vector<int> = Bool
+		public Task<bool> Messages_UpdateDialogFiltersOrder(int[] order)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xC563C1E4);
+				writer.WriteTLVector(order);
+				return "Messages_UpdateDialogFiltersOrder";
+			});
+
+		//stats.getBroadcastStats#ab42441a flags:# dark:flags.0?true channel:InputChannel = stats.BroadcastStats
+		public Task<Stats_BroadcastStats> Stats_GetBroadcastStats(InputChannelBase channel, bool dark = false)
+			=> CallAsync<Stats_BroadcastStats>(writer =>
+			{
+				writer.Write(0xAB42441A);
+				writer.Write(dark ? 0x1 : 0);
+				writer.WriteTLObject(channel);
+				return "Stats_GetBroadcastStats";
+			});
+
+		//stats.loadAsyncGraph#621d5fa0 flags:# token:string x:flags.0?long = StatsGraph
+		public Task<StatsGraphBase> Stats_LoadAsyncGraph(string token, long? x = null)
+			=> CallAsync<StatsGraphBase>(writer =>
+			{
+				writer.Write(0x621D5FA0);
+				writer.Write(x != null ? 0x1 : 0);
+				writer.WriteTLString(token);
+				if (x != null)
+					writer.Write(x.Value);
+				return "Stats_LoadAsyncGraph";
+			});
+
+		//stickers.setStickerSetThumb#9a364e30 stickerset:InputStickerSet thumb:InputDocument = messages.StickerSet
+		public Task<Messages_StickerSet> Stickers_SetStickerSetThumb(InputStickerSet stickerset, InputDocumentBase thumb)
+			=> CallAsync<Messages_StickerSet>(writer =>
+			{
+				writer.Write(0x9A364E30);
+				writer.WriteTLObject(stickerset);
+				writer.WriteTLObject(thumb);
+				return "Stickers_SetStickerSetThumb";
+			});
+
+		//bots.setBotCommands#805d46f6 commands:Vector<BotCommand> = Bool
+		public Task<bool> Bots_SetBotCommands(BotCommand[] commands)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x805D46F6);
+				writer.WriteTLVector(commands);
+				return "Bots_SetBotCommands";
+			});
+
+		//messages.getOldFeaturedStickers#5fe7025b offset:int limit:int hash:int = messages.FeaturedStickers
+		public Task<Messages_FeaturedStickersBase> Messages_GetOldFeaturedStickers(int offset, int limit, int hash)
+			=> CallAsync<Messages_FeaturedStickersBase>(writer =>
+			{
+				writer.Write(0x5FE7025B);
+				writer.Write(offset);
+				writer.Write(limit);
+				writer.Write(hash);
+				return "Messages_GetOldFeaturedStickers";
+			});
+
+		//help.getPromoData#c0977421 = help.PromoData
+		public Task<Help_PromoDataBase> Help_GetPromoData()
+			=> CallAsync<Help_PromoDataBase>(writer =>
+			{
+				writer.Write(0xC0977421);
+				return "Help_GetPromoData";
+			});
+
+		//help.hidePromoData#1e251c95 peer:InputPeer = Bool
+		public Task<bool> Help_HidePromoData(InputPeer peer)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x1E251C95);
+				writer.WriteTLObject(peer);
+				return "Help_HidePromoData";
+			});
+
+		//phone.sendSignalingData#ff7a9383 peer:InputPhoneCall data:bytes = Bool
+		public Task<bool> Phone_SendSignalingData(InputPhoneCall peer, byte[] data)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xFF7A9383);
+				writer.WriteTLObject(peer);
+				writer.WriteTLBytes(data);
+				return "Phone_SendSignalingData";
+			});
+
+		//stats.getMegagroupStats#dcdf8607 flags:# dark:flags.0?true channel:InputChannel = stats.MegagroupStats
+		public Task<Stats_MegagroupStats> Stats_GetMegagroupStats(InputChannelBase channel, bool dark = false)
+			=> CallAsync<Stats_MegagroupStats>(writer =>
+			{
+				writer.Write(0xDCDF8607);
+				writer.Write(dark ? 0x1 : 0);
+				writer.WriteTLObject(channel);
+				return "Stats_GetMegagroupStats";
+			});
+
+		//account.getGlobalPrivacySettings#eb2b4cf6 = GlobalPrivacySettings
+		public Task<GlobalPrivacySettings> Account_GetGlobalPrivacySettings()
+			=> CallAsync<GlobalPrivacySettings>(writer =>
+			{
+				writer.Write(0xEB2B4CF6);
+				return "Account_GetGlobalPrivacySettings";
+			});
+
+		//account.setGlobalPrivacySettings#1edaaac2 settings:GlobalPrivacySettings = GlobalPrivacySettings
+		public Task<GlobalPrivacySettings> Account_SetGlobalPrivacySettings(GlobalPrivacySettings settings)
+			=> CallAsync<GlobalPrivacySettings>(writer =>
+			{
+				writer.Write(0x1EDAAAC2);
+				writer.WriteTLObject(settings);
+				return "Account_SetGlobalPrivacySettings";
+			});
+
+		//help.dismissSuggestion#077fa99f suggestion:string = Bool
+		public Task<bool> Help_DismissSuggestion(string suggestion)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x077FA99F);
+				writer.WriteTLString(suggestion);
+				return "Help_DismissSuggestion";
+			});
+
+		//help.getCountriesList#735787a8 lang_code:string hash:int = help.CountriesList
+		public Task<Help_CountriesListBase> Help_GetCountriesList(string lang_code, int hash)
+			=> CallAsync<Help_CountriesListBase>(writer =>
+			{
+				writer.Write(0x735787A8);
+				writer.WriteTLString(lang_code);
+				writer.Write(hash);
+				return "Help_GetCountriesList";
+			});
+
+		//messages.getReplies#24b581ba peer:InputPeer msg_id:int offset_id:int offset_date:int add_offset:int limit:int max_id:int min_id:int hash:int = messages.Messages
+		public Task<Messages_MessagesBase> Messages_GetReplies(InputPeer peer, int msg_id, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, int hash)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0x24B581BA);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				writer.Write(offset_id);
+				writer.WriteTLStamp(offset_date);
+				writer.Write(add_offset);
+				writer.Write(limit);
+				writer.Write(max_id);
+				writer.Write(min_id);
+				writer.Write(hash);
+				return "Messages_GetReplies";
+			});
+
+		//messages.getDiscussionMessage#446972fd peer:InputPeer msg_id:int = messages.DiscussionMessage
+		public Task<Messages_DiscussionMessage> Messages_GetDiscussionMessage(InputPeer peer, int msg_id)
+			=> CallAsync<Messages_DiscussionMessage>(writer =>
+			{
+				writer.Write(0x446972FD);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				return "Messages_GetDiscussionMessage";
+			});
+
+		//messages.readDiscussion#f731a9f4 peer:InputPeer msg_id:int read_max_id:int = Bool
+		public Task<bool> Messages_ReadDiscussion(InputPeer peer, int msg_id, int read_max_id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xF731A9F4);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				writer.Write(read_max_id);
+				return "Messages_ReadDiscussion";
+			});
+
+		//contacts.blockFromReplies#29a8962c flags:# delete_message:flags.0?true delete_history:flags.1?true report_spam:flags.2?true msg_id:int = Updates
+		public Task<UpdatesBase> Contacts_BlockFromReplies(int msg_id, bool delete_message = false, bool delete_history = false, bool report_spam = false)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x29A8962C);
+				writer.Write((delete_message ? 0x1 : 0) | (delete_history ? 0x2 : 0) | (report_spam ? 0x4 : 0));
+				writer.Write(msg_id);
+				return "Contacts_BlockFromReplies";
+			});
+
+		//stats.getMessagePublicForwards#5630281b channel:InputChannel msg_id:int offset_rate:int offset_peer:InputPeer offset_id:int limit:int = messages.Messages
+		public Task<Messages_MessagesBase> Stats_GetMessagePublicForwards(InputChannelBase channel, int msg_id, int offset_rate, InputPeer offset_peer, int offset_id, int limit)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0x5630281B);
+				writer.WriteTLObject(channel);
+				writer.Write(msg_id);
+				writer.Write(offset_rate);
+				writer.WriteTLObject(offset_peer);
+				writer.Write(offset_id);
+				writer.Write(limit);
+				return "Stats_GetMessagePublicForwards";
+			});
+
+		//stats.getMessageStats#b6e0a3f5 flags:# dark:flags.0?true channel:InputChannel msg_id:int = stats.MessageStats
+		public Task<Stats_MessageStats> Stats_GetMessageStats(InputChannelBase channel, int msg_id, bool dark = false)
+			=> CallAsync<Stats_MessageStats>(writer =>
+			{
+				writer.Write(0xB6E0A3F5);
+				writer.Write(dark ? 0x1 : 0);
+				writer.WriteTLObject(channel);
+				writer.Write(msg_id);
+				return "Stats_GetMessageStats";
+			});
+
+		//messages.unpinAllMessages#f025bc8b peer:InputPeer = messages.AffectedHistory
+		public Task<Messages_AffectedHistory> Messages_UnpinAllMessages(InputPeer peer)
+			=> CallAsync<Messages_AffectedHistory>(writer =>
+			{
+				writer.Write(0xF025BC8B);
+				writer.WriteTLObject(peer);
+				return "Messages_UnpinAllMessages";
+			});
 	}
 }

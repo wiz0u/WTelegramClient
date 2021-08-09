@@ -359,5 +359,4 @@ namespace TL
 			[IfFlag(17)] public long grouped_id;
 		}
 	}
-
 }
