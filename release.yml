@@ -9,42 +9,46 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-jobs:
-  - job: publish
-    steps:
-    - task: DotNetCoreCLI@2
-      inputs:
-        command: 'pack'
-        packagesToPack: '**/*.csproj'
-        includesymbols: true
-        versioningScheme: 'byEnvVar'
-        versionEnvVar: 'Build.BuildNumber'
-        buildProperties: 'NoWarn="1573;1591;0419";Version=$(Build.BuildNumber)'
+stages:
+  - stage: publish
+    jobs:
+    - job: publish
+      steps:
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'pack'
+          packagesToPack: '**/*.csproj'
+          includesymbols: true
+          versioningScheme: 'byEnvVar'
+          versionEnvVar: 'Build.BuildNumber'
+          buildProperties: 'NoWarn="1573;1591;0419";Version=$(Build.BuildNumber)'
 
-    - task: NuGetCommand@2
-      inputs:
-        command: 'push'
-        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
-        nuGetFeedType: 'external'
-        publishFeedCredentials: 'nuget.org'
-        
-  - job: notify
-    pool:
-      server
-    steps:
-    - task: InvokeRESTAPI@1
-      inputs:
-        connectionType: 'connectedServiceName'
-        serviceConnection: 'Telegram Deploy Notice'
-        method: 'POST'
-        body: |
-          { 
-          status": "success",
-          "complete": true,
-          "message": "{
-            \"commitId\": \"$(Build.SourceVersion)\",
-            \"buildNumber\": \"$(Build.BuildNumber)\",
-            \"teamProjectName\": \"$(system.TeamProject)\"
-          }"
-          }
-        waitForCompletion: 'false'
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'nuget.org'
+
+  - stage: notify
+    jobs:
+    - job: notify
+      pool:
+        server
+      steps:
+      - task: InvokeRESTAPI@1
+        inputs:
+          connectionType: 'connectedServiceName'
+          serviceConnection: 'Telegram Deploy Notice'
+          method: 'POST'
+          body: |
+            { 
+              "status": "success",
+              "complete": true,
+              "message": "{
+                \"commitId\": \"$(Build.SourceVersion)\",
+                \"buildNumber\": \"$(Build.BuildNumber)\",
+                \"teamProjectName\": \"$(system.TeamProject)\"
+              }"
+            }
+          waitForCompletion: 'false'
