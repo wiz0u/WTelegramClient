@@ -116,7 +116,7 @@ Here are the main expected developments:
 - [x] Nuget deployment & public CI feed
 - [x] Convert API functions classes to real methods and serialize structures without using Reflection
 - [ ] Separate task/thread for reading/handling update messages independently from CallAsync
-- [ ] Support MTProto 2.0
+- [x] Support MTProto 2.0
 - [x] Support users with 2FA enabled
 - [ ] Support secret chats end-to-end encryption & PFS
 - [ ] Support all service messages
