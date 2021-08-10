@@ -411,9 +411,12 @@ namespace WTelegram
 			{
 				authorization = await Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
 			}
-			catch (RpcException e) when (e.Code == 400 && e.Message == "SESSION_PASSWORD_NEEDED")
+			catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
 			{
-				throw new NotImplementedException("Library does not support 2FA yet"); //TODO: support 2FA
+				var accountPassword = await Account_GetPassword();
+				Helpers.Log(3, $"This account has enabled 2FA. A password is needed. {accountPassword.hint}");
+				var checkPasswordSRP = Check2FA(accountPassword, Config("password"));
+				authorization = await Auth_CheckPassword(checkPasswordSRP);
 			}
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
 			{

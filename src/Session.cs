@@ -58,7 +58,7 @@ namespace WTelegram
 		{
 			var utf8Json = JsonSerializer.SerializeToUtf8Bytes(this, Helpers.JsonOptions);
 			var finalBlock = new byte[16];
-			var output = new byte[(16 + 32 + utf8Json.Length + 15) & ~15];
+			var output = new byte[(16 + 32 + utf8Json.Length + 16) & ~15];
 			Encryption.RNG.GetBytes(output, 0, 16);
 			using var aes = Aes.Create();
 			using var encryptor = aes.CreateEncryptor(_apiHash, output[0..16]);

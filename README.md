@@ -45,8 +45,9 @@ static string Config(string what)
     if (what == "api_hash") return "YOUR_API_HASH";
     if (what == "phone_number") return "+12025550156";
     if (what == "verification_code") { Console.Write("Code: "); return Console.ReadLine(); }
-    if (what == "first_name") return "John"; // if sign-up is required
-    if (what == "last_name") return "Doe";   // if sign-up is required
+    if (what == "first_name") return "John";   // if sign-up is required
+    if (what == "last_name") return "Doe";     // if sign-up is required
+    if (what == "password") return "secret!";  // if user has enabled 2FA
     return null;
 }
 ...
@@ -116,6 +117,6 @@ Here are the main expected developments:
 - [x] Convert API functions classes to real methods and serialize structures without using Reflection
 - [ ] Separate task/thread for reading/handling update messages independently from CallAsync
 - [ ] Support MTProto 2.0
-- [ ] Support users with 2FA enabled
+- [x] Support users with 2FA enabled
 - [ ] Support secret chats end-to-end encryption & PFS
 - [ ] Support all service messages

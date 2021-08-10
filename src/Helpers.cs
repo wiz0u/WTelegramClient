@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace WTelegram
 {
@@ -127,6 +128,14 @@ namespace WTelegram
 						return a << shift;
 				}
 			}
+		}
+
+		internal static byte[] To256Bytes(this BigInteger bi)
+		{
+			var result = new byte[256];
+			var bigEndian = bi.ToByteArray(true, true);
+			bigEndian.CopyTo(result, 256 - bigEndian.Length);
+			return result;
 		}
 	}
 }

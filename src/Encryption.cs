@@ -257,5 +257,66 @@ Slv8kg9qv1m6XHVQY3PnEw+QQtqSIXklHwIDAQAB
 			}
 			return output;
 		}
+
+		internal static InputCheckPasswordSRPBase Check2FA(Account_Password accountPassword, string password)
+		{
+			if (accountPassword.current_algo is not PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow algo)
+				throw new ApplicationException("2FA authentication uses an unsupported algo: " + accountPassword.current_algo?.GetType().Name);
+
+			var passwordBytes = Encoding.UTF8.GetBytes(password);
+			var g = new BigInteger(algo.g);
+			var p = new BigInteger(algo.p, true, true);
+			var g_b = new BigInteger(accountPassword.srp_B, true, true);
+			var g_b_256 = g_b.To256Bytes();
+			var g_256 = g.To256Bytes();
+			ValidityChecks(p, algo.g);
+
+			var sha256 = SHA256.Create();
+			sha256.TransformBlock(algo.salt1, 0, algo.salt1.Length, null, 0);
+			sha256.TransformBlock(passwordBytes, 0, passwordBytes.Length, null, 0);
+			sha256.TransformFinalBlock(algo.salt1, 0, algo.salt1.Length);
+			var hash = sha256.Hash;
+			sha256.TransformBlock(algo.salt2, 0, algo.salt2.Length, null, 0);
+			sha256.TransformBlock(hash, 0, 32, null, 0);
+			sha256.TransformFinalBlock(algo.salt2, 0, algo.salt2.Length);
+			hash = sha256.Hash;
+			var pbkdf2 = new Rfc2898DeriveBytes(hash, algo.salt1, 100000, HashAlgorithmName.SHA512).GetBytes(64);
+			sha256.TransformBlock(algo.salt2, 0, algo.salt2.Length, null, 0);
+			sha256.TransformBlock(pbkdf2, 0, 64, null, 0);
+			sha256.TransformFinalBlock(algo.salt2, 0, algo.salt2.Length);
+			var x = new BigInteger(sha256.Hash, true, true);
+
+			sha256.TransformBlock(algo.p, 0, 256, null, 0);
+			sha256.TransformFinalBlock(g_256, 0, 256);
+			var k = new BigInteger(sha256.Hash, true, true);
+
+			var v = BigInteger.ModPow(g, x, p);
+			var k_v = (k * v) % p;
+			var a = new BigInteger(new Int256(RNG).raw, true, true);
+			var g_a = BigInteger.ModPow(g, a, p);
+			var g_a_256 = g_a.To256Bytes();
+
+			sha256.TransformBlock(g_a_256, 0, 256, null, 0);
+			sha256.TransformFinalBlock(g_b_256, 0, 256);
+			var u = new BigInteger(sha256.Hash, true, true);
+
+			var t = (g_b - k_v) % p; //(positive modulo, if the result is negative increment by p)
+			if (t.Sign < 0) t += p;
+			var s_a = BigInteger.ModPow(t, a + u * x, p);
+			var k_a = SHA256.HashData(s_a.To256Bytes());
+
+			hash = SHA256.HashData(algo.p);
+			var h2 = SHA256.HashData(g_256);
+			for (int i = 0; i < 32; i++) hash[i] ^= h2[i];
+			sha256.TransformBlock(hash, 0, 32, null, 0);
+			sha256.TransformBlock(SHA256.HashData(algo.salt1), 0, 32, null, 0);
+			sha256.TransformBlock(SHA256.HashData(algo.salt2), 0, 32, null, 0);
+			sha256.TransformBlock(g_a_256, 0, 256, null, 0);
+			sha256.TransformBlock(g_b_256, 0, 256, null, 0);
+			sha256.TransformFinalBlock(k_a, 0, 32);
+			var m1 = sha256.Hash;
+
+			return new InputCheckPasswordSRP { A = g_a_256, M1 = m1, srp_id = accountPassword.srp_id };
+		}
 	}
 }
