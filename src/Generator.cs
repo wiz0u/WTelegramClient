@@ -11,8 +11,7 @@ namespace WTelegram
 {
 	public class Generator
 	{
-		//TODO: generate BinaryReader/Writer serialization directly to avoid using Reflection
-		//TODO: generate partial class with methods for functions instead of exposing request classes
+		//TODO: generate BinaryReader/Writer serialization for objects too?
 		readonly Dictionary<int, string> ctorToTypes = new();
 		readonly HashSet<string> allTypes = new();
 		readonly Dictionary<int, Dictionary<string, TypeInfo>> typeInfosByLayer = new();
@@ -24,13 +23,12 @@ namespace WTelegram
 		public async Task FromWeb()
 		{
 			Console.WriteLine("Fetch web pages...");
-			//using var http = new HttpClient();
-			//var html = await http.GetStringAsync("https://core.telegram.org/api/layers");
-			var html = await Task.FromResult("#layer-121");
+			using var http = new HttpClient();
+			var html = await http.GetStringAsync("https://core.telegram.org/api/layers");
 			currentLayer = int.Parse(Regex.Match(html, @"#layer-(\d+)").Groups[1].Value);
-			//await File.WriteAllBytesAsync("TL.MTProto.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/mtproto-json"));
-			//await File.WriteAllBytesAsync("TL.Schema.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/json"));
-			//await File.WriteAllBytesAsync("TL.Secret.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/end-to-end-json"));
+			await File.WriteAllBytesAsync("TL.MTProto.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/mtproto-json"));
+			await File.WriteAllBytesAsync("TL.Schema.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/json"));
+			await File.WriteAllBytesAsync("TL.Secret.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/end-to-end-json"));
 			FromJson("TL.MTProto.json", "TL.MTProto.cs", @"TL.Table.cs", true);
 			FromJson("TL.Schema.json", "TL.Schema.cs", @"TL.Table.cs");
 			FromJson("TL.Secret.json", "TL.Secret.cs", @"TL.Table.cs");
@@ -187,7 +185,7 @@ namespace WTelegram
 			{
 				needNewLine = false;
 				sw.WriteLine();
-				sw.WriteLine($"{tabIndent}public abstract class {parentClass} : ITLObject {{ }}");
+				sw.WriteLine($"{tabIndent}public abstract partial class {parentClass} : ITLObject {{ }}");
 			}
 			int skipParams = 0;
 			foreach (var ctor in typeInfo.Structs)
@@ -198,14 +196,14 @@ namespace WTelegram
 				if (!allTypes.Add(layerPrefix + className)) continue;
 				if (needNewLine) { needNewLine = false; sw.WriteLine(); }
 				if (ctor.id == null)
-					sw.Write($"{tabIndent}public abstract class {className} : ITLObject");
+					sw.Write($"{tabIndent}public abstract partial class {className} : ITLObject");
 				else
 				{
 					sw.Write($"{tabIndent}[TLDef(0x{ctor.ID:X8})] //{ctor.predicate}#{ctor.ID:x8} ");
 					if (genericType != null) sw.Write($"{{{typeInfo.ReturnName}:Type}} ");
 					foreach (var parm in ctor.@params) sw.Write($"{parm.name}:{parm.type} ");
 					sw.WriteLine($"= {ctor.type}");
-					sw.Write($"{tabIndent}public class {className} : ");
+					sw.Write($"{tabIndent}public partial class {className} : ");
 					sw.Write(skipParams == 0 && typeInfo.NeedAbstract > 0 ? "ITLObject" : parentClass);
 				}
 				var parms = ctor.@params.Skip(skipParams).ToArray();
@@ -269,8 +267,6 @@ namespace WTelegram
 					if (multiline) sw.WriteLine();
 				}
 
-				if (ctorNeedClone.Contains(className))
-					sw.WriteLine($"{tabIndent}\tpublic {className} Clone() => ({className})MemberwiseClone();");
 				if (multiline)
 					sw.WriteLine(tabIndent + "}");
 				else
@@ -488,8 +484,6 @@ namespace WTelegram
 			}
 			File.Replace(tableCs + ".new", tableCs, null);
 		}
-
-		static readonly HashSet<string> ctorNeedClone = new() { /*"User"*/ };
 
 		private static bool HasPrefix(Constructor ctor, IList<Param> prefixParams)
 		{

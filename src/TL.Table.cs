@@ -6,7 +6,7 @@ namespace TL
 {
 	static partial class Schema
 	{
-		public const int Layer = 121;				// fetched 07/08/2021 01:34:33
+		public const int Layer = 121;					// fetched 09/08/2021 22:59:12
 		public const int VectorCtor = 0x1CB5C415;
 		public const int NullCtor = 0x56730BCC;
 
@@ -14,8 +14,10 @@ namespace TL
 		{
 			// from TL.MTProto:
 			[0x05162463] = typeof(ResPQ),
+			[0x83C95AEC] = typeof(PQInnerData),
 			[0xA9F55F95] = typeof(PQInnerDataDC),
 			[0x56FDDF88] = typeof(PQInnerDataTempDC),
+			[0x79CB045D] = typeof(ServerDHParamsFail),
 			[0xD0E8075C] = typeof(ServerDHParamsOk),
 			[0xB5890DBA] = typeof(ServerDHInnerData),
 			[0x6643B654] = typeof(ClientDHInnerData),
@@ -47,6 +49,7 @@ namespace TL
 			[0x8CC0D131] = typeof(MsgsAllInfo),
 			[0x276D3EC6] = typeof(MsgDetailedInfo),
 			[0x809DB6DF] = typeof(MsgNewDetailedInfo),
+			[0x7A19CB76] = typeof(RSAPublicKey),
 			[0xF660E1D4] = typeof(DestroyAuthKeyOk),
 			[0x0A9F2259] = typeof(DestroyAuthKeyNone),
 			[0xEA109B13] = typeof(DestroyAuthKeyFail),

@@ -69,7 +69,7 @@ To find which derived classes are available for a given base class, the fastest 
 
 The Telegram [API object classes](https://core.telegram.org/schema) are defined in the `TL` namespace, and the [API functions](https://core.telegram.org/methods) are available as async methods of `Client`.
 
-Below is an example of calling the [messages.getAllChats](https://core.telegram.org/method/messages.getAllChats) API function and enumerating the various groups/channels the user is in:
+Below is an example of calling the [messages.getAllChats](https://core.telegram.org/method/messages.getAllChats) API function and enumerating the various groups/channels the user is in, and then using `client.SendMessageAsync` helper function to easily send a message:
 ```csharp
 using TL;
 ...
@@ -89,6 +89,10 @@ foreach (var chat in chats)
             Console.WriteLine($"{group.id}: Group {group.username}: {group.title}");
             break;
     }
+Console.Write("Type a chat ID to send a message: ");
+var id = int.Parse(Console.ReadLine());
+var target = chats.First(chat => chat.ID == id);
+await client.SendMessageAsync(target, "Hello, World");
 ```
 
 # Other things to know
