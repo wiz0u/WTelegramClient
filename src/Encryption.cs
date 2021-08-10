@@ -22,7 +22,11 @@ namespace WTelegram
 
 			//1)
 			var nonce = new Int128(RNG);
+#if MTPROTO1
 			var resPQ = await client.ReqPQ(nonce);
+#else
+			var resPQ = await client.ReqPqMulti(nonce); 
+#endif
 			//2)
 			if (resPQ.nonce != nonce) throw new ApplicationException("Nonce mismatch");
 			var fingerprint = resPQ.server_public_key_fingerprints.FirstOrDefault(PublicKeys.ContainsKey);
@@ -35,7 +39,7 @@ namespace WTelegram
 			ulong p = Helpers.PQFactorize(pq);
 			ulong q = pq / p;
 			//4)
-			var pqInnerData = new PQInnerData
+			var pqInnerData = new PQInnerDataDc
 			{
 				pq = resPQ.pq,
 				p = Helpers.ToBigEndian(p),
@@ -43,6 +47,7 @@ namespace WTelegram
 				nonce = nonce,
 				server_nonce = resPQ.server_nonce,
 				new_nonce = new Int256(RNG),
+				dc = session.DataCenter?.id ?? 0
 			};
 			byte[] encrypted_data;
 			{ // the following code was the way TDLib did it (and seems still accepted) until they changed on 8 July 2021
@@ -116,14 +121,14 @@ namespace WTelegram
 			var authKeyHash = SHA1.HashData(authKey);
 			retry_id = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash); // (auth_key_aux_hash)
 			//9)
-			if (setClientDHparamsAnswer is not DHGenOk) throw new ApplicationException("not dh_gen_ok");
-			if (setClientDHparamsAnswer.nonce != nonce) throw new ApplicationException("Nonce mismatch");
-			if (setClientDHparamsAnswer.server_nonce != resPQ.server_nonce) throw new ApplicationException("Server Nonce mismatch");
+			if (setClientDHparamsAnswer is not DhGenOk dhGenOk) throw new ApplicationException("not dh_gen_ok");
+			if (dhGenOk.nonce != nonce) throw new ApplicationException("Nonce mismatch");
+			if (dhGenOk.server_nonce != resPQ.server_nonce) throw new ApplicationException("Server Nonce mismatch");
 			var expected_new_nonceN = new byte[32 + 1 + 8];
 			pqInnerData.new_nonce.raw.CopyTo(expected_new_nonceN, 0);
 			expected_new_nonceN[32] = 1;
 			Array.Copy(authKeyHash, 0, expected_new_nonceN, 33, 8); // (auth_key_aux_hash)
-			if (!Enumerable.SequenceEqual(setClientDHparamsAnswer.new_nonce_hashN.raw, SHA1.HashData(expected_new_nonceN).Skip(4)))
+			if (!Enumerable.SequenceEqual(dhGenOk.new_nonce_hash1.raw, SHA1.HashData(expected_new_nonceN).Skip(4)))
 				throw new ApplicationException("setClientDHparamsAnswer.new_nonce_hashN mismatch");
 
 			session.AuthKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
@@ -172,6 +177,9 @@ namespace WTelegram
 			// We recommend checking that g_a and g_b are between 2^{2048-64} and dh_prime - 2^{2048-64} as well.
 		}
 
+		[TLDef(0x7A19CB76)] //RSA_public_key#7a19cb76 n:bytes e:bytes = RSAPublicKey
+		public partial class RSAPublicKey : ITLObject { public byte[] n, e; }
+
 		public static void LoadPublicKey(string pem)
 		{
 			using var rsa = RSA.Create();
@@ -196,23 +204,24 @@ Slv8kg9qv1m6XHVQY3PnEw+QQtqSIXklHwIDAQAB
 -----END RSA PUBLIC KEY-----");
 		}
 
-		internal static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, byte[] authKey, byte[] clearSha1)
+		internal static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, byte[] authKey, byte[] msgKeyLarge)
 		{
 			// first, construct AES key & IV
 			int x = encrypt ? 0 : 8;
 			byte[] aes_key = new byte[32], aes_iv = new byte[32];
-			using var sha1 = new SHA1Managed();
-			sha1.TransformBlock(clearSha1, 4, 16, null, 0);     // msgKey
+#if MTPROTO1
+			using var sha1 = SHA1.Create();
+			sha1.TransformBlock(msgKeyLarge, 4, 16, null, 0);   // msgKey
 			sha1.TransformFinalBlock(authKey, x, 32);           // authKey[x:32]
 			var sha1_a = sha1.Hash;
 			sha1.TransformBlock(authKey, 32 + x, 16, null, 0);  // authKey[32+x:16]
-			sha1.TransformBlock(clearSha1, 4, 16, null, 0);     // msgKey
+			sha1.TransformBlock(msgKeyLarge, 4, 16, null, 0);   // msgKey
 			sha1.TransformFinalBlock(authKey, 48 + x, 16);      // authKey[48+x:16]
 			var sha1_b = sha1.Hash;
 			sha1.TransformBlock(authKey, 64 + x, 32, null, 0);  // authKey[64+x:32]
-			sha1.TransformFinalBlock(clearSha1, 4, 16);         // msgKey
+			sha1.TransformFinalBlock(msgKeyLarge, 4, 16);       // msgKey
 			var sha1_c = sha1.Hash;
-			sha1.TransformBlock(clearSha1, 4, 16, null, 0);     // msgKey
+			sha1.TransformBlock(msgKeyLarge, 4, 16, null, 0);   // msgKey
 			sha1.TransformFinalBlock(authKey, 96 + x, 32);      // authKey[96+x:32]
 			var sha1_d = sha1.Hash;
 			Array.Copy(sha1_a, 0, aes_key, 0, 8);
@@ -222,6 +231,21 @@ Slv8kg9qv1m6XHVQY3PnEw+QQtqSIXklHwIDAQAB
 			Array.Copy(sha1_b, 0, aes_iv, 12, 8);
 			Array.Copy(sha1_c, 16, aes_iv, 20, 4);
 			Array.Copy(sha1_d, 0, aes_iv, 24, 8);
+#else
+			using var sha256 = SHA256.Create();
+			sha256.TransformBlock(msgKeyLarge, 8, 16, null, 0);   // msgKey
+			sha256.TransformFinalBlock(authKey, x, 36);           // authKey[x:36]
+			var sha256_a = sha256.Hash;
+			sha256.TransformBlock(authKey, 40 + x, 36, null, 0);  // authKey[40+x:36]
+			sha256.TransformFinalBlock(msgKeyLarge, 8, 16);       // msgKey
+			var sha256_b = sha256.Hash;
+			Array.Copy(sha256_a, 0, aes_key, 0, 8);
+			Array.Copy(sha256_b, 8, aes_key, 8, 16);
+			Array.Copy(sha256_a, 24, aes_key, 24, 8);
+			Array.Copy(sha256_b, 0, aes_iv, 0, 8);
+			Array.Copy(sha256_a, 8, aes_iv, 8, 16);
+			Array.Copy(sha256_b, 24, aes_iv, 24, 8);
+#endif
 
 			return AES_IGE_EncryptDecrypt(input, aes_key, aes_iv, encrypt);
 		}

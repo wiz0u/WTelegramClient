@@ -13,8 +13,7 @@ namespace TL
 		public long[] server_public_key_fingerprints;
 	}
 
-	[TLDef(0x83C95AEC)] //p_q_inner_data#83c95aec pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 = P_Q_inner_data
-	public partial class PQInnerData : ITLObject
+	public abstract partial class PQInnerData : ITLObject
 	{
 		public byte[] pq;
 		public byte[] p;
@@ -22,25 +21,21 @@ namespace TL
 		public Int128 nonce;
 		public Int128 server_nonce;
 		public Int256 new_nonce;
-	}
-	[TLDef(0xA9F55F95)] //p_q_inner_data_DC#a9f55f95 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int = P_Q_inner_data
-	public partial class PQInnerDataDC : PQInnerData { public int dc; }
-	[TLDef(0x56FDDF88)] //p_q_inner_data_temp_DC#56fddf88 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int expires_in:int = P_Q_inner_data
-	public partial class PQInnerDataTempDC : PQInnerData
-	{
 		public int dc;
-		public int expires_in;	// seconds
 	}
+	[TLDef(0xA9F55F95)] //p_q_inner_data_dc#a9f55f95 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int = P_Q_inner_data
+	public partial class PQInnerDataDc : PQInnerData { }
+	[TLDef(0x56FDDF88)] //p_q_inner_data_temp_dc#56fddf88 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int expires_in:int = P_Q_inner_data
+	public partial class PQInnerDataTempDc : PQInnerData { public int expires_in; }
 
-	public abstract partial class ServerDHParams : ITLObject
+	public abstract partial class ServerDHParams : ITLObject { }
+	[TLDef(0xD0E8075C)] //server_DH_params_ok#d0e8075c nonce:int128 server_nonce:int128 encrypted_answer:bytes = Server_DH_Params
+	public partial class ServerDHParamsOk : ServerDHParams
 	{
 		public Int128 nonce;
 		public Int128 server_nonce;
+		public byte[] encrypted_answer;
 	}
-	[TLDef(0x79CB045D)] //server_DH_params_fail#79cb045d nonce:int128 server_nonce:int128 new_nonce_hash:int128 = Server_DH_Params
-	public partial class ServerDHParamsFail : ServerDHParams { public Int128 new_nonce_hash; }
-	[TLDef(0xD0E8075C)] //server_DH_params_ok#d0e8075c nonce:int128 server_nonce:int128 encrypted_answer:bytes = Server_DH_Params
-	public partial class ServerDHParamsOk : ServerDHParams { public byte[] encrypted_answer; }
 
 	[TLDef(0xB5890DBA)] //server_DH_inner_data#b5890dba nonce:int128 server_nonce:int128 g:int dh_prime:bytes g_a:bytes server_time:int = Server_DH_inner_data
 	public partial class ServerDHInnerData : ITLObject
@@ -66,14 +61,13 @@ namespace TL
 	{
 		public Int128 nonce;
 		public Int128 server_nonce;
-		public Int128 new_nonce_hashN; // 16 low order bytes from SHA1(new_nonce + (01=ok, 02=retry, 03=fail) + 8 high order bytes from SHA1(auth_key))
 	}
-	[TLDef(0x3BCBF734)] //DH_gen_ok#3bcbf734 nonce:int128 server_nonce:int128 new_nonce_hashN:int128 = Set_client_DH_params_answer
-	public partial class DHGenOk : SetClientDHParamsAnswer { }
-	[TLDef(0x46DC1FB9)] //DH_gen_retry#46dc1fb9 nonce:int128 server_nonce:int128 new_nonce_hashN:int128 = Set_client_DH_params_answer
-	public partial class DHGenRetry : SetClientDHParamsAnswer { }
-	[TLDef(0xA69DAE02)] //DH_gen_fail#a69dae02 nonce:int128 server_nonce:int128 new_nonce_hashN:int128 = Set_client_DH_params_answer
-	public partial class DHGenFail : SetClientDHParamsAnswer { }
+	[TLDef(0x3BCBF734)] //dh_gen_ok#3bcbf734 nonce:int128 server_nonce:int128 new_nonce_hash1:int128 = Set_client_DH_params_answer
+	public partial class DhGenOk : SetClientDHParamsAnswer { public Int128 new_nonce_hash1; }
+	[TLDef(0x46DC1FB9)] //dh_gen_retry#46dc1fb9 nonce:int128 server_nonce:int128 new_nonce_hash2:int128 = Set_client_DH_params_answer
+	public partial class DhGenRetry : SetClientDHParamsAnswer { public Int128 new_nonce_hash2; }
+	[TLDef(0xA69DAE02)] //dh_gen_fail#a69dae02 nonce:int128 server_nonce:int128 new_nonce_hash3:int128 = Set_client_DH_params_answer
+	public partial class DhGenFail : SetClientDHParamsAnswer { public Int128 new_nonce_hash3; }
 
 	[TLDef(0x75A3F765)] //bind_auth_key_inner#75a3f765 nonce:long temp_auth_key_id:long perm_auth_key_id:long temp_session_id:long expires_at:int = BindAuthKeyInner
 	public partial class BindAuthKeyInner : ITLObject
@@ -120,7 +114,7 @@ namespace TL
 		public long salt;
 	}
 
-	[TLDef(0xAE500895)] //future_salts#ae500895 req_msg_id:long now:int salts:Vector<FutureSalt> = FutureSalts
+	[TLDef(0xAE500895)] //future_salts#ae500895 req_msg_id:long now:int salts:vector<future_salt> = FutureSalts
 	public partial class FutureSalts : ITLObject
 	{
 		public long req_msg_id;
@@ -221,13 +215,6 @@ namespace TL
 		public int status;
 	}
 
-	[TLDef(0x7A19CB76)] //RSA_public_key#7a19cb76 n:bytes e:bytes = RSAPublicKey
-	public partial class RSAPublicKey : ITLObject
-	{
-		public byte[] n;
-		public byte[] e;
-	}
-
 	public abstract partial class DestroyAuthKeyRes : ITLObject { }
 	[TLDef(0xF660E1D4)] //destroy_auth_key_ok#f660e1d4 = DestroyAuthKeyRes
 	public partial class DestroyAuthKeyOk : DestroyAuthKeyRes { }
@@ -244,15 +231,6 @@ namespace WTelegram		// ---functions---
 
 	public partial class Client
 	{
-		//req_PQ#60469778 nonce:int128 = ResPQ
-		public Task<ResPQ> ReqPQ(Int128 nonce)
-			=> CallAsync<ResPQ>(writer =>
-			{
-				writer.Write(0x60469778);
-				writer.Write(nonce);
-				return "ReqPQ";
-			});
-
 		//req_pq_multi#be7e8ef1 nonce:int128 = ResPQ
 		public Task<ResPQ> ReqPqMulti(Int128 nonce)
 			=> CallAsync<ResPQ>(writer =>

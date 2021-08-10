@@ -9,7 +9,7 @@ namespace WTelegram
 	internal class Session
 	{
 		public long AuthKeyID;
-		public byte[] AuthKey;
+		public byte[] AuthKey;		// 2048-bit = 256 bytes
 		public long Salt;
 		public long Id;
 		public int Seqno;

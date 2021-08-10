@@ -31,7 +31,9 @@ namespace WTelegram
 		private Type _lastRpcResultType = typeof(object);
 		private readonly List<long> _msgsToAck = new();
 		private int _unexpectedSaltChange;
-
+		private readonly Random _random = new();
+		private readonly SHA256 _sha256 = SHA256.Create();
+				
 		public Client(Func<string,string> configProvider = null, Func<ITLObject, Task> updateHandler = null)
 		{
 			_config = configProvider ?? DefaultConfigOrAsk;
@@ -85,6 +87,7 @@ namespace WTelegram
 			var endpoint = _session.DataCenter == null ? IPEndPoint.Parse(Config("server_address"))
 				: new IPEndPoint(IPAddress.Parse(_session.DataCenter.ip_address), _session.DataCenter.port);
 			Helpers.Log(2, $"Connecting to {endpoint}...");
+			//TODO: maintain different connections/sessions to different DCs for main API/file download/file upload?
 			_tcpClient = new TcpClient(endpoint.AddressFamily);
 			await _tcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
 			_networkStream = _tcpClient.GetStream();
@@ -164,28 +167,42 @@ namespace WTelegram
 			}
 			else
 			{
-				//TODO: implement MTProto 2.0
 				using var clearStream = new MemoryStream(1024);
 				using var clearWriter = new BinaryWriter(clearStream, Encoding.UTF8);
-				clearWriter.Write(_session.Salt);		// int64 salt
-				clearWriter.Write(_session.Id);			// int64 session_id
-				clearWriter.Write(msgId);				// int64 message_id
-				clearWriter.Write(seqno);				// int32 msg_seqno
-				clearWriter.Write(0);					// int32 message_data_length (to be patched)
-				var typeName = msgSerializer(clearWriter);   // bytes message_data
+#if MTPROTO1
+				const int prepend = 0;
+#else
+				const int prepend = 32;
+				clearWriter.Write(_session.AuthKey, 88, prepend);
+#endif
+				clearWriter.Write(_session.Salt);			// int64 salt
+				clearWriter.Write(_session.Id);				// int64 session_id
+				clearWriter.Write(msgId);					// int64 message_id
+				clearWriter.Write(seqno);					// int32 msg_seqno
+				clearWriter.Write(0);						// int32 message_data_length (to be patched)
+				var typeName = msgSerializer(clearWriter);	// bytes message_data
 				Helpers.Log(1, $"Sending   {typeName,-50} #{(short)msgId.GetHashCode():X4}");
-				int clearLength = (int)clearStream.Length;  // length before padding (= 32 + message_data_length)
+				int clearLength = (int)clearStream.Length - prepend;  // length before padding (= 32 + message_data_length)
 				int padding = (0x7FFFFFF0 - clearLength) % 16;
-				clearStream.SetLength(clearLength + padding);
+#if !MTPROTO1
+				padding += _random.Next(1, 64) * 16;		// MTProto 2.0 padding must be between 12..1024 with total length divisible by 16
+#endif
+				clearStream.SetLength(prepend + clearLength + padding);
 				byte[] clearBuffer = clearStream.GetBuffer();
-				BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(28), clearLength - 32);    // patch message_data_length
-				RNG.GetBytes(clearBuffer, clearLength, padding);
-				var clearSha1 = SHA1.HashData(clearBuffer.AsSpan(0, clearLength)); // padding excluded from computation!
-				byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(0, clearLength + padding), true, _session.AuthKey, clearSha1);
+				BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(prepend + 28), clearLength - 32);    // patch message_data_length
+				RNG.GetBytes(clearBuffer, prepend + clearLength, padding);
+#if MTPROTO1
+				var msgKeyLarge = SHA1.HashData(clearBuffer.AsSpan(0, clearLength)); // padding excluded from computation!
+				const int msgKeyOffset = 4;	// msg_key = low 128-bits of SHA1(plaintext)
+#else
+				var msgKeyLarge = SHA256.HashData(clearBuffer.AsSpan(0, prepend + clearLength + padding));
+				const int msgKeyOffset = 8; // msg_key = middle 128-bits of SHA256(authkey_part+plaintext+padding)
+#endif
+				byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(prepend, clearLength + padding), true, _session.AuthKey, msgKeyLarge);
 
-				writer.Write(_session.AuthKeyID);	// int64 auth_key_id
-				writer.Write(clearSha1, 4, 16);		// int128 msg_key = low 128-bits of SHA1(clear message body)
-				writer.Write(encrypted_data);		// bytes encrypted_data
+				writer.Write(_session.AuthKeyID);				// int64 auth_key_id
+				writer.Write(msgKeyLarge, msgKeyOffset, 16);	// int128 msg_key
+				writer.Write(encrypted_data);					// bytes encrypted_data
 			}
 
 			var buffer = memStream.GetBuffer();
@@ -229,7 +246,12 @@ namespace WTelegram
 				throw new ApplicationException($"Received a packet encrypted with unexpected key {authKeyId:X}");
 			else
 			{
-				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24), false, _session.AuthKey, data[4..24]);
+#if MTPROTO1
+				byte[] msgKeyLarge = data[4..24];
+#else
+				byte[] msgKeyLarge = data[0..24];
+#endif
+				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24), false, _session.AuthKey, msgKeyLarge);
 				if (decrypted_data.Length < 36) // header below+ctorNb
 					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
 				using var reader = new BinaryReader(new MemoryStream(decrypted_data));
@@ -249,10 +271,17 @@ namespace WTelegram
 				if (sessionId != _session.Id) throw new ApplicationException($"Unexpected session ID {_session.Id} != {_session.Id}");
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				if ((seqno & 1) != 0) lock(_msgsToAck) _msgsToAck.Add(msgId);
+#if MTPROTO1
 				if (decrypted_data.Length - 32 - length is < 0 or > 15) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
 				if (!data.AsSpan(8, 16).SequenceEqual(SHA1.HashData(decrypted_data.AsSpan(0, 32 + length)).AsSpan(4)))
 					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
-
+#else
+				if (decrypted_data.Length - 32 - length is < 12 or > 1024) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
+				_sha256.TransformBlock(_session.AuthKey, 96, 32, null, 0);
+				_sha256.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
+				if (!data.AsSpan(8, 16).SequenceEqual(_sha256.Hash.AsSpan(8, 16)))
+					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
+#endif
 				return reader.ReadTLObject((type, obj) =>
 				{
 					Helpers.Log(1, $"Receiving {type.Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} {(seqno == -1 ? "clearText" : "isContent")}={(seqno & 1) != 0}");

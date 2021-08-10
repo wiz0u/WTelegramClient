@@ -29,16 +29,15 @@ namespace WTelegram
 			await File.WriteAllBytesAsync("TL.MTProto.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/mtproto-json"));
 			await File.WriteAllBytesAsync("TL.Schema.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/json"));
 			await File.WriteAllBytesAsync("TL.Secret.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/end-to-end-json"));
-			FromJson("TL.MTProto.json", "TL.MTProto.cs", @"TL.Table.cs", true);
+			FromJson("TL.MTProto.json", "TL.MTProto.cs", @"TL.Table.cs");
 			FromJson("TL.Schema.json", "TL.Schema.cs", @"TL.Table.cs");
 			FromJson("TL.Secret.json", "TL.Secret.cs", @"TL.Table.cs");
 		}
 
-		public void FromJson(string jsonPath, string outputCs, string tableCs = null, bool legacy = false)
+		public void FromJson(string jsonPath, string outputCs, string tableCs = null)
 		{
 			Console.WriteLine("Parsing " + jsonPath);
 			var schema = JsonSerializer.Deserialize<SchemaJson>(File.ReadAllText(jsonPath));
-			if (legacy) InjectLegacy(schema);
 			using var sw = File.CreateText(outputCs);
 			sw.WriteLine("// This file is (mainly) generated automatically using the Generator class");
 			sw.WriteLine("using System;");
@@ -145,34 +144,6 @@ namespace WTelegram
 			sw.WriteLine("}");
 
 			if (tableCs != null) UpdateTable(jsonPath, tableCs, methods);
-		}
-
-		private static void InjectLegacy(SchemaJson schema)
-		{
-			foreach (var c in schema.constructors.Where(c => c.type == "P_Q_inner_data"))
-				c.predicate = c.predicate[..^2] + "DC";
-			var add = new Constructor { id = ID(0x83C95AEC), predicate = "p_q_inner_data", type = "P_Q_inner_data",
-				@params = Params("pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256") };
-			schema.constructors.Insert(schema.constructors.FindIndex(c => c.type == add.type), add);
-			add = new Constructor { id = ID(0x79CB045D), predicate = "server_DH_params_fail", type = "Server_DH_Params",
-				@params = Params("nonce:int128 server_nonce:int128 new_nonce_hash:int128") };
-			schema.constructors.Insert(schema.constructors.FindIndex(c => c.type == add.type), add);
-			add = new Constructor { id = ID(0x7A19CB76), predicate = "RSA_public_key", type = "RSAPublicKey",
-				@params = Params("n:bytes e:bytes") };
-			schema.constructors.Insert(schema.constructors.FindIndex(c => c.type == "DestroyAuthKeyRes"), add);
-			foreach (var c in schema.constructors.Where(c => c.type == "Set_client_DH_params_answer"))
-			{
-				c.predicate = "DH" + c.predicate[2..];
-				c.@params[2].name = "new_nonce_hashN";
-			}
-			schema.constructors.Find(c => c.predicate == "future_salts").@params[2].type = "Vector<FutureSalt>";
-			var addm = new Method { id = ID(0x60469778), method= "req_PQ", type = "ResPQ",
-				@params = Params("nonce:int128") };
-			schema.methods.Insert(0, addm);
-
-			static string ID(uint id) => ((int)id).ToString();
-			static Param[] Params(string args)
-				=> args.Split(' ').Select(s => { var nt = s.Split(':'); return new Param { name = nt[0], type = nt[1] }; }).ToArray();
 		}
 
 		void WriteTypeInfo(StreamWriter sw, TypeInfo typeInfo, string layerPrefix, bool isMethod)
