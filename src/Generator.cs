@@ -156,7 +156,7 @@ namespace WTelegram
 		{
 			var parentClass = typeInfo.NeedAbstract != 0 ? typeInfo.ReturnName : "ITLObject";
 			var genericType = typeInfo.ReturnName.Length == 1 ? $"<{typeInfo.ReturnName}>" : null;
-			if (isMethod) parentClass = $"ITLFunction<{MapType(typeInfo.ReturnName, "")}>";
+			if (isMethod) parentClass = "ITLFunction";
 			bool needNewLine = true;
 			if (typeInfo.NeedAbstract == -1 && allTypes.Add(layerPrefix + parentClass))
 			{
@@ -293,7 +293,7 @@ namespace WTelegram
 			else if (type == "Object")
 				return "ITLObject";
 			else if (type == "!X")
-				return "ITLFunction<X>";
+				return "ITLFunction";
 			else if (typeInfos.TryGetValue(type, out var typeInfo))
 				return typeInfo.ReturnName;
 			else if (type == "int")
@@ -345,7 +345,7 @@ namespace WTelegram
 			if (style == -1) return;
 			sw.WriteLine();
 
-			if (method.type.Length == 1) funcName += $"<{returnType}>";
+			if (method.type.Length == 1 && style != 1) funcName += $"<{returnType}>";
 			if (currentJson != "TL.MTProto")
 				sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/method/{method.method}\"/></summary>");
 			else
@@ -358,7 +358,7 @@ namespace WTelegram
 
 			if (style == 0) sw.WriteLine($"{tabIndent}public Task<{returnType}> {funcName}() => CallAsync<{returnType}>({funcName});");
 			if (style == 0) sw.Write($"{tabIndent}public static string {funcName}(BinaryWriter writer");
-			if (style == 1) sw.Write($"{tabIndent}public static ITLFunction<{returnType}> {funcName}(");
+			if (style == 1) sw.Write($"{tabIndent}public static ITLFunction {funcName}(");
 			if (style == 2) sw.Write($"{tabIndent}public Task<{returnType}> {funcName}(");
 			bool first = style != 0;
 			foreach (var parm in method.@params) // output non-optional parameters

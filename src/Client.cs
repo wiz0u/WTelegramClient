@@ -27,7 +27,7 @@ namespace WTelegram
 		private TcpClient _tcpClient;
 		private NetworkStream _networkStream;
 		private int _frame_seqTx = 0, _frame_seqRx = 0;
-		private ITLFunction<object> _lastSentMsg;
+		private ITLFunction _lastSentMsg;
 		private Type _lastRpcResultType = typeof(object);
 		private readonly List<long> _msgsToAck = new();
 		private int _unexpectedSaltChange;
@@ -96,8 +96,8 @@ namespace WTelegram
 			if (_session.AuthKey == null)
 				await CreateAuthorizationKey(this, _session);
 
-			TLConfig = await InvokeWithLayer(Schema.Layer,
-				InitConnection<Config>(_apiId,
+			TLConfig = await InvokeWithLayer<Config>(Schema.Layer,
+				InitConnection(_apiId,
 					Config("device_model"),
 					Config("system_version"),
 					Config("app_version"),
@@ -140,13 +140,13 @@ namespace WTelegram
 		}
 
 		public Task SendAsync(ITLObject msg, bool isContent = true)
-			=> SendAsync<object>(writer =>
+			=> SendAsync(writer =>
 			{
 				writer.WriteTLObject(msg);
 				return msg.GetType().Name;
 			}, isContent);
 
-		public async Task SendAsync<X>(ITLFunction<X> msgSerializer, bool isContent = true)
+		public async Task SendAsync(ITLFunction msgSerializer, bool isContent = true)
 		{
 			if (_session.AuthKeyID != 0) await CheckMsgsToAck();
 			using var memStream = new MemoryStream(1024);
@@ -215,7 +215,7 @@ namespace WTelegram
 			//TODO: support Transport obfuscation?
 
 			await _networkStream.WriteAsync(frame);
-			_lastSentMsg = writer => msgSerializer(writer);
+			_lastSentMsg = msgSerializer;
 		}
 
 		internal async Task<ITLObject> RecvInternalAsync()
@@ -239,8 +239,9 @@ namespace WTelegram
 				int length = reader.ReadInt32();
 				if (length != data.Length - 20) throw new ApplicationException($"Unexpected unencrypted length {length} != {data.Length - 20}");
 
-				return reader.ReadTLObject((type, _) =>
-					Helpers.Log(1, $"Receiving {type.Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} unencrypted"));
+				var obj = reader.ReadTLObject();
+				Helpers.Log(1, $"Receiving {obj.GetType().Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} unencrypted");
+				return obj;
 			}
 			else if (authKeyId != _session.AuthKeyID)
 				throw new ApplicationException($"Received a packet encrypted with unexpected key {authKeyId:X}");
@@ -282,13 +283,12 @@ namespace WTelegram
 				if (!data.AsSpan(8, 16).SequenceEqual(_sha256.Hash.AsSpan(8, 16)))
 					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
 #endif
-				return reader.ReadTLObject((type, obj) =>
-				{
-					Helpers.Log(1, $"Receiving {type.Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} {(seqno == -1 ? "clearText" : "isContent")}={(seqno & 1) != 0}");
-					if (type == typeof(RpcResult))
-						DeserializeRpcResult(reader, (RpcResult)obj); // necessary hack because some RPC return bare types like bool or int[]
-				});
-		}
+				var obj = reader.ReadTLObject(type => type == typeof(RpcResult));
+				if (obj is RpcResult rpcResult)
+					DeserializeRpcResult(reader, rpcResult); // necessary hack because some RPC return bare types like bool or int[]
+				Helpers.Log(1, $"Receiving {obj.GetType().Name,-50} timestamp={_session.MsgIdToStamp(msgId)} isResponse={(msgId & 2) != 0} {(seqno == -1 ? "clearText" : "isContent")}={(seqno & 1) != 0}");
+				return obj;
+			}
 
 			static string TransportError(int error_code) => error_code switch
 			{
@@ -350,7 +350,7 @@ namespace WTelegram
 			public RpcException(int code, string message) : base(message) => Code = code;
 		}
 
-		public async Task<X> CallAsync<X>(ITLFunction<X> request)
+		public async Task<X> CallAsync<X>(ITLFunction request)
 		{
 			await SendAsync(request);
 			// TODO: create a background reactor system that handles incoming packets and wake up awaiting tasks when their result has arrived

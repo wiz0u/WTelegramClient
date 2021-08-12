@@ -6209,7 +6209,7 @@ namespace WTelegram		// ---functions---
 	public partial class Client
 	{
 		///<summary>See <a href="https://core.telegram.org/method/invokeAfterMsg"/></summary>
-		public Task<X> InvokeAfterMsg<X>(long msg_id, ITLFunction<X> query)
+		public Task<X> InvokeAfterMsg<X>(long msg_id, ITLFunction query)
 			=> CallAsync<X>(writer =>
 			{
 				writer.Write(0xCB9F372D);
@@ -6219,7 +6219,7 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/invokeAfterMsgs"/></summary>
-		public Task<X> InvokeAfterMsgs<X>(long[] msg_ids, ITLFunction<X> query)
+		public Task<X> InvokeAfterMsgs<X>(long[] msg_ids, ITLFunction query)
 			=> CallAsync<X>(writer =>
 			{
 				writer.Write(0x3DC4B4F0);
@@ -7027,7 +7027,7 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/initConnection"/></summary>
-		public static ITLFunction<X> InitConnection<X>(int api_id, string device_model, string system_version, string app_version, string system_lang_code, string lang_pack, string lang_code, ITLFunction<X> query, InputClientProxy proxy = null, JSONValue params_ = null)
+		public static ITLFunction InitConnection(int api_id, string device_model, string system_version, string app_version, string system_lang_code, string lang_pack, string lang_code, ITLFunction query, InputClientProxy proxy = null, JSONValue params_ = null)
 			=> writer =>
 			{
 				writer.Write(0xC1CD5EA9);
@@ -7044,7 +7044,7 @@ namespace WTelegram		// ---functions---
 				if (params_ != null)
 					writer.WriteTLObject(params_);
 				query(writer);
-				return "InitConnection<X>";
+				return "InitConnection";
 			};
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getSupport"/></summary>
@@ -7138,7 +7138,7 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/invokeWithLayer"/></summary>
-		public Task<X> InvokeWithLayer<X>(int layer, ITLFunction<X> query)
+		public Task<X> InvokeWithLayer<X>(int layer, ITLFunction query)
 			=> CallAsync<X>(writer =>
 			{
 				writer.Write(0xDA9B0D0D);
@@ -7300,7 +7300,7 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/invokeWithoutUpdates"/></summary>
-		public Task<X> InvokeWithoutUpdates<X>(ITLFunction<X> query)
+		public Task<X> InvokeWithoutUpdates<X>(ITLFunction query)
 			=> CallAsync<X>(writer =>
 			{
 				writer.Write(0xBF9459B7);
@@ -8889,7 +8889,7 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/invokeWithMessagesRange"/></summary>
-		public Task<X> InvokeWithMessagesRange<X>(MessageRange range, ITLFunction<X> query)
+		public Task<X> InvokeWithMessagesRange<X>(MessageRange range, ITLFunction query)
 			=> CallAsync<X>(writer =>
 			{
 				writer.Write(0x365275F2);
@@ -8899,7 +8899,7 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/invokeWithTakeout"/></summary>
-		public Task<X> InvokeWithTakeout<X>(long takeout_id, ITLFunction<X> query)
+		public Task<X> InvokeWithTakeout<X>(long takeout_id, ITLFunction query)
 			=> CallAsync<X>(writer =>
 			{
 				writer.Write(0xACA9FD2E);

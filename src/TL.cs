@@ -11,7 +11,7 @@ using WTelegram;
 namespace TL
 {
 	public interface ITLObject { }
-	public delegate string ITLFunction<out X>(BinaryWriter writer);
+	public delegate string ITLFunction(BinaryWriter writer);
 
 	public static partial class Schema
 	{
@@ -51,14 +51,14 @@ namespace TL
 			}
 		}
 
-		internal static ITLObject ReadTLObject(this BinaryReader reader, Action<Type, object> notifyType = null)
+		internal static ITLObject ReadTLObject(this BinaryReader reader, Func<Type, bool> customRead = null)
 		{
 			var ctorNb = reader.ReadUInt32();
 			if (ctorNb == NullCtor) return null;
 			if (!Table.TryGetValue(ctorNb, out var type))
 				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 			var obj = Activator.CreateInstance(type);
-			notifyType?.Invoke(type, obj);
+			if (customRead?.Invoke(type) == true) return (ITLObject)obj;
 			var fields = obj.GetType().GetFields().GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
