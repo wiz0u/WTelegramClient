@@ -82,8 +82,8 @@ namespace TL
 	[TLDef(0xF35C6D01)] //rpc_result#f35c6d01 req_msg_id:long result:Object = RpcResult
 	public partial class RpcResult : ITLObject
 	{
-		internal long req_msg_id;
-		internal object result;
+		public long req_msg_id;
+		public object result;
 	}
 
 	[TLDef(0x2144CA19)] //rpc_error#2144ca19 error_code:int error_message:string = RpcError

@@ -2,7 +2,7 @@ pr: none
 trigger:
 - master
 
-name: 0.7.1-alpha.$(Rev:r)
+name: 0.7.5-alpha.$(Rev:r)
 
 pool:
   vmImage: ubuntu-latest

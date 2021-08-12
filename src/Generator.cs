@@ -19,16 +19,21 @@ namespace WTelegram
 		Dictionary<string, TypeInfo> typeInfos;
 		int currentLayer;
 		string tabIndent;
+		private string currentJson;
 
 		public async Task FromWeb()
 		{
 			Console.WriteLine("Fetch web pages...");
+#if DEBUG
+			currentLayer = await Task.FromResult(0);
+#else
 			using var http = new HttpClient();
 			var html = await http.GetStringAsync("https://core.telegram.org/api/layers");
 			currentLayer = int.Parse(Regex.Match(html, @"#layer-(\d+)").Groups[1].Value);
 			await File.WriteAllBytesAsync("TL.MTProto.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/mtproto-json"));
 			await File.WriteAllBytesAsync("TL.Schema.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/json"));
 			await File.WriteAllBytesAsync("TL.Secret.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/end-to-end-json"));
+#endif
 			FromJson("TL.MTProto.json", "TL.MTProto.cs", @"TL.Table.cs");
 			FromJson("TL.Schema.json", "TL.Schema.cs", @"TL.Table.cs");
 			FromJson("TL.Secret.json", "TL.Secret.cs", @"TL.Table.cs");
@@ -37,6 +42,7 @@ namespace WTelegram
 		public void FromJson(string jsonPath, string outputCs, string tableCs = null)
 		{
 			Console.WriteLine("Parsing " + jsonPath);
+			currentJson = Path.GetFileNameWithoutExtension(jsonPath);
 			var schema = JsonSerializer.Deserialize<SchemaJson>(File.ReadAllText(jsonPath));
 			using var sw = File.CreateText(outputCs);
 			sw.WriteLine("// This file is (mainly) generated automatically using the Generator class");
@@ -61,7 +67,7 @@ namespace WTelegram
 				foreach (var ctor in layer)
 				{
 					if (ctorToTypes.ContainsKey(ctor.ID)) continue;
-					if (ctor.type is "Bool" or "Vector t") continue;
+					if (ctor.type == "Vector t") continue;
 					var structName = CSharpName(ctor.predicate);
 					ctorToTypes[ctor.ID] = layerPrefix + structName;
 					var typeInfo = typeInfos.GetOrCreate(ctor.type);
@@ -143,7 +149,7 @@ namespace WTelegram
 			}
 			sw.WriteLine("}");
 
-			if (tableCs != null) UpdateTable(jsonPath, tableCs, methods);
+			if (tableCs != null) UpdateTable(tableCs, methods);
 		}
 
 		void WriteTypeInfo(StreamWriter sw, TypeInfo typeInfo, string layerPrefix, bool isMethod)
@@ -156,6 +162,8 @@ namespace WTelegram
 			{
 				needNewLine = false;
 				sw.WriteLine();
+				if (currentJson != "TL.MTProto")
+					sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/type/{typeInfo.Structs[0].type}\"/></summary>");
 				sw.WriteLine($"{tabIndent}public abstract partial class {parentClass} : ITLObject {{ }}");
 			}
 			int skipParams = 0;
@@ -167,13 +175,25 @@ namespace WTelegram
 				if (!allTypes.Add(layerPrefix + className)) continue;
 				if (needNewLine) { needNewLine = false; sw.WriteLine(); }
 				if (ctor.id == null)
+				{
+					if (currentJson != "TL.MTProto")
+						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/type/{typeInfo.Structs[0].type}\"/></summary>");
 					sw.Write($"{tabIndent}public abstract partial class {className} : ITLObject");
+				}
 				else
 				{
-					sw.Write($"{tabIndent}[TLDef(0x{ctor.ID:X8})] //{ctor.predicate}#{ctor.ID:x8} ");
-					if (genericType != null) sw.Write($"{{{typeInfo.ReturnName}:Type}} ");
-					foreach (var parm in ctor.@params) sw.Write($"{parm.name}:{parm.type} ");
-					sw.WriteLine($"= {ctor.type}");
+					if (currentJson != "TL.MTProto")
+					{
+						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/constructor/{ctor.predicate}\"/></summary>");
+						sw.WriteLine($"{tabIndent}[TLDef(0x{ctor.ID:X8})]");
+					}
+					else
+					{
+						sw.Write($"{tabIndent}[TLDef(0x{ctor.ID:X8})] //{ctor.predicate}#{ctor.ID:x8} ");
+						if (genericType != null) sw.Write($"{{{typeInfo.ReturnName}:Type}} ");
+						foreach (var parm in ctor.@params) sw.Write($"{parm.name}:{parm.type} ");
+						sw.WriteLine($"= {ctor.type}");
+					}
 					sw.Write($"{tabIndent}public partial class {className} : ");
 					sw.Write(skipParams == 0 && typeInfo.NeedAbstract > 0 ? "ITLObject" : parentClass);
 				}
@@ -325,10 +345,16 @@ namespace WTelegram
 			if (style == -1) return;
 			sw.WriteLine();
 
-			sw.Write($"{tabIndent}//{method.method}#{ctorNb:x8} ");
-			if (method.type.Length == 1) { sw.Write($"{{{method.type}:Type}} "); funcName += $"<{returnType}>"; }
-			foreach (var parm in method.@params) sw.Write($"{parm.name}:{parm.type} ");
-			sw.WriteLine($"= {method.type}");
+			if (method.type.Length == 1) funcName += $"<{returnType}>";
+			if (currentJson != "TL.MTProto")
+				sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/method/{method.method}\"/></summary>");
+			else
+			{
+				sw.Write($"{tabIndent}//{method.method}#{ctorNb:x8} ");
+				if (method.type.Length == 1) sw.Write($"{{{method.type}:Type}} ");
+				foreach (var parm in method.@params) sw.Write($"{parm.name}:{parm.type} ");
+				sw.WriteLine($"= {method.type}");
+			}
 
 			if (style == 0) sw.WriteLine($"{tabIndent}public Task<{returnType}> {funcName}() => CallAsync<{returnType}>({funcName});");
 			if (style == 0) sw.Write($"{tabIndent}public static string {funcName}(BinaryWriter writer");
@@ -425,9 +451,9 @@ namespace WTelegram
 			if (style != 0) tabIndent = tabIndent[0..^1];
 		}
 
-		void UpdateTable(string jsonPath, string tableCs, List<TypeInfo> methods)
+		void UpdateTable(string tableCs, List<TypeInfo> methods)
 		{
-			var myTag = $"\t\t\t// from {Path.GetFileNameWithoutExtension(jsonPath)}:";
+			var myTag = $"\t\t\t// from {currentJson}:";
 			var seen_ids = new HashSet<int>();
 			using (var sr = new StreamReader(tableCs))
 			using (var sw = new StreamWriter(tableCs + ".new"))
