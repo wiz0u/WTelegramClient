@@ -51,14 +51,14 @@ namespace TL
 			}
 		}
 
-		internal static ITLObject ReadTLObject(this BinaryReader reader, Func<Type, bool> customRead = null)
+		internal static ITLObject ReadTLObject(this BinaryReader reader, Func<Type, bool> notifyType = null)
 		{
 			var ctorNb = reader.ReadUInt32();
 			if (ctorNb == NullCtor) return null;
 			if (!Table.TryGetValue(ctorNb, out var type))
 				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 			var obj = Activator.CreateInstance(type);
-			if (customRead?.Invoke(type) == true) return (ITLObject)obj;
+			if (notifyType?.Invoke(type) == true) return (ITLObject) obj;
 			var fields = obj.GetType().GetFields().GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
@@ -244,7 +244,7 @@ namespace TL
 				}
 				catch (Exception ex)
 				{
-					Helpers.Log(4, ex.ToString());
+					Helpers.Log(4, "While deserializing vector<%Message>: " + ex.ToString());
 				}
 				reader.BaseStream.Position = pos + array[i].bytes;
 			}
@@ -255,7 +255,6 @@ namespace TL
 		{
 			using var reader = new BinaryReader(new GZipStream(new MemoryStream(obj.packed_data), CompressionMode.Decompress));
 			var result = ReadTLObject(reader);
-			Helpers.Log(1, $"            → {result.GetType().Name}");
 			return result;
 		}
 

@@ -71,12 +71,16 @@ namespace WTelegram
 
 		internal (long msgId, int seqno) NewMsg(bool isContent)
 		{
+			int seqno;
 			long msgId = DateTime.UtcNow.Ticks + ServerTicksOffset - 621355968000000000L;
 			msgId = msgId * 428 + (msgId >> 24) * 25110956; // approximately unixtime*2^32 and divisible by 4
-			if (msgId <= LastSentMsgId) msgId = LastSentMsgId += 4; else LastSentMsgId = msgId;
+			lock (this)
+			{
+				if (msgId <= LastSentMsgId) msgId = LastSentMsgId += 4; else LastSentMsgId = msgId;
 
-			int seqno = isContent ? Seqno++ * 2 + 1 : Seqno * 2;
-			Save();
+				seqno = isContent ? Seqno++ * 2 + 1 : Seqno * 2;
+				Save();
+			}
 			return (msgId, seqno);
 		}
 
