@@ -7,8 +7,10 @@ namespace TL
 	static partial class Schema
 	{
 		public const int Layer = 121;					// fetched 10/08/2021 11:46:24
-		public const int VectorCtor = 0x1CB5C415;
-		public const int NullCtor = 0x56730BCC;
+		public const uint VectorCtor = 0x1CB5C415;
+		public const uint NullCtor = 0x56730BCC;
+		public const uint RpcResult = 0xF35C6D01;
+		public const uint MsgContainer = 0x73F1F8DC;
 
 		internal readonly static Dictionary<uint, Type> Table = new()
 		{

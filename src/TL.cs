@@ -51,14 +51,13 @@ namespace TL
 			}
 		}
 
-		internal static ITLObject ReadTLObject(this BinaryReader reader, Func<Type, bool> notifyType = null)
+		internal static ITLObject ReadTLObject(this BinaryReader reader, uint ctorNb = 0)
 		{
-			var ctorNb = reader.ReadUInt32();
+			if (ctorNb == 0) ctorNb = reader.ReadUInt32();
 			if (ctorNb == NullCtor) return null;
 			if (!Table.TryGetValue(ctorNb, out var type))
 				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 			var obj = Activator.CreateInstance(type);
-			if (notifyType?.Invoke(type) == true) return (ITLObject) obj;
 			var fields = obj.GetType().GetFields().GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
@@ -129,8 +128,6 @@ namespace TL
 					{
 						if (type == typeof(byte[]))
 							return reader.ReadTLBytes();
-						else if (type == typeof(_Message[]))
-							return reader.ReadTLMessages();
 						else
 							return reader.ReadTLVector(type);
 					}
@@ -139,7 +136,7 @@ namespace TL
 					else if (type == typeof(Int256))
 						return new Int256(reader);
 					else
-						return ReadTLObject(reader);
+						return reader.ReadTLObject();
 				default:
 					ShouldntBeHere();
 					return null;
@@ -158,7 +155,7 @@ namespace TL
 
 		internal static Array ReadTLVector(this BinaryReader reader, Type type)
 		{
-			var ctorNb = reader.ReadInt32();
+			var ctorNb = reader.ReadUInt32();
 			if (ctorNb != VectorCtor) throw new ApplicationException($"Cannot deserialize {type.Name} with ctor #{ctorNb:x}");
 			var elementType = type.GetElementType();
 			int count = reader.ReadInt32();
@@ -225,36 +222,10 @@ namespace TL
 			writer.Write(0);    // null arrays are serialized as empty
 		}
 
-		internal static _Message[] ReadTLMessages(this BinaryReader reader)
-		{
-			int count = reader.ReadInt32();
-			var array = new _Message[count];
-			for (int i = 0; i < count; i++)
-			{
-				array[i] = new _Message
-				{
-					msg_id = reader.ReadInt64(),
-					seqno = reader.ReadInt32(),
-					bytes = reader.ReadInt32(),
-				};
-				var pos = reader.BaseStream.Position;
-				try
-				{
-					array[i].body = reader.ReadTLObject();
-				}
-				catch (Exception ex)
-				{
-					Helpers.Log(4, "While deserializing vector<%Message>: " + ex.ToString());
-				}
-				reader.BaseStream.Position = pos + array[i].bytes;
-			}
-			return array;
-		}
-
 		internal static ITLObject UnzipPacket(GzipPacked obj)
 		{
 			using var reader = new BinaryReader(new GZipStream(new MemoryStream(obj.packed_data), CompressionMode.Decompress));
-			var result = ReadTLObject(reader);
+			var result = reader.ReadTLObject();
 			return result;
 		}
 

@@ -37,7 +37,7 @@ That file path is configurable, and under various circumstances (changing user o
 # Non-interactive configuration
 Your next step will probably be to provide a configuration to the client so that the required elements (in bold above) are not prompted through the Console but answered by your program.
 
-For that you need to write a method that will provide the answer, and pass it on the constructor:
+To do this, you need to write a method that will provide the answers, and pass it on the constructor:
 ```csharp
 static string Config(string what)
 {
@@ -57,7 +57,7 @@ There are other configuration items that are queried to your method but returnin
 
 The configuration items shown above are the only ones that have no default values and are required to be provided by your method.
 
-The constructor also takes another optional delegate parameter that will be called for any other Update and other information/status/service messages that Telegram sends unsollicited, independently of your API requests.
+The constructor also takes another optional delegate parameter that will be called for any other Update or other information/status/service messages that Telegram sends unsollicited, independently of your API requests.
 
 Finally, if you want to redirect the library logs to your logger instead of the Console, you can install a delegate in the `WTelegram.Helpers.Log` static property.
 Its `int` argument is the log severity, compatible with the classic [LogLevel enum](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel)
@@ -104,7 +104,7 @@ Beyond the TL async methods, the Client class offers a few other methods to simp
 
 The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code**
 
-This library requires .NET 5.0 minimum.
+For the moment, this library requires .NET 5.0 minimum.
 
 # Development status
 The library is already well usable for many scenarios involving automated steps based on API requests/responses.
@@ -115,7 +115,7 @@ Here are the main expected developments:
 - [x] Improve code Generator (import of TL-schema JSONs)
 - [x] Nuget deployment & public CI feed
 - [x] Convert API functions classes to real methods and serialize structures without using Reflection
-- [ ] Separate task/thread for reading/handling update messages independently from CallAsync
+- [x] Separate background task for reading/handling update messages independently
 - [x] Support MTProto 2.0
 - [x] Support users with 2FA enabled
 - [ ] Support secret chats end-to-end encryption & PFS
