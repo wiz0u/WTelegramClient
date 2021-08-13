@@ -51,6 +51,7 @@
 	partial class UserBase
 	{
 		public abstract int ID { get; }
+		public abstract string DisplayName { get; }
 		protected abstract InputPeer ToInputPeer();
 		protected abstract InputUserBase ToInputUser();
 		public static implicit operator InputPeer(UserBase user) => user.ToInputPeer();
@@ -59,12 +60,14 @@
 	partial class UserEmpty
 	{
 		public override int ID => id;
+		public override string DisplayName => null;
 		protected override InputPeer ToInputPeer() => InputPeer.Empty;
 		protected override InputUserBase ToInputUser() => InputUser.Empty;
 	}
 	partial class User
 	{
 		public override int ID => id;
+		public override string DisplayName => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
 		protected override InputPeer ToInputPeer() => new InputPeerUser { user_id = id, access_hash = access_hash };
 		protected override InputUserBase ToInputUser() => new InputUser { user_id = id, access_hash = access_hash };
 	}

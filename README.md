@@ -1,6 +1,8 @@
-﻿[![NuGet version](https://badge.fury.io/nu/WTelegramClient.svg)](https://badge.fury.io/nu/WTelegramClient)
-[![Build Status](https://dev.azure.com/wiz0u/WTelegramClient/_apis/build/status/wiz0u.WTelegramClient?branchName=master)](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
-[![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-blue.svg?style=flat-square)](https://t.me/WTelegramClient)
+﻿[![NuGet version](https://img.shields.io/nuget/v/WTelegramClient)](https://www.nuget.org/packages/WTelegramClient/)
+[![Dev nuget](https://img.shields.io/badge/dynamic/json?color=ffc040&label=Dev%20nuget&query=%24.versions%5B0%5D&url=https%3A%2F%2Fpkgs.dev.azure.com%2Fwiz0u%2F81bd92b7-0bb9-4701-b426-09090b27e037%2F_packaging%2F46ce0497-7803-4bd4-8c6c-030583e7c371%2Fnuget%2Fv3%2Fflat2%2Fwtelegramclient%2Findex.json)](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
+[![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
+[![API Layer](https://img.shields.io/badge/API_Layer-121-blueviolet)](https://core.telegram.org/api/layers)
+[![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 
 # WTelegramClient
 ### _Telegram client library written 100% in C# and .NET Core_
