@@ -52,6 +52,7 @@ namespace TL
 			[0xF660E1D4] = typeof(DestroyAuthKeyOk),
 			[0x0A9F2259] = typeof(DestroyAuthKeyNone),
 			[0xEA109B13] = typeof(DestroyAuthKeyFail),
+			[0x7ABE77EC] = typeof(Ping),
 			// from TL.Schema:
 			[0xBC799737] = typeof(BoolFalse),
 			[0x997275B5] = typeof(BoolTrue),

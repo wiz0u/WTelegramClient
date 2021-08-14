@@ -13,6 +13,7 @@
 	{
 		public abstract int ID { get; }
 		public abstract string Title { get; }
+		/// <summary>returns true if you're banned of any of these rights</summary>
 		public abstract bool IsBanned(ChatBannedRights.Flags flags = 0);
 		protected abstract InputPeer ToInputPeer();
 		public static implicit operator InputPeer(ChatBase chat) => chat.ToInputPeer();
@@ -28,7 +29,6 @@
 	{
 		public override int ID => id;
 		public override string Title => title;
-		/// <summary>returns true if you're banned of any of these rights</summary>
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		protected override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
 	}

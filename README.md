@@ -127,5 +127,5 @@ Here are the main expected developments:
 - [x] Separate background task for reading/handling update messages independently
 - [x] Support MTProto 2.0
 - [x] Support users with 2FA enabled
+- [x] Support main service messages
 - [ ] Support secret chats end-to-end encryption & PFS
-- [ ] Support all service messages

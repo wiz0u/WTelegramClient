@@ -122,10 +122,17 @@ namespace WTelegram
 			}
 			if (typeInfosByLayer[0]["Message"].SameName.ID == 0x5BB8E511) typeInfosByLayer[0].Remove("Message");
 
-			var methods = new List<TypeInfo>();
 			if (schema.methods.Count != 0)
 			{
 				typeInfos = typeInfosByLayer[0];
+				var ping = schema.methods.FirstOrDefault(m => m.method == "ping");
+				if (ping != null)
+				{
+					var typeInfo = new TypeInfo { ReturnName = ping.type };
+					typeInfo.Structs.Add(new Constructor { id = ping.id, @params = ping.@params, predicate = ping.method, type = ping.type });
+					ctorToTypes[int.Parse(ping.id)] = CSharpName(ping.method);
+					WriteTypeInfo(sw, typeInfo, "", false);
+				}
 				sw.WriteLine("}");
 				sw.WriteLine("");
 				sw.WriteLine("namespace WTelegram\t\t// ---functions---");
@@ -149,7 +156,7 @@ namespace WTelegram
 			}
 			sw.WriteLine("}");
 
-			if (tableCs != null) UpdateTable(tableCs, methods);
+			if (tableCs != null) UpdateTable(tableCs);
 		}
 
 		void WriteTypeInfo(StreamWriter sw, TypeInfo typeInfo, string layerPrefix, bool isMethod)
@@ -345,18 +352,20 @@ namespace WTelegram
 			if (style == -1) return;
 			sw.WriteLine();
 
+			var callAsync = "CallAsync";
 			if (method.type.Length == 1 && style != 1) funcName += $"<{returnType}>";
 			if (currentJson != "TL.MTProto")
 				sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/method/{method.method}\"/></summary>");
 			else
 			{
+				if (method.type is not "FutureSalts" and not "Pong") callAsync = "CallBareAsync";
 				sw.Write($"{tabIndent}//{method.method}#{ctorNb:x8} ");
 				if (method.type.Length == 1) sw.Write($"{{{method.type}:Type}} ");
 				foreach (var parm in method.@params) sw.Write($"{parm.name}:{parm.type} ");
 				sw.WriteLine($"= {method.type}");
 			}
 
-			if (style == 0) sw.WriteLine($"{tabIndent}public Task<{returnType}> {funcName}() => CallAsync<{returnType}>({funcName});");
+			if (style == 0) sw.WriteLine($"{tabIndent}public Task<{returnType}> {funcName}() => {callAsync}<{returnType}>({funcName});");
 			if (style == 0) sw.Write($"{tabIndent}public static string {funcName}(BinaryWriter writer");
 			if (style == 1) sw.Write($"{tabIndent}public static ITLFunction {funcName}(");
 			if (style == 2) sw.Write($"{tabIndent}public Task<{returnType}> {funcName}(");
@@ -390,7 +399,7 @@ namespace WTelegram
 			sw.WriteLine(")");
 			if (style != 0) tabIndent += "\t";
 			if (style == 1) sw.WriteLine($"{tabIndent}=> writer =>");
-			if (style == 2) sw.WriteLine($"{tabIndent}=> CallAsync<{returnType}>(writer =>");
+			if (style == 2) sw.WriteLine($"{tabIndent}=> {callAsync}<{returnType}>(writer =>");
 			sw.WriteLine(tabIndent + "{");
 			sw.WriteLine($"{tabIndent}\twriter.Write(0x{ctorNb:X8});");
 			foreach (var parm in method.@params) // serialize request
@@ -451,7 +460,7 @@ namespace WTelegram
 			if (style != 0) tabIndent = tabIndent[0..^1];
 		}
 
-		void UpdateTable(string tableCs, List<TypeInfo> methods)
+		void UpdateTable(string tableCs)
 		{
 			var myTag = $"\t\t\t// from {currentJson}:";
 			var seen_ids = new HashSet<int>();

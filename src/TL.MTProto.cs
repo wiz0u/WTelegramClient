@@ -222,6 +222,9 @@ namespace TL
 	public partial class DestroyAuthKeyNone : DestroyAuthKeyRes { }
 	[TLDef(0xEA109B13)] //destroy_auth_key_fail#ea109b13 = DestroyAuthKeyRes
 	public partial class DestroyAuthKeyFail : DestroyAuthKeyRes { }
+
+	[TLDef(0x7ABE77EC)] //ping#7abe77ec ping_id:long = Pong
+	public partial class Ping : ITLObject { public long ping_id; }
 }
 
 namespace WTelegram		// ---functions---
@@ -233,7 +236,7 @@ namespace WTelegram		// ---functions---
 	{
 		//req_pq_multi#be7e8ef1 nonce:int128 = ResPQ
 		public Task<ResPQ> ReqPqMulti(Int128 nonce)
-			=> CallAsync<ResPQ>(writer =>
+			=> CallBareAsync<ResPQ>(writer =>
 			{
 				writer.Write(0xBE7E8EF1);
 				writer.Write(nonce);
@@ -242,7 +245,7 @@ namespace WTelegram		// ---functions---
 
 		//req_DH_params#d712e4be nonce:int128 server_nonce:int128 p:bytes q:bytes public_key_fingerprint:long encrypted_data:bytes = Server_DH_Params
 		public Task<ServerDHParams> ReqDHParams(Int128 nonce, Int128 server_nonce, byte[] p, byte[] q, long public_key_fingerprint, byte[] encrypted_data)
-			=> CallAsync<ServerDHParams>(writer =>
+			=> CallBareAsync<ServerDHParams>(writer =>
 			{
 				writer.Write(0xD712E4BE);
 				writer.Write(nonce);
@@ -256,7 +259,7 @@ namespace WTelegram		// ---functions---
 
 		//set_client_DH_params#f5045f1f nonce:int128 server_nonce:int128 encrypted_data:bytes = Set_client_DH_params_answer
 		public Task<SetClientDHParamsAnswer> SetClientDHParams(Int128 nonce, Int128 server_nonce, byte[] encrypted_data)
-			=> CallAsync<SetClientDHParamsAnswer>(writer =>
+			=> CallBareAsync<SetClientDHParamsAnswer>(writer =>
 			{
 				writer.Write(0xF5045F1F);
 				writer.Write(nonce);
@@ -267,7 +270,7 @@ namespace WTelegram		// ---functions---
 
 		//rpc_drop_answer#58e4a740 req_msg_id:long = RpcDropAnswer
 		public Task<RpcDropAnswer> RpcDropAnswer(long req_msg_id)
-			=> CallAsync<RpcDropAnswer>(writer =>
+			=> CallBareAsync<RpcDropAnswer>(writer =>
 			{
 				writer.Write(0x58E4A740);
 				writer.Write(req_msg_id);
@@ -304,7 +307,7 @@ namespace WTelegram		// ---functions---
 
 		//destroy_session#e7512126 session_id:long = DestroySessionRes
 		public Task<DestroySessionRes> DestroySession(long session_id)
-			=> CallAsync<DestroySessionRes>(writer =>
+			=> CallBareAsync<DestroySessionRes>(writer =>
 			{
 				writer.Write(0xE7512126);
 				writer.Write(session_id);
@@ -313,7 +316,7 @@ namespace WTelegram		// ---functions---
 
 		//destroy_auth_key#d1435160 = DestroyAuthKeyRes
 		public Task<DestroyAuthKeyRes> DestroyAuthKey()
-			=> CallAsync<DestroyAuthKeyRes>(writer =>
+			=> CallBareAsync<DestroyAuthKeyRes>(writer =>
 			{
 				writer.Write(0xD1435160);
 				return "DestroyAuthKey";

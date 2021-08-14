@@ -236,6 +236,12 @@ namespace TL
 #endif
 	}
 
+	public class RpcException : Exception
+	{
+		public readonly int Code;
+		public RpcException(int code, string message) : base(message) => Code = code;
+	}
+
 	[AttributeUsage(AttributeTargets.Class)]
 	public class TLDefAttribute : Attribute
 	{

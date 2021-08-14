@@ -29,12 +29,13 @@ namespace WTelegram
 		private NetworkStream _networkStream;
 		private int _frame_seqTx = 0, _frame_seqRx = 0;
 		private ITLFunction _lastSentMsg;
+		private long _lastRecvMsgId;
 		private readonly List<long> _msgsToAck = new();
 		private readonly Random _random = new();
 		private readonly SHA256 _sha256 = SHA256.Create();
 		private int _unexpectedSaltChange;
 		private Task _reactorTask;
-		private TaskCompletionSource<object> _rawRequest;
+		private long _bareRequest;
 		private readonly Dictionary<long, (Type type, TaskCompletionSource<object> tcs)> _pendingRequests = new();
 		private readonly SemaphoreSlim _sendSemaphore = new(1);
 		private CancellationTokenSource _cts;
@@ -302,7 +303,7 @@ namespace WTelegram
 			if (authKeyId == 0) // Unencrypted message
 			{
 				using var reader = new BinaryReader(new MemoryStream(data, 8, data.Length - 8));
-				long msgId = reader.ReadInt64();
+				long msgId = _lastRecvMsgId = reader.ReadInt64();
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				int length = reader.ReadInt32();
 				if (length != data.Length - 20) throw new ApplicationException($"Unexpected unencrypted length {length} != {data.Length - 20}");
@@ -324,11 +325,11 @@ namespace WTelegram
 				if (decrypted_data.Length < 36) // header below+ctorNb
 					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
 				using var reader = new BinaryReader(new MemoryStream(decrypted_data));
-				var serverSalt = reader.ReadInt64();	// int64 salt
-				var sessionId = reader.ReadInt64();		// int64 session_id
-				var msgId = reader.ReadInt64();			// int64 message_id
-				var seqno = reader.ReadInt32();			// int32 msg_seqno
-				var length = reader.ReadInt32();		// int32 message_data_length
+				var serverSalt = reader.ReadInt64();			// int64 salt
+				var sessionId = reader.ReadInt64();				// int64 session_id
+				var msgId = _lastRecvMsgId = reader.ReadInt64();// int64 message_id
+				var seqno = reader.ReadInt32();					// int32 msg_seqno
+				var length = reader.ReadInt32();				// int32 message_data_length
 
 				if (serverSalt != _session.Salt)
 				{
@@ -418,17 +419,13 @@ namespace WTelegram
 		private RpcResult ReadRpcResult(BinaryReader reader)
 		{
 			long msgId = reader.ReadInt64();
-			(Type type, TaskCompletionSource<object> tcs) request;
-			lock (_pendingRequests)
-				if (_pendingRequests.TryGetValue(msgId, out request))
-					_pendingRequests.Remove(msgId);
+			var (type, tcs) = PullPendingRequest(msgId);
 			object result;
-			if (request.type != null)
+			if (tcs != null)
 			{
-				result = reader.ReadTLValue(request.type);
+				result = reader.ReadTLValue(type);
 				Log(1, "");
-				Task.Run(() => request.tcs.SetResult(result)); // to avoid deadlock, see https://blog.stephencleary.com/2012/12/dont-block-in-asynchronous-code.html
-				return new RpcResult { req_msg_id = msgId, result = result };
+				Task.Run(() => tcs.SetResult(result)); // in Task.Run to avoid deadlock, see https://blog.stephencleary.com/2012/12/dont-block-in-asynchronous-code.html
 			}
 			else
 			{
@@ -437,8 +434,8 @@ namespace WTelegram
 					Log(4, "for unknown msgId ");
 				else
 					Log(1, "for past msgId ");
-				return new RpcResult { req_msg_id = msgId, result = result };
 			}
+			return new RpcResult { req_msg_id = msgId, result = result };
 
 			void Log(int level, string msgIdprefix)
 			{
@@ -449,29 +446,33 @@ namespace WTelegram
 			}
 		}
 
-		public class RpcException : Exception
+		private (Type type, TaskCompletionSource<object> tcs) PullPendingRequest(long msgId)
 		{
-			public readonly int Code;
-			public RpcException(int code, string message) : base(message) => Code = code;
+			(Type type, TaskCompletionSource<object> tcs) request;
+			lock (_pendingRequests)
+				if (_pendingRequests.TryGetValue(msgId, out request))
+					_pendingRequests.Remove(msgId);
+			return request;
+		}
+
+		internal async Task<X> CallBareAsync<X>(ITLFunction request)
+		{
+			var msgId = await SendAsync(request, false);
+			var tcs = new TaskCompletionSource<object>();
+			lock (_pendingRequests)
+				_pendingRequests[msgId] = (typeof(X), tcs);
+			_bareRequest = msgId;
+			return (X)await tcs.Task;
 		}
 
 		public async Task<X> CallAsync<X>(ITLFunction request)
 		{
 		retry:
 			var msgId = await SendAsync(request, true);
-			object result;
-			if (_session.AuthKeyID == 0)
-			{
-				_rawRequest = new TaskCompletionSource<object>();
-				result = await _rawRequest.Task;
-			}
-			else
-			{
-				var tcs = new TaskCompletionSource<object>();
-				lock (_pendingRequests)
-					_pendingRequests[msgId] = (typeof(X), tcs);
-				result = await tcs.Task;
-			}
+			var tcs = new TaskCompletionSource<object>();
+			lock (_pendingRequests)
+				_pendingRequests[msgId] = (typeof(X), tcs);
+			var result = await tcs.Task;
 			switch (result)
 			{
 				case X resultX: return resultX;
@@ -549,6 +550,10 @@ namespace WTelegram
 						if (msg.body != null)
 							await HandleMessageAsync(msg.body);
 					break;
+				case MsgCopy msgCopy:
+					if (msgCopy?.orig_message?.body != null)
+						await HandleMessageAsync(msgCopy.orig_message.body);
+					break;
 				case BadServerSalt badServerSalt:
 					_session.Salt = badServerSalt.new_server_salt;
 					if (badServerSalt.bad_msg_id == _session.LastSentMsgId)
@@ -562,21 +567,44 @@ namespace WTelegram
 							}
 					}
 					break;
-				case BadMsgNotification badMsgNotification:
-					Helpers.Log(3, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
+				case Ping ping:
+					_ = SendAsync(MakeFunction(new Pong { msg_id = _lastRecvMsgId, ping_id = ping.ping_id }), false);
+					break;
+				case Pong pong:
+					await SetResult(pong.msg_id, pong);
+					break;
+				case FutureSalts futureSalts:
+					await SetResult(futureSalts.req_msg_id, futureSalts);
 					break;
 				case RpcResult rpcResult:
-					break; // wake-up of waiting task was already done in ReadRpcResult
+					break; // SetResult was already done in ReadRpcResult
+				case MsgsAck msgsAck:
+					break; // we don't do anything with these, for now
+				case BadMsgNotification badMsgNotification:
+					Helpers.Log(4, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
+					goto default;
 				default:
-					if (_rawRequest != null)
+					if (_bareRequest != 0)
 					{
-						var rawRequest = _rawRequest;
-						_ = Task.Run(() => rawRequest.SetResult(obj)); // to avoid deadlock, see https://blog.stephencleary.com/2012/12/dont-block-in-asynchronous-code.html
-						_rawRequest = null;
+						var (type, tcs) = PullPendingRequest(_bareRequest);
+						if (obj.GetType().IsAssignableTo(type))
+						{
+							_bareRequest = 0;
+							_ = Task.Run(() => tcs.SetResult(obj));
+						}
 					}
-					else if (_updateHandler != null)
+					if (_updateHandler != null)
 						await _updateHandler?.Invoke(obj);
 					break;
+			}
+
+			async Task SetResult(long msgId, object result)
+			{
+				var (type, tcs) = PullPendingRequest(msgId);
+				if (tcs != null)
+					_ = Task.Run(() => tcs.SetResult(result));
+				else if (_updateHandler != null)
+					await _updateHandler?.Invoke(obj);
 			}
 		}
 
