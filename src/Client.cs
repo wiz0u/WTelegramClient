@@ -422,21 +422,30 @@ namespace WTelegram
 			lock (_pendingRequests)
 				if (_pendingRequests.TryGetValue(msgId, out request))
 					_pendingRequests.Remove(msgId);
+			object result;
 			if (request.type != null)
 			{
-				var result = reader.ReadTLValue(request.type);
-				Helpers.Log(1, $"           → {result?.GetType().Name,-47} #{(short)msgId.GetHashCode():X4}");
+				result = reader.ReadTLValue(request.type);
+				Log(1, "");
 				Task.Run(() => request.tcs.SetResult(result)); // to avoid deadlock, see https://blog.stephencleary.com/2012/12/dont-block-in-asynchronous-code.html
 				return new RpcResult { req_msg_id = msgId, result = result };
 			}
 			else
 			{
-				var result = reader.ReadTLObject();
+				result = reader.ReadTLObject();
 				if (_session.MsgIdToStamp(msgId) >= _session.SessionStart)
-					Helpers.Log(4, $"           → {result?.GetType().Name,-47} for unknown msgId #{(short)msgId.GetHashCode():X4}");
+					Log(4, "for unknown msgId ");
 				else
-					Helpers.Log(1, $"           → {result?.GetType().Name,-47} for past msgId #{(short)msgId.GetHashCode():X4}");
+					Log(1, "for past msgId ");
 				return new RpcResult { req_msg_id = msgId, result = result };
+			}
+
+			void Log(int level, string msgIdprefix)
+			{
+				if (result is RpcError rpcError)
+					Helpers.Log(4, $"           → RpcError {rpcError.error_code,3} {rpcError.error_message,-34} {msgIdprefix}#{(short)msgId.GetHashCode():X4}");
+				else
+					Helpers.Log(level, $"           → {result?.GetType().Name,-47} {msgIdprefix}#{(short)msgId.GetHashCode():X4}");
 			}
 		}
 
@@ -467,11 +476,17 @@ namespace WTelegram
 			{
 				case X resultX: return resultX;
 				case RpcError rpcError:
-					int migrateDC;
-					if (rpcError.error_code == 303 && ((migrateDC = rpcError.error_message.IndexOf("_MIGRATE_")) > 0))
+					int number;
+					if (rpcError.error_code == 303 && ((number = rpcError.error_message.IndexOf("_MIGRATE_")) > 0))
 					{
-						migrateDC = int.Parse(rpcError.error_message[(migrateDC + 9)..]);
-						await MigrateDCAsync(migrateDC);
+						number = int.Parse(rpcError.error_message[(number + 9)..]);
+						await MigrateDCAsync(number);
+						goto retry;
+					}
+					else if (rpcError.error_code == 420 && ((number = rpcError.error_message.IndexOf("_WAIT_")) > 0))
+					{
+						number = int.Parse(rpcError.error_message[(number + 6)..]);
+						await Task.Delay(number * 1000);
 						goto retry;
 					}
 					else

@@ -13,6 +13,7 @@
 	{
 		public abstract int ID { get; }
 		public abstract string Title { get; }
+		public abstract bool IsBanned(ChatBannedRights.Flags flags = 0);
 		protected abstract InputPeer ToInputPeer();
 		public static implicit operator InputPeer(ChatBase chat) => chat.ToInputPeer();
 	}
@@ -20,24 +21,29 @@
 	{
 		public override int ID => id;
 		public override string Title => null;
+		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		protected override InputPeer ToInputPeer() => InputPeer.Empty;
 	}
 	partial class Chat
 	{
 		public override int ID => id;
 		public override string Title => title;
+		/// <summary>returns true if you're banned of any of these rights</summary>
+		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		protected override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
 	}
 	partial class ChatForbidden
 	{
 		public override int ID => id;
 		public override string Title => title;
+		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		protected override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
 	}
 	partial class Channel
 	{
 		public override int ID => id;
 		public override string Title => title;
+		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((banned_rights?.flags ?? 0) & flags) != 0 || ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		protected override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
 		public static implicit operator InputChannel(Channel channel) => new() { channel_id = channel.id, access_hash = channel.access_hash };
 	}
@@ -45,6 +51,7 @@
 	{
 		public override int ID => id;
 		public override string Title => title;
+		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		protected override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
 	}
 	

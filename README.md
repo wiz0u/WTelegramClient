@@ -69,6 +69,7 @@ Its `int` argument is the log severity, compatible with the classic [LogLevel en
 :information_source: The Telegram API makes extensive usage of base and derived classes, so be ready to use the various syntaxes C# offer to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
 
 To find which derived classes are available for a given base class, the fastest is to check our [TL.Schema.cs](src/TL.Schema.cs) source file as they are listed in groups.
+Intellisense tooltips on API structures/methods will also display a web link to the adequate Telegram documentation page.
 
 The Telegram [API object classes](https://core.telegram.org/schema) are defined in the `TL` namespace, and the [API functions](https://core.telegram.org/methods) are available as async methods of `Client`.
 
@@ -102,14 +103,20 @@ await client.SendMessageAsync(target, "Hello, World");
 
 An invalid API request can result in a RpcException being raised, reflecting the [error code and status text](https://core.telegram.org/api/errors) of the problem.
 
-Beyond the TL async methods, the Client class offers a few other methods to simplify the sending of files, medias or messages.
-
 The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code**
+
+Optional API parameters have a default value of `null` when unset. Passing `null` for a required string/array is the same as *empty* (0-length). Required API parameters/fields can sometimes be set to 0 or `null` when unused (check API documentation).
+
+I've added several useful converters or implicit cast to various API object so that they are more easy to manipulate.
+
+Beyond the TL async methods, the Client class offers a few other methods to simplify the sending of files, medias or messages.
 
 For the moment, this library requires .NET 5.0 minimum.
 
 # Development status
-The library is already well usable for many scenarios involving automated steps based on API requests/responses.
+The library is usable for most scenarios including (sequential or parallel) automated steps based on API requests/responses, or real-time monitoring of incoming Updates/messages. Secret chats have not been tested yet.
+
+Developers feedback are welcome in the Telegram channel [@WTelegramClient](https://t.me/WTelegramClient)
 
 Here are the main expected developments:
 - [x] Encrypt session file
