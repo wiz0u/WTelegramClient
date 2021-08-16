@@ -10,10 +10,8 @@ namespace WTelegram
 	static class Compat
 	{
 #if NETCOREAPP2_1_OR_GREATER
-		internal static IPEndPoint IPEndPoint_Parse(string addr)
-			=> IPEndPoint.Parse(addr);
-		internal static BigInteger BigEndianInteger(byte[] value)
-			=> new(value, true, true);
+		internal static IPEndPoint IPEndPoint_Parse(string addr) => IPEndPoint.Parse(addr);
+		internal static BigInteger BigEndianInteger(byte[] value) => new(value, true, true);
 #else
 		internal static BigInteger BigEndianInteger(byte[] value)
 		{

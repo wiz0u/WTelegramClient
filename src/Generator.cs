@@ -30,9 +30,9 @@ namespace WTelegram
 			using var http = new HttpClient();
 			var html = await http.GetStringAsync("https://core.telegram.org/api/layers");
 			currentLayer = int.Parse(Regex.Match(html, @"#layer-(\d+)").Groups[1].Value);
-			await File.WriteAllBytesAsync("TL.MTProto.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/mtproto-json"));
-			await File.WriteAllBytesAsync("TL.Schema.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/json"));
-			await File.WriteAllBytesAsync("TL.Secret.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/end-to-end-json"));
+			File.WriteAllBytes("TL.MTProto.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/mtproto-json"));
+			File.WriteAllBytes("TL.Schema.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/json"));
+			File.WriteAllBytes("TL.Secret.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/end-to-end-json"));
 #endif
 			FromJson("TL.MTProto.json", "TL.MTProto.cs", @"TL.Table.cs");
 			FromJson("TL.Schema.json", "TL.Schema.cs", @"TL.Table.cs");
