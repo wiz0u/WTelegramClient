@@ -1,13 +1,13 @@
 ﻿namespace TL
 {
-	partial class InputChannel		{ public static InputPeerChannel Empty => new(); }
-	partial class InputDocument		{ public static InputDocumentEmpty Empty => new(); }
-	partial class InputPeer			{ public static InputPeerEmpty Empty => new(); }
-	partial class InputPhoto		{ public static InputPhotoEmpty Empty => new(); }
-	partial class InputEncryptedFile{ public static InputEncryptedFileEmpty Empty => new(); }
-	partial class InputStickerSet	{ public static InputStickerSetEmpty Empty => new(); }
-	partial class InputUser			{ public static InputUserEmpty Empty => new(); }
-	partial class InputUser			{ public static InputUserSelf Self => new(); }
+	partial class InputChannel { public static InputPeerChannel Empty => new(); }
+	partial class InputDocument { public static InputDocumentEmpty Empty => new(); }
+	partial class InputPeer { public static InputPeerEmpty Empty => new(); }
+	partial class InputPhoto { public static InputPhotoEmpty Empty => new(); }
+	partial class InputEncryptedFile { public static InputEncryptedFileEmpty Empty => new(); }
+	partial class InputStickerSet { public static InputStickerSetEmpty Empty => new(); }
+	partial class InputUser { public static InputUserEmpty Empty => new(); }
+	partial class InputUser { public static InputUserSelf Self => new(); }
 
 	partial class ChatBase
 	{
@@ -54,7 +54,7 @@
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		protected override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
 	}
-	
+
 	partial class UserBase
 	{
 		public abstract int ID { get; }
@@ -97,13 +97,13 @@
 		public InputPhotoFileLocation ToFileLocation(PhotoSizeBase photoSize) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = photoSize.Type };
 	}
 
-	partial class PhotoSizeBase			{ public abstract string Type { get; } }
-	partial class PhotoSizeEmpty		{ public override string Type => type; }
-	partial class PhotoSize				{ public override string Type => type; }
-	partial class PhotoCachedSize		{ public override string Type => type; }
-	partial class PhotoStrippedSize		{ public override string Type => type; }
-	partial class PhotoSizeProgressive	{ public override string Type => type; }
-	partial class PhotoPathSize			{ public override string Type => type; }
+	partial class PhotoSizeBase { public abstract string Type { get; } }
+	partial class PhotoSizeEmpty { public override string Type => type; }
+	partial class PhotoSize { public override string Type => type; }
+	partial class PhotoCachedSize { public override string Type => type; }
+	partial class PhotoStrippedSize { public override string Type => type; }
+	partial class PhotoSizeProgressive { public override string Type => type; }
+	partial class PhotoPathSize { public override string Type => type; }
 
 	partial class DocumentBase
 	{
@@ -164,4 +164,9 @@
 	{
 		public static implicit operator InputStickerSetID(StickerSet stickerSet) => new() { id = stickerSet.id, access_hash = stickerSet.access_hash };
 	}
+
+	partial class Peer { public abstract int ID { get; }  }
+	partial class PeerUser { public override int ID => user_id; }
+	partial class PeerChat { public override int ID => chat_id; }
+	partial class PeerChannel { public override int ID => channel_id; }
 }
