@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>WTelegram</RootNamespace>
     <Deterministic>true</Deterministic>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -10,7 +11,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageId>WTelegramClient</PackageId>
-    <Description>Telegram client library written 100% in C# and .NET Core</Description>
+    <Description>Telegram client library written 100% in C# and .NET Standard</Description>
     <Authors>Wizou</Authors>
     <Copyright>Copyright © Olivier Marcoux 2021</Copyright>
     <PackageTags>Telegram;Client;Api;UserBot;MTProto</PackageTags>
@@ -21,8 +22,8 @@
     <!--<PackageReadmeFile>README.md</PackageReadmeFile> see https://github.com/NuGet/Home/issues/10791 -->
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;1573;1591;0419</NoWarn>
+  <PropertyGroup>
+    <NoWarn>IDE0079;1701;1702;1573;1591;0419</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,6 +35,18 @@
   <ItemGroup>
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="IndexRange" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+    <PackageReference Include="System.Formats.Asn1" Version="5.0.0" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+    <PackageReference Include="TA.System.Runtime.CompilerServices.RuntimeHelpers.GetSubArray" Version="1.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

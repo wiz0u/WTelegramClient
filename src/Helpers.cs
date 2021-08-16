@@ -24,9 +24,15 @@ namespace WTelegram
 
 		public static long RandomLong()
 		{
+#if NETCOREAPP2_1_OR_GREATER
 			Span<long> span = stackalloc long[1];
 			System.Security.Cryptography.RandomNumberGenerator.Fill(System.Runtime.InteropServices.MemoryMarshal.AsBytes(span));
 			return span[0];
+#else
+			var span = new byte[8];
+			Encryption.RNG.GetBytes(span);
+			return BitConverter.ToInt64(span, 0);
+#endif
 		}
 
 		public static byte[] ToBigEndian(ulong value) // variable-size buffer

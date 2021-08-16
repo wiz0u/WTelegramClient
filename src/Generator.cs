@@ -413,7 +413,7 @@ namespace WTelegram
 					parmType = parmType[(qm + 1)..];
 					sw.WriteLine($"{tabIndent}\tif ({parmName} != null)");
 					sw.Write('\t');
-					if (MapOptionalType(parmType, parm.name).EndsWith('?'))
+					if (MapOptionalType(parmType, parm.name).EndsWith("?"))
 						parmName += ".Value";
 				}
 				switch (parmType)
