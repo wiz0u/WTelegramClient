@@ -4,7 +4,7 @@
 [![API Layer](https://img.shields.io/badge/API_Layer-121-blueviolet)](https://core.telegram.org/api/layers)
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 
-# WTelegramClient
+# <img src="logo.png" width="32"/> WTelegramClient
 ### _Telegram client library written 100% in C# and .NET Standard_
 
 ## How to use
@@ -111,7 +111,7 @@ I've added several useful converters or implicit cast to various API object so t
 
 Beyond the TL async methods, the Client class offers a few other methods to simplify the sending of files, medias or messages.
 
-This library works best with **.NET 5.0** and is also available for **.NET Standard 2.0** (.NET Framework 4.6.1 & .NET Core 2.0)
+This library works best with **.NET 5.0+** and is also available for **.NET Standard 2.0** (.NET Framework 4.6.1+ & .NET Core 2.0+)
 
 # Development status
 The library is usable for most scenarios including (sequential or parallel) automated steps based on API requests/responses, or real-time monitoring of incoming Updates/messages. Secret chats have not been tested yet.

@@ -14,6 +14,7 @@
     <Description>Telegram client library written 100% in C# and .NET Standard</Description>
     <Authors>Wizou</Authors>
     <Copyright>Copyright © Olivier Marcoux 2021</Copyright>
+    <PackageIcon>logo.png</PackageIcon>
     <PackageTags>Telegram;Client;Api;UserBot;MTProto</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/wiz0u/WTelegramClient</PackageProjectUrl>
@@ -29,7 +30,11 @@
   <ItemGroup>
     <None Remove=".gitattributes" />
     <None Remove=".gitignore" />
-    <!--<None Include="..\README.md" Pack="true" PackagePath=""/>-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\logo.png" Link="Data\logo.png" Pack="true" PackagePath="\"/>
+    <None Include="..\README.md" Link="Data\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>

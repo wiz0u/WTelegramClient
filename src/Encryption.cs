@@ -312,7 +312,8 @@ Slv8kg9qv1m6XHVQY3PnEw+QQtqSIXklHwIDAQAB
 			Sha256.TransformFinalBlock(algo.salt2, 0, algo.salt2.Length);
 			hash = Sha256.Hash;
 #if NETCOREAPP2_0_OR_GREATER
-			var pbkdf2 = new Rfc2898DeriveBytes(hash, algo.salt1, 100000, HashAlgorithmName.SHA512).GetBytes(64);
+			using var derive = new Rfc2898DeriveBytes(hash, algo.salt1, 100000, HashAlgorithmName.SHA512);
+			var pbkdf2 = derive.GetBytes(64);
 #else
 			var pbkdf2 = PBKDF2_SHA512(hash, algo.salt1, 100000, 64);
 #endif
@@ -360,9 +361,7 @@ Slv8kg9qv1m6XHVQY3PnEw+QQtqSIXklHwIDAQAB
 		// adapted from https://github.com/dotnet/aspnetcore/blob/main/src/DataProtection/Cryptography.KeyDerivation/src/PBKDF2/ManagedPbkdf2Provider.cs
 		public static byte[] PBKDF2_SHA512(byte[] password, byte[] salt, int iterationCount, int numBytesRequested)
 		{
-			// PBKDF2 is defined in NIST SP800-132, Sec. 5.3.
-			// http://csrc.nist.gov/publications/nistpubs/800-132/nist-sp800-132.pdf
-
+			// PBKDF2 is defined in NIST SP800-132, Sec. 5.3: http://csrc.nist.gov/publications/nistpubs/800-132/nist-sp800-132.pdf
 			byte[] retVal = new byte[numBytesRequested];
 			int numBytesWritten = 0;
 			int numBytesRemaining = numBytesRequested;
@@ -371,39 +370,35 @@ Slv8kg9qv1m6XHVQY3PnEw+QQtqSIXklHwIDAQAB
 			byte[] saltWithBlockIndex = new byte[checked(salt.Length + sizeof(uint))];
 			Buffer.BlockCopy(salt, 0, saltWithBlockIndex, 0, salt.Length);
 
-			using (var hashAlgorithm = new HMACSHA512(password))
+			using var hashAlgorithm = new HMACSHA512(password);
+			for (uint blockIndex = 1; numBytesRemaining > 0; blockIndex++)
 			{
-				for (uint blockIndex = 1; numBytesRemaining > 0; blockIndex++)
+				// write the block index out as big-endian
+				saltWithBlockIndex[^4] = (byte)(blockIndex >> 24);
+				saltWithBlockIndex[^3] = (byte)(blockIndex >> 16);
+				saltWithBlockIndex[^2] = (byte)(blockIndex >> 8);
+				saltWithBlockIndex[^1] = (byte)blockIndex;
+
+				// U_1 = PRF(U_0) = PRF(Salt || block_index)
+				// T_blockIndex = U_1
+				byte[] U_iter = hashAlgorithm.ComputeHash(saltWithBlockIndex); // this is U_1
+				byte[] T_blockIndex = U_iter;
+
+				for (int iter = 1; iter < iterationCount; iter++)
 				{
-					// write the block index out as big-endian
-					saltWithBlockIndex[^4] = (byte)(blockIndex >> 24);
-					saltWithBlockIndex[^3] = (byte)(blockIndex >> 16);
-					saltWithBlockIndex[^2] = (byte)(blockIndex >> 8);
-					saltWithBlockIndex[^1] = (byte)blockIndex;
-
-					// U_1 = PRF(U_0) = PRF(Salt || block_index)
-					// T_blockIndex = U_1
-					byte[] U_iter = hashAlgorithm.ComputeHash(saltWithBlockIndex); // this is U_1
-					byte[] T_blockIndex = U_iter;
-
-					for (int iter = 1; iter < iterationCount; iter++)
-					{
-						U_iter = hashAlgorithm.ComputeHash(U_iter);
-						for (int j = U_iter.Length - 1; j >= 0; j--)
-							T_blockIndex[j] ^= U_iter[j];
-						// At this point, the 'U_iter' variable actually contains U_{iter+1} (due to indexing differences).
-					}
-
-					// At this point, we're done iterating on this block, so copy the transformed block into retVal.
-					int numBytesToCopy = Math.Min(numBytesRemaining, T_blockIndex.Length);
-					Buffer.BlockCopy(T_blockIndex, 0, retVal, numBytesWritten, numBytesToCopy);
-					numBytesWritten += numBytesToCopy;
-					numBytesRemaining -= numBytesToCopy;
+					U_iter = hashAlgorithm.ComputeHash(U_iter);
+					for (int j = U_iter.Length - 1; j >= 0; j--)
+						T_blockIndex[j] ^= U_iter[j];
+					// At this point, the 'U_iter' variable actually contains U_{iter+1} (due to indexing differences).
 				}
-			}
 
-			// retVal := T_1 || T_2 || ... || T_n, where T_n may be truncated to meet the desired output length
-			return retVal;
+				// At this point, we're done iterating on this block, so copy the transformed block into retVal.
+				int numBytesToCopy = Math.Min(numBytesRemaining, T_blockIndex.Length);
+				Buffer.BlockCopy(T_blockIndex, 0, retVal, numBytesWritten, numBytesToCopy);
+				numBytesWritten += numBytesToCopy;
+				numBytesRemaining -= numBytesToCopy;
+			}
+			return retVal; // retVal := T_1 || T_2 || ... || T_n, where T_n may be truncated to meet the desired output length
 		}
 #endif
 	}
