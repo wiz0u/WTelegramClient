@@ -1,4 +1,8 @@
-﻿namespace TL
+﻿using System.Globalization;
+using System.Text;
+using System.Web;
+
+namespace TL
 {
 	partial class InputChannel { public static InputPeerChannel Empty => new(); }
 	partial class InputDocument { public static InputDocumentEmpty Empty => new(); }
@@ -169,4 +173,30 @@
 	partial class PeerUser { public override int ID => user_id; }
 	partial class PeerChat { public override int ID => chat_id; }
 	partial class PeerChannel { public override int ID => channel_id; }
+
+	partial class JsonObjectValue { public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }
+	partial class JsonNull { public override string ToString() => "null"; }
+	partial class JsonBool { public override string ToString() => value ? "true" : "false"; }
+	partial class JsonNumber { public override string ToString() => value.ToString(CultureInfo.InvariantCulture); }
+	partial class JsonString { public override string ToString() => HttpUtility.JavaScriptStringEncode(value, true); }
+	partial class JsonArray
+	{
+		public override string ToString()
+		{
+			var sb = new StringBuilder().Append('[');
+			for (int i = 0; i < value.Length; i++)
+				sb.Append(i == 0 ? "" : ",").Append(value[i]);
+			return sb.Append(']').ToString();
+		}
+	}
+	partial class JsonObject
+	{
+		public override string ToString()
+		{
+			var sb = new StringBuilder().Append('{');
+			for (int i = 0; i < value.Length; i++)
+				sb.Append(i == 0 ? "" : ",").Append(value[i]);
+			return sb.Append('}').ToString();
+		}
+	}
 }
