@@ -26,7 +26,7 @@ namespace WTelegram
 
 		internal static async Task CreateAuthorizationKey(Client client, Session session)
 		{
-			if (PublicKeys.Count == 0) LoadDefaultPublicKey();
+			if (PublicKeys.Count == 0) LoadDefaultPublicKeys();
 
 			//1)
 			var nonce = new Int128(RNG);
@@ -57,8 +57,9 @@ namespace WTelegram
 				new_nonce = new Int256(RNG),
 				dc = session.DataCenter?.id ?? 0
 			};
-			byte[] encrypted_data;
-			{ // the following code was the way TDLib did it (and seems still accepted) until they changed on 8 July 2021
+			byte[] encrypted_data = null;
+			{
+#if OLDKEY
 				using var clearStream = new MemoryStream(255);
 				clearStream.Position = 20; // skip SHA1 area (to be patched)
 				using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
@@ -70,6 +71,34 @@ namespace WTelegram
 				Sha1.ComputeHash(clearBuffer, 20, clearLength - 20).CopyTo(clearBuffer, 0); // patch with SHA1
 				encrypted_data = BigInteger.ModPow(BigEndianInteger(clearBuffer), // encrypt with RSA key
 					BigEndianInteger(publicKey.e), BigEndianInteger(publicKey.n)).ToByteArray(true, true);
+#else
+				//4.1) RSA_PAD(data, server_public_key)
+				using var clearStream = new MemoryStream(256);
+				using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
+				byte[] aes_key = new byte[32], zero_iv = new byte[32];
+				var n = BigEndianInteger(publicKey.n);
+				while (encrypted_data == null)
+				{
+					RNG.GetBytes(aes_key);
+					clearStream.Position = 0;
+					clearStream.Write(aes_key, 0, 32); // write aes_key as prefix for initial Sha256 computation
+					writer.WriteTLObject(pqInnerData);
+					int clearLength = (int)clearStream.Position - 32;  // length before padding
+					if (clearLength > 144) throw new ApplicationException("PQInnerData too big");
+					byte[] clearBuffer = clearStream.GetBuffer();
+					RNG.GetBytes(clearBuffer, 32 + clearLength, 192 - clearLength);
+					Sha256.ComputeHash(clearBuffer, 0, 32 + 192).CopyTo(clearBuffer, 224); // append Sha256
+					Array.Reverse(clearBuffer, 32, 192);
+					var aes_encrypted = AES_IGE_EncryptDecrypt(clearBuffer.AsSpan(32, 224), aes_key, zero_iv, true);
+					var hash_aes = Sha256.ComputeHash(aes_encrypted);
+					for (int i = 0; i < 32; i++) // prefix aes_encrypted with temp_key_xor
+						clearBuffer[i] = (byte)(aes_key[i] ^ hash_aes[i]);
+					aes_encrypted.CopyTo(clearBuffer, 32);
+					var x = BigEndianInteger(clearBuffer);
+					if (x < n) // if good result, encrypt with RSA key:
+						encrypted_data = BigInteger.ModPow(x, BigEndianInteger(publicKey.e), n).To256Bytes();
+				} // otherwise, repeat the steps
+#endif
 			}
 			var serverDHparams = await client.ReqDHParams(pqInnerData.nonce, pqInnerData.server_nonce, pqInnerData.p, pqInnerData.q, fingerprint, encrypted_data);
 			//5)
@@ -107,7 +136,7 @@ namespace WTelegram
 				retry_id = retry_id,
 				g_b = g_b.ToByteArray(true, true)
 			};
-			{ // the following code was the way TDLib did it (and seems still accepted) until they changed on 8 July 2021
+			{
 				using var clearStream = new MemoryStream(384);
 				clearStream.Position = 20; // skip SHA1 area (to be patched)
 				using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
@@ -147,17 +176,16 @@ namespace WTelegram
 			static (byte[] key, byte[] iv) ConstructTmpAESKeyIV(Int128 server_nonce, Int256 new_nonce)
 			{
 				byte[] tmp_aes_key = new byte[32], tmp_aes_iv = new byte[32];
-				using var sha1 = new SHA1Managed();
-				sha1.TransformBlock(new_nonce, 0, 32, null, 0);
-				sha1.TransformFinalBlock(server_nonce, 0, 16);
-				sha1.Hash.CopyTo(tmp_aes_key, 0);                   // tmp_aes_key := SHA1(new_nonce + server_nonce)
-				sha1.TransformBlock(server_nonce, 0, 16, null, 0);
-				sha1.TransformFinalBlock(new_nonce, 0, 32);
-				Array.Copy(sha1.Hash, 0, tmp_aes_key, 20, 12);      //              + SHA1(server_nonce, new_nonce)[0:12]
-				Array.Copy(sha1.Hash, 12, tmp_aes_iv, 0, 8);        // tmp_aes_iv  != SHA1(server_nonce, new_nonce)[12:8]
-				sha1.TransformBlock(new_nonce, 0, 32, null, 0);
-				sha1.TransformFinalBlock(new_nonce, 0, 32);
-				sha1.Hash.CopyTo(tmp_aes_iv, 8);                    //              + SHA(new_nonce + new_nonce)
+				Sha1.TransformBlock(new_nonce, 0, 32, null, 0);
+				Sha1.TransformFinalBlock(server_nonce, 0, 16);
+				Sha1.Hash.CopyTo(tmp_aes_key, 0);                   // tmp_aes_key := SHA1(new_nonce + server_nonce)
+				Sha1.TransformBlock(server_nonce, 0, 16, null, 0);
+				Sha1.TransformFinalBlock(new_nonce, 0, 32);
+				Array.Copy(Sha1.Hash, 0, tmp_aes_key, 20, 12);      //              + SHA1(server_nonce, new_nonce)[0:12]
+				Array.Copy(Sha1.Hash, 12, tmp_aes_iv, 0, 8);        // tmp_aes_iv  != SHA1(server_nonce, new_nonce)[12:8]
+				Sha1.TransformBlock(new_nonce, 0, 32, null, 0);
+				Sha1.TransformFinalBlock(new_nonce, 0, 32);
+				Sha1.Hash.CopyTo(tmp_aes_iv, 8);                    //              + SHA(new_nonce + new_nonce)
 				Array.Copy(new_nonce, 0, tmp_aes_iv, 28, 4);        //              + new_nonce[0:4]
 				return (tmp_aes_key, tmp_aes_iv);
 			}
@@ -200,8 +228,10 @@ namespace WTelegram
 			Helpers.Log(1, $"Loaded a public key with fingerprint {fingerprint:X}");
 		}
 
-		private static void LoadDefaultPublicKey() // fingerprint C3B42B026CE86B21
+		private static void LoadDefaultPublicKeys() 
 		{
+#if OLDKEY
+			// Old Public Key (C3B42B026CE86B21)
 			LoadPublicKey(@"-----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAwVACPi9w23mF3tBkdZz+zwrzKOaaQdr01vAbU4E1pvkfj4sqDsm6
 lyDONS789sVoD/xCS9Y0hkkC3gtL1tSfTlgCMOOul9lcixlEKzwKENj1Yz/s7daS
@@ -210,6 +240,26 @@ Efzk2DWgkBluml8OREmvfraX3bkHZJTKX4EQSjBbbdJ2ZXIsRrYOXfaA+xayEGB+
 8hdlLmAjbCVfaigxX0CDqWeR1yFL9kwd9P0NsZRPsmoqVwMbMu7mStFai6aIhc3n
 Slv8kg9qv1m6XHVQY3PnEw+QQtqSIXklHwIDAQAB
 -----END RSA PUBLIC KEY-----");
+#else
+			// Production Public Key (D09D1D85DE64FD85)
+			LoadPublicKey(@"-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEA6LszBcC1LGzyr992NzE0ieY+BSaOW622Aa9Bd4ZHLl+TuFQ4lo4g
+5nKaMBwK/BIb9xUfg0Q29/2mgIR6Zr9krM7HjuIcCzFvDtr+L0GQjae9H0pRB2OO
+62cECs5HKhT5DZ98K33vmWiLowc621dQuwKWSQKjWf50XYFw42h21P2KXUGyp2y/
++aEyZ+uVgLLQbRA1dEjSDZ2iGRy12Mk5gpYc397aYp438fsJoHIgJ2lgMv5h7WY9
+t6N/byY9Nw9p21Og3AoXSL2q/2IJ1WRUhebgAdGVMlV1fkuOQoEzR7EdpqtQD9Cs
+5+bfo3Nhmcyvk5ftB0WkJ9z6bNZ7yxrP8wIDAQAB
+-----END RSA PUBLIC KEY-----");
+			// Test Public Key (B25898DF208D2603)
+			LoadPublicKey(@"-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEAyMEdY1aR+sCR3ZSJrtztKTKqigvO/vBfqACJLZtS7QMgCGXJ6XIR
+yy7mx66W0/sOFa7/1mAZtEoIokDP3ShoqF4fVNb6XeqgQfaUHd8wJpDWHcR2OFwv
+plUUI1PLTktZ9uW2WE23b+ixNwJjJGwBDJPQEQFBE+vfmH0JP503wr5INS1poWg/
+j25sIWeYPHYeOrFp/eXaqhISP6G+q2IeTaWTXpwZj4LzXq5YOpk4bYEQ6mvRq7D1
+aHWfYmlEGepfaYR8Q0YqvvhYtMte3ITnuSJs171+GDqpdKcSwHnd6FudwGO4pcCO
+j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
+-----END RSA PUBLIC KEY-----");
+#endif
 		}
 
 		internal static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, byte[] authKey, byte[] msgKeyLarge)

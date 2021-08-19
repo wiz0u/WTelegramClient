@@ -138,8 +138,9 @@ namespace WTelegram
 
 		internal static byte[] To256Bytes(this BigInteger bi)
 		{
-			var result = new byte[256];
 			var bigEndian = bi.ToByteArray(true, true);
+			if (bigEndian.Length == 256) return bigEndian;
+			var result = new byte[256];
 			bigEndian.CopyTo(result, 256 - bigEndian.Length);
 			return result;
 		}
