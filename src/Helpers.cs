@@ -146,8 +146,10 @@ namespace WTelegram
 			}
 		}
 
+		public static int MillerRabinIterations { get; set; } = 64; // 64 is OpenSSL default for 2048-bits numbers
+
 		// Miller–Rabin primality test
-		public static bool IsProbablePrime(this BigInteger n, int k = 64)
+		public static bool IsProbablePrime(this BigInteger n)
 		{
 			var n_minus_one = n - BigInteger.One;
 			if (n_minus_one.Sign <= 0) return false;
@@ -160,7 +162,9 @@ namespace WTelegram
 			var randomBytes = new byte[bitLen / 8 + 1];
 			var lastByteMask = (byte)((1 << (int)(bitLen % 8)) - 1);
 			BigInteger a;
-			for (int i = 0; i < k; i++)
+			if (MillerRabinIterations < 15) // 15 is the minimum recommended by Telegram
+				Log(3, $"MillerRabinIterations ({MillerRabinIterations}) is below the minimal level of safety (15)");
+			for (int i = 0; i < MillerRabinIterations; i++)
 			{
 				do
 				{
