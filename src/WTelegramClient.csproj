@@ -33,10 +33,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\ci.yml" Link="Data\ci.yml" />
+    <None Include="..\.github\ci.yml" Link="Data\ci.yml" />
     <None Include="..\logo.png" Link="Data\logo.png" Pack="true" PackagePath="\" />
     <None Include="..\README.md" Link="Data\README.md" Pack="true" PackagePath="\" />
-    <None Include="..\release.yml" Link="Data\release.yml" />
+    <None Include="..\.github\release.yml" Link="Data\release.yml" />
   </ItemGroup>
 
   <ItemGroup>
