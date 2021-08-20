@@ -1,4 +1,4 @@
-// This file is (mainly) generated automatically using the Generator class
+﻿// This file is (mainly) generated automatically using the Generator class
 using System;
 using System.Threading.Tasks;
 
@@ -177,13 +177,14 @@ namespace TL
 		[IfFlag(1)] public int ttl_seconds;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputMediaDocument"/></summary>
-	[TLDef(0x23AB23D2)]
+	[TLDef(0x33473058)]
 	public partial class InputMediaDocument : InputMedia
 	{
-		[Flags] public enum Flags { has_ttl_seconds = 0x1 }
+		[Flags] public enum Flags { has_ttl_seconds = 0x1, has_query = 0x2 }
 		public Flags flags;
 		public InputDocumentBase id;
 		[IfFlag(0)] public int ttl_seconds;
+		[IfFlag(1)] public string query;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputMediaVenue"/></summary>
 	[TLDef(0xC13D1C11)]
@@ -218,10 +219,10 @@ namespace TL
 	[TLDef(0xD33F43F3)]
 	public partial class InputMediaGame : InputMedia { public InputGame id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputMediaInvoice"/></summary>
-	[TLDef(0xF4E096C3)]
+	[TLDef(0xD9799874)]
 	public partial class InputMediaInvoice : InputMedia
 	{
-		[Flags] public enum Flags { has_photo = 0x1 }
+		[Flags] public enum Flags { has_photo = 0x1, has_start_param = 0x2 }
 		public Flags flags;
 		public string title;
 		public string description;
@@ -230,7 +231,7 @@ namespace TL
 		public byte[] payload;
 		public string provider;
 		public DataJSON provider_data;
-		public string start_param;
+		[IfFlag(1)] public string start_param;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputMediaGeoLive"/></summary>
 	[TLDef(0x971FA843)]
@@ -365,22 +366,28 @@ namespace TL
 		public long secret;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputPeerPhotoFileLocation"/></summary>
-	[TLDef(0x27D69997)]
+	[TLDef(0x37257E99)]
 	public partial class InputPeerPhotoFileLocation : InputFileLocationBase
 	{
 		[Flags] public enum Flags { big = 0x1 }
 		public Flags flags;
 		public InputPeer peer;
-		public long volume_id;
-		public int local_id;
+		public long photo_id;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputStickerSetThumb"/></summary>
-	[TLDef(0x0DBAEAE9)]
+	[TLDef(0x9D84F3DB)]
 	public partial class InputStickerSetThumb : InputFileLocationBase
 	{
 		public InputStickerSet stickerset;
-		public long volume_id;
-		public int local_id;
+		public int thumb_version;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/inputGroupCallStream"/></summary>
+	[TLDef(0xBBA51639)]
+	public partial class InputGroupCallStream : InputFileLocationBase
+	{
+		public InputGroupCall call;
+		public long time_ms;
+		public int scale;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/Peer"/></summary>
@@ -441,7 +448,7 @@ namespace TL
 			has_phone = 0x10, has_photo = 0x20, has_status = 0x40, self = 0x400, contact = 0x800, mutual_contact = 0x1000, 
 			deleted = 0x2000, bot = 0x4000, bot_chat_history = 0x8000, bot_nochats = 0x10000, verified = 0x20000, restricted = 0x40000, 
 			has_bot_inline_placeholder = 0x80000, min = 0x100000, bot_inline_geo = 0x200000, has_lang_code = 0x400000, support = 0x800000, 
-			scam = 0x1000000, apply_min_photo = 0x2000000 }
+			scam = 0x1000000, apply_min_photo = 0x2000000, fake = 0x4000000 }
 		public Flags flags;
 		public int id;
 		[IfFlag(0)] public long access_hash;
@@ -463,14 +470,13 @@ namespace TL
 	[TLDef(0x4F11BAE1)]
 	public partial class UserProfilePhotoEmpty : UserProfilePhotoBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/userProfilePhoto"/></summary>
-	[TLDef(0x69D3AB26)]
+	[TLDef(0x82D1F706)]
 	public partial class UserProfilePhoto : UserProfilePhotoBase
 	{
-		[Flags] public enum Flags { has_video = 0x1 }
+		[Flags] public enum Flags { has_video = 0x1, has_stripped_thumb = 0x2 }
 		public Flags flags;
 		public long photo_id;
-		public FileLocation photo_small;
-		public FileLocation photo_big;
+		[IfFlag(1)] public byte[] stripped_thumb;
 		public int dc_id;
 	}
 
@@ -531,7 +537,8 @@ namespace TL
 		[Flags] public enum Flags { creator = 0x1, left = 0x4, broadcast = 0x20, has_username = 0x40, verified = 0x80, 
 			megagroup = 0x100, restricted = 0x200, signatures = 0x800, min = 0x1000, has_access_hash = 0x2000, has_admin_rights = 0x4000, 
 			has_banned_rights = 0x8000, has_participants_count = 0x20000, has_default_banned_rights = 0x40000, scam = 0x80000, 
-			has_link = 0x100000, has_geo = 0x200000, slowmode_enabled = 0x400000, call_active = 0x800000, call_not_empty = 0x1000000 }
+			has_link = 0x100000, has_geo = 0x200000, slowmode_enabled = 0x400000, call_active = 0x800000, call_not_empty = 0x1000000, 
+			fake = 0x2000000, gigagroup = 0x4000000 }
 		public Flags flags;
 		public int id;
 		[IfFlag(13)] public long access_hash;
@@ -561,24 +568,28 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/type/ChatFull"/></summary>
 	public abstract partial class ChatFullBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/chatFull"/></summary>
-	[TLDef(0x1B7C9DB3)]
+	[TLDef(0x8A1E2983)]
 	public partial class ChatFull : ChatFullBase
 	{
 		[Flags] public enum Flags { has_chat_photo = 0x4, has_bot_info = 0x8, has_pinned_msg_id = 0x40, can_set_username = 0x80, 
-			has_scheduled = 0x100, has_folder_id = 0x800 }
+			has_scheduled = 0x100, has_folder_id = 0x800, has_call = 0x1000, has_exported_invite = 0x2000, has_ttl_period = 0x4000, 
+			has_groupcall_default_join_as = 0x8000 }
 		public Flags flags;
 		public int id;
 		public string about;
 		public ChatParticipantsBase participants;
 		[IfFlag(2)] public PhotoBase chat_photo;
 		public PeerNotifySettings notify_settings;
-		public ExportedChatInvite exported_invite;
+		[IfFlag(13)] public ExportedChatInvite exported_invite;
 		[IfFlag(3)] public BotInfo[] bot_info;
 		[IfFlag(6)] public int pinned_msg_id;
 		[IfFlag(11)] public int folder_id;
+		[IfFlag(12)] public InputGroupCall call;
+		[IfFlag(14)] public int ttl_period;
+		[IfFlag(15)] public Peer groupcall_default_join_as;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channelFull"/></summary>
-	[TLDef(0xF0E6672A)]
+	[TLDef(0x548C3F93)]
 	public partial class ChannelFull : ChatFullBase
 	{
 		[Flags] public enum Flags { has_participants_count = 0x1, has_admins_count = 0x2, has_kicked_count = 0x4, 
@@ -586,7 +597,8 @@ namespace TL
 			can_set_stickers = 0x80, has_stickerset = 0x100, has_available_min_id = 0x200, hidden_prehistory = 0x400, 
 			has_folder_id = 0x800, has_stats_dc = 0x1000, has_online_count = 0x2000, has_linked_chat_id = 0x4000, has_location = 0x8000, 
 			can_set_location = 0x10000, has_slowmode_seconds = 0x20000, has_slowmode_next_send_date = 0x40000, has_scheduled = 0x80000, 
-			can_view_stats = 0x100000, blocked = 0x400000 }
+			can_view_stats = 0x100000, has_call = 0x200000, blocked = 0x400000, has_exported_invite = 0x800000, 
+			has_ttl_period = 0x1000000, has_pending_suggestions = 0x2000000, has_groupcall_default_join_as = 0x4000000 }
 		public Flags flags;
 		public int id;
 		public string about;
@@ -600,7 +612,7 @@ namespace TL
 		public int unread_count;
 		public PhotoBase chat_photo;
 		public PeerNotifySettings notify_settings;
-		public ExportedChatInvite exported_invite;
+		[IfFlag(23)] public ExportedChatInvite exported_invite;
 		public BotInfo[] bot_info;
 		[IfFlag(4)] public int migrated_from_chat_id;
 		[IfFlag(4)] public int migrated_from_max_id;
@@ -614,6 +626,10 @@ namespace TL
 		[IfFlag(18)] public DateTime slowmode_next_send_date;
 		[IfFlag(12)] public int stats_dc;
 		public int pts;
+		[IfFlag(21)] public InputGroupCall call;
+		[IfFlag(24)] public int ttl_period;
+		[IfFlag(25)] public string[] pending_suggestions;
+		[IfFlag(26)] public Peer groupcall_default_join_as;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/ChatParticipant"/></summary>
@@ -664,30 +680,36 @@ namespace TL
 	[TLDef(0x37C1011C)]
 	public partial class ChatPhotoEmpty : ChatPhotoBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/chatPhoto"/></summary>
-	[TLDef(0xD20B9F3C)]
+	[TLDef(0x1C6E1C11)]
 	public partial class ChatPhoto : ChatPhotoBase
 	{
-		[Flags] public enum Flags { has_video = 0x1 }
+		[Flags] public enum Flags { has_video = 0x1, has_stripped_thumb = 0x2 }
 		public Flags flags;
-		public FileLocation photo_small;
-		public FileLocation photo_big;
+		public long photo_id;
+		[IfFlag(1)] public byte[] stripped_thumb;
 		public int dc_id;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/Message"/></summary>
 	public abstract partial class MessageBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageEmpty"/></summary>
-	[TLDef(0x83E5DE54)]
-	public partial class MessageEmpty : MessageBase { public int id; }
+	[TLDef(0x90A6CA84)]
+	public partial class MessageEmpty : MessageBase
+	{
+		[Flags] public enum Flags { has_peer_id = 0x1 }
+		public Flags flags;
+		public int id;
+		[IfFlag(0)] public Peer peer_id;
+	}
 	///<summary>See <a href="https://core.telegram.org/constructor/message"/></summary>
-	[TLDef(0x58AE39C9)]
+	[TLDef(0xBCE383D2)]
 	public partial class Message : MessageBase
 	{
 		[Flags] public enum Flags { out_ = 0x2, has_fwd_from = 0x4, has_reply_to = 0x8, mentioned = 0x10, media_unread = 0x20, 
 			has_reply_markup = 0x40, has_entities = 0x80, has_from_id = 0x100, has_media = 0x200, has_views = 0x400, 
 			has_via_bot_id = 0x800, silent = 0x2000, post = 0x4000, has_edit_date = 0x8000, has_post_author = 0x10000, 
 			has_grouped_id = 0x20000, from_scheduled = 0x40000, legacy = 0x80000, edit_hide = 0x200000, has_restriction_reason = 0x400000, 
-			has_replies = 0x800000, pinned = 0x1000000 }
+			has_replies = 0x800000, pinned = 0x1000000, has_ttl_period = 0x2000000 }
 		public Flags flags;
 		public int id;
 		[IfFlag(8)] public Peer from_id;
@@ -707,13 +729,14 @@ namespace TL
 		[IfFlag(16)] public string post_author;
 		[IfFlag(17)] public long grouped_id;
 		[IfFlag(22)] public RestrictionReason[] restriction_reason;
+		[IfFlag(25)] public int ttl_period;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messageService"/></summary>
-	[TLDef(0x286FA604)]
+	[TLDef(0x2B085862)]
 	public partial class MessageService : MessageBase
 	{
 		[Flags] public enum Flags { out_ = 0x2, has_reply_to = 0x8, mentioned = 0x10, media_unread = 0x20, has_from_id = 0x100, 
-			silent = 0x2000, post = 0x4000, legacy = 0x80000 }
+			silent = 0x2000, post = 0x4000, legacy = 0x80000, has_ttl_period = 0x2000000 }
 		public Flags flags;
 		public int id;
 		[IfFlag(8)] public Peer from_id;
@@ -721,6 +744,7 @@ namespace TL
 		[IfFlag(3)] public MessageReplyHeader reply_to;
 		public DateTime date;
 		public MessageAction action;
+		[IfFlag(25)] public int ttl_period;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/MessageMedia"/></summary>
@@ -935,6 +959,32 @@ namespace TL
 		public Peer to_id;
 		public int distance;
 	}
+	///<summary>See <a href="https://core.telegram.org/constructor/messageActionGroupCall"/></summary>
+	[TLDef(0x7A0D7F42)]
+	public partial class MessageActionGroupCall : MessageAction
+	{
+		[Flags] public enum Flags { has_duration = 0x1 }
+		public Flags flags;
+		public InputGroupCall call;
+		[IfFlag(0)] public int duration;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/messageActionInviteToGroupCall"/></summary>
+	[TLDef(0x76B9F11A)]
+	public partial class MessageActionInviteToGroupCall : MessageAction
+	{
+		public InputGroupCall call;
+		public int[] users;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/messageActionSetMessagesTTL"/></summary>
+	[TLDef(0xAA1AFBFD)]
+	public partial class MessageActionSetMessagesTTL : MessageAction { public int period; }
+	///<summary>See <a href="https://core.telegram.org/constructor/messageActionGroupCallScheduled"/></summary>
+	[TLDef(0xB3A07661)]
+	public partial class MessageActionGroupCallScheduled : MessageAction
+	{
+		public InputGroupCall call;
+		public DateTime schedule_date;
+	}
 
 	///<summary>See <a href="https://core.telegram.org/type/Dialog"/></summary>
 	public abstract partial class DialogBase : ITLObject { }
@@ -996,21 +1046,19 @@ namespace TL
 	[TLDef(0x0E17E23C)]
 	public partial class PhotoSizeEmpty : PhotoSizeBase { public string type; }
 	///<summary>See <a href="https://core.telegram.org/constructor/photoSize"/></summary>
-	[TLDef(0x77BFB61B)]
+	[TLDef(0x75C78E60)]
 	public partial class PhotoSize : PhotoSizeBase
 	{
 		public string type;
-		public FileLocation location;
 		public int w;
 		public int h;
 		public int size;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/photoCachedSize"/></summary>
-	[TLDef(0xE9A734FA)]
+	[TLDef(0x021E1AD6)]
 	public partial class PhotoCachedSize : PhotoSizeBase
 	{
 		public string type;
-		public FileLocation location;
 		public int w;
 		public int h;
 		public byte[] bytes;
@@ -1023,11 +1071,10 @@ namespace TL
 		public byte[] bytes;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/photoSizeProgressive"/></summary>
-	[TLDef(0x5AA86A51)]
+	[TLDef(0xFA3EFB95)]
 	public partial class PhotoSizeProgressive : PhotoSizeBase
 	{
 		public string type;
-		public FileLocation location;
 		public int w;
 		public int h;
 		public int[] sizes;
@@ -1161,10 +1208,11 @@ namespace TL
 		[IfFlag(2)] public WallPaperSettings settings;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/wallPaperNoFile"/></summary>
-	[TLDef(0x8AF40B25)]
+	[TLDef(0xE0804116)]
 	public partial class WallPaperNoFile : WallPaperBase
 	{
 		[Flags] public enum Flags { default_ = 0x2, has_settings = 0x4, dark = 0x10 }
+		public long id;
 		public Flags flags;
 		[IfFlag(2)] public WallPaperSettings settings;
 	}
@@ -1184,22 +1232,25 @@ namespace TL
 	[TLDef(0xADF44EE3)]
 	public partial class InputReportReasonChildAbuse : ReportReason { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonOther"/></summary>
-	[TLDef(0xE1746D0A)]
-	public partial class InputReportReasonOther : ReportReason { public string text; }
+	[TLDef(0xC1E4A2B1)]
+	public partial class InputReportReasonOther : ReportReason { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonCopyright"/></summary>
 	[TLDef(0x9B89F93A)]
 	public partial class InputReportReasonCopyright : ReportReason { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonGeoIrrelevant"/></summary>
 	[TLDef(0xDBD4FEED)]
 	public partial class InputReportReasonGeoIrrelevant : ReportReason { }
+	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonFake"/></summary>
+	[TLDef(0xF5DDD6E7)]
+	public partial class InputReportReasonFake : ReportReason { }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/userFull"/></summary>
-	[TLDef(0xEDF17C12)]
+	[TLDef(0x139A9A77)]
 	public partial class UserFull : ITLObject
 	{
 		[Flags] public enum Flags { blocked = 0x1, has_about = 0x2, has_profile_photo = 0x4, has_bot_info = 0x8, 
 			phone_calls_available = 0x10, phone_calls_private = 0x20, has_pinned_msg_id = 0x40, can_pin_message = 0x80, 
-			has_folder_id = 0x800, has_scheduled = 0x1000, video_calls_available = 0x2000 }
+			has_folder_id = 0x800, has_scheduled = 0x1000, video_calls_available = 0x2000, has_ttl_period = 0x4000 }
 		public Flags flags;
 		public UserBase user;
 		[IfFlag(1)] public string about;
@@ -1210,6 +1261,7 @@ namespace TL
 		[IfFlag(6)] public int pinned_msg_id;
 		public int common_chats_count;
 		[IfFlag(11)] public int folder_id;
+		[IfFlag(14)] public int ttl_period;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/contact"/></summary>
@@ -1467,11 +1519,11 @@ namespace TL
 		public SendMessageAction action;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChatUserTyping"/></summary>
-	[TLDef(0x9A65EA1F)]
+	[TLDef(0x86CADB6C)]
 	public partial class UpdateChatUserTyping : Update
 	{
 		public int chat_id;
-		public int user_id;
+		public Peer from_id;
 		public SendMessageAction action;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChatParticipants"/></summary>
@@ -1695,15 +1747,16 @@ namespace TL
 	[TLDef(0x9375341E)]
 	public partial class UpdateSavedGifs : Update { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateBotInlineQuery"/></summary>
-	[TLDef(0x54826690)]
+	[TLDef(0x3F2038DB)]
 	public partial class UpdateBotInlineQuery : Update
 	{
-		[Flags] public enum Flags { has_geo = 0x1 }
+		[Flags] public enum Flags { has_geo = 0x1, has_peer_type = 0x2 }
 		public Flags flags;
 		public long query_id;
 		public int user_id;
 		public string query;
 		[IfFlag(0)] public GeoPointBase geo;
+		[IfFlag(1)] public InlineQueryPeerType peer_type;
 		public string offset;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateBotInlineSend"/></summary>
@@ -1945,12 +1998,13 @@ namespace TL
 	[TLDef(0x564FE691)]
 	public partial class UpdateLoginToken : Update { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateMessagePollVote"/></summary>
-	[TLDef(0x42F88F2C)]
+	[TLDef(0x37F69F0B)]
 	public partial class UpdateMessagePollVote : Update
 	{
 		public long poll_id;
 		public int user_id;
 		public byte[][] options;
+		public int qts;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateDialogFilter"/></summary>
 	[TLDef(0x26FFDE7D)]
@@ -2010,14 +2064,14 @@ namespace TL
 		public bool blocked;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelUserTyping"/></summary>
-	[TLDef(0xFF2ABE9F)]
+	[TLDef(0x6B171718)]
 	public partial class UpdateChannelUserTyping : Update
 	{
 		[Flags] public enum Flags { has_top_msg_id = 0x1 }
 		public Flags flags;
 		public int channel_id;
 		[IfFlag(0)] public int top_msg_id;
-		public int user_id;
+		public Peer from_id;
 		public SendMessageAction action;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updatePinnedMessages"/></summary>
@@ -2041,6 +2095,88 @@ namespace TL
 		public int[] messages;
 		public int pts;
 		public int pts_count;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/updateChat"/></summary>
+	[TLDef(0x1330A196)]
+	public partial class UpdateChat : Update { public int chat_id; }
+	///<summary>See <a href="https://core.telegram.org/constructor/updateGroupCallParticipants"/></summary>
+	[TLDef(0xF2EBDB4E)]
+	public partial class UpdateGroupCallParticipants : Update
+	{
+		public InputGroupCall call;
+		public GroupCallParticipant[] participants;
+		public int version;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/updateGroupCall"/></summary>
+	[TLDef(0xA45EB99B)]
+	public partial class UpdateGroupCall : Update
+	{
+		public int chat_id;
+		public GroupCallBase call;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/updatePeerHistoryTTL"/></summary>
+	[TLDef(0xBB9BB9A5)]
+	public partial class UpdatePeerHistoryTTL : Update
+	{
+		[Flags] public enum Flags { has_ttl_period = 0x1 }
+		public Flags flags;
+		public Peer peer;
+		[IfFlag(0)] public int ttl_period;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/updateChatParticipant"/></summary>
+	[TLDef(0xF3B3781F)]
+	public partial class UpdateChatParticipant : Update
+	{
+		[Flags] public enum Flags { has_prev_participant = 0x1, has_new_participant = 0x2, has_invite = 0x4 }
+		public Flags flags;
+		public int chat_id;
+		public DateTime date;
+		public int actor_id;
+		public int user_id;
+		[IfFlag(0)] public ChatParticipantBase prev_participant;
+		[IfFlag(1)] public ChatParticipantBase new_participant;
+		[IfFlag(2)] public ExportedChatInvite invite;
+		public int qts;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelParticipant"/></summary>
+	[TLDef(0x7FECB1EC)]
+	public partial class UpdateChannelParticipant : Update
+	{
+		[Flags] public enum Flags { has_prev_participant = 0x1, has_new_participant = 0x2, has_invite = 0x4 }
+		public Flags flags;
+		public int channel_id;
+		public DateTime date;
+		public int actor_id;
+		public int user_id;
+		[IfFlag(0)] public ChannelParticipantBase prev_participant;
+		[IfFlag(1)] public ChannelParticipantBase new_participant;
+		[IfFlag(2)] public ExportedChatInvite invite;
+		public int qts;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/updateBotStopped"/></summary>
+	[TLDef(0x07F9488A)]
+	public partial class UpdateBotStopped : Update
+	{
+		public int user_id;
+		public DateTime date;
+		public bool stopped;
+		public int qts;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/updateGroupCallConnection"/></summary>
+	[TLDef(0x0B783982)]
+	public partial class UpdateGroupCallConnection : Update
+	{
+		[Flags] public enum Flags { presentation = 0x1 }
+		public Flags flags;
+		public DataJSON params_;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/updateBotCommands"/></summary>
+	[TLDef(0xCF7E0873)]
+	public partial class UpdateBotCommands : Update
+	{
+		public Peer peer;
+		public int bot_id;
+		public BotCommand[] commands;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/updates.state"/></summary>
@@ -2095,11 +2231,11 @@ namespace TL
 	[TLDef(0xE317AF7E)]
 	public partial class UpdatesTooLong : UpdatesBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateShortMessage"/></summary>
-	[TLDef(0x2296D2C8)]
+	[TLDef(0xFAEFF833)]
 	public partial class UpdateShortMessage : UpdatesBase
 	{
 		[Flags] public enum Flags { out_ = 0x2, has_fwd_from = 0x4, has_reply_to = 0x8, mentioned = 0x10, media_unread = 0x20, 
-			has_entities = 0x80, has_via_bot_id = 0x800, silent = 0x2000 }
+			has_entities = 0x80, has_via_bot_id = 0x800, silent = 0x2000, has_ttl_period = 0x2000000 }
 		public Flags flags;
 		public int id;
 		public int user_id;
@@ -2111,13 +2247,14 @@ namespace TL
 		[IfFlag(11)] public int via_bot_id;
 		[IfFlag(3)] public MessageReplyHeader reply_to;
 		[IfFlag(7)] public MessageEntity[] entities;
+		[IfFlag(25)] public int ttl_period;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateShortChatMessage"/></summary>
-	[TLDef(0x402D5DBB)]
+	[TLDef(0x1157B858)]
 	public partial class UpdateShortChatMessage : UpdatesBase
 	{
 		[Flags] public enum Flags { out_ = 0x2, has_fwd_from = 0x4, has_reply_to = 0x8, mentioned = 0x10, media_unread = 0x20, 
-			has_entities = 0x80, has_via_bot_id = 0x800, silent = 0x2000 }
+			has_entities = 0x80, has_via_bot_id = 0x800, silent = 0x2000, has_ttl_period = 0x2000000 }
 		public Flags flags;
 		public int id;
 		public int from_id;
@@ -2130,6 +2267,7 @@ namespace TL
 		[IfFlag(11)] public int via_bot_id;
 		[IfFlag(3)] public MessageReplyHeader reply_to;
 		[IfFlag(7)] public MessageEntity[] entities;
+		[IfFlag(25)] public int ttl_period;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateShort"/></summary>
 	[TLDef(0x78D4DEC1)]
@@ -2160,10 +2298,10 @@ namespace TL
 		public int seq;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateShortSentMessage"/></summary>
-	[TLDef(0x11F1331C)]
+	[TLDef(0x9015E101)]
 	public partial class UpdateShortSentMessage : UpdatesBase
 	{
-		[Flags] public enum Flags { out_ = 0x2, has_entities = 0x80, has_media = 0x200 }
+		[Flags] public enum Flags { out_ = 0x2, has_entities = 0x80, has_media = 0x200, has_ttl_period = 0x2000000 }
 		public Flags flags;
 		public int id;
 		public int pts;
@@ -2171,6 +2309,7 @@ namespace TL
 		public DateTime date;
 		[IfFlag(9)] public MessageMedia media;
 		[IfFlag(7)] public MessageEntity[] entities;
+		[IfFlag(25)] public int ttl_period;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/photos.Photos"/></summary>
@@ -2299,10 +2438,10 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/type/help.AppUpdate"/></summary>
 	public abstract partial class Help_AppUpdateBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/help.appUpdate"/></summary>
-	[TLDef(0x1DA7158F)]
+	[TLDef(0xCCBBCE30)]
 	public partial class Help_AppUpdate : Help_AppUpdateBase
 	{
-		[Flags] public enum Flags { can_not_skip = 0x1, has_document = 0x2, has_url = 0x4 }
+		[Flags] public enum Flags { can_not_skip = 0x1, has_document = 0x2, has_url = 0x4, has_sticker = 0x8 }
 		public Flags flags;
 		public int id;
 		public string version;
@@ -2310,6 +2449,7 @@ namespace TL
 		public MessageEntity[] entities;
 		[IfFlag(1)] public DocumentBase document;
 		[IfFlag(2)] public string url;
+		[IfFlag(3)] public DocumentBase sticker;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/help.noAppUpdate"/></summary>
 	[TLDef(0xC45A6536)]
@@ -2361,8 +2501,13 @@ namespace TL
 		public long key_fingerprint;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/encryptedChatDiscarded"/></summary>
-	[TLDef(0x13D6DD27)]
-	public partial class EncryptedChatDiscarded : EncryptedChatBase { public int id; }
+	[TLDef(0x1E1C7C45)]
+	public partial class EncryptedChatDiscarded : EncryptedChatBase
+	{
+		[Flags] public enum Flags { history_deleted = 0x1 }
+		public Flags flags;
+		public int id;
+	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/inputEncryptedChat"/></summary>
 	[TLDef(0xF141B5E1)]
@@ -2563,6 +2708,12 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/constructor/sendMessageUploadRoundAction"/></summary>
 	[TLDef(0x243E1C66)]
 	public partial class SendMessageUploadRoundAction : SendMessageAction { public int progress; }
+	///<summary>See <a href="https://core.telegram.org/constructor/speakingInGroupCallAction"/></summary>
+	[TLDef(0xD92C2285)]
+	public partial class SpeakingInGroupCallAction : SendMessageAction { }
+	///<summary>See <a href="https://core.telegram.org/constructor/sendMessageHistoryImportAction"/></summary>
+	[TLDef(0xDBDA9246)]
+	public partial class SendMessageHistoryImportAction : SendMessageAction { public int progress; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/contacts.found"/></summary>
 	[TLDef(0xB3134D9D)]
@@ -2860,11 +3011,11 @@ namespace TL
 	public partial class Account_Authorizations : ITLObject { public Authorization[] authorizations; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/account.password"/></summary>
-	[TLDef(0xAD2641F8)]
+	[TLDef(0x185B184F)]
 	public partial class Account_Password : ITLObject
 	{
 		[Flags] public enum Flags { has_recovery = 0x1, has_secure_values = 0x2, has_password = 0x4, has_hint = 0x8, 
-			has_email_unconfirmed_pattern = 0x10 }
+			has_email_unconfirmed_pattern = 0x10, has_pending_reset_date = 0x20 }
 		public Flags flags;
 		[IfFlag(2)] public PasswordKdfAlgo current_algo;
 		[IfFlag(2)] public byte[] srp_B;
@@ -2874,6 +3025,7 @@ namespace TL
 		public PasswordKdfAlgo new_algo;
 		public SecurePasswordKdfAlgo new_secure_algo;
 		public byte[] secure_random;
+		[IfFlag(5)] public DateTime pending_reset_date;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/account.passwordSettings"/></summary>
@@ -2913,12 +3065,21 @@ namespace TL
 
 	///<summary>See <a href="https://core.telegram.org/type/ExportedChatInvite"/></summary>
 	public abstract partial class ExportedChatInvite : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/chatInviteEmpty"/></summary>
-	[TLDef(0x69DF3769)]
-	public partial class ChatInviteEmpty : ExportedChatInvite { }
 	///<summary>See <a href="https://core.telegram.org/constructor/chatInviteExported"/></summary>
-	[TLDef(0xFC2E05BC)]
-	public partial class ChatInviteExported : ExportedChatInvite { public string link; }
+	[TLDef(0x6E24FC9D)]
+	public partial class ChatInviteExported : ExportedChatInvite
+	{
+		[Flags] public enum Flags { revoked = 0x1, has_expire_date = 0x2, has_usage_limit = 0x4, has_usage = 0x8, 
+			has_start_date = 0x10, permanent = 0x20 }
+		public Flags flags;
+		public string link;
+		public int admin_id;
+		public DateTime date;
+		[IfFlag(4)] public DateTime start_date;
+		[IfFlag(1)] public DateTime expire_date;
+		[IfFlag(2)] public int usage_limit;
+		[IfFlag(3)] public int usage;
+	}
 
 	///<summary>See <a href="https://core.telegram.org/type/ChatInvite"/></summary>
 	public abstract partial class ChatInviteBase : ITLObject { }
@@ -2967,10 +3128,10 @@ namespace TL
 	public partial class InputStickerSetDice : InputStickerSet { public string emoticon; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/stickerSet"/></summary>
-	[TLDef(0xEEB46F27)]
+	[TLDef(0xD7DF217A)]
 	public partial class StickerSet : ITLObject
 	{
-		[Flags] public enum Flags { has_installed_date = 0x1, archived = 0x2, official = 0x4, masks = 0x8, has_thumb = 0x10, 
+		[Flags] public enum Flags { has_installed_date = 0x1, archived = 0x2, official = 0x4, masks = 0x8, has_thumbs = 0x10, 
 			animated = 0x20 }
 		public Flags flags;
 		[IfFlag(0)] public DateTime installed_date;
@@ -2978,8 +3139,9 @@ namespace TL
 		public long access_hash;
 		public string title;
 		public string short_name;
-		[IfFlag(4)] public PhotoSizeBase thumb;
+		[IfFlag(4)] public PhotoSizeBase[] thumbs;
 		[IfFlag(4)] public int thumb_dc_id;
+		[IfFlag(4)] public int thumb_version;
 		public int count;
 		public int hash;
 	}
@@ -3098,19 +3260,21 @@ namespace TL
 		public Flags flags;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/replyKeyboardForceReply"/></summary>
-	[TLDef(0xF4108AA0)]
+	[TLDef(0x86B40B08)]
 	public partial class ReplyKeyboardForceReply : ReplyMarkup
 	{
-		[Flags] public enum Flags { single_use = 0x2, selective = 0x4 }
+		[Flags] public enum Flags { single_use = 0x2, selective = 0x4, has_placeholder = 0x8 }
 		public Flags flags;
+		[IfFlag(3)] public string placeholder;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/replyKeyboardMarkup"/></summary>
-	[TLDef(0x3502758C)]
+	[TLDef(0x85DD99D1)]
 	public partial class ReplyKeyboardMarkup : ReplyMarkup
 	{
-		[Flags] public enum Flags { resize = 0x1, single_use = 0x2, selective = 0x4 }
+		[Flags] public enum Flags { resize = 0x1, single_use = 0x2, selective = 0x4, has_placeholder = 0x8 }
 		public Flags flags;
 		public KeyboardButtonRow[] rows;
+		[IfFlag(3)] public string placeholder;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/replyInlineMarkup"/></summary>
 	[TLDef(0x48A30254)]
@@ -3310,19 +3474,19 @@ namespace TL
 		[IfFlag(2)] public string rank;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channelParticipantBanned"/></summary>
-	[TLDef(0x1C0FACAF)]
+	[TLDef(0x50A1DFD6)]
 	public partial class ChannelParticipantBanned : ChannelParticipantBase
 	{
 		[Flags] public enum Flags { left = 0x1 }
 		public Flags flags;
-		public int user_id;
+		public Peer peer;
 		public int kicked_by;
 		public DateTime date;
 		public ChatBannedRights banned_rights;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channelParticipantLeft"/></summary>
-	[TLDef(0xC3C6796B)]
-	public partial class ChannelParticipantLeft : ChannelParticipantBase { public int user_id; }
+	[TLDef(0x1B03F006)]
+	public partial class ChannelParticipantLeft : ChannelParticipantBase { public Peer peer; }
 
 	///<summary>See <a href="https://core.telegram.org/type/ChannelParticipantsFilter"/></summary>
 	public abstract partial class ChannelParticipantsFilter : ITLObject { }
@@ -3360,11 +3524,12 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/type/channels.ChannelParticipants"/></summary>
 	public abstract partial class Channels_ChannelParticipantsBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/channels.channelParticipants"/></summary>
-	[TLDef(0xF56EE2A8)]
+	[TLDef(0x9AB0FEAF)]
 	public partial class Channels_ChannelParticipants : Channels_ChannelParticipantsBase
 	{
 		public int count;
 		public ChannelParticipantBase[] participants;
+		public ChatBase[] chats;
 		public UserBase[] users;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channels.channelParticipantsNotModified"/></summary>
@@ -3372,10 +3537,11 @@ namespace TL
 	public partial class Channels_ChannelParticipantsNotModified : Channels_ChannelParticipantsBase { }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/channels.channelParticipant"/></summary>
-	[TLDef(0xD0D9B163)]
+	[TLDef(0xDFB80317)]
 	public partial class Channels_ChannelParticipant : ITLObject
 	{
 		public ChannelParticipantBase participant;
+		public ChatBase[] chats;
 		public UserBase[] users;
 	}
 
@@ -3465,6 +3631,20 @@ namespace TL
 	public partial class InputBotInlineMessageGame : InputBotInlineMessage
 	{
 		[Flags] public enum Flags { has_reply_markup = 0x4 }
+		[IfFlag(2)] public ReplyMarkup reply_markup;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/inputBotInlineMessageMediaInvoice"/></summary>
+	[TLDef(0xD7E78225)]
+	public partial class InputBotInlineMessageMediaInvoice : InputBotInlineMessage
+	{
+		[Flags] public enum Flags { has_photo = 0x1, has_reply_markup = 0x4 }
+		public string title;
+		public string description;
+		[IfFlag(0)] public InputWebDocument photo;
+		public Invoice invoice;
+		public byte[] payload;
+		public string provider;
+		public DataJSON provider_data;
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 	}
 
@@ -3570,6 +3750,18 @@ namespace TL
 		public string first_name;
 		public string last_name;
 		public string vcard;
+		[IfFlag(2)] public ReplyMarkup reply_markup;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/botInlineMessageMediaInvoice"/></summary>
+	[TLDef(0x354A9B09)]
+	public partial class BotInlineMessageMediaInvoice : BotInlineMessage
+	{
+		[Flags] public enum Flags { has_photo = 0x1, shipping_address_requested = 0x2, has_reply_markup = 0x4, test = 0x8 }
+		public string title;
+		public string description;
+		[IfFlag(0)] public WebDocumentBase photo;
+		public string currency;
+		public long total_amount;
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 	}
 
@@ -4209,14 +4401,17 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/invoice"/></summary>
-	[TLDef(0xC30AA358)]
+	[TLDef(0x0CD886E0)]
 	public partial class Invoice : ITLObject
 	{
 		[Flags] public enum Flags { test = 0x1, name_requested = 0x2, phone_requested = 0x4, email_requested = 0x8, 
-			shipping_address_requested = 0x10, flexible = 0x20, phone_to_provider = 0x40, email_to_provider = 0x80 }
+			shipping_address_requested = 0x10, flexible = 0x20, phone_to_provider = 0x40, email_to_provider = 0x80, 
+			has_max_tip_amount = 0x100 }
 		public Flags flags;
 		public string currency;
 		public LabeledPrice[] prices;
+		[IfFlag(8)] public long max_tip_amount;
+		[IfFlag(8)] public long[] suggested_tip_amounts;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/paymentCharge"/></summary>
@@ -4326,12 +4521,13 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/payments.paymentForm"/></summary>
-	[TLDef(0x3F56AEA3)]
+	[TLDef(0x8D0B2415)]
 	public partial class Payments_PaymentForm : ITLObject
 	{
 		[Flags] public enum Flags { has_saved_info = 0x1, has_saved_credentials = 0x2, can_save_credentials = 0x4, 
 			password_missing = 0x8, has_native_provider = 0x10 }
 		public Flags flags;
+		public long form_id;
 		public int bot_id;
 		public Invoice invoice;
 		public int provider_id;
@@ -4363,17 +4559,21 @@ namespace TL
 	public partial class Payments_PaymentVerificationNeeded : Payments_PaymentResultBase { public string url; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/payments.paymentReceipt"/></summary>
-	[TLDef(0x500911E1)]
+	[TLDef(0x10B555D0)]
 	public partial class Payments_PaymentReceipt : ITLObject
 	{
-		[Flags] public enum Flags { has_info = 0x1, has_shipping = 0x2 }
+		[Flags] public enum Flags { has_info = 0x1, has_shipping = 0x2, has_photo = 0x4, has_tip_amount = 0x8 }
 		public Flags flags;
 		public DateTime date;
 		public int bot_id;
-		public Invoice invoice;
 		public int provider_id;
+		public string title;
+		public string description;
+		[IfFlag(2)] public WebDocumentBase photo;
+		public Invoice invoice;
 		[IfFlag(0)] public PaymentRequestedInfo info;
 		[IfFlag(1)] public ShippingOption shipping;
+		[IfFlag(3)] public long tip_amount;
 		public string currency;
 		public long total_amount;
 		public string credentials_title;
@@ -4409,13 +4609,9 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/constructor/inputPaymentCredentialsApplePay"/></summary>
 	[TLDef(0x0AA1C39F)]
 	public partial class InputPaymentCredentialsApplePay : InputPaymentCredentialsBase { public DataJSON payment_data; }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputPaymentCredentialsAndroidPay"/></summary>
-	[TLDef(0xCA05D50E)]
-	public partial class InputPaymentCredentialsAndroidPay : InputPaymentCredentialsBase
-	{
-		public DataJSON payment_token;
-		public string google_transaction_id;
-	}
+	///<summary>See <a href="https://core.telegram.org/constructor/inputPaymentCredentialsGooglePay"/></summary>
+	[TLDef(0x8AC32801)]
+	public partial class InputPaymentCredentialsGooglePay : InputPaymentCredentialsBase { public DataJSON payment_token; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/account.tmpPassword"/></summary>
 	[TLDef(0xDB64FD34)]
@@ -4757,6 +4953,47 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionToggleSlowMode"/></summary>
 	[TLDef(0x53909779)]
 	public partial class ChannelAdminLogEventActionToggleSlowMode : ChannelAdminLogEventAction
+	{
+		public int prev_value;
+		public int new_value;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionStartGroupCall"/></summary>
+	[TLDef(0x23209745)]
+	public partial class ChannelAdminLogEventActionStartGroupCall : ChannelAdminLogEventAction { public InputGroupCall call; }
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionDiscardGroupCall"/></summary>
+	[TLDef(0xDB9F9140)]
+	public partial class ChannelAdminLogEventActionDiscardGroupCall : ChannelAdminLogEventAction { public InputGroupCall call; }
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionParticipantMute"/></summary>
+	[TLDef(0xF92424D2)]
+	public partial class ChannelAdminLogEventActionParticipantMute : ChannelAdminLogEventAction { public GroupCallParticipant participant; }
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionParticipantUnmute"/></summary>
+	[TLDef(0xE64429C0)]
+	public partial class ChannelAdminLogEventActionParticipantUnmute : ChannelAdminLogEventAction { public GroupCallParticipant participant; }
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionToggleGroupCallSetting"/></summary>
+	[TLDef(0x56D6A247)]
+	public partial class ChannelAdminLogEventActionToggleGroupCallSetting : ChannelAdminLogEventAction { public bool join_muted; }
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionParticipantJoinByInvite"/></summary>
+	[TLDef(0x5CDADA77)]
+	public partial class ChannelAdminLogEventActionParticipantJoinByInvite : ChannelAdminLogEventAction { public ExportedChatInvite invite; }
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionExportedInviteDelete"/></summary>
+	[TLDef(0x5A50FCA4)]
+	public partial class ChannelAdminLogEventActionExportedInviteDelete : ChannelAdminLogEventAction { public ExportedChatInvite invite; }
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionExportedInviteRevoke"/></summary>
+	[TLDef(0x410A134E)]
+	public partial class ChannelAdminLogEventActionExportedInviteRevoke : ChannelAdminLogEventAction { public ExportedChatInvite invite; }
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionExportedInviteEdit"/></summary>
+	[TLDef(0xE90EBB59)]
+	public partial class ChannelAdminLogEventActionExportedInviteEdit : ChannelAdminLogEventAction
+	{
+		public ExportedChatInvite prev_invite;
+		public ExportedChatInvite new_invite;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionParticipantVolume"/></summary>
+	[TLDef(0x3E7F6847)]
+	public partial class ChannelAdminLogEventActionParticipantVolume : ChannelAdminLogEventAction { public GroupCallParticipant participant; }
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionChangeHistoryTTL"/></summary>
+	[TLDef(0x6E941A38)]
+	public partial class ChannelAdminLogEventActionChangeHistoryTTL : ChannelAdminLogEventAction
 	{
 		public int prev_value;
 		public int new_value;
@@ -5528,8 +5765,8 @@ namespace TL
 	[TLDef(0x72091C80)]
 	public partial class InputWallPaperSlug : InputWallPaperBase { public string slug; }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputWallPaperNoFile"/></summary>
-	[TLDef(0x8427BBAC)]
-	public partial class InputWallPaperNoFile : InputWallPaperBase { }
+	[TLDef(0x967A462E)]
+	public partial class InputWallPaperNoFile : InputWallPaperBase { public long id; }
 
 	///<summary>See <a href="https://core.telegram.org/type/account.WallPapers"/></summary>
 	public abstract partial class Account_WallPapersBase : ITLObject { }
@@ -5553,14 +5790,16 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/wallPaperSettings"/></summary>
-	[TLDef(0x05086CF8)]
+	[TLDef(0x1DC1BCA4)]
 	public partial class WallPaperSettings : ITLObject
 	{
 		[Flags] public enum Flags { has_background_color = 0x1, blur = 0x2, motion = 0x4, has_intensity = 0x8, 
-			has_second_background_color = 0x10 }
+			has_second_background_color = 0x10, has_third_background_color = 0x20, has_fourth_background_color = 0x40 }
 		public Flags flags;
 		[IfFlag(0)] public int background_color;
 		[IfFlag(4)] public int second_background_color;
+		[IfFlag(5)] public int third_background_color;
+		[IfFlag(6)] public int fourth_background_color;
 		[IfFlag(3)] public int intensity;
 		[IfFlag(4)] public int rotation;
 	}
@@ -5614,16 +5853,6 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/constructor/emojiLanguage"/></summary>
 	[TLDef(0xB3FB5361)]
 	public partial class EmojiLanguage : ITLObject { public string lang_code; }
-
-	///<summary>See <a href="https://core.telegram.org/type/FileLocation"/></summary>
-	public abstract partial class FileLocation : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/fileLocationToBeDeprecated"/></summary>
-	[TLDef(0xBC7FC6CD)]
-	public partial class FileLocationToBeDeprecated : FileLocation
-	{
-		public long volume_id;
-		public int local_id;
-	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/folder"/></summary>
 	[TLDef(0xFF544E65)]
@@ -6021,13 +6250,12 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/videoSize"/></summary>
-	[TLDef(0xE831C556)]
+	[TLDef(0xDE33B094)]
 	public partial class VideoSize : ITLObject
 	{
 		[Flags] public enum Flags { has_video_start_ts = 0x1 }
 		public Flags flags;
 		public string type;
-		public FileLocation location;
 		public int w;
 		public int h;
 		public int size;
@@ -6199,6 +6427,268 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/constructor/stats.messageStats"/></summary>
 	[TLDef(0x8999F295)]
 	public partial class Stats_MessageStats : ITLObject { public StatsGraphBase views_graph; }
+
+	///<summary>See <a href="https://core.telegram.org/type/GroupCall"/></summary>
+	public abstract partial class GroupCallBase : ITLObject { }
+	///<summary>See <a href="https://core.telegram.org/constructor/groupCallDiscarded"/></summary>
+	[TLDef(0x7780BCB4)]
+	public partial class GroupCallDiscarded : GroupCallBase
+	{
+		public long id;
+		public long access_hash;
+		public int duration;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/groupCall"/></summary>
+	[TLDef(0xD597650C)]
+	public partial class GroupCall : GroupCallBase
+	{
+		[Flags] public enum Flags { join_muted = 0x2, can_change_join_muted = 0x4, has_title = 0x8, has_stream_dc_id = 0x10, 
+			has_record_start_date = 0x20, join_date_asc = 0x40, has_schedule_date = 0x80, schedule_start_subscribed = 0x100, 
+			can_start_video = 0x200, has_unmuted_video_count = 0x400 }
+		public Flags flags;
+		public long id;
+		public long access_hash;
+		public int participants_count;
+		[IfFlag(3)] public string title;
+		[IfFlag(4)] public int stream_dc_id;
+		[IfFlag(5)] public DateTime record_start_date;
+		[IfFlag(7)] public DateTime schedule_date;
+		[IfFlag(10)] public int unmuted_video_count;
+		public int unmuted_video_limit;
+		public int version;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/inputGroupCall"/></summary>
+	[TLDef(0xD8AA840F)]
+	public partial class InputGroupCall : ITLObject
+	{
+		public long id;
+		public long access_hash;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/groupCallParticipant"/></summary>
+	[TLDef(0xEBA636FE)]
+	public partial class GroupCallParticipant : ITLObject
+	{
+		[Flags] public enum Flags { muted = 0x1, left = 0x2, can_self_unmute = 0x4, has_active_date = 0x8, just_joined = 0x10, 
+			versioned = 0x20, has_video = 0x40, has_volume = 0x80, min = 0x100, muted_by_you = 0x200, volume_by_admin = 0x400, 
+			has_about = 0x800, self = 0x1000, has_raise_hand_rating = 0x2000, has_presentation = 0x4000, video_joined = 0x8000 }
+		public Flags flags;
+		public Peer peer;
+		public DateTime date;
+		[IfFlag(3)] public DateTime active_date;
+		public int source;
+		[IfFlag(7)] public int volume;
+		[IfFlag(11)] public string about;
+		[IfFlag(13)] public long raise_hand_rating;
+		[IfFlag(6)] public GroupCallParticipantVideo video;
+		[IfFlag(14)] public GroupCallParticipantVideo presentation;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/phone.groupCall"/></summary>
+	[TLDef(0x9E727AAD)]
+	public partial class Phone_GroupCall : ITLObject
+	{
+		public GroupCallBase call;
+		public GroupCallParticipant[] participants;
+		public string participants_next_offset;
+		public ChatBase[] chats;
+		public UserBase[] users;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/phone.groupParticipants"/></summary>
+	[TLDef(0xF47751B6)]
+	public partial class Phone_GroupParticipants : ITLObject
+	{
+		public int count;
+		public GroupCallParticipant[] participants;
+		public string next_offset;
+		public ChatBase[] chats;
+		public UserBase[] users;
+		public int version;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/type/InlineQueryPeerType"/></summary>
+	public abstract partial class InlineQueryPeerType : ITLObject { }
+	///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeSameBotPM"/></summary>
+	[TLDef(0x3081ED9D)]
+	public partial class InlineQueryPeerTypeSameBotPM : InlineQueryPeerType { }
+	///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypePM"/></summary>
+	[TLDef(0x833C0FAC)]
+	public partial class InlineQueryPeerTypePM : InlineQueryPeerType { }
+	///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeChat"/></summary>
+	[TLDef(0xD766C50A)]
+	public partial class InlineQueryPeerTypeChat : InlineQueryPeerType { }
+	///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeMegagroup"/></summary>
+	[TLDef(0x5EC4BE43)]
+	public partial class InlineQueryPeerTypeMegagroup : InlineQueryPeerType { }
+	///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeBroadcast"/></summary>
+	[TLDef(0x6334EE9A)]
+	public partial class InlineQueryPeerTypeBroadcast : InlineQueryPeerType { }
+
+	///<summary>See <a href="https://core.telegram.org/constructor/messages.historyImport"/></summary>
+	[TLDef(0x1662AF0B)]
+	public partial class Messages_HistoryImport : ITLObject { public long id; }
+
+	///<summary>See <a href="https://core.telegram.org/constructor/messages.historyImportParsed"/></summary>
+	[TLDef(0x5E0FB7B9)]
+	public partial class Messages_HistoryImportParsed : ITLObject
+	{
+		[Flags] public enum Flags { pm = 0x1, group = 0x2, has_title = 0x4 }
+		public Flags flags;
+		[IfFlag(2)] public string title;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/messages.affectedFoundMessages"/></summary>
+	[TLDef(0xEF8D3E6C)]
+	public partial class Messages_AffectedFoundMessages : ITLObject
+	{
+		public int pts;
+		public int pts_count;
+		public int offset;
+		public int[] messages;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/chatInviteImporter"/></summary>
+	[TLDef(0x1E3E6680)]
+	public partial class ChatInviteImporter : ITLObject
+	{
+		public int user_id;
+		public DateTime date;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/messages.exportedChatInvites"/></summary>
+	[TLDef(0xBDC62DCC)]
+	public partial class Messages_ExportedChatInvites : ITLObject
+	{
+		public int count;
+		public ExportedChatInvite[] invites;
+		public UserBase[] users;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/type/messages.ExportedChatInvite"/></summary>
+	public abstract partial class Messages_ExportedChatInviteBase : ITLObject { }
+	///<summary>See <a href="https://core.telegram.org/constructor/messages.exportedChatInvite"/></summary>
+	[TLDef(0x1871BE50)]
+	public partial class Messages_ExportedChatInvite : Messages_ExportedChatInviteBase
+	{
+		public ExportedChatInvite invite;
+		public UserBase[] users;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/messages.exportedChatInviteReplaced"/></summary>
+	[TLDef(0x222600EF)]
+	public partial class Messages_ExportedChatInviteReplaced : Messages_ExportedChatInviteBase
+	{
+		public ExportedChatInvite invite;
+		public ExportedChatInvite new_invite;
+		public UserBase[] users;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/messages.chatInviteImporters"/></summary>
+	[TLDef(0x81B6B00A)]
+	public partial class Messages_ChatInviteImporters : ITLObject
+	{
+		public int count;
+		public ChatInviteImporter[] importers;
+		public UserBase[] users;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/chatAdminWithInvites"/></summary>
+	[TLDef(0xDFD2330F)]
+	public partial class ChatAdminWithInvites : ITLObject
+	{
+		public int admin_id;
+		public int invites_count;
+		public int revoked_invites_count;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/messages.chatAdminsWithInvites"/></summary>
+	[TLDef(0xB69B72D7)]
+	public partial class Messages_ChatAdminsWithInvites : ITLObject
+	{
+		public ChatAdminWithInvites[] admins;
+		public UserBase[] users;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/messages.checkedHistoryImportPeer"/></summary>
+	[TLDef(0xA24DE717)]
+	public partial class Messages_CheckedHistoryImportPeer : ITLObject { public string confirm_text; }
+
+	///<summary>See <a href="https://core.telegram.org/constructor/phone.joinAsPeers"/></summary>
+	[TLDef(0xAFE5623F)]
+	public partial class Phone_JoinAsPeers : ITLObject
+	{
+		public Peer[] peers;
+		public ChatBase[] chats;
+		public UserBase[] users;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/phone.exportedGroupCallInvite"/></summary>
+	[TLDef(0x204BD158)]
+	public partial class Phone_ExportedGroupCallInvite : ITLObject { public string link; }
+
+	///<summary>See <a href="https://core.telegram.org/constructor/groupCallParticipantVideoSourceGroup"/></summary>
+	[TLDef(0xDCB118B7)]
+	public partial class GroupCallParticipantVideoSourceGroup : ITLObject
+	{
+		public string semantics;
+		public int[] sources;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/groupCallParticipantVideo"/></summary>
+	[TLDef(0x67753AC8)]
+	public partial class GroupCallParticipantVideo : ITLObject
+	{
+		[Flags] public enum Flags { paused = 0x1, has_audio_source = 0x2 }
+		public Flags flags;
+		public string endpoint;
+		public GroupCallParticipantVideoSourceGroup[] source_groups;
+		[IfFlag(1)] public int audio_source;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/stickers.suggestedShortName"/></summary>
+	[TLDef(0x85FEA03F)]
+	public partial class Stickers_SuggestedShortName : ITLObject { public string short_name; }
+
+	///<summary>See <a href="https://core.telegram.org/type/BotCommandScope"/></summary>
+	public abstract partial class BotCommandScope : ITLObject { }
+	///<summary>See <a href="https://core.telegram.org/constructor/botCommandScopeDefault"/></summary>
+	[TLDef(0x2F6CB2AB)]
+	public partial class BotCommandScopeDefault : BotCommandScope { }
+	///<summary>See <a href="https://core.telegram.org/constructor/botCommandScopeUsers"/></summary>
+	[TLDef(0x3C4F04D8)]
+	public partial class BotCommandScopeUsers : BotCommandScope { }
+	///<summary>See <a href="https://core.telegram.org/constructor/botCommandScopeChats"/></summary>
+	[TLDef(0x6FE1A881)]
+	public partial class BotCommandScopeChats : BotCommandScope { }
+	///<summary>See <a href="https://core.telegram.org/constructor/botCommandScopeChatAdmins"/></summary>
+	[TLDef(0xB9AA606A)]
+	public partial class BotCommandScopeChatAdmins : BotCommandScope { }
+	///<summary>See <a href="https://core.telegram.org/constructor/botCommandScopePeer"/></summary>
+	[TLDef(0xDB9D897D)]
+	public partial class BotCommandScopePeer : BotCommandScope { public InputPeer peer; }
+	///<summary>See <a href="https://core.telegram.org/constructor/botCommandScopePeerAdmins"/></summary>
+	[TLDef(0x3FD863D1)]
+	public partial class BotCommandScopePeerAdmins : BotCommandScope { public InputPeer peer; }
+	///<summary>See <a href="https://core.telegram.org/constructor/botCommandScopePeerUser"/></summary>
+	[TLDef(0x0A1321F3)]
+	public partial class BotCommandScopePeerUser : BotCommandScope
+	{
+		public InputPeer peer;
+		public InputUserBase user_id;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/type/account.ResetPasswordResult"/></summary>
+	public abstract partial class Account_ResetPasswordResult : ITLObject { }
+	///<summary>See <a href="https://core.telegram.org/constructor/account.resetPasswordFailedWait"/></summary>
+	[TLDef(0xE3779861)]
+	public partial class Account_ResetPasswordFailedWait : Account_ResetPasswordResult { public DateTime retry_date; }
+	///<summary>See <a href="https://core.telegram.org/constructor/account.resetPasswordRequestedWait"/></summary>
+	[TLDef(0xE9EFFC7D)]
+	public partial class Account_ResetPasswordRequestedWait : Account_ResetPasswordResult { public DateTime until_date; }
+	///<summary>See <a href="https://core.telegram.org/constructor/account.resetPasswordOk"/></summary>
+	[TLDef(0xE926D63E)]
+	public partial class Account_ResetPasswordOk : Account_ResetPasswordResult { }
 }
 
 namespace WTelegram		// ---functions---
@@ -6226,6 +6716,66 @@ namespace WTelegram		// ---functions---
 				writer.WriteTLVector(msg_ids);
 				query(writer);
 				return "InvokeAfterMsgs<X>";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/initConnection"/></summary>
+		public static ITLFunction InitConnection(int api_id, string device_model, string system_version, string app_version, string system_lang_code, string lang_pack, string lang_code, ITLFunction query, InputClientProxy proxy = null, JSONValue params_ = null)
+			=> writer =>
+			{
+				writer.Write(0xC1CD5EA9);
+				writer.Write((proxy != null ? 0x1 : 0) | (params_ != null ? 0x2 : 0));
+				writer.Write(api_id);
+				writer.WriteTLString(device_model);
+				writer.WriteTLString(system_version);
+				writer.WriteTLString(app_version);
+				writer.WriteTLString(system_lang_code);
+				writer.WriteTLString(lang_pack);
+				writer.WriteTLString(lang_code);
+				if (proxy != null)
+					writer.WriteTLObject(proxy);
+				if (params_ != null)
+					writer.WriteTLObject(params_);
+				query(writer);
+				return "InitConnection";
+			};
+
+		///<summary>See <a href="https://core.telegram.org/method/invokeWithLayer"/></summary>
+		public Task<X> InvokeWithLayer<X>(int layer, ITLFunction query)
+			=> CallAsync<X>(writer =>
+			{
+				writer.Write(0xDA9B0D0D);
+				writer.Write(layer);
+				query(writer);
+				return "InvokeWithLayer<X>";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/invokeWithoutUpdates"/></summary>
+		public Task<X> InvokeWithoutUpdates<X>(ITLFunction query)
+			=> CallAsync<X>(writer =>
+			{
+				writer.Write(0xBF9459B7);
+				query(writer);
+				return "InvokeWithoutUpdates<X>";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/invokeWithMessagesRange"/></summary>
+		public Task<X> InvokeWithMessagesRange<X>(MessageRange range, ITLFunction query)
+			=> CallAsync<X>(writer =>
+			{
+				writer.Write(0x365275F2);
+				writer.WriteTLObject(range);
+				query(writer);
+				return "InvokeWithMessagesRange<X>";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/invokeWithTakeout"/></summary>
+		public Task<X> InvokeWithTakeout<X>(long takeout_id, ITLFunction query)
+			=> CallAsync<X>(writer =>
+			{
+				writer.Write(0xACA9FD2E);
+				writer.Write(takeout_id);
+				query(writer);
+				return "InvokeWithTakeout<X>";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.sendCode"/></summary>
@@ -6308,6 +6858,114 @@ namespace WTelegram		// ---functions---
 				writer.WriteTLStamp(expires_at);
 				writer.WriteTLBytes(encrypted_message);
 				return "Auth_BindTempAuthKey";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/auth.importBotAuthorization"/></summary>
+		public Task<Auth_AuthorizationBase> Auth_ImportBotAuthorization(int flags, int api_id, string api_hash, string bot_auth_token)
+			=> CallAsync<Auth_AuthorizationBase>(writer =>
+			{
+				writer.Write(0x67A3FF2C);
+				writer.Write(flags);
+				writer.Write(api_id);
+				writer.WriteTLString(api_hash);
+				writer.WriteTLString(bot_auth_token);
+				return "Auth_ImportBotAuthorization";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/auth.checkPassword"/></summary>
+		public Task<Auth_AuthorizationBase> Auth_CheckPassword(InputCheckPasswordSRPBase password)
+			=> CallAsync<Auth_AuthorizationBase>(writer =>
+			{
+				writer.Write(0xD18B4D16);
+				writer.WriteTLObject(password);
+				return "Auth_CheckPassword";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/auth.requestPasswordRecovery"/></summary>
+		public Task<Auth_PasswordRecovery> Auth_RequestPasswordRecovery()
+			=> CallAsync<Auth_PasswordRecovery>(writer =>
+			{
+				writer.Write(0xD897BC66);
+				return "Auth_RequestPasswordRecovery";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/auth.recoverPassword"/></summary>
+		public Task<Auth_AuthorizationBase> Auth_RecoverPassword(string code, Account_PasswordInputSettings new_settings = null)
+			=> CallAsync<Auth_AuthorizationBase>(writer =>
+			{
+				writer.Write(0x37096C70);
+				writer.Write(new_settings != null ? 0x1 : 0);
+				writer.WriteTLString(code);
+				if (new_settings != null)
+					writer.WriteTLObject(new_settings);
+				return "Auth_RecoverPassword";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/auth.resendCode"/></summary>
+		public Task<Auth_SentCode> Auth_ResendCode(string phone_number, string phone_code_hash)
+			=> CallAsync<Auth_SentCode>(writer =>
+			{
+				writer.Write(0x3EF1A9BF);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLString(phone_code_hash);
+				return "Auth_ResendCode";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/auth.cancelCode"/></summary>
+		public Task<bool> Auth_CancelCode(string phone_number, string phone_code_hash)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x1F040578);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLString(phone_code_hash);
+				return "Auth_CancelCode";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/auth.dropTempAuthKeys"/></summary>
+		public Task<bool> Auth_DropTempAuthKeys(long[] except_auth_keys)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x8E48A188);
+				writer.WriteTLVector(except_auth_keys);
+				return "Auth_DropTempAuthKeys";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/auth.exportLoginToken"/></summary>
+		public Task<Auth_LoginTokenBase> Auth_ExportLoginToken(int api_id, string api_hash, int[] except_ids)
+			=> CallAsync<Auth_LoginTokenBase>(writer =>
+			{
+				writer.Write(0xB1B41517);
+				writer.Write(api_id);
+				writer.WriteTLString(api_hash);
+				writer.WriteTLVector(except_ids);
+				return "Auth_ExportLoginToken";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/auth.importLoginToken"/></summary>
+		public Task<Auth_LoginTokenBase> Auth_ImportLoginToken(byte[] token)
+			=> CallAsync<Auth_LoginTokenBase>(writer =>
+			{
+				writer.Write(0x95AC5CE4);
+				writer.WriteTLBytes(token);
+				return "Auth_ImportLoginToken";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/auth.acceptLoginToken"/></summary>
+		public Task<Authorization> Auth_AcceptLoginToken(byte[] token)
+			=> CallAsync<Authorization>(writer =>
+			{
+				writer.Write(0xE894AD4D);
+				writer.WriteTLBytes(token);
+				return "Auth_AcceptLoginToken";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/auth.checkRecoveryPassword"/></summary>
+		public Task<bool> Auth_CheckRecoveryPassword(string code)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x0D36BF79);
+				writer.WriteTLString(code);
+				return "Auth_CheckRecoveryPassword";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.registerDevice"/></summary>
@@ -6396,13 +7054,609 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.reportPeer"/></summary>
-		public Task<bool> Account_ReportPeer(InputPeer peer, ReportReason reason)
+		public Task<bool> Account_ReportPeer(InputPeer peer, ReportReason reason, string message)
 			=> CallAsync<bool>(writer =>
 			{
-				writer.Write(0xAE189D5F);
+				writer.Write(0xC5BA3D86);
 				writer.WriteTLObject(peer);
 				writer.WriteTLObject(reason);
+				writer.WriteTLString(message);
 				return "Account_ReportPeer";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.checkUsername"/></summary>
+		public Task<bool> Account_CheckUsername(string username)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x2714D86C);
+				writer.WriteTLString(username);
+				return "Account_CheckUsername";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.updateUsername"/></summary>
+		public Task<UserBase> Account_UpdateUsername(string username)
+			=> CallAsync<UserBase>(writer =>
+			{
+				writer.Write(0x3E0BDD7C);
+				writer.WriteTLString(username);
+				return "Account_UpdateUsername";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getPrivacy"/></summary>
+		public Task<Account_PrivacyRules> Account_GetPrivacy(InputPrivacyKey key)
+			=> CallAsync<Account_PrivacyRules>(writer =>
+			{
+				writer.Write(0xDADBC950);
+				writer.WriteTLObject(key);
+				return "Account_GetPrivacy";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.setPrivacy"/></summary>
+		public Task<Account_PrivacyRules> Account_SetPrivacy(InputPrivacyKey key, InputPrivacyRule[] rules)
+			=> CallAsync<Account_PrivacyRules>(writer =>
+			{
+				writer.Write(0xC9F81CE8);
+				writer.WriteTLObject(key);
+				writer.WriteTLVector(rules);
+				return "Account_SetPrivacy";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.deleteAccount"/></summary>
+		public Task<bool> Account_DeleteAccount(string reason)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x418D4E0B);
+				writer.WriteTLString(reason);
+				return "Account_DeleteAccount";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getAccountTTL"/></summary>
+		public Task<AccountDaysTTL> Account_GetAccountTTL()
+			=> CallAsync<AccountDaysTTL>(writer =>
+			{
+				writer.Write(0x08FC711D);
+				return "Account_GetAccountTTL";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.setAccountTTL"/></summary>
+		public Task<bool> Account_SetAccountTTL(AccountDaysTTL ttl)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x2442485E);
+				writer.WriteTLObject(ttl);
+				return "Account_SetAccountTTL";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.sendChangePhoneCode"/></summary>
+		public Task<Auth_SentCode> Account_SendChangePhoneCode(string phone_number, CodeSettings settings)
+			=> CallAsync<Auth_SentCode>(writer =>
+			{
+				writer.Write(0x82574AE5);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLObject(settings);
+				return "Account_SendChangePhoneCode";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.changePhone"/></summary>
+		public Task<UserBase> Account_ChangePhone(string phone_number, string phone_code_hash, string phone_code)
+			=> CallAsync<UserBase>(writer =>
+			{
+				writer.Write(0x70C32EDB);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLString(phone_code_hash);
+				writer.WriteTLString(phone_code);
+				return "Account_ChangePhone";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.updateDeviceLocked"/></summary>
+		public Task<bool> Account_UpdateDeviceLocked(int period)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x38DF3532);
+				writer.Write(period);
+				return "Account_UpdateDeviceLocked";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getAuthorizations"/></summary>
+		public Task<Account_Authorizations> Account_GetAuthorizations()
+			=> CallAsync<Account_Authorizations>(writer =>
+			{
+				writer.Write(0xE320C158);
+				return "Account_GetAuthorizations";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.resetAuthorization"/></summary>
+		public Task<bool> Account_ResetAuthorization(long hash)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xDF77F3BC);
+				writer.Write(hash);
+				return "Account_ResetAuthorization";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getPassword"/></summary>
+		public Task<Account_Password> Account_GetPassword()
+			=> CallAsync<Account_Password>(writer =>
+			{
+				writer.Write(0x548A30F5);
+				return "Account_GetPassword";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getPasswordSettings"/></summary>
+		public Task<Account_PasswordSettings> Account_GetPasswordSettings(InputCheckPasswordSRPBase password)
+			=> CallAsync<Account_PasswordSettings>(writer =>
+			{
+				writer.Write(0x9CD4EAF9);
+				writer.WriteTLObject(password);
+				return "Account_GetPasswordSettings";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.updatePasswordSettings"/></summary>
+		public Task<bool> Account_UpdatePasswordSettings(InputCheckPasswordSRPBase password, Account_PasswordInputSettings new_settings)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xA59B102F);
+				writer.WriteTLObject(password);
+				writer.WriteTLObject(new_settings);
+				return "Account_UpdatePasswordSettings";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.sendConfirmPhoneCode"/></summary>
+		public Task<Auth_SentCode> Account_SendConfirmPhoneCode(string hash, CodeSettings settings)
+			=> CallAsync<Auth_SentCode>(writer =>
+			{
+				writer.Write(0x1B3FAA88);
+				writer.WriteTLString(hash);
+				writer.WriteTLObject(settings);
+				return "Account_SendConfirmPhoneCode";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.confirmPhone"/></summary>
+		public Task<bool> Account_ConfirmPhone(string phone_code_hash, string phone_code)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x5F2178C3);
+				writer.WriteTLString(phone_code_hash);
+				writer.WriteTLString(phone_code);
+				return "Account_ConfirmPhone";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getTmpPassword"/></summary>
+		public Task<Account_TmpPassword> Account_GetTmpPassword(InputCheckPasswordSRPBase password, int period)
+			=> CallAsync<Account_TmpPassword>(writer =>
+			{
+				writer.Write(0x449E0B51);
+				writer.WriteTLObject(password);
+				writer.Write(period);
+				return "Account_GetTmpPassword";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getWebAuthorizations"/></summary>
+		public Task<Account_WebAuthorizations> Account_GetWebAuthorizations()
+			=> CallAsync<Account_WebAuthorizations>(writer =>
+			{
+				writer.Write(0x182E6D6F);
+				return "Account_GetWebAuthorizations";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.resetWebAuthorization"/></summary>
+		public Task<bool> Account_ResetWebAuthorization(long hash)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x2D01B9EF);
+				writer.Write(hash);
+				return "Account_ResetWebAuthorization";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.resetWebAuthorizations"/></summary>
+		public Task<bool> Account_ResetWebAuthorizations()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x682D2594);
+				return "Account_ResetWebAuthorizations";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getAllSecureValues"/></summary>
+		public Task<SecureValue[]> Account_GetAllSecureValues()
+			=> CallAsync<SecureValue[]>(writer =>
+			{
+				writer.Write(0xB288BC7D);
+				return "Account_GetAllSecureValues";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getSecureValue"/></summary>
+		public Task<SecureValue[]> Account_GetSecureValue(SecureValueType[] types)
+			=> CallAsync<SecureValue[]>(writer =>
+			{
+				writer.Write(0x73665BC2);
+				writer.WriteTLVector(types);
+				return "Account_GetSecureValue";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.saveSecureValue"/></summary>
+		public Task<SecureValue> Account_SaveSecureValue(InputSecureValue value, long secure_secret_id)
+			=> CallAsync<SecureValue>(writer =>
+			{
+				writer.Write(0x899FE31D);
+				writer.WriteTLObject(value);
+				writer.Write(secure_secret_id);
+				return "Account_SaveSecureValue";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.deleteSecureValue"/></summary>
+		public Task<bool> Account_DeleteSecureValue(SecureValueType[] types)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xB880BC4B);
+				writer.WriteTLVector(types);
+				return "Account_DeleteSecureValue";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getAuthorizationForm"/></summary>
+		public Task<Account_AuthorizationForm> Account_GetAuthorizationForm(int bot_id, string scope, string public_key)
+			=> CallAsync<Account_AuthorizationForm>(writer =>
+			{
+				writer.Write(0xB86BA8E1);
+				writer.Write(bot_id);
+				writer.WriteTLString(scope);
+				writer.WriteTLString(public_key);
+				return "Account_GetAuthorizationForm";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.acceptAuthorization"/></summary>
+		public Task<bool> Account_AcceptAuthorization(int bot_id, string scope, string public_key, SecureValueHash[] value_hashes, SecureCredentialsEncrypted credentials)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xE7027C94);
+				writer.Write(bot_id);
+				writer.WriteTLString(scope);
+				writer.WriteTLString(public_key);
+				writer.WriteTLVector(value_hashes);
+				writer.WriteTLObject(credentials);
+				return "Account_AcceptAuthorization";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.sendVerifyPhoneCode"/></summary>
+		public Task<Auth_SentCode> Account_SendVerifyPhoneCode(string phone_number, CodeSettings settings)
+			=> CallAsync<Auth_SentCode>(writer =>
+			{
+				writer.Write(0xA5A356F9);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLObject(settings);
+				return "Account_SendVerifyPhoneCode";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.verifyPhone"/></summary>
+		public Task<bool> Account_VerifyPhone(string phone_number, string phone_code_hash, string phone_code)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x4DD3A7F6);
+				writer.WriteTLString(phone_number);
+				writer.WriteTLString(phone_code_hash);
+				writer.WriteTLString(phone_code);
+				return "Account_VerifyPhone";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.sendVerifyEmailCode"/></summary>
+		public Task<Account_SentEmailCode> Account_SendVerifyEmailCode(string email)
+			=> CallAsync<Account_SentEmailCode>(writer =>
+			{
+				writer.Write(0x7011509F);
+				writer.WriteTLString(email);
+				return "Account_SendVerifyEmailCode";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.verifyEmail"/></summary>
+		public Task<bool> Account_VerifyEmail(string email, string code)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xECBA39DB);
+				writer.WriteTLString(email);
+				writer.WriteTLString(code);
+				return "Account_VerifyEmail";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.initTakeoutSession"/></summary>
+		public Task<Account_Takeout> Account_InitTakeoutSession(bool contacts = false, bool message_users = false, bool message_chats = false, bool message_megagroups = false, bool message_channels = false, bool files = false, int? file_max_size = null)
+			=> CallAsync<Account_Takeout>(writer =>
+			{
+				writer.Write(0xF05B4804);
+				writer.Write((contacts ? 0x1 : 0) | (message_users ? 0x2 : 0) | (message_chats ? 0x4 : 0) | (message_megagroups ? 0x8 : 0) | (message_channels ? 0x10 : 0) | (files ? 0x20 : 0) | (file_max_size != null ? 0x20 : 0));
+				if (file_max_size != null)
+					writer.Write(file_max_size.Value);
+				return "Account_InitTakeoutSession";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.finishTakeoutSession"/></summary>
+		public Task<bool> Account_FinishTakeoutSession(bool success = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x1D2652EE);
+				writer.Write(success ? 0x1 : 0);
+				return "Account_FinishTakeoutSession";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.confirmPasswordEmail"/></summary>
+		public Task<bool> Account_ConfirmPasswordEmail(string code)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x8FDF1920);
+				writer.WriteTLString(code);
+				return "Account_ConfirmPasswordEmail";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.resendPasswordEmail"/></summary>
+		public Task<bool> Account_ResendPasswordEmail()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x7A7F2A15);
+				return "Account_ResendPasswordEmail";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.cancelPasswordEmail"/></summary>
+		public Task<bool> Account_CancelPasswordEmail()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xC1CBD5B6);
+				return "Account_CancelPasswordEmail";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getContactSignUpNotification"/></summary>
+		public Task<bool> Account_GetContactSignUpNotification()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x9F07C728);
+				return "Account_GetContactSignUpNotification";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.setContactSignUpNotification"/></summary>
+		public Task<bool> Account_SetContactSignUpNotification(bool silent)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xCFF43F61);
+				writer.Write(silent ? 0x997275B5 : 0xBC799737);
+				return "Account_SetContactSignUpNotification";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getNotifyExceptions"/></summary>
+		public Task<UpdatesBase> Account_GetNotifyExceptions(bool compare_sound = false, InputNotifyPeerBase peer = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x53577479);
+				writer.Write((compare_sound ? 0x2 : 0) | (peer != null ? 0x1 : 0));
+				if (peer != null)
+					writer.WriteTLObject(peer);
+				return "Account_GetNotifyExceptions";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getWallPaper"/></summary>
+		public Task<WallPaperBase> Account_GetWallPaper(InputWallPaperBase wallpaper)
+			=> CallAsync<WallPaperBase>(writer =>
+			{
+				writer.Write(0xFC8DDBEA);
+				writer.WriteTLObject(wallpaper);
+				return "Account_GetWallPaper";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.uploadWallPaper"/></summary>
+		public Task<WallPaperBase> Account_UploadWallPaper(InputFileBase file, string mime_type, WallPaperSettings settings)
+			=> CallAsync<WallPaperBase>(writer =>
+			{
+				writer.Write(0xDD853661);
+				writer.WriteTLObject(file);
+				writer.WriteTLString(mime_type);
+				writer.WriteTLObject(settings);
+				return "Account_UploadWallPaper";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.saveWallPaper"/></summary>
+		public Task<bool> Account_SaveWallPaper(InputWallPaperBase wallpaper, bool unsave, WallPaperSettings settings)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x6C5A5B37);
+				writer.WriteTLObject(wallpaper);
+				writer.Write(unsave ? 0x997275B5 : 0xBC799737);
+				writer.WriteTLObject(settings);
+				return "Account_SaveWallPaper";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.installWallPaper"/></summary>
+		public Task<bool> Account_InstallWallPaper(InputWallPaperBase wallpaper, WallPaperSettings settings)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xFEED5769);
+				writer.WriteTLObject(wallpaper);
+				writer.WriteTLObject(settings);
+				return "Account_InstallWallPaper";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.resetWallPapers"/></summary>
+		public Task<bool> Account_ResetWallPapers()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xBB3B9804);
+				return "Account_ResetWallPapers";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getAutoDownloadSettings"/></summary>
+		public Task<Account_AutoDownloadSettings> Account_GetAutoDownloadSettings()
+			=> CallAsync<Account_AutoDownloadSettings>(writer =>
+			{
+				writer.Write(0x56DA0B3F);
+				return "Account_GetAutoDownloadSettings";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.saveAutoDownloadSettings"/></summary>
+		public Task<bool> Account_SaveAutoDownloadSettings(AutoDownloadSettings settings, bool low = false, bool high = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x76F36233);
+				writer.Write((low ? 0x1 : 0) | (high ? 0x2 : 0));
+				writer.WriteTLObject(settings);
+				return "Account_SaveAutoDownloadSettings";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.uploadTheme"/></summary>
+		public Task<DocumentBase> Account_UploadTheme(InputFileBase file, string file_name, string mime_type, InputFileBase thumb = null)
+			=> CallAsync<DocumentBase>(writer =>
+			{
+				writer.Write(0x1C3DB333);
+				writer.Write(thumb != null ? 0x1 : 0);
+				writer.WriteTLObject(file);
+				if (thumb != null)
+					writer.WriteTLObject(thumb);
+				writer.WriteTLString(file_name);
+				writer.WriteTLString(mime_type);
+				return "Account_UploadTheme";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.createTheme"/></summary>
+		public Task<Theme> Account_CreateTheme(string slug, string title, InputDocumentBase document = null, InputThemeSettings settings = null)
+			=> CallAsync<Theme>(writer =>
+			{
+				writer.Write(0x8432C21F);
+				writer.Write((document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0));
+				writer.WriteTLString(slug);
+				writer.WriteTLString(title);
+				if (document != null)
+					writer.WriteTLObject(document);
+				if (settings != null)
+					writer.WriteTLObject(settings);
+				return "Account_CreateTheme";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.updateTheme"/></summary>
+		public Task<Theme> Account_UpdateTheme(string format, InputThemeBase theme, string slug = null, string title = null, InputDocumentBase document = null, InputThemeSettings settings = null)
+			=> CallAsync<Theme>(writer =>
+			{
+				writer.Write(0x5CB367D5);
+				writer.Write((slug != null ? 0x1 : 0) | (title != null ? 0x2 : 0) | (document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0));
+				writer.WriteTLString(format);
+				writer.WriteTLObject(theme);
+				if (slug != null)
+					writer.WriteTLString(slug);
+				if (title != null)
+					writer.WriteTLString(title);
+				if (document != null)
+					writer.WriteTLObject(document);
+				if (settings != null)
+					writer.WriteTLObject(settings);
+				return "Account_UpdateTheme";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.saveTheme"/></summary>
+		public Task<bool> Account_SaveTheme(InputThemeBase theme, bool unsave)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xF257106C);
+				writer.WriteTLObject(theme);
+				writer.Write(unsave ? 0x997275B5 : 0xBC799737);
+				return "Account_SaveTheme";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.installTheme"/></summary>
+		public Task<bool> Account_InstallTheme(bool dark = false, string format = null, InputThemeBase theme = null)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x7AE43737);
+				writer.Write((dark ? 0x1 : 0) | (format != null ? 0x2 : 0) | (theme != null ? 0x2 : 0));
+				if (format != null)
+					writer.WriteTLString(format);
+				if (theme != null)
+					writer.WriteTLObject(theme);
+				return "Account_InstallTheme";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getTheme"/></summary>
+		public Task<Theme> Account_GetTheme(string format, InputThemeBase theme, long document_id)
+			=> CallAsync<Theme>(writer =>
+			{
+				writer.Write(0x8D9D742B);
+				writer.WriteTLString(format);
+				writer.WriteTLObject(theme);
+				writer.Write(document_id);
+				return "Account_GetTheme";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getThemes"/></summary>
+		public Task<Account_ThemesBase> Account_GetThemes(string format, int hash)
+			=> CallAsync<Account_ThemesBase>(writer =>
+			{
+				writer.Write(0x285946F8);
+				writer.WriteTLString(format);
+				writer.Write(hash);
+				return "Account_GetThemes";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.setContentSettings"/></summary>
+		public Task<bool> Account_SetContentSettings(bool sensitive_enabled = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xB574B16B);
+				writer.Write(sensitive_enabled ? 0x1 : 0);
+				return "Account_SetContentSettings";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getContentSettings"/></summary>
+		public Task<Account_ContentSettings> Account_GetContentSettings()
+			=> CallAsync<Account_ContentSettings>(writer =>
+			{
+				writer.Write(0x8B9B4DAE);
+				return "Account_GetContentSettings";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getMultiWallPapers"/></summary>
+		public Task<WallPaperBase[]> Account_GetMultiWallPapers(InputWallPaperBase[] wallpapers)
+			=> CallAsync<WallPaperBase[]>(writer =>
+			{
+				writer.Write(0x65AD71DC);
+				writer.WriteTLVector(wallpapers);
+				return "Account_GetMultiWallPapers";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.getGlobalPrivacySettings"/></summary>
+		public Task<GlobalPrivacySettings> Account_GetGlobalPrivacySettings()
+			=> CallAsync<GlobalPrivacySettings>(writer =>
+			{
+				writer.Write(0xEB2B4CF6);
+				return "Account_GetGlobalPrivacySettings";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.setGlobalPrivacySettings"/></summary>
+		public Task<GlobalPrivacySettings> Account_SetGlobalPrivacySettings(GlobalPrivacySettings settings)
+			=> CallAsync<GlobalPrivacySettings>(writer =>
+			{
+				writer.Write(0x1EDAAAC2);
+				writer.WriteTLObject(settings);
+				return "Account_SetGlobalPrivacySettings";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.reportProfilePhoto"/></summary>
+		public Task<bool> Account_ReportProfilePhoto(InputPeer peer, InputPhotoBase photo_id, ReportReason reason, string message)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xFA8CC6F5);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(photo_id);
+				writer.WriteTLObject(reason);
+				writer.WriteTLString(message);
+				return "Account_ReportProfilePhoto";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.resetPassword"/></summary>
+		public Task<Account_ResetPasswordResult> Account_ResetPassword()
+			=> CallAsync<Account_ResetPasswordResult>(writer =>
+			{
+				writer.Write(0x9308CE1B);
+				return "Account_ResetPassword";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/account.declinePasswordReset"/></summary>
+		public Task<bool> Account_DeclinePasswordReset()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x4C9409F6);
+				return "Account_DeclinePasswordReset";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/users.getUsers"/></summary>
@@ -6421,6 +7675,16 @@ namespace WTelegram		// ---functions---
 				writer.Write(0xCA30A5B1);
 				writer.WriteTLObject(id);
 				return "Users_GetFullUser";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/users.setSecureValueErrors"/></summary>
+		public Task<bool> Users_SetSecureValueErrors(InputUserBase id, SecureValueErrorBase[] errors)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x90C894B5);
+				writer.WriteTLObject(id);
+				writer.WriteTLVector(errors);
+				return "Users_SetSecureValueErrors";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getContactIDs"/></summary>
@@ -6502,6 +7766,116 @@ namespace WTelegram		// ---functions---
 				writer.Write(offset);
 				writer.Write(limit);
 				return "Contacts_GetBlocked";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/contacts.search"/></summary>
+		public Task<Contacts_Found> Contacts_Search(string q, int limit)
+			=> CallAsync<Contacts_Found>(writer =>
+			{
+				writer.Write(0x11F812D8);
+				writer.WriteTLString(q);
+				writer.Write(limit);
+				return "Contacts_Search";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/contacts.resolveUsername"/></summary>
+		public Task<Contacts_ResolvedPeer> Contacts_ResolveUsername(string username)
+			=> CallAsync<Contacts_ResolvedPeer>(writer =>
+			{
+				writer.Write(0xF93CCBA3);
+				writer.WriteTLString(username);
+				return "Contacts_ResolveUsername";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/contacts.getTopPeers"/></summary>
+		public Task<Contacts_TopPeersBase> Contacts_GetTopPeers(int offset, int limit, int hash, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false)
+			=> CallAsync<Contacts_TopPeersBase>(writer =>
+			{
+				writer.Write(0xD4982DB5);
+				writer.Write((correspondents ? 0x1 : 0) | (bots_pm ? 0x2 : 0) | (bots_inline ? 0x4 : 0) | (phone_calls ? 0x8 : 0) | (forward_users ? 0x10 : 0) | (forward_chats ? 0x20 : 0) | (groups ? 0x400 : 0) | (channels ? 0x8000 : 0));
+				writer.Write(offset);
+				writer.Write(limit);
+				writer.Write(hash);
+				return "Contacts_GetTopPeers";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/contacts.resetTopPeerRating"/></summary>
+		public Task<bool> Contacts_ResetTopPeerRating(TopPeerCategory category, InputPeer peer)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x1AE373AC);
+				writer.WriteTLObject(category);
+				writer.WriteTLObject(peer);
+				return "Contacts_ResetTopPeerRating";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/contacts.resetSaved"/></summary>
+		public Task<bool> Contacts_ResetSaved()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x879537F1);
+				return "Contacts_ResetSaved";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/contacts.getSaved"/></summary>
+		public Task<SavedContact[]> Contacts_GetSaved()
+			=> CallAsync<SavedContact[]>(writer =>
+			{
+				writer.Write(0x82F1E39F);
+				return "Contacts_GetSaved";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/contacts.toggleTopPeers"/></summary>
+		public Task<bool> Contacts_ToggleTopPeers(bool enabled)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x8514BDDA);
+				writer.Write(enabled ? 0x997275B5 : 0xBC799737);
+				return "Contacts_ToggleTopPeers";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/contacts.addContact"/></summary>
+		public Task<UpdatesBase> Contacts_AddContact(InputUserBase id, string first_name, string last_name, string phone, bool add_phone_privacy_exception = false)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xE8F463D0);
+				writer.Write(add_phone_privacy_exception ? 0x1 : 0);
+				writer.WriteTLObject(id);
+				writer.WriteTLString(first_name);
+				writer.WriteTLString(last_name);
+				writer.WriteTLString(phone);
+				return "Contacts_AddContact";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/contacts.acceptContact"/></summary>
+		public Task<UpdatesBase> Contacts_AcceptContact(InputUserBase id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xF831A20F);
+				writer.WriteTLObject(id);
+				return "Contacts_AcceptContact";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/contacts.getLocated"/></summary>
+		public Task<UpdatesBase> Contacts_GetLocated(InputGeoPointBase geo_point, bool background = false, int? self_expires = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xD348BC44);
+				writer.Write((background ? 0x2 : 0) | (self_expires != null ? 0x1 : 0));
+				writer.WriteTLObject(geo_point);
+				if (self_expires != null)
+					writer.Write(self_expires.Value);
+				return "Contacts_GetLocated";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/contacts.blockFromReplies"/></summary>
+		public Task<UpdatesBase> Contacts_BlockFromReplies(int msg_id, bool delete_message = false, bool delete_history = false, bool report_spam = false)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x29A8962C);
+				writer.Write((delete_message ? 0x1 : 0) | (delete_history ? 0x2 : 0) | (report_spam ? 0x4 : 0));
+				writer.Write(msg_id);
+				return "Contacts_BlockFromReplies";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getMessages"/></summary>
@@ -6697,13 +8071,14 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.report"/></summary>
-		public Task<bool> Messages_Report(InputPeer peer, int[] id, ReportReason reason)
+		public Task<bool> Messages_Report(InputPeer peer, int[] id, ReportReason reason, string message)
 			=> CallAsync<bool>(writer =>
 			{
-				writer.Write(0xBD82B658);
+				writer.Write(0x8953AB4E);
 				writer.WriteTLObject(peer);
 				writer.WriteTLVector(id);
 				writer.WriteTLObject(reason);
+				writer.WriteTLString(message);
 				return "Messages_Report";
 			});
 
@@ -6757,10 +8132,11 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.deleteChatUser"/></summary>
-		public Task<UpdatesBase> Messages_DeleteChatUser(int chat_id, InputUserBase user_id)
+		public Task<UpdatesBase> Messages_DeleteChatUser(int chat_id, InputUserBase user_id, bool revoke_history = false)
 			=> CallAsync<UpdatesBase>(writer =>
 			{
-				writer.Write(0xE0611F16);
+				writer.Write(0xC534459A);
+				writer.Write(revoke_history ? 0x1 : 0);
 				writer.Write(chat_id);
 				writer.WriteTLObject(user_id);
 				return "Messages_DeleteChatUser";
@@ -6774,129 +8150,6 @@ namespace WTelegram		// ---functions---
 				writer.WriteTLVector(users);
 				writer.WriteTLString(title);
 				return "Messages_CreateChat";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/updates.getState"/></summary>
-		public Task<Updates_State> Updates_GetState()
-			=> CallAsync<Updates_State>(writer =>
-			{
-				writer.Write(0xEDD4882A);
-				return "Updates_GetState";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/updates.getDifference"/></summary>
-		public Task<Updates_DifferenceBase> Updates_GetDifference(int pts, DateTime date, int qts, int? pts_total_limit = null)
-			=> CallAsync<Updates_DifferenceBase>(writer =>
-			{
-				writer.Write(0x25939651);
-				writer.Write(pts_total_limit != null ? 0x1 : 0);
-				writer.Write(pts);
-				if (pts_total_limit != null)
-					writer.Write(pts_total_limit.Value);
-				writer.WriteTLStamp(date);
-				writer.Write(qts);
-				return "Updates_GetDifference";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/photos.updateProfilePhoto"/></summary>
-		public Task<Photos_Photo> Photos_UpdateProfilePhoto(InputPhotoBase id)
-			=> CallAsync<Photos_Photo>(writer =>
-			{
-				writer.Write(0x72D4742C);
-				writer.WriteTLObject(id);
-				return "Photos_UpdateProfilePhoto";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/photos.uploadProfilePhoto"/></summary>
-		public Task<Photos_Photo> Photos_UploadProfilePhoto(InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null)
-			=> CallAsync<Photos_Photo>(writer =>
-			{
-				writer.Write(0x89F30F69);
-				writer.Write((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0));
-				if (file != null)
-					writer.WriteTLObject(file);
-				if (video != null)
-					writer.WriteTLObject(video);
-				if (video_start_ts != null)
-					writer.Write(video_start_ts.Value);
-				return "Photos_UploadProfilePhoto";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/photos.deletePhotos"/></summary>
-		public Task<long[]> Photos_DeletePhotos(InputPhotoBase[] id)
-			=> CallAsync<long[]>(writer =>
-			{
-				writer.Write(0x87CF7F2F);
-				writer.WriteTLVector(id);
-				return "Photos_DeletePhotos";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/upload.saveFilePart"/></summary>
-		public Task<bool> Upload_SaveFilePart(long file_id, int file_part, byte[] bytes)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xB304A621);
-				writer.Write(file_id);
-				writer.Write(file_part);
-				writer.WriteTLBytes(bytes);
-				return "Upload_SaveFilePart";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/upload.getFile"/></summary>
-		public Task<Upload_FileBase> Upload_GetFile(InputFileLocationBase location, int offset, int limit, bool precise = false, bool cdn_supported = false)
-			=> CallAsync<Upload_FileBase>(writer =>
-			{
-				writer.Write(0xB15A9AFC);
-				writer.Write((precise ? 0x1 : 0) | (cdn_supported ? 0x2 : 0));
-				writer.WriteTLObject(location);
-				writer.Write(offset);
-				writer.Write(limit);
-				return "Upload_GetFile";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getConfig"/></summary>
-		public Task<Config> Help_GetConfig() => CallAsync<Config>(Help_GetConfig);
-		public static string Help_GetConfig(BinaryWriter writer)
-		{
-			writer.Write(0xC4F9186B);
-			return "Help_GetConfig";
-		}
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getNearestDc"/></summary>
-		public Task<NearestDc> Help_GetNearestDc()
-			=> CallAsync<NearestDc>(writer =>
-			{
-				writer.Write(0x1FB33026);
-				return "Help_GetNearestDc";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getAppUpdate"/></summary>
-		public Task<Help_AppUpdateBase> Help_GetAppUpdate(string source)
-			=> CallAsync<Help_AppUpdateBase>(writer =>
-			{
-				writer.Write(0x522D5A7D);
-				writer.WriteTLString(source);
-				return "Help_GetAppUpdate";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getInviteText"/></summary>
-		public Task<Help_InviteText> Help_GetInviteText()
-			=> CallAsync<Help_InviteText>(writer =>
-			{
-				writer.Write(0x4D392343);
-				return "Help_GetInviteText";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/photos.getUserPhotos"/></summary>
-		public Task<Photos_PhotosBase> Photos_GetUserPhotos(InputUserBase user_id, int offset, long max_id, int limit)
-			=> CallAsync<Photos_PhotosBase>(writer =>
-			{
-				writer.Write(0x91CD32A8);
-				writer.WriteTLObject(user_id);
-				writer.Write(offset);
-				writer.Write(max_id);
-				writer.Write(limit);
-				return "Photos_GetUserPhotos";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getDhConfig"/></summary>
@@ -6932,10 +8185,11 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.discardEncryption"/></summary>
-		public Task<bool> Messages_DiscardEncryption(int chat_id)
+		public Task<bool> Messages_DiscardEncryption(int chat_id, bool delete_history = false)
 			=> CallAsync<bool>(writer =>
 			{
-				writer.Write(0xEDD923C5);
+				writer.Write(0xF393AEA0);
+				writer.Write(delete_history ? 0x1 : 0);
 				writer.Write(chat_id);
 				return "Messages_DiscardEncryption";
 			});
@@ -7014,47 +8268,6 @@ namespace WTelegram		// ---functions---
 				return "Messages_ReportEncryptedSpam";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/upload.saveBigFilePart"/></summary>
-		public Task<bool> Upload_SaveBigFilePart(long file_id, int file_part, int file_total_parts, byte[] bytes)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xDE7B673D);
-				writer.Write(file_id);
-				writer.Write(file_part);
-				writer.Write(file_total_parts);
-				writer.WriteTLBytes(bytes);
-				return "Upload_SaveBigFilePart";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/initConnection"/></summary>
-		public static ITLFunction InitConnection(int api_id, string device_model, string system_version, string app_version, string system_lang_code, string lang_pack, string lang_code, ITLFunction query, InputClientProxy proxy = null, JSONValue params_ = null)
-			=> writer =>
-			{
-				writer.Write(0xC1CD5EA9);
-				writer.Write((proxy != null ? 0x1 : 0) | (params_ != null ? 0x2 : 0));
-				writer.Write(api_id);
-				writer.WriteTLString(device_model);
-				writer.WriteTLString(system_version);
-				writer.WriteTLString(app_version);
-				writer.WriteTLString(system_lang_code);
-				writer.WriteTLString(lang_pack);
-				writer.WriteTLString(lang_code);
-				if (proxy != null)
-					writer.WriteTLObject(proxy);
-				if (params_ != null)
-					writer.WriteTLObject(params_);
-				query(writer);
-				return "InitConnection";
-			};
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getSupport"/></summary>
-		public Task<Help_Support> Help_GetSupport()
-			=> CallAsync<Help_Support>(writer =>
-			{
-				writer.Write(0x9CDF08CD);
-				return "Help_GetSupport";
-			});
-
 		///<summary>See <a href="https://core.telegram.org/method/messages.readMessageContents"/></summary>
 		public Task<Messages_AffectedMessages> Messages_ReadMessageContents(int[] id)
 			=> CallAsync<Messages_AffectedMessages>(writer =>
@@ -7062,119 +8275,6 @@ namespace WTelegram		// ---functions---
 				writer.Write(0x36A73F77);
 				writer.WriteTLVector(id);
 				return "Messages_ReadMessageContents";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.checkUsername"/></summary>
-		public Task<bool> Account_CheckUsername(string username)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x2714D86C);
-				writer.WriteTLString(username);
-				return "Account_CheckUsername";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.updateUsername"/></summary>
-		public Task<UserBase> Account_UpdateUsername(string username)
-			=> CallAsync<UserBase>(writer =>
-			{
-				writer.Write(0x3E0BDD7C);
-				writer.WriteTLString(username);
-				return "Account_UpdateUsername";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/contacts.search"/></summary>
-		public Task<Contacts_Found> Contacts_Search(string q, int limit)
-			=> CallAsync<Contacts_Found>(writer =>
-			{
-				writer.Write(0x11F812D8);
-				writer.WriteTLString(q);
-				writer.Write(limit);
-				return "Contacts_Search";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getPrivacy"/></summary>
-		public Task<Account_PrivacyRules> Account_GetPrivacy(InputPrivacyKey key)
-			=> CallAsync<Account_PrivacyRules>(writer =>
-			{
-				writer.Write(0xDADBC950);
-				writer.WriteTLObject(key);
-				return "Account_GetPrivacy";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.setPrivacy"/></summary>
-		public Task<Account_PrivacyRules> Account_SetPrivacy(InputPrivacyKey key, InputPrivacyRule[] rules)
-			=> CallAsync<Account_PrivacyRules>(writer =>
-			{
-				writer.Write(0xC9F81CE8);
-				writer.WriteTLObject(key);
-				writer.WriteTLVector(rules);
-				return "Account_SetPrivacy";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.deleteAccount"/></summary>
-		public Task<bool> Account_DeleteAccount(string reason)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x418D4E0B);
-				writer.WriteTLString(reason);
-				return "Account_DeleteAccount";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getAccountTTL"/></summary>
-		public Task<AccountDaysTTL> Account_GetAccountTTL()
-			=> CallAsync<AccountDaysTTL>(writer =>
-			{
-				writer.Write(0x08FC711D);
-				return "Account_GetAccountTTL";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.setAccountTTL"/></summary>
-		public Task<bool> Account_SetAccountTTL(AccountDaysTTL ttl)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x2442485E);
-				writer.WriteTLObject(ttl);
-				return "Account_SetAccountTTL";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/invokeWithLayer"/></summary>
-		public Task<X> InvokeWithLayer<X>(int layer, ITLFunction query)
-			=> CallAsync<X>(writer =>
-			{
-				writer.Write(0xDA9B0D0D);
-				writer.Write(layer);
-				query(writer);
-				return "InvokeWithLayer<X>";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/contacts.resolveUsername"/></summary>
-		public Task<Contacts_ResolvedPeer> Contacts_ResolveUsername(string username)
-			=> CallAsync<Contacts_ResolvedPeer>(writer =>
-			{
-				writer.Write(0xF93CCBA3);
-				writer.WriteTLString(username);
-				return "Contacts_ResolveUsername";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.sendChangePhoneCode"/></summary>
-		public Task<Auth_SentCode> Account_SendChangePhoneCode(string phone_number, CodeSettings settings)
-			=> CallAsync<Auth_SentCode>(writer =>
-			{
-				writer.Write(0x82574AE5);
-				writer.WriteTLString(phone_number);
-				writer.WriteTLObject(settings);
-				return "Account_SendChangePhoneCode";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.changePhone"/></summary>
-		public Task<UserBase> Account_ChangePhone(string phone_number, string phone_code_hash, string phone_code)
-			=> CallAsync<UserBase>(writer =>
-			{
-				writer.Write(0x70C32EDB);
-				writer.WriteTLString(phone_number);
-				writer.WriteTLString(phone_code_hash);
-				writer.WriteTLString(phone_code);
-				return "Account_ChangePhone";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getStickers"/></summary>
@@ -7196,27 +8296,6 @@ namespace WTelegram		// ---functions---
 				return "Messages_GetAllStickers";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/account.updateDeviceLocked"/></summary>
-		public Task<bool> Account_UpdateDeviceLocked(int period)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x38DF3532);
-				writer.Write(period);
-				return "Account_UpdateDeviceLocked";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/auth.importBotAuthorization"/></summary>
-		public Task<Auth_AuthorizationBase> Auth_ImportBotAuthorization(int flags, int api_id, string api_hash, string bot_auth_token)
-			=> CallAsync<Auth_AuthorizationBase>(writer =>
-			{
-				writer.Write(0x67A3FF2C);
-				writer.Write(flags);
-				writer.Write(api_id);
-				writer.WriteTLString(api_hash);
-				writer.WriteTLString(bot_auth_token);
-				return "Auth_ImportBotAuthorization";
-			});
-
 		///<summary>See <a href="https://core.telegram.org/method/messages.getWebPagePreview"/></summary>
 		public Task<MessageMedia> Messages_GetWebPagePreview(string message, MessageEntity[] entities = null)
 			=> CallAsync<MessageMedia>(writer =>
@@ -7229,91 +8308,17 @@ namespace WTelegram		// ---functions---
 				return "Messages_GetWebPagePreview";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/account.getAuthorizations"/></summary>
-		public Task<Account_Authorizations> Account_GetAuthorizations()
-			=> CallAsync<Account_Authorizations>(writer =>
-			{
-				writer.Write(0xE320C158);
-				return "Account_GetAuthorizations";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.resetAuthorization"/></summary>
-		public Task<bool> Account_ResetAuthorization(long hash)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xDF77F3BC);
-				writer.Write(hash);
-				return "Account_ResetAuthorization";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getPassword"/></summary>
-		public Task<Account_Password> Account_GetPassword()
-			=> CallAsync<Account_Password>(writer =>
-			{
-				writer.Write(0x548A30F5);
-				return "Account_GetPassword";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getPasswordSettings"/></summary>
-		public Task<Account_PasswordSettings> Account_GetPasswordSettings(InputCheckPasswordSRPBase password)
-			=> CallAsync<Account_PasswordSettings>(writer =>
-			{
-				writer.Write(0x9CD4EAF9);
-				writer.WriteTLObject(password);
-				return "Account_GetPasswordSettings";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.updatePasswordSettings"/></summary>
-		public Task<bool> Account_UpdatePasswordSettings(InputCheckPasswordSRPBase password, Account_PasswordInputSettings new_settings)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xA59B102F);
-				writer.WriteTLObject(password);
-				writer.WriteTLObject(new_settings);
-				return "Account_UpdatePasswordSettings";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/auth.checkPassword"/></summary>
-		public Task<Auth_AuthorizationBase> Auth_CheckPassword(InputCheckPasswordSRPBase password)
-			=> CallAsync<Auth_AuthorizationBase>(writer =>
-			{
-				writer.Write(0xD18B4D16);
-				writer.WriteTLObject(password);
-				return "Auth_CheckPassword";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/auth.requestPasswordRecovery"/></summary>
-		public Task<Auth_PasswordRecovery> Auth_RequestPasswordRecovery()
-			=> CallAsync<Auth_PasswordRecovery>(writer =>
-			{
-				writer.Write(0xD897BC66);
-				return "Auth_RequestPasswordRecovery";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/auth.recoverPassword"/></summary>
-		public Task<Auth_AuthorizationBase> Auth_RecoverPassword(string code)
-			=> CallAsync<Auth_AuthorizationBase>(writer =>
-			{
-				writer.Write(0x4EA56E92);
-				writer.WriteTLString(code);
-				return "Auth_RecoverPassword";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/invokeWithoutUpdates"/></summary>
-		public Task<X> InvokeWithoutUpdates<X>(ITLFunction query)
-			=> CallAsync<X>(writer =>
-			{
-				writer.Write(0xBF9459B7);
-				query(writer);
-				return "InvokeWithoutUpdates<X>";
-			});
-
 		///<summary>See <a href="https://core.telegram.org/method/messages.exportChatInvite"/></summary>
-		public Task<ExportedChatInvite> Messages_ExportChatInvite(InputPeer peer)
+		public Task<ExportedChatInvite> Messages_ExportChatInvite(InputPeer peer, bool legacy_revoke_permanent = false, DateTime? expire_date = null, int? usage_limit = null)
 			=> CallAsync<ExportedChatInvite>(writer =>
 			{
-				writer.Write(0x0DF7534C);
+				writer.Write(0x14B9BCD7);
+				writer.Write((legacy_revoke_permanent ? 0x4 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0));
 				writer.WriteTLObject(peer);
+				if (expire_date != null)
+					writer.WriteTLStamp(expire_date.Value);
+				if (usage_limit != null)
+					writer.Write(usage_limit.Value);
 				return "Messages_ExportChatInvite";
 			});
 
@@ -7375,15 +8380,6 @@ namespace WTelegram		// ---functions---
 				return "Messages_StartBot";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/help.getAppChangelog"/></summary>
-		public Task<UpdatesBase> Help_GetAppChangelog(string prev_app_version)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x9010EF6F);
-				writer.WriteTLString(prev_app_version);
-				return "Help_GetAppChangelog";
-			});
-
 		///<summary>See <a href="https://core.telegram.org/method/messages.getMessagesViews"/></summary>
 		public Task<Messages_MessageViews> Messages_GetMessagesViews(InputPeer peer, int[] id, bool increment)
 			=> CallAsync<Messages_MessageViews>(writer =>
@@ -7393,215 +8389,6 @@ namespace WTelegram		// ---functions---
 				writer.WriteTLVector(id);
 				writer.Write(increment ? 0x997275B5 : 0xBC799737);
 				return "Messages_GetMessagesViews";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.readHistory"/></summary>
-		public Task<bool> Channels_ReadHistory(InputChannelBase channel, int max_id)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xCC104937);
-				writer.WriteTLObject(channel);
-				writer.Write(max_id);
-				return "Channels_ReadHistory";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.deleteMessages"/></summary>
-		public Task<Messages_AffectedMessages> Channels_DeleteMessages(InputChannelBase channel, int[] id)
-			=> CallAsync<Messages_AffectedMessages>(writer =>
-			{
-				writer.Write(0x84C1FD4E);
-				writer.WriteTLObject(channel);
-				writer.WriteTLVector(id);
-				return "Channels_DeleteMessages";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.deleteUserHistory"/></summary>
-		public Task<Messages_AffectedHistory> Channels_DeleteUserHistory(InputChannelBase channel, InputUserBase user_id)
-			=> CallAsync<Messages_AffectedHistory>(writer =>
-			{
-				writer.Write(0xD10DD71B);
-				writer.WriteTLObject(channel);
-				writer.WriteTLObject(user_id);
-				return "Channels_DeleteUserHistory";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.reportSpam"/></summary>
-		public Task<bool> Channels_ReportSpam(InputChannelBase channel, InputUserBase user_id, int[] id)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xFE087810);
-				writer.WriteTLObject(channel);
-				writer.WriteTLObject(user_id);
-				writer.WriteTLVector(id);
-				return "Channels_ReportSpam";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.getMessages"/></summary>
-		public Task<Messages_MessagesBase> Channels_GetMessages(InputChannelBase channel, InputMessage[] id)
-			=> CallAsync<Messages_MessagesBase>(writer =>
-			{
-				writer.Write(0xAD8C9A23);
-				writer.WriteTLObject(channel);
-				writer.WriteTLVector(id);
-				return "Channels_GetMessages";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.getParticipants"/></summary>
-		public Task<Channels_ChannelParticipantsBase> Channels_GetParticipants(InputChannelBase channel, ChannelParticipantsFilter filter, int offset, int limit, int hash)
-			=> CallAsync<Channels_ChannelParticipantsBase>(writer =>
-			{
-				writer.Write(0x123E05E9);
-				writer.WriteTLObject(channel);
-				writer.WriteTLObject(filter);
-				writer.Write(offset);
-				writer.Write(limit);
-				writer.Write(hash);
-				return "Channels_GetParticipants";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.getParticipant"/></summary>
-		public Task<Channels_ChannelParticipant> Channels_GetParticipant(InputChannelBase channel, InputUserBase user_id)
-			=> CallAsync<Channels_ChannelParticipant>(writer =>
-			{
-				writer.Write(0x546DD7A6);
-				writer.WriteTLObject(channel);
-				writer.WriteTLObject(user_id);
-				return "Channels_GetParticipant";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.getChannels"/></summary>
-		public Task<Messages_ChatsBase> Channels_GetChannels(InputChannelBase[] id)
-			=> CallAsync<Messages_ChatsBase>(writer =>
-			{
-				writer.Write(0x0A7F6BBB);
-				writer.WriteTLVector(id);
-				return "Channels_GetChannels";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.getFullChannel"/></summary>
-		public Task<Messages_ChatFull> Channels_GetFullChannel(InputChannelBase channel)
-			=> CallAsync<Messages_ChatFull>(writer =>
-			{
-				writer.Write(0x08736A09);
-				writer.WriteTLObject(channel);
-				return "Channels_GetFullChannel";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.createChannel"/></summary>
-		public Task<UpdatesBase> Channels_CreateChannel(string title, string about, bool broadcast = false, bool megagroup = false, bool for_import = false, InputGeoPointBase geo_point = null, string address = null)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x3D5FB10F);
-				writer.Write((broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0) | (geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0));
-				writer.WriteTLString(title);
-				writer.WriteTLString(about);
-				if (geo_point != null)
-					writer.WriteTLObject(geo_point);
-				if (address != null)
-					writer.WriteTLString(address);
-				return "Channels_CreateChannel";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.editAdmin"/></summary>
-		public Task<UpdatesBase> Channels_EditAdmin(InputChannelBase channel, InputUserBase user_id, ChatAdminRights admin_rights, string rank)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xD33C8902);
-				writer.WriteTLObject(channel);
-				writer.WriteTLObject(user_id);
-				writer.WriteTLObject(admin_rights);
-				writer.WriteTLString(rank);
-				return "Channels_EditAdmin";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.editTitle"/></summary>
-		public Task<UpdatesBase> Channels_EditTitle(InputChannelBase channel, string title)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x566DECD0);
-				writer.WriteTLObject(channel);
-				writer.WriteTLString(title);
-				return "Channels_EditTitle";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.editPhoto"/></summary>
-		public Task<UpdatesBase> Channels_EditPhoto(InputChannelBase channel, InputChatPhotoBase photo)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xF12E57C9);
-				writer.WriteTLObject(channel);
-				writer.WriteTLObject(photo);
-				return "Channels_EditPhoto";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.checkUsername"/></summary>
-		public Task<bool> Channels_CheckUsername(InputChannelBase channel, string username)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x10E6BD2C);
-				writer.WriteTLObject(channel);
-				writer.WriteTLString(username);
-				return "Channels_CheckUsername";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.updateUsername"/></summary>
-		public Task<bool> Channels_UpdateUsername(InputChannelBase channel, string username)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x3514B3DE);
-				writer.WriteTLObject(channel);
-				writer.WriteTLString(username);
-				return "Channels_UpdateUsername";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.joinChannel"/></summary>
-		public Task<UpdatesBase> Channels_JoinChannel(InputChannelBase channel)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x24B524C5);
-				writer.WriteTLObject(channel);
-				return "Channels_JoinChannel";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.leaveChannel"/></summary>
-		public Task<UpdatesBase> Channels_LeaveChannel(InputChannelBase channel)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xF836AA95);
-				writer.WriteTLObject(channel);
-				return "Channels_LeaveChannel";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.inviteToChannel"/></summary>
-		public Task<UpdatesBase> Channels_InviteToChannel(InputChannelBase channel, InputUserBase[] users)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x199F3A6C);
-				writer.WriteTLObject(channel);
-				writer.WriteTLVector(users);
-				return "Channels_InviteToChannel";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.deleteChannel"/></summary>
-		public Task<UpdatesBase> Channels_DeleteChannel(InputChannelBase channel)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xC0111FE3);
-				writer.WriteTLObject(channel);
-				return "Channels_DeleteChannel";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/updates.getChannelDifference"/></summary>
-		public Task<Updates_ChannelDifferenceBase> Updates_GetChannelDifference(InputChannelBase channel, ChannelMessagesFilterBase filter, int pts, int limit, bool force = false)
-			=> CallAsync<Updates_ChannelDifferenceBase>(writer =>
-			{
-				writer.Write(0x03173D78);
-				writer.Write(force ? 0x1 : 0);
-				writer.WriteTLObject(channel);
-				writer.WriteTLObject(filter);
-				writer.Write(pts);
-				writer.Write(limit);
-				return "Updates_GetChannelDifference";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editChatAdmin"/></summary>
@@ -7731,47 +8518,6 @@ namespace WTelegram		// ---functions---
 				return "Messages_SendInlineBotResult";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/channels.exportMessageLink"/></summary>
-		public Task<ExportedMessageLink> Channels_ExportMessageLink(InputChannelBase channel, int id, bool grouped = false, bool thread = false)
-			=> CallAsync<ExportedMessageLink>(writer =>
-			{
-				writer.Write(0xE63FADEB);
-				writer.Write((grouped ? 0x1 : 0) | (thread ? 0x2 : 0));
-				writer.WriteTLObject(channel);
-				writer.Write(id);
-				return "Channels_ExportMessageLink";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.toggleSignatures"/></summary>
-		public Task<UpdatesBase> Channels_ToggleSignatures(InputChannelBase channel, bool enabled)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x1F69B606);
-				writer.WriteTLObject(channel);
-				writer.Write(enabled ? 0x997275B5 : 0xBC799737);
-				return "Channels_ToggleSignatures";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/auth.resendCode"/></summary>
-		public Task<Auth_SentCode> Auth_ResendCode(string phone_number, string phone_code_hash)
-			=> CallAsync<Auth_SentCode>(writer =>
-			{
-				writer.Write(0x3EF1A9BF);
-				writer.WriteTLString(phone_number);
-				writer.WriteTLString(phone_code_hash);
-				return "Auth_ResendCode";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/auth.cancelCode"/></summary>
-		public Task<bool> Auth_CancelCode(string phone_number, string phone_code_hash)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x1F040578);
-				writer.WriteTLString(phone_number);
-				writer.WriteTLString(phone_code_hash);
-				return "Auth_CancelCode";
-			});
-
 		///<summary>See <a href="https://core.telegram.org/method/messages.getMessageEditData"/></summary>
 		public Task<Messages_MessageEditData> Messages_GetMessageEditData(InputPeer peer, int id)
 			=> CallAsync<Messages_MessageEditData>(writer =>
@@ -7849,28 +8595,6 @@ namespace WTelegram		// ---functions---
 					writer.WriteTLString(url);
 				writer.WriteTLStamp(cache_time);
 				return "Messages_SetBotCallbackAnswer";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/contacts.getTopPeers"/></summary>
-		public Task<Contacts_TopPeersBase> Contacts_GetTopPeers(int offset, int limit, int hash, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false)
-			=> CallAsync<Contacts_TopPeersBase>(writer =>
-			{
-				writer.Write(0xD4982DB5);
-				writer.Write((correspondents ? 0x1 : 0) | (bots_pm ? 0x2 : 0) | (bots_inline ? 0x4 : 0) | (phone_calls ? 0x8 : 0) | (forward_users ? 0x10 : 0) | (forward_chats ? 0x20 : 0) | (groups ? 0x400 : 0) | (channels ? 0x8000 : 0));
-				writer.Write(offset);
-				writer.Write(limit);
-				writer.Write(hash);
-				return "Contacts_GetTopPeers";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/contacts.resetTopPeerRating"/></summary>
-		public Task<bool> Contacts_ResetTopPeerRating(TopPeerCategory category, InputPeer peer)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x1AE373AC);
-				writer.WriteTLObject(category);
-				writer.WriteTLObject(peer);
-				return "Contacts_ResetTopPeerRating";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getPeerDialogs"/></summary>
@@ -7964,35 +8688,6 @@ namespace WTelegram		// ---functions---
 				return "Messages_GetArchivedStickers";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/account.sendConfirmPhoneCode"/></summary>
-		public Task<Auth_SentCode> Account_SendConfirmPhoneCode(string hash, CodeSettings settings)
-			=> CallAsync<Auth_SentCode>(writer =>
-			{
-				writer.Write(0x1B3FAA88);
-				writer.WriteTLString(hash);
-				writer.WriteTLObject(settings);
-				return "Account_SendConfirmPhoneCode";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.confirmPhone"/></summary>
-		public Task<bool> Account_ConfirmPhone(string phone_code_hash, string phone_code)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x5F2178C3);
-				writer.WriteTLString(phone_code_hash);
-				writer.WriteTLString(phone_code);
-				return "Account_ConfirmPhone";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.getAdminedPublicChannels"/></summary>
-		public Task<Messages_ChatsBase> Channels_GetAdminedPublicChannels(bool by_location = false, bool check_limit = false)
-			=> CallAsync<Messages_ChatsBase>(writer =>
-			{
-				writer.Write(0xF8B036AF);
-				writer.Write((by_location ? 0x1 : 0) | (check_limit ? 0x2 : 0));
-				return "Channels_GetAdminedPublicChannels";
-			});
-
 		///<summary>See <a href="https://core.telegram.org/method/messages.getMaskStickers"/></summary>
 		public Task<Messages_AllStickersBase> Messages_GetMaskStickers(int hash)
 			=> CallAsync<Messages_AllStickersBase>(writer =>
@@ -8009,15 +8704,6 @@ namespace WTelegram		// ---functions---
 				writer.Write(0xCC5B67CC);
 				writer.WriteTLObject(media);
 				return "Messages_GetAttachedStickers";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/auth.dropTempAuthKeys"/></summary>
-		public Task<bool> Auth_DropTempAuthKeys(long[] except_auth_keys)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x8E48A188);
-				writer.WriteTLVector(except_auth_keys);
-				return "Auth_DropTempAuthKeys";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setGameScore"/></summary>
@@ -8086,16 +8772,6 @@ namespace WTelegram		// ---functions---
 				return "Messages_GetAllChats";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/help.setBotUpdatesStatus"/></summary>
-		public Task<bool> Help_SetBotUpdatesStatus(int pending_updates_count, string message)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xEC22CFCD);
-				writer.Write(pending_updates_count);
-				writer.WriteTLString(message);
-				return "Help_SetBotUpdatesStatus";
-			});
-
 		///<summary>See <a href="https://core.telegram.org/method/messages.getWebPage"/></summary>
 		public Task<WebPageBase> Messages_GetWebPage(string url, int hash)
 			=> CallAsync<WebPageBase>(writer =>
@@ -8136,108 +8812,6 @@ namespace WTelegram		// ---functions---
 				return "Messages_GetPinnedDialogs";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/bots.sendCustomRequest"/></summary>
-		public Task<DataJSON> Bots_SendCustomRequest(string custom_method, DataJSON params_)
-			=> CallAsync<DataJSON>(writer =>
-			{
-				writer.Write(0xAA2769ED);
-				writer.WriteTLString(custom_method);
-				writer.WriteTLObject(params_);
-				return "Bots_SendCustomRequest";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/bots.answerWebhookJSONQuery"/></summary>
-		public Task<bool> Bots_AnswerWebhookJSONQuery(long query_id, DataJSON data)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xE6213F4D);
-				writer.Write(query_id);
-				writer.WriteTLObject(data);
-				return "Bots_AnswerWebhookJSONQuery";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/upload.getWebFile"/></summary>
-		public Task<Upload_WebFile> Upload_GetWebFile(InputWebFileLocationBase location, int offset, int limit)
-			=> CallAsync<Upload_WebFile>(writer =>
-			{
-				writer.Write(0x24E6818D);
-				writer.WriteTLObject(location);
-				writer.Write(offset);
-				writer.Write(limit);
-				return "Upload_GetWebFile";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/payments.getPaymentForm"/></summary>
-		public Task<Payments_PaymentForm> Payments_GetPaymentForm(int msg_id)
-			=> CallAsync<Payments_PaymentForm>(writer =>
-			{
-				writer.Write(0x99F09745);
-				writer.Write(msg_id);
-				return "Payments_GetPaymentForm";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/payments.getPaymentReceipt"/></summary>
-		public Task<Payments_PaymentReceipt> Payments_GetPaymentReceipt(int msg_id)
-			=> CallAsync<Payments_PaymentReceipt>(writer =>
-			{
-				writer.Write(0xA092A980);
-				writer.Write(msg_id);
-				return "Payments_GetPaymentReceipt";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/payments.validateRequestedInfo"/></summary>
-		public Task<Payments_ValidatedRequestedInfo> Payments_ValidateRequestedInfo(int msg_id, PaymentRequestedInfo info, bool save = false)
-			=> CallAsync<Payments_ValidatedRequestedInfo>(writer =>
-			{
-				writer.Write(0x770A8E74);
-				writer.Write(save ? 0x1 : 0);
-				writer.Write(msg_id);
-				writer.WriteTLObject(info);
-				return "Payments_ValidateRequestedInfo";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/payments.sendPaymentForm"/></summary>
-		public Task<Payments_PaymentResultBase> Payments_SendPaymentForm(int msg_id, InputPaymentCredentialsBase credentials, string requested_info_id = null, string shipping_option_id = null)
-			=> CallAsync<Payments_PaymentResultBase>(writer =>
-			{
-				writer.Write(0x2B8879B3);
-				writer.Write((requested_info_id != null ? 0x1 : 0) | (shipping_option_id != null ? 0x2 : 0));
-				writer.Write(msg_id);
-				if (requested_info_id != null)
-					writer.WriteTLString(requested_info_id);
-				if (shipping_option_id != null)
-					writer.WriteTLString(shipping_option_id);
-				writer.WriteTLObject(credentials);
-				return "Payments_SendPaymentForm";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getTmpPassword"/></summary>
-		public Task<Account_TmpPassword> Account_GetTmpPassword(InputCheckPasswordSRPBase password, int period)
-			=> CallAsync<Account_TmpPassword>(writer =>
-			{
-				writer.Write(0x449E0B51);
-				writer.WriteTLObject(password);
-				writer.Write(period);
-				return "Account_GetTmpPassword";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/payments.getSavedInfo"/></summary>
-		public Task<Payments_SavedInfo> Payments_GetSavedInfo()
-			=> CallAsync<Payments_SavedInfo>(writer =>
-			{
-				writer.Write(0x227D824B);
-				return "Payments_GetSavedInfo";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/payments.clearSavedInfo"/></summary>
-		public Task<bool> Payments_ClearSavedInfo(bool credentials = false, bool info = false)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xD83D70C1);
-				writer.Write((credentials ? 0x1 : 0) | (info ? 0x2 : 0));
-				return "Payments_ClearSavedInfo";
-			});
-
 		///<summary>See <a href="https://core.telegram.org/method/messages.setBotShippingResults"/></summary>
 		public Task<bool> Messages_SetBotShippingResults(long query_id, string error = null, ShippingOption[] shipping_options = null)
 			=> CallAsync<bool>(writer =>
@@ -8264,18 +8838,1512 @@ namespace WTelegram		// ---functions---
 				return "Messages_SetBotPrecheckoutResults";
 			});
 
+		///<summary>See <a href="https://core.telegram.org/method/messages.uploadMedia"/></summary>
+		public Task<MessageMedia> Messages_UploadMedia(InputPeer peer, InputMedia media)
+			=> CallAsync<MessageMedia>(writer =>
+			{
+				writer.Write(0x519BC2B1);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(media);
+				return "Messages_UploadMedia";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.sendScreenshotNotification"/></summary>
+		public Task<UpdatesBase> Messages_SendScreenshotNotification(InputPeer peer, int reply_to_msg_id, long random_id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xC97DF020);
+				writer.WriteTLObject(peer);
+				writer.Write(reply_to_msg_id);
+				writer.Write(random_id);
+				return "Messages_SendScreenshotNotification";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getFavedStickers"/></summary>
+		public Task<Messages_FavedStickersBase> Messages_GetFavedStickers(int hash)
+			=> CallAsync<Messages_FavedStickersBase>(writer =>
+			{
+				writer.Write(0x21CE0B0E);
+				writer.Write(hash);
+				return "Messages_GetFavedStickers";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.faveSticker"/></summary>
+		public Task<bool> Messages_FaveSticker(InputDocumentBase id, bool unfave)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xB9FFC55B);
+				writer.WriteTLObject(id);
+				writer.Write(unfave ? 0x997275B5 : 0xBC799737);
+				return "Messages_FaveSticker";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getUnreadMentions"/></summary>
+		public Task<Messages_MessagesBase> Messages_GetUnreadMentions(InputPeer peer, int offset_id, int add_offset, int limit, int max_id, int min_id)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0x46578472);
+				writer.WriteTLObject(peer);
+				writer.Write(offset_id);
+				writer.Write(add_offset);
+				writer.Write(limit);
+				writer.Write(max_id);
+				writer.Write(min_id);
+				return "Messages_GetUnreadMentions";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.readMentions"/></summary>
+		public Task<Messages_AffectedHistory> Messages_ReadMentions(InputPeer peer)
+			=> CallAsync<Messages_AffectedHistory>(writer =>
+			{
+				writer.Write(0x0F0189D3);
+				writer.WriteTLObject(peer);
+				return "Messages_ReadMentions";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getRecentLocations"/></summary>
+		public Task<Messages_MessagesBase> Messages_GetRecentLocations(InputPeer peer, int limit, int hash)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0xBBC45B09);
+				writer.WriteTLObject(peer);
+				writer.Write(limit);
+				writer.Write(hash);
+				return "Messages_GetRecentLocations";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.sendMultiMedia"/></summary>
+		public Task<UpdatesBase> Messages_SendMultiMedia(InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, DateTime? schedule_date = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xCC0110CB);
+				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0));
+				writer.WriteTLObject(peer);
+				if (reply_to_msg_id != null)
+					writer.Write(reply_to_msg_id.Value);
+				writer.WriteTLVector(multi_media);
+				if (schedule_date != null)
+					writer.WriteTLStamp(schedule_date.Value);
+				return "Messages_SendMultiMedia";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.uploadEncryptedFile"/></summary>
+		public Task<EncryptedFileBase> Messages_UploadEncryptedFile(InputEncryptedChat peer, InputEncryptedFileBase file)
+			=> CallAsync<EncryptedFileBase>(writer =>
+			{
+				writer.Write(0x5057C497);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(file);
+				return "Messages_UploadEncryptedFile";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.searchStickerSets"/></summary>
+		public Task<Messages_FoundStickerSetsBase> Messages_SearchStickerSets(string q, int hash, bool exclude_featured = false)
+			=> CallAsync<Messages_FoundStickerSetsBase>(writer =>
+			{
+				writer.Write(0xC2B7D08B);
+				writer.Write(exclude_featured ? 0x1 : 0);
+				writer.WriteTLString(q);
+				writer.Write(hash);
+				return "Messages_SearchStickerSets";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getSplitRanges"/></summary>
+		public Task<MessageRange[]> Messages_GetSplitRanges()
+			=> CallAsync<MessageRange[]>(writer =>
+			{
+				writer.Write(0x1CFF7E08);
+				return "Messages_GetSplitRanges";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.markDialogUnread"/></summary>
+		public Task<bool> Messages_MarkDialogUnread(InputDialogPeerBase peer, bool unread = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xC286D98F);
+				writer.Write(unread ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				return "Messages_MarkDialogUnread";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getDialogUnreadMarks"/></summary>
+		public Task<DialogPeerBase[]> Messages_GetDialogUnreadMarks()
+			=> CallAsync<DialogPeerBase[]>(writer =>
+			{
+				writer.Write(0x22E24E22);
+				return "Messages_GetDialogUnreadMarks";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.clearAllDrafts"/></summary>
+		public Task<bool> Messages_ClearAllDrafts()
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x7E58EE9C);
+				return "Messages_ClearAllDrafts";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.updatePinnedMessage"/></summary>
+		public Task<UpdatesBase> Messages_UpdatePinnedMessage(InputPeer peer, int id, bool silent = false, bool unpin = false, bool pm_oneside = false)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xD2AAF7EC);
+				writer.Write((silent ? 0x1 : 0) | (unpin ? 0x2 : 0) | (pm_oneside ? 0x4 : 0));
+				writer.WriteTLObject(peer);
+				writer.Write(id);
+				return "Messages_UpdatePinnedMessage";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.sendVote"/></summary>
+		public Task<UpdatesBase> Messages_SendVote(InputPeer peer, int msg_id, byte[][] options)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x10EA6184);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				writer.WriteTLVector(options);
+				return "Messages_SendVote";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getPollResults"/></summary>
+		public Task<UpdatesBase> Messages_GetPollResults(InputPeer peer, int msg_id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x73BB643B);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				return "Messages_GetPollResults";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getOnlines"/></summary>
+		public Task<ChatOnlines> Messages_GetOnlines(InputPeer peer)
+			=> CallAsync<ChatOnlines>(writer =>
+			{
+				writer.Write(0x6E2BE050);
+				writer.WriteTLObject(peer);
+				return "Messages_GetOnlines";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getStatsURL"/></summary>
+		public Task<StatsURL> Messages_GetStatsURL(InputPeer peer, string params_, bool dark = false)
+			=> CallAsync<StatsURL>(writer =>
+			{
+				writer.Write(0x812C2AE6);
+				writer.Write(dark ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(params_);
+				return "Messages_GetStatsURL";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.editChatAbout"/></summary>
+		public Task<bool> Messages_EditChatAbout(InputPeer peer, string about)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xDEF60797);
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(about);
+				return "Messages_EditChatAbout";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.editChatDefaultBannedRights"/></summary>
+		public Task<UpdatesBase> Messages_EditChatDefaultBannedRights(InputPeer peer, ChatBannedRights banned_rights)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xA5866B41);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(banned_rights);
+				return "Messages_EditChatDefaultBannedRights";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiKeywords"/></summary>
+		public Task<EmojiKeywordsDifference> Messages_GetEmojiKeywords(string lang_code)
+			=> CallAsync<EmojiKeywordsDifference>(writer =>
+			{
+				writer.Write(0x35A0E062);
+				writer.WriteTLString(lang_code);
+				return "Messages_GetEmojiKeywords";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiKeywordsDifference"/></summary>
+		public Task<EmojiKeywordsDifference> Messages_GetEmojiKeywordsDifference(string lang_code, int from_version)
+			=> CallAsync<EmojiKeywordsDifference>(writer =>
+			{
+				writer.Write(0x1508B6AF);
+				writer.WriteTLString(lang_code);
+				writer.Write(from_version);
+				return "Messages_GetEmojiKeywordsDifference";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiKeywordsLanguages"/></summary>
+		public Task<EmojiLanguage[]> Messages_GetEmojiKeywordsLanguages(string[] lang_codes)
+			=> CallAsync<EmojiLanguage[]>(writer =>
+			{
+				writer.Write(0x4E9963B2);
+				writer.WriteTLVector(lang_codes);
+				return "Messages_GetEmojiKeywordsLanguages";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiURL"/></summary>
+		public Task<EmojiURL> Messages_GetEmojiURL(string lang_code)
+			=> CallAsync<EmojiURL>(writer =>
+			{
+				writer.Write(0xD5B10C26);
+				writer.WriteTLString(lang_code);
+				return "Messages_GetEmojiURL";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getSearchCounters"/></summary>
+		public Task<Messages_SearchCounter[]> Messages_GetSearchCounters(InputPeer peer, MessagesFilter[] filters)
+			=> CallAsync<Messages_SearchCounter[]>(writer =>
+			{
+				writer.Write(0x732EEF00);
+				writer.WriteTLObject(peer);
+				writer.WriteTLVector(filters);
+				return "Messages_GetSearchCounters";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.requestUrlAuth"/></summary>
+		public Task<UrlAuthResult> Messages_RequestUrlAuth(InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null)
+			=> CallAsync<UrlAuthResult>(writer =>
+			{
+				writer.Write(0x198FB446);
+				writer.Write((peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0));
+				if (peer != null)
+					writer.WriteTLObject(peer);
+				if (msg_id != null)
+					writer.Write(msg_id.Value);
+				if (button_id != null)
+					writer.Write(button_id.Value);
+				if (url != null)
+					writer.WriteTLString(url);
+				return "Messages_RequestUrlAuth";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.acceptUrlAuth"/></summary>
+		public Task<UrlAuthResult> Messages_AcceptUrlAuth(bool write_allowed = false, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null)
+			=> CallAsync<UrlAuthResult>(writer =>
+			{
+				writer.Write(0xB12C7125);
+				writer.Write((write_allowed ? 0x1 : 0) | (peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0));
+				if (peer != null)
+					writer.WriteTLObject(peer);
+				if (msg_id != null)
+					writer.Write(msg_id.Value);
+				if (button_id != null)
+					writer.Write(button_id.Value);
+				if (url != null)
+					writer.WriteTLString(url);
+				return "Messages_AcceptUrlAuth";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.hidePeerSettingsBar"/></summary>
+		public Task<bool> Messages_HidePeerSettingsBar(InputPeer peer)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x4FACB138);
+				writer.WriteTLObject(peer);
+				return "Messages_HidePeerSettingsBar";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getScheduledHistory"/></summary>
+		public Task<Messages_MessagesBase> Messages_GetScheduledHistory(InputPeer peer, int hash)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0xE2C2685B);
+				writer.WriteTLObject(peer);
+				writer.Write(hash);
+				return "Messages_GetScheduledHistory";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getScheduledMessages"/></summary>
+		public Task<Messages_MessagesBase> Messages_GetScheduledMessages(InputPeer peer, int[] id)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0xBDBB0464);
+				writer.WriteTLObject(peer);
+				writer.WriteTLVector(id);
+				return "Messages_GetScheduledMessages";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.sendScheduledMessages"/></summary>
+		public Task<UpdatesBase> Messages_SendScheduledMessages(InputPeer peer, int[] id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xBD38850A);
+				writer.WriteTLObject(peer);
+				writer.WriteTLVector(id);
+				return "Messages_SendScheduledMessages";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.deleteScheduledMessages"/></summary>
+		public Task<UpdatesBase> Messages_DeleteScheduledMessages(InputPeer peer, int[] id)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x59AE2B16);
+				writer.WriteTLObject(peer);
+				writer.WriteTLVector(id);
+				return "Messages_DeleteScheduledMessages";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getPollVotes"/></summary>
+		public Task<Messages_VotesList> Messages_GetPollVotes(InputPeer peer, int id, int limit, byte[] option = null, string offset = null)
+			=> CallAsync<Messages_VotesList>(writer =>
+			{
+				writer.Write(0xB86E380E);
+				writer.Write((option != null ? 0x1 : 0) | (offset != null ? 0x2 : 0));
+				writer.WriteTLObject(peer);
+				writer.Write(id);
+				if (option != null)
+					writer.WriteTLBytes(option);
+				if (offset != null)
+					writer.WriteTLString(offset);
+				writer.Write(limit);
+				return "Messages_GetPollVotes";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.toggleStickerSets"/></summary>
+		public Task<bool> Messages_ToggleStickerSets(InputStickerSet[] stickersets, bool uninstall = false, bool archive = false, bool unarchive = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xB5052FEA);
+				writer.Write((uninstall ? 0x1 : 0) | (archive ? 0x2 : 0) | (unarchive ? 0x4 : 0));
+				writer.WriteTLVector(stickersets);
+				return "Messages_ToggleStickerSets";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getDialogFilters"/></summary>
+		public Task<DialogFilter[]> Messages_GetDialogFilters()
+			=> CallAsync<DialogFilter[]>(writer =>
+			{
+				writer.Write(0xF19ED96D);
+				return "Messages_GetDialogFilters";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getSuggestedDialogFilters"/></summary>
+		public Task<DialogFilterSuggested[]> Messages_GetSuggestedDialogFilters()
+			=> CallAsync<DialogFilterSuggested[]>(writer =>
+			{
+				writer.Write(0xA29CD42C);
+				return "Messages_GetSuggestedDialogFilters";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.updateDialogFilter"/></summary>
+		public Task<bool> Messages_UpdateDialogFilter(int id, DialogFilter filter = null)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x1AD4A04A);
+				writer.Write(filter != null ? 0x1 : 0);
+				writer.Write(id);
+				if (filter != null)
+					writer.WriteTLObject(filter);
+				return "Messages_UpdateDialogFilter";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.updateDialogFiltersOrder"/></summary>
+		public Task<bool> Messages_UpdateDialogFiltersOrder(int[] order)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xC563C1E4);
+				writer.WriteTLVector(order);
+				return "Messages_UpdateDialogFiltersOrder";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getOldFeaturedStickers"/></summary>
+		public Task<Messages_FeaturedStickersBase> Messages_GetOldFeaturedStickers(int offset, int limit, int hash)
+			=> CallAsync<Messages_FeaturedStickersBase>(writer =>
+			{
+				writer.Write(0x5FE7025B);
+				writer.Write(offset);
+				writer.Write(limit);
+				writer.Write(hash);
+				return "Messages_GetOldFeaturedStickers";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getReplies"/></summary>
+		public Task<Messages_MessagesBase> Messages_GetReplies(InputPeer peer, int msg_id, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, int hash)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0x24B581BA);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				writer.Write(offset_id);
+				writer.WriteTLStamp(offset_date);
+				writer.Write(add_offset);
+				writer.Write(limit);
+				writer.Write(max_id);
+				writer.Write(min_id);
+				writer.Write(hash);
+				return "Messages_GetReplies";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getDiscussionMessage"/></summary>
+		public Task<Messages_DiscussionMessage> Messages_GetDiscussionMessage(InputPeer peer, int msg_id)
+			=> CallAsync<Messages_DiscussionMessage>(writer =>
+			{
+				writer.Write(0x446972FD);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				return "Messages_GetDiscussionMessage";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.readDiscussion"/></summary>
+		public Task<bool> Messages_ReadDiscussion(InputPeer peer, int msg_id, int read_max_id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xF731A9F4);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				writer.Write(read_max_id);
+				return "Messages_ReadDiscussion";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.unpinAllMessages"/></summary>
+		public Task<Messages_AffectedHistory> Messages_UnpinAllMessages(InputPeer peer)
+			=> CallAsync<Messages_AffectedHistory>(writer =>
+			{
+				writer.Write(0xF025BC8B);
+				writer.WriteTLObject(peer);
+				return "Messages_UnpinAllMessages";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.deleteChat"/></summary>
+		public Task<bool> Messages_DeleteChat(int chat_id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x83247D11);
+				writer.Write(chat_id);
+				return "Messages_DeleteChat";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.deletePhoneCallHistory"/></summary>
+		public Task<Messages_AffectedFoundMessages> Messages_DeletePhoneCallHistory(bool revoke = false)
+			=> CallAsync<Messages_AffectedFoundMessages>(writer =>
+			{
+				writer.Write(0xF9CBE409);
+				writer.Write(revoke ? 0x1 : 0);
+				return "Messages_DeletePhoneCallHistory";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.checkHistoryImport"/></summary>
+		public Task<Messages_HistoryImportParsed> Messages_CheckHistoryImport(string import_head)
+			=> CallAsync<Messages_HistoryImportParsed>(writer =>
+			{
+				writer.Write(0x43FE19F3);
+				writer.WriteTLString(import_head);
+				return "Messages_CheckHistoryImport";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.initHistoryImport"/></summary>
+		public Task<Messages_HistoryImport> Messages_InitHistoryImport(InputPeer peer, InputFileBase file, int media_count)
+			=> CallAsync<Messages_HistoryImport>(writer =>
+			{
+				writer.Write(0x34090C3B);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(file);
+				writer.Write(media_count);
+				return "Messages_InitHistoryImport";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.uploadImportedMedia"/></summary>
+		public Task<MessageMedia> Messages_UploadImportedMedia(InputPeer peer, long import_id, string file_name, InputMedia media)
+			=> CallAsync<MessageMedia>(writer =>
+			{
+				writer.Write(0x2A862092);
+				writer.WriteTLObject(peer);
+				writer.Write(import_id);
+				writer.WriteTLString(file_name);
+				writer.WriteTLObject(media);
+				return "Messages_UploadImportedMedia";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.startHistoryImport"/></summary>
+		public Task<bool> Messages_StartHistoryImport(InputPeer peer, long import_id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xB43DF344);
+				writer.WriteTLObject(peer);
+				writer.Write(import_id);
+				return "Messages_StartHistoryImport";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getExportedChatInvites"/></summary>
+		public Task<Messages_ExportedChatInvites> Messages_GetExportedChatInvites(InputPeer peer, InputUserBase admin_id, int limit, bool revoked = false, DateTime? offset_date = null, string offset_link = null)
+			=> CallAsync<Messages_ExportedChatInvites>(writer =>
+			{
+				writer.Write(0xA2B5A3F6);
+				writer.Write((revoked ? 0x8 : 0) | (offset_date != null ? 0x4 : 0) | (offset_link != null ? 0x4 : 0));
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(admin_id);
+				if (offset_date != null)
+					writer.WriteTLStamp(offset_date.Value);
+				if (offset_link != null)
+					writer.WriteTLString(offset_link);
+				writer.Write(limit);
+				return "Messages_GetExportedChatInvites";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getExportedChatInvite"/></summary>
+		public Task<Messages_ExportedChatInviteBase> Messages_GetExportedChatInvite(InputPeer peer, string link)
+			=> CallAsync<Messages_ExportedChatInviteBase>(writer =>
+			{
+				writer.Write(0x73746F5C);
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(link);
+				return "Messages_GetExportedChatInvite";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.editExportedChatInvite"/></summary>
+		public Task<Messages_ExportedChatInviteBase> Messages_EditExportedChatInvite(InputPeer peer, string link, bool revoked = false, DateTime? expire_date = null, int? usage_limit = null)
+			=> CallAsync<Messages_ExportedChatInviteBase>(writer =>
+			{
+				writer.Write(0x02E4FFBE);
+				writer.Write((revoked ? 0x4 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0));
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(link);
+				if (expire_date != null)
+					writer.WriteTLStamp(expire_date.Value);
+				if (usage_limit != null)
+					writer.Write(usage_limit.Value);
+				return "Messages_EditExportedChatInvite";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.deleteRevokedExportedChatInvites"/></summary>
+		public Task<bool> Messages_DeleteRevokedExportedChatInvites(InputPeer peer, InputUserBase admin_id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x56987BD5);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(admin_id);
+				return "Messages_DeleteRevokedExportedChatInvites";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.deleteExportedChatInvite"/></summary>
+		public Task<bool> Messages_DeleteExportedChatInvite(InputPeer peer, string link)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xD464A42B);
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(link);
+				return "Messages_DeleteExportedChatInvite";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getAdminsWithInvites"/></summary>
+		public Task<Messages_ChatAdminsWithInvites> Messages_GetAdminsWithInvites(InputPeer peer)
+			=> CallAsync<Messages_ChatAdminsWithInvites>(writer =>
+			{
+				writer.Write(0x3920E6EF);
+				writer.WriteTLObject(peer);
+				return "Messages_GetAdminsWithInvites";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getChatInviteImporters"/></summary>
+		public Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(InputPeer peer, string link, DateTime offset_date, InputUserBase offset_user, int limit)
+			=> CallAsync<Messages_ChatInviteImporters>(writer =>
+			{
+				writer.Write(0x26FB7289);
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(link);
+				writer.WriteTLStamp(offset_date);
+				writer.WriteTLObject(offset_user);
+				writer.Write(limit);
+				return "Messages_GetChatInviteImporters";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.setHistoryTTL"/></summary>
+		public Task<UpdatesBase> Messages_SetHistoryTTL(InputPeer peer, int period)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xB80E5FE4);
+				writer.WriteTLObject(peer);
+				writer.Write(period);
+				return "Messages_SetHistoryTTL";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.checkHistoryImportPeer"/></summary>
+		public Task<Messages_CheckedHistoryImportPeer> Messages_CheckHistoryImportPeer(InputPeer peer)
+			=> CallAsync<Messages_CheckedHistoryImportPeer>(writer =>
+			{
+				writer.Write(0x5DC60F03);
+				writer.WriteTLObject(peer);
+				return "Messages_CheckHistoryImportPeer";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/updates.getState"/></summary>
+		public Task<Updates_State> Updates_GetState()
+			=> CallAsync<Updates_State>(writer =>
+			{
+				writer.Write(0xEDD4882A);
+				return "Updates_GetState";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/updates.getDifference"/></summary>
+		public Task<Updates_DifferenceBase> Updates_GetDifference(int pts, DateTime date, int qts, int? pts_total_limit = null)
+			=> CallAsync<Updates_DifferenceBase>(writer =>
+			{
+				writer.Write(0x25939651);
+				writer.Write(pts_total_limit != null ? 0x1 : 0);
+				writer.Write(pts);
+				if (pts_total_limit != null)
+					writer.Write(pts_total_limit.Value);
+				writer.WriteTLStamp(date);
+				writer.Write(qts);
+				return "Updates_GetDifference";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/updates.getChannelDifference"/></summary>
+		public Task<Updates_ChannelDifferenceBase> Updates_GetChannelDifference(InputChannelBase channel, ChannelMessagesFilterBase filter, int pts, int limit, bool force = false)
+			=> CallAsync<Updates_ChannelDifferenceBase>(writer =>
+			{
+				writer.Write(0x03173D78);
+				writer.Write(force ? 0x1 : 0);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(filter);
+				writer.Write(pts);
+				writer.Write(limit);
+				return "Updates_GetChannelDifference";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/photos.updateProfilePhoto"/></summary>
+		public Task<Photos_Photo> Photos_UpdateProfilePhoto(InputPhotoBase id)
+			=> CallAsync<Photos_Photo>(writer =>
+			{
+				writer.Write(0x72D4742C);
+				writer.WriteTLObject(id);
+				return "Photos_UpdateProfilePhoto";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/photos.uploadProfilePhoto"/></summary>
+		public Task<Photos_Photo> Photos_UploadProfilePhoto(InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null)
+			=> CallAsync<Photos_Photo>(writer =>
+			{
+				writer.Write(0x89F30F69);
+				writer.Write((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0));
+				if (file != null)
+					writer.WriteTLObject(file);
+				if (video != null)
+					writer.WriteTLObject(video);
+				if (video_start_ts != null)
+					writer.Write(video_start_ts.Value);
+				return "Photos_UploadProfilePhoto";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/photos.deletePhotos"/></summary>
+		public Task<long[]> Photos_DeletePhotos(InputPhotoBase[] id)
+			=> CallAsync<long[]>(writer =>
+			{
+				writer.Write(0x87CF7F2F);
+				writer.WriteTLVector(id);
+				return "Photos_DeletePhotos";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/photos.getUserPhotos"/></summary>
+		public Task<Photos_PhotosBase> Photos_GetUserPhotos(InputUserBase user_id, int offset, long max_id, int limit)
+			=> CallAsync<Photos_PhotosBase>(writer =>
+			{
+				writer.Write(0x91CD32A8);
+				writer.WriteTLObject(user_id);
+				writer.Write(offset);
+				writer.Write(max_id);
+				writer.Write(limit);
+				return "Photos_GetUserPhotos";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/upload.saveFilePart"/></summary>
+		public Task<bool> Upload_SaveFilePart(long file_id, int file_part, byte[] bytes)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xB304A621);
+				writer.Write(file_id);
+				writer.Write(file_part);
+				writer.WriteTLBytes(bytes);
+				return "Upload_SaveFilePart";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/upload.getFile"/></summary>
+		public Task<Upload_FileBase> Upload_GetFile(InputFileLocationBase location, int offset, int limit, bool precise = false, bool cdn_supported = false)
+			=> CallAsync<Upload_FileBase>(writer =>
+			{
+				writer.Write(0xB15A9AFC);
+				writer.Write((precise ? 0x1 : 0) | (cdn_supported ? 0x2 : 0));
+				writer.WriteTLObject(location);
+				writer.Write(offset);
+				writer.Write(limit);
+				return "Upload_GetFile";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/upload.saveBigFilePart"/></summary>
+		public Task<bool> Upload_SaveBigFilePart(long file_id, int file_part, int file_total_parts, byte[] bytes)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xDE7B673D);
+				writer.Write(file_id);
+				writer.Write(file_part);
+				writer.Write(file_total_parts);
+				writer.WriteTLBytes(bytes);
+				return "Upload_SaveBigFilePart";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/upload.getWebFile"/></summary>
+		public Task<Upload_WebFile> Upload_GetWebFile(InputWebFileLocationBase location, int offset, int limit)
+			=> CallAsync<Upload_WebFile>(writer =>
+			{
+				writer.Write(0x24E6818D);
+				writer.WriteTLObject(location);
+				writer.Write(offset);
+				writer.Write(limit);
+				return "Upload_GetWebFile";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/upload.getCdnFile"/></summary>
+		public Task<Upload_CdnFileBase> Upload_GetCdnFile(byte[] file_token, int offset, int limit)
+			=> CallAsync<Upload_CdnFileBase>(writer =>
+			{
+				writer.Write(0x2000BCC3);
+				writer.WriteTLBytes(file_token);
+				writer.Write(offset);
+				writer.Write(limit);
+				return "Upload_GetCdnFile";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/upload.reuploadCdnFile"/></summary>
+		public Task<FileHash[]> Upload_ReuploadCdnFile(byte[] file_token, byte[] request_token)
+			=> CallAsync<FileHash[]>(writer =>
+			{
+				writer.Write(0x9B2754A8);
+				writer.WriteTLBytes(file_token);
+				writer.WriteTLBytes(request_token);
+				return "Upload_ReuploadCdnFile";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/upload.getCdnFileHashes"/></summary>
+		public Task<FileHash[]> Upload_GetCdnFileHashes(byte[] file_token, int offset)
+			=> CallAsync<FileHash[]>(writer =>
+			{
+				writer.Write(0x4DA54231);
+				writer.WriteTLBytes(file_token);
+				writer.Write(offset);
+				return "Upload_GetCdnFileHashes";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/upload.getFileHashes"/></summary>
+		public Task<FileHash[]> Upload_GetFileHashes(InputFileLocationBase location, int offset)
+			=> CallAsync<FileHash[]>(writer =>
+			{
+				writer.Write(0xC7025931);
+				writer.WriteTLObject(location);
+				writer.Write(offset);
+				return "Upload_GetFileHashes";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getConfig"/></summary>
+		public Task<Config> Help_GetConfig() => CallAsync<Config>(Help_GetConfig);
+		public static string Help_GetConfig(BinaryWriter writer)
+		{
+			writer.Write(0xC4F9186B);
+			return "Help_GetConfig";
+		}
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getNearestDc"/></summary>
+		public Task<NearestDc> Help_GetNearestDc()
+			=> CallAsync<NearestDc>(writer =>
+			{
+				writer.Write(0x1FB33026);
+				return "Help_GetNearestDc";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getAppUpdate"/></summary>
+		public Task<Help_AppUpdateBase> Help_GetAppUpdate(string source)
+			=> CallAsync<Help_AppUpdateBase>(writer =>
+			{
+				writer.Write(0x522D5A7D);
+				writer.WriteTLString(source);
+				return "Help_GetAppUpdate";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getInviteText"/></summary>
+		public Task<Help_InviteText> Help_GetInviteText()
+			=> CallAsync<Help_InviteText>(writer =>
+			{
+				writer.Write(0x4D392343);
+				return "Help_GetInviteText";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getSupport"/></summary>
+		public Task<Help_Support> Help_GetSupport()
+			=> CallAsync<Help_Support>(writer =>
+			{
+				writer.Write(0x9CDF08CD);
+				return "Help_GetSupport";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getAppChangelog"/></summary>
+		public Task<UpdatesBase> Help_GetAppChangelog(string prev_app_version)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x9010EF6F);
+				writer.WriteTLString(prev_app_version);
+				return "Help_GetAppChangelog";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.setBotUpdatesStatus"/></summary>
+		public Task<bool> Help_SetBotUpdatesStatus(int pending_updates_count, string message)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xEC22CFCD);
+				writer.Write(pending_updates_count);
+				writer.WriteTLString(message);
+				return "Help_SetBotUpdatesStatus";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getCdnConfig"/></summary>
+		public Task<CdnConfig> Help_GetCdnConfig()
+			=> CallAsync<CdnConfig>(writer =>
+			{
+				writer.Write(0x52029342);
+				return "Help_GetCdnConfig";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getRecentMeUrls"/></summary>
+		public Task<Help_RecentMeUrls> Help_GetRecentMeUrls(string referer)
+			=> CallAsync<Help_RecentMeUrls>(writer =>
+			{
+				writer.Write(0x3DC0F114);
+				writer.WriteTLString(referer);
+				return "Help_GetRecentMeUrls";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getTermsOfServiceUpdate"/></summary>
+		public Task<Help_TermsOfServiceUpdateBase> Help_GetTermsOfServiceUpdate()
+			=> CallAsync<Help_TermsOfServiceUpdateBase>(writer =>
+			{
+				writer.Write(0x2CA51FD1);
+				return "Help_GetTermsOfServiceUpdate";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.acceptTermsOfService"/></summary>
+		public Task<bool> Help_AcceptTermsOfService(DataJSON id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xEE72F79A);
+				writer.WriteTLObject(id);
+				return "Help_AcceptTermsOfService";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getDeepLinkInfo"/></summary>
+		public Task<Help_DeepLinkInfoBase> Help_GetDeepLinkInfo(string path)
+			=> CallAsync<Help_DeepLinkInfoBase>(writer =>
+			{
+				writer.Write(0x3FEDC75F);
+				writer.WriteTLString(path);
+				return "Help_GetDeepLinkInfo";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getAppConfig"/></summary>
+		public Task<JSONValue> Help_GetAppConfig()
+			=> CallAsync<JSONValue>(writer =>
+			{
+				writer.Write(0x98914110);
+				return "Help_GetAppConfig";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.saveAppLog"/></summary>
+		public Task<bool> Help_SaveAppLog(InputAppEvent[] events)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x6F02F748);
+				writer.WriteTLVector(events);
+				return "Help_SaveAppLog";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getPassportConfig"/></summary>
+		public Task<Help_PassportConfigBase> Help_GetPassportConfig(int hash)
+			=> CallAsync<Help_PassportConfigBase>(writer =>
+			{
+				writer.Write(0xC661AD08);
+				writer.Write(hash);
+				return "Help_GetPassportConfig";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getSupportName"/></summary>
+		public Task<Help_SupportName> Help_GetSupportName()
+			=> CallAsync<Help_SupportName>(writer =>
+			{
+				writer.Write(0xD360E72C);
+				return "Help_GetSupportName";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getUserInfo"/></summary>
+		public Task<Help_UserInfoBase> Help_GetUserInfo(InputUserBase user_id)
+			=> CallAsync<Help_UserInfoBase>(writer =>
+			{
+				writer.Write(0x038A08D3);
+				writer.WriteTLObject(user_id);
+				return "Help_GetUserInfo";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.editUserInfo"/></summary>
+		public Task<Help_UserInfoBase> Help_EditUserInfo(InputUserBase user_id, string message, MessageEntity[] entities)
+			=> CallAsync<Help_UserInfoBase>(writer =>
+			{
+				writer.Write(0x66B91B70);
+				writer.WriteTLObject(user_id);
+				writer.WriteTLString(message);
+				writer.WriteTLVector(entities);
+				return "Help_EditUserInfo";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getPromoData"/></summary>
+		public Task<Help_PromoDataBase> Help_GetPromoData()
+			=> CallAsync<Help_PromoDataBase>(writer =>
+			{
+				writer.Write(0xC0977421);
+				return "Help_GetPromoData";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.hidePromoData"/></summary>
+		public Task<bool> Help_HidePromoData(InputPeer peer)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x1E251C95);
+				writer.WriteTLObject(peer);
+				return "Help_HidePromoData";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.dismissSuggestion"/></summary>
+		public Task<bool> Help_DismissSuggestion(InputPeer peer, string suggestion)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xF50DBAA1);
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(suggestion);
+				return "Help_DismissSuggestion";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/help.getCountriesList"/></summary>
+		public Task<Help_CountriesListBase> Help_GetCountriesList(string lang_code, int hash)
+			=> CallAsync<Help_CountriesListBase>(writer =>
+			{
+				writer.Write(0x735787A8);
+				writer.WriteTLString(lang_code);
+				writer.Write(hash);
+				return "Help_GetCountriesList";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.readHistory"/></summary>
+		public Task<bool> Channels_ReadHistory(InputChannelBase channel, int max_id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xCC104937);
+				writer.WriteTLObject(channel);
+				writer.Write(max_id);
+				return "Channels_ReadHistory";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.deleteMessages"/></summary>
+		public Task<Messages_AffectedMessages> Channels_DeleteMessages(InputChannelBase channel, int[] id)
+			=> CallAsync<Messages_AffectedMessages>(writer =>
+			{
+				writer.Write(0x84C1FD4E);
+				writer.WriteTLObject(channel);
+				writer.WriteTLVector(id);
+				return "Channels_DeleteMessages";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.deleteUserHistory"/></summary>
+		public Task<Messages_AffectedHistory> Channels_DeleteUserHistory(InputChannelBase channel, InputUserBase user_id)
+			=> CallAsync<Messages_AffectedHistory>(writer =>
+			{
+				writer.Write(0xD10DD71B);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(user_id);
+				return "Channels_DeleteUserHistory";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.reportSpam"/></summary>
+		public Task<bool> Channels_ReportSpam(InputChannelBase channel, InputUserBase user_id, int[] id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xFE087810);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(user_id);
+				writer.WriteTLVector(id);
+				return "Channels_ReportSpam";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.getMessages"/></summary>
+		public Task<Messages_MessagesBase> Channels_GetMessages(InputChannelBase channel, InputMessage[] id)
+			=> CallAsync<Messages_MessagesBase>(writer =>
+			{
+				writer.Write(0xAD8C9A23);
+				writer.WriteTLObject(channel);
+				writer.WriteTLVector(id);
+				return "Channels_GetMessages";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.getParticipants"/></summary>
+		public Task<Channels_ChannelParticipantsBase> Channels_GetParticipants(InputChannelBase channel, ChannelParticipantsFilter filter, int offset, int limit, int hash)
+			=> CallAsync<Channels_ChannelParticipantsBase>(writer =>
+			{
+				writer.Write(0x123E05E9);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(filter);
+				writer.Write(offset);
+				writer.Write(limit);
+				writer.Write(hash);
+				return "Channels_GetParticipants";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.getParticipant"/></summary>
+		public Task<Channels_ChannelParticipant> Channels_GetParticipant(InputChannelBase channel, InputPeer participant)
+			=> CallAsync<Channels_ChannelParticipant>(writer =>
+			{
+				writer.Write(0xA0AB6CC6);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(participant);
+				return "Channels_GetParticipant";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.getChannels"/></summary>
+		public Task<Messages_ChatsBase> Channels_GetChannels(InputChannelBase[] id)
+			=> CallAsync<Messages_ChatsBase>(writer =>
+			{
+				writer.Write(0x0A7F6BBB);
+				writer.WriteTLVector(id);
+				return "Channels_GetChannels";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.getFullChannel"/></summary>
+		public Task<Messages_ChatFull> Channels_GetFullChannel(InputChannelBase channel)
+			=> CallAsync<Messages_ChatFull>(writer =>
+			{
+				writer.Write(0x08736A09);
+				writer.WriteTLObject(channel);
+				return "Channels_GetFullChannel";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.createChannel"/></summary>
+		public Task<UpdatesBase> Channels_CreateChannel(string title, string about, bool broadcast = false, bool megagroup = false, bool for_import = false, InputGeoPointBase geo_point = null, string address = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x3D5FB10F);
+				writer.Write((broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0) | (geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0));
+				writer.WriteTLString(title);
+				writer.WriteTLString(about);
+				if (geo_point != null)
+					writer.WriteTLObject(geo_point);
+				if (address != null)
+					writer.WriteTLString(address);
+				return "Channels_CreateChannel";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.editAdmin"/></summary>
+		public Task<UpdatesBase> Channels_EditAdmin(InputChannelBase channel, InputUserBase user_id, ChatAdminRights admin_rights, string rank)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xD33C8902);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(user_id);
+				writer.WriteTLObject(admin_rights);
+				writer.WriteTLString(rank);
+				return "Channels_EditAdmin";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.editTitle"/></summary>
+		public Task<UpdatesBase> Channels_EditTitle(InputChannelBase channel, string title)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x566DECD0);
+				writer.WriteTLObject(channel);
+				writer.WriteTLString(title);
+				return "Channels_EditTitle";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.editPhoto"/></summary>
+		public Task<UpdatesBase> Channels_EditPhoto(InputChannelBase channel, InputChatPhotoBase photo)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xF12E57C9);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(photo);
+				return "Channels_EditPhoto";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.checkUsername"/></summary>
+		public Task<bool> Channels_CheckUsername(InputChannelBase channel, string username)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x10E6BD2C);
+				writer.WriteTLObject(channel);
+				writer.WriteTLString(username);
+				return "Channels_CheckUsername";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.updateUsername"/></summary>
+		public Task<bool> Channels_UpdateUsername(InputChannelBase channel, string username)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x3514B3DE);
+				writer.WriteTLObject(channel);
+				writer.WriteTLString(username);
+				return "Channels_UpdateUsername";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.joinChannel"/></summary>
+		public Task<UpdatesBase> Channels_JoinChannel(InputChannelBase channel)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x24B524C5);
+				writer.WriteTLObject(channel);
+				return "Channels_JoinChannel";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.leaveChannel"/></summary>
+		public Task<UpdatesBase> Channels_LeaveChannel(InputChannelBase channel)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xF836AA95);
+				writer.WriteTLObject(channel);
+				return "Channels_LeaveChannel";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.inviteToChannel"/></summary>
+		public Task<UpdatesBase> Channels_InviteToChannel(InputChannelBase channel, InputUserBase[] users)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x199F3A6C);
+				writer.WriteTLObject(channel);
+				writer.WriteTLVector(users);
+				return "Channels_InviteToChannel";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.deleteChannel"/></summary>
+		public Task<UpdatesBase> Channels_DeleteChannel(InputChannelBase channel)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xC0111FE3);
+				writer.WriteTLObject(channel);
+				return "Channels_DeleteChannel";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.exportMessageLink"/></summary>
+		public Task<ExportedMessageLink> Channels_ExportMessageLink(InputChannelBase channel, int id, bool grouped = false, bool thread = false)
+			=> CallAsync<ExportedMessageLink>(writer =>
+			{
+				writer.Write(0xE63FADEB);
+				writer.Write((grouped ? 0x1 : 0) | (thread ? 0x2 : 0));
+				writer.WriteTLObject(channel);
+				writer.Write(id);
+				return "Channels_ExportMessageLink";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.toggleSignatures"/></summary>
+		public Task<UpdatesBase> Channels_ToggleSignatures(InputChannelBase channel, bool enabled)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x1F69B606);
+				writer.WriteTLObject(channel);
+				writer.Write(enabled ? 0x997275B5 : 0xBC799737);
+				return "Channels_ToggleSignatures";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.getAdminedPublicChannels"/></summary>
+		public Task<Messages_ChatsBase> Channels_GetAdminedPublicChannels(bool by_location = false, bool check_limit = false)
+			=> CallAsync<Messages_ChatsBase>(writer =>
+			{
+				writer.Write(0xF8B036AF);
+				writer.Write((by_location ? 0x1 : 0) | (check_limit ? 0x2 : 0));
+				return "Channels_GetAdminedPublicChannels";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.editBanned"/></summary>
+		public Task<UpdatesBase> Channels_EditBanned(InputChannelBase channel, InputPeer participant, ChatBannedRights banned_rights)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x96E6CD81);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(participant);
+				writer.WriteTLObject(banned_rights);
+				return "Channels_EditBanned";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.getAdminLog"/></summary>
+		public Task<Channels_AdminLogResults> Channels_GetAdminLog(InputChannelBase channel, string q, long max_id, long min_id, int limit, ChannelAdminLogEventsFilter events_filter = null, InputUserBase[] admins = null)
+			=> CallAsync<Channels_AdminLogResults>(writer =>
+			{
+				writer.Write(0x33DDF480);
+				writer.Write((events_filter != null ? 0x1 : 0) | (admins != null ? 0x2 : 0));
+				writer.WriteTLObject(channel);
+				writer.WriteTLString(q);
+				if (events_filter != null)
+					writer.WriteTLObject(events_filter);
+				if (admins != null)
+					writer.WriteTLVector(admins);
+				writer.Write(max_id);
+				writer.Write(min_id);
+				writer.Write(limit);
+				return "Channels_GetAdminLog";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.setStickers"/></summary>
+		public Task<bool> Channels_SetStickers(InputChannelBase channel, InputStickerSet stickerset)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xEA8CA4F9);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(stickerset);
+				return "Channels_SetStickers";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.readMessageContents"/></summary>
+		public Task<bool> Channels_ReadMessageContents(InputChannelBase channel, int[] id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xEAB5DC38);
+				writer.WriteTLObject(channel);
+				writer.WriteTLVector(id);
+				return "Channels_ReadMessageContents";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.deleteHistory"/></summary>
+		public Task<bool> Channels_DeleteHistory(InputChannelBase channel, int max_id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xAF369D42);
+				writer.WriteTLObject(channel);
+				writer.Write(max_id);
+				return "Channels_DeleteHistory";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.togglePreHistoryHidden"/></summary>
+		public Task<UpdatesBase> Channels_TogglePreHistoryHidden(InputChannelBase channel, bool enabled)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xEABBB94C);
+				writer.WriteTLObject(channel);
+				writer.Write(enabled ? 0x997275B5 : 0xBC799737);
+				return "Channels_TogglePreHistoryHidden";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.getLeftChannels"/></summary>
+		public Task<Messages_ChatsBase> Channels_GetLeftChannels(int offset)
+			=> CallAsync<Messages_ChatsBase>(writer =>
+			{
+				writer.Write(0x8341ECC0);
+				writer.Write(offset);
+				return "Channels_GetLeftChannels";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.getGroupsForDiscussion"/></summary>
+		public Task<Messages_ChatsBase> Channels_GetGroupsForDiscussion()
+			=> CallAsync<Messages_ChatsBase>(writer =>
+			{
+				writer.Write(0xF5DAD378);
+				return "Channels_GetGroupsForDiscussion";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.setDiscussionGroup"/></summary>
+		public Task<bool> Channels_SetDiscussionGroup(InputChannelBase broadcast, InputChannelBase group)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x40582BB2);
+				writer.WriteTLObject(broadcast);
+				writer.WriteTLObject(group);
+				return "Channels_SetDiscussionGroup";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.editCreator"/></summary>
+		public Task<UpdatesBase> Channels_EditCreator(InputChannelBase channel, InputUserBase user_id, InputCheckPasswordSRPBase password)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x8F38CD1F);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(user_id);
+				writer.WriteTLObject(password);
+				return "Channels_EditCreator";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.editLocation"/></summary>
+		public Task<bool> Channels_EditLocation(InputChannelBase channel, InputGeoPointBase geo_point, string address)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x58E63F6D);
+				writer.WriteTLObject(channel);
+				writer.WriteTLObject(geo_point);
+				writer.WriteTLString(address);
+				return "Channels_EditLocation";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.toggleSlowMode"/></summary>
+		public Task<UpdatesBase> Channels_ToggleSlowMode(InputChannelBase channel, int seconds)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xEDD49EF0);
+				writer.WriteTLObject(channel);
+				writer.Write(seconds);
+				return "Channels_ToggleSlowMode";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.getInactiveChannels"/></summary>
+		public Task<Messages_InactiveChats> Channels_GetInactiveChannels()
+			=> CallAsync<Messages_InactiveChats>(writer =>
+			{
+				writer.Write(0x11E831EE);
+				return "Channels_GetInactiveChannels";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.convertToGigagroup"/></summary>
+		public Task<UpdatesBase> Channels_ConvertToGigagroup(InputChannelBase channel)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x0B290C69);
+				writer.WriteTLObject(channel);
+				return "Channels_ConvertToGigagroup";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/bots.sendCustomRequest"/></summary>
+		public Task<DataJSON> Bots_SendCustomRequest(string custom_method, DataJSON params_)
+			=> CallAsync<DataJSON>(writer =>
+			{
+				writer.Write(0xAA2769ED);
+				writer.WriteTLString(custom_method);
+				writer.WriteTLObject(params_);
+				return "Bots_SendCustomRequest";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/bots.answerWebhookJSONQuery"/></summary>
+		public Task<bool> Bots_AnswerWebhookJSONQuery(long query_id, DataJSON data)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xE6213F4D);
+				writer.Write(query_id);
+				writer.WriteTLObject(data);
+				return "Bots_AnswerWebhookJSONQuery";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/bots.setBotCommands"/></summary>
+		public Task<bool> Bots_SetBotCommands(BotCommandScope scope, string lang_code, BotCommand[] commands)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x0517165A);
+				writer.WriteTLObject(scope);
+				writer.WriteTLString(lang_code);
+				writer.WriteTLVector(commands);
+				return "Bots_SetBotCommands";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/bots.resetBotCommands"/></summary>
+		public Task<bool> Bots_ResetBotCommands(BotCommandScope scope, string lang_code)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x3D8DE0F9);
+				writer.WriteTLObject(scope);
+				writer.WriteTLString(lang_code);
+				return "Bots_ResetBotCommands";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/bots.getBotCommands"/></summary>
+		public Task<BotCommand[]> Bots_GetBotCommands(BotCommandScope scope, string lang_code)
+			=> CallAsync<BotCommand[]>(writer =>
+			{
+				writer.Write(0xE34C0DD6);
+				writer.WriteTLObject(scope);
+				writer.WriteTLString(lang_code);
+				return "Bots_GetBotCommands";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/payments.getPaymentForm"/></summary>
+		public Task<Payments_PaymentForm> Payments_GetPaymentForm(InputPeer peer, int msg_id, DataJSON theme_params = null)
+			=> CallAsync<Payments_PaymentForm>(writer =>
+			{
+				writer.Write(0x8A333C8D);
+				writer.Write(theme_params != null ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				if (theme_params != null)
+					writer.WriteTLObject(theme_params);
+				return "Payments_GetPaymentForm";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/payments.getPaymentReceipt"/></summary>
+		public Task<Payments_PaymentReceipt> Payments_GetPaymentReceipt(InputPeer peer, int msg_id)
+			=> CallAsync<Payments_PaymentReceipt>(writer =>
+			{
+				writer.Write(0x2478D1CC);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				return "Payments_GetPaymentReceipt";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/payments.validateRequestedInfo"/></summary>
+		public Task<Payments_ValidatedRequestedInfo> Payments_ValidateRequestedInfo(InputPeer peer, int msg_id, PaymentRequestedInfo info, bool save = false)
+			=> CallAsync<Payments_ValidatedRequestedInfo>(writer =>
+			{
+				writer.Write(0xDB103170);
+				writer.Write(save ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				writer.WriteTLObject(info);
+				return "Payments_ValidateRequestedInfo";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/payments.sendPaymentForm"/></summary>
+		public Task<Payments_PaymentResultBase> Payments_SendPaymentForm(long form_id, InputPeer peer, int msg_id, InputPaymentCredentialsBase credentials, string requested_info_id = null, string shipping_option_id = null, long? tip_amount = null)
+			=> CallAsync<Payments_PaymentResultBase>(writer =>
+			{
+				writer.Write(0x30C3BC9D);
+				writer.Write((requested_info_id != null ? 0x1 : 0) | (shipping_option_id != null ? 0x2 : 0) | (tip_amount != null ? 0x4 : 0));
+				writer.Write(form_id);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				if (requested_info_id != null)
+					writer.WriteTLString(requested_info_id);
+				if (shipping_option_id != null)
+					writer.WriteTLString(shipping_option_id);
+				writer.WriteTLObject(credentials);
+				if (tip_amount != null)
+					writer.Write(tip_amount.Value);
+				return "Payments_SendPaymentForm";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/payments.getSavedInfo"/></summary>
+		public Task<Payments_SavedInfo> Payments_GetSavedInfo()
+			=> CallAsync<Payments_SavedInfo>(writer =>
+			{
+				writer.Write(0x227D824B);
+				return "Payments_GetSavedInfo";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/payments.clearSavedInfo"/></summary>
+		public Task<bool> Payments_ClearSavedInfo(bool credentials = false, bool info = false)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xD83D70C1);
+				writer.Write((credentials ? 0x1 : 0) | (info ? 0x2 : 0));
+				return "Payments_ClearSavedInfo";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/payments.getBankCardData"/></summary>
+		public Task<Payments_BankCardData> Payments_GetBankCardData(string number)
+			=> CallAsync<Payments_BankCardData>(writer =>
+			{
+				writer.Write(0x2E79D779);
+				writer.WriteTLString(number);
+				return "Payments_GetBankCardData";
+			});
+
 		///<summary>See <a href="https://core.telegram.org/method/stickers.createStickerSet"/></summary>
-		public Task<Messages_StickerSet> Stickers_CreateStickerSet(InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, bool masks = false, bool animated = false, InputDocumentBase thumb = null)
+		public Task<Messages_StickerSet> Stickers_CreateStickerSet(InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, bool masks = false, bool animated = false, InputDocumentBase thumb = null, string software = null)
 			=> CallAsync<Messages_StickerSet>(writer =>
 			{
-				writer.Write(0xF1036780);
-				writer.Write((masks ? 0x1 : 0) | (animated ? 0x2 : 0) | (thumb != null ? 0x4 : 0));
+				writer.Write(0x9021AB67);
+				writer.Write((masks ? 0x1 : 0) | (animated ? 0x2 : 0) | (thumb != null ? 0x4 : 0) | (software != null ? 0x8 : 0));
 				writer.WriteTLObject(user_id);
 				writer.WriteTLString(title);
 				writer.WriteTLString(short_name);
 				if (thumb != null)
 					writer.WriteTLObject(thumb);
 				writer.WriteTLVector(stickers);
+				if (software != null)
+					writer.WriteTLString(software);
 				return "Stickers_CreateStickerSet";
 			});
 
@@ -8308,14 +10376,32 @@ namespace WTelegram		// ---functions---
 				return "Stickers_AddStickerToSet";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/messages.uploadMedia"/></summary>
-		public Task<MessageMedia> Messages_UploadMedia(InputPeer peer, InputMedia media)
-			=> CallAsync<MessageMedia>(writer =>
+		///<summary>See <a href="https://core.telegram.org/method/stickers.setStickerSetThumb"/></summary>
+		public Task<Messages_StickerSet> Stickers_SetStickerSetThumb(InputStickerSet stickerset, InputDocumentBase thumb)
+			=> CallAsync<Messages_StickerSet>(writer =>
 			{
-				writer.Write(0x519BC2B1);
-				writer.WriteTLObject(peer);
-				writer.WriteTLObject(media);
-				return "Messages_UploadMedia";
+				writer.Write(0x9A364E30);
+				writer.WriteTLObject(stickerset);
+				writer.WriteTLObject(thumb);
+				return "Stickers_SetStickerSetThumb";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/stickers.checkShortName"/></summary>
+		public Task<bool> Stickers_CheckShortName(string short_name)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x284B3639);
+				writer.WriteTLString(short_name);
+				return "Stickers_CheckShortName";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/stickers.suggestShortName"/></summary>
+		public Task<Stickers_SuggestedShortName> Stickers_SuggestShortName(string title)
+			=> CallAsync<Stickers_SuggestedShortName>(writer =>
+			{
+				writer.Write(0x4DAFC503);
+				writer.WriteTLString(title);
+				return "Stickers_SuggestShortName";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.getCallConfig"/></summary>
@@ -8406,33 +10492,228 @@ namespace WTelegram		// ---functions---
 				return "Phone_SaveCallDebug";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/upload.getCdnFile"/></summary>
-		public Task<Upload_CdnFileBase> Upload_GetCdnFile(byte[] file_token, int offset, int limit)
-			=> CallAsync<Upload_CdnFileBase>(writer =>
+		///<summary>See <a href="https://core.telegram.org/method/phone.sendSignalingData"/></summary>
+		public Task<bool> Phone_SendSignalingData(InputPhoneCall peer, byte[] data)
+			=> CallAsync<bool>(writer =>
 			{
-				writer.Write(0x2000BCC3);
-				writer.WriteTLBytes(file_token);
-				writer.Write(offset);
+				writer.Write(0xFF7A9383);
+				writer.WriteTLObject(peer);
+				writer.WriteTLBytes(data);
+				return "Phone_SendSignalingData";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.createGroupCall"/></summary>
+		public Task<UpdatesBase> Phone_CreateGroupCall(InputPeer peer, int random_id, string title = null, DateTime? schedule_date = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x48CDC6D8);
+				writer.Write((title != null ? 0x1 : 0) | (schedule_date != null ? 0x2 : 0));
+				writer.WriteTLObject(peer);
+				writer.Write(random_id);
+				if (title != null)
+					writer.WriteTLString(title);
+				if (schedule_date != null)
+					writer.WriteTLStamp(schedule_date.Value);
+				return "Phone_CreateGroupCall";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.joinGroupCall"/></summary>
+		public Task<UpdatesBase> Phone_JoinGroupCall(InputGroupCall call, InputPeer join_as, DataJSON params_, bool muted = false, bool video_stopped = false, string invite_hash = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xB132FF7B);
+				writer.Write((muted ? 0x1 : 0) | (video_stopped ? 0x4 : 0) | (invite_hash != null ? 0x2 : 0));
+				writer.WriteTLObject(call);
+				writer.WriteTLObject(join_as);
+				if (invite_hash != null)
+					writer.WriteTLString(invite_hash);
+				writer.WriteTLObject(params_);
+				return "Phone_JoinGroupCall";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.leaveGroupCall"/></summary>
+		public Task<UpdatesBase> Phone_LeaveGroupCall(InputGroupCall call, int source)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x500377F9);
+				writer.WriteTLObject(call);
+				writer.Write(source);
+				return "Phone_LeaveGroupCall";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.inviteToGroupCall"/></summary>
+		public Task<UpdatesBase> Phone_InviteToGroupCall(InputGroupCall call, InputUserBase[] users)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x7B393160);
+				writer.WriteTLObject(call);
+				writer.WriteTLVector(users);
+				return "Phone_InviteToGroupCall";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.discardGroupCall"/></summary>
+		public Task<UpdatesBase> Phone_DiscardGroupCall(InputGroupCall call)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x7A777135);
+				writer.WriteTLObject(call);
+				return "Phone_DiscardGroupCall";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.toggleGroupCallSettings"/></summary>
+		public Task<UpdatesBase> Phone_ToggleGroupCallSettings(InputGroupCall call, bool reset_invite_hash = false, bool? join_muted = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x74BBB43D);
+				writer.Write((reset_invite_hash ? 0x2 : 0) | (join_muted != null ? 0x1 : 0));
+				writer.WriteTLObject(call);
+				if (join_muted != null)
+					writer.Write(join_muted.Value ? 0x997275B5 : 0xBC799737);
+				return "Phone_ToggleGroupCallSettings";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.getGroupCall"/></summary>
+		public Task<Phone_GroupCall> Phone_GetGroupCall(InputGroupCall call)
+			=> CallAsync<Phone_GroupCall>(writer =>
+			{
+				writer.Write(0x0C7CB017);
+				writer.WriteTLObject(call);
+				return "Phone_GetGroupCall";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.getGroupParticipants"/></summary>
+		public Task<Phone_GroupParticipants> Phone_GetGroupParticipants(InputGroupCall call, InputPeer[] ids, int[] sources, string offset, int limit)
+			=> CallAsync<Phone_GroupParticipants>(writer =>
+			{
+				writer.Write(0xC558D8AB);
+				writer.WriteTLObject(call);
+				writer.WriteTLVector(ids);
+				writer.WriteTLVector(sources);
+				writer.WriteTLString(offset);
 				writer.Write(limit);
-				return "Upload_GetCdnFile";
+				return "Phone_GetGroupParticipants";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/upload.reuploadCdnFile"/></summary>
-		public Task<FileHash[]> Upload_ReuploadCdnFile(byte[] file_token, byte[] request_token)
-			=> CallAsync<FileHash[]>(writer =>
+		///<summary>See <a href="https://core.telegram.org/method/phone.checkGroupCall"/></summary>
+		public Task<int[]> Phone_CheckGroupCall(InputGroupCall call, int[] sources)
+			=> CallAsync<int[]>(writer =>
 			{
-				writer.Write(0x9B2754A8);
-				writer.WriteTLBytes(file_token);
-				writer.WriteTLBytes(request_token);
-				return "Upload_ReuploadCdnFile";
+				writer.Write(0xB59CF977);
+				writer.WriteTLObject(call);
+				writer.WriteTLVector(sources);
+				return "Phone_CheckGroupCall";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/help.getCdnConfig"/></summary>
-		public Task<CdnConfig> Help_GetCdnConfig()
-			=> CallAsync<CdnConfig>(writer =>
+		///<summary>See <a href="https://core.telegram.org/method/phone.toggleGroupCallRecord"/></summary>
+		public Task<UpdatesBase> Phone_ToggleGroupCallRecord(InputGroupCall call, bool start = false, string title = null)
+			=> CallAsync<UpdatesBase>(writer =>
 			{
-				writer.Write(0x52029342);
-				return "Help_GetCdnConfig";
+				writer.Write(0xC02A66D7);
+				writer.Write((start ? 0x1 : 0) | (title != null ? 0x2 : 0));
+				writer.WriteTLObject(call);
+				if (title != null)
+					writer.WriteTLString(title);
+				return "Phone_ToggleGroupCallRecord";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.editGroupCallParticipant"/></summary>
+		public Task<UpdatesBase> Phone_EditGroupCallParticipant(InputGroupCall call, InputPeer participant, bool? muted = null, int? volume = null, bool? raise_hand = null, bool? video_stopped = null, bool? video_paused = null, bool? presentation_paused = null)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xA5273ABF);
+				writer.Write((muted != null ? 0x1 : 0) | (volume != null ? 0x2 : 0) | (raise_hand != null ? 0x4 : 0) | (video_stopped != null ? 0x8 : 0) | (video_paused != null ? 0x10 : 0) | (presentation_paused != null ? 0x20 : 0));
+				writer.WriteTLObject(call);
+				writer.WriteTLObject(participant);
+				if (muted != null)
+					writer.Write(muted.Value ? 0x997275B5 : 0xBC799737);
+				if (volume != null)
+					writer.Write(volume.Value);
+				if (raise_hand != null)
+					writer.Write(raise_hand.Value ? 0x997275B5 : 0xBC799737);
+				if (video_stopped != null)
+					writer.Write(video_stopped.Value ? 0x997275B5 : 0xBC799737);
+				if (video_paused != null)
+					writer.Write(video_paused.Value ? 0x997275B5 : 0xBC799737);
+				if (presentation_paused != null)
+					writer.Write(presentation_paused.Value ? 0x997275B5 : 0xBC799737);
+				return "Phone_EditGroupCallParticipant";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.editGroupCallTitle"/></summary>
+		public Task<UpdatesBase> Phone_EditGroupCallTitle(InputGroupCall call, string title)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x1CA6AC0A);
+				writer.WriteTLObject(call);
+				writer.WriteTLString(title);
+				return "Phone_EditGroupCallTitle";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.getGroupCallJoinAs"/></summary>
+		public Task<Phone_JoinAsPeers> Phone_GetGroupCallJoinAs(InputPeer peer)
+			=> CallAsync<Phone_JoinAsPeers>(writer =>
+			{
+				writer.Write(0xEF7C213A);
+				writer.WriteTLObject(peer);
+				return "Phone_GetGroupCallJoinAs";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.exportGroupCallInvite"/></summary>
+		public Task<Phone_ExportedGroupCallInvite> Phone_ExportGroupCallInvite(InputGroupCall call, bool can_self_unmute = false)
+			=> CallAsync<Phone_ExportedGroupCallInvite>(writer =>
+			{
+				writer.Write(0xE6AA647F);
+				writer.Write(can_self_unmute ? 0x1 : 0);
+				writer.WriteTLObject(call);
+				return "Phone_ExportGroupCallInvite";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.toggleGroupCallStartSubscription"/></summary>
+		public Task<UpdatesBase> Phone_ToggleGroupCallStartSubscription(InputGroupCall call, bool subscribed)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x219C34E6);
+				writer.WriteTLObject(call);
+				writer.Write(subscribed ? 0x997275B5 : 0xBC799737);
+				return "Phone_ToggleGroupCallStartSubscription";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.startScheduledGroupCall"/></summary>
+		public Task<UpdatesBase> Phone_StartScheduledGroupCall(InputGroupCall call)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x5680E342);
+				writer.WriteTLObject(call);
+				return "Phone_StartScheduledGroupCall";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.saveDefaultGroupCallJoinAs"/></summary>
+		public Task<bool> Phone_SaveDefaultGroupCallJoinAs(InputPeer peer, InputPeer join_as)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0x575E1F8C);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(join_as);
+				return "Phone_SaveDefaultGroupCallJoinAs";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.joinGroupCallPresentation"/></summary>
+		public Task<UpdatesBase> Phone_JoinGroupCallPresentation(InputGroupCall call, DataJSON params_)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xCBEA6BC4);
+				writer.WriteTLObject(call);
+				writer.WriteTLObject(params_);
+				return "Phone_JoinGroupCallPresentation";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/phone.leaveGroupCallPresentation"/></summary>
+		public Task<UpdatesBase> Phone_LeaveGroupCallPresentation(InputGroupCall call)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x1C50D144);
+				writer.WriteTLObject(call);
+				return "Phone_LeaveGroupCallPresentation";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/langpack.getLangPack"/></summary>
@@ -8476,499 +10757,6 @@ namespace WTelegram		// ---functions---
 				return "Langpack_GetLanguages";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/channels.editBanned"/></summary>
-		public Task<UpdatesBase> Channels_EditBanned(InputChannelBase channel, InputUserBase user_id, ChatBannedRights banned_rights)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x72796912);
-				writer.WriteTLObject(channel);
-				writer.WriteTLObject(user_id);
-				writer.WriteTLObject(banned_rights);
-				return "Channels_EditBanned";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.getAdminLog"/></summary>
-		public Task<Channels_AdminLogResults> Channels_GetAdminLog(InputChannelBase channel, string q, long max_id, long min_id, int limit, ChannelAdminLogEventsFilter events_filter = null, InputUserBase[] admins = null)
-			=> CallAsync<Channels_AdminLogResults>(writer =>
-			{
-				writer.Write(0x33DDF480);
-				writer.Write((events_filter != null ? 0x1 : 0) | (admins != null ? 0x2 : 0));
-				writer.WriteTLObject(channel);
-				writer.WriteTLString(q);
-				if (events_filter != null)
-					writer.WriteTLObject(events_filter);
-				if (admins != null)
-					writer.WriteTLVector(admins);
-				writer.Write(max_id);
-				writer.Write(min_id);
-				writer.Write(limit);
-				return "Channels_GetAdminLog";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/upload.getCdnFileHashes"/></summary>
-		public Task<FileHash[]> Upload_GetCdnFileHashes(byte[] file_token, int offset)
-			=> CallAsync<FileHash[]>(writer =>
-			{
-				writer.Write(0x4DA54231);
-				writer.WriteTLBytes(file_token);
-				writer.Write(offset);
-				return "Upload_GetCdnFileHashes";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.sendScreenshotNotification"/></summary>
-		public Task<UpdatesBase> Messages_SendScreenshotNotification(InputPeer peer, int reply_to_msg_id, long random_id)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xC97DF020);
-				writer.WriteTLObject(peer);
-				writer.Write(reply_to_msg_id);
-				writer.Write(random_id);
-				return "Messages_SendScreenshotNotification";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.setStickers"/></summary>
-		public Task<bool> Channels_SetStickers(InputChannelBase channel, InputStickerSet stickerset)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xEA8CA4F9);
-				writer.WriteTLObject(channel);
-				writer.WriteTLObject(stickerset);
-				return "Channels_SetStickers";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getFavedStickers"/></summary>
-		public Task<Messages_FavedStickersBase> Messages_GetFavedStickers(int hash)
-			=> CallAsync<Messages_FavedStickersBase>(writer =>
-			{
-				writer.Write(0x21CE0B0E);
-				writer.Write(hash);
-				return "Messages_GetFavedStickers";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.faveSticker"/></summary>
-		public Task<bool> Messages_FaveSticker(InputDocumentBase id, bool unfave)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xB9FFC55B);
-				writer.WriteTLObject(id);
-				writer.Write(unfave ? 0x997275B5 : 0xBC799737);
-				return "Messages_FaveSticker";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.readMessageContents"/></summary>
-		public Task<bool> Channels_ReadMessageContents(InputChannelBase channel, int[] id)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xEAB5DC38);
-				writer.WriteTLObject(channel);
-				writer.WriteTLVector(id);
-				return "Channels_ReadMessageContents";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/contacts.resetSaved"/></summary>
-		public Task<bool> Contacts_ResetSaved()
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x879537F1);
-				return "Contacts_ResetSaved";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getUnreadMentions"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetUnreadMentions(InputPeer peer, int offset_id, int add_offset, int limit, int max_id, int min_id)
-			=> CallAsync<Messages_MessagesBase>(writer =>
-			{
-				writer.Write(0x46578472);
-				writer.WriteTLObject(peer);
-				writer.Write(offset_id);
-				writer.Write(add_offset);
-				writer.Write(limit);
-				writer.Write(max_id);
-				writer.Write(min_id);
-				return "Messages_GetUnreadMentions";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.deleteHistory"/></summary>
-		public Task<bool> Channels_DeleteHistory(InputChannelBase channel, int max_id)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xAF369D42);
-				writer.WriteTLObject(channel);
-				writer.Write(max_id);
-				return "Channels_DeleteHistory";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getRecentMeUrls"/></summary>
-		public Task<Help_RecentMeUrls> Help_GetRecentMeUrls(string referer)
-			=> CallAsync<Help_RecentMeUrls>(writer =>
-			{
-				writer.Write(0x3DC0F114);
-				writer.WriteTLString(referer);
-				return "Help_GetRecentMeUrls";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.togglePreHistoryHidden"/></summary>
-		public Task<UpdatesBase> Channels_TogglePreHistoryHidden(InputChannelBase channel, bool enabled)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xEABBB94C);
-				writer.WriteTLObject(channel);
-				writer.Write(enabled ? 0x997275B5 : 0xBC799737);
-				return "Channels_TogglePreHistoryHidden";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.readMentions"/></summary>
-		public Task<Messages_AffectedHistory> Messages_ReadMentions(InputPeer peer)
-			=> CallAsync<Messages_AffectedHistory>(writer =>
-			{
-				writer.Write(0x0F0189D3);
-				writer.WriteTLObject(peer);
-				return "Messages_ReadMentions";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getRecentLocations"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetRecentLocations(InputPeer peer, int limit, int hash)
-			=> CallAsync<Messages_MessagesBase>(writer =>
-			{
-				writer.Write(0xBBC45B09);
-				writer.WriteTLObject(peer);
-				writer.Write(limit);
-				writer.Write(hash);
-				return "Messages_GetRecentLocations";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.sendMultiMedia"/></summary>
-		public Task<UpdatesBase> Messages_SendMultiMedia(InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, DateTime? schedule_date = null)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xCC0110CB);
-				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0));
-				writer.WriteTLObject(peer);
-				if (reply_to_msg_id != null)
-					writer.Write(reply_to_msg_id.Value);
-				writer.WriteTLVector(multi_media);
-				if (schedule_date != null)
-					writer.WriteTLStamp(schedule_date.Value);
-				return "Messages_SendMultiMedia";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.uploadEncryptedFile"/></summary>
-		public Task<EncryptedFileBase> Messages_UploadEncryptedFile(InputEncryptedChat peer, InputEncryptedFileBase file)
-			=> CallAsync<EncryptedFileBase>(writer =>
-			{
-				writer.Write(0x5057C497);
-				writer.WriteTLObject(peer);
-				writer.WriteTLObject(file);
-				return "Messages_UploadEncryptedFile";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getWebAuthorizations"/></summary>
-		public Task<Account_WebAuthorizations> Account_GetWebAuthorizations()
-			=> CallAsync<Account_WebAuthorizations>(writer =>
-			{
-				writer.Write(0x182E6D6F);
-				return "Account_GetWebAuthorizations";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.resetWebAuthorization"/></summary>
-		public Task<bool> Account_ResetWebAuthorization(long hash)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x2D01B9EF);
-				writer.Write(hash);
-				return "Account_ResetWebAuthorization";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.resetWebAuthorizations"/></summary>
-		public Task<bool> Account_ResetWebAuthorizations()
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x682D2594);
-				return "Account_ResetWebAuthorizations";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.searchStickerSets"/></summary>
-		public Task<Messages_FoundStickerSetsBase> Messages_SearchStickerSets(string q, int hash, bool exclude_featured = false)
-			=> CallAsync<Messages_FoundStickerSetsBase>(writer =>
-			{
-				writer.Write(0xC2B7D08B);
-				writer.Write(exclude_featured ? 0x1 : 0);
-				writer.WriteTLString(q);
-				writer.Write(hash);
-				return "Messages_SearchStickerSets";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/upload.getFileHashes"/></summary>
-		public Task<FileHash[]> Upload_GetFileHashes(InputFileLocationBase location, int offset)
-			=> CallAsync<FileHash[]>(writer =>
-			{
-				writer.Write(0xC7025931);
-				writer.WriteTLObject(location);
-				writer.Write(offset);
-				return "Upload_GetFileHashes";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getTermsOfServiceUpdate"/></summary>
-		public Task<Help_TermsOfServiceUpdateBase> Help_GetTermsOfServiceUpdate()
-			=> CallAsync<Help_TermsOfServiceUpdateBase>(writer =>
-			{
-				writer.Write(0x2CA51FD1);
-				return "Help_GetTermsOfServiceUpdate";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.acceptTermsOfService"/></summary>
-		public Task<bool> Help_AcceptTermsOfService(DataJSON id)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xEE72F79A);
-				writer.WriteTLObject(id);
-				return "Help_AcceptTermsOfService";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getAllSecureValues"/></summary>
-		public Task<SecureValue[]> Account_GetAllSecureValues()
-			=> CallAsync<SecureValue[]>(writer =>
-			{
-				writer.Write(0xB288BC7D);
-				return "Account_GetAllSecureValues";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getSecureValue"/></summary>
-		public Task<SecureValue[]> Account_GetSecureValue(SecureValueType[] types)
-			=> CallAsync<SecureValue[]>(writer =>
-			{
-				writer.Write(0x73665BC2);
-				writer.WriteTLVector(types);
-				return "Account_GetSecureValue";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.saveSecureValue"/></summary>
-		public Task<SecureValue> Account_SaveSecureValue(InputSecureValue value, long secure_secret_id)
-			=> CallAsync<SecureValue>(writer =>
-			{
-				writer.Write(0x899FE31D);
-				writer.WriteTLObject(value);
-				writer.Write(secure_secret_id);
-				return "Account_SaveSecureValue";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.deleteSecureValue"/></summary>
-		public Task<bool> Account_DeleteSecureValue(SecureValueType[] types)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xB880BC4B);
-				writer.WriteTLVector(types);
-				return "Account_DeleteSecureValue";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/users.setSecureValueErrors"/></summary>
-		public Task<bool> Users_SetSecureValueErrors(InputUserBase id, SecureValueErrorBase[] errors)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x90C894B5);
-				writer.WriteTLObject(id);
-				writer.WriteTLVector(errors);
-				return "Users_SetSecureValueErrors";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getAuthorizationForm"/></summary>
-		public Task<Account_AuthorizationForm> Account_GetAuthorizationForm(int bot_id, string scope, string public_key)
-			=> CallAsync<Account_AuthorizationForm>(writer =>
-			{
-				writer.Write(0xB86BA8E1);
-				writer.Write(bot_id);
-				writer.WriteTLString(scope);
-				writer.WriteTLString(public_key);
-				return "Account_GetAuthorizationForm";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.acceptAuthorization"/></summary>
-		public Task<bool> Account_AcceptAuthorization(int bot_id, string scope, string public_key, SecureValueHash[] value_hashes, SecureCredentialsEncrypted credentials)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xE7027C94);
-				writer.Write(bot_id);
-				writer.WriteTLString(scope);
-				writer.WriteTLString(public_key);
-				writer.WriteTLVector(value_hashes);
-				writer.WriteTLObject(credentials);
-				return "Account_AcceptAuthorization";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.sendVerifyPhoneCode"/></summary>
-		public Task<Auth_SentCode> Account_SendVerifyPhoneCode(string phone_number, CodeSettings settings)
-			=> CallAsync<Auth_SentCode>(writer =>
-			{
-				writer.Write(0xA5A356F9);
-				writer.WriteTLString(phone_number);
-				writer.WriteTLObject(settings);
-				return "Account_SendVerifyPhoneCode";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.verifyPhone"/></summary>
-		public Task<bool> Account_VerifyPhone(string phone_number, string phone_code_hash, string phone_code)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x4DD3A7F6);
-				writer.WriteTLString(phone_number);
-				writer.WriteTLString(phone_code_hash);
-				writer.WriteTLString(phone_code);
-				return "Account_VerifyPhone";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.sendVerifyEmailCode"/></summary>
-		public Task<Account_SentEmailCode> Account_SendVerifyEmailCode(string email)
-			=> CallAsync<Account_SentEmailCode>(writer =>
-			{
-				writer.Write(0x7011509F);
-				writer.WriteTLString(email);
-				return "Account_SendVerifyEmailCode";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.verifyEmail"/></summary>
-		public Task<bool> Account_VerifyEmail(string email, string code)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xECBA39DB);
-				writer.WriteTLString(email);
-				writer.WriteTLString(code);
-				return "Account_VerifyEmail";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getDeepLinkInfo"/></summary>
-		public Task<Help_DeepLinkInfoBase> Help_GetDeepLinkInfo(string path)
-			=> CallAsync<Help_DeepLinkInfoBase>(writer =>
-			{
-				writer.Write(0x3FEDC75F);
-				writer.WriteTLString(path);
-				return "Help_GetDeepLinkInfo";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/contacts.getSaved"/></summary>
-		public Task<SavedContact[]> Contacts_GetSaved()
-			=> CallAsync<SavedContact[]>(writer =>
-			{
-				writer.Write(0x82F1E39F);
-				return "Contacts_GetSaved";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.getLeftChannels"/></summary>
-		public Task<Messages_ChatsBase> Channels_GetLeftChannels(int offset)
-			=> CallAsync<Messages_ChatsBase>(writer =>
-			{
-				writer.Write(0x8341ECC0);
-				writer.Write(offset);
-				return "Channels_GetLeftChannels";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.initTakeoutSession"/></summary>
-		public Task<Account_Takeout> Account_InitTakeoutSession(bool contacts = false, bool message_users = false, bool message_chats = false, bool message_megagroups = false, bool message_channels = false, bool files = false, int? file_max_size = null)
-			=> CallAsync<Account_Takeout>(writer =>
-			{
-				writer.Write(0xF05B4804);
-				writer.Write((contacts ? 0x1 : 0) | (message_users ? 0x2 : 0) | (message_chats ? 0x4 : 0) | (message_megagroups ? 0x8 : 0) | (message_channels ? 0x10 : 0) | (files ? 0x20 : 0) | (file_max_size != null ? 0x20 : 0));
-				if (file_max_size != null)
-					writer.Write(file_max_size.Value);
-				return "Account_InitTakeoutSession";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.finishTakeoutSession"/></summary>
-		public Task<bool> Account_FinishTakeoutSession(bool success = false)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x1D2652EE);
-				writer.Write(success ? 0x1 : 0);
-				return "Account_FinishTakeoutSession";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getSplitRanges"/></summary>
-		public Task<MessageRange[]> Messages_GetSplitRanges()
-			=> CallAsync<MessageRange[]>(writer =>
-			{
-				writer.Write(0x1CFF7E08);
-				return "Messages_GetSplitRanges";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/invokeWithMessagesRange"/></summary>
-		public Task<X> InvokeWithMessagesRange<X>(MessageRange range, ITLFunction query)
-			=> CallAsync<X>(writer =>
-			{
-				writer.Write(0x365275F2);
-				writer.WriteTLObject(range);
-				query(writer);
-				return "InvokeWithMessagesRange<X>";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/invokeWithTakeout"/></summary>
-		public Task<X> InvokeWithTakeout<X>(long takeout_id, ITLFunction query)
-			=> CallAsync<X>(writer =>
-			{
-				writer.Write(0xACA9FD2E);
-				writer.Write(takeout_id);
-				query(writer);
-				return "InvokeWithTakeout<X>";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.markDialogUnread"/></summary>
-		public Task<bool> Messages_MarkDialogUnread(InputDialogPeerBase peer, bool unread = false)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xC286D98F);
-				writer.Write(unread ? 0x1 : 0);
-				writer.WriteTLObject(peer);
-				return "Messages_MarkDialogUnread";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getDialogUnreadMarks"/></summary>
-		public Task<DialogPeerBase[]> Messages_GetDialogUnreadMarks()
-			=> CallAsync<DialogPeerBase[]>(writer =>
-			{
-				writer.Write(0x22E24E22);
-				return "Messages_GetDialogUnreadMarks";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/contacts.toggleTopPeers"/></summary>
-		public Task<bool> Contacts_ToggleTopPeers(bool enabled)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x8514BDDA);
-				writer.Write(enabled ? 0x997275B5 : 0xBC799737);
-				return "Contacts_ToggleTopPeers";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.clearAllDrafts"/></summary>
-		public Task<bool> Messages_ClearAllDrafts()
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x7E58EE9C);
-				return "Messages_ClearAllDrafts";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getAppConfig"/></summary>
-		public Task<JSONValue> Help_GetAppConfig()
-			=> CallAsync<JSONValue>(writer =>
-			{
-				writer.Write(0x98914110);
-				return "Help_GetAppConfig";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.saveAppLog"/></summary>
-		public Task<bool> Help_SaveAppLog(InputAppEvent[] events)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x6F02F748);
-				writer.WriteTLVector(events);
-				return "Help_SaveAppLog";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getPassportConfig"/></summary>
-		public Task<Help_PassportConfigBase> Help_GetPassportConfig(int hash)
-			=> CallAsync<Help_PassportConfigBase>(writer =>
-			{
-				writer.Write(0xC661AD08);
-				writer.Write(hash);
-				return "Help_GetPassportConfig";
-			});
-
 		///<summary>See <a href="https://core.telegram.org/method/langpack.getLanguage"/></summary>
 		public Task<LangPackLanguage> Langpack_GetLanguage(string lang_pack, string lang_code)
 			=> CallAsync<LangPackLanguage>(writer =>
@@ -8977,263 +10765,6 @@ namespace WTelegram		// ---functions---
 				writer.WriteTLString(lang_pack);
 				writer.WriteTLString(lang_code);
 				return "Langpack_GetLanguage";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.updatePinnedMessage"/></summary>
-		public Task<UpdatesBase> Messages_UpdatePinnedMessage(InputPeer peer, int id, bool silent = false, bool unpin = false, bool pm_oneside = false)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xD2AAF7EC);
-				writer.Write((silent ? 0x1 : 0) | (unpin ? 0x2 : 0) | (pm_oneside ? 0x4 : 0));
-				writer.WriteTLObject(peer);
-				writer.Write(id);
-				return "Messages_UpdatePinnedMessage";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.confirmPasswordEmail"/></summary>
-		public Task<bool> Account_ConfirmPasswordEmail(string code)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x8FDF1920);
-				writer.WriteTLString(code);
-				return "Account_ConfirmPasswordEmail";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.resendPasswordEmail"/></summary>
-		public Task<bool> Account_ResendPasswordEmail()
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x7A7F2A15);
-				return "Account_ResendPasswordEmail";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.cancelPasswordEmail"/></summary>
-		public Task<bool> Account_CancelPasswordEmail()
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xC1CBD5B6);
-				return "Account_CancelPasswordEmail";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getSupportName"/></summary>
-		public Task<Help_SupportName> Help_GetSupportName()
-			=> CallAsync<Help_SupportName>(writer =>
-			{
-				writer.Write(0xD360E72C);
-				return "Help_GetSupportName";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getUserInfo"/></summary>
-		public Task<Help_UserInfoBase> Help_GetUserInfo(InputUserBase user_id)
-			=> CallAsync<Help_UserInfoBase>(writer =>
-			{
-				writer.Write(0x038A08D3);
-				writer.WriteTLObject(user_id);
-				return "Help_GetUserInfo";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.editUserInfo"/></summary>
-		public Task<Help_UserInfoBase> Help_EditUserInfo(InputUserBase user_id, string message, MessageEntity[] entities)
-			=> CallAsync<Help_UserInfoBase>(writer =>
-			{
-				writer.Write(0x66B91B70);
-				writer.WriteTLObject(user_id);
-				writer.WriteTLString(message);
-				writer.WriteTLVector(entities);
-				return "Help_EditUserInfo";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getContactSignUpNotification"/></summary>
-		public Task<bool> Account_GetContactSignUpNotification()
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x9F07C728);
-				return "Account_GetContactSignUpNotification";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.setContactSignUpNotification"/></summary>
-		public Task<bool> Account_SetContactSignUpNotification(bool silent)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xCFF43F61);
-				writer.Write(silent ? 0x997275B5 : 0xBC799737);
-				return "Account_SetContactSignUpNotification";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getNotifyExceptions"/></summary>
-		public Task<UpdatesBase> Account_GetNotifyExceptions(bool compare_sound = false, InputNotifyPeerBase peer = null)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x53577479);
-				writer.Write((compare_sound ? 0x2 : 0) | (peer != null ? 0x1 : 0));
-				if (peer != null)
-					writer.WriteTLObject(peer);
-				return "Account_GetNotifyExceptions";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.sendVote"/></summary>
-		public Task<UpdatesBase> Messages_SendVote(InputPeer peer, int msg_id, byte[][] options)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x10EA6184);
-				writer.WriteTLObject(peer);
-				writer.Write(msg_id);
-				writer.WriteTLVector(options);
-				return "Messages_SendVote";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getPollResults"/></summary>
-		public Task<UpdatesBase> Messages_GetPollResults(InputPeer peer, int msg_id)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x73BB643B);
-				writer.WriteTLObject(peer);
-				writer.Write(msg_id);
-				return "Messages_GetPollResults";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getOnlines"/></summary>
-		public Task<ChatOnlines> Messages_GetOnlines(InputPeer peer)
-			=> CallAsync<ChatOnlines>(writer =>
-			{
-				writer.Write(0x6E2BE050);
-				writer.WriteTLObject(peer);
-				return "Messages_GetOnlines";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getStatsURL"/></summary>
-		public Task<StatsURL> Messages_GetStatsURL(InputPeer peer, string params_, bool dark = false)
-			=> CallAsync<StatsURL>(writer =>
-			{
-				writer.Write(0x812C2AE6);
-				writer.Write(dark ? 0x1 : 0);
-				writer.WriteTLObject(peer);
-				writer.WriteTLString(params_);
-				return "Messages_GetStatsURL";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.editChatAbout"/></summary>
-		public Task<bool> Messages_EditChatAbout(InputPeer peer, string about)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xDEF60797);
-				writer.WriteTLObject(peer);
-				writer.WriteTLString(about);
-				return "Messages_EditChatAbout";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.editChatDefaultBannedRights"/></summary>
-		public Task<UpdatesBase> Messages_EditChatDefaultBannedRights(InputPeer peer, ChatBannedRights banned_rights)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xA5866B41);
-				writer.WriteTLObject(peer);
-				writer.WriteTLObject(banned_rights);
-				return "Messages_EditChatDefaultBannedRights";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getWallPaper"/></summary>
-		public Task<WallPaperBase> Account_GetWallPaper(InputWallPaperBase wallpaper)
-			=> CallAsync<WallPaperBase>(writer =>
-			{
-				writer.Write(0xFC8DDBEA);
-				writer.WriteTLObject(wallpaper);
-				return "Account_GetWallPaper";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.uploadWallPaper"/></summary>
-		public Task<WallPaperBase> Account_UploadWallPaper(InputFileBase file, string mime_type, WallPaperSettings settings)
-			=> CallAsync<WallPaperBase>(writer =>
-			{
-				writer.Write(0xDD853661);
-				writer.WriteTLObject(file);
-				writer.WriteTLString(mime_type);
-				writer.WriteTLObject(settings);
-				return "Account_UploadWallPaper";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.saveWallPaper"/></summary>
-		public Task<bool> Account_SaveWallPaper(InputWallPaperBase wallpaper, bool unsave, WallPaperSettings settings)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x6C5A5B37);
-				writer.WriteTLObject(wallpaper);
-				writer.Write(unsave ? 0x997275B5 : 0xBC799737);
-				writer.WriteTLObject(settings);
-				return "Account_SaveWallPaper";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.installWallPaper"/></summary>
-		public Task<bool> Account_InstallWallPaper(InputWallPaperBase wallpaper, WallPaperSettings settings)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xFEED5769);
-				writer.WriteTLObject(wallpaper);
-				writer.WriteTLObject(settings);
-				return "Account_InstallWallPaper";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.resetWallPapers"/></summary>
-		public Task<bool> Account_ResetWallPapers()
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xBB3B9804);
-				return "Account_ResetWallPapers";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getAutoDownloadSettings"/></summary>
-		public Task<Account_AutoDownloadSettings> Account_GetAutoDownloadSettings()
-			=> CallAsync<Account_AutoDownloadSettings>(writer =>
-			{
-				writer.Write(0x56DA0B3F);
-				return "Account_GetAutoDownloadSettings";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.saveAutoDownloadSettings"/></summary>
-		public Task<bool> Account_SaveAutoDownloadSettings(AutoDownloadSettings settings, bool low = false, bool high = false)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x76F36233);
-				writer.Write((low ? 0x1 : 0) | (high ? 0x2 : 0));
-				writer.WriteTLObject(settings);
-				return "Account_SaveAutoDownloadSettings";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiKeywords"/></summary>
-		public Task<EmojiKeywordsDifference> Messages_GetEmojiKeywords(string lang_code)
-			=> CallAsync<EmojiKeywordsDifference>(writer =>
-			{
-				writer.Write(0x35A0E062);
-				writer.WriteTLString(lang_code);
-				return "Messages_GetEmojiKeywords";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiKeywordsDifference"/></summary>
-		public Task<EmojiKeywordsDifference> Messages_GetEmojiKeywordsDifference(string lang_code, int from_version)
-			=> CallAsync<EmojiKeywordsDifference>(writer =>
-			{
-				writer.Write(0x1508B6AF);
-				writer.WriteTLString(lang_code);
-				writer.Write(from_version);
-				return "Messages_GetEmojiKeywordsDifference";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiKeywordsLanguages"/></summary>
-		public Task<EmojiLanguage[]> Messages_GetEmojiKeywordsLanguages(string[] lang_codes)
-			=> CallAsync<EmojiLanguage[]>(writer =>
-			{
-				writer.Write(0x4E9963B2);
-				writer.WriteTLVector(lang_codes);
-				return "Messages_GetEmojiKeywordsLanguages";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiURL"/></summary>
-		public Task<EmojiURL> Messages_GetEmojiURL(string lang_code)
-			=> CallAsync<EmojiURL>(writer =>
-			{
-				writer.Write(0xD5B10C26);
-				writer.WriteTLString(lang_code);
-				return "Messages_GetEmojiURL";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/folders.editPeerFolders"/></summary>
@@ -9252,399 +10783,6 @@ namespace WTelegram		// ---functions---
 				writer.Write(0x1C295881);
 				writer.Write(folder_id);
 				return "Folders_DeleteFolder";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getSearchCounters"/></summary>
-		public Task<Messages_SearchCounter[]> Messages_GetSearchCounters(InputPeer peer, MessagesFilter[] filters)
-			=> CallAsync<Messages_SearchCounter[]>(writer =>
-			{
-				writer.Write(0x732EEF00);
-				writer.WriteTLObject(peer);
-				writer.WriteTLVector(filters);
-				return "Messages_GetSearchCounters";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.getGroupsForDiscussion"/></summary>
-		public Task<Messages_ChatsBase> Channels_GetGroupsForDiscussion()
-			=> CallAsync<Messages_ChatsBase>(writer =>
-			{
-				writer.Write(0xF5DAD378);
-				return "Channels_GetGroupsForDiscussion";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.setDiscussionGroup"/></summary>
-		public Task<bool> Channels_SetDiscussionGroup(InputChannelBase broadcast, InputChannelBase group)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x40582BB2);
-				writer.WriteTLObject(broadcast);
-				writer.WriteTLObject(group);
-				return "Channels_SetDiscussionGroup";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.requestUrlAuth"/></summary>
-		public Task<UrlAuthResult> Messages_RequestUrlAuth(InputPeer peer, int msg_id, int button_id)
-			=> CallAsync<UrlAuthResult>(writer =>
-			{
-				writer.Write(0xE33F5613);
-				writer.WriteTLObject(peer);
-				writer.Write(msg_id);
-				writer.Write(button_id);
-				return "Messages_RequestUrlAuth";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.acceptUrlAuth"/></summary>
-		public Task<UrlAuthResult> Messages_AcceptUrlAuth(InputPeer peer, int msg_id, int button_id, bool write_allowed = false)
-			=> CallAsync<UrlAuthResult>(writer =>
-			{
-				writer.Write(0xF729EA98);
-				writer.Write(write_allowed ? 0x1 : 0);
-				writer.WriteTLObject(peer);
-				writer.Write(msg_id);
-				writer.Write(button_id);
-				return "Messages_AcceptUrlAuth";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.hidePeerSettingsBar"/></summary>
-		public Task<bool> Messages_HidePeerSettingsBar(InputPeer peer)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x4FACB138);
-				writer.WriteTLObject(peer);
-				return "Messages_HidePeerSettingsBar";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/contacts.addContact"/></summary>
-		public Task<UpdatesBase> Contacts_AddContact(InputUserBase id, string first_name, string last_name, string phone, bool add_phone_privacy_exception = false)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xE8F463D0);
-				writer.Write(add_phone_privacy_exception ? 0x1 : 0);
-				writer.WriteTLObject(id);
-				writer.WriteTLString(first_name);
-				writer.WriteTLString(last_name);
-				writer.WriteTLString(phone);
-				return "Contacts_AddContact";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/contacts.acceptContact"/></summary>
-		public Task<UpdatesBase> Contacts_AcceptContact(InputUserBase id)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xF831A20F);
-				writer.WriteTLObject(id);
-				return "Contacts_AcceptContact";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.editCreator"/></summary>
-		public Task<UpdatesBase> Channels_EditCreator(InputChannelBase channel, InputUserBase user_id, InputCheckPasswordSRPBase password)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x8F38CD1F);
-				writer.WriteTLObject(channel);
-				writer.WriteTLObject(user_id);
-				writer.WriteTLObject(password);
-				return "Channels_EditCreator";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/contacts.getLocated"/></summary>
-		public Task<UpdatesBase> Contacts_GetLocated(InputGeoPointBase geo_point, bool background = false, int? self_expires = null)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xD348BC44);
-				writer.Write((background ? 0x2 : 0) | (self_expires != null ? 0x1 : 0));
-				writer.WriteTLObject(geo_point);
-				if (self_expires != null)
-					writer.Write(self_expires.Value);
-				return "Contacts_GetLocated";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.editLocation"/></summary>
-		public Task<bool> Channels_EditLocation(InputChannelBase channel, InputGeoPointBase geo_point, string address)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x58E63F6D);
-				writer.WriteTLObject(channel);
-				writer.WriteTLObject(geo_point);
-				writer.WriteTLString(address);
-				return "Channels_EditLocation";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.toggleSlowMode"/></summary>
-		public Task<UpdatesBase> Channels_ToggleSlowMode(InputChannelBase channel, int seconds)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xEDD49EF0);
-				writer.WriteTLObject(channel);
-				writer.Write(seconds);
-				return "Channels_ToggleSlowMode";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getScheduledHistory"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetScheduledHistory(InputPeer peer, int hash)
-			=> CallAsync<Messages_MessagesBase>(writer =>
-			{
-				writer.Write(0xE2C2685B);
-				writer.WriteTLObject(peer);
-				writer.Write(hash);
-				return "Messages_GetScheduledHistory";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getScheduledMessages"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetScheduledMessages(InputPeer peer, int[] id)
-			=> CallAsync<Messages_MessagesBase>(writer =>
-			{
-				writer.Write(0xBDBB0464);
-				writer.WriteTLObject(peer);
-				writer.WriteTLVector(id);
-				return "Messages_GetScheduledMessages";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.sendScheduledMessages"/></summary>
-		public Task<UpdatesBase> Messages_SendScheduledMessages(InputPeer peer, int[] id)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0xBD38850A);
-				writer.WriteTLObject(peer);
-				writer.WriteTLVector(id);
-				return "Messages_SendScheduledMessages";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.deleteScheduledMessages"/></summary>
-		public Task<UpdatesBase> Messages_DeleteScheduledMessages(InputPeer peer, int[] id)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x59AE2B16);
-				writer.WriteTLObject(peer);
-				writer.WriteTLVector(id);
-				return "Messages_DeleteScheduledMessages";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.uploadTheme"/></summary>
-		public Task<DocumentBase> Account_UploadTheme(InputFileBase file, string file_name, string mime_type, InputFileBase thumb = null)
-			=> CallAsync<DocumentBase>(writer =>
-			{
-				writer.Write(0x1C3DB333);
-				writer.Write(thumb != null ? 0x1 : 0);
-				writer.WriteTLObject(file);
-				if (thumb != null)
-					writer.WriteTLObject(thumb);
-				writer.WriteTLString(file_name);
-				writer.WriteTLString(mime_type);
-				return "Account_UploadTheme";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.createTheme"/></summary>
-		public Task<Theme> Account_CreateTheme(string slug, string title, InputDocumentBase document = null, InputThemeSettings settings = null)
-			=> CallAsync<Theme>(writer =>
-			{
-				writer.Write(0x8432C21F);
-				writer.Write((document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0));
-				writer.WriteTLString(slug);
-				writer.WriteTLString(title);
-				if (document != null)
-					writer.WriteTLObject(document);
-				if (settings != null)
-					writer.WriteTLObject(settings);
-				return "Account_CreateTheme";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.updateTheme"/></summary>
-		public Task<Theme> Account_UpdateTheme(string format, InputThemeBase theme, string slug = null, string title = null, InputDocumentBase document = null, InputThemeSettings settings = null)
-			=> CallAsync<Theme>(writer =>
-			{
-				writer.Write(0x5CB367D5);
-				writer.Write((slug != null ? 0x1 : 0) | (title != null ? 0x2 : 0) | (document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0));
-				writer.WriteTLString(format);
-				writer.WriteTLObject(theme);
-				if (slug != null)
-					writer.WriteTLString(slug);
-				if (title != null)
-					writer.WriteTLString(title);
-				if (document != null)
-					writer.WriteTLObject(document);
-				if (settings != null)
-					writer.WriteTLObject(settings);
-				return "Account_UpdateTheme";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.saveTheme"/></summary>
-		public Task<bool> Account_SaveTheme(InputThemeBase theme, bool unsave)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xF257106C);
-				writer.WriteTLObject(theme);
-				writer.Write(unsave ? 0x997275B5 : 0xBC799737);
-				return "Account_SaveTheme";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.installTheme"/></summary>
-		public Task<bool> Account_InstallTheme(bool dark = false, string format = null, InputThemeBase theme = null)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x7AE43737);
-				writer.Write((dark ? 0x1 : 0) | (format != null ? 0x2 : 0) | (theme != null ? 0x2 : 0));
-				if (format != null)
-					writer.WriteTLString(format);
-				if (theme != null)
-					writer.WriteTLObject(theme);
-				return "Account_InstallTheme";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getTheme"/></summary>
-		public Task<Theme> Account_GetTheme(string format, InputThemeBase theme, long document_id)
-			=> CallAsync<Theme>(writer =>
-			{
-				writer.Write(0x8D9D742B);
-				writer.WriteTLString(format);
-				writer.WriteTLObject(theme);
-				writer.Write(document_id);
-				return "Account_GetTheme";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getThemes"/></summary>
-		public Task<Account_ThemesBase> Account_GetThemes(string format, int hash)
-			=> CallAsync<Account_ThemesBase>(writer =>
-			{
-				writer.Write(0x285946F8);
-				writer.WriteTLString(format);
-				writer.Write(hash);
-				return "Account_GetThemes";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/auth.exportLoginToken"/></summary>
-		public Task<Auth_LoginTokenBase> Auth_ExportLoginToken(int api_id, string api_hash, int[] except_ids)
-			=> CallAsync<Auth_LoginTokenBase>(writer =>
-			{
-				writer.Write(0xB1B41517);
-				writer.Write(api_id);
-				writer.WriteTLString(api_hash);
-				writer.WriteTLVector(except_ids);
-				return "Auth_ExportLoginToken";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/auth.importLoginToken"/></summary>
-		public Task<Auth_LoginTokenBase> Auth_ImportLoginToken(byte[] token)
-			=> CallAsync<Auth_LoginTokenBase>(writer =>
-			{
-				writer.Write(0x95AC5CE4);
-				writer.WriteTLBytes(token);
-				return "Auth_ImportLoginToken";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/auth.acceptLoginToken"/></summary>
-		public Task<Authorization> Auth_AcceptLoginToken(byte[] token)
-			=> CallAsync<Authorization>(writer =>
-			{
-				writer.Write(0xE894AD4D);
-				writer.WriteTLBytes(token);
-				return "Auth_AcceptLoginToken";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.setContentSettings"/></summary>
-		public Task<bool> Account_SetContentSettings(bool sensitive_enabled = false)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xB574B16B);
-				writer.Write(sensitive_enabled ? 0x1 : 0);
-				return "Account_SetContentSettings";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getContentSettings"/></summary>
-		public Task<Account_ContentSettings> Account_GetContentSettings()
-			=> CallAsync<Account_ContentSettings>(writer =>
-			{
-				writer.Write(0x8B9B4DAE);
-				return "Account_GetContentSettings";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/channels.getInactiveChannels"/></summary>
-		public Task<Messages_InactiveChats> Channels_GetInactiveChannels()
-			=> CallAsync<Messages_InactiveChats>(writer =>
-			{
-				writer.Write(0x11E831EE);
-				return "Channels_GetInactiveChannels";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getMultiWallPapers"/></summary>
-		public Task<WallPaperBase[]> Account_GetMultiWallPapers(InputWallPaperBase[] wallpapers)
-			=> CallAsync<WallPaperBase[]>(writer =>
-			{
-				writer.Write(0x65AD71DC);
-				writer.WriteTLVector(wallpapers);
-				return "Account_GetMultiWallPapers";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getPollVotes"/></summary>
-		public Task<Messages_VotesList> Messages_GetPollVotes(InputPeer peer, int id, int limit, byte[] option = null, string offset = null)
-			=> CallAsync<Messages_VotesList>(writer =>
-			{
-				writer.Write(0xB86E380E);
-				writer.Write((option != null ? 0x1 : 0) | (offset != null ? 0x2 : 0));
-				writer.WriteTLObject(peer);
-				writer.Write(id);
-				if (option != null)
-					writer.WriteTLBytes(option);
-				if (offset != null)
-					writer.WriteTLString(offset);
-				writer.Write(limit);
-				return "Messages_GetPollVotes";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.toggleStickerSets"/></summary>
-		public Task<bool> Messages_ToggleStickerSets(InputStickerSet[] stickersets, bool uninstall = false, bool archive = false, bool unarchive = false)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xB5052FEA);
-				writer.Write((uninstall ? 0x1 : 0) | (archive ? 0x2 : 0) | (unarchive ? 0x4 : 0));
-				writer.WriteTLVector(stickersets);
-				return "Messages_ToggleStickerSets";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/payments.getBankCardData"/></summary>
-		public Task<Payments_BankCardData> Payments_GetBankCardData(string number)
-			=> CallAsync<Payments_BankCardData>(writer =>
-			{
-				writer.Write(0x2E79D779);
-				writer.WriteTLString(number);
-				return "Payments_GetBankCardData";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getDialogFilters"/></summary>
-		public Task<DialogFilter[]> Messages_GetDialogFilters()
-			=> CallAsync<DialogFilter[]>(writer =>
-			{
-				writer.Write(0xF19ED96D);
-				return "Messages_GetDialogFilters";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getSuggestedDialogFilters"/></summary>
-		public Task<DialogFilterSuggested[]> Messages_GetSuggestedDialogFilters()
-			=> CallAsync<DialogFilterSuggested[]>(writer =>
-			{
-				writer.Write(0xA29CD42C);
-				return "Messages_GetSuggestedDialogFilters";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.updateDialogFilter"/></summary>
-		public Task<bool> Messages_UpdateDialogFilter(int id, DialogFilter filter = null)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x1AD4A04A);
-				writer.Write(filter != null ? 0x1 : 0);
-				writer.Write(id);
-				if (filter != null)
-					writer.WriteTLObject(filter);
-				return "Messages_UpdateDialogFilter";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.updateDialogFiltersOrder"/></summary>
-		public Task<bool> Messages_UpdateDialogFiltersOrder(int[] order)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xC563C1E4);
-				writer.WriteTLVector(order);
-				return "Messages_UpdateDialogFiltersOrder";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stats.getBroadcastStats"/></summary>
@@ -9669,63 +10807,6 @@ namespace WTelegram		// ---functions---
 				return "Stats_LoadAsyncGraph";
 			});
 
-		///<summary>See <a href="https://core.telegram.org/method/stickers.setStickerSetThumb"/></summary>
-		public Task<Messages_StickerSet> Stickers_SetStickerSetThumb(InputStickerSet stickerset, InputDocumentBase thumb)
-			=> CallAsync<Messages_StickerSet>(writer =>
-			{
-				writer.Write(0x9A364E30);
-				writer.WriteTLObject(stickerset);
-				writer.WriteTLObject(thumb);
-				return "Stickers_SetStickerSetThumb";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/bots.setBotCommands"/></summary>
-		public Task<bool> Bots_SetBotCommands(BotCommand[] commands)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x805D46F6);
-				writer.WriteTLVector(commands);
-				return "Bots_SetBotCommands";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getOldFeaturedStickers"/></summary>
-		public Task<Messages_FeaturedStickersBase> Messages_GetOldFeaturedStickers(int offset, int limit, int hash)
-			=> CallAsync<Messages_FeaturedStickersBase>(writer =>
-			{
-				writer.Write(0x5FE7025B);
-				writer.Write(offset);
-				writer.Write(limit);
-				writer.Write(hash);
-				return "Messages_GetOldFeaturedStickers";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getPromoData"/></summary>
-		public Task<Help_PromoDataBase> Help_GetPromoData()
-			=> CallAsync<Help_PromoDataBase>(writer =>
-			{
-				writer.Write(0xC0977421);
-				return "Help_GetPromoData";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.hidePromoData"/></summary>
-		public Task<bool> Help_HidePromoData(InputPeer peer)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x1E251C95);
-				writer.WriteTLObject(peer);
-				return "Help_HidePromoData";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/phone.sendSignalingData"/></summary>
-		public Task<bool> Phone_SendSignalingData(InputPhoneCall peer, byte[] data)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xFF7A9383);
-				writer.WriteTLObject(peer);
-				writer.WriteTLBytes(data);
-				return "Phone_SendSignalingData";
-			});
-
 		///<summary>See <a href="https://core.telegram.org/method/stats.getMegagroupStats"/></summary>
 		public Task<Stats_MegagroupStats> Stats_GetMegagroupStats(InputChannelBase channel, bool dark = false)
 			=> CallAsync<Stats_MegagroupStats>(writer =>
@@ -9734,90 +10815,6 @@ namespace WTelegram		// ---functions---
 				writer.Write(dark ? 0x1 : 0);
 				writer.WriteTLObject(channel);
 				return "Stats_GetMegagroupStats";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.getGlobalPrivacySettings"/></summary>
-		public Task<GlobalPrivacySettings> Account_GetGlobalPrivacySettings()
-			=> CallAsync<GlobalPrivacySettings>(writer =>
-			{
-				writer.Write(0xEB2B4CF6);
-				return "Account_GetGlobalPrivacySettings";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/account.setGlobalPrivacySettings"/></summary>
-		public Task<GlobalPrivacySettings> Account_SetGlobalPrivacySettings(GlobalPrivacySettings settings)
-			=> CallAsync<GlobalPrivacySettings>(writer =>
-			{
-				writer.Write(0x1EDAAAC2);
-				writer.WriteTLObject(settings);
-				return "Account_SetGlobalPrivacySettings";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.dismissSuggestion"/></summary>
-		public Task<bool> Help_DismissSuggestion(string suggestion)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0x077FA99F);
-				writer.WriteTLString(suggestion);
-				return "Help_DismissSuggestion";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/help.getCountriesList"/></summary>
-		public Task<Help_CountriesListBase> Help_GetCountriesList(string lang_code, int hash)
-			=> CallAsync<Help_CountriesListBase>(writer =>
-			{
-				writer.Write(0x735787A8);
-				writer.WriteTLString(lang_code);
-				writer.Write(hash);
-				return "Help_GetCountriesList";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getReplies"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetReplies(InputPeer peer, int msg_id, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, int hash)
-			=> CallAsync<Messages_MessagesBase>(writer =>
-			{
-				writer.Write(0x24B581BA);
-				writer.WriteTLObject(peer);
-				writer.Write(msg_id);
-				writer.Write(offset_id);
-				writer.WriteTLStamp(offset_date);
-				writer.Write(add_offset);
-				writer.Write(limit);
-				writer.Write(max_id);
-				writer.Write(min_id);
-				writer.Write(hash);
-				return "Messages_GetReplies";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.getDiscussionMessage"/></summary>
-		public Task<Messages_DiscussionMessage> Messages_GetDiscussionMessage(InputPeer peer, int msg_id)
-			=> CallAsync<Messages_DiscussionMessage>(writer =>
-			{
-				writer.Write(0x446972FD);
-				writer.WriteTLObject(peer);
-				writer.Write(msg_id);
-				return "Messages_GetDiscussionMessage";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.readDiscussion"/></summary>
-		public Task<bool> Messages_ReadDiscussion(InputPeer peer, int msg_id, int read_max_id)
-			=> CallAsync<bool>(writer =>
-			{
-				writer.Write(0xF731A9F4);
-				writer.WriteTLObject(peer);
-				writer.Write(msg_id);
-				writer.Write(read_max_id);
-				return "Messages_ReadDiscussion";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/contacts.blockFromReplies"/></summary>
-		public Task<UpdatesBase> Contacts_BlockFromReplies(int msg_id, bool delete_message = false, bool delete_history = false, bool report_spam = false)
-			=> CallAsync<UpdatesBase>(writer =>
-			{
-				writer.Write(0x29A8962C);
-				writer.Write((delete_message ? 0x1 : 0) | (delete_history ? 0x2 : 0) | (report_spam ? 0x4 : 0));
-				writer.Write(msg_id);
-				return "Contacts_BlockFromReplies";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stats.getMessagePublicForwards"/></summary>
@@ -9843,15 +10840,6 @@ namespace WTelegram		// ---functions---
 				writer.WriteTLObject(channel);
 				writer.Write(msg_id);
 				return "Stats_GetMessageStats";
-			});
-
-		///<summary>See <a href="https://core.telegram.org/method/messages.unpinAllMessages"/></summary>
-		public Task<Messages_AffectedHistory> Messages_UnpinAllMessages(InputPeer peer)
-			=> CallAsync<Messages_AffectedHistory>(writer =>
-			{
-				writer.Write(0xF025BC8B);
-				writer.WriteTLObject(peer);
-				return "Messages_UnpinAllMessages";
 			});
 	}
 }

@@ -108,6 +108,11 @@ namespace TL
 	partial class PhotoStrippedSize { public override string Type => type; }
 	partial class PhotoSizeProgressive { public override string Type => type; }
 	partial class PhotoPathSize { public override string Type => type; }
+	namespace Layer23
+	{
+		partial class PhotoSize { public override string Type => type; }
+		partial class PhotoCachedSize { public override string Type => type; }
+	}
 
 	partial class DocumentBase
 	{

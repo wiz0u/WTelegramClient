@@ -13,7 +13,8 @@ namespace TL
 		public long[] server_public_key_fingerprints;
 	}
 
-	public abstract partial class PQInnerData : ITLObject
+	[TLDef(0x83C95AEC)] //p_q_inner_data#83c95aec pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 = P_Q_inner_data
+	public partial class PQInnerData : ITLObject
 	{
 		public byte[] pq;
 		public byte[] p;
@@ -21,21 +22,37 @@ namespace TL
 		public Int128 nonce;
 		public Int128 server_nonce;
 		public Int256 new_nonce;
-		public int dc;
 	}
 	[TLDef(0xA9F55F95)] //p_q_inner_data_dc#a9f55f95 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int = P_Q_inner_data
-	public partial class PQInnerDataDc : PQInnerData { }
+	public partial class PQInnerDataDc : PQInnerData { public int dc; }
+	[TLDef(0x3C6A84D4)] //p_q_inner_data_temp#3c6a84d4 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 expires_in:int = P_Q_inner_data
+	public partial class PQInnerDataTemp : PQInnerData { public int expires_in; }
 	[TLDef(0x56FDDF88)] //p_q_inner_data_temp_dc#56fddf88 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int expires_in:int = P_Q_inner_data
-	public partial class PQInnerDataTempDc : PQInnerData { public int expires_in; }
+	public partial class PQInnerDataTempDc : PQInnerData
+	{
+		public int dc;
+		public int expires_in;
+	}
 
-	public abstract partial class ServerDHParams : ITLObject { }
-	[TLDef(0xD0E8075C)] //server_DH_params_ok#d0e8075c nonce:int128 server_nonce:int128 encrypted_answer:bytes = Server_DH_Params
-	public partial class ServerDHParamsOk : ServerDHParams
+	[TLDef(0x75A3F765)] //bind_auth_key_inner#75a3f765 nonce:long temp_auth_key_id:long perm_auth_key_id:long temp_session_id:long expires_at:int = BindAuthKeyInner
+	public partial class BindAuthKeyInner : ITLObject
+	{
+		public long nonce;
+		public long temp_auth_key_id;
+		public long perm_auth_key_id;
+		public long temp_session_id;
+		public DateTime expires_at;
+	}
+
+	public abstract partial class ServerDHParams : ITLObject
 	{
 		public Int128 nonce;
 		public Int128 server_nonce;
-		public byte[] encrypted_answer;
 	}
+	[TLDef(0x79CB045D)] //server_DH_params_fail#79cb045d nonce:int128 server_nonce:int128 new_nonce_hash:int128 = Server_DH_Params
+	public partial class ServerDHParamsFail : ServerDHParams { public Int128 new_nonce_hash; }
+	[TLDef(0xD0E8075C)] //server_DH_params_ok#d0e8075c nonce:int128 server_nonce:int128 encrypted_answer:bytes = Server_DH_Params
+	public partial class ServerDHParamsOk : ServerDHParams { public byte[] encrypted_answer; }
 
 	[TLDef(0xB5890DBA)] //server_DH_inner_data#b5890dba nonce:int128 server_nonce:int128 g:int dh_prime:bytes g_a:bytes server_time:int = Server_DH_inner_data
 	public partial class ServerDHInnerData : ITLObject
@@ -69,22 +86,63 @@ namespace TL
 	[TLDef(0xA69DAE02)] //dh_gen_fail#a69dae02 nonce:int128 server_nonce:int128 new_nonce_hash3:int128 = Set_client_DH_params_answer
 	public partial class DhGenFail : SetClientDHParamsAnswer { public Int128 new_nonce_hash3; }
 
-	[TLDef(0x75A3F765)] //bind_auth_key_inner#75a3f765 nonce:long temp_auth_key_id:long perm_auth_key_id:long temp_session_id:long expires_at:int = BindAuthKeyInner
-	public partial class BindAuthKeyInner : ITLObject
-	{
-		public long nonce;
-		public long temp_auth_key_id;
-		public long perm_auth_key_id;
-		public long temp_session_id;
-		public DateTime expires_at;
-	}
+	public abstract partial class DestroyAuthKeyRes : ITLObject { }
+	[TLDef(0xF660E1D4)] //destroy_auth_key_ok#f660e1d4 = DestroyAuthKeyRes
+	public partial class DestroyAuthKeyOk : DestroyAuthKeyRes { }
+	[TLDef(0x0A9F2259)] //destroy_auth_key_none#0a9f2259 = DestroyAuthKeyRes
+	public partial class DestroyAuthKeyNone : DestroyAuthKeyRes { }
+	[TLDef(0xEA109B13)] //destroy_auth_key_fail#ea109b13 = DestroyAuthKeyRes
+	public partial class DestroyAuthKeyFail : DestroyAuthKeyRes { }
 
-	[TLDef(0xF35C6D01)] //rpc_result#f35c6d01 req_msg_id:long result:Object = RpcResult
-	public partial class RpcResult : ITLObject
+	[TLDef(0x62D6B459)] //msgs_ack#62d6b459 msg_ids:Vector<long> = MsgsAck
+	public partial class MsgsAck : ITLObject { public long[] msg_ids; }
+
+	[TLDef(0xA7EFF811)] //bad_msg_notification#a7eff811 bad_msg_id:long bad_msg_seqno:int error_code:int = BadMsgNotification
+	public partial class BadMsgNotification : ITLObject
+	{
+		public long bad_msg_id;
+		public int bad_msg_seqno;
+		public int error_code;
+	}
+	[TLDef(0xEDAB447B)] //bad_server_salt#edab447b bad_msg_id:long bad_msg_seqno:int error_code:int new_server_salt:long = BadMsgNotification
+	public partial class BadServerSalt : BadMsgNotification { public long new_server_salt; }
+
+	[TLDef(0xDA69FB52)] //msgs_state_req#da69fb52 msg_ids:Vector<long> = MsgsStateReq
+	public partial class MsgsStateReq : ITLObject { public long[] msg_ids; }
+
+	[TLDef(0x04DEB57D)] //msgs_state_info#04deb57d req_msg_id:long info:bytes = MsgsStateInfo
+	public partial class MsgsStateInfo : ITLObject
 	{
 		public long req_msg_id;
-		public object result;
+		public byte[] info;
 	}
+
+	[TLDef(0x8CC0D131)] //msgs_all_info#8cc0d131 msg_ids:Vector<long> info:bytes = MsgsAllInfo
+	public partial class MsgsAllInfo : ITLObject
+	{
+		public long[] msg_ids;
+		public byte[] info;
+	}
+
+	public abstract partial class MsgDetailedInfoBase : ITLObject { }
+	[TLDef(0x276D3EC6)] //msg_detailed_info#276d3ec6 msg_id:long answer_msg_id:long bytes:int status:int = MsgDetailedInfo
+	public partial class MsgDetailedInfo : MsgDetailedInfoBase
+	{
+		public long msg_id;
+		public long answer_msg_id;
+		public int bytes;
+		public int status;
+	}
+	[TLDef(0x809DB6DF)] //msg_new_detailed_info#809db6df answer_msg_id:long bytes:int status:int = MsgDetailedInfo
+	public partial class MsgNewDetailedInfo : MsgDetailedInfoBase
+	{
+		public long answer_msg_id;
+		public int bytes;
+		public int status;
+	}
+
+	[TLDef(0x7D861A08)] //msg_resend_req#7d861a08 msg_ids:Vector<long> = MsgResendReq
+	public partial class MsgResendReq : ITLObject { public long[] msg_ids; }
 
 	[TLDef(0x2144CA19)] //rpc_error#2144ca19 error_code:int error_message:string = RpcError
 	public partial class RpcError : ITLObject
@@ -144,84 +202,38 @@ namespace TL
 		public long server_salt;
 	}
 
-	public abstract partial class MessageContainer : ITLObject { }
-	[TLDef(0x73F1F8DC)] //msg_container#73f1f8dc messages:vector<%Message> = MessageContainer
-	public partial class MsgContainer : MessageContainer { public _Message[] messages; }
-
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006")]
-	[TLDef(0x5BB8E511)] //message#5bb8e511 msg_id:long seqno:int bytes:int body:Object = Message
-	public partial class _Message
+	[TLDef(0x9299359F)] //http_wait#9299359f max_delay:int wait_after:int max_wait:int = HttpWait
+	public partial class HttpWait : ITLObject
 	{
-		public long msg_id;
-		public int seqno;
-		public int bytes;
-		public ITLObject body;
+		public int max_delay;
+		public int wait_after;
+		public int max_wait;
 	}
 
-	public abstract partial class MessageCopy : ITLObject { }
-	[TLDef(0xE06046B2)] //msg_copy#e06046b2 orig_message:Message = MessageCopy
-	public partial class MsgCopy : MessageCopy { public _Message orig_message; }
-
-	[TLDef(0x3072CFA1)] //gzip_packed#3072cfa1 packed_data:bytes = Object
-	public partial class GzipPacked : ITLObject { public byte[] packed_data; }
-
-	[TLDef(0x62D6B459)] //msgs_ack#62d6b459 msg_ids:Vector<long> = MsgsAck
-	public partial class MsgsAck : ITLObject { public long[] msg_ids; }
-
-	[TLDef(0xA7EFF811)] //bad_msg_notification#a7eff811 bad_msg_id:long bad_msg_seqno:int error_code:int = BadMsgNotification
-	public partial class BadMsgNotification : ITLObject
+	[TLDef(0xD433AD73)] //ipPort#d433ad73 ipv4:int port:int = IpPort
+	public partial class IpPort : ITLObject
 	{
-		public long bad_msg_id;
-		public int bad_msg_seqno;
-		public int error_code;
+		public int ipv4;
+		public int port;
 	}
-	[TLDef(0xEDAB447B)] //bad_server_salt#edab447b bad_msg_id:long bad_msg_seqno:int error_code:int new_server_salt:long = BadMsgNotification
-	public partial class BadServerSalt : BadMsgNotification { public long new_server_salt; }
+	[TLDef(0x37982646)] //ipPortSecret#37982646 ipv4:int port:int secret:bytes = IpPort
+	public partial class IpPortSecret : IpPort { public byte[] secret; }
 
-	[TLDef(0x7D861A08)] //msg_resend_req#7d861a08 msg_ids:Vector<long> = MsgResendReq
-	public partial class MsgResendReq : ITLObject { public long[] msg_ids; }
-
-	[TLDef(0xDA69FB52)] //msgs_state_req#da69fb52 msg_ids:Vector<long> = MsgsStateReq
-	public partial class MsgsStateReq : ITLObject { public long[] msg_ids; }
-
-	[TLDef(0x04DEB57D)] //msgs_state_info#04deb57d req_msg_id:long info:bytes = MsgsStateInfo
-	public partial class MsgsStateInfo : ITLObject
+	[TLDef(0x4679B65F)] //accessPointRule#4679b65f phone_prefix_rules:bytes dc_id:int ips:vector<IpPort> = AccessPointRule
+	public partial class AccessPointRule : ITLObject
 	{
-		public long req_msg_id;
-		public byte[] info;
+		public byte[] phone_prefix_rules;
+		public int dc_id;
+		public IpPort[] ips;
 	}
 
-	[TLDef(0x8CC0D131)] //msgs_all_info#8cc0d131 msg_ids:Vector<long> info:bytes = MsgsAllInfo
-	public partial class MsgsAllInfo : ITLObject
+	[TLDef(0x5A592A6C)] //help.configSimple#5a592a6c date:int expires:int rules:vector<AccessPointRule> = help.ConfigSimple
+	public partial class Help_ConfigSimple : ITLObject
 	{
-		public long[] msg_ids;
-		public byte[] info;
+		public DateTime date;
+		public DateTime expires;
+		public AccessPointRule[] rules;
 	}
-
-	public abstract partial class MsgDetailedInfoBase : ITLObject { }
-	[TLDef(0x276D3EC6)] //msg_detailed_info#276d3ec6 msg_id:long answer_msg_id:long bytes:int status:int = MsgDetailedInfo
-	public partial class MsgDetailedInfo : MsgDetailedInfoBase
-	{
-		public long msg_id;
-		public long answer_msg_id;
-		public int bytes;
-		public int status;
-	}
-	[TLDef(0x809DB6DF)] //msg_new_detailed_info#809db6df answer_msg_id:long bytes:int status:int = MsgDetailedInfo
-	public partial class MsgNewDetailedInfo : MsgDetailedInfoBase
-	{
-		public long answer_msg_id;
-		public int bytes;
-		public int status;
-	}
-
-	public abstract partial class DestroyAuthKeyRes : ITLObject { }
-	[TLDef(0xF660E1D4)] //destroy_auth_key_ok#f660e1d4 = DestroyAuthKeyRes
-	public partial class DestroyAuthKeyOk : DestroyAuthKeyRes { }
-	[TLDef(0x0A9F2259)] //destroy_auth_key_none#0a9f2259 = DestroyAuthKeyRes
-	public partial class DestroyAuthKeyNone : DestroyAuthKeyRes { }
-	[TLDef(0xEA109B13)] //destroy_auth_key_fail#ea109b13 = DestroyAuthKeyRes
-	public partial class DestroyAuthKeyFail : DestroyAuthKeyRes { }
 
 	[TLDef(0x7ABE77EC)] //ping#7abe77ec ping_id:long = Pong
 	public partial class Ping : ITLObject { public long ping_id; }
@@ -234,6 +246,15 @@ namespace WTelegram		// ---functions---
 
 	public partial class Client
 	{
+		//req_pq#60469778 nonce:int128 = ResPQ
+		public Task<ResPQ> ReqPq(Int128 nonce)
+			=> CallBareAsync<ResPQ>(writer =>
+			{
+				writer.Write(0x60469778);
+				writer.Write(nonce);
+				return "ReqPq";
+			});
+
 		//req_pq_multi#be7e8ef1 nonce:int128 = ResPQ
 		public Task<ResPQ> ReqPqMulti(Int128 nonce)
 			=> CallBareAsync<ResPQ>(writer =>
@@ -266,6 +287,14 @@ namespace WTelegram		// ---functions---
 				writer.Write(server_nonce);
 				writer.WriteTLBytes(encrypted_data);
 				return "SetClientDHParams";
+			});
+
+		//destroy_auth_key#d1435160 = DestroyAuthKeyRes
+		public Task<DestroyAuthKeyRes> DestroyAuthKey()
+			=> CallBareAsync<DestroyAuthKeyRes>(writer =>
+			{
+				writer.Write(0xD1435160);
+				return "DestroyAuthKey";
 			});
 
 		//rpc_drop_answer#58e4a740 req_msg_id:long = RpcDropAnswer
@@ -312,14 +341,6 @@ namespace WTelegram		// ---functions---
 				writer.Write(0xE7512126);
 				writer.Write(session_id);
 				return "DestroySession";
-			});
-
-		//destroy_auth_key#d1435160 = DestroyAuthKeyRes
-		public Task<DestroyAuthKeyRes> DestroyAuthKey()
-			=> CallBareAsync<DestroyAuthKeyRes>(writer =>
-			{
-				writer.Write(0xD1435160);
-				return "DestroyAuthKey";
 			});
 	}
 }

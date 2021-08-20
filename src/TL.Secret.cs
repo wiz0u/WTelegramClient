@@ -1,4 +1,4 @@
-// This file is (mainly) generated automatically using the Generator class
+﻿// This file is (mainly) generated automatically using the Generator class
 using System;
 
 namespace TL
@@ -256,9 +256,32 @@ namespace TL
 		[TLDef(0x051448E5)]
 		public partial class DocumentAttributeAudio : DocumentAttribute { public int duration; }
 
+		///<summary>See <a href="https://core.telegram.org/constructor/photoSize"/></summary>
+		[TLDef(0x77BFB61B)]
+		public partial class PhotoSize : PhotoSizeBase
+		{
+			public string type;
+			public FileLocationBase location;
+			public int w;
+			public int h;
+			public int size;
+		}
+		///<summary>See <a href="https://core.telegram.org/constructor/photoCachedSize"/></summary>
+		[TLDef(0xE9A734FA)]
+		public partial class PhotoCachedSize : PhotoSizeBase
+		{
+			public string type;
+			public FileLocationBase location;
+			public int w;
+			public int h;
+			public byte[] bytes;
+		}
+
+		///<summary>See <a href="https://core.telegram.org/type/FileLocation"/></summary>
+		public abstract partial class FileLocationBase : ITLObject { }
 		///<summary>See <a href="https://core.telegram.org/constructor/fileLocationUnavailable"/></summary>
 		[TLDef(0x7C596B46)]
-		public partial class FileLocationUnavailable : FileLocation
+		public partial class FileLocationUnavailable : FileLocationBase
 		{
 			public long volume_id;
 			public int local_id;
@@ -266,7 +289,7 @@ namespace TL
 		}
 		///<summary>See <a href="https://core.telegram.org/constructor/fileLocation"/></summary>
 		[TLDef(0x53D69076)]
-		public partial class FileLocation_ : FileLocation
+		public partial class FileLocation : FileLocationBase
 		{
 			public int dc_id;
 			public long volume_id;
@@ -285,7 +308,7 @@ namespace TL
 			public DateTime date;
 			public string mime_type;
 			public int size;
-			public PhotoSize thumb;
+			public PhotoSizeBase thumb;
 			public int dc_id;
 			public DocumentAttribute[] attributes;
 		}

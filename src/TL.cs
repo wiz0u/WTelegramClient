@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using WTelegram;
 
 namespace TL
 {
@@ -236,23 +234,11 @@ namespace TL
 #endif
 	}
 
-	public class RpcException : Exception
-	{
-		public readonly int Code;
-		public RpcException(int code, string message) : base(message) => Code = code;
-	}
-
 	[AttributeUsage(AttributeTargets.Class)]
 	public class TLDefAttribute : Attribute
 	{
 		public readonly uint CtorNb;
 		public TLDefAttribute(uint ctorNb) => CtorNb = ctorNb;
-		/*public TLDefAttribute(string def)
-		{
-			var hash = def.IndexOfAny(new[] { '#', ' ' });
-			CtorNb = def[hash] == ' ' ? Force.Crc32.Crc32Algorithm.Compute(System.Text.Encoding.UTF8.GetBytes(def))
-									  : uint.Parse(def[(hash + 1)..def.IndexOf(' ', hash)], System.Globalization.NumberStyles.HexNumber);
-		}*/
 	}
 
 	[AttributeUsage(AttributeTargets.Field)]
@@ -287,4 +273,37 @@ namespace TL
 		public override int GetHashCode() => HashCode.Combine(raw[0], raw[1]);
 		public static implicit operator byte[](Int256 int256) => int256.raw;
 	}
+
+	public class RpcException : Exception
+	{
+		public readonly int Code;
+		public RpcException(int code, string message) : base(message) => Code = code;
+	}
+
+	// Below TL types are commented "parsed manually" from https://github.com/telegramdesktop/tdesktop/blob/dev/Telegram/Resources/tl/mtproto.tl
+
+	[TLDef(0xF35C6D01)] //rpc_result#f35c6d01 req_msg_id:long result:Object = RpcResult
+	public partial class RpcResult : ITLObject
+	{
+		public long req_msg_id;
+		public object result;
+	}
+
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006")]
+	[TLDef(0x5BB8E511)] //message#5bb8e511 msg_id:long seqno:int bytes:int body:Object = Message
+	public partial class _Message
+	{
+		public long msg_id;
+		public int seqno;
+		public int bytes;
+		public ITLObject body;
+	}
+
+	[TLDef(0x73F1F8DC)] //msg_container#73f1f8dc messages:vector<%Message> = MessageContainer
+	public partial class MsgContainer : ITLObject { public _Message[] messages; }
+	[TLDef(0xE06046B2)] //msg_copy#e06046b2 orig_message:Message = MessageCopy
+	public partial class MsgCopy : ITLObject { public _Message orig_message; }
+
+	[TLDef(0x3072CFA1)] //gzip_packed#3072cfa1 packed_data:bytes = Object
+	public partial class GzipPacked : ITLObject { public byte[] packed_data; }
 }

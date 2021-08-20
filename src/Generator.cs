@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -27,23 +28,74 @@ namespace WTelegram
 			currentLayer = await Task.FromResult(TL.Schema.Layer);
 #else
 			using var http = new HttpClient();
-			var html = await http.GetStringAsync("https://core.telegram.org/api/layers");
-			currentLayer = int.Parse(Regex.Match(html, @"#layer-(\d+)").Groups[1].Value);
-			File.WriteAllBytes("TL.MTProto.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/mtproto-json"));
-			File.WriteAllBytes("TL.Schema.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/json"));
+			//var html = await http.GetStringAsync("https://core.telegram.org/api/layers");
+			//currentLayer = int.Parse(Regex.Match(html, @"#layer-(\d+)").Groups[1].Value);
+			//File.WriteAllBytes("TL.MTProto.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/mtproto-json"));
+			//File.WriteAllBytes("TL.Schema.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/json"));
+			File.WriteAllBytes("TL.MTProto.tl", await http.GetByteArrayAsync("https://raw.githubusercontent.com/telegramdesktop/tdesktop/dev/Telegram/Resources/tl/mtproto.tl"));
+			File.WriteAllBytes("TL.Schema.tl", await http.GetByteArrayAsync("https://raw.githubusercontent.com/telegramdesktop/tdesktop/dev/Telegram/Resources/tl/api.tl"));
 			File.WriteAllBytes("TL.Secret.json", await http.GetByteArrayAsync("https://core.telegram.org/schema/end-to-end-json"));
 #endif
-			FromJson("TL.MTProto.json", "TL.MTProto.cs", @"TL.Table.cs");
-			FromJson("TL.Schema.json", "TL.Schema.cs", @"TL.Table.cs");
-			FromJson("TL.Secret.json", "TL.Secret.cs", @"TL.Table.cs");
+			//FromJson("TL.MTProto.json", "TL.MTProto.cs", @"TL.Table.cs");
+			//FromJson("TL.Schema.json", "TL.Schema.cs", @"TL.Table.cs");
+			FromTL("TL.MTProto.tl", "TL.MTProto.cs");
+			FromTL("TL.Schema.tl", "TL.Schema.cs");
+			FromJson("TL.Secret.json", "TL.Secret.cs");
 		}
 
-		public void FromJson(string jsonPath, string outputCs, string tableCs = null)
+		private void FromTL(string tlPath, string outputCs)
+		{
+			using var sr = new StreamReader(tlPath);
+			var schema = new SchemaJson { constructors = new(), methods = new() };
+			string line;
+			bool inFunctions = false;
+			while ((line = sr.ReadLine()) != null)
+			{
+				line = line.Trim();
+				if (line == "---functions---")
+					inFunctions = true;
+				else if (line == "---types---")
+					inFunctions = false;
+				else if (line.StartsWith("// LAYER "))
+					currentLayer = int.Parse(line[9..]);
+				else if (line != "" && !line.StartsWith("//"))
+				{
+					if (!line.EndsWith(";")) System.Diagnostics.Debugger.Break();
+					var words = line.Split(' ');
+					int hash = words[0].IndexOf('#');
+					if (hash == -1) { Console.WriteLine(line); continue; }
+					if (words[^2] != "=") { Console.WriteLine(line); continue; }
+					string name = words[0][0..hash];
+					int id = int.Parse(words[0][(hash + 1)..], System.Globalization.NumberStyles.HexNumber);
+					string type = words[^1].TrimEnd(';');
+					var @params = words[1..^2].Where(word => word != "{X:Type}").Select(word =>
+					{
+						int colon = word.IndexOf(':');
+						string name = word[0..colon];
+						string type = word[(colon + 1)..];
+						if (type == "string" && outputCs == "TL.MTProto.cs" && !name.Contains("message")) type = "bytes";
+						return new Param { name = name, type = type };
+					}).ToArray();
+					if (inFunctions)
+						schema.methods.Add(new Method { id = id.ToString(), method = name, type = type, @params = @params });
+					else
+						schema.constructors.Add(new Constructor { id = id.ToString(), predicate = name, type = type, @params = @params });
+				}
+			}
+			FromSchema(schema, outputCs);
+		}
+
+		public void FromJson(string jsonPath, string outputCs)
 		{
 			Console.WriteLine("Parsing " + jsonPath);
-			currentJson = Path.GetFileNameWithoutExtension(jsonPath);
 			var schema = JsonSerializer.Deserialize<SchemaJson>(File.ReadAllText(jsonPath));
-			using var sw = File.CreateText(outputCs);
+			FromSchema(schema, outputCs);
+		}
+
+		public void FromSchema(SchemaJson schema, string outputCs)
+		{
+			currentJson = Path.GetFileNameWithoutExtension(outputCs);
+			using var sw = new StreamWriter(outputCs, false, Encoding.UTF8);
 			sw.WriteLine("// This file is (mainly) generated automatically using the Generator class");
 			sw.WriteLine("using System;");
 			if (schema.methods.Count != 0) sw.WriteLine("using System.Threading.Tasks;");
@@ -77,7 +129,12 @@ namespace WTelegram
 				}
 				foreach (var (name, typeInfo) in typeInfos)
 				{
-					if (allTypes.Contains(typeInfo.ReturnName)) { typeInfo.NeedAbstract = -2; continue; }
+					if (allTypes.Contains(typeInfo.ReturnName))
+					{
+						if (typeInfosByLayer[0].TryGetValue(typeInfo.ReturnName, out var existingType))
+							typeInfo.ReturnName = existingType.ReturnName;
+						typeInfo.NeedAbstract = -2; continue;
+					}
 					if (typeInfo.SameName == null)
 					{
 						typeInfo.NeedAbstract = -1;
@@ -119,7 +176,7 @@ namespace WTelegram
 					tabIndent = tabIndent[1..];
 				}
 			}
-			if (typeInfosByLayer[0]["Message"].SameName.ID == 0x5BB8E511) typeInfosByLayer[0].Remove("Message");
+			if (typeInfosByLayer[0].GetValueOrDefault("Message")?.SameName.ID == 0x5BB8E511) typeInfosByLayer[0].Remove("Message");
 
 			if (schema.methods.Count != 0)
 			{
@@ -155,7 +212,7 @@ namespace WTelegram
 			}
 			sw.WriteLine("}");
 
-			if (tableCs != null) UpdateTable(tableCs);
+			UpdateTable("TL.Table.cs");
 		}
 
 		void WriteTypeInfo(StreamWriter sw, TypeInfo typeInfo, string layerPrefix, bool isMethod)
@@ -300,8 +357,6 @@ namespace WTelegram
 				return "ITLObject";
 			else if (type == "!X")
 				return "ITLFunction";
-			else if (typeInfos.TryGetValue(type, out var typeInfo))
-				return typeInfo.ReturnName;
 			else if (type == "int")
 			{
 				var name2 = '_' + name + '_';
@@ -313,8 +368,17 @@ namespace WTelegram
 			}
 			else if (type == "string")
 				return name.StartsWith("md5") ? "byte[]" : "string";
-			else
+			else if (type == "long" || type == "double" || type == "X")
 				return type;
+			else if (typeInfos.TryGetValue(type, out var typeInfo))
+				return typeInfo.ReturnName;
+			else
+			{	// try to find type in a lower layer
+				foreach (var layer in typeInfosByLayer.OrderByDescending(kvp => kvp.Key))
+					if (layer.Value.TryGetValue(type, out typeInfo))
+						return layer.Key == 0 ? typeInfo.ReturnName : $"Layer{layer.Key}.{typeInfo.ReturnName}";
+				return CSharpName(type);
+			}
 		}
 
 		private string MapOptionalType(string type, string name)
@@ -464,7 +528,7 @@ namespace WTelegram
 			var myTag = $"\t\t\t// from {currentJson}:";
 			var seen_ids = new HashSet<int>();
 			using (var sr = new StreamReader(tableCs))
-			using (var sw = new StreamWriter(tableCs + ".new"))
+			using (var sw = new StreamWriter(tableCs + ".new", false, Encoding.UTF8))
 			{
 				string line;
 				while ((line = sr.ReadLine()) != null)
