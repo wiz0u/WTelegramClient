@@ -233,7 +233,6 @@ namespace WTelegram
 				}
 				var buffer = memStream.GetBuffer();
 				int frameLength = (int)memStream.Length;
-				//TODO: support Quick Ack?
 				BinaryPrimitives.WriteInt32LittleEndian(buffer, frameLength + 4); // patch frame_len with correct value
 				uint crc = Force.Crc32.Crc32Algorithm.Compute(buffer, 0, frameLength);
 				writer.Write(crc);              // int32 frame_crc
@@ -298,8 +297,9 @@ namespace WTelegram
 			if (data.Length < 24) // authKeyId+msgId+length+ctorNb | authKeyId+msgKey
 				throw new ApplicationException($"Packet payload too small: {data.Length}");
 
-			//TODO: ignore msgId <= lastRecvMsgId, ignore MsgId >= 30 sec in the future or < 300 sec in the past
 			long authKeyId = BinaryPrimitives.ReadInt64LittleEndian(data);
+			if (authKeyId != _session.AuthKeyID)
+				throw new ApplicationException($"Received a packet encrypted with unexpected key {authKeyId:X}");
 			if (authKeyId == 0) // Unencrypted message
 			{
 				using var reader = new BinaryReader(new MemoryStream(data, 8, data.Length - 8));
@@ -312,8 +312,6 @@ namespace WTelegram
 				Helpers.Log(1, $"Receiving {obj.GetType().Name,-50} {_session.MsgIdToStamp(msgId):u} {((msgId & 2) == 0 ? "": "NAR")} unencrypted");
 				return obj;
 			}
-			else if (authKeyId != _session.AuthKeyID)
-				throw new ApplicationException($"Received a packet encrypted with unexpected key {authKeyId:X}");
 			else
 			{
 #if MTPROTO1
@@ -330,6 +328,7 @@ namespace WTelegram
 				var msgId = _lastRecvMsgId = reader.ReadInt64();// int64 message_id
 				var seqno = reader.ReadInt32();					// int32 msg_seqno
 				var length = reader.ReadInt32();				// int32 message_data_length
+				var msgStamp = _session.MsgIdToStamp(msgId);
 
 				if (serverSalt != _session.Salt)
 				{
@@ -341,6 +340,8 @@ namespace WTelegram
 				if (sessionId != _session.Id) throw new ApplicationException($"Unexpected session ID {_session.Id} != {_session.Id}");
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				if ((seqno & 1) != 0) lock(_msgsToAck) _msgsToAck.Add(msgId);
+				if ((msgStamp - DateTime.UtcNow).Ticks / TimeSpan.TicksPerSecond is > 30 or < -300)
+					return null;
 #if MTPROTO1
 				if (decrypted_data.Length - 32 - length is < 0 or > 15) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
 				if (!data.AsSpan(8, 16).SequenceEqual(Sha1Recv.ComputeHash(decrypted_data, 0, 32 + length).AsSpan(4)))
@@ -355,18 +356,18 @@ namespace WTelegram
 				var ctorNb = reader.ReadUInt32();
 				if (ctorNb == Schema.MsgContainer)
 				{
-					Helpers.Log(1, $"Receiving {"MsgContainer",-50} {_session.MsgIdToStamp(msgId):u} (svc)");
+					Helpers.Log(1, $"Receiving {"MsgContainer",-50} {msgStamp:u} (svc)");
 					return ReadMsgContainer(reader);
 				}
 				else if (ctorNb == Schema.RpcResult)
 				{
-					Helpers.Log(1, $"Receiving {"RpcResult",-50} {_session.MsgIdToStamp(msgId):u}");
+					Helpers.Log(1, $"Receiving {"RpcResult",-50} {msgStamp:u}");
 					return ReadRpcResult(reader);
 				}
 				else
 				{
 					var obj = reader.ReadTLObject(ctorNb);
-					Helpers.Log(1, $"Receiving {obj.GetType().Name,-50} {_session.MsgIdToStamp(msgId):u} {((seqno & 1) != 0 ? "" : "(svc)")} {((msgId & 2) == 0 ? "" : "NAR")}");
+					Helpers.Log(1, $"Receiving {obj.GetType().Name,-50} {msgStamp:u} {((seqno & 1) != 0 ? "" : "(svc)")} {((msgId & 2) == 0 ? "" : "NAR")}");
 					return obj;
 				}
 			}
@@ -534,10 +535,20 @@ namespace WTelegram
 
 		private async Task Reactor(CancellationToken ct)
 		{
-			while (!ct.IsCancellationRequested)
+			try
 			{
-				var obj = await RecvInternalAsync(ct);
-				await HandleMessageAsync(obj);
+				while (!ct.IsCancellationRequested)
+				{
+					var obj = await RecvInternalAsync(ct);
+					if (obj == null) continue; // ignored message :|
+					await HandleMessageAsync(obj);
+				}
+			}
+			catch (OperationCanceledException)
+			{ }
+			catch (Exception ex)
+			{
+				Helpers.Log(5, $"An exception occured in the reactor: {ex}");
 			}
 		}
 

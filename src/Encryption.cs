@@ -129,6 +129,7 @@ namespace WTelegram
 			RNG.GetBytes(bData);
 			var b = BigEndianInteger(bData);
 			var g_b = BigInteger.ModPow(serverDHinnerData.g, b, dh_prime);
+			ValidityChecksDH(g_a, g_b, dh_prime);
 			var clientDHinnerData = new ClientDHInnerData
 			{
 				nonce = nonce,
@@ -193,7 +194,7 @@ namespace WTelegram
 
 		private static void ValidityChecks(BigInteger p, int g)
 		{
-			//TODO: check whether p is a safe prime (meaning that both p and (p - 1) / 2 are prime)
+			Helpers.Log(2, "Verifying encryption key safety... (this happens only during session negociation)");
 			// check that 2^2047 <= p < 2^2048
 			if (p.GetBitLength() != 2048) throw new ApplicationException("p is not 2048-bit number");
 			// check that g generates a cyclic subgroup of prime order (p - 1) / 2, i.e. is a quadratic residue mod p.
@@ -209,8 +210,19 @@ namespace WTelegram
 				_ => true,
 			})
 				throw new ApplicationException("Bad prime mod 4g");
-			//TODO: check that g, g_a and g_b are greater than 1 and less than dh_prime - 1.
+			// check whether p is a safe prime (meaning that both p and (p - 1) / 2 are prime)
+			if (!p.IsProbablePrime()) throw new ApplicationException("p is not a prime number");
+			if (!((p - 1) / 2).IsProbablePrime()) throw new ApplicationException("(p - 1) / 2 is not a prime number");
+		}
+
+		private static void ValidityChecksDH(BigInteger g_a, BigInteger g_b, BigInteger dh_prime)
+		{
+			// check that g, g_a and g_b are greater than 1 and less than dh_prime - 1.
 			// We recommend checking that g_a and g_b are between 2^{2048-64} and dh_prime - 2^{2048-64} as well.
+			var l = BigInteger.One << (2048 - 64);
+			var r = dh_prime - l;
+			if (g_a < l || g_a > r || g_b < l || g_b > r)
+				throw new ApplicationException("g^a or g^b is not between 2^{2048-64} and dh_prime - 2^{2048-64}");
 		}
 
 		[TLDef(0x7A19CB76)] //RSA_public_key#7a19cb76 n:bytes e:bytes = RSAPublicKey

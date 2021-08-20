@@ -6,6 +6,7 @@ namespace WTelegram
 {
 	public static class Helpers
 	{
+		// int argument is the LogLevel: https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel
 		public static Action<int, string> Log { get; set; } = DefaultLogger;
 
 		public static readonly System.Text.Json.JsonSerializerOptions JsonOptions = new(System.Text.Json.JsonSerializerDefaults.Web) { IncludeFields = true, WriteIndented = true };
@@ -39,7 +40,7 @@ namespace WTelegram
 		{
 			int i;
 			var temp = value;
-			for (i = 1; (temp >>= 8) != 0; i++);
+			for (i = 1; (temp >>= 8) != 0; i++) ;
 			var result = new byte[i];
 			while (--i >= 0) { result[i] = (byte)value; value >>= 8; }
 			return result;
@@ -51,6 +52,15 @@ namespace WTelegram
 			ulong result = 0;
 			foreach (byte b in bytes)
 				result = (result << 8) + b;
+			return result;
+		}
+
+		internal static byte[] To256Bytes(this BigInteger bi)
+		{
+			var bigEndian = bi.ToByteArray(true, true);
+			if (bigEndian.Length == 256) return bigEndian;
+			var result = new byte[256];
+			bigEndian.CopyTo(result, 256 - bigEndian.Length);
 			return result;
 		}
 
@@ -136,13 +146,44 @@ namespace WTelegram
 			}
 		}
 
-		internal static byte[] To256Bytes(this BigInteger bi)
+		// Miller–Rabin primality test
+		public static bool IsProbablePrime(this BigInteger n, int k = 64)
 		{
-			var bigEndian = bi.ToByteArray(true, true);
-			if (bigEndian.Length == 256) return bigEndian;
-			var result = new byte[256];
-			bigEndian.CopyTo(result, 256 - bigEndian.Length);
-			return result;
+			var n_minus_one = n - BigInteger.One;
+			if (n_minus_one.Sign <= 0) return false;
+
+			int s;
+			var d = n_minus_one;
+			for (s = 0; d.IsEven; s++) d >>= 1;
+
+			var bitLen = n.GetBitLength();
+			var randomBytes = new byte[bitLen / 8 + 1];
+			var lastByteMask = (byte)((1 << (int)(bitLen % 8)) - 1);
+			BigInteger a;
+			for (int i = 0; i < k; i++)
+			{
+				do
+				{
+					Encryption.RNG.GetBytes(randomBytes);
+					randomBytes[^1] &= lastByteMask; // we don't want more bits than necessary
+					a = new BigInteger(randomBytes);
+				}
+				while (a < 3 || a >= n_minus_one);
+				a--;
+
+				var x = BigInteger.ModPow(a, d, n);
+				if (x.IsOne || x == n_minus_one) continue;
+
+				int r;
+				for (r = s - 1; r > 0; r--)
+				{
+					x = BigInteger.ModPow(x, 2, n);
+					if (x.IsOne) return false;
+					if (x == n_minus_one) break;
+				}
+				if (r == 0) return false;
+			}
+			return true;
 		}
 	}
 }

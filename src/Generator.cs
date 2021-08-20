@@ -11,7 +11,6 @@ namespace WTelegram
 {
 	public class Generator
 	{
-		//TODO: generate BinaryReader/Writer serialization for objects too?
 		readonly Dictionary<int, string> ctorToTypes = new();
 		readonly HashSet<string> allTypes = new();
 		readonly Dictionary<int, Dictionary<string, TypeInfo>> typeInfosByLayer = new();
@@ -25,7 +24,7 @@ namespace WTelegram
 		{
 			Console.WriteLine("Fetch web pages...");
 #if DEBUG
-			currentLayer = await Task.FromResult(0);
+			currentLayer = await Task.FromResult(TL.Schema.Layer);
 #else
 			using var http = new HttpClient();
 			var html = await http.GetStringAsync("https://core.telegram.org/api/layers");

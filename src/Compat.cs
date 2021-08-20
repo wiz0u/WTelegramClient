@@ -30,10 +30,10 @@ namespace WTelegram
 			return result;
 		}
 
-		internal static int GetBitLength(this BigInteger bigInteger)
+		internal static long GetBitLength(this BigInteger bigInteger)
 		{
 			var bytes = bigInteger.ToByteArray();
-			var length = bytes.Length * 8;
+			var length = bytes.LongLength * 8L;
 			int lastByte = bytes[^1];
 			while ((lastByte & 0x80) == 0) { length--; lastByte = (lastByte << 1) + 1; }
 			return length;
