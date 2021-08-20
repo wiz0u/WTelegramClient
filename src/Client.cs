@@ -488,11 +488,13 @@ namespace WTelegram
 					else if (rpcError.error_code == 420 && ((number = rpcError.error_message.IndexOf("_WAIT_")) > 0))
 					{
 						number = int.Parse(rpcError.error_message[(number + 6)..]);
-						await Task.Delay(number * 1000);
-						goto retry;
+						if (number <= 60)
+						{
+							await Task.Delay(number * 1000);
+							goto retry;
+						}
 					}
-					else
-						throw new RpcException(rpcError.error_code, rpcError.error_message);
+					throw new RpcException(rpcError.error_code, rpcError.error_message);
 				default:
 					throw new ApplicationException($"{request.GetType().Name} call got a result of type {result.GetType().Name} instead of {typeof(X).Name}");
 			}
