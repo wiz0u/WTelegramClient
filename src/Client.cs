@@ -621,6 +621,18 @@ namespace WTelegram
 			}
 		}
 
+		public async Task<User> BotAuthIfNeeded()
+		{
+			if (_session.User != null)
+				return Schema.Deserialize<User>(_session.User);
+			var authorization = await Auth_ImportBotAuthorization(0, _apiId, _apiHash, Config("bot_token"));
+			if (authorization is not Auth_Authorization { user: User user })
+				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
+			_session.User = user.Serialize();
+			_session.Save();
+			return user;
+		}
+
 		public async Task<User> UserAuthIfNeeded(CodeSettings settings = null)
 		{
 			if (_session.User != null)
