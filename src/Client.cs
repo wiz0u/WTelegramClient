@@ -234,7 +234,7 @@ namespace WTelegram
 				var buffer = memStream.GetBuffer();
 				int frameLength = (int)memStream.Length;
 				BinaryPrimitives.WriteInt32LittleEndian(buffer, frameLength + 4); // patch frame_len with correct value
-				uint crc = Force.Crc32.Crc32Algorithm.Compute(buffer, 0, frameLength);
+				uint crc = Helpers.UpdateCrc32(0, buffer, 0, frameLength);
 				writer.Write(crc);              // int32 frame_crc
 				//TODO: support Transport obfuscation?
 
@@ -277,8 +277,8 @@ namespace WTelegram
 			var payload = new byte[length];
 			if (await FullReadAsync(_networkStream, payload, length, ct) != length)
 				throw new ApplicationException("Could not read frame data : Connection shut down");
-			uint crc32 = Force.Crc32.Crc32Algorithm.Compute(frame, 0, 8);
-			crc32 = Force.Crc32.Crc32Algorithm.Append(crc32, payload);
+			uint crc32 = Helpers.UpdateCrc32(0, frame, 0, 8);
+			crc32 = Helpers.UpdateCrc32(crc32, payload, 0, payload.Length);
 			if (await FullReadAsync(_networkStream, frame, 4, ct) != 4)
 				throw new ApplicationException("Could not read frame CRC : Connection shut down");
 			if (crc32 != BinaryPrimitives.ReadUInt32LittleEndian(frame))

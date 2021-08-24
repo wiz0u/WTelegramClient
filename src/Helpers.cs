@@ -189,5 +189,11 @@ namespace WTelegram
 			}
 			return true;
 		}
+
+		// see also https://github.com/dotnet/runtime/issues/2036 and https://github.com/dotnet/runtime/pull/53623
+		internal static readonly Func<uint, byte[], int, int, uint> UpdateCrc32 = (Func<uint, byte[], int, int, uint>)
+			typeof(System.IO.Compression.ZipArchive).Assembly.GetType("System.IO.Compression.Crc32Helper")
+			.GetMethod("UpdateCrc32", new[] { typeof(uint), typeof(byte[]), typeof(int), typeof(int) })
+			.CreateDelegate(typeof(Func<uint, byte[], int, int, uint>));
 	}
 }
