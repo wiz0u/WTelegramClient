@@ -39,6 +39,9 @@ namespace WTelegram
 		private readonly SemaphoreSlim _sendSemaphore = new(1);
 		private CancellationTokenSource _cts;
 
+		/// <summary>Welcome to WTelegramClient! 😀</summary>
+		/// <param name="configProvider">Config callback, is queried for: api_id, api_hash, session_pathname</param>
+		/// <param name="updateHandler">Handler for Telegram updates messages that are not replies to RPC API calls</param>
 		public Client(Func<string,string> configProvider = null, Func<ITLObject, Task> updateHandler = null)
 		{
 			_config = configProvider ?? DefaultConfigOrAsk;
@@ -98,6 +101,8 @@ namespace WTelegram
 			_session.Reset();
 		}
 
+		/// <summary>Establish connection to Telegram servers. Config callback is queried for: server_address</summary>
+		/// <returns>Most methods of this class are async Task, so please use <see langword="await"/></returns>
 		public async Task ConnectAsync()
 		{
 			if (_reactorTask != null)
@@ -234,7 +239,7 @@ namespace WTelegram
 				var buffer = memStream.GetBuffer();
 				int frameLength = (int)memStream.Length;
 				BinaryPrimitives.WriteInt32LittleEndian(buffer, frameLength + 4); // patch frame_len with correct value
-				uint crc = Helpers.UpdateCrc32(0, buffer, 0, frameLength);
+				uint crc = Compat.UpdateCrc32(0, buffer, 0, frameLength);
 				writer.Write(crc);              // int32 frame_crc
 				//TODO: support Transport obfuscation?
 
@@ -277,8 +282,8 @@ namespace WTelegram
 			var payload = new byte[length];
 			if (await FullReadAsync(_networkStream, payload, length, ct) != length)
 				throw new ApplicationException("Could not read frame data : Connection shut down");
-			uint crc32 = Helpers.UpdateCrc32(0, frame, 0, 8);
-			crc32 = Helpers.UpdateCrc32(crc32, payload, 0, payload.Length);
+			uint crc32 = Compat.UpdateCrc32(0, frame, 0, 8);
+			crc32 = Compat.UpdateCrc32(crc32, payload, 0, payload.Length);
 			if (await FullReadAsync(_networkStream, frame, 4, ct) != 4)
 				throw new ApplicationException("Could not read frame CRC : Connection shut down");
 			if (crc32 != BinaryPrimitives.ReadUInt32LittleEndian(frame))
@@ -621,6 +626,11 @@ namespace WTelegram
 			}
 		}
 
+		/// <summary>
+		/// Login as bot (if not already done).
+		/// Config callback is queried for: bot_token
+		/// </summary>
+		/// <returns>Detail about the logged bot</returns>
 		public async Task<User> BotAuthIfNeeded()
 		{
 			if (_session.User != null)
@@ -633,6 +643,13 @@ namespace WTelegram
 			return user;
 		}
 
+		/// <summary>
+		/// Login as a user (if not already done).
+		/// Config callback is queried for: phone_number, verification_code
+		/// <br/>and eventually first_name, last_name (signup required), password (2FA auth)
+		/// </summary>
+		/// <param name="settings"></param>
+		/// <returns>Detail about the logged user</returns>
 		public async Task<User> UserAuthIfNeeded(CodeSettings settings = null)
 		{
 			if (_session.User != null)

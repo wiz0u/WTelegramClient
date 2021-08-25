@@ -7,6 +7,7 @@ namespace TL
 	partial class InputChannel { public static InputPeerChannel Empty => new(); }
 	partial class InputDocument { public static InputDocumentEmpty Empty => new(); }
 	partial class InputPeer { public static InputPeerEmpty Empty => new(); }
+	partial class InputPeer { public static InputPeerSelf Self => new(); }
 	partial class InputPhoto { public static InputPhotoEmpty Empty => new(); }
 	partial class InputEncryptedFile { public static InputEncryptedFileEmpty Empty => new(); }
 	partial class InputStickerSet { public static InputStickerSetEmpty Empty => new(); }
