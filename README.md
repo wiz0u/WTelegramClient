@@ -17,7 +17,7 @@ static Task Main(string[] _)
 {
     using var client = new WTelegram.Client();
     await client.ConnectAsync();
-    var user = await client.UserAuthIfNeeded();
+    var user = await client.LogonUserIfNeeded();
     Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name} (id {user.id})");
 }
 ```

@@ -631,10 +631,17 @@ namespace WTelegram
 		/// Config callback is queried for: bot_token
 		/// </summary>
 		/// <returns>Detail about the logged bot</returns>
-		public async Task<User> BotAuthIfNeeded()
+		public async Task<User> LogonBotIfNeeded()
 		{
 			if (_session.User != null)
-				return Schema.Deserialize<User>(_session.User);
+				try
+				{
+					return Schema.Deserialize<User>(_session.User);
+				}
+				catch (Exception ex)
+				{
+					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to logon...");
+				}
 			var authorization = await Auth_ImportBotAuthorization(0, _apiId, _apiHash, Config("bot_token"));
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
@@ -650,10 +657,17 @@ namespace WTelegram
 		/// </summary>
 		/// <param name="settings"></param>
 		/// <returns>Detail about the logged user</returns>
-		public async Task<User> UserAuthIfNeeded(CodeSettings settings = null)
+		public async Task<User> LogonUserIfNeeded(CodeSettings settings = null)
 		{
 			if (_session.User != null)
-				return Schema.Deserialize<User>(_session.User);
+				try
+				{
+					return Schema.Deserialize<User>(_session.User);
+				}
+				catch (Exception ex)
+				{
+					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to logon...");
+				}
 			string phone_number = Config("phone_number");
 			var sentCode = await Auth_SendCode(phone_number, _apiId, _apiHash, settings ?? new());
 			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
