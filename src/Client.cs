@@ -631,7 +631,7 @@ namespace WTelegram
 		/// Config callback is queried for: bot_token
 		/// </summary>
 		/// <returns>Detail about the logged bot</returns>
-		public async Task<User> LogonBotIfNeeded()
+		public async Task<User> LoginBotIfNeeded()
 		{
 			if (_session.User != null)
 				try
@@ -640,7 +640,7 @@ namespace WTelegram
 				}
 				catch (Exception ex)
 				{
-					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to logon...");
+					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to login...");
 				}
 			var authorization = await Auth_ImportBotAuthorization(0, _apiId, _apiHash, Config("bot_token"));
 			if (authorization is not Auth_Authorization { user: User user })
@@ -657,7 +657,7 @@ namespace WTelegram
 		/// </summary>
 		/// <param name="settings"></param>
 		/// <returns>Detail about the logged user</returns>
-		public async Task<User> LogonUserIfNeeded(CodeSettings settings = null)
+		public async Task<User> LoginUserIfNeeded(CodeSettings settings = null)
 		{
 			if (_session.User != null)
 				try
@@ -666,7 +666,7 @@ namespace WTelegram
 				}
 				catch (Exception ex)
 				{
-					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to logon...");
+					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to login...");
 				}
 			string phone_number = Config("phone_number");
 			var sentCode = await Auth_SendCode(phone_number, _apiId, _apiHash, settings ?? new());
