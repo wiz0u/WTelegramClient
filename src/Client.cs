@@ -499,6 +499,11 @@ namespace WTelegram
 							goto retry;
 						}
 					}
+					else if (rpcError.error_code == 500 && rpcError.error_message == "AUTH_RESTART")
+					{
+						_session.User = null; // force a full login authorization flow, next time
+						_session.Save();
+					}
 					throw new RpcException(rpcError.error_code, rpcError.error_message);
 				default:
 					throw new ApplicationException($"{request.GetType().Name} call got a result of type {result.GetType().Name} instead of {typeof(X).Name}");
@@ -633,16 +638,22 @@ namespace WTelegram
 		/// <returns>Detail about the logged bot</returns>
 		public async Task<User> LoginBotIfNeeded()
 		{
+			string botToken = Config("bot_token");
 			if (_session.User != null)
+			{ 
 				try
 				{
-					return Schema.Deserialize<User>(_session.User);
+					var prevUser = Schema.Deserialize<User>(_session.User);
+					if (prevUser?.id == int.Parse(botToken.Split(':')[0]))
+						return prevUser;
 				}
 				catch (Exception ex)
 				{
 					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to login...");
 				}
-			var authorization = await Auth_ImportBotAuthorization(0, _apiId, _apiHash, Config("bot_token"));
+				await Auth_LogOut();
+			}
+			var authorization = await Auth_ImportBotAuthorization(0, _apiId, _apiHash, botToken);
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
 			_session.User = user.Serialize();
@@ -659,16 +670,21 @@ namespace WTelegram
 		/// <returns>Detail about the logged user</returns>
 		public async Task<User> LoginUserIfNeeded(CodeSettings settings = null)
 		{
+			string phone_number = Config("phone_number");
 			if (_session.User != null)
+			{
 				try
 				{
-					return Schema.Deserialize<User>(_session.User);
+					var prevUser = Schema.Deserialize<User>(_session.User);
+					if (prevUser?.phone == string.Concat(phone_number.Where(char.IsDigit)))
+						return prevUser;
 				}
 				catch (Exception ex)
 				{
 					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to login...");
 				}
-			string phone_number = Config("phone_number");
+				await Auth_LogOut();
+			}
 			var sentCode = await Auth_SendCode(phone_number, _apiId, _apiHash, settings ?? new());
 			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
 			var verification_code = Config("verification_code");
@@ -697,6 +713,7 @@ namespace WTelegram
 			}
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
+			//TODO: find better serialization for User not subject to TL changes?
 			_session.User = user.Serialize();
 			_session.Save();
 			return user;
