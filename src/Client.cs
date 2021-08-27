@@ -604,13 +604,23 @@ namespace WTelegram
 				case MsgsAck msgsAck:
 					break; // we don't do anything with these, for now
 				case BadMsgNotification badMsgNotification:
-					Helpers.Log(4, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
-					goto default;
+					{
+						Helpers.Log(4, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
+						var (type, tcs) = PullPendingRequest(badMsgNotification.bad_msg_id);
+						if (tcs != null)
+						{
+							if (_bareRequest == badMsgNotification.bad_msg_id) _bareRequest = 0;
+							_ = Task.Run(() => tcs.SetException(new ApplicationException($"BadMsgNotification {badMsgNotification.error_code}")));
+						}
+						else if (_updateHandler != null)
+							await _updateHandler?.Invoke(obj);
+					}
+					break;
 				default:
 					if (_bareRequest != 0)
 					{
 						var (type, tcs) = PullPendingRequest(_bareRequest);
-						if (type.IsAssignableFrom(obj.GetType()))
+						if (type?.IsAssignableFrom(obj.GetType()) == true)
 						{
 							_bareRequest = 0;
 							_ = Task.Run(() => tcs.SetResult(obj));
@@ -670,12 +680,16 @@ namespace WTelegram
 		/// <returns>Detail about the logged user</returns>
 		public async Task<User> LoginUserIfNeeded(CodeSettings settings = null)
 		{
-			string phone_number = Config("phone_number");
+			string phone_number = null;
 			if (_session.User != null)
 			{
 				try
 				{
 					var prevUser = Schema.Deserialize<User>(_session.User);
+					var userId = _config("user_id"); // if config prefers to validate current user by its id, use it
+					if (userId != null && int.TryParse(userId, out int id) && prevUser.id == id)
+						return prevUser;
+					phone_number = Config("phone_number"); // otherwise, validation is done by the phone number
 					if (prevUser?.phone == string.Concat(phone_number.Where(char.IsDigit)))
 						return prevUser;
 				}
@@ -685,6 +699,7 @@ namespace WTelegram
 				}
 				await Auth_LogOut();
 			}
+			phone_number ??= Config("phone_number");
 			var sentCode = await Auth_SendCode(phone_number, _apiId, _apiHash, settings ?? new());
 			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
 			var verification_code = Config("verification_code");
