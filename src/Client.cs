@@ -307,7 +307,7 @@ namespace WTelegram
 				throw new ApplicationException($"Received a packet encrypted with unexpected key {authKeyId:X}");
 			if (authKeyId == 0) // Unencrypted message
 			{
-				using var reader = new BinaryReader(new MemoryStream(data, 8, data.Length - 8));
+				using var reader = new TL.BinaryReader(new MemoryStream(data, 8, data.Length - 8), this);
 				long msgId = _lastRecvMsgId = reader.ReadInt64();
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				int length = reader.ReadInt32();
@@ -327,7 +327,7 @@ namespace WTelegram
 				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24), false, _session.AuthKey, msgKeyLarge);
 				if (decrypted_data.Length < 36) // header below+ctorNb
 					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
-				using var reader = new BinaryReader(new MemoryStream(decrypted_data));
+				using var reader = new TL.BinaryReader(new MemoryStream(decrypted_data), this);
 				var serverSalt = reader.ReadInt64();			// int64 salt
 				var sessionId = reader.ReadInt64();				// int64 session_id
 				var msgId = _lastRecvMsgId = reader.ReadInt64();// int64 message_id
@@ -385,7 +385,7 @@ namespace WTelegram
 			};
 		}
 
-		internal MsgContainer ReadMsgContainer(BinaryReader reader)
+		internal MsgContainer ReadMsgContainer(TL.BinaryReader reader)
 		{
 			int count = reader.ReadInt32();
 			var array = new _Message[count];
@@ -422,7 +422,7 @@ namespace WTelegram
 			return new MsgContainer { messages = array };
 		}
 
-		private RpcResult ReadRpcResult(BinaryReader reader)
+		private RpcResult ReadRpcResult(TL.BinaryReader reader)
 		{
 			long msgId = reader.ReadInt64();
 			var (type, tcs) = PullPendingRequest(msgId);
@@ -838,5 +838,34 @@ namespace WTelegram
 					reply_to_msg_id: reply_to_msg_id, entities: entities, schedule_date: schedule_date);
 		}
 		#endregion
+
+		/// <summary>Enable the collection of id/access_hash pairs (experimental)</summary>
+		public bool CollectAccessHash { get; set; }
+		readonly Dictionary<Type, Dictionary<long, long>> _accessHashes = new();
+		public IEnumerable<KeyValuePair<long, long>> AllAccessHashesFor<T>() where T : ITLObject
+			=> _accessHashes.GetValueOrDefault(typeof(T));
+		/// <summary>Retrieve the access_hash associated with this id (for a TL class)</summary>
+		/// <typeparam name="T">a TL object class. For example User, Channel or Photo</typeparam>
+		public long? GetAccessHashFor<T>(long id) where T : ITLObject
+		{
+			lock (_accessHashes)
+				return _accessHashes.GetOrCreate(typeof(T)).TryGetValue(id, out var access_hash) ? access_hash : null;
+		}
+		public void SetAccessHashFor<T>(long id, long access_hash) where T : ITLObject
+		{
+			lock (_accessHashes)
+				_accessHashes.GetOrCreate(typeof(T))[id] = access_hash;
+		}
+		internal void UpdateAccessHash(object obj, Type type, object access_hash)
+		{
+			if (!CollectAccessHash) return;
+			if (access_hash is not long accessHash) return;
+			if (type.GetField("id") is not FieldInfo idField) return;
+			if (idField.GetValue(obj) is not long id)
+				if (idField.GetValue(obj) is not int idInt) return;
+				else id = idInt;
+			lock (_accessHashes)
+				_accessHashes.GetOrCreate(type)[id] = accessHash;
+		}
 	}
 }

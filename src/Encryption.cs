@@ -109,7 +109,7 @@ namespace WTelegram
 			var (tmp_aes_key, tmp_aes_iv) = ConstructTmpAESKeyIV(resPQ.server_nonce, pqInnerData.new_nonce);
 			var answer = AES_IGE_EncryptDecrypt(serverDHparamsOk.encrypted_answer, tmp_aes_key, tmp_aes_iv, false);
 
-			using var encryptedReader = new BinaryReader(new MemoryStream(answer));
+			using var encryptedReader = new TL.BinaryReader(new MemoryStream(answer), client);
 			var answerHash = encryptedReader.ReadBytes(20);
 			var answerObj = encryptedReader.ReadTLObject();
 			if (answerObj is not ServerDHInnerData serverDHinnerData) throw new ApplicationException("not server_DH_inner_data");

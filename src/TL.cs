@@ -24,7 +24,7 @@ namespace TL
 		internal static T Deserialize<T>(byte[] bytes) where T : ITLObject
 		{
 			using var memStream = new MemoryStream(bytes);
-			using var reader = new BinaryReader(memStream);
+			using var reader = new BinaryReader(memStream, null);
 			return (T)reader.ReadTLObject();
 		}
 
@@ -56,7 +56,7 @@ namespace TL
 			if (!Table.TryGetValue(ctorNb, out var type))
 				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 			var obj = Activator.CreateInstance(type);
-			var fields = obj.GetType().GetFields().GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
+			var fields = type.GetFields().GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
@@ -64,9 +64,10 @@ namespace TL
 				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1 << ifFlag.Bit)) == 0) continue;
 				object value = reader.ReadTLValue(field.FieldType);
 				field.SetValue(obj, value);
-				if (field.Name.Equals("Flags", StringComparison.OrdinalIgnoreCase)) flags = (int)value;
+				if (field.Name == "flags") flags = (int)value;
+				else if (field.Name == "access_hash") reader.Client?.UpdateAccessHash(obj, type, value);
 			}
-			return type == typeof(GzipPacked) ? UnzipPacket((GzipPacked)obj) : (ITLObject)obj;
+			return type == typeof(GzipPacked) ? UnzipPacket((GzipPacked)obj, reader.Client) : (ITLObject)obj;
 		}
 
 		internal static void WriteTLValue(this BinaryWriter writer, object value)
@@ -220,9 +221,9 @@ namespace TL
 			writer.Write(0);    // null arrays are serialized as empty
 		}
 
-		internal static ITLObject UnzipPacket(GzipPacked obj)
+		internal static ITLObject UnzipPacket(GzipPacked obj, WTelegram.Client client)
 		{
-			using var reader = new BinaryReader(new GZipStream(new MemoryStream(obj.packed_data), CompressionMode.Decompress));
+			using var reader = new BinaryReader(new GZipStream(new MemoryStream(obj.packed_data), CompressionMode.Decompress), client);
 			var result = reader.ReadTLObject();
 			return result;
 		}
@@ -232,6 +233,12 @@ namespace TL
 #else
 		private static void ShouldntBeHere() => throw new NotImplementedException("You've reached an unexpected point in code");
 #endif
+	}
+
+	public class BinaryReader : System.IO.BinaryReader
+	{
+		public readonly WTelegram.Client Client;
+		public BinaryReader(Stream stream, WTelegram.Client client) : base(stream) => Client = client;
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
