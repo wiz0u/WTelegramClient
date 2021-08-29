@@ -21,7 +21,7 @@ stages:
           includesymbols: true
           versioningScheme: 'byEnvVar'
           versionEnvVar: 'Build.BuildNumber'
-          buildProperties: 'NoWarn="1573;1591;0419";Version=$(Build.BuildNumber)'
+          buildProperties: 'NoWarn="0419;1573;1591";Version=$(Build.BuildNumber);ContinuousIntegrationBuild=true'
 
       - task: NuGetCommand@2
         inputs:
