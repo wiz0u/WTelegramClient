@@ -42,7 +42,7 @@ namespace WTelegram
 		/// <summary>Welcome to WTelegramClient! 😀</summary>
 		/// <param name="configProvider">Config callback, is queried for: api_id, api_hash, session_pathname</param>
 		/// <param name="updateHandler">Handler for Telegram updates messages that are not replies to RPC API calls</param>
-		public Client(Func<string,string> configProvider = null, Func<ITLObject, Task> updateHandler = null)
+		public Client(Func<string, string> configProvider = null, Func<ITLObject, Task> updateHandler = null)
 		{
 			_config = configProvider ?? DefaultConfigOrAsk;
 			_updateHandler = updateHandler;
@@ -291,7 +291,7 @@ namespace WTelegram
 			return payload;
 		}
 
-		internal async Task<ITLObject> RecvInternalAsync(CancellationToken ct)
+		internal async Task<ITLObject> RecvAsync(CancellationToken ct)
 		{
 			var data = await RecvFrameAsync(ct);
 			if (data.Length == 4 && data[3] == 0xFF)
@@ -551,7 +551,7 @@ namespace WTelegram
 			{
 				while (!ct.IsCancellationRequested)
 				{
-					var obj = await RecvInternalAsync(ct);
+					var obj = await RecvAsync(ct);
 					if (obj == null) continue; // ignored message :|
 					await HandleMessageAsync(obj);
 				}
@@ -613,7 +613,7 @@ namespace WTelegram
 							_ = Task.Run(() => tcs.SetException(new ApplicationException($"BadMsgNotification {badMsgNotification.error_code}")));
 						}
 						else if (_updateHandler != null)
-							await _updateHandler?.Invoke(obj);
+							await _updateHandler.Invoke(obj);
 					}
 					break;
 				default:
@@ -627,7 +627,7 @@ namespace WTelegram
 						}
 					}
 					if (_updateHandler != null)
-						await _updateHandler?.Invoke(obj);
+						await _updateHandler.Invoke(obj);
 					break;
 			}
 
@@ -637,7 +637,7 @@ namespace WTelegram
 				if (tcs != null)
 					_ = Task.Run(() => tcs.SetResult(result));
 				else if (_updateHandler != null)
-					await _updateHandler?.Invoke(obj);
+					await _updateHandler.Invoke(obj);
 			}
 		}
 
@@ -719,7 +719,7 @@ namespace WTelegram
 			{
 				var waitUntil = DateTime.UtcNow.AddSeconds(3);
 				if (signUpRequired.terms_of_service != null && _updateHandler != null)
-					await _updateHandler?.Invoke(signUpRequired.terms_of_service); // give caller the possibility to read and accept TOS
+					await _updateHandler.Invoke(signUpRequired.terms_of_service); // give caller the possibility to read and accept TOS
 				var first_name = Config("first_name");
 				var last_name = Config("last_name");
 				var wait = waitUntil - DateTime.UtcNow;

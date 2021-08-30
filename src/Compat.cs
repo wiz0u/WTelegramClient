@@ -87,3 +87,22 @@ namespace WTelegram
 #endif
 	}
 }
+
+#if NETSTANDARD2_0
+namespace System.Runtime.CompilerServices
+{
+	internal static class RuntimeHelpers
+	{
+		public static T[] GetSubArray<T>(T[] array, Range range)
+		{
+			if (array == null) throw new ArgumentNullException();
+			var (offset, length) = range.GetOffsetAndLength(array.Length);
+			if (length == 0) return Array.Empty<T>();
+			var dest = typeof(T).IsValueType || typeof(T[]) == array.GetType() ? new T[length]
+				: (T[])Array.CreateInstance(array.GetType().GetElementType()!, length);
+			Array.Copy(array, offset, dest, 0, length);
+			return dest;
+		}
+	}
+}
+#endif
