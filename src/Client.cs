@@ -558,9 +558,10 @@ namespace WTelegram
 			}
 			catch (OperationCanceledException)
 			{ }
-			catch (Exception ex) when (!ct.IsCancellationRequested)
+			catch (Exception ex)
 			{
-				Helpers.Log(5, $"An exception occured in the reactor: {ex}");
+				if (!ct.IsCancellationRequested)
+					Helpers.Log(5, $"An exception occured in the reactor: {ex}");
 			}
 		}
 
