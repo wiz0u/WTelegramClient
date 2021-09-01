@@ -194,7 +194,7 @@ namespace WTelegram
 
 		private static void ValidityChecks(BigInteger p, int g)
 		{
-			Helpers.Log(2, "Verifying encryption key safety... (this happens only during session negociation)");
+			Helpers.Log(2, "Verifying encryption key safety... (this should happen only once)");
 			// check that 2^2047 <= p < 2^2048
 			if (p.GetBitLength() != 2048) throw new ApplicationException("p is not 2048-bit number");
 			// check that g generates a cyclic subgroup of prime order (p - 1) / 2, i.e. is a quadratic residue mod p.

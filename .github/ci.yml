@@ -2,7 +2,7 @@ pr: none
 trigger:
 - master
 
-name: 0.9.4-ci.$(Rev:r)
+name: 0.9.5-ci.$(Rev:r)
 
 pool:
   vmImage: ubuntu-latest

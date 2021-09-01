@@ -147,12 +147,13 @@ namespace WTelegram
 		}
 
 		public static int MillerRabinIterations { get; set; } = 64; // 64 is OpenSSL default for 2048-bits numbers
-
+		private static readonly HashSet<BigInteger> GoodPrimes = new();
 		// Miller–Rabin primality test
 		public static bool IsProbablePrime(this BigInteger n)
 		{
 			var n_minus_one = n - BigInteger.One;
 			if (n_minus_one.Sign <= 0) return false;
+			if (GoodPrimes.Contains(n)) return true;
 
 			int s;
 			var d = n_minus_one;
@@ -187,6 +188,7 @@ namespace WTelegram
 				}
 				if (r == 0) return false;
 			}
+			GoodPrimes.Add(n);
 			return true;
 		}
 	}

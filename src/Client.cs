@@ -190,7 +190,7 @@ namespace WTelegram
 					writer.Write(0L);						// int64 auth_key_id = 0 (Unencrypted)
 					writer.Write(msgId);					// int64 message_id
 					writer.Write(0);						// int32 message_data_length (to be patched)
-					var typeName = func(writer);	// bytes message_data
+					var typeName = func(writer);			// bytes message_data
 					Helpers.Log(1, $"Sending   {typeName}...");
 					BinaryPrimitives.WriteInt32LittleEndian(memStream.GetBuffer().AsSpan(24), (int)memStream.Length - 28);    // patch message_data_length
 				}
@@ -204,12 +204,12 @@ namespace WTelegram
 					const int prepend = 32;
 					clearWriter.Write(_session.AuthKey, 88, prepend);
 	#endif
-					clearWriter.Write(_session.Salt);			// int64 salt
-					clearWriter.Write(_session.Id);				// int64 session_id
-					clearWriter.Write(msgId);					// int64 message_id
-					clearWriter.Write(seqno);					// int32 msg_seqno
-					clearWriter.Write(0);						// int32 message_data_length (to be patched)
-					var typeName = func(clearWriter);	// bytes message_data
+					clearWriter.Write(_session.Salt);		// int64 salt
+					clearWriter.Write(_session.Id);			// int64 session_id
+					clearWriter.Write(msgId);				// int64 message_id
+					clearWriter.Write(seqno);				// int32 msg_seqno
+					clearWriter.Write(0);					// int32 message_data_length (to be patched)
+					var typeName = func(clearWriter);		// bytes message_data
 					if ((seqno & 1) != 0)
 						Helpers.Log(1, $"Sending   {typeName,-50} #{(short)msgId.GetHashCode():X4}");
 					else
@@ -558,7 +558,7 @@ namespace WTelegram
 			}
 			catch (OperationCanceledException)
 			{ }
-			catch (Exception ex)
+			catch (Exception ex) when (!ct.IsCancellationRequested)
 			{
 				Helpers.Log(5, $"An exception occured in the reactor: {ex}");
 			}
