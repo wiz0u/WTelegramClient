@@ -177,13 +177,16 @@ namespace WTelegram
 			static (byte[] key, byte[] iv) ConstructTmpAESKeyIV(Int128 server_nonce, Int256 new_nonce)
 			{
 				byte[] tmp_aes_key = new byte[32], tmp_aes_iv = new byte[32];
+				Sha1.Initialize();
 				Sha1.TransformBlock(new_nonce, 0, 32, null, 0);
 				Sha1.TransformFinalBlock(server_nonce, 0, 16);
 				Sha1.Hash.CopyTo(tmp_aes_key, 0);                   // tmp_aes_key := SHA1(new_nonce + server_nonce)
+				Sha1.Initialize();
 				Sha1.TransformBlock(server_nonce, 0, 16, null, 0);
 				Sha1.TransformFinalBlock(new_nonce, 0, 32);
 				Array.Copy(Sha1.Hash, 0, tmp_aes_key, 20, 12);      //              + SHA1(server_nonce, new_nonce)[0:12]
 				Array.Copy(Sha1.Hash, 12, tmp_aes_iv, 0, 8);        // tmp_aes_iv  != SHA1(server_nonce, new_nonce)[12:8]
+				Sha1.Initialize();
 				Sha1.TransformBlock(new_nonce, 0, 32, null, 0);
 				Sha1.TransformFinalBlock(new_nonce, 0, 32);
 				Sha1.Hash.CopyTo(tmp_aes_iv, 8);                    //              + SHA(new_nonce + new_nonce)
@@ -281,16 +284,20 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			byte[] aes_key = new byte[32], aes_iv = new byte[32];
 #if MTPROTO1
 			var sha1 = encrypt ? Sha1 : Sha1Recv;
+			sha1.Initialize();
 			sha1.TransformBlock(msgKeyLarge, 4, 16, null, 0);   // msgKey
 			sha1.TransformFinalBlock(authKey, x, 32);           // authKey[x:32]
 			var sha1_a = sha1.Hash;
+			sha1.Initialize();
 			sha1.TransformBlock(authKey, 32 + x, 16, null, 0);  // authKey[32+x:16]
 			sha1.TransformBlock(msgKeyLarge, 4, 16, null, 0);   // msgKey
 			sha1.TransformFinalBlock(authKey, 48 + x, 16);      // authKey[48+x:16]
 			var sha1_b = sha1.Hash;
+			sha1.Initialize();
 			sha1.TransformBlock(authKey, 64 + x, 32, null, 0);  // authKey[64+x:32]
 			sha1.TransformFinalBlock(msgKeyLarge, 4, 16);       // msgKey
 			var sha1_c = sha1.Hash;
+			sha1.Initialize();
 			sha1.TransformBlock(msgKeyLarge, 4, 16, null, 0);   // msgKey
 			sha1.TransformFinalBlock(authKey, 96 + x, 32);      // authKey[96+x:32]
 			var sha1_d = sha1.Hash;
@@ -303,9 +310,11 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			Array.Copy(sha1_d, 0, aes_iv, 24, 8);
 #else
 			var sha256 = encrypt ? Sha256 : Sha256Recv;
+			sha256.Initialize();
 			sha256.TransformBlock(msgKeyLarge, 8, 16, null, 0);   // msgKey
 			sha256.TransformFinalBlock(authKey, x, 36);           // authKey[x:36]
 			var sha256_a = sha256.Hash;
+			sha256.Initialize();
 			sha256.TransformBlock(authKey, 40 + x, 36, null, 0);  // authKey[40+x:36]
 			sha256.TransformFinalBlock(msgKeyLarge, 8, 16);       // msgKey
 			var sha256_b = sha256.Hash;
@@ -365,10 +374,12 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			var g_256 = g.To256Bytes();
 			ValidityChecks(p, algo.g);
 
+			Sha256.Initialize();
 			Sha256.TransformBlock(algo.salt1, 0, algo.salt1.Length, null, 0);
 			Sha256.TransformBlock(passwordBytes, 0, passwordBytes.Length, null, 0);
 			Sha256.TransformFinalBlock(algo.salt1, 0, algo.salt1.Length);
 			var hash = Sha256.Hash;
+			Sha256.Initialize();
 			Sha256.TransformBlock(algo.salt2, 0, algo.salt2.Length, null, 0);
 			Sha256.TransformBlock(hash, 0, 32, null, 0);
 			Sha256.TransformFinalBlock(algo.salt2, 0, algo.salt2.Length);
@@ -379,11 +390,13 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 #else
 			var pbkdf2 = PBKDF2_SHA512(hash, algo.salt1, 100000, 64);
 #endif
+			Sha256.Initialize();
 			Sha256.TransformBlock(algo.salt2, 0, algo.salt2.Length, null, 0);
 			Sha256.TransformBlock(pbkdf2, 0, 64, null, 0);
 			Sha256.TransformFinalBlock(algo.salt2, 0, algo.salt2.Length);
 			var x = BigEndianInteger(Sha256.Hash);
 
+			Sha256.Initialize();
 			Sha256.TransformBlock(algo.p, 0, 256, null, 0);
 			Sha256.TransformFinalBlock(g_256, 0, 256);
 			var k = BigEndianInteger(Sha256.Hash);
@@ -394,6 +407,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			var g_a = BigInteger.ModPow(g, a, p);
 			var g_a_256 = g_a.To256Bytes();
 
+			Sha256.Initialize();
 			Sha256.TransformBlock(g_a_256, 0, 256, null, 0);
 			Sha256.TransformFinalBlock(g_b_256, 0, 256);
 			var u = BigEndianInteger(Sha256.Hash);
@@ -408,6 +422,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			for (int i = 0; i < 32; i++) hash[i] ^= h2[i];
 			var hs1 = Sha256.ComputeHash(algo.salt1);
 			var hs2 = Sha256.ComputeHash(algo.salt2);
+			Sha256.Initialize();
 			Sha256.TransformBlock(hash, 0, 32, null, 0);
 			Sha256.TransformBlock(hs1, 0, 32, null, 0);
 			Sha256.TransformBlock(hs2, 0, 32, null, 0);

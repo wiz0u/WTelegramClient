@@ -353,6 +353,7 @@ namespace WTelegram
 					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
 #else
 				if (decrypted_data.Length - 32 - length is < 12 or > 1024) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
+				Sha256Recv.Initialize();
 				Sha256Recv.TransformBlock(_session.AuthKey, 96, 32, null, 0);
 				Sha256Recv.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
 				if (!data.AsSpan(8, 16).SequenceEqual(Sha256Recv.Hash.AsSpan(8, 16)))
