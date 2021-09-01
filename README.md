@@ -30,7 +30,7 @@ If the verification succeeds but the phone number is unknown to Telegram, the us
 And that's it, you now have access to the [full range of Telegram services](https://core.telegram.org/methods), mainly through calls to `await client.Some_TL_Method(...)`
 
 # Saved session
-If you run this program again, you will notice that the previous prompts are gone and you are automatically logged-on and ready to go.
+If you run this program again, you will notice that only **api_id** and **api_hash** are requested, the other prompts are gone and you are automatically logged-on and ready to go.
 
 This is because WTelegramClient saves (typically in the encrypted file **bin\WTelegram.session**) its state and the authentication keys that were negociated with Telegram so that you needn't sign-in again every time.
 

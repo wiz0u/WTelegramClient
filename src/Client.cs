@@ -70,6 +70,7 @@ namespace WTelegram
 			"system_lang_code" => CultureInfo.InstalledUICulture.TwoLetterISOLanguageName,
 			"lang_pack" => "",
 			"lang_code" => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
+			"user_id" => "-1",
 			_ => null // api_id api_hash phone_number verification_code... it's up to you to reply to these correctly
 		};
 
@@ -676,7 +677,7 @@ namespace WTelegram
 		/// <summary>
 		/// Login as a user (if not already done).
 		/// Config callback is queried for: phone_number, verification_code
-		/// <br/>and eventually first_name, last_name (signup required), password (2FA auth)
+		/// <br/>and eventually first_name, last_name (signup required), password (2FA auth), user_id (alt validation)
 		/// </summary>
 		/// <param name="settings"></param>
 		/// <returns>Detail about the logged user</returns>
@@ -689,7 +690,7 @@ namespace WTelegram
 				{
 					var prevUser = Schema.Deserialize<User>(_session.User);
 					var userId = _config("user_id"); // if config prefers to validate current user by its id, use it
-					if (userId != null && int.TryParse(userId, out int id) && prevUser.id == id)
+					if (userId != null && int.TryParse(userId, out int id) && (id == -1 || prevUser.id == id))
 						return prevUser;
 					phone_number = Config("phone_number"); // otherwise, validation is done by the phone number
 					if (prevUser?.phone == string.Concat(phone_number.Where(char.IsDigit)))
