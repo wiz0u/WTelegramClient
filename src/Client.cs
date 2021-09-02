@@ -19,9 +19,9 @@ namespace WTelegram
 {
 	public sealed partial class Client : IDisposable
 	{
+		public event Func<ITLObject, Task> Update;
 		public Config TLConfig { get; private set; }
 		private readonly Func<string, string> _config;
-		private readonly Func<ITLObject, Task> _updateHandler;
 		private readonly int _apiId;
 		private readonly string _apiHash;
 		private readonly Session _session;
@@ -41,15 +41,15 @@ namespace WTelegram
 
 		/// <summary>Welcome to WTelegramClient! 😀</summary>
 		/// <param name="configProvider">Config callback, is queried for: api_id, api_hash, session_pathname</param>
-		/// <param name="updateHandler">Handler for Telegram updates messages that are not replies to RPC API calls</param>
-		public Client(Func<string, string> configProvider = null, Func<ITLObject, Task> updateHandler = null)
+		public Client(Func<string, string> configProvider = null)
 		{
 			_config = configProvider ?? DefaultConfigOrAsk;
-			_updateHandler = updateHandler;
 			_apiId = int.Parse(Config("api_id"));
 			_apiHash = Config("api_hash");
 			_session = Session.LoadOrCreate(Config("session_pathname"), Convert.FromHexString(_apiHash));
 		}
+
+		private Task OnUpdate(ITLObject obj) => Update?.Invoke(obj) ?? Task.CompletedTask;
 
 		public string Config(string config)
 			=> _config(config) ?? DefaultConfig(config) ?? throw new ApplicationException("You must provide a config value for " + config);
@@ -615,8 +615,8 @@ namespace WTelegram
 							if (_bareRequest == badMsgNotification.bad_msg_id) _bareRequest = 0;
 							_ = Task.Run(() => tcs.SetException(new ApplicationException($"BadMsgNotification {badMsgNotification.error_code}")));
 						}
-						else if (_updateHandler != null)
-							await _updateHandler.Invoke(obj);
+						else
+							await OnUpdate(obj);
 					}
 					break;
 				default:
@@ -629,8 +629,7 @@ namespace WTelegram
 							_ = Task.Run(() => tcs.SetResult(obj));
 						}
 					}
-					if (_updateHandler != null)
-						await _updateHandler.Invoke(obj);
+					await OnUpdate(obj);
 					break;
 			}
 
@@ -639,8 +638,8 @@ namespace WTelegram
 				var (type, tcs) = PullPendingRequest(msgId);
 				if (tcs != null)
 					_ = Task.Run(() => tcs.SetResult(result));
-				else if (_updateHandler != null)
-					await _updateHandler.Invoke(obj);
+				else
+					await OnUpdate(obj);
 			}
 		}
 
@@ -721,8 +720,8 @@ namespace WTelegram
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
 			{
 				var waitUntil = DateTime.UtcNow.AddSeconds(3);
-				if (signUpRequired.terms_of_service != null && _updateHandler != null)
-					await _updateHandler.Invoke(signUpRequired.terms_of_service); // give caller the possibility to read and accept TOS
+				if (signUpRequired.terms_of_service != null)
+					await OnUpdate(signUpRequired.terms_of_service); // give caller the possibility to read and accept TOS
 				var first_name = Config("first_name");
 				var last_name = Config("last_name");
 				var wait = waitUntil - DateTime.UtcNow;

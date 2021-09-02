@@ -9,7 +9,7 @@
 
 ## How to use
 
-:warning: This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this before proceeding.
+⚠️ This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this before proceeding.
 
 After installing WTelegramClient through Nuget, your first Console program will be as simple as:
 ```csharp
@@ -55,18 +55,14 @@ static string Config(string what)
 ...
 using var client = new WTelegram.Client(Config);
 ```
-There are other configuration items that are queried to your method but returning `null` let WTelegramClient choose a default adequate value.
-
-The configuration items shown above are the only ones that have no default values and are required to be provided by your method.
-
-The constructor also takes another optional delegate parameter that will be called for any other Update or other information/status/service messages that Telegram sends unsollicited, independently of your API requests.
+There are other configuration items that are queried to your method but returning `null` let WTelegramClient choose a default adequate value. Those shown above are the only ones that have no default values and are required to be provided by your method.
 
 Finally, if you want to redirect the library logs to your logger instead of the Console, you can install a delegate in the `WTelegram.Helpers.Log` static property.
 Its `int` argument is the log severity, compatible with the classic [LogLevel enum](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel)
 
 # Example of API call
 
-:information_source: The Telegram API makes extensive usage of base and derived classes, so be ready to use the various syntaxes C# offer to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
+ℹ️ The Telegram API makes extensive usage of base and derived classes, so be ready to use the various syntaxes C# offer to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
 
 To find which derived classes are available for a given base class, the fastest is to check our [TL.Schema.cs](src/TL.Schema.cs) source file as they are listed in groups.
 Intellisense tooltips on API structures/methods will also display a web link to the adequate Telegram documentation page.
@@ -101,7 +97,9 @@ await client.SendMessageAsync(target, "Hello, World");
 
 # Other things to know
 
-An invalid API request can result in a RpcException being raised, reflecting the [error code and status text](https://core.telegram.org/api/errors) of the problem.
+The Client class also offers an `Update` event that is triggered when Telegram servers sends unsollicited Updates or notifications/information/status/service messages, independently of your API requests.
+
+An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://core.telegram.org/api/errors) of the problem.
 
 The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
 
