@@ -19,8 +19,9 @@ namespace WTelegram
 {
 	public sealed partial class Client : IDisposable
 	{
-		public event Func<ITLObject, Task> Update;
+		public event Action<ITLObject> Update;
 		public Config TLConfig { get; private set; }
+
 		private readonly Func<string, string> _config;
 		private readonly int _apiId;
 		private readonly string _apiHash;
@@ -48,8 +49,6 @@ namespace WTelegram
 			_apiHash = Config("api_hash");
 			_session = Session.LoadOrCreate(Config("session_pathname"), Convert.FromHexString(_apiHash));
 		}
-
-		private Task OnUpdate(ITLObject obj) => Update?.Invoke(obj) ?? Task.CompletedTask;
 
 		public string Config(string config)
 			=> _config(config) ?? DefaultConfig(config) ?? throw new ApplicationException("You must provide a config value for " + config);
@@ -597,10 +596,10 @@ namespace WTelegram
 					_ = SendAsync(MakeFunction(new Pong { msg_id = _lastRecvMsgId, ping_id = ping.ping_id }), false);
 					break;
 				case Pong pong:
-					await SetResult(pong.msg_id, pong);
+					SetResult(pong.msg_id, pong);
 					break;
 				case FutureSalts futureSalts:
-					await SetResult(futureSalts.req_msg_id, futureSalts);
+					SetResult(futureSalts.req_msg_id, futureSalts);
 					break;
 				case RpcResult rpcResult:
 					break; // SetResult was already done in ReadRpcResult
@@ -616,7 +615,7 @@ namespace WTelegram
 							_ = Task.Run(() => tcs.SetException(new ApplicationException($"BadMsgNotification {badMsgNotification.error_code}")));
 						}
 						else
-							await OnUpdate(obj);
+							OnUpdate(obj);
 					}
 					break;
 				default:
@@ -627,19 +626,32 @@ namespace WTelegram
 						{
 							_bareRequest = 0;
 							_ = Task.Run(() => tcs.SetResult(obj));
+							break;
 						}
 					}
-					await OnUpdate(obj);
+					OnUpdate(obj);
 					break;
 			}
 
-			async Task SetResult(long msgId, object result)
+			void SetResult(long msgId, object result)
 			{
 				var (type, tcs) = PullPendingRequest(msgId);
 				if (tcs != null)
 					_ = Task.Run(() => tcs.SetResult(result));
 				else
-					await OnUpdate(obj);
+					OnUpdate(obj);
+			}
+		}
+
+		private void OnUpdate(ITLObject obj)
+		{
+			try
+			{
+				Update?.Invoke(obj);
+			}
+			catch (Exception ex)
+			{
+				Helpers.Log(4, $"Update callback on {obj.GetType().Name} raised {ex}");
 			}
 		}
 
@@ -721,7 +733,7 @@ namespace WTelegram
 			{
 				var waitUntil = DateTime.UtcNow.AddSeconds(3);
 				if (signUpRequired.terms_of_service != null)
-					await OnUpdate(signUpRequired.terms_of_service); // give caller the possibility to read and accept TOS
+					OnUpdate(signUpRequired.terms_of_service); // give caller the possibility to read and accept TOS
 				var first_name = Config("first_name");
 				var last_name = Config("last_name");
 				var wait = waitUntil - DateTime.UtcNow;

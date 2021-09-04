@@ -38,6 +38,7 @@
     <None Include="..\logo.png" Link="Data\logo.png" Pack="true" PackagePath="\" />
     <None Include="..\README.md" Link="Data\README.md" Pack="true" PackagePath="\" />
     <None Include="..\.github\release.yml" Link="Data\release.yml" />
+    <None Include="..\Examples\*.cs" Link="Data\Examples\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>
