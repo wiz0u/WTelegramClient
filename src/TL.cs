@@ -287,6 +287,11 @@ namespace TL
 		public RpcException(int code, string message) : base(message) => Code = code;
 	}
 
+	public class ReactorError : ITLObject
+	{
+		public Exception Exception;
+	}
+
 	// Below TL types are commented "parsed manually" from https://github.com/telegramdesktop/tdesktop/blob/dev/Telegram/Resources/tl/mtproto.tl
 
 	[TLDef(0xF35C6D01)] //rpc_result#f35c6d01 req_msg_id:long result:Object = RpcResult

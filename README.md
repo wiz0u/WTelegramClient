@@ -13,7 +13,7 @@
 
 After installing WTelegramClient through Nuget, your first Console program will be as simple as:
 ```csharp
-static Task Main(string[] _)
+static async Task Main(string[] _)
 {
     using var client = new WTelegram.Client();
     await client.ConnectAsync();
@@ -110,6 +110,32 @@ I've added several useful converters or implicit cast to various API object so t
 Beyond the TL async methods, the Client class offers a few other methods to simplify the sending of files, medias or messages.
 
 This library works best with **.NET 5.0+** and is also available for **.NET Standard 2.0** (.NET Framework 4.6.1+ & .NET Core 2.0+)
+
+# Troubleshooting guide
+
+Here is a list of common issues and how to fix them so that your program work correctly:
+1) Are you using the Nuget package instead of the library source code?
+<br/>It is not recommended to copy/compile the source code of the library for a normal usage.
+<br/>When built in DEBUG mode, the source code connects to Telegram test servers. So you can either:
+    - **Recommended:** Use the [official Nuget package](https://www.nuget.org/packages/WTelegramClient) or the [private nuget feed of development builds](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
+    - Build your code in RELEASE mode
+    - Modify your config callback to reply to "server_address" with the IP address of Telegram production servers (as found on your API development tools)
+
+2) After `ConnectAsync()`, are you calling `LoginUserIfNeeded()`?
+<br/>If you don't authenticate as a user (or bot), you have access to a very limited subset of Telegram APIs
+
+3) Did you use `await` with every Client methods?
+<br/>This library is completely Task-based and you should learn, understand and use the [asynchronous model of C# programming](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/) before proceeding further.
+
+4) Are you keeping a live reference to the Client instance and dispose it only at the end of your program?
+<br/>If you create the instance in a submethod and don't store it somewhere permanent, it might be destroyed by the garbage collector at some point. So as long as the client must be running, make sure the reference is stored in a (static) field or somewhere appropriate.
+<br/>Also, as the Client class inherits `IDisposable`, remember to call `client.Dispose()` when your program ends (or exit a `using` scope).
+
+5) Is your program ending immediately instead of waiting for Updates?
+<br/>Your program must be running/waiting continuously in order for the background Task to receive and process the Updates. So make sure your main program doesn't end immediately. For a console program, this is typical done by waiting for a key or some close event.
+
+6) Is every Telegram API call rejected? (typically with an exception message like `AUTH_RESTART`)
+<br/>The user authentification might have failed at some point (or the user revoked the authorization). It is therefore necessary to go through the authentification again. This can be done by deleting the WTelegram.session file, or at runtime by calling `client.Reset()`
 
 # Development status
 The library is usable for most scenarios including (sequential or parallel) automated steps based on API requests/responses, or real-time monitoring of incoming Updates/messages. Secret chats have not been tested yet.
