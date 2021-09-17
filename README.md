@@ -90,7 +90,7 @@ foreach (var chat in chats)
             break;
     }
 Console.Write("Type a chat ID to send a message: ");
-var id = int.Parse(Console.ReadLine());
+long id = long.Parse(Console.ReadLine());
 var target = chats.First(chat => chat.ID == id);
 await client.SendMessageAsync(target, "Hello, World");
 ```

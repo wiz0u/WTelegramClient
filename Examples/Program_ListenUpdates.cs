@@ -30,10 +30,10 @@ namespace WTelegramClientTest
 		}
 
 
-		private static readonly Dictionary<int, UserBase> users = new();
-		private static readonly Dictionary<int, ChatBase> chats = new();
-		private static string AUser(int user_id) => users.TryGetValue(user_id, out var user) ? user.DisplayName : $"User {user_id}";
-		private static string AChat(int chat_id) => chats.TryGetValue(chat_id, out var chat) ? chat.Title : $"Chat {chat_id}";
+		private static readonly Dictionary<long, UserBase> users = new();
+		private static readonly Dictionary<long, ChatBase> chats = new();
+		private static string AUser(long user_id) => users.TryGetValue(user_id, out var user) ? user.DisplayName : $"User {user_id}";
+		private static string AChat(long chat_id) => chats.TryGetValue(chat_id, out var chat) ? chat.Title : $"Chat {chat_id}";
 		private static string APeer(Peer peer) => peer is null ? null : peer is PeerUser user ? AUser(user.user_id)
 			: peer is PeerChat chat ? AChat(chat.chat_id) : peer is PeerChannel channel ? AChat(channel.channel_id) : $"Peer {peer.ID}";
 
