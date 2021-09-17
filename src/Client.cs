@@ -121,7 +121,7 @@ namespace WTelegram
 			_networkStream = _tcpClient.GetStream();
 			_frame_seqTx = _frame_seqRx = 0;
 			_cts = new();
-			_reactorTask = Reactor(_networkStream, _cts.Token);
+			_reactorTask = Reactor(_networkStream, _cts);
 			_sendSemaphore.Release();
 
 			if (_session.AuthKey == null)
@@ -164,22 +164,33 @@ namespace WTelegram
 			}
 		}
 
-		private async Task Reactor(NetworkStream stream, CancellationToken ct)
+		private async Task KeepAlive(CancellationToken ct)
 		{
-			int reconnects = 0;
+			int ping_id = _random.Next();
 			while (!ct.IsCancellationRequested)
 			{
-				ITLObject obj;
+				await Task.Delay(60000, ct);
+				await PingDelayDisconnect(ping_id++, 75);
+			}
+		}
+
+		private async Task Reactor(NetworkStream stream, CancellationTokenSource cts)
+		{
+			int reconnects = 0;
+			var keepAliveTask = KeepAlive(cts.Token);
+			while (!cts.IsCancellationRequested)
+			{
+				ITLObject obj = null;
 				try
 				{
-					obj = await RecvAsync(stream, ct);
+					obj = await RecvAsync(stream, cts.Token);
 				}
 				catch (Exception ex) // an exception in RecvAsync is always fatal
 				{
-					if (ct.IsCancellationRequested) return;
+					if (cts.IsCancellationRequested) return;
 					Helpers.Log(5, $"An exception occured in the reactor: {ex}");
 					var oldSemaphore = _sendSemaphore;
-					await oldSemaphore.WaitAsync(ct); // prevent any sending while we reconnect
+					await oldSemaphore.WaitAsync(cts.Token); // prevent any sending while we reconnect
 					try
 					{
 						lock (_pendingRequests) // abort all pending requests
@@ -202,7 +213,7 @@ namespace WTelegram
 					{
 						oldSemaphore.Release();
 					}
-					return; // always stop the reactor
+					cts.Cancel(); // always stop the reactor
 				}
 				if (obj != null)
 					await HandleMessageAsync(obj);
