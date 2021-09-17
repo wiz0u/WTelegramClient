@@ -368,7 +368,7 @@ namespace WTelegram
 					writer.Write(0);						// int32 message_data_length (to be patched)
 					var typeName = func(writer);			// bytes message_data
 					Helpers.Log(1, $"Sending   {typeName}...");
-					BinaryPrimitives.WriteInt32LittleEndian(memStream.GetBuffer().AsSpan(24), (int)memStream.Length - 28);    // patch message_data_length
+					BinaryPrimitives.WriteInt32LittleEndian(memStream.GetBuffer().AsSpan(20), (int)memStream.Length - 24);    // patch message_data_length
 				}
 				else
 				{
