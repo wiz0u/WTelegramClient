@@ -130,6 +130,7 @@ namespace WTelegram
 			if (_session.AuthKey == null)
 				await CreateAuthorizationKey(this, _session);
 
+			var keepAliveTask = KeepAlive(_cts.Token);
 			TLConfig = await this.InvokeWithLayer<Config>(Layer.Version,
 				Schema.InitConnection(_apiId,
 					Config("device_model"),
@@ -180,7 +181,6 @@ namespace WTelegram
 		private async Task Reactor(NetworkStream stream, CancellationTokenSource cts)
 		{
 			int reconnects = 0;
-			var keepAliveTask = KeepAlive(cts.Token);
 			while (!cts.IsCancellationRequested)
 			{
 				ITLObject obj = null;
