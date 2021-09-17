@@ -38,37 +38,37 @@ namespace TL
 	[TLDef(0x7DA07EC9)]
 	public partial class InputPeerSelf : InputPeer { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputPeerChat"/></summary>
-	[TLDef(0x179BE863)]
-	public partial class InputPeerChat : InputPeer { public int chat_id; }
+	[TLDef(0x35A95CB9)]
+	public partial class InputPeerChat : InputPeer { public long chat_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputPeerUser"/></summary>
-	[TLDef(0x7B8E7DE6)]
+	[TLDef(0xDDE8A54C)]
 	public partial class InputPeerUser : InputPeer
 	{
-		public int user_id;
+		public long user_id;
 		public long access_hash;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputPeerChannel"/></summary>
-	[TLDef(0x20ADAEF8)]
+	[TLDef(0x27BCBBFC)]
 	public partial class InputPeerChannel : InputPeer
 	{
-		public int channel_id;
+		public long channel_id;
 		public long access_hash;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputPeerUserFromMessage"/></summary>
-	[TLDef(0x17BAE2E6)]
+	[TLDef(0xA87B0A1C)]
 	public partial class InputPeerUserFromMessage : InputPeer
 	{
 		public InputPeer peer;
 		public int msg_id;
-		public int user_id;
+		public long user_id;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputPeerChannelFromMessage"/></summary>
-	[TLDef(0x9C95F7BB)]
+	[TLDef(0xBD2A0840)]
 	public partial class InputPeerChannelFromMessage : InputPeer
 	{
 		public InputPeer peer;
 		public int msg_id;
-		public int channel_id;
+		public long channel_id;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/InputUser"/></summary>
@@ -80,19 +80,19 @@ namespace TL
 	[TLDef(0xF7C1B13F)]
 	public partial class InputUserSelf : InputUserBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputUser"/></summary>
-	[TLDef(0xD8292816)]
+	[TLDef(0xF21158C6)]
 	public partial class InputUser : InputUserBase
 	{
-		public int user_id;
+		public long user_id;
 		public long access_hash;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputUserFromMessage"/></summary>
-	[TLDef(0x2D117597)]
+	[TLDef(0x1DA448E2)]
 	public partial class InputUserFromMessage : InputUserBase
 	{
 		public InputPeer peer;
 		public int msg_id;
-		public int user_id;
+		public long user_id;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/InputContact"/></summary>
@@ -382,25 +382,29 @@ namespace TL
 		public int thumb_version;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputGroupCallStream"/></summary>
-	[TLDef(0xBBA51639)]
+	[TLDef(0x0598A92A)]
 	public partial class InputGroupCallStream : InputFileLocationBase
 	{
+		[Flags] public enum Flags { has_video_channel = 0x1 }
+		public Flags flags;
 		public InputGroupCall call;
 		public long time_ms;
 		public int scale;
+		[IfFlag(0)] public int video_channel;
+		[IfFlag(0)] public int video_quality;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/Peer"/></summary>
 	public abstract partial class Peer : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/peerUser"/></summary>
-	[TLDef(0x9DB1BC6D)]
-	public partial class PeerUser : Peer { public int user_id; }
+	[TLDef(0x59511722)]
+	public partial class PeerUser : Peer { public long user_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/peerChat"/></summary>
-	[TLDef(0xBAD0E5BB)]
-	public partial class PeerChat : Peer { public int chat_id; }
+	[TLDef(0x36C6019A)]
+	public partial class PeerChat : Peer { public long chat_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/peerChannel"/></summary>
-	[TLDef(0xBDDDE532)]
-	public partial class PeerChannel : Peer { public int channel_id; }
+	[TLDef(0xA2A5371E)]
+	public partial class PeerChannel : Peer { public long channel_id; }
 
 	///<summary>See <a href="https://core.telegram.org/type/storage.FileType"/></summary>
 	public abstract partial class Storage_FileType : ITLObject { }
@@ -438,10 +442,10 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/type/User"/></summary>
 	public abstract partial class UserBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/userEmpty"/></summary>
-	[TLDef(0x200250BA)]
-	public partial class UserEmpty : UserBase { public int id; }
+	[TLDef(0xD3BC4B7A)]
+	public partial class UserEmpty : UserBase { public long id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/user"/></summary>
-	[TLDef(0x938458C1)]
+	[TLDef(0x3FF6ECB0)]
 	public partial class User : UserBase
 	{
 		[Flags] public enum Flags { has_access_hash = 0x1, has_first_name = 0x2, has_last_name = 0x4, has_username = 0x8, 
@@ -450,7 +454,7 @@ namespace TL
 			has_bot_inline_placeholder = 0x80000, min = 0x100000, bot_inline_geo = 0x200000, has_lang_code = 0x400000, support = 0x800000, 
 			scam = 0x1000000, apply_min_photo = 0x2000000, fake = 0x4000000 }
 		public Flags flags;
-		public int id;
+		public long id;
 		[IfFlag(0)] public long access_hash;
 		[IfFlag(1)] public string first_name;
 		[IfFlag(2)] public string last_name;
@@ -504,16 +508,16 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/type/Chat"/></summary>
 	public abstract partial class ChatBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/chatEmpty"/></summary>
-	[TLDef(0x9BA2D800)]
-	public partial class ChatEmpty : ChatBase { public int id; }
+	[TLDef(0x29562865)]
+	public partial class ChatEmpty : ChatBase { public long id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/chat"/></summary>
-	[TLDef(0x3BDA1BDE)]
+	[TLDef(0x41CBF256)]
 	public partial class Chat : ChatBase
 	{
 		[Flags] public enum Flags { creator = 0x1, kicked = 0x2, left = 0x4, deactivated = 0x20, has_migrated_to = 0x40, 
 			has_admin_rights = 0x4000, has_default_banned_rights = 0x40000, call_active = 0x800000, call_not_empty = 0x1000000 }
 		public Flags flags;
-		public int id;
+		public long id;
 		public string title;
 		public ChatPhotoBase photo;
 		public int participants_count;
@@ -524,14 +528,14 @@ namespace TL
 		[IfFlag(18)] public ChatBannedRights default_banned_rights;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/chatForbidden"/></summary>
-	[TLDef(0x07328BDB)]
+	[TLDef(0x6592A1A7)]
 	public partial class ChatForbidden : ChatBase
 	{
-		public int id;
+		public long id;
 		public string title;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channel"/></summary>
-	[TLDef(0xD31A961E)]
+	[TLDef(0x8261AC61)]
 	public partial class Channel : ChatBase
 	{
 		[Flags] public enum Flags { creator = 0x1, left = 0x4, broadcast = 0x20, has_username = 0x40, verified = 0x80, 
@@ -540,13 +544,12 @@ namespace TL
 			has_link = 0x100000, has_geo = 0x200000, slowmode_enabled = 0x400000, call_active = 0x800000, call_not_empty = 0x1000000, 
 			fake = 0x2000000, gigagroup = 0x4000000 }
 		public Flags flags;
-		public int id;
+		public long id;
 		[IfFlag(13)] public long access_hash;
 		public string title;
 		[IfFlag(6)] public string username;
 		public ChatPhotoBase photo;
 		public DateTime date;
-		public int version;
 		[IfFlag(9)] public RestrictionReason[] restriction_reason;
 		[IfFlag(14)] public ChatAdminRights admin_rights;
 		[IfFlag(15)] public ChatBannedRights banned_rights;
@@ -554,12 +557,12 @@ namespace TL
 		[IfFlag(17)] public int participants_count;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channelForbidden"/></summary>
-	[TLDef(0x289DA732)]
+	[TLDef(0x17D493D5)]
 	public partial class ChannelForbidden : ChatBase
 	{
 		[Flags] public enum Flags { broadcast = 0x20, megagroup = 0x100, has_until_date = 0x10000 }
 		public Flags flags;
-		public int id;
+		public long id;
 		public long access_hash;
 		public string title;
 		[IfFlag(16)] public DateTime until_date;
@@ -568,14 +571,14 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/type/ChatFull"/></summary>
 	public abstract partial class ChatFullBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/chatFull"/></summary>
-	[TLDef(0x8A1E2983)]
+	[TLDef(0x4DBDC099)]
 	public partial class ChatFull : ChatFullBase
 	{
 		[Flags] public enum Flags { has_chat_photo = 0x4, has_bot_info = 0x8, has_pinned_msg_id = 0x40, can_set_username = 0x80, 
 			has_scheduled = 0x100, has_folder_id = 0x800, has_call = 0x1000, has_exported_invite = 0x2000, has_ttl_period = 0x4000, 
-			has_groupcall_default_join_as = 0x8000 }
+			has_groupcall_default_join_as = 0x8000, has_theme_emoticon = 0x10000 }
 		public Flags flags;
-		public int id;
+		public long id;
 		public string about;
 		public ChatParticipantsBase participants;
 		[IfFlag(2)] public PhotoBase chat_photo;
@@ -587,9 +590,10 @@ namespace TL
 		[IfFlag(12)] public InputGroupCall call;
 		[IfFlag(14)] public int ttl_period;
 		[IfFlag(15)] public Peer groupcall_default_join_as;
+		[IfFlag(16)] public string theme_emoticon;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channelFull"/></summary>
-	[TLDef(0x548C3F93)]
+	[TLDef(0xE9B27A17)]
 	public partial class ChannelFull : ChatFullBase
 	{
 		[Flags] public enum Flags { has_participants_count = 0x1, has_admins_count = 0x2, has_kicked_count = 0x4, 
@@ -598,9 +602,10 @@ namespace TL
 			has_folder_id = 0x800, has_stats_dc = 0x1000, has_online_count = 0x2000, has_linked_chat_id = 0x4000, has_location = 0x8000, 
 			can_set_location = 0x10000, has_slowmode_seconds = 0x20000, has_slowmode_next_send_date = 0x40000, has_scheduled = 0x80000, 
 			can_view_stats = 0x100000, has_call = 0x200000, blocked = 0x400000, has_exported_invite = 0x800000, 
-			has_ttl_period = 0x1000000, has_pending_suggestions = 0x2000000, has_groupcall_default_join_as = 0x4000000 }
+			has_ttl_period = 0x1000000, has_pending_suggestions = 0x2000000, has_groupcall_default_join_as = 0x4000000, 
+			has_theme_emoticon = 0x8000000 }
 		public Flags flags;
-		public int id;
+		public long id;
 		public string about;
 		[IfFlag(0)] public int participants_count;
 		[IfFlag(1)] public int admins_count;
@@ -614,13 +619,13 @@ namespace TL
 		public PeerNotifySettings notify_settings;
 		[IfFlag(23)] public ExportedChatInvite exported_invite;
 		public BotInfo[] bot_info;
-		[IfFlag(4)] public int migrated_from_chat_id;
+		[IfFlag(4)] public long migrated_from_chat_id;
 		[IfFlag(4)] public int migrated_from_max_id;
 		[IfFlag(5)] public int pinned_msg_id;
 		[IfFlag(8)] public StickerSet stickerset;
 		[IfFlag(9)] public int available_min_id;
 		[IfFlag(11)] public int folder_id;
-		[IfFlag(14)] public int linked_chat_id;
+		[IfFlag(14)] public long linked_chat_id;
 		[IfFlag(15)] public ChannelLocationBase location;
 		[IfFlag(17)] public int slowmode_seconds;
 		[IfFlag(18)] public DateTime slowmode_next_send_date;
@@ -630,46 +635,47 @@ namespace TL
 		[IfFlag(24)] public int ttl_period;
 		[IfFlag(25)] public string[] pending_suggestions;
 		[IfFlag(26)] public Peer groupcall_default_join_as;
+		[IfFlag(27)] public string theme_emoticon;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/ChatParticipant"/></summary>
 	public abstract partial class ChatParticipantBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/chatParticipant"/></summary>
-	[TLDef(0xC8D7493E)]
+	[TLDef(0xC02D4007)]
 	public partial class ChatParticipant : ChatParticipantBase
 	{
-		public int user_id;
-		public int inviter_id;
+		public long user_id;
+		public long inviter_id;
 		public DateTime date;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/chatParticipantCreator"/></summary>
-	[TLDef(0xDA13538A)]
-	public partial class ChatParticipantCreator : ChatParticipantBase { public int user_id; }
+	[TLDef(0xE46BCEE4)]
+	public partial class ChatParticipantCreator : ChatParticipantBase { public long user_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/chatParticipantAdmin"/></summary>
-	[TLDef(0xE2D6E436)]
+	[TLDef(0xA0933F5B)]
 	public partial class ChatParticipantAdmin : ChatParticipantBase
 	{
-		public int user_id;
-		public int inviter_id;
+		public long user_id;
+		public long inviter_id;
 		public DateTime date;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/ChatParticipants"/></summary>
 	public abstract partial class ChatParticipantsBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/chatParticipantsForbidden"/></summary>
-	[TLDef(0xFC900C2B)]
+	[TLDef(0x8763D3E1)]
 	public partial class ChatParticipantsForbidden : ChatParticipantsBase
 	{
 		[Flags] public enum Flags { has_self_participant = 0x1 }
 		public Flags flags;
-		public int chat_id;
+		public long chat_id;
 		[IfFlag(0)] public ChatParticipantBase self_participant;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/chatParticipants"/></summary>
-	[TLDef(0x3F460FED)]
+	[TLDef(0x3CBC93F8)]
 	public partial class ChatParticipants : ChatParticipantsBase
 	{
-		public int chat_id;
+		public long chat_id;
 		public ChatParticipantBase[] participants;
 		public int version;
 	}
@@ -702,7 +708,7 @@ namespace TL
 		[IfFlag(0)] public Peer peer_id;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/message"/></summary>
-	[TLDef(0xBCE383D2)]
+	[TLDef(0x85D6CBE2)]
 	public partial class Message : MessageBase
 	{
 		[Flags] public enum Flags { out_ = 0x2, has_fwd_from = 0x4, has_reply_to = 0x8, mentioned = 0x10, media_unread = 0x20, 
@@ -715,7 +721,7 @@ namespace TL
 		[IfFlag(8)] public Peer from_id;
 		public Peer peer_id;
 		[IfFlag(2)] public MessageFwdHeader fwd_from;
-		[IfFlag(11)] public int via_bot_id;
+		[IfFlag(11)] public long via_bot_id;
 		[IfFlag(3)] public MessageReplyHeader reply_to;
 		public DateTime date;
 		public string message;
@@ -765,14 +771,14 @@ namespace TL
 	[TLDef(0x56E0D474)]
 	public partial class MessageMediaGeo : MessageMedia { public GeoPointBase geo; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageMediaContact"/></summary>
-	[TLDef(0xCBF24940)]
+	[TLDef(0x70322949)]
 	public partial class MessageMediaContact : MessageMedia
 	{
 		public string phone_number;
 		public string first_name;
 		public string last_name;
 		public string vcard;
-		public int user_id;
+		public long user_id;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messageMediaUnsupported"/></summary>
 	[TLDef(0x9F84F49E)]
@@ -849,11 +855,11 @@ namespace TL
 	[TLDef(0xB6AEF7B0)]
 	public partial class MessageActionEmpty : MessageAction { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionChatCreate"/></summary>
-	[TLDef(0xA6638B9A)]
+	[TLDef(0xBD47CBAD)]
 	public partial class MessageActionChatCreate : MessageAction
 	{
 		public string title;
-		public int[] users;
+		public long[] users;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionChatEditTitle"/></summary>
 	[TLDef(0xB5A1CE5A)]
@@ -865,26 +871,26 @@ namespace TL
 	[TLDef(0x95E3FBEF)]
 	public partial class MessageActionChatDeletePhoto : MessageAction { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionChatAddUser"/></summary>
-	[TLDef(0x488A7337)]
-	public partial class MessageActionChatAddUser : MessageAction { public int[] users; }
+	[TLDef(0x15CEFD00)]
+	public partial class MessageActionChatAddUser : MessageAction { public long[] users; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionChatDeleteUser"/></summary>
-	[TLDef(0xB2AE9B0C)]
-	public partial class MessageActionChatDeleteUser : MessageAction { public int user_id; }
+	[TLDef(0xA43F30CC)]
+	public partial class MessageActionChatDeleteUser : MessageAction { public long user_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionChatJoinedByLink"/></summary>
-	[TLDef(0xF89CF5E8)]
-	public partial class MessageActionChatJoinedByLink : MessageAction { public int inviter_id; }
+	[TLDef(0x031224C3)]
+	public partial class MessageActionChatJoinedByLink : MessageAction { public long inviter_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionChannelCreate"/></summary>
 	[TLDef(0x95D2AC92)]
 	public partial class MessageActionChannelCreate : MessageAction { public string title; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionChatMigrateTo"/></summary>
-	[TLDef(0x51BDB021)]
-	public partial class MessageActionChatMigrateTo : MessageAction { public int channel_id; }
+	[TLDef(0xE1037F92)]
+	public partial class MessageActionChatMigrateTo : MessageAction { public long channel_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionChannelMigrateFrom"/></summary>
-	[TLDef(0xB055EAEE)]
+	[TLDef(0xEA3948E9)]
 	public partial class MessageActionChannelMigrateFrom : MessageAction
 	{
 		public string title;
-		public int chat_id;
+		public long chat_id;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionPinMessage"/></summary>
 	[TLDef(0x94BD38ED)]
@@ -969,11 +975,11 @@ namespace TL
 		[IfFlag(0)] public int duration;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionInviteToGroupCall"/></summary>
-	[TLDef(0x76B9F11A)]
+	[TLDef(0x502F92F7)]
 	public partial class MessageActionInviteToGroupCall : MessageAction
 	{
 		public InputGroupCall call;
-		public int[] users;
+		public long[] users;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionSetMessagesTTL"/></summary>
 	[TLDef(0xAA1AFBFD)]
@@ -985,6 +991,9 @@ namespace TL
 		public InputGroupCall call;
 		public DateTime schedule_date;
 	}
+	///<summary>See <a href="https://core.telegram.org/constructor/messageActionSetChatTheme"/></summary>
+	[TLDef(0xAA786345)]
+	public partial class MessageActionSetChatTheme : MessageAction { public string emoticon; }
 
 	///<summary>See <a href="https://core.telegram.org/type/Dialog"/></summary>
 	public abstract partial class DialogBase : ITLObject { }
@@ -1137,10 +1146,10 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/auth.exportedAuthorization"/></summary>
-	[TLDef(0xDF969C2D)]
+	[TLDef(0xB434E2B8)]
 	public partial class Auth_ExportedAuthorization : ITLObject
 	{
-		public int id;
+		public long id;
 		public byte[] bytes;
 	}
 
@@ -1245,12 +1254,13 @@ namespace TL
 	public partial class InputReportReasonFake : ReportReason { }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/userFull"/></summary>
-	[TLDef(0x139A9A77)]
+	[TLDef(0xD697FF05)]
 	public partial class UserFull : ITLObject
 	{
 		[Flags] public enum Flags { blocked = 0x1, has_about = 0x2, has_profile_photo = 0x4, has_bot_info = 0x8, 
 			phone_calls_available = 0x10, phone_calls_private = 0x20, has_pinned_msg_id = 0x40, can_pin_message = 0x80, 
-			has_folder_id = 0x800, has_scheduled = 0x1000, video_calls_available = 0x2000, has_ttl_period = 0x4000 }
+			has_folder_id = 0x800, has_scheduled = 0x1000, video_calls_available = 0x2000, has_ttl_period = 0x4000, 
+			has_theme_emoticon = 0x8000 }
 		public Flags flags;
 		public UserBase user;
 		[IfFlag(1)] public string about;
@@ -1262,29 +1272,30 @@ namespace TL
 		public int common_chats_count;
 		[IfFlag(11)] public int folder_id;
 		[IfFlag(14)] public int ttl_period;
+		[IfFlag(15)] public string theme_emoticon;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/contact"/></summary>
-	[TLDef(0xF911C994)]
+	[TLDef(0x145ADE0B)]
 	public partial class Contact : ITLObject
 	{
-		public int user_id;
+		public long user_id;
 		public bool mutual;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/importedContact"/></summary>
-	[TLDef(0xD0028438)]
+	[TLDef(0xC13E3C50)]
 	public partial class ImportedContact : ITLObject
 	{
-		public int user_id;
+		public long user_id;
 		public long client_id;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/contactStatus"/></summary>
-	[TLDef(0xD3680C61)]
+	[TLDef(0x16D9703B)]
 	public partial class ContactStatus : ITLObject
 	{
-		public int user_id;
+		public long user_id;
 		public UserStatus status;
 	}
 
@@ -1512,17 +1523,17 @@ namespace TL
 		public int pts_count;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateUserTyping"/></summary>
-	[TLDef(0x5C486927)]
+	[TLDef(0xC01E857F)]
 	public partial class UpdateUserTyping : Update
 	{
-		public int user_id;
+		public long user_id;
 		public SendMessageAction action;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChatUserTyping"/></summary>
-	[TLDef(0x86CADB6C)]
+	[TLDef(0x83487AF0)]
 	public partial class UpdateChatUserTyping : Update
 	{
-		public int chat_id;
+		public long chat_id;
 		public Peer from_id;
 		public SendMessageAction action;
 	}
@@ -1530,26 +1541,26 @@ namespace TL
 	[TLDef(0x07761198)]
 	public partial class UpdateChatParticipants : Update { public ChatParticipantsBase participants; }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateUserStatus"/></summary>
-	[TLDef(0x1BFBD823)]
+	[TLDef(0xE5BDF8DE)]
 	public partial class UpdateUserStatus : Update
 	{
-		public int user_id;
+		public long user_id;
 		public UserStatus status;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateUserName"/></summary>
-	[TLDef(0xA7332B73)]
+	[TLDef(0xC3F202E0)]
 	public partial class UpdateUserName : Update
 	{
-		public int user_id;
+		public long user_id;
 		public string first_name;
 		public string last_name;
 		public string username;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateUserPhoto"/></summary>
-	[TLDef(0x95313B0C)]
+	[TLDef(0xF227868C)]
 	public partial class UpdateUserPhoto : Update
 	{
-		public int user_id;
+		public long user_id;
 		public DateTime date;
 		public UserProfilePhotoBase photo;
 		public bool previous;
@@ -1580,21 +1591,21 @@ namespace TL
 		public DateTime date;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChatParticipantAdd"/></summary>
-	[TLDef(0xEA4B0E5C)]
+	[TLDef(0x3DDA5451)]
 	public partial class UpdateChatParticipantAdd : Update
 	{
-		public int chat_id;
-		public int user_id;
-		public int inviter_id;
+		public long chat_id;
+		public long user_id;
+		public long inviter_id;
 		public DateTime date;
 		public int version;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChatParticipantDelete"/></summary>
-	[TLDef(0x6E5F8C22)]
+	[TLDef(0xE32F3D77)]
 	public partial class UpdateChatParticipantDelete : Update
 	{
-		public int chat_id;
-		public int user_id;
+		public long chat_id;
+		public long user_id;
 		public int version;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateDcOptions"/></summary>
@@ -1627,10 +1638,10 @@ namespace TL
 		public PrivacyRule[] rules;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateUserPhone"/></summary>
-	[TLDef(0x12B9417B)]
+	[TLDef(0x05492A13)]
 	public partial class UpdateUserPhone : Update
 	{
-		public int user_id;
+		public long user_id;
 		public string phone;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateReadHistoryInbox"/></summary>
@@ -1672,17 +1683,17 @@ namespace TL
 		public int pts_count;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelTooLong"/></summary>
-	[TLDef(0xEB0467FB)]
+	[TLDef(0x108D941F)]
 	public partial class UpdateChannelTooLong : Update
 	{
 		[Flags] public enum Flags { has_pts = 0x1 }
 		public Flags flags;
-		public int channel_id;
+		public long channel_id;
 		[IfFlag(0)] public int pts;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannel"/></summary>
-	[TLDef(0xB6D45656)]
-	public partial class UpdateChannel : Update { public int channel_id; }
+	[TLDef(0x635B4C09)]
+	public partial class UpdateChannel : Update { public long channel_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateNewChannelMessage"/></summary>
 	[TLDef(0x62BA04D9)]
 	public partial class UpdateNewChannelMessage : Update
@@ -1692,40 +1703,40 @@ namespace TL
 		public int pts_count;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateReadChannelInbox"/></summary>
-	[TLDef(0x330B5424)]
+	[TLDef(0x922E6E10)]
 	public partial class UpdateReadChannelInbox : Update
 	{
 		[Flags] public enum Flags { has_folder_id = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public int folder_id;
-		public int channel_id;
+		public long channel_id;
 		public int max_id;
 		public int still_unread_count;
 		public int pts;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateDeleteChannelMessages"/></summary>
-	[TLDef(0xC37521C9)]
+	[TLDef(0xC32D5B12)]
 	public partial class UpdateDeleteChannelMessages : Update
 	{
-		public int channel_id;
+		public long channel_id;
 		public int[] messages;
 		public int pts;
 		public int pts_count;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelMessageViews"/></summary>
-	[TLDef(0x98A12B4B)]
+	[TLDef(0xF226AC08)]
 	public partial class UpdateChannelMessageViews : Update
 	{
-		public int channel_id;
+		public long channel_id;
 		public int id;
 		public int views;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChatParticipantAdmin"/></summary>
-	[TLDef(0xB6901959)]
+	[TLDef(0xD7CA61A2)]
 	public partial class UpdateChatParticipantAdmin : Update
 	{
-		public int chat_id;
-		public int user_id;
+		public long chat_id;
+		public long user_id;
 		public bool is_admin;
 		public int version;
 	}
@@ -1747,29 +1758,29 @@ namespace TL
 	[TLDef(0x9375341E)]
 	public partial class UpdateSavedGifs : Update { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateBotInlineQuery"/></summary>
-	[TLDef(0x3F2038DB)]
+	[TLDef(0x496F379C)]
 	public partial class UpdateBotInlineQuery : Update
 	{
 		[Flags] public enum Flags { has_geo = 0x1, has_peer_type = 0x2 }
 		public Flags flags;
 		public long query_id;
-		public int user_id;
+		public long user_id;
 		public string query;
 		[IfFlag(0)] public GeoPointBase geo;
 		[IfFlag(1)] public InlineQueryPeerType peer_type;
 		public string offset;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateBotInlineSend"/></summary>
-	[TLDef(0x0E48F964)]
+	[TLDef(0x12F12A07)]
 	public partial class UpdateBotInlineSend : Update
 	{
 		[Flags] public enum Flags { has_geo = 0x1, has_msg_id = 0x2 }
 		public Flags flags;
-		public int user_id;
+		public long user_id;
 		public string query;
 		[IfFlag(0)] public GeoPointBase geo;
 		public string id;
-		[IfFlag(1)] public InputBotInlineMessageID msg_id;
+		[IfFlag(1)] public InputBotInlineMessageIDBase msg_id;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateEditChannelMessage"/></summary>
 	[TLDef(0x1B3F4DF7)]
@@ -1780,13 +1791,13 @@ namespace TL
 		public int pts_count;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateBotCallbackQuery"/></summary>
-	[TLDef(0xE73547E1)]
+	[TLDef(0xB9CFC48D)]
 	public partial class UpdateBotCallbackQuery : Update
 	{
 		[Flags] public enum Flags { has_data = 0x1, has_game_short_name = 0x2 }
 		public Flags flags;
 		public long query_id;
-		public int user_id;
+		public long user_id;
 		public Peer peer;
 		public int msg_id;
 		public long chat_instance;
@@ -1802,23 +1813,23 @@ namespace TL
 		public int pts_count;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateInlineBotCallbackQuery"/></summary>
-	[TLDef(0xF9D27A5A)]
+	[TLDef(0x691E9052)]
 	public partial class UpdateInlineBotCallbackQuery : Update
 	{
 		[Flags] public enum Flags { has_data = 0x1, has_game_short_name = 0x2 }
 		public Flags flags;
 		public long query_id;
-		public int user_id;
-		public InputBotInlineMessageID msg_id;
+		public long user_id;
+		public InputBotInlineMessageIDBase msg_id;
 		public long chat_instance;
 		[IfFlag(0)] public byte[] data;
 		[IfFlag(1)] public string game_short_name;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateReadChannelOutbox"/></summary>
-	[TLDef(0x25D6C9C7)]
+	[TLDef(0xB75F99A9)]
 	public partial class UpdateReadChannelOutbox : Update
 	{
-		public int channel_id;
+		public long channel_id;
 		public int max_id;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateDraftMessage"/></summary>
@@ -1841,10 +1852,10 @@ namespace TL
 	[TLDef(0x3354678F)]
 	public partial class UpdatePtsChanged : Update { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelWebPage"/></summary>
-	[TLDef(0x40771900)]
+	[TLDef(0x2F2BA99F)]
 	public partial class UpdateChannelWebPage : Update
 	{
-		public int channel_id;
+		public long channel_id;
 		public WebPageBase webpage;
 		public int pts;
 		public int pts_count;
@@ -1879,22 +1890,22 @@ namespace TL
 		public int timeout;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateBotShippingQuery"/></summary>
-	[TLDef(0xE0CDC940)]
+	[TLDef(0xB5AEFD7D)]
 	public partial class UpdateBotShippingQuery : Update
 	{
 		public long query_id;
-		public int user_id;
+		public long user_id;
 		public byte[] payload;
 		public PostAddress shipping_address;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateBotPrecheckoutQuery"/></summary>
-	[TLDef(0x5D2F3AA9)]
+	[TLDef(0x8CAA9A96)]
 	public partial class UpdateBotPrecheckoutQuery : Update
 	{
 		[Flags] public enum Flags { has_info = 0x1, has_shipping_option_id = 0x2 }
 		public Flags flags;
 		public long query_id;
-		public int user_id;
+		public long user_id;
 		public byte[] payload;
 		[IfFlag(0)] public PaymentRequestedInfo info;
 		[IfFlag(1)] public string shipping_option_id;
@@ -1914,20 +1925,20 @@ namespace TL
 	[TLDef(0xE511996D)]
 	public partial class UpdateFavedStickers : Update { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelReadMessagesContents"/></summary>
-	[TLDef(0x89893B45)]
+	[TLDef(0x44BDD535)]
 	public partial class UpdateChannelReadMessagesContents : Update
 	{
-		public int channel_id;
+		public long channel_id;
 		public int[] messages;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateContactsReset"/></summary>
 	[TLDef(0x7084A7BE)]
 	public partial class UpdateContactsReset : Update { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelAvailableMessages"/></summary>
-	[TLDef(0x70DB6837)]
+	[TLDef(0xB23FC698)]
 	public partial class UpdateChannelAvailableMessages : Update
 	{
-		public int channel_id;
+		public long channel_id;
 		public int available_min_id;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateDialogUnreadMark"/></summary>
@@ -1998,11 +2009,11 @@ namespace TL
 	[TLDef(0x564FE691)]
 	public partial class UpdateLoginToken : Update { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateMessagePollVote"/></summary>
-	[TLDef(0x37F69F0B)]
+	[TLDef(0x106395C9)]
 	public partial class UpdateMessagePollVote : Update
 	{
 		public long poll_id;
-		public int user_id;
+		public long user_id;
 		public byte[][] options;
 		public int qts;
 	}
@@ -2029,30 +2040,30 @@ namespace TL
 		public byte[] data;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelMessageForwards"/></summary>
-	[TLDef(0x6E8A84DF)]
+	[TLDef(0xD29A27F4)]
 	public partial class UpdateChannelMessageForwards : Update
 	{
-		public int channel_id;
+		public long channel_id;
 		public int id;
 		public int forwards;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateReadChannelDiscussionInbox"/></summary>
-	[TLDef(0x1CC7DE54)]
+	[TLDef(0xD6B19546)]
 	public partial class UpdateReadChannelDiscussionInbox : Update
 	{
 		[Flags] public enum Flags { has_broadcast_id = 0x1 }
 		public Flags flags;
-		public int channel_id;
+		public long channel_id;
 		public int top_msg_id;
 		public int read_max_id;
-		[IfFlag(0)] public int broadcast_id;
+		[IfFlag(0)] public long broadcast_id;
 		[IfFlag(0)] public int broadcast_post;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateReadChannelDiscussionOutbox"/></summary>
-	[TLDef(0x4638A26C)]
+	[TLDef(0x695C9E7C)]
 	public partial class UpdateReadChannelDiscussionOutbox : Update
 	{
-		public int channel_id;
+		public long channel_id;
 		public int top_msg_id;
 		public int read_max_id;
 	}
@@ -2064,12 +2075,12 @@ namespace TL
 		public bool blocked;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelUserTyping"/></summary>
-	[TLDef(0x6B171718)]
+	[TLDef(0x8C88C923)]
 	public partial class UpdateChannelUserTyping : Update
 	{
 		[Flags] public enum Flags { has_top_msg_id = 0x1 }
 		public Flags flags;
-		public int channel_id;
+		public long channel_id;
 		[IfFlag(0)] public int top_msg_id;
 		public Peer from_id;
 		public SendMessageAction action;
@@ -2086,19 +2097,19 @@ namespace TL
 		public int pts_count;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updatePinnedChannelMessages"/></summary>
-	[TLDef(0x8588878B)]
+	[TLDef(0x5BB98608)]
 	public partial class UpdatePinnedChannelMessages : Update
 	{
 		[Flags] public enum Flags { pinned = 0x1 }
 		public Flags flags;
-		public int channel_id;
+		public long channel_id;
 		public int[] messages;
 		public int pts;
 		public int pts_count;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChat"/></summary>
-	[TLDef(0x1330A196)]
-	public partial class UpdateChat : Update { public int chat_id; }
+	[TLDef(0xF89A6A4E)]
+	public partial class UpdateChat : Update { public long chat_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateGroupCallParticipants"/></summary>
 	[TLDef(0xF2EBDB4E)]
 	public partial class UpdateGroupCallParticipants : Update
@@ -2108,10 +2119,10 @@ namespace TL
 		public int version;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateGroupCall"/></summary>
-	[TLDef(0xA45EB99B)]
+	[TLDef(0x14B24500)]
 	public partial class UpdateGroupCall : Update
 	{
-		public int chat_id;
+		public long chat_id;
 		public GroupCallBase call;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updatePeerHistoryTTL"/></summary>
@@ -2124,40 +2135,40 @@ namespace TL
 		[IfFlag(0)] public int ttl_period;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChatParticipant"/></summary>
-	[TLDef(0xF3B3781F)]
+	[TLDef(0xD087663A)]
 	public partial class UpdateChatParticipant : Update
 	{
 		[Flags] public enum Flags { has_prev_participant = 0x1, has_new_participant = 0x2, has_invite = 0x4 }
 		public Flags flags;
-		public int chat_id;
+		public long chat_id;
 		public DateTime date;
-		public int actor_id;
-		public int user_id;
+		public long actor_id;
+		public long user_id;
 		[IfFlag(0)] public ChatParticipantBase prev_participant;
 		[IfFlag(1)] public ChatParticipantBase new_participant;
 		[IfFlag(2)] public ExportedChatInvite invite;
 		public int qts;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelParticipant"/></summary>
-	[TLDef(0x7FECB1EC)]
+	[TLDef(0x985D3ABB)]
 	public partial class UpdateChannelParticipant : Update
 	{
 		[Flags] public enum Flags { has_prev_participant = 0x1, has_new_participant = 0x2, has_invite = 0x4 }
 		public Flags flags;
-		public int channel_id;
+		public long channel_id;
 		public DateTime date;
-		public int actor_id;
-		public int user_id;
+		public long actor_id;
+		public long user_id;
 		[IfFlag(0)] public ChannelParticipantBase prev_participant;
 		[IfFlag(1)] public ChannelParticipantBase new_participant;
 		[IfFlag(2)] public ExportedChatInvite invite;
 		public int qts;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateBotStopped"/></summary>
-	[TLDef(0x07F9488A)]
+	[TLDef(0xC4870A49)]
 	public partial class UpdateBotStopped : Update
 	{
-		public int user_id;
+		public long user_id;
 		public DateTime date;
 		public bool stopped;
 		public int qts;
@@ -2171,11 +2182,11 @@ namespace TL
 		public DataJSON params_;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateBotCommands"/></summary>
-	[TLDef(0xCF7E0873)]
+	[TLDef(0x4D712F2E)]
 	public partial class UpdateBotCommands : Update
 	{
 		public Peer peer;
-		public int bot_id;
+		public long bot_id;
 		public BotCommand[] commands;
 	}
 
@@ -2231,40 +2242,40 @@ namespace TL
 	[TLDef(0xE317AF7E)]
 	public partial class UpdatesTooLong : UpdatesBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateShortMessage"/></summary>
-	[TLDef(0xFAEFF833)]
+	[TLDef(0x313BC7F8)]
 	public partial class UpdateShortMessage : UpdatesBase
 	{
 		[Flags] public enum Flags { out_ = 0x2, has_fwd_from = 0x4, has_reply_to = 0x8, mentioned = 0x10, media_unread = 0x20, 
 			has_entities = 0x80, has_via_bot_id = 0x800, silent = 0x2000, has_ttl_period = 0x2000000 }
 		public Flags flags;
 		public int id;
-		public int user_id;
+		public long user_id;
 		public string message;
 		public int pts;
 		public int pts_count;
 		public DateTime date;
 		[IfFlag(2)] public MessageFwdHeader fwd_from;
-		[IfFlag(11)] public int via_bot_id;
+		[IfFlag(11)] public long via_bot_id;
 		[IfFlag(3)] public MessageReplyHeader reply_to;
 		[IfFlag(7)] public MessageEntity[] entities;
 		[IfFlag(25)] public int ttl_period;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateShortChatMessage"/></summary>
-	[TLDef(0x1157B858)]
+	[TLDef(0x4D6DEEA5)]
 	public partial class UpdateShortChatMessage : UpdatesBase
 	{
 		[Flags] public enum Flags { out_ = 0x2, has_fwd_from = 0x4, has_reply_to = 0x8, mentioned = 0x10, media_unread = 0x20, 
 			has_entities = 0x80, has_via_bot_id = 0x800, silent = 0x2000, has_ttl_period = 0x2000000 }
 		public Flags flags;
 		public int id;
-		public int from_id;
-		public int chat_id;
+		public long from_id;
+		public long chat_id;
 		public string message;
 		public int pts;
 		public int pts_count;
 		public DateTime date;
 		[IfFlag(2)] public MessageFwdHeader fwd_from;
-		[IfFlag(11)] public int via_bot_id;
+		[IfFlag(11)] public long via_bot_id;
 		[IfFlag(3)] public MessageReplyHeader reply_to;
 		[IfFlag(7)] public MessageEntity[] entities;
 		[IfFlag(25)] public int ttl_period;
@@ -2465,17 +2476,17 @@ namespace TL
 	[TLDef(0xAB7EC0A0)]
 	public partial class EncryptedChatEmpty : EncryptedChatBase { public int id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/encryptedChatWaiting"/></summary>
-	[TLDef(0x3BF703DC)]
+	[TLDef(0x66B25953)]
 	public partial class EncryptedChatWaiting : EncryptedChatBase
 	{
 		public int id;
 		public long access_hash;
 		public DateTime date;
-		public int admin_id;
-		public int participant_id;
+		public long admin_id;
+		public long participant_id;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/encryptedChatRequested"/></summary>
-	[TLDef(0x62718A82)]
+	[TLDef(0x48F1D94C)]
 	public partial class EncryptedChatRequested : EncryptedChatBase
 	{
 		[Flags] public enum Flags { has_folder_id = 0x1 }
@@ -2484,19 +2495,19 @@ namespace TL
 		public int id;
 		public long access_hash;
 		public DateTime date;
-		public int admin_id;
-		public int participant_id;
+		public long admin_id;
+		public long participant_id;
 		public byte[] g_a;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/encryptedChat"/></summary>
-	[TLDef(0xFA56CE36)]
+	[TLDef(0x61F0D4C7)]
 	public partial class EncryptedChat : EncryptedChatBase
 	{
 		public int id;
 		public long access_hash;
 		public DateTime date;
-		public int admin_id;
-		public int participant_id;
+		public long admin_id;
+		public long participant_id;
 		public byte[] g_a_or_b;
 		public long key_fingerprint;
 	}
@@ -2714,6 +2725,19 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/constructor/sendMessageHistoryImportAction"/></summary>
 	[TLDef(0xDBDA9246)]
 	public partial class SendMessageHistoryImportAction : SendMessageAction { public int progress; }
+	///<summary>See <a href="https://core.telegram.org/constructor/sendMessageChooseStickerAction"/></summary>
+	[TLDef(0xB05AC6B1)]
+	public partial class SendMessageChooseStickerAction : SendMessageAction { }
+	///<summary>See <a href="https://core.telegram.org/constructor/sendMessageEmojiInteraction"/></summary>
+	[TLDef(0x6A3233B6)]
+	public partial class SendMessageEmojiInteraction : SendMessageAction
+	{
+		public string emoticon;
+		public DataJSON interaction;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/sendMessageEmojiInteractionSeen"/></summary>
+	[TLDef(0xB665902E)]
+	public partial class SendMessageEmojiInteractionSeen : SendMessageAction { public string emoticon; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/contacts.found"/></summary>
 	[TLDef(0xB3134D9D)]
@@ -2800,11 +2824,11 @@ namespace TL
 	[TLDef(0x90110467)]
 	public partial class InputPrivacyValueDisallowUsers : InputPrivacyRule { public InputUserBase[] users; }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyValueAllowChatParticipants"/></summary>
-	[TLDef(0x4C81C1BA)]
-	public partial class InputPrivacyValueAllowChatParticipants : InputPrivacyRule { public int[] chats; }
+	[TLDef(0x840649CF)]
+	public partial class InputPrivacyValueAllowChatParticipants : InputPrivacyRule { public long[] chats; }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyValueDisallowChatParticipants"/></summary>
-	[TLDef(0xD82363AF)]
-	public partial class InputPrivacyValueDisallowChatParticipants : InputPrivacyRule { public int[] chats; }
+	[TLDef(0xE94F0F86)]
+	public partial class InputPrivacyValueDisallowChatParticipants : InputPrivacyRule { public long[] chats; }
 
 	///<summary>See <a href="https://core.telegram.org/type/PrivacyRule"/></summary>
 	public abstract partial class PrivacyRule : ITLObject { }
@@ -2815,8 +2839,8 @@ namespace TL
 	[TLDef(0x65427B82)]
 	public partial class PrivacyValueAllowAll : PrivacyRule { }
 	///<summary>See <a href="https://core.telegram.org/constructor/privacyValueAllowUsers"/></summary>
-	[TLDef(0x4D5BBE0C)]
-	public partial class PrivacyValueAllowUsers : PrivacyRule { public int[] users; }
+	[TLDef(0xB8905FB2)]
+	public partial class PrivacyValueAllowUsers : PrivacyRule { public long[] users; }
 	///<summary>See <a href="https://core.telegram.org/constructor/privacyValueDisallowContacts"/></summary>
 	[TLDef(0xF888FA1A)]
 	public partial class PrivacyValueDisallowContacts : PrivacyRule { }
@@ -2824,14 +2848,14 @@ namespace TL
 	[TLDef(0x8B73E763)]
 	public partial class PrivacyValueDisallowAll : PrivacyRule { }
 	///<summary>See <a href="https://core.telegram.org/constructor/privacyValueDisallowUsers"/></summary>
-	[TLDef(0x0C7F49B7)]
-	public partial class PrivacyValueDisallowUsers : PrivacyRule { public int[] users; }
+	[TLDef(0xE4621141)]
+	public partial class PrivacyValueDisallowUsers : PrivacyRule { public long[] users; }
 	///<summary>See <a href="https://core.telegram.org/constructor/privacyValueAllowChatParticipants"/></summary>
-	[TLDef(0x18BE796B)]
-	public partial class PrivacyValueAllowChatParticipants : PrivacyRule { public int[] chats; }
+	[TLDef(0x6B134E8E)]
+	public partial class PrivacyValueAllowChatParticipants : PrivacyRule { public long[] chats; }
 	///<summary>See <a href="https://core.telegram.org/constructor/privacyValueDisallowChatParticipants"/></summary>
-	[TLDef(0xACAE0690)]
-	public partial class PrivacyValueDisallowChatParticipants : PrivacyRule { public int[] chats; }
+	[TLDef(0x41C87565)]
+	public partial class PrivacyValueDisallowChatParticipants : PrivacyRule { public long[] chats; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/account.privacyRules"/></summary>
 	[TLDef(0x50A04E45)]
@@ -2902,10 +2926,10 @@ namespace TL
 	[TLDef(0xF1749A22)]
 	public partial class Messages_StickersNotModified : Messages_StickersBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.stickers"/></summary>
-	[TLDef(0xE4599BBD)]
+	[TLDef(0x30A6EC7E)]
 	public partial class Messages_Stickers : Messages_StickersBase
 	{
-		public int hash;
+		public long hash;
 		public DocumentBase[] stickers;
 	}
 
@@ -2923,10 +2947,10 @@ namespace TL
 	[TLDef(0xE86602C3)]
 	public partial class Messages_AllStickersNotModified : Messages_AllStickersBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.allStickers"/></summary>
-	[TLDef(0xEDFD405F)]
+	[TLDef(0xCDBBCEBB)]
 	public partial class Messages_AllStickers : Messages_AllStickersBase
 	{
-		public int hash;
+		public long hash;
 		public StickerSet[] sets;
 	}
 
@@ -3066,14 +3090,14 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/type/ExportedChatInvite"/></summary>
 	public abstract partial class ExportedChatInvite : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/chatInviteExported"/></summary>
-	[TLDef(0x6E24FC9D)]
+	[TLDef(0xB18105E8)]
 	public partial class ChatInviteExported : ExportedChatInvite
 	{
 		[Flags] public enum Flags { revoked = 0x1, has_expire_date = 0x2, has_usage_limit = 0x4, has_usage = 0x8, 
 			has_start_date = 0x10, permanent = 0x20 }
 		public Flags flags;
 		public string link;
-		public int admin_id;
+		public long admin_id;
 		public DateTime date;
 		[IfFlag(4)] public DateTime start_date;
 		[IfFlag(1)] public DateTime expire_date;
@@ -3164,10 +3188,10 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/botInfo"/></summary>
-	[TLDef(0x98E81D3A)]
+	[TLDef(0x1B74B335)]
 	public partial class BotInfo : ITLObject
 	{
-		public int user_id;
+		public long user_id;
 		public string description;
 		public BotCommand[] commands;
 	}
@@ -3320,8 +3344,8 @@ namespace TL
 	[TLDef(0x76A6D327)]
 	public partial class MessageEntityTextUrl : MessageEntity { public string url; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageEntityMentionName"/></summary>
-	[TLDef(0x352DCA58)]
-	public partial class MessageEntityMentionName : MessageEntity { public int user_id; }
+	[TLDef(0xDC7B1140)]
+	public partial class MessageEntityMentionName : MessageEntity { public long user_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputMessageEntityMentionName"/></summary>
 	[TLDef(0x208E68C9)]
 	public partial class InputMessageEntityMentionName : MessageEntity { public InputUserBase user_id; }
@@ -3350,19 +3374,19 @@ namespace TL
 	[TLDef(0xEE8C1E86)]
 	public partial class InputChannelEmpty : InputChannelBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputChannel"/></summary>
-	[TLDef(0xAFEB712E)]
+	[TLDef(0xF35AEC28)]
 	public partial class InputChannel : InputChannelBase
 	{
-		public int channel_id;
+		public long channel_id;
 		public long access_hash;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputChannelFromMessage"/></summary>
-	[TLDef(0x2A286531)]
+	[TLDef(0x5B934F9D)]
 	public partial class InputChannelFromMessage : InputChannelBase
 	{
 		public InputPeer peer;
 		public int msg_id;
-		public int channel_id;
+		public long channel_id;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/contacts.resolvedPeer"/></summary>
@@ -3436,51 +3460,51 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/type/ChannelParticipant"/></summary>
 	public abstract partial class ChannelParticipantBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/channelParticipant"/></summary>
-	[TLDef(0x15EBAC1D)]
+	[TLDef(0xC00C07C0)]
 	public partial class ChannelParticipant : ChannelParticipantBase
 	{
-		public int user_id;
+		public long user_id;
 		public DateTime date;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channelParticipantSelf"/></summary>
-	[TLDef(0xA3289A6D)]
+	[TLDef(0x28A8BC67)]
 	public partial class ChannelParticipantSelf : ChannelParticipantBase
 	{
-		public int user_id;
-		public int inviter_id;
+		public long user_id;
+		public long inviter_id;
 		public DateTime date;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channelParticipantCreator"/></summary>
-	[TLDef(0x447DCA4B)]
+	[TLDef(0x2FE601D3)]
 	public partial class ChannelParticipantCreator : ChannelParticipantBase
 	{
 		[Flags] public enum Flags { has_rank = 0x1 }
 		public Flags flags;
-		public int user_id;
+		public long user_id;
 		public ChatAdminRights admin_rights;
 		[IfFlag(0)] public string rank;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channelParticipantAdmin"/></summary>
-	[TLDef(0xCCBEBBAF)]
+	[TLDef(0x34C3BB53)]
 	public partial class ChannelParticipantAdmin : ChannelParticipantBase
 	{
 		[Flags] public enum Flags { can_edit = 0x1, self = 0x2, has_rank = 0x4 }
 		public Flags flags;
-		public int user_id;
-		[IfFlag(1)] public int inviter_id;
-		public int promoted_by;
+		public long user_id;
+		[IfFlag(1)] public long inviter_id;
+		public long promoted_by;
 		public DateTime date;
 		public ChatAdminRights admin_rights;
 		[IfFlag(2)] public string rank;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channelParticipantBanned"/></summary>
-	[TLDef(0x50A1DFD6)]
+	[TLDef(0x6DF8014E)]
 	public partial class ChannelParticipantBanned : ChannelParticipantBase
 	{
 		[Flags] public enum Flags { left = 0x1 }
 		public Flags flags;
 		public Peer peer;
-		public int kicked_by;
+		public long kicked_by;
 		public DateTime date;
 		public ChatBannedRights banned_rights;
 	}
@@ -3563,10 +3587,10 @@ namespace TL
 	[TLDef(0xE8025CA2)]
 	public partial class Messages_SavedGifsNotModified : Messages_SavedGifsBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.savedGifs"/></summary>
-	[TLDef(0x2E0709A5)]
+	[TLDef(0x84A02A0D)]
 	public partial class Messages_SavedGifs : Messages_SavedGifsBase
 	{
-		public int hash;
+		public long hash;
 		public DocumentBase[] gifs;
 	}
 
@@ -3882,12 +3906,23 @@ namespace TL
 		public Flags flags;
 	}
 
+	///<summary>See <a href="https://core.telegram.org/type/InputBotInlineMessageID"/></summary>
+	public abstract partial class InputBotInlineMessageIDBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputBotInlineMessageID"/></summary>
 	[TLDef(0x890C3D89)]
-	public partial class InputBotInlineMessageID : ITLObject
+	public partial class InputBotInlineMessageID : InputBotInlineMessageIDBase
 	{
 		public int dc_id;
 		public long id;
+		public long access_hash;
+	}
+	///<summary>See <a href="https://core.telegram.org/constructor/inputBotInlineMessageID64"/></summary>
+	[TLDef(0xB6D915D7)]
+	public partial class InputBotInlineMessageID64 : InputBotInlineMessageIDBase
+	{
+		public int dc_id;
+		public long owner_id;
+		public int id;
 		public long access_hash;
 	}
 
@@ -3999,10 +4034,10 @@ namespace TL
 	[TLDef(0xC6DC0C66)]
 	public partial class Messages_FeaturedStickersNotModified : Messages_FeaturedStickersBase { public int count; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.featuredStickers"/></summary>
-	[TLDef(0xB6ABC341)]
+	[TLDef(0x84C02310)]
 	public partial class Messages_FeaturedStickers : Messages_FeaturedStickersBase
 	{
-		public int hash;
+		public long hash;
 		public int count;
 		public StickerSetCoveredBase[] sets;
 		public long[] unread;
@@ -4014,10 +4049,10 @@ namespace TL
 	[TLDef(0x0B17F890)]
 	public partial class Messages_RecentStickersNotModified : Messages_RecentStickersBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.recentStickers"/></summary>
-	[TLDef(0x22F3AFB3)]
+	[TLDef(0x88D37C56)]
 	public partial class Messages_RecentStickers : Messages_RecentStickersBase
 	{
-		public int hash;
+		public long hash;
 		public StickerPack[] packs;
 		public DocumentBase[] stickers;
 		public int[] dates;
@@ -4109,11 +4144,11 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/highScore"/></summary>
-	[TLDef(0x58FFFCD0)]
+	[TLDef(0x73A379EB)]
 	public partial class HighScore : ITLObject
 	{
 		public int pos;
-		public int user_id;
+		public long user_id;
 		public int score;
 	}
 
@@ -4521,16 +4556,16 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/payments.paymentForm"/></summary>
-	[TLDef(0x8D0B2415)]
+	[TLDef(0x1694761B)]
 	public partial class Payments_PaymentForm : ITLObject
 	{
 		[Flags] public enum Flags { has_saved_info = 0x1, has_saved_credentials = 0x2, can_save_credentials = 0x4, 
 			password_missing = 0x8, has_native_provider = 0x10 }
 		public Flags flags;
 		public long form_id;
-		public int bot_id;
+		public long bot_id;
 		public Invoice invoice;
-		public int provider_id;
+		public long provider_id;
 		public string url;
 		[IfFlag(4)] public string native_provider;
 		[IfFlag(4)] public DataJSON native_params;
@@ -4559,14 +4594,14 @@ namespace TL
 	public partial class Payments_PaymentVerificationNeeded : Payments_PaymentResultBase { public string url; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/payments.paymentReceipt"/></summary>
-	[TLDef(0x10B555D0)]
+	[TLDef(0x70C4FE03)]
 	public partial class Payments_PaymentReceipt : ITLObject
 	{
 		[Flags] public enum Flags { has_info = 0x1, has_shipping = 0x2, has_photo = 0x4, has_tip_amount = 0x8 }
 		public Flags flags;
 		public DateTime date;
-		public int bot_id;
-		public int provider_id;
+		public long bot_id;
+		public long provider_id;
 		public string title;
 		public string description;
 		[IfFlag(2)] public WebDocumentBase photo;
@@ -4655,7 +4690,7 @@ namespace TL
 	[TLDef(0x5366C915)]
 	public partial class PhoneCallEmpty : PhoneCallBase { public long id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/phoneCallWaiting"/></summary>
-	[TLDef(0x1B8F4AD1)]
+	[TLDef(0xC5226F17)]
 	public partial class PhoneCallWaiting : PhoneCallBase
 	{
 		[Flags] public enum Flags { has_receive_date = 0x1, video = 0x40 }
@@ -4663,13 +4698,13 @@ namespace TL
 		public long id;
 		public long access_hash;
 		public DateTime date;
-		public int admin_id;
-		public int participant_id;
+		public long admin_id;
+		public long participant_id;
 		public PhoneCallProtocol protocol;
 		[IfFlag(0)] public DateTime receive_date;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/phoneCallRequested"/></summary>
-	[TLDef(0x87EABB53)]
+	[TLDef(0x14B0ED0C)]
 	public partial class PhoneCallRequested : PhoneCallBase
 	{
 		[Flags] public enum Flags { video = 0x40 }
@@ -4677,13 +4712,13 @@ namespace TL
 		public long id;
 		public long access_hash;
 		public DateTime date;
-		public int admin_id;
-		public int participant_id;
+		public long admin_id;
+		public long participant_id;
 		public byte[] g_a_hash;
 		public PhoneCallProtocol protocol;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/phoneCallAccepted"/></summary>
-	[TLDef(0x997C454A)]
+	[TLDef(0x3660C311)]
 	public partial class PhoneCallAccepted : PhoneCallBase
 	{
 		[Flags] public enum Flags { video = 0x40 }
@@ -4691,13 +4726,13 @@ namespace TL
 		public long id;
 		public long access_hash;
 		public DateTime date;
-		public int admin_id;
-		public int participant_id;
+		public long admin_id;
+		public long participant_id;
 		public byte[] g_b;
 		public PhoneCallProtocol protocol;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/phoneCall"/></summary>
-	[TLDef(0x8742AE7F)]
+	[TLDef(0x967F7C67)]
 	public partial class PhoneCall : PhoneCallBase
 	{
 		[Flags] public enum Flags { p2p_allowed = 0x20, video = 0x40 }
@@ -4705,8 +4740,8 @@ namespace TL
 		public long id;
 		public long access_hash;
 		public DateTime date;
-		public int admin_id;
-		public int participant_id;
+		public long admin_id;
+		public long participant_id;
 		public byte[] g_a_or_b;
 		public long key_fingerprint;
 		public PhoneCallProtocol protocol;
@@ -4937,11 +4972,11 @@ namespace TL
 	[TLDef(0x8F079643)]
 	public partial class ChannelAdminLogEventActionStopPoll : ChannelAdminLogEventAction { public MessageBase message; }
 	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionChangeLinkedChat"/></summary>
-	[TLDef(0xA26F881B)]
+	[TLDef(0x050C7AC8)]
 	public partial class ChannelAdminLogEventActionChangeLinkedChat : ChannelAdminLogEventAction
 	{
-		public int prev_value;
-		public int new_value;
+		public long prev_value;
+		public long new_value;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionChangeLocation"/></summary>
 	[TLDef(0x0E6B76AE)]
@@ -4998,14 +5033,21 @@ namespace TL
 		public int prev_value;
 		public int new_value;
 	}
+	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionChangeTheme"/></summary>
+	[TLDef(0xFE69018D)]
+	public partial class ChannelAdminLogEventActionChangeTheme : ChannelAdminLogEventAction
+	{
+		public string prev_value;
+		public string new_value;
+	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEvent"/></summary>
-	[TLDef(0x3B5A3E40)]
+	[TLDef(0x1FAD68CD)]
 	public partial class ChannelAdminLogEvent : ITLObject
 	{
 		public long id;
 		public DateTime date;
-		public int user_id;
+		public long user_id;
 		public ChannelAdminLogEventAction action;
 	}
 
@@ -5042,10 +5084,10 @@ namespace TL
 	[TLDef(0x9E8FA6D3)]
 	public partial class Messages_FavedStickersNotModified : Messages_FavedStickersBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.favedStickers"/></summary>
-	[TLDef(0xF37F2F16)]
+	[TLDef(0x2CB51097)]
 	public partial class Messages_FavedStickers : Messages_FavedStickersBase
 	{
-		public int hash;
+		public long hash;
 		public StickerPack[] packs;
 		public DocumentBase[] stickers;
 	}
@@ -5056,11 +5098,11 @@ namespace TL
 	[TLDef(0x46E1D13D)]
 	public partial class RecentMeUrlUnknown : RecentMeUrl { }
 	///<summary>See <a href="https://core.telegram.org/constructor/recentMeUrlUser"/></summary>
-	[TLDef(0x8DBC3336)]
-	public partial class RecentMeUrlUser : RecentMeUrl { public int user_id; }
+	[TLDef(0xB92C09E2)]
+	public partial class RecentMeUrlUser : RecentMeUrl { public long user_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/recentMeUrlChat"/></summary>
-	[TLDef(0xA01B22F9)]
-	public partial class RecentMeUrlChat : RecentMeUrl { public int chat_id; }
+	[TLDef(0xB2DA71D2)]
+	public partial class RecentMeUrlChat : RecentMeUrl { public long chat_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/recentMeUrlChatInvite"/></summary>
 	[TLDef(0xEB49081D)]
 	public partial class RecentMeUrlChatInvite : RecentMeUrl { public ChatInviteBase chat_invite; }
@@ -5090,11 +5132,11 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/webAuthorization"/></summary>
-	[TLDef(0xCAC943F2)]
+	[TLDef(0xA6F8F452)]
 	public partial class WebAuthorization : ITLObject
 	{
 		public long hash;
-		public int bot_id;
+		public long bot_id;
 		public string domain;
 		public string browser;
 		public string platform;
@@ -5155,10 +5197,10 @@ namespace TL
 	[TLDef(0x0D54B65D)]
 	public partial class Messages_FoundStickerSetsNotModified : Messages_FoundStickerSetsBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.foundStickerSets"/></summary>
-	[TLDef(0x5108D648)]
+	[TLDef(0x8AF09DD2)]
 	public partial class Messages_FoundStickerSets : Messages_FoundStickerSetsBase
 	{
-		public int hash;
+		public long hash;
 		public StickerSetCoveredBase[] sets;
 	}
 
@@ -5711,14 +5753,14 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/pollResults"/></summary>
-	[TLDef(0xBADCC1A3)]
+	[TLDef(0xDCB82EA3)]
 	public partial class PollResults : ITLObject
 	{
 		[Flags] public enum Flags { min = 0x1, has_results = 0x2, has_total_voters = 0x4, has_recent_voters = 0x8, has_solution = 0x10 }
 		public Flags flags;
 		[IfFlag(1)] public PollAnswerVoters[] results;
 		[IfFlag(2)] public int total_voters;
-		[IfFlag(3)] public int[] recent_voters;
+		[IfFlag(3)] public long[] recent_voters;
 		[IfFlag(4)] public string solution;
 		[IfFlag(4)] public MessageEntity[] solution_entities;
 	}
@@ -5774,10 +5816,10 @@ namespace TL
 	[TLDef(0x1C199183)]
 	public partial class Account_WallPapersNotModified : Account_WallPapersBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/account.wallPapers"/></summary>
-	[TLDef(0x702B65A9)]
+	[TLDef(0xCDC3858C)]
 	public partial class Account_WallPapers : Account_WallPapersBase
 	{
-		public int hash;
+		public long hash;
 		public WallPaperBase[] wallpapers;
 	}
 
@@ -5960,10 +6002,11 @@ namespace TL
 	public partial class InputThemeSlug : InputThemeBase { public string slug; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/theme"/></summary>
-	[TLDef(0x028F1114)]
+	[TLDef(0xE802B8DC)]
 	public partial class Theme : ITLObject
 	{
-		[Flags] public enum Flags { creator = 0x1, default_ = 0x2, has_document = 0x4, has_settings = 0x8 }
+		[Flags] public enum Flags { creator = 0x1, default_ = 0x2, has_document = 0x4, has_settings = 0x8, has_installs_count = 0x10, 
+			for_chat = 0x20 }
 		public Flags flags;
 		public long id;
 		public long access_hash;
@@ -5971,7 +6014,7 @@ namespace TL
 		public string title;
 		[IfFlag(2)] public DocumentBase document;
 		[IfFlag(3)] public ThemeSettings settings;
-		public int installs_count;
+		[IfFlag(4)] public int installs_count;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/account.Themes"/></summary>
@@ -5980,10 +6023,10 @@ namespace TL
 	[TLDef(0xF41EB622)]
 	public partial class Account_ThemesNotModified : Account_ThemesBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/account.themes"/></summary>
-	[TLDef(0x7F676421)]
+	[TLDef(0x9A3D8C6D)]
 	public partial class Account_Themes : Account_ThemesBase
 	{
-		public int hash;
+		public long hash;
 		public Theme[] themes;
 	}
 
@@ -6043,29 +6086,31 @@ namespace TL
 	public partial class BaseThemeArctic : BaseTheme { }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/inputThemeSettings"/></summary>
-	[TLDef(0xBD507CD1)]
+	[TLDef(0x8FDE504F)]
 	public partial class InputThemeSettings : ITLObject
 	{
-		[Flags] public enum Flags { has_message_top_color = 0x1, has_wallpaper = 0x2 }
+		[Flags] public enum Flags { has_message_colors = 0x1, has_wallpaper = 0x2, message_colors_animated = 0x4, 
+			has_outbox_accent_color = 0x8 }
 		public Flags flags;
 		public BaseTheme base_theme;
 		public int accent_color;
-		[IfFlag(0)] public int message_top_color;
-		[IfFlag(0)] public int message_bottom_color;
+		[IfFlag(3)] public int outbox_accent_color;
+		[IfFlag(0)] public int[] message_colors;
 		[IfFlag(1)] public InputWallPaperBase wallpaper;
 		[IfFlag(1)] public WallPaperSettings wallpaper_settings;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/themeSettings"/></summary>
-	[TLDef(0x9C14984A)]
+	[TLDef(0xFA58B6D4)]
 	public partial class ThemeSettings : ITLObject
 	{
-		[Flags] public enum Flags { has_message_top_color = 0x1, has_wallpaper = 0x2 }
+		[Flags] public enum Flags { has_message_colors = 0x1, has_wallpaper = 0x2, message_colors_animated = 0x4, 
+			has_outbox_accent_color = 0x8 }
 		public Flags flags;
 		public BaseTheme base_theme;
 		public int accent_color;
-		[IfFlag(0)] public int message_top_color;
-		[IfFlag(0)] public int message_bottom_color;
+		[IfFlag(3)] public int outbox_accent_color;
+		[IfFlag(0)] public int[] message_colors;
 		[IfFlag(1)] public WallPaperBase wallpaper;
 	}
 
@@ -6084,25 +6129,25 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/type/MessageUserVote"/></summary>
 	public abstract partial class MessageUserVoteBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageUserVote"/></summary>
-	[TLDef(0xA28E5559)]
+	[TLDef(0x34D247B4)]
 	public partial class MessageUserVote : MessageUserVoteBase
 	{
-		public int user_id;
+		public long user_id;
 		public byte[] option;
 		public DateTime date;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messageUserVoteInputOption"/></summary>
-	[TLDef(0x36377430)]
+	[TLDef(0x3CA5B0EC)]
 	public partial class MessageUserVoteInputOption : MessageUserVoteBase
 	{
-		public int user_id;
+		public long user_id;
 		public DateTime date;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messageUserVoteMultiple"/></summary>
-	[TLDef(0x0E8FE0DE)]
+	[TLDef(0x8A65E557)]
 	public partial class MessageUserVoteMultiple : MessageUserVoteBase
 	{
-		public int user_id;
+		public long user_id;
 		public byte[][] options;
 		public DateTime date;
 	}
@@ -6263,29 +6308,29 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/statsGroupTopPoster"/></summary>
-	[TLDef(0x18F3D0F7)]
+	[TLDef(0x9D04AF9B)]
 	public partial class StatsGroupTopPoster : ITLObject
 	{
-		public int user_id;
+		public long user_id;
 		public int messages;
 		public int avg_chars;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/statsGroupTopAdmin"/></summary>
-	[TLDef(0x6014F412)]
+	[TLDef(0xD7584C87)]
 	public partial class StatsGroupTopAdmin : ITLObject
 	{
-		public int user_id;
+		public long user_id;
 		public int deleted;
 		public int kicked;
 		public int banned;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/statsGroupTopInviter"/></summary>
-	[TLDef(0x31962A4C)]
+	[TLDef(0x535F779D)]
 	public partial class StatsGroupTopInviter : ITLObject
 	{
-		public int user_id;
+		public long user_id;
 		public int invitations;
 	}
 
@@ -6378,7 +6423,7 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.discussionMessage"/></summary>
-	[TLDef(0xF5DD8F9D)]
+	[TLDef(0xA6341782)]
 	public partial class Messages_DiscussionMessage : ITLObject
 	{
 		[Flags] public enum Flags { has_max_id = 0x1, has_read_inbox_max_id = 0x2, has_read_outbox_max_id = 0x4 }
@@ -6387,6 +6432,7 @@ namespace TL
 		[IfFlag(0)] public int max_id;
 		[IfFlag(1)] public int read_inbox_max_id;
 		[IfFlag(2)] public int read_outbox_max_id;
+		public int unread_count;
 		public ChatBase[] chats;
 		public UserBase[] users;
 	}
@@ -6403,7 +6449,7 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/messageReplies"/></summary>
-	[TLDef(0x4128FAAC)]
+	[TLDef(0x83D60FC2)]
 	public partial class MessageReplies : ITLObject
 	{
 		[Flags] public enum Flags { comments = 0x1, has_recent_repliers = 0x2, has_max_id = 0x4, has_read_max_id = 0x8 }
@@ -6411,7 +6457,7 @@ namespace TL
 		public int replies;
 		public int replies_pts;
 		[IfFlag(1)] public Peer[] recent_repliers;
-		[IfFlag(0)] public int channel_id;
+		[IfFlag(0)] public long channel_id;
 		[IfFlag(2)] public int max_id;
 		[IfFlag(3)] public int read_max_id;
 	}
@@ -6444,7 +6490,7 @@ namespace TL
 	{
 		[Flags] public enum Flags { join_muted = 0x2, can_change_join_muted = 0x4, has_title = 0x8, has_stream_dc_id = 0x10, 
 			has_record_start_date = 0x20, join_date_asc = 0x40, has_schedule_date = 0x80, schedule_start_subscribed = 0x100, 
-			can_start_video = 0x200, has_unmuted_video_count = 0x400 }
+			can_start_video = 0x200, has_unmuted_video_count = 0x400, record_video_active = 0x800 }
 		public Flags flags;
 		public long id;
 		public long access_hash;
@@ -6550,10 +6596,10 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/chatInviteImporter"/></summary>
-	[TLDef(0x1E3E6680)]
+	[TLDef(0x0B5CD5F4)]
 	public partial class ChatInviteImporter : ITLObject
 	{
-		public int user_id;
+		public long user_id;
 		public DateTime date;
 	}
 
@@ -6594,10 +6640,10 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/chatAdminWithInvites"/></summary>
-	[TLDef(0xDFD2330F)]
+	[TLDef(0xF2ECEF23)]
 	public partial class ChatAdminWithInvites : ITLObject
 	{
-		public int admin_id;
+		public long admin_id;
 		public int invites_count;
 		public int revoked_invites_count;
 	}
@@ -6689,6 +6735,50 @@ namespace TL
 	///<summary>See <a href="https://core.telegram.org/constructor/account.resetPasswordOk"/></summary>
 	[TLDef(0xE926D63E)]
 	public partial class Account_ResetPasswordOk : Account_ResetPasswordResult { }
+
+	///<summary>See <a href="https://core.telegram.org/constructor/chatTheme"/></summary>
+	[TLDef(0xED0B5C33)]
+	public partial class ChatTheme : ITLObject
+	{
+		public string emoticon;
+		public Theme theme;
+		public Theme dark_theme;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/type/account.ChatThemes"/></summary>
+	public abstract partial class Account_ChatThemesBase : ITLObject { }
+	///<summary>See <a href="https://core.telegram.org/constructor/account.chatThemesNotModified"/></summary>
+	[TLDef(0xE011E1C4)]
+	public partial class Account_ChatThemesNotModified : Account_ChatThemesBase { }
+	///<summary>See <a href="https://core.telegram.org/constructor/account.chatThemes"/></summary>
+	[TLDef(0xFE4CBEBD)]
+	public partial class Account_ChatThemes : Account_ChatThemesBase
+	{
+		public int hash;
+		public ChatTheme[] themes;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/sponsoredMessage"/></summary>
+	[TLDef(0x2A3C381F)]
+	public partial class SponsoredMessage : ITLObject
+	{
+		[Flags] public enum Flags { has_start_param = 0x1, has_entities = 0x2 }
+		public Flags flags;
+		public byte[] random_id;
+		public Peer from_id;
+		[IfFlag(0)] public string start_param;
+		public string message;
+		[IfFlag(1)] public MessageEntity[] entities;
+	}
+
+	///<summary>See <a href="https://core.telegram.org/constructor/messages.sponsoredMessages"/></summary>
+	[TLDef(0x65A4C7D5)]
+	public partial class Messages_SponsoredMessages : ITLObject
+	{
+		public SponsoredMessage[] messages;
+		public ChatBase[] chats;
+		public UserBase[] users;
+	}
 }
 
 namespace WTelegram		// ---functions---
@@ -6839,10 +6929,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.importAuthorization"/></summary>
-		public Task<Auth_AuthorizationBase> Auth_ImportAuthorization(int id, byte[] bytes)
+		public Task<Auth_AuthorizationBase> Auth_ImportAuthorization(long id, byte[] bytes)
 			=> CallAsync<Auth_AuthorizationBase>(writer =>
 			{
-				writer.Write(0xE3EF9613);
+				writer.Write(0xA57A7DAD);
 				writer.Write(id);
 				writer.WriteTLBytes(bytes);
 				return "Auth_ImportAuthorization";
@@ -6931,10 +7021,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.exportLoginToken"/></summary>
-		public Task<Auth_LoginTokenBase> Auth_ExportLoginToken(int api_id, string api_hash, int[] except_ids)
+		public Task<Auth_LoginTokenBase> Auth_ExportLoginToken(int api_id, string api_hash, long[] except_ids)
 			=> CallAsync<Auth_LoginTokenBase>(writer =>
 			{
-				writer.Write(0xB1B41517);
+				writer.Write(0xB7E085FE);
 				writer.Write(api_id);
 				writer.WriteTLString(api_hash);
 				writer.WriteTLVector(except_ids);
@@ -6969,10 +7059,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.registerDevice"/></summary>
-		public Task<bool> Account_RegisterDevice(int token_type, string token, bool app_sandbox, byte[] secret, int[] other_uids, bool no_muted = false)
+		public Task<bool> Account_RegisterDevice(int token_type, string token, bool app_sandbox, byte[] secret, long[] other_uids, bool no_muted = false)
 			=> CallAsync<bool>(writer =>
 			{
-				writer.Write(0x68976C6F);
+				writer.Write(0xEC86017A);
 				writer.Write(no_muted ? 0x1 : 0);
 				writer.Write(token_type);
 				writer.WriteTLString(token);
@@ -6983,10 +7073,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.unregisterDevice"/></summary>
-		public Task<bool> Account_UnregisterDevice(int token_type, string token, int[] other_uids)
+		public Task<bool> Account_UnregisterDevice(int token_type, string token, long[] other_uids)
 			=> CallAsync<bool>(writer =>
 			{
-				writer.Write(0x3076C4BF);
+				writer.Write(0x6A0D3206);
 				writer.Write(token_type);
 				writer.WriteTLString(token);
 				writer.WriteTLVector(other_uids);
@@ -7045,10 +7135,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getWallPapers"/></summary>
-		public Task<Account_WallPapersBase> Account_GetWallPapers(int hash)
+		public Task<Account_WallPapersBase> Account_GetWallPapers(long hash)
 			=> CallAsync<Account_WallPapersBase>(writer =>
 			{
-				writer.Write(0xAABB1763);
+				writer.Write(0x07967D36);
 				writer.Write(hash);
 				return "Account_GetWallPapers";
 			});
@@ -7293,10 +7383,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getAuthorizationForm"/></summary>
-		public Task<Account_AuthorizationForm> Account_GetAuthorizationForm(int bot_id, string scope, string public_key)
+		public Task<Account_AuthorizationForm> Account_GetAuthorizationForm(long bot_id, string scope, string public_key)
 			=> CallAsync<Account_AuthorizationForm>(writer =>
 			{
-				writer.Write(0xB86BA8E1);
+				writer.Write(0xA929597A);
 				writer.Write(bot_id);
 				writer.WriteTLString(scope);
 				writer.WriteTLString(public_key);
@@ -7304,10 +7394,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.acceptAuthorization"/></summary>
-		public Task<bool> Account_AcceptAuthorization(int bot_id, string scope, string public_key, SecureValueHash[] value_hashes, SecureCredentialsEncrypted credentials)
+		public Task<bool> Account_AcceptAuthorization(long bot_id, string scope, string public_key, SecureValueHash[] value_hashes, SecureCredentialsEncrypted credentials)
 			=> CallAsync<bool>(writer =>
 			{
-				writer.Write(0xE7027C94);
+				writer.Write(0xF3ED4C73);
 				writer.Write(bot_id);
 				writer.WriteTLString(scope);
 				writer.WriteTLString(public_key);
@@ -7579,10 +7669,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getThemes"/></summary>
-		public Task<Account_ThemesBase> Account_GetThemes(string format, int hash)
+		public Task<Account_ThemesBase> Account_GetThemes(string format, long hash)
 			=> CallAsync<Account_ThemesBase>(writer =>
 			{
-				writer.Write(0x285946F8);
+				writer.Write(0x7206E458);
 				writer.WriteTLString(format);
 				writer.Write(hash);
 				return "Account_GetThemes";
@@ -7659,6 +7749,15 @@ namespace WTelegram		// ---functions---
 				return "Account_DeclinePasswordReset";
 			});
 
+		///<summary>See <a href="https://core.telegram.org/method/account.getChatThemes"/></summary>
+		public Task<Account_ChatThemesBase> Account_GetChatThemes(int hash)
+			=> CallAsync<Account_ChatThemesBase>(writer =>
+			{
+				writer.Write(0xD6D71D7B);
+				writer.Write(hash);
+				return "Account_GetChatThemes";
+			});
+
 		///<summary>See <a href="https://core.telegram.org/method/users.getUsers"/></summary>
 		public Task<UserBase[]> Users_GetUsers(InputUserBase[] id)
 			=> CallAsync<UserBase[]>(writer =>
@@ -7688,10 +7787,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getContactIDs"/></summary>
-		public Task<int[]> Contacts_GetContactIDs(int hash)
+		public Task<int[]> Contacts_GetContactIDs(long hash)
 			=> CallAsync<int[]>(writer =>
 			{
-				writer.Write(0x2CAA4A42);
+				writer.Write(0x7ADC669D);
 				writer.Write(hash);
 				return "Contacts_GetContactIDs";
 			});
@@ -7705,10 +7804,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getContacts"/></summary>
-		public Task<Contacts_ContactsBase> Contacts_GetContacts(int hash)
+		public Task<Contacts_ContactsBase> Contacts_GetContacts(long hash)
 			=> CallAsync<Contacts_ContactsBase>(writer =>
 			{
-				writer.Write(0xC023849F);
+				writer.Write(0x5DD69E12);
 				writer.Write(hash);
 				return "Contacts_GetContacts";
 			});
@@ -7788,10 +7887,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getTopPeers"/></summary>
-		public Task<Contacts_TopPeersBase> Contacts_GetTopPeers(int offset, int limit, int hash, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false)
+		public Task<Contacts_TopPeersBase> Contacts_GetTopPeers(int offset, int limit, long hash, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false)
 			=> CallAsync<Contacts_TopPeersBase>(writer =>
 			{
-				writer.Write(0xD4982DB5);
+				writer.Write(0x973478B6);
 				writer.Write((correspondents ? 0x1 : 0) | (bots_pm ? 0x2 : 0) | (bots_inline ? 0x4 : 0) | (phone_calls ? 0x8 : 0) | (forward_users ? 0x10 : 0) | (forward_chats ? 0x20 : 0) | (groups ? 0x400 : 0) | (channels ? 0x8000 : 0));
 				writer.Write(offset);
 				writer.Write(limit);
@@ -7888,10 +7987,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getDialogs"/></summary>
-		public Task<Messages_DialogsBase> Messages_GetDialogs(DateTime offset_date, int offset_id, InputPeer offset_peer, int limit, int hash, bool exclude_pinned = false, int? folder_id = null)
+		public Task<Messages_DialogsBase> Messages_GetDialogs(DateTime offset_date, int offset_id, InputPeer offset_peer, int limit, long hash, bool exclude_pinned = false, int? folder_id = null)
 			=> CallAsync<Messages_DialogsBase>(writer =>
 			{
-				writer.Write(0xA0EE3B73);
+				writer.Write(0xA0F4CB4F);
 				writer.Write((exclude_pinned ? 0x1 : 0) | (folder_id != null ? 0x2 : 0));
 				if (folder_id != null)
 					writer.Write(folder_id.Value);
@@ -7904,10 +8003,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getHistory"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetHistory(InputPeer peer, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, int hash)
+		public Task<Messages_MessagesBase> Messages_GetHistory(InputPeer peer, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash)
 			=> CallAsync<Messages_MessagesBase>(writer =>
 			{
-				writer.Write(0xDCBB8260);
+				writer.Write(0x4423E6C5);
 				writer.WriteTLObject(peer);
 				writer.Write(offset_id);
 				writer.WriteTLStamp(offset_date);
@@ -7920,10 +8019,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.search"/></summary>
-		public Task<Messages_MessagesBase> Messages_Search(InputPeer peer, string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_id, int add_offset, int limit, int max_id, int min_id, int hash, InputPeer from_id = null, int? top_msg_id = null)
+		public Task<Messages_MessagesBase> Messages_Search(InputPeer peer, string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_id, int add_offset, int limit, int max_id, int min_id, long hash, InputPeer from_id = null, int? top_msg_id = null)
 			=> CallAsync<Messages_MessagesBase>(writer =>
 			{
-				writer.Write(0x0C352EEC);
+				writer.Write(0xA0FDA762);
 				writer.Write((from_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x2 : 0));
 				writer.WriteTLObject(peer);
 				writer.WriteTLString(q);
@@ -8038,11 +8137,11 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.forwardMessages"/></summary>
-		public Task<UpdatesBase> Messages_ForwardMessages(InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, bool silent = false, bool background = false, bool with_my_score = false, DateTime? schedule_date = null)
+		public Task<UpdatesBase> Messages_ForwardMessages(InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, DateTime? schedule_date = null)
 			=> CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xD9FEE60E);
-				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (schedule_date != null ? 0x400 : 0));
+				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (schedule_date != null ? 0x400 : 0));
 				writer.WriteTLObject(from_peer);
 				writer.WriteTLVector(id);
 				writer.WriteTLVector(random_id);
@@ -8083,48 +8182,48 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getChats"/></summary>
-		public Task<Messages_ChatsBase> Messages_GetChats(int[] id)
+		public Task<Messages_ChatsBase> Messages_GetChats(long[] id)
 			=> CallAsync<Messages_ChatsBase>(writer =>
 			{
-				writer.Write(0x3C6AA187);
+				writer.Write(0x49E9528F);
 				writer.WriteTLVector(id);
 				return "Messages_GetChats";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getFullChat"/></summary>
-		public Task<Messages_ChatFull> Messages_GetFullChat(int chat_id)
+		public Task<Messages_ChatFull> Messages_GetFullChat(long chat_id)
 			=> CallAsync<Messages_ChatFull>(writer =>
 			{
-				writer.Write(0x3B831C66);
+				writer.Write(0xAEB00B34);
 				writer.Write(chat_id);
 				return "Messages_GetFullChat";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editChatTitle"/></summary>
-		public Task<UpdatesBase> Messages_EditChatTitle(int chat_id, string title)
+		public Task<UpdatesBase> Messages_EditChatTitle(long chat_id, string title)
 			=> CallAsync<UpdatesBase>(writer =>
 			{
-				writer.Write(0xDC452855);
+				writer.Write(0x73783FFD);
 				writer.Write(chat_id);
 				writer.WriteTLString(title);
 				return "Messages_EditChatTitle";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editChatPhoto"/></summary>
-		public Task<UpdatesBase> Messages_EditChatPhoto(int chat_id, InputChatPhotoBase photo)
+		public Task<UpdatesBase> Messages_EditChatPhoto(long chat_id, InputChatPhotoBase photo)
 			=> CallAsync<UpdatesBase>(writer =>
 			{
-				writer.Write(0xCA4C79D8);
+				writer.Write(0x35DDD674);
 				writer.Write(chat_id);
 				writer.WriteTLObject(photo);
 				return "Messages_EditChatPhoto";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.addChatUser"/></summary>
-		public Task<UpdatesBase> Messages_AddChatUser(int chat_id, InputUserBase user_id, int fwd_limit)
+		public Task<UpdatesBase> Messages_AddChatUser(long chat_id, InputUserBase user_id, int fwd_limit)
 			=> CallAsync<UpdatesBase>(writer =>
 			{
-				writer.Write(0xF9A0AA09);
+				writer.Write(0xF24753E3);
 				writer.Write(chat_id);
 				writer.WriteTLObject(user_id);
 				writer.Write(fwd_limit);
@@ -8132,10 +8231,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.deleteChatUser"/></summary>
-		public Task<UpdatesBase> Messages_DeleteChatUser(int chat_id, InputUserBase user_id, bool revoke_history = false)
+		public Task<UpdatesBase> Messages_DeleteChatUser(long chat_id, InputUserBase user_id, bool revoke_history = false)
 			=> CallAsync<UpdatesBase>(writer =>
 			{
-				writer.Write(0xC534459A);
+				writer.Write(0xA2185CAB);
 				writer.Write(revoke_history ? 0x1 : 0);
 				writer.Write(chat_id);
 				writer.WriteTLObject(user_id);
@@ -8278,20 +8377,20 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getStickers"/></summary>
-		public Task<Messages_StickersBase> Messages_GetStickers(string emoticon, int hash)
+		public Task<Messages_StickersBase> Messages_GetStickers(string emoticon, long hash)
 			=> CallAsync<Messages_StickersBase>(writer =>
 			{
-				writer.Write(0x043D4F2C);
+				writer.Write(0xD5A5D3A1);
 				writer.WriteTLString(emoticon);
 				writer.Write(hash);
 				return "Messages_GetStickers";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getAllStickers"/></summary>
-		public Task<Messages_AllStickersBase> Messages_GetAllStickers(int hash)
+		public Task<Messages_AllStickersBase> Messages_GetAllStickers(long hash)
 			=> CallAsync<Messages_AllStickersBase>(writer =>
 			{
-				writer.Write(0x1C9618B1);
+				writer.Write(0xB8A0A1A8);
 				writer.Write(hash);
 				return "Messages_GetAllStickers";
 			});
@@ -8392,10 +8491,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editChatAdmin"/></summary>
-		public Task<bool> Messages_EditChatAdmin(int chat_id, InputUserBase user_id, bool is_admin)
+		public Task<bool> Messages_EditChatAdmin(long chat_id, InputUserBase user_id, bool is_admin)
 			=> CallAsync<bool>(writer =>
 			{
-				writer.Write(0xA9E69F2E);
+				writer.Write(0xA85BD1C2);
 				writer.Write(chat_id);
 				writer.WriteTLObject(user_id);
 				writer.Write(is_admin ? 0x997275B5 : 0xBC799737);
@@ -8403,10 +8502,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.migrateChat"/></summary>
-		public Task<UpdatesBase> Messages_MigrateChat(int chat_id)
+		public Task<UpdatesBase> Messages_MigrateChat(long chat_id)
 			=> CallAsync<UpdatesBase>(writer =>
 			{
-				writer.Write(0x15A3B8E3);
+				writer.Write(0xA2875319);
 				writer.Write(chat_id);
 				return "Messages_MigrateChat";
 			});
@@ -8452,10 +8551,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getSavedGifs"/></summary>
-		public Task<Messages_SavedGifsBase> Messages_GetSavedGifs(int hash)
+		public Task<Messages_SavedGifsBase> Messages_GetSavedGifs(long hash)
 			=> CallAsync<Messages_SavedGifsBase>(writer =>
 			{
-				writer.Write(0x83BF3D52);
+				writer.Write(0x5CF09635);
 				writer.Write(hash);
 				return "Messages_GetSavedGifs";
 			});
@@ -8550,7 +8649,7 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editInlineBotMessage"/></summary>
-		public Task<bool> Messages_EditInlineBotMessage(InputBotInlineMessageID id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null)
+		public Task<bool> Messages_EditInlineBotMessage(InputBotInlineMessageIDBase id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null)
 			=> CallAsync<bool>(writer =>
 			{
 				writer.Write(0x83557DBA);
@@ -8630,10 +8729,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getFeaturedStickers"/></summary>
-		public Task<Messages_FeaturedStickersBase> Messages_GetFeaturedStickers(int hash)
+		public Task<Messages_FeaturedStickersBase> Messages_GetFeaturedStickers(long hash)
 			=> CallAsync<Messages_FeaturedStickersBase>(writer =>
 			{
-				writer.Write(0x2DACCA4F);
+				writer.Write(0x64780B14);
 				writer.Write(hash);
 				return "Messages_GetFeaturedStickers";
 			});
@@ -8648,10 +8747,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getRecentStickers"/></summary>
-		public Task<Messages_RecentStickersBase> Messages_GetRecentStickers(int hash, bool attached = false)
+		public Task<Messages_RecentStickersBase> Messages_GetRecentStickers(long hash, bool attached = false)
 			=> CallAsync<Messages_RecentStickersBase>(writer =>
 			{
-				writer.Write(0x5EA192C9);
+				writer.Write(0x9DA9403B);
 				writer.Write(attached ? 0x1 : 0);
 				writer.Write(hash);
 				return "Messages_GetRecentStickers";
@@ -8689,10 +8788,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getMaskStickers"/></summary>
-		public Task<Messages_AllStickersBase> Messages_GetMaskStickers(int hash)
+		public Task<Messages_AllStickersBase> Messages_GetMaskStickers(long hash)
 			=> CallAsync<Messages_AllStickersBase>(writer =>
 			{
-				writer.Write(0x65B8C79F);
+				writer.Write(0x640F82B8);
 				writer.Write(hash);
 				return "Messages_GetMaskStickers";
 			});
@@ -8720,7 +8819,7 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setInlineGameScore"/></summary>
-		public Task<bool> Messages_SetInlineGameScore(InputBotInlineMessageID id, InputUserBase user_id, int score, bool edit_message = false, bool force = false)
+		public Task<bool> Messages_SetInlineGameScore(InputBotInlineMessageIDBase id, InputUserBase user_id, int score, bool edit_message = false, bool force = false)
 			=> CallAsync<bool>(writer =>
 			{
 				writer.Write(0x15AD9F64);
@@ -8743,7 +8842,7 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getInlineGameHighScores"/></summary>
-		public Task<Messages_HighScores> Messages_GetInlineGameHighScores(InputBotInlineMessageID id, InputUserBase user_id)
+		public Task<Messages_HighScores> Messages_GetInlineGameHighScores(InputBotInlineMessageIDBase id, InputUserBase user_id)
 			=> CallAsync<Messages_HighScores>(writer =>
 			{
 				writer.Write(0x0F635E1B);
@@ -8753,10 +8852,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getCommonChats"/></summary>
-		public Task<Messages_ChatsBase> Messages_GetCommonChats(InputUserBase user_id, int max_id, int limit)
+		public Task<Messages_ChatsBase> Messages_GetCommonChats(InputUserBase user_id, long max_id, int limit)
 			=> CallAsync<Messages_ChatsBase>(writer =>
 			{
-				writer.Write(0x0D0A48C4);
+				writer.Write(0xE40CA104);
 				writer.WriteTLObject(user_id);
 				writer.Write(max_id);
 				writer.Write(limit);
@@ -8764,10 +8863,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getAllChats"/></summary>
-		public Task<Messages_ChatsBase> Messages_GetAllChats(int[] except_ids)
+		public Task<Messages_ChatsBase> Messages_GetAllChats(long[] except_ids)
 			=> CallAsync<Messages_ChatsBase>(writer =>
 			{
-				writer.Write(0xEBA80FF0);
+				writer.Write(0x875F74BE);
 				writer.WriteTLVector(except_ids);
 				return "Messages_GetAllChats";
 			});
@@ -8860,10 +8959,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getFavedStickers"/></summary>
-		public Task<Messages_FavedStickersBase> Messages_GetFavedStickers(int hash)
+		public Task<Messages_FavedStickersBase> Messages_GetFavedStickers(long hash)
 			=> CallAsync<Messages_FavedStickersBase>(writer =>
 			{
-				writer.Write(0x21CE0B0E);
+				writer.Write(0x04F1AAA9);
 				writer.Write(hash);
 				return "Messages_GetFavedStickers";
 			});
@@ -8902,10 +9001,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getRecentLocations"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetRecentLocations(InputPeer peer, int limit, int hash)
+		public Task<Messages_MessagesBase> Messages_GetRecentLocations(InputPeer peer, int limit, long hash)
 			=> CallAsync<Messages_MessagesBase>(writer =>
 			{
-				writer.Write(0xBBC45B09);
+				writer.Write(0x702A40E0);
 				writer.WriteTLObject(peer);
 				writer.Write(limit);
 				writer.Write(hash);
@@ -8938,10 +9037,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.searchStickerSets"/></summary>
-		public Task<Messages_FoundStickerSetsBase> Messages_SearchStickerSets(string q, int hash, bool exclude_featured = false)
+		public Task<Messages_FoundStickerSetsBase> Messages_SearchStickerSets(string q, long hash, bool exclude_featured = false)
 			=> CallAsync<Messages_FoundStickerSetsBase>(writer =>
 			{
-				writer.Write(0xC2B7D08B);
+				writer.Write(0x35705B8A);
 				writer.Write(exclude_featured ? 0x1 : 0);
 				writer.WriteTLString(q);
 				writer.Write(hash);
@@ -9145,10 +9244,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getScheduledHistory"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetScheduledHistory(InputPeer peer, int hash)
+		public Task<Messages_MessagesBase> Messages_GetScheduledHistory(InputPeer peer, long hash)
 			=> CallAsync<Messages_MessagesBase>(writer =>
 			{
-				writer.Write(0xE2C2685B);
+				writer.Write(0xF516760B);
 				writer.WriteTLObject(peer);
 				writer.Write(hash);
 				return "Messages_GetScheduledHistory";
@@ -9248,10 +9347,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getOldFeaturedStickers"/></summary>
-		public Task<Messages_FeaturedStickersBase> Messages_GetOldFeaturedStickers(int offset, int limit, int hash)
+		public Task<Messages_FeaturedStickersBase> Messages_GetOldFeaturedStickers(int offset, int limit, long hash)
 			=> CallAsync<Messages_FeaturedStickersBase>(writer =>
 			{
-				writer.Write(0x5FE7025B);
+				writer.Write(0x7ED094A1);
 				writer.Write(offset);
 				writer.Write(limit);
 				writer.Write(hash);
@@ -9259,10 +9358,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getReplies"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetReplies(InputPeer peer, int msg_id, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, int hash)
+		public Task<Messages_MessagesBase> Messages_GetReplies(InputPeer peer, int msg_id, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash)
 			=> CallAsync<Messages_MessagesBase>(writer =>
 			{
-				writer.Write(0x24B581BA);
+				writer.Write(0x22DDD30C);
 				writer.WriteTLObject(peer);
 				writer.Write(msg_id);
 				writer.Write(offset_id);
@@ -9306,10 +9405,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.deleteChat"/></summary>
-		public Task<bool> Messages_DeleteChat(int chat_id)
+		public Task<bool> Messages_DeleteChat(long chat_id)
 			=> CallAsync<bool>(writer =>
 			{
-				writer.Write(0x83247D11);
+				writer.Write(0x5BD0EE50);
 				writer.Write(chat_id);
 				return "Messages_DeleteChat";
 			});
@@ -9465,6 +9564,26 @@ namespace WTelegram		// ---functions---
 				writer.Write(0x5DC60F03);
 				writer.WriteTLObject(peer);
 				return "Messages_CheckHistoryImportPeer";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.setChatTheme"/></summary>
+		public Task<UpdatesBase> Messages_SetChatTheme(InputPeer peer, string emoticon)
+			=> CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0xE63BE13F);
+				writer.WriteTLObject(peer);
+				writer.WriteTLString(emoticon);
+				return "Messages_SetChatTheme";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/messages.getMessageReadParticipants"/></summary>
+		public Task<long[]> Messages_GetMessageReadParticipants(InputPeer peer, int msg_id)
+			=> CallAsync<long[]>(writer =>
+			{
+				writer.Write(0x2C6F97B7);
+				writer.WriteTLObject(peer);
+				writer.Write(msg_id);
+				return "Messages_GetMessageReadParticipants";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/updates.getState"/></summary>
@@ -9880,10 +9999,10 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getParticipants"/></summary>
-		public Task<Channels_ChannelParticipantsBase> Channels_GetParticipants(InputChannelBase channel, ChannelParticipantsFilter filter, int offset, int limit, int hash)
+		public Task<Channels_ChannelParticipantsBase> Channels_GetParticipants(InputChannelBase channel, ChannelParticipantsFilter filter, int offset, int limit, long hash)
 			=> CallAsync<Channels_ChannelParticipantsBase>(writer =>
 			{
-				writer.Write(0x123E05E9);
+				writer.Write(0x77CED9D0);
 				writer.WriteTLObject(channel);
 				writer.WriteTLObject(filter);
 				writer.Write(offset);
@@ -10197,6 +10316,25 @@ namespace WTelegram		// ---functions---
 				writer.Write(0x0B290C69);
 				writer.WriteTLObject(channel);
 				return "Channels_ConvertToGigagroup";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.viewSponsoredMessage"/></summary>
+		public Task<bool> Channels_ViewSponsoredMessage(InputChannelBase channel, byte[] random_id)
+			=> CallAsync<bool>(writer =>
+			{
+				writer.Write(0xBEAEDB94);
+				writer.WriteTLObject(channel);
+				writer.WriteTLBytes(random_id);
+				return "Channels_ViewSponsoredMessage";
+			});
+
+		///<summary>See <a href="https://core.telegram.org/method/channels.getSponsoredMessages"/></summary>
+		public Task<Messages_SponsoredMessages> Channels_GetSponsoredMessages(InputChannelBase channel)
+			=> CallAsync<Messages_SponsoredMessages>(writer =>
+			{
+				writer.Write(0xEC210FBF);
+				writer.WriteTLObject(channel);
+				return "Channels_GetSponsoredMessages";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/bots.sendCustomRequest"/></summary>
@@ -10573,11 +10711,12 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.getGroupCall"/></summary>
-		public Task<Phone_GroupCall> Phone_GetGroupCall(InputGroupCall call)
+		public Task<Phone_GroupCall> Phone_GetGroupCall(InputGroupCall call, int limit)
 			=> CallAsync<Phone_GroupCall>(writer =>
 			{
-				writer.Write(0x0C7CB017);
+				writer.Write(0x041845DB);
 				writer.WriteTLObject(call);
+				writer.Write(limit);
 				return "Phone_GetGroupCall";
 			});
 
@@ -10605,14 +10744,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.toggleGroupCallRecord"/></summary>
-		public Task<UpdatesBase> Phone_ToggleGroupCallRecord(InputGroupCall call, bool start = false, string title = null)
+		public Task<UpdatesBase> Phone_ToggleGroupCallRecord(InputGroupCall call, bool start = false, bool video = false, string title = null, bool? video_portrait = null)
 			=> CallAsync<UpdatesBase>(writer =>
 			{
-				writer.Write(0xC02A66D7);
-				writer.Write((start ? 0x1 : 0) | (title != null ? 0x2 : 0));
+				writer.Write(0xF128C708);
+				writer.Write((start ? 0x1 : 0) | (video ? 0x4 : 0) | (title != null ? 0x2 : 0) | (video_portrait != null ? 0x4 : 0));
 				writer.WriteTLObject(call);
 				if (title != null)
 					writer.WriteTLString(title);
+				if (video_portrait != null)
+					writer.Write(video_portrait.Value ? 0x997275B5 : 0xBC799737);
 				return "Phone_ToggleGroupCallRecord";
 			});
 
