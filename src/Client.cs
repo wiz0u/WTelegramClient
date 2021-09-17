@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 using TL;
 using static WTelegram.Encryption;
 
+// necessary for .NET Standard 2.0 compilation:
+#pragma warning disable CA1835 // Prefer the 'Memory'-based overloads for 'ReadAsync' and 'WriteAsync'
+
 namespace WTelegram
 {
 	public sealed partial class Client : IDisposable
@@ -27,9 +30,9 @@ namespace WTelegram
 		private readonly int _apiId;
 		private readonly string _apiHash;
 		private readonly Session _session;
+		private static readonly byte[] IntermediateHeader = new byte[4] { 0xee, 0xee, 0xee, 0xee };
 		private TcpClient _tcpClient;
 		private NetworkStream _networkStream;
-		private int _frame_seqTx = 0, _frame_seqRx = 0;
 		private ITLFunction _lastSentMsg;
 		private long _lastRecvMsgId;
 		private readonly List<long> _msgsToAck = new();
@@ -119,7 +122,7 @@ namespace WTelegram
 			_tcpClient = new TcpClient(endpoint.AddressFamily);
 			await _tcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
 			_networkStream = _tcpClient.GetStream();
-			_frame_seqTx = _frame_seqRx = 0;
+			await _networkStream.WriteAsync(IntermediateHeader, 0, 4);
 			_cts = new();
 			_reactorTask = Reactor(_networkStream, _cts);
 			_sendSemaphore.Release();
@@ -316,33 +319,20 @@ namespace WTelegram
 		}
 
 
-		private async Task<byte[]> RecvFrameAsync(NetworkStream stream, CancellationToken ct)
+		private static async Task<byte[]> RecvFrameAsync(NetworkStream stream, CancellationToken ct)
 		{
-			byte[] frame = new byte[8];
-			if (await FullReadAsync(stream, frame, 8, ct) != 8)
-				throw new ApplicationException("Could not read frame prefix : Connection shut down");
-			int length = BinaryPrimitives.ReadInt32LittleEndian(frame) - 12;
+			byte[] overhead = new byte[4];
+			if (await FullReadAsync(stream, overhead, 4, ct) != 4)
+				throw new ApplicationException("Could not read payload length : Connection shut down");
+			int length = BinaryPrimitives.ReadInt32LittleEndian(overhead);
 			if (length <= 0 || length >= 0x10000)
 				throw new ApplicationException("Invalid frame_len");
-			int seqno = BinaryPrimitives.ReadInt32LittleEndian(frame.AsSpan(4));
-			if (seqno != _frame_seqRx++)
-			{
-				Trace.TraceWarning($"Unexpected frame_seq received: {seqno} instead of {_frame_seqRx}");
-				_frame_seqRx = seqno + 1;
-			}
 			var payload = new byte[length];
 			if (await FullReadAsync(stream, payload, length, ct) != length)
 				throw new ApplicationException("Could not read frame data : Connection shut down");
-			uint crc32 = Compat.UpdateCrc32(0, frame, 0, 8);
-			crc32 = Compat.UpdateCrc32(crc32, payload, 0, payload.Length);
-			if (await FullReadAsync(stream, frame, 4, ct) != 4)
-				throw new ApplicationException("Could not read frame CRC : Connection shut down");
-			if (crc32 != BinaryPrimitives.ReadUInt32LittleEndian(frame))
-				throw new ApplicationException("Invalid envelope CRC32");
 			return payload;
 		}
 
-#pragma warning disable CA1835 // necessary for .NET Standard 2.0 compilation
 		private static async Task<int> FullReadAsync(Stream stream, byte[] buffer, int length, CancellationToken ct = default)
 		{
 			for (int offset = 0; offset != length;)
@@ -369,8 +359,7 @@ namespace WTelegram
 			{
 				using var memStream = new MemoryStream(1024);
 				using var writer = new BinaryWriter(memStream, Encoding.UTF8);
-				writer.Write(0);                // int32 frame_len (to be patched with full frame length)
-				writer.Write(_frame_seqTx++);   // int32 frame_seq
+				writer.Write(0);                // int32 payload_len (to be patched with payload length)
 
 				if (_session.AuthKeyID == 0) // send unencrypted message
 				{
@@ -425,12 +414,10 @@ namespace WTelegram
 				}
 				var buffer = memStream.GetBuffer();
 				int frameLength = (int)memStream.Length;
-				BinaryPrimitives.WriteInt32LittleEndian(buffer, frameLength + 4); // patch frame_len with correct value
-				uint crc = Compat.UpdateCrc32(0, buffer, 0, frameLength);
-				writer.Write(crc);              // int32 frame_crc
+				BinaryPrimitives.WriteInt32LittleEndian(buffer, frameLength - 4); // patch payload_len with correct value
 				//TODO: support Transport obfuscation?
 
-				await _networkStream.WriteAsync(memStream.GetBuffer(), 0, frameLength + 4);
+				await _networkStream.WriteAsync(memStream.GetBuffer(), 0, frameLength);
 				_lastSentMsg = func;
 			}
 			finally
@@ -439,7 +426,6 @@ namespace WTelegram
 			}
 			return msgId;
 		}
-#pragma warning restore CA1835
 
 		private static ITLFunction MakeFunction(ITLObject msg)
 			=> writer =>

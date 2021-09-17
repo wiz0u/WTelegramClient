@@ -9,12 +9,6 @@ namespace WTelegram
 {
 	static class Compat
 	{
-		// see also https://github.com/dotnet/runtime/issues/2036 and https://github.com/dotnet/runtime/pull/53623
-		internal static readonly Func<uint, byte[], int, int, uint> UpdateCrc32 = (Func<uint, byte[], int, int, uint>)
-			typeof(System.IO.Compression.ZipArchive).Assembly.GetType("System.IO.Compression.Crc32Helper")
-			.GetMethod("UpdateCrc32", new[] { typeof(uint), typeof(byte[]), typeof(int), typeof(int) })
-			.CreateDelegate(typeof(Func<uint, byte[], int, int, uint>));
-
 #if NETCOREAPP2_1_OR_GREATER
 		internal static IPEndPoint IPEndPoint_Parse(string addr) => IPEndPoint.Parse(addr);
 		internal static BigInteger BigEndianInteger(byte[] value) => new(value, true, true);
