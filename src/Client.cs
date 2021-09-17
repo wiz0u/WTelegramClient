@@ -743,11 +743,19 @@ namespace WTelegram
 				{
 					var prevUser = Schema.Deserialize<User>(_session.User);
 					var userId = _config("user_id"); // if config prefers to validate current user by its id, use it
-					if (userId != null && int.TryParse(userId, out int id) && (id == -1 || prevUser.id == id))
+					if (userId == null || !int.TryParse(userId, out int id) || id != -1 && prevUser.id != id)
+					{
+						phone_number = Config("phone_number"); // otherwise, validation is done by the phone number
+						if (prevUser?.phone != string.Concat(phone_number.Where(char.IsDigit)))
+							prevUser = null;
+					}
+					if (prevUser != null)
+					{
+						// TODO: implement a more complete Updates gaps handling system? https://core.telegram.org/api/updates
+						var udpatesState = await Updates_GetState();
+						OnUpdate(udpatesState);
 						return prevUser;
-					phone_number = Config("phone_number"); // otherwise, validation is done by the phone number
-					if (prevUser?.phone == string.Concat(phone_number.Where(char.IsDigit)))
-						return prevUser;
+					}
 				}
 				catch (Exception ex)
 				{
