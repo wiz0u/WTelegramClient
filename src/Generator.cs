@@ -25,7 +25,7 @@ namespace WTelegram
 		{
 			Console.WriteLine("Fetch web pages...");
 #if DEBUG
-			currentLayer = await Task.FromResult(TL.Schema.Layer);
+			currentLayer = await Task.FromResult(TL.Layer.Version);
 #else
 			using var http = new HttpClient();
 			//var html = await http.GetStringAsync("https://core.telegram.org/api/layers");
@@ -96,12 +96,14 @@ namespace WTelegram
 		{
 			currentJson = Path.GetFileNameWithoutExtension(outputCs);
 			using var sw = new StreamWriter(outputCs, false, Encoding.UTF8);
-			sw.WriteLine("// This file is (mainly) generated automatically using the Generator class");
+			sw.WriteLine("// This file is generated automatically using the Generator class");
 			sw.WriteLine("using System;");
 			if (schema.methods.Count != 0) sw.WriteLine("using System.Threading.Tasks;");
 			sw.WriteLine();
 			sw.WriteLine("namespace TL");
-			sw.Write("{");
+			sw.WriteLine("{");
+			sw.WriteLine("\tusing BinaryWriter = System.IO.BinaryWriter;");
+			sw.WriteLine("\tusing Client = WTelegram.Client;");
 			tabIndent = "\t";
 			var layers = schema.constructors.GroupBy(c => c.layer).OrderBy(g => g.Key);
 			foreach (var layer in layers)
@@ -189,14 +191,10 @@ namespace WTelegram
 					ctorToTypes[int.Parse(ping.id)] = CSharpName(ping.method);
 					WriteTypeInfo(sw, typeInfo, "", false);
 				}
-				sw.WriteLine("}");
-				sw.WriteLine("");
-				sw.WriteLine("namespace WTelegram\t\t// ---functions---");
-				sw.WriteLine("{");
-				sw.WriteLine("\tusing System.IO;");
-				sw.WriteLine("\tusing TL;");
 				sw.WriteLine();
-				sw.WriteLine("\tpublic partial class Client");
+				sw.WriteLine("\t// ---functions---");
+				sw.WriteLine();
+				sw.WriteLine($"\tpublic static class {currentJson[3..]}");
 				//sw.WriteLine("\tpublic static partial class Fn // ---functions---");
 				sw.Write("\t{");
 				tabIndent = "\t\t";
@@ -428,11 +426,11 @@ namespace WTelegram
 				sw.WriteLine($"= {method.type}");
 			}
 
-			if (style == 0) sw.WriteLine($"{tabIndent}public Task<{returnType}> {funcName}() => {callAsync}<{returnType}>({funcName});");
+			if (style == 0) sw.WriteLine($"{tabIndent}public static Task<{returnType}> {funcName}(this Client client) => client.{callAsync}<{returnType}>({funcName});");
 			if (style == 0) sw.Write($"{tabIndent}public static string {funcName}(BinaryWriter writer");
 			if (style == 1) sw.Write($"{tabIndent}public static ITLFunction {funcName}(");
-			if (style == 2) sw.Write($"{tabIndent}public Task<{returnType}> {funcName}(");
-			bool first = style != 0;
+			if (style == 2) sw.Write($"{tabIndent}public static Task<{returnType}> {funcName}(this Client client");
+			bool first = style == 1;
 			foreach (var parm in method.@params) // output non-optional parameters
 			{
 				if (parm.type == "#" || parm.type.StartsWith("flags.")) continue;
@@ -462,7 +460,7 @@ namespace WTelegram
 			sw.WriteLine(")");
 			if (style != 0) tabIndent += "\t";
 			if (style == 1) sw.WriteLine($"{tabIndent}=> writer =>");
-			if (style == 2) sw.WriteLine($"{tabIndent}=> {callAsync}<{returnType}>(writer =>");
+			if (style == 2) sw.WriteLine($"{tabIndent}=> client.{callAsync}<{returnType}>(writer =>");
 			sw.WriteLine(tabIndent + "{");
 			sw.WriteLine($"{tabIndent}\twriter.Write(0x{ctorNb:X8});");
 			foreach (var parm in method.@params) // serialize request

@@ -1,9 +1,12 @@
-﻿// This file is (mainly) generated automatically using the Generator class
+﻿// This file is generated automatically using the Generator class
 using System;
 using System.Threading.Tasks;
 
 namespace TL
 {
+	using BinaryWriter = System.IO.BinaryWriter;
+	using Client = WTelegram.Client;
+
 	[TLDef(0x05162463)] //resPQ#05162463 nonce:int128 server_nonce:int128 pq:bytes server_public_key_fingerprints:Vector<long> = ResPQ
 	public partial class ResPQ : ITLObject
 	{
@@ -237,18 +240,14 @@ namespace TL
 
 	[TLDef(0x7ABE77EC)] //ping#7abe77ec ping_id:long = Pong
 	public partial class Ping : ITLObject { public long ping_id; }
-}
 
-namespace WTelegram		// ---functions---
-{
-	using System.IO;
-	using TL;
+	// ---functions---
 
-	public partial class Client
+	public static class MTProto
 	{
 		//req_pq#60469778 nonce:int128 = ResPQ
-		public Task<ResPQ> ReqPq(Int128 nonce)
-			=> CallBareAsync<ResPQ>(writer =>
+		public static Task<ResPQ> ReqPq(this Client client, Int128 nonce)
+			=> client.CallBareAsync<ResPQ>(writer =>
 			{
 				writer.Write(0x60469778);
 				writer.Write(nonce);
@@ -256,8 +255,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		//req_pq_multi#be7e8ef1 nonce:int128 = ResPQ
-		public Task<ResPQ> ReqPqMulti(Int128 nonce)
-			=> CallBareAsync<ResPQ>(writer =>
+		public static Task<ResPQ> ReqPqMulti(this Client client, Int128 nonce)
+			=> client.CallBareAsync<ResPQ>(writer =>
 			{
 				writer.Write(0xBE7E8EF1);
 				writer.Write(nonce);
@@ -265,8 +264,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		//req_DH_params#d712e4be nonce:int128 server_nonce:int128 p:bytes q:bytes public_key_fingerprint:long encrypted_data:bytes = Server_DH_Params
-		public Task<ServerDHParams> ReqDHParams(Int128 nonce, Int128 server_nonce, byte[] p, byte[] q, long public_key_fingerprint, byte[] encrypted_data)
-			=> CallBareAsync<ServerDHParams>(writer =>
+		public static Task<ServerDHParams> ReqDHParams(this Client client, Int128 nonce, Int128 server_nonce, byte[] p, byte[] q, long public_key_fingerprint, byte[] encrypted_data)
+			=> client.CallBareAsync<ServerDHParams>(writer =>
 			{
 				writer.Write(0xD712E4BE);
 				writer.Write(nonce);
@@ -279,8 +278,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		//set_client_DH_params#f5045f1f nonce:int128 server_nonce:int128 encrypted_data:bytes = Set_client_DH_params_answer
-		public Task<SetClientDHParamsAnswer> SetClientDHParams(Int128 nonce, Int128 server_nonce, byte[] encrypted_data)
-			=> CallBareAsync<SetClientDHParamsAnswer>(writer =>
+		public static Task<SetClientDHParamsAnswer> SetClientDHParams(this Client client, Int128 nonce, Int128 server_nonce, byte[] encrypted_data)
+			=> client.CallBareAsync<SetClientDHParamsAnswer>(writer =>
 			{
 				writer.Write(0xF5045F1F);
 				writer.Write(nonce);
@@ -290,16 +289,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		//destroy_auth_key#d1435160 = DestroyAuthKeyRes
-		public Task<DestroyAuthKeyRes> DestroyAuthKey()
-			=> CallBareAsync<DestroyAuthKeyRes>(writer =>
+		public static Task<DestroyAuthKeyRes> DestroyAuthKey(this Client client)
+			=> client.CallBareAsync<DestroyAuthKeyRes>(writer =>
 			{
 				writer.Write(0xD1435160);
 				return "DestroyAuthKey";
 			});
 
 		//rpc_drop_answer#58e4a740 req_msg_id:long = RpcDropAnswer
-		public Task<RpcDropAnswer> RpcDropAnswer(long req_msg_id)
-			=> CallBareAsync<RpcDropAnswer>(writer =>
+		public static Task<RpcDropAnswer> RpcDropAnswer(this Client client, long req_msg_id)
+			=> client.CallBareAsync<RpcDropAnswer>(writer =>
 			{
 				writer.Write(0x58E4A740);
 				writer.Write(req_msg_id);
@@ -307,8 +306,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		//get_future_salts#b921bd04 num:int = FutureSalts
-		public Task<FutureSalts> GetFutureSalts(int num)
-			=> CallAsync<FutureSalts>(writer =>
+		public static Task<FutureSalts> GetFutureSalts(this Client client, int num)
+			=> client.CallAsync<FutureSalts>(writer =>
 			{
 				writer.Write(0xB921BD04);
 				writer.Write(num);
@@ -316,8 +315,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		//ping#7abe77ec ping_id:long = Pong
-		public Task<Pong> Ping(long ping_id)
-			=> CallAsync<Pong>(writer =>
+		public static Task<Pong> Ping(this Client client, long ping_id)
+			=> client.CallAsync<Pong>(writer =>
 			{
 				writer.Write(0x7ABE77EC);
 				writer.Write(ping_id);
@@ -325,8 +324,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		//ping_delay_disconnect#f3427b8c ping_id:long disconnect_delay:int = Pong
-		public Task<Pong> PingDelayDisconnect(long ping_id, int disconnect_delay)
-			=> CallAsync<Pong>(writer =>
+		public static Task<Pong> PingDelayDisconnect(this Client client, long ping_id, int disconnect_delay)
+			=> client.CallAsync<Pong>(writer =>
 			{
 				writer.Write(0xF3427B8C);
 				writer.Write(ping_id);
@@ -335,8 +334,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		//destroy_session#e7512126 session_id:long = DestroySessionRes
-		public Task<DestroySessionRes> DestroySession(long session_id)
-			=> CallBareAsync<DestroySessionRes>(writer =>
+		public static Task<DestroySessionRes> DestroySession(this Client client, long session_id)
+			=> client.CallBareAsync<DestroySessionRes>(writer =>
 			{
 				writer.Write(0xE7512126);
 				writer.Write(session_id);

@@ -1,16 +1,16 @@
-﻿// This file is (mainly) generated automatically using the Generator class
+﻿// This file is generated automatically using the Generator class
 using System;
 using System.Collections.Generic;
 
 namespace TL
 {
-	static partial class Schema
+	static class Layer
 	{
-		public const int Layer = 133;					// fetched 17/09/2021 01:46:27
-		public const uint VectorCtor = 0x1CB5C415;
-		public const uint NullCtor = 0x56730BCC;
-		public const uint RpcResult = 0xF35C6D01;
-		public const uint MsgContainer = 0x73F1F8DC;
+		public const int Version = 133;					// fetched 17/09/2021 02:47:02
+		internal const uint VectorCtor = 0x1CB5C415;
+		internal const uint NullCtor = 0x56730BCC;
+		internal const uint RpcResultCtor = 0xF35C6D01;
+		internal const uint MsgContainerCtor = 0x73F1F8DC;
 
 		internal readonly static Dictionary<uint, Type> Table = new()
 		{

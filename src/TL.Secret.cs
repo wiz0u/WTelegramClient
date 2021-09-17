@@ -1,8 +1,11 @@
-﻿// This file is (mainly) generated automatically using the Generator class
+﻿// This file is generated automatically using the Generator class
 using System;
 
 namespace TL
 {
+	using BinaryWriter = System.IO.BinaryWriter;
+	using Client = WTelegram.Client;
+
 	namespace Layer8
 	{
 		///<summary>See <a href="https://core.telegram.org/type/DecryptedMessage"/></summary>

@@ -11,7 +11,7 @@ namespace TL
 	public interface ITLObject { }
 	public delegate string ITLFunction(BinaryWriter writer);
 
-	public static partial class Schema
+	public static class Serialization
 	{
 		internal static byte[] Serialize(this ITLObject msg)
 		{
@@ -30,7 +30,7 @@ namespace TL
 
 		internal static void WriteTLObject(this BinaryWriter writer, ITLObject obj)
 		{
-			if (obj == null) { writer.Write(NullCtor); return; }
+			if (obj == null) { writer.Write(Layer.NullCtor); return; }
 			var type = obj.GetType();
 			var ctorNb = type.GetCustomAttribute<TLDefAttribute>().CtorNb;
 			writer.Write(ctorNb);
@@ -52,8 +52,8 @@ namespace TL
 		internal static ITLObject ReadTLObject(this BinaryReader reader, uint ctorNb = 0)
 		{
 			if (ctorNb == 0) ctorNb = reader.ReadUInt32();
-			if (ctorNb == NullCtor) return null;
-			if (!Table.TryGetValue(ctorNb, out var type))
+			if (ctorNb == Layer.NullCtor) return null;
+			if (!Layer.Table.TryGetValue(ctorNb, out var type))
 				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 			var obj = Activator.CreateInstance(type);
 			var fields = type.GetFields().GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
@@ -144,7 +144,7 @@ namespace TL
 
 		internal static void WriteTLVector(this BinaryWriter writer, Array array)
 		{
-			writer.Write(VectorCtor);
+			writer.Write(Layer.VectorCtor);
 			if (array == null) { writer.Write(0); return; }
 			int count = array.Length;
 			writer.Write(count);
@@ -155,7 +155,7 @@ namespace TL
 		internal static Array ReadTLVector(this BinaryReader reader, Type type)
 		{
 			var ctorNb = reader.ReadUInt32();
-			if (ctorNb != VectorCtor) throw new ApplicationException($"Cannot deserialize {type.Name} with ctor #{ctorNb:x}");
+			if (ctorNb != Layer.VectorCtor) throw new ApplicationException($"Cannot deserialize {type.Name} with ctor #{ctorNb:x}");
 			var elementType = type.GetElementType();
 			int count = reader.ReadInt32();
 			Array array = (Array)Activator.CreateInstance(type, count);
@@ -215,9 +215,9 @@ namespace TL
 		internal static void WriteTLNull(this BinaryWriter writer, Type type)
 		{
 			if (!type.IsArray)
-				writer.Write(NullCtor);
+				writer.Write(Layer.NullCtor);
 			else if (type != typeof(byte[]))
-				writer.Write(VectorCtor);
+				writer.Write(Layer.VectorCtor);
 			writer.Write(0);    // null arrays are serialized as empty
 		}
 

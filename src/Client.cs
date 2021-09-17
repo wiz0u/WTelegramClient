@@ -20,7 +20,7 @@ using static WTelegram.Encryption;
 
 namespace WTelegram
 {
-	public sealed partial class Client : IDisposable
+	public sealed class Client : IDisposable
 	{
 		public event Action<ITLObject> Update;
 		public Config TLConfig { get; private set; }
@@ -130,15 +130,15 @@ namespace WTelegram
 			if (_session.AuthKey == null)
 				await CreateAuthorizationKey(this, _session);
 
-			TLConfig = await InvokeWithLayer<Config>(Schema.Layer,
-				InitConnection(_apiId,
+			TLConfig = await this.InvokeWithLayer<Config>(Layer.Version,
+				Schema.InitConnection(_apiId,
 					Config("device_model"),
 					Config("system_version"),
 					Config("app_version"),
 					Config("system_lang_code"),
 					Config("lang_pack"),
 					Config("lang_code"),
-					Help_GetConfig));
+					Schema.Help_GetConfig));
 			Helpers.Log(2, $"Connected to {(TLConfig.test_mode ? "Test DC" : "DC")} {TLConfig.this_dc}... {TLConfig.flags & (Config.Flags)~0xE00}");
 		}
 
@@ -147,7 +147,7 @@ namespace WTelegram
 			Helpers.Log(2, $"Migrate to DC {dcId}...");
 			Auth_ExportedAuthorization exported = null;
 			if (_session.User != null)
-				exported = await Auth_ExportAuthorization(dcId);
+				exported = await this.Auth_ExportAuthorization(dcId);
 			var prevFamily = _tcpClient.Client.RemoteEndPoint.AddressFamily;
 			Reset(false);
 			var dcOptions = TLConfig.dc_options.Where(dc => dc.id == dcId && (dc.flags & (DcOption.Flags.media_only | DcOption.Flags.cdn)) == 0);
@@ -160,7 +160,7 @@ namespace WTelegram
 			await ConnectAsync();
 			if (exported != null)
 			{
-				var authorization = await Auth_ImportAuthorization(exported.id, exported.bytes);
+				var authorization = await this.Auth_ImportAuthorization(exported.id, exported.bytes);
 				if (authorization is not Auth_Authorization { user: User user })
 					throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
 				_session.User = user.Serialize();
@@ -173,7 +173,7 @@ namespace WTelegram
 			while (!ct.IsCancellationRequested)
 			{
 				await Task.Delay(60000, ct);
-				await PingDelayDisconnect(ping_id++, 75);
+				await this.PingDelayDisconnect(ping_id++, 75);
 			}
 		}
 
@@ -292,12 +292,12 @@ namespace WTelegram
 					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
 #endif
 				var ctorNb = reader.ReadUInt32();
-				if (ctorNb == Schema.MsgContainer)
+				if (ctorNb == Layer.MsgContainerCtor)
 				{
 					Helpers.Log(1, $"Receiving {"MsgContainer",-50} {msgStamp:u} (svc)");
 					return ReadMsgContainer(reader);
 				}
-				else if (ctorNb == Schema.RpcResult)
+				else if (ctorNb == Layer.RpcResultCtor)
 				{
 					Helpers.Log(1, $"Receiving {"RpcResult",-50} {msgStamp:u}");
 					return ReadRpcResult(reader);
@@ -451,7 +451,7 @@ namespace WTelegram
 				try
 				{
 					var ctorNb = reader.ReadUInt32();
-					if (ctorNb == Schema.RpcResult)
+					if (ctorNb == Layer.RpcResultCtor)
 					{
 						Helpers.Log(1, $"          → {"RpcResult",-48} {_session.MsgIdToStamp(msg.msg_id):u}");
 						msg.body = ReadRpcResult(reader);
@@ -695,7 +695,7 @@ namespace WTelegram
 			{ 
 				try
 				{
-					var prevUser = Schema.Deserialize<User>(_session.User);
+					var prevUser = Serialization.Deserialize<User>(_session.User);
 					if (prevUser?.id == int.Parse(botToken.Split(':')[0]))
 						return prevUser;
 				}
@@ -703,9 +703,9 @@ namespace WTelegram
 				{
 					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to login...");
 				}
-				await Auth_LogOut();
+				await this.Auth_LogOut();
 			}
-			var authorization = await Auth_ImportBotAuthorization(0, _apiId, _apiHash, botToken);
+			var authorization = await this.Auth_ImportBotAuthorization(0, _apiId, _apiHash, botToken);
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
 			_session.User = user.Serialize();
@@ -727,7 +727,7 @@ namespace WTelegram
 			{
 				try
 				{
-					var prevUser = Schema.Deserialize<User>(_session.User);
+					var prevUser = Serialization.Deserialize<User>(_session.User);
 					var userId = _config("user_id"); // if config prefers to validate current user by its id, use it
 					if (userId == null || !int.TryParse(userId, out int id) || id != -1 && prevUser.id != id)
 					{
@@ -738,7 +738,7 @@ namespace WTelegram
 					if (prevUser != null)
 					{
 						// TODO: implement a more complete Updates gaps handling system? https://core.telegram.org/api/updates
-						var udpatesState = await Updates_GetState();
+						var udpatesState = await this.Updates_GetState();
 						OnUpdate(udpatesState);
 						return prevUser;
 					}
@@ -747,23 +747,23 @@ namespace WTelegram
 				{
 					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to login...");
 				}
-				await Auth_LogOut();
+				await this.Auth_LogOut();
 			}
 			phone_number ??= Config("phone_number");
-			var sentCode = await Auth_SendCode(phone_number, _apiId, _apiHash, settings ?? new());
+			var sentCode = await this.Auth_SendCode(phone_number, _apiId, _apiHash, settings ?? new());
 			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
 			var verification_code = Config("verification_code");
 			Auth_AuthorizationBase authorization;
 			try
 			{
-				authorization = await Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
+				authorization = await this.Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
 			}
 			catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
 			{
-				var accountPassword = await Account_GetPassword();
+				var accountPassword = await this.Account_GetPassword();
 				Helpers.Log(3, $"This account has enabled 2FA. A password is needed. {accountPassword.hint}");
 				var checkPasswordSRP = Check2FA(accountPassword, Config("password"));
-				authorization = await Auth_CheckPassword(checkPasswordSRP);
+				authorization = await this.Auth_CheckPassword(checkPasswordSRP);
 			}
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
 			{
@@ -774,7 +774,7 @@ namespace WTelegram
 				var last_name = Config("last_name");
 				var wait = waitUntil - DateTime.UtcNow;
 				if (wait > TimeSpan.Zero) await Task.Delay(wait); // we get a FLOOD_WAIT_3 if we SignUp too fast
-				authorization = await Auth_SignUp(phone_number, sentCode.phone_code_hash, first_name, last_name);
+				authorization = await this.Auth_SignUp(phone_number, sentCode.phone_code_hash, first_name, last_name);
 			}
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
@@ -822,9 +822,9 @@ namespace WTelegram
 						try
 						{
 							if (isBig)
-								await Upload_SaveBigFilePart(file_id, file_part, file_total_parts, bytes);
+								await this.Upload_SaveBigFilePart(file_id, file_part, file_total_parts, bytes);
 							else
-								await Upload_SaveFilePart(file_id, file_part, bytes);
+								await this.Upload_SaveFilePart(file_id, file_part, bytes);
 							lock (tasks) tasks.Remove(file_part);
 						}
 						catch (Exception)
@@ -881,10 +881,10 @@ namespace WTelegram
 		public Task<UpdatesBase> SendMessageAsync(InputPeer peer, string text, InputMedia media = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, bool disable_preview = false)
 		{
 			if (media == null)
-				return Messages_SendMessage(peer, text, Helpers.RandomLong(),
+				return this.Messages_SendMessage(peer, text, Helpers.RandomLong(),
 					no_webpage: disable_preview, reply_to_msg_id: reply_to_msg_id, entities: entities, schedule_date: schedule_date);
 			else
-				return Messages_SendMedia(peer, media, text, Helpers.RandomLong(),
+				return this.Messages_SendMedia(peer, media, text, Helpers.RandomLong(),
 					reply_to_msg_id: reply_to_msg_id, entities: entities, schedule_date: schedule_date);
 		}
 		#endregion

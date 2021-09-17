@@ -1,9 +1,12 @@
-﻿// This file is (mainly) generated automatically using the Generator class
+﻿// This file is generated automatically using the Generator class
 using System;
 using System.Threading.Tasks;
 
 namespace TL
 {
+	using BinaryWriter = System.IO.BinaryWriter;
+	using Client = WTelegram.Client;
+
 	///<summary>See <a href="https://core.telegram.org/type/Bool"/></summary>
 	public abstract partial class Bool : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/boolFalse"/></summary>
@@ -6779,18 +6782,14 @@ namespace TL
 		public ChatBase[] chats;
 		public UserBase[] users;
 	}
-}
 
-namespace WTelegram		// ---functions---
-{
-	using System.IO;
-	using TL;
+	// ---functions---
 
-	public partial class Client
+	public static class Schema
 	{
 		///<summary>See <a href="https://core.telegram.org/method/invokeAfterMsg"/></summary>
-		public Task<X> InvokeAfterMsg<X>(long msg_id, ITLFunction query)
-			=> CallAsync<X>(writer =>
+		public static Task<X> InvokeAfterMsg<X>(this Client client, long msg_id, ITLFunction query)
+			=> client.CallAsync<X>(writer =>
 			{
 				writer.Write(0xCB9F372D);
 				writer.Write(msg_id);
@@ -6799,8 +6798,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/invokeAfterMsgs"/></summary>
-		public Task<X> InvokeAfterMsgs<X>(long[] msg_ids, ITLFunction query)
-			=> CallAsync<X>(writer =>
+		public static Task<X> InvokeAfterMsgs<X>(this Client client, long[] msg_ids, ITLFunction query)
+			=> client.CallAsync<X>(writer =>
 			{
 				writer.Write(0x3DC4B4F0);
 				writer.WriteTLVector(msg_ids);
@@ -6830,8 +6829,8 @@ namespace WTelegram		// ---functions---
 			};
 
 		///<summary>See <a href="https://core.telegram.org/method/invokeWithLayer"/></summary>
-		public Task<X> InvokeWithLayer<X>(int layer, ITLFunction query)
-			=> CallAsync<X>(writer =>
+		public static Task<X> InvokeWithLayer<X>(this Client client, int layer, ITLFunction query)
+			=> client.CallAsync<X>(writer =>
 			{
 				writer.Write(0xDA9B0D0D);
 				writer.Write(layer);
@@ -6840,8 +6839,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/invokeWithoutUpdates"/></summary>
-		public Task<X> InvokeWithoutUpdates<X>(ITLFunction query)
-			=> CallAsync<X>(writer =>
+		public static Task<X> InvokeWithoutUpdates<X>(this Client client, ITLFunction query)
+			=> client.CallAsync<X>(writer =>
 			{
 				writer.Write(0xBF9459B7);
 				query(writer);
@@ -6849,8 +6848,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/invokeWithMessagesRange"/></summary>
-		public Task<X> InvokeWithMessagesRange<X>(MessageRange range, ITLFunction query)
-			=> CallAsync<X>(writer =>
+		public static Task<X> InvokeWithMessagesRange<X>(this Client client, MessageRange range, ITLFunction query)
+			=> client.CallAsync<X>(writer =>
 			{
 				writer.Write(0x365275F2);
 				writer.WriteTLObject(range);
@@ -6859,8 +6858,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/invokeWithTakeout"/></summary>
-		public Task<X> InvokeWithTakeout<X>(long takeout_id, ITLFunction query)
-			=> CallAsync<X>(writer =>
+		public static Task<X> InvokeWithTakeout<X>(this Client client, long takeout_id, ITLFunction query)
+			=> client.CallAsync<X>(writer =>
 			{
 				writer.Write(0xACA9FD2E);
 				writer.Write(takeout_id);
@@ -6869,8 +6868,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.sendCode"/></summary>
-		public Task<Auth_SentCode> Auth_SendCode(string phone_number, int api_id, string api_hash, CodeSettings settings)
-			=> CallAsync<Auth_SentCode>(writer =>
+		public static Task<Auth_SentCode> Auth_SendCode(this Client client, string phone_number, int api_id, string api_hash, CodeSettings settings)
+			=> client.CallAsync<Auth_SentCode>(writer =>
 			{
 				writer.Write(0xA677244F);
 				writer.WriteTLString(phone_number);
@@ -6881,8 +6880,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.signUp"/></summary>
-		public Task<Auth_AuthorizationBase> Auth_SignUp(string phone_number, string phone_code_hash, string first_name, string last_name)
-			=> CallAsync<Auth_AuthorizationBase>(writer =>
+		public static Task<Auth_AuthorizationBase> Auth_SignUp(this Client client, string phone_number, string phone_code_hash, string first_name, string last_name)
+			=> client.CallAsync<Auth_AuthorizationBase>(writer =>
 			{
 				writer.Write(0x80EEE427);
 				writer.WriteTLString(phone_number);
@@ -6893,8 +6892,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.signIn"/></summary>
-		public Task<Auth_AuthorizationBase> Auth_SignIn(string phone_number, string phone_code_hash, string phone_code)
-			=> CallAsync<Auth_AuthorizationBase>(writer =>
+		public static Task<Auth_AuthorizationBase> Auth_SignIn(this Client client, string phone_number, string phone_code_hash, string phone_code)
+			=> client.CallAsync<Auth_AuthorizationBase>(writer =>
 			{
 				writer.Write(0xBCD51581);
 				writer.WriteTLString(phone_number);
@@ -6904,24 +6903,24 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.logOut"/></summary>
-		public Task<bool> Auth_LogOut()
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Auth_LogOut(this Client client)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x5717DA40);
 				return "Auth_LogOut";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.resetAuthorizations"/></summary>
-		public Task<bool> Auth_ResetAuthorizations()
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Auth_ResetAuthorizations(this Client client)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x9FAB0D1A);
 				return "Auth_ResetAuthorizations";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.exportAuthorization"/></summary>
-		public Task<Auth_ExportedAuthorization> Auth_ExportAuthorization(int dc_id)
-			=> CallAsync<Auth_ExportedAuthorization>(writer =>
+		public static Task<Auth_ExportedAuthorization> Auth_ExportAuthorization(this Client client, int dc_id)
+			=> client.CallAsync<Auth_ExportedAuthorization>(writer =>
 			{
 				writer.Write(0xE5BFFFCD);
 				writer.Write(dc_id);
@@ -6929,8 +6928,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.importAuthorization"/></summary>
-		public Task<Auth_AuthorizationBase> Auth_ImportAuthorization(long id, byte[] bytes)
-			=> CallAsync<Auth_AuthorizationBase>(writer =>
+		public static Task<Auth_AuthorizationBase> Auth_ImportAuthorization(this Client client, long id, byte[] bytes)
+			=> client.CallAsync<Auth_AuthorizationBase>(writer =>
 			{
 				writer.Write(0xA57A7DAD);
 				writer.Write(id);
@@ -6939,8 +6938,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.bindTempAuthKey"/></summary>
-		public Task<bool> Auth_BindTempAuthKey(long perm_auth_key_id, long nonce, DateTime expires_at, byte[] encrypted_message)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Auth_BindTempAuthKey(this Client client, long perm_auth_key_id, long nonce, DateTime expires_at, byte[] encrypted_message)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xCDD42A05);
 				writer.Write(perm_auth_key_id);
@@ -6951,8 +6950,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.importBotAuthorization"/></summary>
-		public Task<Auth_AuthorizationBase> Auth_ImportBotAuthorization(int flags, int api_id, string api_hash, string bot_auth_token)
-			=> CallAsync<Auth_AuthorizationBase>(writer =>
+		public static Task<Auth_AuthorizationBase> Auth_ImportBotAuthorization(this Client client, int flags, int api_id, string api_hash, string bot_auth_token)
+			=> client.CallAsync<Auth_AuthorizationBase>(writer =>
 			{
 				writer.Write(0x67A3FF2C);
 				writer.Write(flags);
@@ -6963,8 +6962,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.checkPassword"/></summary>
-		public Task<Auth_AuthorizationBase> Auth_CheckPassword(InputCheckPasswordSRPBase password)
-			=> CallAsync<Auth_AuthorizationBase>(writer =>
+		public static Task<Auth_AuthorizationBase> Auth_CheckPassword(this Client client, InputCheckPasswordSRPBase password)
+			=> client.CallAsync<Auth_AuthorizationBase>(writer =>
 			{
 				writer.Write(0xD18B4D16);
 				writer.WriteTLObject(password);
@@ -6972,16 +6971,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.requestPasswordRecovery"/></summary>
-		public Task<Auth_PasswordRecovery> Auth_RequestPasswordRecovery()
-			=> CallAsync<Auth_PasswordRecovery>(writer =>
+		public static Task<Auth_PasswordRecovery> Auth_RequestPasswordRecovery(this Client client)
+			=> client.CallAsync<Auth_PasswordRecovery>(writer =>
 			{
 				writer.Write(0xD897BC66);
 				return "Auth_RequestPasswordRecovery";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.recoverPassword"/></summary>
-		public Task<Auth_AuthorizationBase> Auth_RecoverPassword(string code, Account_PasswordInputSettings new_settings = null)
-			=> CallAsync<Auth_AuthorizationBase>(writer =>
+		public static Task<Auth_AuthorizationBase> Auth_RecoverPassword(this Client client, string code, Account_PasswordInputSettings new_settings = null)
+			=> client.CallAsync<Auth_AuthorizationBase>(writer =>
 			{
 				writer.Write(0x37096C70);
 				writer.Write(new_settings != null ? 0x1 : 0);
@@ -6992,8 +6991,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.resendCode"/></summary>
-		public Task<Auth_SentCode> Auth_ResendCode(string phone_number, string phone_code_hash)
-			=> CallAsync<Auth_SentCode>(writer =>
+		public static Task<Auth_SentCode> Auth_ResendCode(this Client client, string phone_number, string phone_code_hash)
+			=> client.CallAsync<Auth_SentCode>(writer =>
 			{
 				writer.Write(0x3EF1A9BF);
 				writer.WriteTLString(phone_number);
@@ -7002,8 +7001,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.cancelCode"/></summary>
-		public Task<bool> Auth_CancelCode(string phone_number, string phone_code_hash)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Auth_CancelCode(this Client client, string phone_number, string phone_code_hash)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x1F040578);
 				writer.WriteTLString(phone_number);
@@ -7012,8 +7011,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.dropTempAuthKeys"/></summary>
-		public Task<bool> Auth_DropTempAuthKeys(long[] except_auth_keys)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Auth_DropTempAuthKeys(this Client client, long[] except_auth_keys)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x8E48A188);
 				writer.WriteTLVector(except_auth_keys);
@@ -7021,8 +7020,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.exportLoginToken"/></summary>
-		public Task<Auth_LoginTokenBase> Auth_ExportLoginToken(int api_id, string api_hash, long[] except_ids)
-			=> CallAsync<Auth_LoginTokenBase>(writer =>
+		public static Task<Auth_LoginTokenBase> Auth_ExportLoginToken(this Client client, int api_id, string api_hash, long[] except_ids)
+			=> client.CallAsync<Auth_LoginTokenBase>(writer =>
 			{
 				writer.Write(0xB7E085FE);
 				writer.Write(api_id);
@@ -7032,8 +7031,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.importLoginToken"/></summary>
-		public Task<Auth_LoginTokenBase> Auth_ImportLoginToken(byte[] token)
-			=> CallAsync<Auth_LoginTokenBase>(writer =>
+		public static Task<Auth_LoginTokenBase> Auth_ImportLoginToken(this Client client, byte[] token)
+			=> client.CallAsync<Auth_LoginTokenBase>(writer =>
 			{
 				writer.Write(0x95AC5CE4);
 				writer.WriteTLBytes(token);
@@ -7041,8 +7040,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.acceptLoginToken"/></summary>
-		public Task<Authorization> Auth_AcceptLoginToken(byte[] token)
-			=> CallAsync<Authorization>(writer =>
+		public static Task<Authorization> Auth_AcceptLoginToken(this Client client, byte[] token)
+			=> client.CallAsync<Authorization>(writer =>
 			{
 				writer.Write(0xE894AD4D);
 				writer.WriteTLBytes(token);
@@ -7050,8 +7049,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.checkRecoveryPassword"/></summary>
-		public Task<bool> Auth_CheckRecoveryPassword(string code)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Auth_CheckRecoveryPassword(this Client client, string code)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x0D36BF79);
 				writer.WriteTLString(code);
@@ -7059,8 +7058,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.registerDevice"/></summary>
-		public Task<bool> Account_RegisterDevice(int token_type, string token, bool app_sandbox, byte[] secret, long[] other_uids, bool no_muted = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_RegisterDevice(this Client client, int token_type, string token, bool app_sandbox, byte[] secret, long[] other_uids, bool no_muted = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xEC86017A);
 				writer.Write(no_muted ? 0x1 : 0);
@@ -7073,8 +7072,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.unregisterDevice"/></summary>
-		public Task<bool> Account_UnregisterDevice(int token_type, string token, long[] other_uids)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_UnregisterDevice(this Client client, int token_type, string token, long[] other_uids)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x6A0D3206);
 				writer.Write(token_type);
@@ -7084,8 +7083,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.updateNotifySettings"/></summary>
-		public Task<bool> Account_UpdateNotifySettings(InputNotifyPeerBase peer, InputPeerNotifySettings settings)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_UpdateNotifySettings(this Client client, InputNotifyPeerBase peer, InputPeerNotifySettings settings)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x84BE5B93);
 				writer.WriteTLObject(peer);
@@ -7094,8 +7093,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getNotifySettings"/></summary>
-		public Task<PeerNotifySettings> Account_GetNotifySettings(InputNotifyPeerBase peer)
-			=> CallAsync<PeerNotifySettings>(writer =>
+		public static Task<PeerNotifySettings> Account_GetNotifySettings(this Client client, InputNotifyPeerBase peer)
+			=> client.CallAsync<PeerNotifySettings>(writer =>
 			{
 				writer.Write(0x12B3AD31);
 				writer.WriteTLObject(peer);
@@ -7103,16 +7102,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.resetNotifySettings"/></summary>
-		public Task<bool> Account_ResetNotifySettings()
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_ResetNotifySettings(this Client client)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xDB7E1747);
 				return "Account_ResetNotifySettings";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.updateProfile"/></summary>
-		public Task<UserBase> Account_UpdateProfile(string first_name = null, string last_name = null, string about = null)
-			=> CallAsync<UserBase>(writer =>
+		public static Task<UserBase> Account_UpdateProfile(this Client client, string first_name = null, string last_name = null, string about = null)
+			=> client.CallAsync<UserBase>(writer =>
 			{
 				writer.Write(0x78515775);
 				writer.Write((first_name != null ? 0x1 : 0) | (last_name != null ? 0x2 : 0) | (about != null ? 0x4 : 0));
@@ -7126,8 +7125,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.updateStatus"/></summary>
-		public Task<bool> Account_UpdateStatus(bool offline)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_UpdateStatus(this Client client, bool offline)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x6628562C);
 				writer.Write(offline ? 0x997275B5 : 0xBC799737);
@@ -7135,8 +7134,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getWallPapers"/></summary>
-		public Task<Account_WallPapersBase> Account_GetWallPapers(long hash)
-			=> CallAsync<Account_WallPapersBase>(writer =>
+		public static Task<Account_WallPapersBase> Account_GetWallPapers(this Client client, long hash)
+			=> client.CallAsync<Account_WallPapersBase>(writer =>
 			{
 				writer.Write(0x07967D36);
 				writer.Write(hash);
@@ -7144,8 +7143,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.reportPeer"/></summary>
-		public Task<bool> Account_ReportPeer(InputPeer peer, ReportReason reason, string message)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_ReportPeer(this Client client, InputPeer peer, ReportReason reason, string message)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xC5BA3D86);
 				writer.WriteTLObject(peer);
@@ -7155,8 +7154,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.checkUsername"/></summary>
-		public Task<bool> Account_CheckUsername(string username)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_CheckUsername(this Client client, string username)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x2714D86C);
 				writer.WriteTLString(username);
@@ -7164,8 +7163,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.updateUsername"/></summary>
-		public Task<UserBase> Account_UpdateUsername(string username)
-			=> CallAsync<UserBase>(writer =>
+		public static Task<UserBase> Account_UpdateUsername(this Client client, string username)
+			=> client.CallAsync<UserBase>(writer =>
 			{
 				writer.Write(0x3E0BDD7C);
 				writer.WriteTLString(username);
@@ -7173,8 +7172,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getPrivacy"/></summary>
-		public Task<Account_PrivacyRules> Account_GetPrivacy(InputPrivacyKey key)
-			=> CallAsync<Account_PrivacyRules>(writer =>
+		public static Task<Account_PrivacyRules> Account_GetPrivacy(this Client client, InputPrivacyKey key)
+			=> client.CallAsync<Account_PrivacyRules>(writer =>
 			{
 				writer.Write(0xDADBC950);
 				writer.WriteTLObject(key);
@@ -7182,8 +7181,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.setPrivacy"/></summary>
-		public Task<Account_PrivacyRules> Account_SetPrivacy(InputPrivacyKey key, InputPrivacyRule[] rules)
-			=> CallAsync<Account_PrivacyRules>(writer =>
+		public static Task<Account_PrivacyRules> Account_SetPrivacy(this Client client, InputPrivacyKey key, InputPrivacyRule[] rules)
+			=> client.CallAsync<Account_PrivacyRules>(writer =>
 			{
 				writer.Write(0xC9F81CE8);
 				writer.WriteTLObject(key);
@@ -7192,8 +7191,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.deleteAccount"/></summary>
-		public Task<bool> Account_DeleteAccount(string reason)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_DeleteAccount(this Client client, string reason)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x418D4E0B);
 				writer.WriteTLString(reason);
@@ -7201,16 +7200,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getAccountTTL"/></summary>
-		public Task<AccountDaysTTL> Account_GetAccountTTL()
-			=> CallAsync<AccountDaysTTL>(writer =>
+		public static Task<AccountDaysTTL> Account_GetAccountTTL(this Client client)
+			=> client.CallAsync<AccountDaysTTL>(writer =>
 			{
 				writer.Write(0x08FC711D);
 				return "Account_GetAccountTTL";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.setAccountTTL"/></summary>
-		public Task<bool> Account_SetAccountTTL(AccountDaysTTL ttl)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_SetAccountTTL(this Client client, AccountDaysTTL ttl)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x2442485E);
 				writer.WriteTLObject(ttl);
@@ -7218,8 +7217,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.sendChangePhoneCode"/></summary>
-		public Task<Auth_SentCode> Account_SendChangePhoneCode(string phone_number, CodeSettings settings)
-			=> CallAsync<Auth_SentCode>(writer =>
+		public static Task<Auth_SentCode> Account_SendChangePhoneCode(this Client client, string phone_number, CodeSettings settings)
+			=> client.CallAsync<Auth_SentCode>(writer =>
 			{
 				writer.Write(0x82574AE5);
 				writer.WriteTLString(phone_number);
@@ -7228,8 +7227,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.changePhone"/></summary>
-		public Task<UserBase> Account_ChangePhone(string phone_number, string phone_code_hash, string phone_code)
-			=> CallAsync<UserBase>(writer =>
+		public static Task<UserBase> Account_ChangePhone(this Client client, string phone_number, string phone_code_hash, string phone_code)
+			=> client.CallAsync<UserBase>(writer =>
 			{
 				writer.Write(0x70C32EDB);
 				writer.WriteTLString(phone_number);
@@ -7239,8 +7238,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.updateDeviceLocked"/></summary>
-		public Task<bool> Account_UpdateDeviceLocked(int period)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_UpdateDeviceLocked(this Client client, int period)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x38DF3532);
 				writer.Write(period);
@@ -7248,16 +7247,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getAuthorizations"/></summary>
-		public Task<Account_Authorizations> Account_GetAuthorizations()
-			=> CallAsync<Account_Authorizations>(writer =>
+		public static Task<Account_Authorizations> Account_GetAuthorizations(this Client client)
+			=> client.CallAsync<Account_Authorizations>(writer =>
 			{
 				writer.Write(0xE320C158);
 				return "Account_GetAuthorizations";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.resetAuthorization"/></summary>
-		public Task<bool> Account_ResetAuthorization(long hash)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_ResetAuthorization(this Client client, long hash)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xDF77F3BC);
 				writer.Write(hash);
@@ -7265,16 +7264,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getPassword"/></summary>
-		public Task<Account_Password> Account_GetPassword()
-			=> CallAsync<Account_Password>(writer =>
+		public static Task<Account_Password> Account_GetPassword(this Client client)
+			=> client.CallAsync<Account_Password>(writer =>
 			{
 				writer.Write(0x548A30F5);
 				return "Account_GetPassword";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getPasswordSettings"/></summary>
-		public Task<Account_PasswordSettings> Account_GetPasswordSettings(InputCheckPasswordSRPBase password)
-			=> CallAsync<Account_PasswordSettings>(writer =>
+		public static Task<Account_PasswordSettings> Account_GetPasswordSettings(this Client client, InputCheckPasswordSRPBase password)
+			=> client.CallAsync<Account_PasswordSettings>(writer =>
 			{
 				writer.Write(0x9CD4EAF9);
 				writer.WriteTLObject(password);
@@ -7282,8 +7281,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.updatePasswordSettings"/></summary>
-		public Task<bool> Account_UpdatePasswordSettings(InputCheckPasswordSRPBase password, Account_PasswordInputSettings new_settings)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_UpdatePasswordSettings(this Client client, InputCheckPasswordSRPBase password, Account_PasswordInputSettings new_settings)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xA59B102F);
 				writer.WriteTLObject(password);
@@ -7292,8 +7291,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.sendConfirmPhoneCode"/></summary>
-		public Task<Auth_SentCode> Account_SendConfirmPhoneCode(string hash, CodeSettings settings)
-			=> CallAsync<Auth_SentCode>(writer =>
+		public static Task<Auth_SentCode> Account_SendConfirmPhoneCode(this Client client, string hash, CodeSettings settings)
+			=> client.CallAsync<Auth_SentCode>(writer =>
 			{
 				writer.Write(0x1B3FAA88);
 				writer.WriteTLString(hash);
@@ -7302,8 +7301,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.confirmPhone"/></summary>
-		public Task<bool> Account_ConfirmPhone(string phone_code_hash, string phone_code)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_ConfirmPhone(this Client client, string phone_code_hash, string phone_code)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x5F2178C3);
 				writer.WriteTLString(phone_code_hash);
@@ -7312,8 +7311,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getTmpPassword"/></summary>
-		public Task<Account_TmpPassword> Account_GetTmpPassword(InputCheckPasswordSRPBase password, int period)
-			=> CallAsync<Account_TmpPassword>(writer =>
+		public static Task<Account_TmpPassword> Account_GetTmpPassword(this Client client, InputCheckPasswordSRPBase password, int period)
+			=> client.CallAsync<Account_TmpPassword>(writer =>
 			{
 				writer.Write(0x449E0B51);
 				writer.WriteTLObject(password);
@@ -7322,16 +7321,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getWebAuthorizations"/></summary>
-		public Task<Account_WebAuthorizations> Account_GetWebAuthorizations()
-			=> CallAsync<Account_WebAuthorizations>(writer =>
+		public static Task<Account_WebAuthorizations> Account_GetWebAuthorizations(this Client client)
+			=> client.CallAsync<Account_WebAuthorizations>(writer =>
 			{
 				writer.Write(0x182E6D6F);
 				return "Account_GetWebAuthorizations";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.resetWebAuthorization"/></summary>
-		public Task<bool> Account_ResetWebAuthorization(long hash)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_ResetWebAuthorization(this Client client, long hash)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x2D01B9EF);
 				writer.Write(hash);
@@ -7339,24 +7338,24 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.resetWebAuthorizations"/></summary>
-		public Task<bool> Account_ResetWebAuthorizations()
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_ResetWebAuthorizations(this Client client)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x682D2594);
 				return "Account_ResetWebAuthorizations";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getAllSecureValues"/></summary>
-		public Task<SecureValue[]> Account_GetAllSecureValues()
-			=> CallAsync<SecureValue[]>(writer =>
+		public static Task<SecureValue[]> Account_GetAllSecureValues(this Client client)
+			=> client.CallAsync<SecureValue[]>(writer =>
 			{
 				writer.Write(0xB288BC7D);
 				return "Account_GetAllSecureValues";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getSecureValue"/></summary>
-		public Task<SecureValue[]> Account_GetSecureValue(SecureValueType[] types)
-			=> CallAsync<SecureValue[]>(writer =>
+		public static Task<SecureValue[]> Account_GetSecureValue(this Client client, SecureValueType[] types)
+			=> client.CallAsync<SecureValue[]>(writer =>
 			{
 				writer.Write(0x73665BC2);
 				writer.WriteTLVector(types);
@@ -7364,8 +7363,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.saveSecureValue"/></summary>
-		public Task<SecureValue> Account_SaveSecureValue(InputSecureValue value, long secure_secret_id)
-			=> CallAsync<SecureValue>(writer =>
+		public static Task<SecureValue> Account_SaveSecureValue(this Client client, InputSecureValue value, long secure_secret_id)
+			=> client.CallAsync<SecureValue>(writer =>
 			{
 				writer.Write(0x899FE31D);
 				writer.WriteTLObject(value);
@@ -7374,8 +7373,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.deleteSecureValue"/></summary>
-		public Task<bool> Account_DeleteSecureValue(SecureValueType[] types)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_DeleteSecureValue(this Client client, SecureValueType[] types)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xB880BC4B);
 				writer.WriteTLVector(types);
@@ -7383,8 +7382,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getAuthorizationForm"/></summary>
-		public Task<Account_AuthorizationForm> Account_GetAuthorizationForm(long bot_id, string scope, string public_key)
-			=> CallAsync<Account_AuthorizationForm>(writer =>
+		public static Task<Account_AuthorizationForm> Account_GetAuthorizationForm(this Client client, long bot_id, string scope, string public_key)
+			=> client.CallAsync<Account_AuthorizationForm>(writer =>
 			{
 				writer.Write(0xA929597A);
 				writer.Write(bot_id);
@@ -7394,8 +7393,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.acceptAuthorization"/></summary>
-		public Task<bool> Account_AcceptAuthorization(long bot_id, string scope, string public_key, SecureValueHash[] value_hashes, SecureCredentialsEncrypted credentials)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_AcceptAuthorization(this Client client, long bot_id, string scope, string public_key, SecureValueHash[] value_hashes, SecureCredentialsEncrypted credentials)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xF3ED4C73);
 				writer.Write(bot_id);
@@ -7407,8 +7406,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.sendVerifyPhoneCode"/></summary>
-		public Task<Auth_SentCode> Account_SendVerifyPhoneCode(string phone_number, CodeSettings settings)
-			=> CallAsync<Auth_SentCode>(writer =>
+		public static Task<Auth_SentCode> Account_SendVerifyPhoneCode(this Client client, string phone_number, CodeSettings settings)
+			=> client.CallAsync<Auth_SentCode>(writer =>
 			{
 				writer.Write(0xA5A356F9);
 				writer.WriteTLString(phone_number);
@@ -7417,8 +7416,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.verifyPhone"/></summary>
-		public Task<bool> Account_VerifyPhone(string phone_number, string phone_code_hash, string phone_code)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_VerifyPhone(this Client client, string phone_number, string phone_code_hash, string phone_code)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x4DD3A7F6);
 				writer.WriteTLString(phone_number);
@@ -7428,8 +7427,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.sendVerifyEmailCode"/></summary>
-		public Task<Account_SentEmailCode> Account_SendVerifyEmailCode(string email)
-			=> CallAsync<Account_SentEmailCode>(writer =>
+		public static Task<Account_SentEmailCode> Account_SendVerifyEmailCode(this Client client, string email)
+			=> client.CallAsync<Account_SentEmailCode>(writer =>
 			{
 				writer.Write(0x7011509F);
 				writer.WriteTLString(email);
@@ -7437,8 +7436,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.verifyEmail"/></summary>
-		public Task<bool> Account_VerifyEmail(string email, string code)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_VerifyEmail(this Client client, string email, string code)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xECBA39DB);
 				writer.WriteTLString(email);
@@ -7447,8 +7446,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.initTakeoutSession"/></summary>
-		public Task<Account_Takeout> Account_InitTakeoutSession(bool contacts = false, bool message_users = false, bool message_chats = false, bool message_megagroups = false, bool message_channels = false, bool files = false, int? file_max_size = null)
-			=> CallAsync<Account_Takeout>(writer =>
+		public static Task<Account_Takeout> Account_InitTakeoutSession(this Client client, bool contacts = false, bool message_users = false, bool message_chats = false, bool message_megagroups = false, bool message_channels = false, bool files = false, int? file_max_size = null)
+			=> client.CallAsync<Account_Takeout>(writer =>
 			{
 				writer.Write(0xF05B4804);
 				writer.Write((contacts ? 0x1 : 0) | (message_users ? 0x2 : 0) | (message_chats ? 0x4 : 0) | (message_megagroups ? 0x8 : 0) | (message_channels ? 0x10 : 0) | (files ? 0x20 : 0) | (file_max_size != null ? 0x20 : 0));
@@ -7458,8 +7457,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.finishTakeoutSession"/></summary>
-		public Task<bool> Account_FinishTakeoutSession(bool success = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_FinishTakeoutSession(this Client client, bool success = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x1D2652EE);
 				writer.Write(success ? 0x1 : 0);
@@ -7467,8 +7466,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.confirmPasswordEmail"/></summary>
-		public Task<bool> Account_ConfirmPasswordEmail(string code)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_ConfirmPasswordEmail(this Client client, string code)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x8FDF1920);
 				writer.WriteTLString(code);
@@ -7476,32 +7475,32 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.resendPasswordEmail"/></summary>
-		public Task<bool> Account_ResendPasswordEmail()
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_ResendPasswordEmail(this Client client)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x7A7F2A15);
 				return "Account_ResendPasswordEmail";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.cancelPasswordEmail"/></summary>
-		public Task<bool> Account_CancelPasswordEmail()
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_CancelPasswordEmail(this Client client)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xC1CBD5B6);
 				return "Account_CancelPasswordEmail";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getContactSignUpNotification"/></summary>
-		public Task<bool> Account_GetContactSignUpNotification()
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_GetContactSignUpNotification(this Client client)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x9F07C728);
 				return "Account_GetContactSignUpNotification";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.setContactSignUpNotification"/></summary>
-		public Task<bool> Account_SetContactSignUpNotification(bool silent)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_SetContactSignUpNotification(this Client client, bool silent)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xCFF43F61);
 				writer.Write(silent ? 0x997275B5 : 0xBC799737);
@@ -7509,8 +7508,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getNotifyExceptions"/></summary>
-		public Task<UpdatesBase> Account_GetNotifyExceptions(bool compare_sound = false, InputNotifyPeerBase peer = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Account_GetNotifyExceptions(this Client client, bool compare_sound = false, InputNotifyPeerBase peer = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x53577479);
 				writer.Write((compare_sound ? 0x2 : 0) | (peer != null ? 0x1 : 0));
@@ -7520,8 +7519,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getWallPaper"/></summary>
-		public Task<WallPaperBase> Account_GetWallPaper(InputWallPaperBase wallpaper)
-			=> CallAsync<WallPaperBase>(writer =>
+		public static Task<WallPaperBase> Account_GetWallPaper(this Client client, InputWallPaperBase wallpaper)
+			=> client.CallAsync<WallPaperBase>(writer =>
 			{
 				writer.Write(0xFC8DDBEA);
 				writer.WriteTLObject(wallpaper);
@@ -7529,8 +7528,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.uploadWallPaper"/></summary>
-		public Task<WallPaperBase> Account_UploadWallPaper(InputFileBase file, string mime_type, WallPaperSettings settings)
-			=> CallAsync<WallPaperBase>(writer =>
+		public static Task<WallPaperBase> Account_UploadWallPaper(this Client client, InputFileBase file, string mime_type, WallPaperSettings settings)
+			=> client.CallAsync<WallPaperBase>(writer =>
 			{
 				writer.Write(0xDD853661);
 				writer.WriteTLObject(file);
@@ -7540,8 +7539,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.saveWallPaper"/></summary>
-		public Task<bool> Account_SaveWallPaper(InputWallPaperBase wallpaper, bool unsave, WallPaperSettings settings)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_SaveWallPaper(this Client client, InputWallPaperBase wallpaper, bool unsave, WallPaperSettings settings)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x6C5A5B37);
 				writer.WriteTLObject(wallpaper);
@@ -7551,8 +7550,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.installWallPaper"/></summary>
-		public Task<bool> Account_InstallWallPaper(InputWallPaperBase wallpaper, WallPaperSettings settings)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_InstallWallPaper(this Client client, InputWallPaperBase wallpaper, WallPaperSettings settings)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xFEED5769);
 				writer.WriteTLObject(wallpaper);
@@ -7561,24 +7560,24 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.resetWallPapers"/></summary>
-		public Task<bool> Account_ResetWallPapers()
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_ResetWallPapers(this Client client)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xBB3B9804);
 				return "Account_ResetWallPapers";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getAutoDownloadSettings"/></summary>
-		public Task<Account_AutoDownloadSettings> Account_GetAutoDownloadSettings()
-			=> CallAsync<Account_AutoDownloadSettings>(writer =>
+		public static Task<Account_AutoDownloadSettings> Account_GetAutoDownloadSettings(this Client client)
+			=> client.CallAsync<Account_AutoDownloadSettings>(writer =>
 			{
 				writer.Write(0x56DA0B3F);
 				return "Account_GetAutoDownloadSettings";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.saveAutoDownloadSettings"/></summary>
-		public Task<bool> Account_SaveAutoDownloadSettings(AutoDownloadSettings settings, bool low = false, bool high = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_SaveAutoDownloadSettings(this Client client, AutoDownloadSettings settings, bool low = false, bool high = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x76F36233);
 				writer.Write((low ? 0x1 : 0) | (high ? 0x2 : 0));
@@ -7587,8 +7586,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.uploadTheme"/></summary>
-		public Task<DocumentBase> Account_UploadTheme(InputFileBase file, string file_name, string mime_type, InputFileBase thumb = null)
-			=> CallAsync<DocumentBase>(writer =>
+		public static Task<DocumentBase> Account_UploadTheme(this Client client, InputFileBase file, string file_name, string mime_type, InputFileBase thumb = null)
+			=> client.CallAsync<DocumentBase>(writer =>
 			{
 				writer.Write(0x1C3DB333);
 				writer.Write(thumb != null ? 0x1 : 0);
@@ -7601,8 +7600,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.createTheme"/></summary>
-		public Task<Theme> Account_CreateTheme(string slug, string title, InputDocumentBase document = null, InputThemeSettings settings = null)
-			=> CallAsync<Theme>(writer =>
+		public static Task<Theme> Account_CreateTheme(this Client client, string slug, string title, InputDocumentBase document = null, InputThemeSettings settings = null)
+			=> client.CallAsync<Theme>(writer =>
 			{
 				writer.Write(0x8432C21F);
 				writer.Write((document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0));
@@ -7616,8 +7615,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.updateTheme"/></summary>
-		public Task<Theme> Account_UpdateTheme(string format, InputThemeBase theme, string slug = null, string title = null, InputDocumentBase document = null, InputThemeSettings settings = null)
-			=> CallAsync<Theme>(writer =>
+		public static Task<Theme> Account_UpdateTheme(this Client client, string format, InputThemeBase theme, string slug = null, string title = null, InputDocumentBase document = null, InputThemeSettings settings = null)
+			=> client.CallAsync<Theme>(writer =>
 			{
 				writer.Write(0x5CB367D5);
 				writer.Write((slug != null ? 0x1 : 0) | (title != null ? 0x2 : 0) | (document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0));
@@ -7635,8 +7634,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.saveTheme"/></summary>
-		public Task<bool> Account_SaveTheme(InputThemeBase theme, bool unsave)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_SaveTheme(this Client client, InputThemeBase theme, bool unsave)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xF257106C);
 				writer.WriteTLObject(theme);
@@ -7645,8 +7644,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.installTheme"/></summary>
-		public Task<bool> Account_InstallTheme(bool dark = false, string format = null, InputThemeBase theme = null)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_InstallTheme(this Client client, bool dark = false, string format = null, InputThemeBase theme = null)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x7AE43737);
 				writer.Write((dark ? 0x1 : 0) | (format != null ? 0x2 : 0) | (theme != null ? 0x2 : 0));
@@ -7658,8 +7657,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getTheme"/></summary>
-		public Task<Theme> Account_GetTheme(string format, InputThemeBase theme, long document_id)
-			=> CallAsync<Theme>(writer =>
+		public static Task<Theme> Account_GetTheme(this Client client, string format, InputThemeBase theme, long document_id)
+			=> client.CallAsync<Theme>(writer =>
 			{
 				writer.Write(0x8D9D742B);
 				writer.WriteTLString(format);
@@ -7669,8 +7668,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getThemes"/></summary>
-		public Task<Account_ThemesBase> Account_GetThemes(string format, long hash)
-			=> CallAsync<Account_ThemesBase>(writer =>
+		public static Task<Account_ThemesBase> Account_GetThemes(this Client client, string format, long hash)
+			=> client.CallAsync<Account_ThemesBase>(writer =>
 			{
 				writer.Write(0x7206E458);
 				writer.WriteTLString(format);
@@ -7679,8 +7678,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.setContentSettings"/></summary>
-		public Task<bool> Account_SetContentSettings(bool sensitive_enabled = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_SetContentSettings(this Client client, bool sensitive_enabled = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xB574B16B);
 				writer.Write(sensitive_enabled ? 0x1 : 0);
@@ -7688,16 +7687,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getContentSettings"/></summary>
-		public Task<Account_ContentSettings> Account_GetContentSettings()
-			=> CallAsync<Account_ContentSettings>(writer =>
+		public static Task<Account_ContentSettings> Account_GetContentSettings(this Client client)
+			=> client.CallAsync<Account_ContentSettings>(writer =>
 			{
 				writer.Write(0x8B9B4DAE);
 				return "Account_GetContentSettings";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getMultiWallPapers"/></summary>
-		public Task<WallPaperBase[]> Account_GetMultiWallPapers(InputWallPaperBase[] wallpapers)
-			=> CallAsync<WallPaperBase[]>(writer =>
+		public static Task<WallPaperBase[]> Account_GetMultiWallPapers(this Client client, InputWallPaperBase[] wallpapers)
+			=> client.CallAsync<WallPaperBase[]>(writer =>
 			{
 				writer.Write(0x65AD71DC);
 				writer.WriteTLVector(wallpapers);
@@ -7705,16 +7704,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getGlobalPrivacySettings"/></summary>
-		public Task<GlobalPrivacySettings> Account_GetGlobalPrivacySettings()
-			=> CallAsync<GlobalPrivacySettings>(writer =>
+		public static Task<GlobalPrivacySettings> Account_GetGlobalPrivacySettings(this Client client)
+			=> client.CallAsync<GlobalPrivacySettings>(writer =>
 			{
 				writer.Write(0xEB2B4CF6);
 				return "Account_GetGlobalPrivacySettings";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.setGlobalPrivacySettings"/></summary>
-		public Task<GlobalPrivacySettings> Account_SetGlobalPrivacySettings(GlobalPrivacySettings settings)
-			=> CallAsync<GlobalPrivacySettings>(writer =>
+		public static Task<GlobalPrivacySettings> Account_SetGlobalPrivacySettings(this Client client, GlobalPrivacySettings settings)
+			=> client.CallAsync<GlobalPrivacySettings>(writer =>
 			{
 				writer.Write(0x1EDAAAC2);
 				writer.WriteTLObject(settings);
@@ -7722,8 +7721,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.reportProfilePhoto"/></summary>
-		public Task<bool> Account_ReportProfilePhoto(InputPeer peer, InputPhotoBase photo_id, ReportReason reason, string message)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_ReportProfilePhoto(this Client client, InputPeer peer, InputPhotoBase photo_id, ReportReason reason, string message)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xFA8CC6F5);
 				writer.WriteTLObject(peer);
@@ -7734,24 +7733,24 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.resetPassword"/></summary>
-		public Task<Account_ResetPasswordResult> Account_ResetPassword()
-			=> CallAsync<Account_ResetPasswordResult>(writer =>
+		public static Task<Account_ResetPasswordResult> Account_ResetPassword(this Client client)
+			=> client.CallAsync<Account_ResetPasswordResult>(writer =>
 			{
 				writer.Write(0x9308CE1B);
 				return "Account_ResetPassword";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.declinePasswordReset"/></summary>
-		public Task<bool> Account_DeclinePasswordReset()
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Account_DeclinePasswordReset(this Client client)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x4C9409F6);
 				return "Account_DeclinePasswordReset";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getChatThemes"/></summary>
-		public Task<Account_ChatThemesBase> Account_GetChatThemes(int hash)
-			=> CallAsync<Account_ChatThemesBase>(writer =>
+		public static Task<Account_ChatThemesBase> Account_GetChatThemes(this Client client, int hash)
+			=> client.CallAsync<Account_ChatThemesBase>(writer =>
 			{
 				writer.Write(0xD6D71D7B);
 				writer.Write(hash);
@@ -7759,8 +7758,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/users.getUsers"/></summary>
-		public Task<UserBase[]> Users_GetUsers(InputUserBase[] id)
-			=> CallAsync<UserBase[]>(writer =>
+		public static Task<UserBase[]> Users_GetUsers(this Client client, InputUserBase[] id)
+			=> client.CallAsync<UserBase[]>(writer =>
 			{
 				writer.Write(0x0D91A548);
 				writer.WriteTLVector(id);
@@ -7768,8 +7767,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/users.getFullUser"/></summary>
-		public Task<UserFull> Users_GetFullUser(InputUserBase id)
-			=> CallAsync<UserFull>(writer =>
+		public static Task<UserFull> Users_GetFullUser(this Client client, InputUserBase id)
+			=> client.CallAsync<UserFull>(writer =>
 			{
 				writer.Write(0xCA30A5B1);
 				writer.WriteTLObject(id);
@@ -7777,8 +7776,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/users.setSecureValueErrors"/></summary>
-		public Task<bool> Users_SetSecureValueErrors(InputUserBase id, SecureValueErrorBase[] errors)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Users_SetSecureValueErrors(this Client client, InputUserBase id, SecureValueErrorBase[] errors)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x90C894B5);
 				writer.WriteTLObject(id);
@@ -7787,8 +7786,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getContactIDs"/></summary>
-		public Task<int[]> Contacts_GetContactIDs(long hash)
-			=> CallAsync<int[]>(writer =>
+		public static Task<int[]> Contacts_GetContactIDs(this Client client, long hash)
+			=> client.CallAsync<int[]>(writer =>
 			{
 				writer.Write(0x7ADC669D);
 				writer.Write(hash);
@@ -7796,16 +7795,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getStatuses"/></summary>
-		public Task<ContactStatus[]> Contacts_GetStatuses()
-			=> CallAsync<ContactStatus[]>(writer =>
+		public static Task<ContactStatus[]> Contacts_GetStatuses(this Client client)
+			=> client.CallAsync<ContactStatus[]>(writer =>
 			{
 				writer.Write(0xC4A353EE);
 				return "Contacts_GetStatuses";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getContacts"/></summary>
-		public Task<Contacts_ContactsBase> Contacts_GetContacts(long hash)
-			=> CallAsync<Contacts_ContactsBase>(writer =>
+		public static Task<Contacts_ContactsBase> Contacts_GetContacts(this Client client, long hash)
+			=> client.CallAsync<Contacts_ContactsBase>(writer =>
 			{
 				writer.Write(0x5DD69E12);
 				writer.Write(hash);
@@ -7813,8 +7812,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.importContacts"/></summary>
-		public Task<Contacts_ImportedContacts> Contacts_ImportContacts(InputContact[] contacts)
-			=> CallAsync<Contacts_ImportedContacts>(writer =>
+		public static Task<Contacts_ImportedContacts> Contacts_ImportContacts(this Client client, InputContact[] contacts)
+			=> client.CallAsync<Contacts_ImportedContacts>(writer =>
 			{
 				writer.Write(0x2C800BE5);
 				writer.WriteTLVector(contacts);
@@ -7822,8 +7821,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.deleteContacts"/></summary>
-		public Task<UpdatesBase> Contacts_DeleteContacts(InputUserBase[] id)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Contacts_DeleteContacts(this Client client, InputUserBase[] id)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x096A0E00);
 				writer.WriteTLVector(id);
@@ -7831,8 +7830,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.deleteByPhones"/></summary>
-		public Task<bool> Contacts_DeleteByPhones(string[] phones)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Contacts_DeleteByPhones(this Client client, string[] phones)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x1013FD9E);
 				writer.WriteTLVector(phones);
@@ -7840,8 +7839,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.block"/></summary>
-		public Task<bool> Contacts_Block(InputPeer id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Contacts_Block(this Client client, InputPeer id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x68CC1411);
 				writer.WriteTLObject(id);
@@ -7849,8 +7848,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.unblock"/></summary>
-		public Task<bool> Contacts_Unblock(InputPeer id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Contacts_Unblock(this Client client, InputPeer id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xBEA65D50);
 				writer.WriteTLObject(id);
@@ -7858,8 +7857,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getBlocked"/></summary>
-		public Task<Contacts_BlockedBase> Contacts_GetBlocked(int offset, int limit)
-			=> CallAsync<Contacts_BlockedBase>(writer =>
+		public static Task<Contacts_BlockedBase> Contacts_GetBlocked(this Client client, int offset, int limit)
+			=> client.CallAsync<Contacts_BlockedBase>(writer =>
 			{
 				writer.Write(0xF57C350F);
 				writer.Write(offset);
@@ -7868,8 +7867,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.search"/></summary>
-		public Task<Contacts_Found> Contacts_Search(string q, int limit)
-			=> CallAsync<Contacts_Found>(writer =>
+		public static Task<Contacts_Found> Contacts_Search(this Client client, string q, int limit)
+			=> client.CallAsync<Contacts_Found>(writer =>
 			{
 				writer.Write(0x11F812D8);
 				writer.WriteTLString(q);
@@ -7878,8 +7877,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.resolveUsername"/></summary>
-		public Task<Contacts_ResolvedPeer> Contacts_ResolveUsername(string username)
-			=> CallAsync<Contacts_ResolvedPeer>(writer =>
+		public static Task<Contacts_ResolvedPeer> Contacts_ResolveUsername(this Client client, string username)
+			=> client.CallAsync<Contacts_ResolvedPeer>(writer =>
 			{
 				writer.Write(0xF93CCBA3);
 				writer.WriteTLString(username);
@@ -7887,8 +7886,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getTopPeers"/></summary>
-		public Task<Contacts_TopPeersBase> Contacts_GetTopPeers(int offset, int limit, long hash, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false)
-			=> CallAsync<Contacts_TopPeersBase>(writer =>
+		public static Task<Contacts_TopPeersBase> Contacts_GetTopPeers(this Client client, int offset, int limit, long hash, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false)
+			=> client.CallAsync<Contacts_TopPeersBase>(writer =>
 			{
 				writer.Write(0x973478B6);
 				writer.Write((correspondents ? 0x1 : 0) | (bots_pm ? 0x2 : 0) | (bots_inline ? 0x4 : 0) | (phone_calls ? 0x8 : 0) | (forward_users ? 0x10 : 0) | (forward_chats ? 0x20 : 0) | (groups ? 0x400 : 0) | (channels ? 0x8000 : 0));
@@ -7899,8 +7898,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.resetTopPeerRating"/></summary>
-		public Task<bool> Contacts_ResetTopPeerRating(TopPeerCategory category, InputPeer peer)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Contacts_ResetTopPeerRating(this Client client, TopPeerCategory category, InputPeer peer)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x1AE373AC);
 				writer.WriteTLObject(category);
@@ -7909,24 +7908,24 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.resetSaved"/></summary>
-		public Task<bool> Contacts_ResetSaved()
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Contacts_ResetSaved(this Client client)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x879537F1);
 				return "Contacts_ResetSaved";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getSaved"/></summary>
-		public Task<SavedContact[]> Contacts_GetSaved()
-			=> CallAsync<SavedContact[]>(writer =>
+		public static Task<SavedContact[]> Contacts_GetSaved(this Client client)
+			=> client.CallAsync<SavedContact[]>(writer =>
 			{
 				writer.Write(0x82F1E39F);
 				return "Contacts_GetSaved";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.toggleTopPeers"/></summary>
-		public Task<bool> Contacts_ToggleTopPeers(bool enabled)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Contacts_ToggleTopPeers(this Client client, bool enabled)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x8514BDDA);
 				writer.Write(enabled ? 0x997275B5 : 0xBC799737);
@@ -7934,8 +7933,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.addContact"/></summary>
-		public Task<UpdatesBase> Contacts_AddContact(InputUserBase id, string first_name, string last_name, string phone, bool add_phone_privacy_exception = false)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Contacts_AddContact(this Client client, InputUserBase id, string first_name, string last_name, string phone, bool add_phone_privacy_exception = false)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xE8F463D0);
 				writer.Write(add_phone_privacy_exception ? 0x1 : 0);
@@ -7947,8 +7946,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.acceptContact"/></summary>
-		public Task<UpdatesBase> Contacts_AcceptContact(InputUserBase id)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Contacts_AcceptContact(this Client client, InputUserBase id)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xF831A20F);
 				writer.WriteTLObject(id);
@@ -7956,8 +7955,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getLocated"/></summary>
-		public Task<UpdatesBase> Contacts_GetLocated(InputGeoPointBase geo_point, bool background = false, int? self_expires = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Contacts_GetLocated(this Client client, InputGeoPointBase geo_point, bool background = false, int? self_expires = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xD348BC44);
 				writer.Write((background ? 0x2 : 0) | (self_expires != null ? 0x1 : 0));
@@ -7968,8 +7967,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.blockFromReplies"/></summary>
-		public Task<UpdatesBase> Contacts_BlockFromReplies(int msg_id, bool delete_message = false, bool delete_history = false, bool report_spam = false)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Contacts_BlockFromReplies(this Client client, int msg_id, bool delete_message = false, bool delete_history = false, bool report_spam = false)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x29A8962C);
 				writer.Write((delete_message ? 0x1 : 0) | (delete_history ? 0x2 : 0) | (report_spam ? 0x4 : 0));
@@ -7978,8 +7977,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getMessages"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetMessages(InputMessage[] id)
-			=> CallAsync<Messages_MessagesBase>(writer =>
+		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client client, InputMessage[] id)
+			=> client.CallAsync<Messages_MessagesBase>(writer =>
 			{
 				writer.Write(0x63C66506);
 				writer.WriteTLVector(id);
@@ -7987,8 +7986,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getDialogs"/></summary>
-		public Task<Messages_DialogsBase> Messages_GetDialogs(DateTime offset_date, int offset_id, InputPeer offset_peer, int limit, long hash, bool exclude_pinned = false, int? folder_id = null)
-			=> CallAsync<Messages_DialogsBase>(writer =>
+		public static Task<Messages_DialogsBase> Messages_GetDialogs(this Client client, DateTime offset_date, int offset_id, InputPeer offset_peer, int limit, long hash, bool exclude_pinned = false, int? folder_id = null)
+			=> client.CallAsync<Messages_DialogsBase>(writer =>
 			{
 				writer.Write(0xA0F4CB4F);
 				writer.Write((exclude_pinned ? 0x1 : 0) | (folder_id != null ? 0x2 : 0));
@@ -8003,8 +8002,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getHistory"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetHistory(InputPeer peer, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash)
-			=> CallAsync<Messages_MessagesBase>(writer =>
+		public static Task<Messages_MessagesBase> Messages_GetHistory(this Client client, InputPeer peer, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash)
+			=> client.CallAsync<Messages_MessagesBase>(writer =>
 			{
 				writer.Write(0x4423E6C5);
 				writer.WriteTLObject(peer);
@@ -8019,8 +8018,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.search"/></summary>
-		public Task<Messages_MessagesBase> Messages_Search(InputPeer peer, string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_id, int add_offset, int limit, int max_id, int min_id, long hash, InputPeer from_id = null, int? top_msg_id = null)
-			=> CallAsync<Messages_MessagesBase>(writer =>
+		public static Task<Messages_MessagesBase> Messages_Search(this Client client, InputPeer peer, string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_id, int add_offset, int limit, int max_id, int min_id, long hash, InputPeer from_id = null, int? top_msg_id = null)
+			=> client.CallAsync<Messages_MessagesBase>(writer =>
 			{
 				writer.Write(0xA0FDA762);
 				writer.Write((from_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x2 : 0));
@@ -8043,8 +8042,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.readHistory"/></summary>
-		public Task<Messages_AffectedMessages> Messages_ReadHistory(InputPeer peer, int max_id)
-			=> CallAsync<Messages_AffectedMessages>(writer =>
+		public static Task<Messages_AffectedMessages> Messages_ReadHistory(this Client client, InputPeer peer, int max_id)
+			=> client.CallAsync<Messages_AffectedMessages>(writer =>
 			{
 				writer.Write(0x0E306D3A);
 				writer.WriteTLObject(peer);
@@ -8053,8 +8052,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.deleteHistory"/></summary>
-		public Task<Messages_AffectedHistory> Messages_DeleteHistory(InputPeer peer, int max_id, bool just_clear = false, bool revoke = false)
-			=> CallAsync<Messages_AffectedHistory>(writer =>
+		public static Task<Messages_AffectedHistory> Messages_DeleteHistory(this Client client, InputPeer peer, int max_id, bool just_clear = false, bool revoke = false)
+			=> client.CallAsync<Messages_AffectedHistory>(writer =>
 			{
 				writer.Write(0x1C015B09);
 				writer.Write((just_clear ? 0x1 : 0) | (revoke ? 0x2 : 0));
@@ -8064,8 +8063,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.deleteMessages"/></summary>
-		public Task<Messages_AffectedMessages> Messages_DeleteMessages(int[] id, bool revoke = false)
-			=> CallAsync<Messages_AffectedMessages>(writer =>
+		public static Task<Messages_AffectedMessages> Messages_DeleteMessages(this Client client, int[] id, bool revoke = false)
+			=> client.CallAsync<Messages_AffectedMessages>(writer =>
 			{
 				writer.Write(0xE58E95D2);
 				writer.Write(revoke ? 0x1 : 0);
@@ -8074,8 +8073,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.receivedMessages"/></summary>
-		public Task<ReceivedNotifyMessage[]> Messages_ReceivedMessages(int max_id)
-			=> CallAsync<ReceivedNotifyMessage[]>(writer =>
+		public static Task<ReceivedNotifyMessage[]> Messages_ReceivedMessages(this Client client, int max_id)
+			=> client.CallAsync<ReceivedNotifyMessage[]>(writer =>
 			{
 				writer.Write(0x05A954C0);
 				writer.Write(max_id);
@@ -8083,8 +8082,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setTyping"/></summary>
-		public Task<bool> Messages_SetTyping(InputPeer peer, SendMessageAction action, int? top_msg_id = null)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_SetTyping(this Client client, InputPeer peer, SendMessageAction action, int? top_msg_id = null)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x58943EE2);
 				writer.Write(top_msg_id != null ? 0x1 : 0);
@@ -8096,8 +8095,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.sendMessage"/></summary>
-		public Task<UpdatesBase> Messages_SendMessage(InputPeer peer, string message, long random_id, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x520C3870);
 				writer.Write((no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0));
@@ -8116,8 +8115,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.sendMedia"/></summary>
-		public Task<UpdatesBase> Messages_SendMedia(InputPeer peer, InputMedia media, string message, long random_id, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x3491EBA9);
 				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0));
@@ -8137,8 +8136,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.forwardMessages"/></summary>
-		public Task<UpdatesBase> Messages_ForwardMessages(InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, DateTime? schedule_date = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, DateTime? schedule_date = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xD9FEE60E);
 				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (schedule_date != null ? 0x400 : 0));
@@ -8152,8 +8151,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.reportSpam"/></summary>
-		public Task<bool> Messages_ReportSpam(InputPeer peer)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_ReportSpam(this Client client, InputPeer peer)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xCF1592DB);
 				writer.WriteTLObject(peer);
@@ -8161,8 +8160,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getPeerSettings"/></summary>
-		public Task<PeerSettings> Messages_GetPeerSettings(InputPeer peer)
-			=> CallAsync<PeerSettings>(writer =>
+		public static Task<PeerSettings> Messages_GetPeerSettings(this Client client, InputPeer peer)
+			=> client.CallAsync<PeerSettings>(writer =>
 			{
 				writer.Write(0x3672E09C);
 				writer.WriteTLObject(peer);
@@ -8170,8 +8169,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.report"/></summary>
-		public Task<bool> Messages_Report(InputPeer peer, int[] id, ReportReason reason, string message)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_Report(this Client client, InputPeer peer, int[] id, ReportReason reason, string message)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x8953AB4E);
 				writer.WriteTLObject(peer);
@@ -8182,8 +8181,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getChats"/></summary>
-		public Task<Messages_ChatsBase> Messages_GetChats(long[] id)
-			=> CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_ChatsBase> Messages_GetChats(this Client client, long[] id)
+			=> client.CallAsync<Messages_ChatsBase>(writer =>
 			{
 				writer.Write(0x49E9528F);
 				writer.WriteTLVector(id);
@@ -8191,8 +8190,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getFullChat"/></summary>
-		public Task<Messages_ChatFull> Messages_GetFullChat(long chat_id)
-			=> CallAsync<Messages_ChatFull>(writer =>
+		public static Task<Messages_ChatFull> Messages_GetFullChat(this Client client, long chat_id)
+			=> client.CallAsync<Messages_ChatFull>(writer =>
 			{
 				writer.Write(0xAEB00B34);
 				writer.Write(chat_id);
@@ -8200,8 +8199,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editChatTitle"/></summary>
-		public Task<UpdatesBase> Messages_EditChatTitle(long chat_id, string title)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_EditChatTitle(this Client client, long chat_id, string title)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x73783FFD);
 				writer.Write(chat_id);
@@ -8210,8 +8209,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editChatPhoto"/></summary>
-		public Task<UpdatesBase> Messages_EditChatPhoto(long chat_id, InputChatPhotoBase photo)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_EditChatPhoto(this Client client, long chat_id, InputChatPhotoBase photo)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x35DDD674);
 				writer.Write(chat_id);
@@ -8220,8 +8219,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.addChatUser"/></summary>
-		public Task<UpdatesBase> Messages_AddChatUser(long chat_id, InputUserBase user_id, int fwd_limit)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_AddChatUser(this Client client, long chat_id, InputUserBase user_id, int fwd_limit)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xF24753E3);
 				writer.Write(chat_id);
@@ -8231,8 +8230,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.deleteChatUser"/></summary>
-		public Task<UpdatesBase> Messages_DeleteChatUser(long chat_id, InputUserBase user_id, bool revoke_history = false)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_DeleteChatUser(this Client client, long chat_id, InputUserBase user_id, bool revoke_history = false)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xA2185CAB);
 				writer.Write(revoke_history ? 0x1 : 0);
@@ -8242,8 +8241,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.createChat"/></summary>
-		public Task<UpdatesBase> Messages_CreateChat(InputUserBase[] users, string title)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_CreateChat(this Client client, InputUserBase[] users, string title)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x09CB126E);
 				writer.WriteTLVector(users);
@@ -8252,8 +8251,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getDhConfig"/></summary>
-		public Task<Messages_DhConfigBase> Messages_GetDhConfig(int version, int random_length)
-			=> CallAsync<Messages_DhConfigBase>(writer =>
+		public static Task<Messages_DhConfigBase> Messages_GetDhConfig(this Client client, int version, int random_length)
+			=> client.CallAsync<Messages_DhConfigBase>(writer =>
 			{
 				writer.Write(0x26CF8950);
 				writer.Write(version);
@@ -8262,8 +8261,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.requestEncryption"/></summary>
-		public Task<EncryptedChatBase> Messages_RequestEncryption(InputUserBase user_id, int random_id, byte[] g_a)
-			=> CallAsync<EncryptedChatBase>(writer =>
+		public static Task<EncryptedChatBase> Messages_RequestEncryption(this Client client, InputUserBase user_id, int random_id, byte[] g_a)
+			=> client.CallAsync<EncryptedChatBase>(writer =>
 			{
 				writer.Write(0xF64DAF43);
 				writer.WriteTLObject(user_id);
@@ -8273,8 +8272,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.acceptEncryption"/></summary>
-		public Task<EncryptedChatBase> Messages_AcceptEncryption(InputEncryptedChat peer, byte[] g_b, long key_fingerprint)
-			=> CallAsync<EncryptedChatBase>(writer =>
+		public static Task<EncryptedChatBase> Messages_AcceptEncryption(this Client client, InputEncryptedChat peer, byte[] g_b, long key_fingerprint)
+			=> client.CallAsync<EncryptedChatBase>(writer =>
 			{
 				writer.Write(0x3DBC0415);
 				writer.WriteTLObject(peer);
@@ -8284,8 +8283,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.discardEncryption"/></summary>
-		public Task<bool> Messages_DiscardEncryption(int chat_id, bool delete_history = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_DiscardEncryption(this Client client, int chat_id, bool delete_history = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xF393AEA0);
 				writer.Write(delete_history ? 0x1 : 0);
@@ -8294,8 +8293,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setEncryptedTyping"/></summary>
-		public Task<bool> Messages_SetEncryptedTyping(InputEncryptedChat peer, bool typing)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_SetEncryptedTyping(this Client client, InputEncryptedChat peer, bool typing)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x791451ED);
 				writer.WriteTLObject(peer);
@@ -8304,8 +8303,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.readEncryptedHistory"/></summary>
-		public Task<bool> Messages_ReadEncryptedHistory(InputEncryptedChat peer, DateTime max_date)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_ReadEncryptedHistory(this Client client, InputEncryptedChat peer, DateTime max_date)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x7F4B690A);
 				writer.WriteTLObject(peer);
@@ -8314,8 +8313,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.sendEncrypted"/></summary>
-		public Task<Messages_SentEncryptedMessage> Messages_SendEncrypted(InputEncryptedChat peer, long random_id, byte[] data, bool silent = false)
-			=> CallAsync<Messages_SentEncryptedMessage>(writer =>
+		public static Task<Messages_SentEncryptedMessage> Messages_SendEncrypted(this Client client, InputEncryptedChat peer, long random_id, byte[] data, bool silent = false)
+			=> client.CallAsync<Messages_SentEncryptedMessage>(writer =>
 			{
 				writer.Write(0x44FA7A15);
 				writer.Write(silent ? 0x1 : 0);
@@ -8326,8 +8325,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.sendEncryptedFile"/></summary>
-		public Task<Messages_SentEncryptedMessage> Messages_SendEncryptedFile(InputEncryptedChat peer, long random_id, byte[] data, InputEncryptedFileBase file, bool silent = false)
-			=> CallAsync<Messages_SentEncryptedMessage>(writer =>
+		public static Task<Messages_SentEncryptedMessage> Messages_SendEncryptedFile(this Client client, InputEncryptedChat peer, long random_id, byte[] data, InputEncryptedFileBase file, bool silent = false)
+			=> client.CallAsync<Messages_SentEncryptedMessage>(writer =>
 			{
 				writer.Write(0x5559481D);
 				writer.Write(silent ? 0x1 : 0);
@@ -8339,8 +8338,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.sendEncryptedService"/></summary>
-		public Task<Messages_SentEncryptedMessage> Messages_SendEncryptedService(InputEncryptedChat peer, long random_id, byte[] data)
-			=> CallAsync<Messages_SentEncryptedMessage>(writer =>
+		public static Task<Messages_SentEncryptedMessage> Messages_SendEncryptedService(this Client client, InputEncryptedChat peer, long random_id, byte[] data)
+			=> client.CallAsync<Messages_SentEncryptedMessage>(writer =>
 			{
 				writer.Write(0x32D439A4);
 				writer.WriteTLObject(peer);
@@ -8350,8 +8349,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.receivedQueue"/></summary>
-		public Task<long[]> Messages_ReceivedQueue(int max_qts)
-			=> CallAsync<long[]>(writer =>
+		public static Task<long[]> Messages_ReceivedQueue(this Client client, int max_qts)
+			=> client.CallAsync<long[]>(writer =>
 			{
 				writer.Write(0x55A5BB66);
 				writer.Write(max_qts);
@@ -8359,8 +8358,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.reportEncryptedSpam"/></summary>
-		public Task<bool> Messages_ReportEncryptedSpam(InputEncryptedChat peer)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_ReportEncryptedSpam(this Client client, InputEncryptedChat peer)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x4B0C8C0F);
 				writer.WriteTLObject(peer);
@@ -8368,8 +8367,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.readMessageContents"/></summary>
-		public Task<Messages_AffectedMessages> Messages_ReadMessageContents(int[] id)
-			=> CallAsync<Messages_AffectedMessages>(writer =>
+		public static Task<Messages_AffectedMessages> Messages_ReadMessageContents(this Client client, int[] id)
+			=> client.CallAsync<Messages_AffectedMessages>(writer =>
 			{
 				writer.Write(0x36A73F77);
 				writer.WriteTLVector(id);
@@ -8377,8 +8376,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getStickers"/></summary>
-		public Task<Messages_StickersBase> Messages_GetStickers(string emoticon, long hash)
-			=> CallAsync<Messages_StickersBase>(writer =>
+		public static Task<Messages_StickersBase> Messages_GetStickers(this Client client, string emoticon, long hash)
+			=> client.CallAsync<Messages_StickersBase>(writer =>
 			{
 				writer.Write(0xD5A5D3A1);
 				writer.WriteTLString(emoticon);
@@ -8387,8 +8386,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getAllStickers"/></summary>
-		public Task<Messages_AllStickersBase> Messages_GetAllStickers(long hash)
-			=> CallAsync<Messages_AllStickersBase>(writer =>
+		public static Task<Messages_AllStickersBase> Messages_GetAllStickers(this Client client, long hash)
+			=> client.CallAsync<Messages_AllStickersBase>(writer =>
 			{
 				writer.Write(0xB8A0A1A8);
 				writer.Write(hash);
@@ -8396,8 +8395,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getWebPagePreview"/></summary>
-		public Task<MessageMedia> Messages_GetWebPagePreview(string message, MessageEntity[] entities = null)
-			=> CallAsync<MessageMedia>(writer =>
+		public static Task<MessageMedia> Messages_GetWebPagePreview(this Client client, string message, MessageEntity[] entities = null)
+			=> client.CallAsync<MessageMedia>(writer =>
 			{
 				writer.Write(0x8B68B0CC);
 				writer.Write(entities != null ? 0x8 : 0);
@@ -8408,8 +8407,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.exportChatInvite"/></summary>
-		public Task<ExportedChatInvite> Messages_ExportChatInvite(InputPeer peer, bool legacy_revoke_permanent = false, DateTime? expire_date = null, int? usage_limit = null)
-			=> CallAsync<ExportedChatInvite>(writer =>
+		public static Task<ExportedChatInvite> Messages_ExportChatInvite(this Client client, InputPeer peer, bool legacy_revoke_permanent = false, DateTime? expire_date = null, int? usage_limit = null)
+			=> client.CallAsync<ExportedChatInvite>(writer =>
 			{
 				writer.Write(0x14B9BCD7);
 				writer.Write((legacy_revoke_permanent ? 0x4 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0));
@@ -8422,8 +8421,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.checkChatInvite"/></summary>
-		public Task<ChatInviteBase> Messages_CheckChatInvite(string hash)
-			=> CallAsync<ChatInviteBase>(writer =>
+		public static Task<ChatInviteBase> Messages_CheckChatInvite(this Client client, string hash)
+			=> client.CallAsync<ChatInviteBase>(writer =>
 			{
 				writer.Write(0x3EADB1BB);
 				writer.WriteTLString(hash);
@@ -8431,8 +8430,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.importChatInvite"/></summary>
-		public Task<UpdatesBase> Messages_ImportChatInvite(string hash)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_ImportChatInvite(this Client client, string hash)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x6C50051C);
 				writer.WriteTLString(hash);
@@ -8440,8 +8439,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getStickerSet"/></summary>
-		public Task<Messages_StickerSet> Messages_GetStickerSet(InputStickerSet stickerset)
-			=> CallAsync<Messages_StickerSet>(writer =>
+		public static Task<Messages_StickerSet> Messages_GetStickerSet(this Client client, InputStickerSet stickerset)
+			=> client.CallAsync<Messages_StickerSet>(writer =>
 			{
 				writer.Write(0x2619A90E);
 				writer.WriteTLObject(stickerset);
@@ -8449,8 +8448,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.installStickerSet"/></summary>
-		public Task<Messages_StickerSetInstallResult> Messages_InstallStickerSet(InputStickerSet stickerset, bool archived)
-			=> CallAsync<Messages_StickerSetInstallResult>(writer =>
+		public static Task<Messages_StickerSetInstallResult> Messages_InstallStickerSet(this Client client, InputStickerSet stickerset, bool archived)
+			=> client.CallAsync<Messages_StickerSetInstallResult>(writer =>
 			{
 				writer.Write(0xC78FE460);
 				writer.WriteTLObject(stickerset);
@@ -8459,8 +8458,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.uninstallStickerSet"/></summary>
-		public Task<bool> Messages_UninstallStickerSet(InputStickerSet stickerset)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_UninstallStickerSet(this Client client, InputStickerSet stickerset)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xF96E55DE);
 				writer.WriteTLObject(stickerset);
@@ -8468,8 +8467,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.startBot"/></summary>
-		public Task<UpdatesBase> Messages_StartBot(InputUserBase bot, InputPeer peer, long random_id, string start_param)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_StartBot(this Client client, InputUserBase bot, InputPeer peer, long random_id, string start_param)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xE6DF7378);
 				writer.WriteTLObject(bot);
@@ -8480,8 +8479,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getMessagesViews"/></summary>
-		public Task<Messages_MessageViews> Messages_GetMessagesViews(InputPeer peer, int[] id, bool increment)
-			=> CallAsync<Messages_MessageViews>(writer =>
+		public static Task<Messages_MessageViews> Messages_GetMessagesViews(this Client client, InputPeer peer, int[] id, bool increment)
+			=> client.CallAsync<Messages_MessageViews>(writer =>
 			{
 				writer.Write(0x5784D3E1);
 				writer.WriteTLObject(peer);
@@ -8491,8 +8490,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editChatAdmin"/></summary>
-		public Task<bool> Messages_EditChatAdmin(long chat_id, InputUserBase user_id, bool is_admin)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_EditChatAdmin(this Client client, long chat_id, InputUserBase user_id, bool is_admin)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xA85BD1C2);
 				writer.Write(chat_id);
@@ -8502,8 +8501,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.migrateChat"/></summary>
-		public Task<UpdatesBase> Messages_MigrateChat(long chat_id)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_MigrateChat(this Client client, long chat_id)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xA2875319);
 				writer.Write(chat_id);
@@ -8511,8 +8510,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.searchGlobal"/></summary>
-		public Task<Messages_MessagesBase> Messages_SearchGlobal(string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_rate, InputPeer offset_peer, int offset_id, int limit, int? folder_id = null)
-			=> CallAsync<Messages_MessagesBase>(writer =>
+		public static Task<Messages_MessagesBase> Messages_SearchGlobal(this Client client, string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_rate, InputPeer offset_peer, int offset_id, int limit, int? folder_id = null)
+			=> client.CallAsync<Messages_MessagesBase>(writer =>
 			{
 				writer.Write(0x4BC6589A);
 				writer.Write(folder_id != null ? 0x1 : 0);
@@ -8530,8 +8529,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.reorderStickerSets"/></summary>
-		public Task<bool> Messages_ReorderStickerSets(long[] order, bool masks = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_ReorderStickerSets(this Client client, long[] order, bool masks = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x78337739);
 				writer.Write(masks ? 0x1 : 0);
@@ -8540,8 +8539,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getDocumentByHash"/></summary>
-		public Task<DocumentBase> Messages_GetDocumentByHash(byte[] sha256, int size, string mime_type)
-			=> CallAsync<DocumentBase>(writer =>
+		public static Task<DocumentBase> Messages_GetDocumentByHash(this Client client, byte[] sha256, int size, string mime_type)
+			=> client.CallAsync<DocumentBase>(writer =>
 			{
 				writer.Write(0x338E2464);
 				writer.WriteTLBytes(sha256);
@@ -8551,8 +8550,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getSavedGifs"/></summary>
-		public Task<Messages_SavedGifsBase> Messages_GetSavedGifs(long hash)
-			=> CallAsync<Messages_SavedGifsBase>(writer =>
+		public static Task<Messages_SavedGifsBase> Messages_GetSavedGifs(this Client client, long hash)
+			=> client.CallAsync<Messages_SavedGifsBase>(writer =>
 			{
 				writer.Write(0x5CF09635);
 				writer.Write(hash);
@@ -8560,8 +8559,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.saveGif"/></summary>
-		public Task<bool> Messages_SaveGif(InputDocumentBase id, bool unsave)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_SaveGif(this Client client, InputDocumentBase id, bool unsave)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x327A30CB);
 				writer.WriteTLObject(id);
@@ -8570,8 +8569,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getInlineBotResults"/></summary>
-		public Task<Messages_BotResults> Messages_GetInlineBotResults(InputUserBase bot, InputPeer peer, string query, string offset, InputGeoPointBase geo_point = null)
-			=> CallAsync<Messages_BotResults>(writer =>
+		public static Task<Messages_BotResults> Messages_GetInlineBotResults(this Client client, InputUserBase bot, InputPeer peer, string query, string offset, InputGeoPointBase geo_point = null)
+			=> client.CallAsync<Messages_BotResults>(writer =>
 			{
 				writer.Write(0x514E999D);
 				writer.Write(geo_point != null ? 0x1 : 0);
@@ -8585,8 +8584,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setInlineBotResults"/></summary>
-		public Task<bool> Messages_SetInlineBotResults(long query_id, InputBotInlineResultBase[] results, DateTime cache_time, bool gallery = false, bool private_ = false, string next_offset = null, InlineBotSwitchPM switch_pm = null)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_SetInlineBotResults(this Client client, long query_id, InputBotInlineResultBase[] results, DateTime cache_time, bool gallery = false, bool private_ = false, string next_offset = null, InlineBotSwitchPM switch_pm = null)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xEB5EA206);
 				writer.Write((gallery ? 0x1 : 0) | (private_ ? 0x2 : 0) | (next_offset != null ? 0x4 : 0) | (switch_pm != null ? 0x8 : 0));
@@ -8601,8 +8600,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.sendInlineBotResult"/></summary>
-		public Task<UpdatesBase> Messages_SendInlineBotResult(InputPeer peer, long random_id, long query_id, string id, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false, int? reply_to_msg_id = null, DateTime? schedule_date = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false, int? reply_to_msg_id = null, DateTime? schedule_date = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x220815B0);
 				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0));
@@ -8618,8 +8617,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getMessageEditData"/></summary>
-		public Task<Messages_MessageEditData> Messages_GetMessageEditData(InputPeer peer, int id)
-			=> CallAsync<Messages_MessageEditData>(writer =>
+		public static Task<Messages_MessageEditData> Messages_GetMessageEditData(this Client client, InputPeer peer, int id)
+			=> client.CallAsync<Messages_MessageEditData>(writer =>
 			{
 				writer.Write(0xFDA68D36);
 				writer.WriteTLObject(peer);
@@ -8628,8 +8627,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editMessage"/></summary>
-		public Task<UpdatesBase> Messages_EditMessage(InputPeer peer, int id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_EditMessage(this Client client, InputPeer peer, int id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x48F71778);
 				writer.Write((no_webpage ? 0x2 : 0) | (message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x8000 : 0));
@@ -8649,8 +8648,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editInlineBotMessage"/></summary>
-		public Task<bool> Messages_EditInlineBotMessage(InputBotInlineMessageIDBase id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_EditInlineBotMessage(this Client client, InputBotInlineMessageIDBase id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x83557DBA);
 				writer.Write((no_webpage ? 0x2 : 0) | (message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0));
@@ -8667,8 +8666,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getBotCallbackAnswer"/></summary>
-		public Task<Messages_BotCallbackAnswer> Messages_GetBotCallbackAnswer(InputPeer peer, int msg_id, bool game = false, byte[] data = null, InputCheckPasswordSRPBase password = null)
-			=> CallAsync<Messages_BotCallbackAnswer>(writer =>
+		public static Task<Messages_BotCallbackAnswer> Messages_GetBotCallbackAnswer(this Client client, InputPeer peer, int msg_id, bool game = false, byte[] data = null, InputCheckPasswordSRPBase password = null)
+			=> client.CallAsync<Messages_BotCallbackAnswer>(writer =>
 			{
 				writer.Write(0x9342CA07);
 				writer.Write((game ? 0x2 : 0) | (data != null ? 0x1 : 0) | (password != null ? 0x4 : 0));
@@ -8682,8 +8681,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setBotCallbackAnswer"/></summary>
-		public Task<bool> Messages_SetBotCallbackAnswer(long query_id, DateTime cache_time, bool alert = false, string message = null, string url = null)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_SetBotCallbackAnswer(this Client client, long query_id, DateTime cache_time, bool alert = false, string message = null, string url = null)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xD58F130A);
 				writer.Write((alert ? 0x2 : 0) | (message != null ? 0x1 : 0) | (url != null ? 0x4 : 0));
@@ -8697,8 +8696,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getPeerDialogs"/></summary>
-		public Task<Messages_PeerDialogs> Messages_GetPeerDialogs(InputDialogPeerBase[] peers)
-			=> CallAsync<Messages_PeerDialogs>(writer =>
+		public static Task<Messages_PeerDialogs> Messages_GetPeerDialogs(this Client client, InputDialogPeerBase[] peers)
+			=> client.CallAsync<Messages_PeerDialogs>(writer =>
 			{
 				writer.Write(0xE470BCFD);
 				writer.WriteTLVector(peers);
@@ -8706,8 +8705,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.saveDraft"/></summary>
-		public Task<bool> Messages_SaveDraft(InputPeer peer, string message, bool no_webpage = false, int? reply_to_msg_id = null, MessageEntity[] entities = null)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_SaveDraft(this Client client, InputPeer peer, string message, bool no_webpage = false, int? reply_to_msg_id = null, MessageEntity[] entities = null)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xBC39E14B);
 				writer.Write((no_webpage ? 0x2 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (entities != null ? 0x8 : 0));
@@ -8721,16 +8720,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getAllDrafts"/></summary>
-		public Task<UpdatesBase> Messages_GetAllDrafts()
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_GetAllDrafts(this Client client)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x6A3F8D65);
 				return "Messages_GetAllDrafts";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getFeaturedStickers"/></summary>
-		public Task<Messages_FeaturedStickersBase> Messages_GetFeaturedStickers(long hash)
-			=> CallAsync<Messages_FeaturedStickersBase>(writer =>
+		public static Task<Messages_FeaturedStickersBase> Messages_GetFeaturedStickers(this Client client, long hash)
+			=> client.CallAsync<Messages_FeaturedStickersBase>(writer =>
 			{
 				writer.Write(0x64780B14);
 				writer.Write(hash);
@@ -8738,8 +8737,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.readFeaturedStickers"/></summary>
-		public Task<bool> Messages_ReadFeaturedStickers(long[] id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_ReadFeaturedStickers(this Client client, long[] id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x5B118126);
 				writer.WriteTLVector(id);
@@ -8747,8 +8746,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getRecentStickers"/></summary>
-		public Task<Messages_RecentStickersBase> Messages_GetRecentStickers(long hash, bool attached = false)
-			=> CallAsync<Messages_RecentStickersBase>(writer =>
+		public static Task<Messages_RecentStickersBase> Messages_GetRecentStickers(this Client client, long hash, bool attached = false)
+			=> client.CallAsync<Messages_RecentStickersBase>(writer =>
 			{
 				writer.Write(0x9DA9403B);
 				writer.Write(attached ? 0x1 : 0);
@@ -8757,8 +8756,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.saveRecentSticker"/></summary>
-		public Task<bool> Messages_SaveRecentSticker(InputDocumentBase id, bool unsave, bool attached = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_SaveRecentSticker(this Client client, InputDocumentBase id, bool unsave, bool attached = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x392718F8);
 				writer.Write(attached ? 0x1 : 0);
@@ -8768,8 +8767,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.clearRecentStickers"/></summary>
-		public Task<bool> Messages_ClearRecentStickers(bool attached = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_ClearRecentStickers(this Client client, bool attached = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x8999602D);
 				writer.Write(attached ? 0x1 : 0);
@@ -8777,8 +8776,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getArchivedStickers"/></summary>
-		public Task<Messages_ArchivedStickers> Messages_GetArchivedStickers(long offset_id, int limit, bool masks = false)
-			=> CallAsync<Messages_ArchivedStickers>(writer =>
+		public static Task<Messages_ArchivedStickers> Messages_GetArchivedStickers(this Client client, long offset_id, int limit, bool masks = false)
+			=> client.CallAsync<Messages_ArchivedStickers>(writer =>
 			{
 				writer.Write(0x57F17692);
 				writer.Write(masks ? 0x1 : 0);
@@ -8788,8 +8787,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getMaskStickers"/></summary>
-		public Task<Messages_AllStickersBase> Messages_GetMaskStickers(long hash)
-			=> CallAsync<Messages_AllStickersBase>(writer =>
+		public static Task<Messages_AllStickersBase> Messages_GetMaskStickers(this Client client, long hash)
+			=> client.CallAsync<Messages_AllStickersBase>(writer =>
 			{
 				writer.Write(0x640F82B8);
 				writer.Write(hash);
@@ -8797,8 +8796,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getAttachedStickers"/></summary>
-		public Task<StickerSetCoveredBase[]> Messages_GetAttachedStickers(InputStickeredMedia media)
-			=> CallAsync<StickerSetCoveredBase[]>(writer =>
+		public static Task<StickerSetCoveredBase[]> Messages_GetAttachedStickers(this Client client, InputStickeredMedia media)
+			=> client.CallAsync<StickerSetCoveredBase[]>(writer =>
 			{
 				writer.Write(0xCC5B67CC);
 				writer.WriteTLObject(media);
@@ -8806,8 +8805,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setGameScore"/></summary>
-		public Task<UpdatesBase> Messages_SetGameScore(InputPeer peer, int id, InputUserBase user_id, int score, bool edit_message = false, bool force = false)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_SetGameScore(this Client client, InputPeer peer, int id, InputUserBase user_id, int score, bool edit_message = false, bool force = false)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x8EF8ECC0);
 				writer.Write((edit_message ? 0x1 : 0) | (force ? 0x2 : 0));
@@ -8819,8 +8818,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setInlineGameScore"/></summary>
-		public Task<bool> Messages_SetInlineGameScore(InputBotInlineMessageIDBase id, InputUserBase user_id, int score, bool edit_message = false, bool force = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_SetInlineGameScore(this Client client, InputBotInlineMessageIDBase id, InputUserBase user_id, int score, bool edit_message = false, bool force = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x15AD9F64);
 				writer.Write((edit_message ? 0x1 : 0) | (force ? 0x2 : 0));
@@ -8831,8 +8830,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getGameHighScores"/></summary>
-		public Task<Messages_HighScores> Messages_GetGameHighScores(InputPeer peer, int id, InputUserBase user_id)
-			=> CallAsync<Messages_HighScores>(writer =>
+		public static Task<Messages_HighScores> Messages_GetGameHighScores(this Client client, InputPeer peer, int id, InputUserBase user_id)
+			=> client.CallAsync<Messages_HighScores>(writer =>
 			{
 				writer.Write(0xE822649D);
 				writer.WriteTLObject(peer);
@@ -8842,8 +8841,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getInlineGameHighScores"/></summary>
-		public Task<Messages_HighScores> Messages_GetInlineGameHighScores(InputBotInlineMessageIDBase id, InputUserBase user_id)
-			=> CallAsync<Messages_HighScores>(writer =>
+		public static Task<Messages_HighScores> Messages_GetInlineGameHighScores(this Client client, InputBotInlineMessageIDBase id, InputUserBase user_id)
+			=> client.CallAsync<Messages_HighScores>(writer =>
 			{
 				writer.Write(0x0F635E1B);
 				writer.WriteTLObject(id);
@@ -8852,8 +8851,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getCommonChats"/></summary>
-		public Task<Messages_ChatsBase> Messages_GetCommonChats(InputUserBase user_id, long max_id, int limit)
-			=> CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_ChatsBase> Messages_GetCommonChats(this Client client, InputUserBase user_id, long max_id, int limit)
+			=> client.CallAsync<Messages_ChatsBase>(writer =>
 			{
 				writer.Write(0xE40CA104);
 				writer.WriteTLObject(user_id);
@@ -8863,8 +8862,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getAllChats"/></summary>
-		public Task<Messages_ChatsBase> Messages_GetAllChats(long[] except_ids)
-			=> CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_ChatsBase> Messages_GetAllChats(this Client client, long[] except_ids)
+			=> client.CallAsync<Messages_ChatsBase>(writer =>
 			{
 				writer.Write(0x875F74BE);
 				writer.WriteTLVector(except_ids);
@@ -8872,8 +8871,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getWebPage"/></summary>
-		public Task<WebPageBase> Messages_GetWebPage(string url, int hash)
-			=> CallAsync<WebPageBase>(writer =>
+		public static Task<WebPageBase> Messages_GetWebPage(this Client client, string url, int hash)
+			=> client.CallAsync<WebPageBase>(writer =>
 			{
 				writer.Write(0x32CA8F91);
 				writer.WriteTLString(url);
@@ -8882,8 +8881,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.toggleDialogPin"/></summary>
-		public Task<bool> Messages_ToggleDialogPin(InputDialogPeerBase peer, bool pinned = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_ToggleDialogPin(this Client client, InputDialogPeerBase peer, bool pinned = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xA731E257);
 				writer.Write(pinned ? 0x1 : 0);
@@ -8892,8 +8891,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.reorderPinnedDialogs"/></summary>
-		public Task<bool> Messages_ReorderPinnedDialogs(int folder_id, InputDialogPeerBase[] order, bool force = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_ReorderPinnedDialogs(this Client client, int folder_id, InputDialogPeerBase[] order, bool force = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x3B1ADF37);
 				writer.Write(force ? 0x1 : 0);
@@ -8903,8 +8902,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getPinnedDialogs"/></summary>
-		public Task<Messages_PeerDialogs> Messages_GetPinnedDialogs(int folder_id)
-			=> CallAsync<Messages_PeerDialogs>(writer =>
+		public static Task<Messages_PeerDialogs> Messages_GetPinnedDialogs(this Client client, int folder_id)
+			=> client.CallAsync<Messages_PeerDialogs>(writer =>
 			{
 				writer.Write(0xD6B94DF2);
 				writer.Write(folder_id);
@@ -8912,8 +8911,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setBotShippingResults"/></summary>
-		public Task<bool> Messages_SetBotShippingResults(long query_id, string error = null, ShippingOption[] shipping_options = null)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_SetBotShippingResults(this Client client, long query_id, string error = null, ShippingOption[] shipping_options = null)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xE5F672FA);
 				writer.Write((error != null ? 0x1 : 0) | (shipping_options != null ? 0x2 : 0));
@@ -8926,8 +8925,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setBotPrecheckoutResults"/></summary>
-		public Task<bool> Messages_SetBotPrecheckoutResults(long query_id, bool success = false, string error = null)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_SetBotPrecheckoutResults(this Client client, long query_id, bool success = false, string error = null)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x09C2DD95);
 				writer.Write((success ? 0x2 : 0) | (error != null ? 0x1 : 0));
@@ -8938,8 +8937,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.uploadMedia"/></summary>
-		public Task<MessageMedia> Messages_UploadMedia(InputPeer peer, InputMedia media)
-			=> CallAsync<MessageMedia>(writer =>
+		public static Task<MessageMedia> Messages_UploadMedia(this Client client, InputPeer peer, InputMedia media)
+			=> client.CallAsync<MessageMedia>(writer =>
 			{
 				writer.Write(0x519BC2B1);
 				writer.WriteTLObject(peer);
@@ -8948,8 +8947,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.sendScreenshotNotification"/></summary>
-		public Task<UpdatesBase> Messages_SendScreenshotNotification(InputPeer peer, int reply_to_msg_id, long random_id)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_SendScreenshotNotification(this Client client, InputPeer peer, int reply_to_msg_id, long random_id)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xC97DF020);
 				writer.WriteTLObject(peer);
@@ -8959,8 +8958,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getFavedStickers"/></summary>
-		public Task<Messages_FavedStickersBase> Messages_GetFavedStickers(long hash)
-			=> CallAsync<Messages_FavedStickersBase>(writer =>
+		public static Task<Messages_FavedStickersBase> Messages_GetFavedStickers(this Client client, long hash)
+			=> client.CallAsync<Messages_FavedStickersBase>(writer =>
 			{
 				writer.Write(0x04F1AAA9);
 				writer.Write(hash);
@@ -8968,8 +8967,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.faveSticker"/></summary>
-		public Task<bool> Messages_FaveSticker(InputDocumentBase id, bool unfave)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_FaveSticker(this Client client, InputDocumentBase id, bool unfave)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xB9FFC55B);
 				writer.WriteTLObject(id);
@@ -8978,8 +8977,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getUnreadMentions"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetUnreadMentions(InputPeer peer, int offset_id, int add_offset, int limit, int max_id, int min_id)
-			=> CallAsync<Messages_MessagesBase>(writer =>
+		public static Task<Messages_MessagesBase> Messages_GetUnreadMentions(this Client client, InputPeer peer, int offset_id, int add_offset, int limit, int max_id, int min_id)
+			=> client.CallAsync<Messages_MessagesBase>(writer =>
 			{
 				writer.Write(0x46578472);
 				writer.WriteTLObject(peer);
@@ -8992,8 +8991,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.readMentions"/></summary>
-		public Task<Messages_AffectedHistory> Messages_ReadMentions(InputPeer peer)
-			=> CallAsync<Messages_AffectedHistory>(writer =>
+		public static Task<Messages_AffectedHistory> Messages_ReadMentions(this Client client, InputPeer peer)
+			=> client.CallAsync<Messages_AffectedHistory>(writer =>
 			{
 				writer.Write(0x0F0189D3);
 				writer.WriteTLObject(peer);
@@ -9001,8 +9000,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getRecentLocations"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetRecentLocations(InputPeer peer, int limit, long hash)
-			=> CallAsync<Messages_MessagesBase>(writer =>
+		public static Task<Messages_MessagesBase> Messages_GetRecentLocations(this Client client, InputPeer peer, int limit, long hash)
+			=> client.CallAsync<Messages_MessagesBase>(writer =>
 			{
 				writer.Write(0x702A40E0);
 				writer.WriteTLObject(peer);
@@ -9012,8 +9011,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.sendMultiMedia"/></summary>
-		public Task<UpdatesBase> Messages_SendMultiMedia(InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, DateTime? schedule_date = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, DateTime? schedule_date = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xCC0110CB);
 				writer.Write((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0));
@@ -9027,8 +9026,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.uploadEncryptedFile"/></summary>
-		public Task<EncryptedFileBase> Messages_UploadEncryptedFile(InputEncryptedChat peer, InputEncryptedFileBase file)
-			=> CallAsync<EncryptedFileBase>(writer =>
+		public static Task<EncryptedFileBase> Messages_UploadEncryptedFile(this Client client, InputEncryptedChat peer, InputEncryptedFileBase file)
+			=> client.CallAsync<EncryptedFileBase>(writer =>
 			{
 				writer.Write(0x5057C497);
 				writer.WriteTLObject(peer);
@@ -9037,8 +9036,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.searchStickerSets"/></summary>
-		public Task<Messages_FoundStickerSetsBase> Messages_SearchStickerSets(string q, long hash, bool exclude_featured = false)
-			=> CallAsync<Messages_FoundStickerSetsBase>(writer =>
+		public static Task<Messages_FoundStickerSetsBase> Messages_SearchStickerSets(this Client client, string q, long hash, bool exclude_featured = false)
+			=> client.CallAsync<Messages_FoundStickerSetsBase>(writer =>
 			{
 				writer.Write(0x35705B8A);
 				writer.Write(exclude_featured ? 0x1 : 0);
@@ -9048,16 +9047,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getSplitRanges"/></summary>
-		public Task<MessageRange[]> Messages_GetSplitRanges()
-			=> CallAsync<MessageRange[]>(writer =>
+		public static Task<MessageRange[]> Messages_GetSplitRanges(this Client client)
+			=> client.CallAsync<MessageRange[]>(writer =>
 			{
 				writer.Write(0x1CFF7E08);
 				return "Messages_GetSplitRanges";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.markDialogUnread"/></summary>
-		public Task<bool> Messages_MarkDialogUnread(InputDialogPeerBase peer, bool unread = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_MarkDialogUnread(this Client client, InputDialogPeerBase peer, bool unread = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xC286D98F);
 				writer.Write(unread ? 0x1 : 0);
@@ -9066,24 +9065,24 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getDialogUnreadMarks"/></summary>
-		public Task<DialogPeerBase[]> Messages_GetDialogUnreadMarks()
-			=> CallAsync<DialogPeerBase[]>(writer =>
+		public static Task<DialogPeerBase[]> Messages_GetDialogUnreadMarks(this Client client)
+			=> client.CallAsync<DialogPeerBase[]>(writer =>
 			{
 				writer.Write(0x22E24E22);
 				return "Messages_GetDialogUnreadMarks";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.clearAllDrafts"/></summary>
-		public Task<bool> Messages_ClearAllDrafts()
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_ClearAllDrafts(this Client client)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x7E58EE9C);
 				return "Messages_ClearAllDrafts";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.updatePinnedMessage"/></summary>
-		public Task<UpdatesBase> Messages_UpdatePinnedMessage(InputPeer peer, int id, bool silent = false, bool unpin = false, bool pm_oneside = false)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_UpdatePinnedMessage(this Client client, InputPeer peer, int id, bool silent = false, bool unpin = false, bool pm_oneside = false)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xD2AAF7EC);
 				writer.Write((silent ? 0x1 : 0) | (unpin ? 0x2 : 0) | (pm_oneside ? 0x4 : 0));
@@ -9093,8 +9092,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.sendVote"/></summary>
-		public Task<UpdatesBase> Messages_SendVote(InputPeer peer, int msg_id, byte[][] options)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_SendVote(this Client client, InputPeer peer, int msg_id, byte[][] options)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x10EA6184);
 				writer.WriteTLObject(peer);
@@ -9104,8 +9103,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getPollResults"/></summary>
-		public Task<UpdatesBase> Messages_GetPollResults(InputPeer peer, int msg_id)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_GetPollResults(this Client client, InputPeer peer, int msg_id)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x73BB643B);
 				writer.WriteTLObject(peer);
@@ -9114,8 +9113,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getOnlines"/></summary>
-		public Task<ChatOnlines> Messages_GetOnlines(InputPeer peer)
-			=> CallAsync<ChatOnlines>(writer =>
+		public static Task<ChatOnlines> Messages_GetOnlines(this Client client, InputPeer peer)
+			=> client.CallAsync<ChatOnlines>(writer =>
 			{
 				writer.Write(0x6E2BE050);
 				writer.WriteTLObject(peer);
@@ -9123,8 +9122,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getStatsURL"/></summary>
-		public Task<StatsURL> Messages_GetStatsURL(InputPeer peer, string params_, bool dark = false)
-			=> CallAsync<StatsURL>(writer =>
+		public static Task<StatsURL> Messages_GetStatsURL(this Client client, InputPeer peer, string params_, bool dark = false)
+			=> client.CallAsync<StatsURL>(writer =>
 			{
 				writer.Write(0x812C2AE6);
 				writer.Write(dark ? 0x1 : 0);
@@ -9134,8 +9133,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editChatAbout"/></summary>
-		public Task<bool> Messages_EditChatAbout(InputPeer peer, string about)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_EditChatAbout(this Client client, InputPeer peer, string about)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xDEF60797);
 				writer.WriteTLObject(peer);
@@ -9144,8 +9143,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editChatDefaultBannedRights"/></summary>
-		public Task<UpdatesBase> Messages_EditChatDefaultBannedRights(InputPeer peer, ChatBannedRights banned_rights)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_EditChatDefaultBannedRights(this Client client, InputPeer peer, ChatBannedRights banned_rights)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xA5866B41);
 				writer.WriteTLObject(peer);
@@ -9154,8 +9153,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiKeywords"/></summary>
-		public Task<EmojiKeywordsDifference> Messages_GetEmojiKeywords(string lang_code)
-			=> CallAsync<EmojiKeywordsDifference>(writer =>
+		public static Task<EmojiKeywordsDifference> Messages_GetEmojiKeywords(this Client client, string lang_code)
+			=> client.CallAsync<EmojiKeywordsDifference>(writer =>
 			{
 				writer.Write(0x35A0E062);
 				writer.WriteTLString(lang_code);
@@ -9163,8 +9162,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiKeywordsDifference"/></summary>
-		public Task<EmojiKeywordsDifference> Messages_GetEmojiKeywordsDifference(string lang_code, int from_version)
-			=> CallAsync<EmojiKeywordsDifference>(writer =>
+		public static Task<EmojiKeywordsDifference> Messages_GetEmojiKeywordsDifference(this Client client, string lang_code, int from_version)
+			=> client.CallAsync<EmojiKeywordsDifference>(writer =>
 			{
 				writer.Write(0x1508B6AF);
 				writer.WriteTLString(lang_code);
@@ -9173,8 +9172,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiKeywordsLanguages"/></summary>
-		public Task<EmojiLanguage[]> Messages_GetEmojiKeywordsLanguages(string[] lang_codes)
-			=> CallAsync<EmojiLanguage[]>(writer =>
+		public static Task<EmojiLanguage[]> Messages_GetEmojiKeywordsLanguages(this Client client, string[] lang_codes)
+			=> client.CallAsync<EmojiLanguage[]>(writer =>
 			{
 				writer.Write(0x4E9963B2);
 				writer.WriteTLVector(lang_codes);
@@ -9182,8 +9181,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getEmojiURL"/></summary>
-		public Task<EmojiURL> Messages_GetEmojiURL(string lang_code)
-			=> CallAsync<EmojiURL>(writer =>
+		public static Task<EmojiURL> Messages_GetEmojiURL(this Client client, string lang_code)
+			=> client.CallAsync<EmojiURL>(writer =>
 			{
 				writer.Write(0xD5B10C26);
 				writer.WriteTLString(lang_code);
@@ -9191,8 +9190,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getSearchCounters"/></summary>
-		public Task<Messages_SearchCounter[]> Messages_GetSearchCounters(InputPeer peer, MessagesFilter[] filters)
-			=> CallAsync<Messages_SearchCounter[]>(writer =>
+		public static Task<Messages_SearchCounter[]> Messages_GetSearchCounters(this Client client, InputPeer peer, MessagesFilter[] filters)
+			=> client.CallAsync<Messages_SearchCounter[]>(writer =>
 			{
 				writer.Write(0x732EEF00);
 				writer.WriteTLObject(peer);
@@ -9201,8 +9200,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.requestUrlAuth"/></summary>
-		public Task<UrlAuthResult> Messages_RequestUrlAuth(InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null)
-			=> CallAsync<UrlAuthResult>(writer =>
+		public static Task<UrlAuthResult> Messages_RequestUrlAuth(this Client client, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null)
+			=> client.CallAsync<UrlAuthResult>(writer =>
 			{
 				writer.Write(0x198FB446);
 				writer.Write((peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0));
@@ -9218,8 +9217,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.acceptUrlAuth"/></summary>
-		public Task<UrlAuthResult> Messages_AcceptUrlAuth(bool write_allowed = false, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null)
-			=> CallAsync<UrlAuthResult>(writer =>
+		public static Task<UrlAuthResult> Messages_AcceptUrlAuth(this Client client, bool write_allowed = false, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null)
+			=> client.CallAsync<UrlAuthResult>(writer =>
 			{
 				writer.Write(0xB12C7125);
 				writer.Write((write_allowed ? 0x1 : 0) | (peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0));
@@ -9235,8 +9234,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.hidePeerSettingsBar"/></summary>
-		public Task<bool> Messages_HidePeerSettingsBar(InputPeer peer)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_HidePeerSettingsBar(this Client client, InputPeer peer)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x4FACB138);
 				writer.WriteTLObject(peer);
@@ -9244,8 +9243,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getScheduledHistory"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetScheduledHistory(InputPeer peer, long hash)
-			=> CallAsync<Messages_MessagesBase>(writer =>
+		public static Task<Messages_MessagesBase> Messages_GetScheduledHistory(this Client client, InputPeer peer, long hash)
+			=> client.CallAsync<Messages_MessagesBase>(writer =>
 			{
 				writer.Write(0xF516760B);
 				writer.WriteTLObject(peer);
@@ -9254,8 +9253,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getScheduledMessages"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetScheduledMessages(InputPeer peer, int[] id)
-			=> CallAsync<Messages_MessagesBase>(writer =>
+		public static Task<Messages_MessagesBase> Messages_GetScheduledMessages(this Client client, InputPeer peer, int[] id)
+			=> client.CallAsync<Messages_MessagesBase>(writer =>
 			{
 				writer.Write(0xBDBB0464);
 				writer.WriteTLObject(peer);
@@ -9264,8 +9263,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.sendScheduledMessages"/></summary>
-		public Task<UpdatesBase> Messages_SendScheduledMessages(InputPeer peer, int[] id)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_SendScheduledMessages(this Client client, InputPeer peer, int[] id)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xBD38850A);
 				writer.WriteTLObject(peer);
@@ -9274,8 +9273,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.deleteScheduledMessages"/></summary>
-		public Task<UpdatesBase> Messages_DeleteScheduledMessages(InputPeer peer, int[] id)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_DeleteScheduledMessages(this Client client, InputPeer peer, int[] id)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x59AE2B16);
 				writer.WriteTLObject(peer);
@@ -9284,8 +9283,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getPollVotes"/></summary>
-		public Task<Messages_VotesList> Messages_GetPollVotes(InputPeer peer, int id, int limit, byte[] option = null, string offset = null)
-			=> CallAsync<Messages_VotesList>(writer =>
+		public static Task<Messages_VotesList> Messages_GetPollVotes(this Client client, InputPeer peer, int id, int limit, byte[] option = null, string offset = null)
+			=> client.CallAsync<Messages_VotesList>(writer =>
 			{
 				writer.Write(0xB86E380E);
 				writer.Write((option != null ? 0x1 : 0) | (offset != null ? 0x2 : 0));
@@ -9300,8 +9299,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.toggleStickerSets"/></summary>
-		public Task<bool> Messages_ToggleStickerSets(InputStickerSet[] stickersets, bool uninstall = false, bool archive = false, bool unarchive = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_ToggleStickerSets(this Client client, InputStickerSet[] stickersets, bool uninstall = false, bool archive = false, bool unarchive = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xB5052FEA);
 				writer.Write((uninstall ? 0x1 : 0) | (archive ? 0x2 : 0) | (unarchive ? 0x4 : 0));
@@ -9310,24 +9309,24 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getDialogFilters"/></summary>
-		public Task<DialogFilter[]> Messages_GetDialogFilters()
-			=> CallAsync<DialogFilter[]>(writer =>
+		public static Task<DialogFilter[]> Messages_GetDialogFilters(this Client client)
+			=> client.CallAsync<DialogFilter[]>(writer =>
 			{
 				writer.Write(0xF19ED96D);
 				return "Messages_GetDialogFilters";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getSuggestedDialogFilters"/></summary>
-		public Task<DialogFilterSuggested[]> Messages_GetSuggestedDialogFilters()
-			=> CallAsync<DialogFilterSuggested[]>(writer =>
+		public static Task<DialogFilterSuggested[]> Messages_GetSuggestedDialogFilters(this Client client)
+			=> client.CallAsync<DialogFilterSuggested[]>(writer =>
 			{
 				writer.Write(0xA29CD42C);
 				return "Messages_GetSuggestedDialogFilters";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.updateDialogFilter"/></summary>
-		public Task<bool> Messages_UpdateDialogFilter(int id, DialogFilter filter = null)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_UpdateDialogFilter(this Client client, int id, DialogFilter filter = null)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x1AD4A04A);
 				writer.Write(filter != null ? 0x1 : 0);
@@ -9338,8 +9337,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.updateDialogFiltersOrder"/></summary>
-		public Task<bool> Messages_UpdateDialogFiltersOrder(int[] order)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_UpdateDialogFiltersOrder(this Client client, int[] order)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xC563C1E4);
 				writer.WriteTLVector(order);
@@ -9347,8 +9346,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getOldFeaturedStickers"/></summary>
-		public Task<Messages_FeaturedStickersBase> Messages_GetOldFeaturedStickers(int offset, int limit, long hash)
-			=> CallAsync<Messages_FeaturedStickersBase>(writer =>
+		public static Task<Messages_FeaturedStickersBase> Messages_GetOldFeaturedStickers(this Client client, int offset, int limit, long hash)
+			=> client.CallAsync<Messages_FeaturedStickersBase>(writer =>
 			{
 				writer.Write(0x7ED094A1);
 				writer.Write(offset);
@@ -9358,8 +9357,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getReplies"/></summary>
-		public Task<Messages_MessagesBase> Messages_GetReplies(InputPeer peer, int msg_id, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash)
-			=> CallAsync<Messages_MessagesBase>(writer =>
+		public static Task<Messages_MessagesBase> Messages_GetReplies(this Client client, InputPeer peer, int msg_id, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash)
+			=> client.CallAsync<Messages_MessagesBase>(writer =>
 			{
 				writer.Write(0x22DDD30C);
 				writer.WriteTLObject(peer);
@@ -9375,8 +9374,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getDiscussionMessage"/></summary>
-		public Task<Messages_DiscussionMessage> Messages_GetDiscussionMessage(InputPeer peer, int msg_id)
-			=> CallAsync<Messages_DiscussionMessage>(writer =>
+		public static Task<Messages_DiscussionMessage> Messages_GetDiscussionMessage(this Client client, InputPeer peer, int msg_id)
+			=> client.CallAsync<Messages_DiscussionMessage>(writer =>
 			{
 				writer.Write(0x446972FD);
 				writer.WriteTLObject(peer);
@@ -9385,8 +9384,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.readDiscussion"/></summary>
-		public Task<bool> Messages_ReadDiscussion(InputPeer peer, int msg_id, int read_max_id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_ReadDiscussion(this Client client, InputPeer peer, int msg_id, int read_max_id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xF731A9F4);
 				writer.WriteTLObject(peer);
@@ -9396,8 +9395,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.unpinAllMessages"/></summary>
-		public Task<Messages_AffectedHistory> Messages_UnpinAllMessages(InputPeer peer)
-			=> CallAsync<Messages_AffectedHistory>(writer =>
+		public static Task<Messages_AffectedHistory> Messages_UnpinAllMessages(this Client client, InputPeer peer)
+			=> client.CallAsync<Messages_AffectedHistory>(writer =>
 			{
 				writer.Write(0xF025BC8B);
 				writer.WriteTLObject(peer);
@@ -9405,8 +9404,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.deleteChat"/></summary>
-		public Task<bool> Messages_DeleteChat(long chat_id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_DeleteChat(this Client client, long chat_id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x5BD0EE50);
 				writer.Write(chat_id);
@@ -9414,8 +9413,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.deletePhoneCallHistory"/></summary>
-		public Task<Messages_AffectedFoundMessages> Messages_DeletePhoneCallHistory(bool revoke = false)
-			=> CallAsync<Messages_AffectedFoundMessages>(writer =>
+		public static Task<Messages_AffectedFoundMessages> Messages_DeletePhoneCallHistory(this Client client, bool revoke = false)
+			=> client.CallAsync<Messages_AffectedFoundMessages>(writer =>
 			{
 				writer.Write(0xF9CBE409);
 				writer.Write(revoke ? 0x1 : 0);
@@ -9423,8 +9422,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.checkHistoryImport"/></summary>
-		public Task<Messages_HistoryImportParsed> Messages_CheckHistoryImport(string import_head)
-			=> CallAsync<Messages_HistoryImportParsed>(writer =>
+		public static Task<Messages_HistoryImportParsed> Messages_CheckHistoryImport(this Client client, string import_head)
+			=> client.CallAsync<Messages_HistoryImportParsed>(writer =>
 			{
 				writer.Write(0x43FE19F3);
 				writer.WriteTLString(import_head);
@@ -9432,8 +9431,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.initHistoryImport"/></summary>
-		public Task<Messages_HistoryImport> Messages_InitHistoryImport(InputPeer peer, InputFileBase file, int media_count)
-			=> CallAsync<Messages_HistoryImport>(writer =>
+		public static Task<Messages_HistoryImport> Messages_InitHistoryImport(this Client client, InputPeer peer, InputFileBase file, int media_count)
+			=> client.CallAsync<Messages_HistoryImport>(writer =>
 			{
 				writer.Write(0x34090C3B);
 				writer.WriteTLObject(peer);
@@ -9443,8 +9442,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.uploadImportedMedia"/></summary>
-		public Task<MessageMedia> Messages_UploadImportedMedia(InputPeer peer, long import_id, string file_name, InputMedia media)
-			=> CallAsync<MessageMedia>(writer =>
+		public static Task<MessageMedia> Messages_UploadImportedMedia(this Client client, InputPeer peer, long import_id, string file_name, InputMedia media)
+			=> client.CallAsync<MessageMedia>(writer =>
 			{
 				writer.Write(0x2A862092);
 				writer.WriteTLObject(peer);
@@ -9455,8 +9454,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.startHistoryImport"/></summary>
-		public Task<bool> Messages_StartHistoryImport(InputPeer peer, long import_id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_StartHistoryImport(this Client client, InputPeer peer, long import_id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xB43DF344);
 				writer.WriteTLObject(peer);
@@ -9465,8 +9464,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getExportedChatInvites"/></summary>
-		public Task<Messages_ExportedChatInvites> Messages_GetExportedChatInvites(InputPeer peer, InputUserBase admin_id, int limit, bool revoked = false, DateTime? offset_date = null, string offset_link = null)
-			=> CallAsync<Messages_ExportedChatInvites>(writer =>
+		public static Task<Messages_ExportedChatInvites> Messages_GetExportedChatInvites(this Client client, InputPeer peer, InputUserBase admin_id, int limit, bool revoked = false, DateTime? offset_date = null, string offset_link = null)
+			=> client.CallAsync<Messages_ExportedChatInvites>(writer =>
 			{
 				writer.Write(0xA2B5A3F6);
 				writer.Write((revoked ? 0x8 : 0) | (offset_date != null ? 0x4 : 0) | (offset_link != null ? 0x4 : 0));
@@ -9481,8 +9480,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getExportedChatInvite"/></summary>
-		public Task<Messages_ExportedChatInviteBase> Messages_GetExportedChatInvite(InputPeer peer, string link)
-			=> CallAsync<Messages_ExportedChatInviteBase>(writer =>
+		public static Task<Messages_ExportedChatInviteBase> Messages_GetExportedChatInvite(this Client client, InputPeer peer, string link)
+			=> client.CallAsync<Messages_ExportedChatInviteBase>(writer =>
 			{
 				writer.Write(0x73746F5C);
 				writer.WriteTLObject(peer);
@@ -9491,8 +9490,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.editExportedChatInvite"/></summary>
-		public Task<Messages_ExportedChatInviteBase> Messages_EditExportedChatInvite(InputPeer peer, string link, bool revoked = false, DateTime? expire_date = null, int? usage_limit = null)
-			=> CallAsync<Messages_ExportedChatInviteBase>(writer =>
+		public static Task<Messages_ExportedChatInviteBase> Messages_EditExportedChatInvite(this Client client, InputPeer peer, string link, bool revoked = false, DateTime? expire_date = null, int? usage_limit = null)
+			=> client.CallAsync<Messages_ExportedChatInviteBase>(writer =>
 			{
 				writer.Write(0x02E4FFBE);
 				writer.Write((revoked ? 0x4 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0));
@@ -9506,8 +9505,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.deleteRevokedExportedChatInvites"/></summary>
-		public Task<bool> Messages_DeleteRevokedExportedChatInvites(InputPeer peer, InputUserBase admin_id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_DeleteRevokedExportedChatInvites(this Client client, InputPeer peer, InputUserBase admin_id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x56987BD5);
 				writer.WriteTLObject(peer);
@@ -9516,8 +9515,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.deleteExportedChatInvite"/></summary>
-		public Task<bool> Messages_DeleteExportedChatInvite(InputPeer peer, string link)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Messages_DeleteExportedChatInvite(this Client client, InputPeer peer, string link)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xD464A42B);
 				writer.WriteTLObject(peer);
@@ -9526,8 +9525,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getAdminsWithInvites"/></summary>
-		public Task<Messages_ChatAdminsWithInvites> Messages_GetAdminsWithInvites(InputPeer peer)
-			=> CallAsync<Messages_ChatAdminsWithInvites>(writer =>
+		public static Task<Messages_ChatAdminsWithInvites> Messages_GetAdminsWithInvites(this Client client, InputPeer peer)
+			=> client.CallAsync<Messages_ChatAdminsWithInvites>(writer =>
 			{
 				writer.Write(0x3920E6EF);
 				writer.WriteTLObject(peer);
@@ -9535,8 +9534,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getChatInviteImporters"/></summary>
-		public Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(InputPeer peer, string link, DateTime offset_date, InputUserBase offset_user, int limit)
-			=> CallAsync<Messages_ChatInviteImporters>(writer =>
+		public static Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(this Client client, InputPeer peer, string link, DateTime offset_date, InputUserBase offset_user, int limit)
+			=> client.CallAsync<Messages_ChatInviteImporters>(writer =>
 			{
 				writer.Write(0x26FB7289);
 				writer.WriteTLObject(peer);
@@ -9548,8 +9547,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setHistoryTTL"/></summary>
-		public Task<UpdatesBase> Messages_SetHistoryTTL(InputPeer peer, int period)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_SetHistoryTTL(this Client client, InputPeer peer, int period)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xB80E5FE4);
 				writer.WriteTLObject(peer);
@@ -9558,8 +9557,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.checkHistoryImportPeer"/></summary>
-		public Task<Messages_CheckedHistoryImportPeer> Messages_CheckHistoryImportPeer(InputPeer peer)
-			=> CallAsync<Messages_CheckedHistoryImportPeer>(writer =>
+		public static Task<Messages_CheckedHistoryImportPeer> Messages_CheckHistoryImportPeer(this Client client, InputPeer peer)
+			=> client.CallAsync<Messages_CheckedHistoryImportPeer>(writer =>
 			{
 				writer.Write(0x5DC60F03);
 				writer.WriteTLObject(peer);
@@ -9567,8 +9566,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.setChatTheme"/></summary>
-		public Task<UpdatesBase> Messages_SetChatTheme(InputPeer peer, string emoticon)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Messages_SetChatTheme(this Client client, InputPeer peer, string emoticon)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xE63BE13F);
 				writer.WriteTLObject(peer);
@@ -9577,8 +9576,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getMessageReadParticipants"/></summary>
-		public Task<long[]> Messages_GetMessageReadParticipants(InputPeer peer, int msg_id)
-			=> CallAsync<long[]>(writer =>
+		public static Task<long[]> Messages_GetMessageReadParticipants(this Client client, InputPeer peer, int msg_id)
+			=> client.CallAsync<long[]>(writer =>
 			{
 				writer.Write(0x2C6F97B7);
 				writer.WriteTLObject(peer);
@@ -9587,16 +9586,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/updates.getState"/></summary>
-		public Task<Updates_State> Updates_GetState()
-			=> CallAsync<Updates_State>(writer =>
+		public static Task<Updates_State> Updates_GetState(this Client client)
+			=> client.CallAsync<Updates_State>(writer =>
 			{
 				writer.Write(0xEDD4882A);
 				return "Updates_GetState";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/updates.getDifference"/></summary>
-		public Task<Updates_DifferenceBase> Updates_GetDifference(int pts, DateTime date, int qts, int? pts_total_limit = null)
-			=> CallAsync<Updates_DifferenceBase>(writer =>
+		public static Task<Updates_DifferenceBase> Updates_GetDifference(this Client client, int pts, DateTime date, int qts, int? pts_total_limit = null)
+			=> client.CallAsync<Updates_DifferenceBase>(writer =>
 			{
 				writer.Write(0x25939651);
 				writer.Write(pts_total_limit != null ? 0x1 : 0);
@@ -9609,8 +9608,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/updates.getChannelDifference"/></summary>
-		public Task<Updates_ChannelDifferenceBase> Updates_GetChannelDifference(InputChannelBase channel, ChannelMessagesFilterBase filter, int pts, int limit, bool force = false)
-			=> CallAsync<Updates_ChannelDifferenceBase>(writer =>
+		public static Task<Updates_ChannelDifferenceBase> Updates_GetChannelDifference(this Client client, InputChannelBase channel, ChannelMessagesFilterBase filter, int pts, int limit, bool force = false)
+			=> client.CallAsync<Updates_ChannelDifferenceBase>(writer =>
 			{
 				writer.Write(0x03173D78);
 				writer.Write(force ? 0x1 : 0);
@@ -9622,8 +9621,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/photos.updateProfilePhoto"/></summary>
-		public Task<Photos_Photo> Photos_UpdateProfilePhoto(InputPhotoBase id)
-			=> CallAsync<Photos_Photo>(writer =>
+		public static Task<Photos_Photo> Photos_UpdateProfilePhoto(this Client client, InputPhotoBase id)
+			=> client.CallAsync<Photos_Photo>(writer =>
 			{
 				writer.Write(0x72D4742C);
 				writer.WriteTLObject(id);
@@ -9631,8 +9630,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/photos.uploadProfilePhoto"/></summary>
-		public Task<Photos_Photo> Photos_UploadProfilePhoto(InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null)
-			=> CallAsync<Photos_Photo>(writer =>
+		public static Task<Photos_Photo> Photos_UploadProfilePhoto(this Client client, InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null)
+			=> client.CallAsync<Photos_Photo>(writer =>
 			{
 				writer.Write(0x89F30F69);
 				writer.Write((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0));
@@ -9646,8 +9645,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/photos.deletePhotos"/></summary>
-		public Task<long[]> Photos_DeletePhotos(InputPhotoBase[] id)
-			=> CallAsync<long[]>(writer =>
+		public static Task<long[]> Photos_DeletePhotos(this Client client, InputPhotoBase[] id)
+			=> client.CallAsync<long[]>(writer =>
 			{
 				writer.Write(0x87CF7F2F);
 				writer.WriteTLVector(id);
@@ -9655,8 +9654,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/photos.getUserPhotos"/></summary>
-		public Task<Photos_PhotosBase> Photos_GetUserPhotos(InputUserBase user_id, int offset, long max_id, int limit)
-			=> CallAsync<Photos_PhotosBase>(writer =>
+		public static Task<Photos_PhotosBase> Photos_GetUserPhotos(this Client client, InputUserBase user_id, int offset, long max_id, int limit)
+			=> client.CallAsync<Photos_PhotosBase>(writer =>
 			{
 				writer.Write(0x91CD32A8);
 				writer.WriteTLObject(user_id);
@@ -9667,8 +9666,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/upload.saveFilePart"/></summary>
-		public Task<bool> Upload_SaveFilePart(long file_id, int file_part, byte[] bytes)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Upload_SaveFilePart(this Client client, long file_id, int file_part, byte[] bytes)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xB304A621);
 				writer.Write(file_id);
@@ -9678,8 +9677,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/upload.getFile"/></summary>
-		public Task<Upload_FileBase> Upload_GetFile(InputFileLocationBase location, int offset, int limit, bool precise = false, bool cdn_supported = false)
-			=> CallAsync<Upload_FileBase>(writer =>
+		public static Task<Upload_FileBase> Upload_GetFile(this Client client, InputFileLocationBase location, int offset, int limit, bool precise = false, bool cdn_supported = false)
+			=> client.CallAsync<Upload_FileBase>(writer =>
 			{
 				writer.Write(0xB15A9AFC);
 				writer.Write((precise ? 0x1 : 0) | (cdn_supported ? 0x2 : 0));
@@ -9690,8 +9689,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/upload.saveBigFilePart"/></summary>
-		public Task<bool> Upload_SaveBigFilePart(long file_id, int file_part, int file_total_parts, byte[] bytes)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Upload_SaveBigFilePart(this Client client, long file_id, int file_part, int file_total_parts, byte[] bytes)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xDE7B673D);
 				writer.Write(file_id);
@@ -9702,8 +9701,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/upload.getWebFile"/></summary>
-		public Task<Upload_WebFile> Upload_GetWebFile(InputWebFileLocationBase location, int offset, int limit)
-			=> CallAsync<Upload_WebFile>(writer =>
+		public static Task<Upload_WebFile> Upload_GetWebFile(this Client client, InputWebFileLocationBase location, int offset, int limit)
+			=> client.CallAsync<Upload_WebFile>(writer =>
 			{
 				writer.Write(0x24E6818D);
 				writer.WriteTLObject(location);
@@ -9713,8 +9712,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/upload.getCdnFile"/></summary>
-		public Task<Upload_CdnFileBase> Upload_GetCdnFile(byte[] file_token, int offset, int limit)
-			=> CallAsync<Upload_CdnFileBase>(writer =>
+		public static Task<Upload_CdnFileBase> Upload_GetCdnFile(this Client client, byte[] file_token, int offset, int limit)
+			=> client.CallAsync<Upload_CdnFileBase>(writer =>
 			{
 				writer.Write(0x2000BCC3);
 				writer.WriteTLBytes(file_token);
@@ -9724,8 +9723,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/upload.reuploadCdnFile"/></summary>
-		public Task<FileHash[]> Upload_ReuploadCdnFile(byte[] file_token, byte[] request_token)
-			=> CallAsync<FileHash[]>(writer =>
+		public static Task<FileHash[]> Upload_ReuploadCdnFile(this Client client, byte[] file_token, byte[] request_token)
+			=> client.CallAsync<FileHash[]>(writer =>
 			{
 				writer.Write(0x9B2754A8);
 				writer.WriteTLBytes(file_token);
@@ -9734,8 +9733,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/upload.getCdnFileHashes"/></summary>
-		public Task<FileHash[]> Upload_GetCdnFileHashes(byte[] file_token, int offset)
-			=> CallAsync<FileHash[]>(writer =>
+		public static Task<FileHash[]> Upload_GetCdnFileHashes(this Client client, byte[] file_token, int offset)
+			=> client.CallAsync<FileHash[]>(writer =>
 			{
 				writer.Write(0x4DA54231);
 				writer.WriteTLBytes(file_token);
@@ -9744,8 +9743,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/upload.getFileHashes"/></summary>
-		public Task<FileHash[]> Upload_GetFileHashes(InputFileLocationBase location, int offset)
-			=> CallAsync<FileHash[]>(writer =>
+		public static Task<FileHash[]> Upload_GetFileHashes(this Client client, InputFileLocationBase location, int offset)
+			=> client.CallAsync<FileHash[]>(writer =>
 			{
 				writer.Write(0xC7025931);
 				writer.WriteTLObject(location);
@@ -9754,7 +9753,7 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getConfig"/></summary>
-		public Task<Config> Help_GetConfig() => CallAsync<Config>(Help_GetConfig);
+		public static Task<Config> Help_GetConfig(this Client client) => client.CallAsync<Config>(Help_GetConfig);
 		public static string Help_GetConfig(BinaryWriter writer)
 		{
 			writer.Write(0xC4F9186B);
@@ -9762,16 +9761,16 @@ namespace WTelegram		// ---functions---
 		}
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getNearestDc"/></summary>
-		public Task<NearestDc> Help_GetNearestDc()
-			=> CallAsync<NearestDc>(writer =>
+		public static Task<NearestDc> Help_GetNearestDc(this Client client)
+			=> client.CallAsync<NearestDc>(writer =>
 			{
 				writer.Write(0x1FB33026);
 				return "Help_GetNearestDc";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getAppUpdate"/></summary>
-		public Task<Help_AppUpdateBase> Help_GetAppUpdate(string source)
-			=> CallAsync<Help_AppUpdateBase>(writer =>
+		public static Task<Help_AppUpdateBase> Help_GetAppUpdate(this Client client, string source)
+			=> client.CallAsync<Help_AppUpdateBase>(writer =>
 			{
 				writer.Write(0x522D5A7D);
 				writer.WriteTLString(source);
@@ -9779,24 +9778,24 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getInviteText"/></summary>
-		public Task<Help_InviteText> Help_GetInviteText()
-			=> CallAsync<Help_InviteText>(writer =>
+		public static Task<Help_InviteText> Help_GetInviteText(this Client client)
+			=> client.CallAsync<Help_InviteText>(writer =>
 			{
 				writer.Write(0x4D392343);
 				return "Help_GetInviteText";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getSupport"/></summary>
-		public Task<Help_Support> Help_GetSupport()
-			=> CallAsync<Help_Support>(writer =>
+		public static Task<Help_Support> Help_GetSupport(this Client client)
+			=> client.CallAsync<Help_Support>(writer =>
 			{
 				writer.Write(0x9CDF08CD);
 				return "Help_GetSupport";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getAppChangelog"/></summary>
-		public Task<UpdatesBase> Help_GetAppChangelog(string prev_app_version)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Help_GetAppChangelog(this Client client, string prev_app_version)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x9010EF6F);
 				writer.WriteTLString(prev_app_version);
@@ -9804,8 +9803,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.setBotUpdatesStatus"/></summary>
-		public Task<bool> Help_SetBotUpdatesStatus(int pending_updates_count, string message)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Help_SetBotUpdatesStatus(this Client client, int pending_updates_count, string message)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xEC22CFCD);
 				writer.Write(pending_updates_count);
@@ -9814,16 +9813,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getCdnConfig"/></summary>
-		public Task<CdnConfig> Help_GetCdnConfig()
-			=> CallAsync<CdnConfig>(writer =>
+		public static Task<CdnConfig> Help_GetCdnConfig(this Client client)
+			=> client.CallAsync<CdnConfig>(writer =>
 			{
 				writer.Write(0x52029342);
 				return "Help_GetCdnConfig";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getRecentMeUrls"/></summary>
-		public Task<Help_RecentMeUrls> Help_GetRecentMeUrls(string referer)
-			=> CallAsync<Help_RecentMeUrls>(writer =>
+		public static Task<Help_RecentMeUrls> Help_GetRecentMeUrls(this Client client, string referer)
+			=> client.CallAsync<Help_RecentMeUrls>(writer =>
 			{
 				writer.Write(0x3DC0F114);
 				writer.WriteTLString(referer);
@@ -9831,16 +9830,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getTermsOfServiceUpdate"/></summary>
-		public Task<Help_TermsOfServiceUpdateBase> Help_GetTermsOfServiceUpdate()
-			=> CallAsync<Help_TermsOfServiceUpdateBase>(writer =>
+		public static Task<Help_TermsOfServiceUpdateBase> Help_GetTermsOfServiceUpdate(this Client client)
+			=> client.CallAsync<Help_TermsOfServiceUpdateBase>(writer =>
 			{
 				writer.Write(0x2CA51FD1);
 				return "Help_GetTermsOfServiceUpdate";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.acceptTermsOfService"/></summary>
-		public Task<bool> Help_AcceptTermsOfService(DataJSON id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Help_AcceptTermsOfService(this Client client, DataJSON id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xEE72F79A);
 				writer.WriteTLObject(id);
@@ -9848,8 +9847,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getDeepLinkInfo"/></summary>
-		public Task<Help_DeepLinkInfoBase> Help_GetDeepLinkInfo(string path)
-			=> CallAsync<Help_DeepLinkInfoBase>(writer =>
+		public static Task<Help_DeepLinkInfoBase> Help_GetDeepLinkInfo(this Client client, string path)
+			=> client.CallAsync<Help_DeepLinkInfoBase>(writer =>
 			{
 				writer.Write(0x3FEDC75F);
 				writer.WriteTLString(path);
@@ -9857,16 +9856,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getAppConfig"/></summary>
-		public Task<JSONValue> Help_GetAppConfig()
-			=> CallAsync<JSONValue>(writer =>
+		public static Task<JSONValue> Help_GetAppConfig(this Client client)
+			=> client.CallAsync<JSONValue>(writer =>
 			{
 				writer.Write(0x98914110);
 				return "Help_GetAppConfig";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.saveAppLog"/></summary>
-		public Task<bool> Help_SaveAppLog(InputAppEvent[] events)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Help_SaveAppLog(this Client client, InputAppEvent[] events)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x6F02F748);
 				writer.WriteTLVector(events);
@@ -9874,8 +9873,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getPassportConfig"/></summary>
-		public Task<Help_PassportConfigBase> Help_GetPassportConfig(int hash)
-			=> CallAsync<Help_PassportConfigBase>(writer =>
+		public static Task<Help_PassportConfigBase> Help_GetPassportConfig(this Client client, int hash)
+			=> client.CallAsync<Help_PassportConfigBase>(writer =>
 			{
 				writer.Write(0xC661AD08);
 				writer.Write(hash);
@@ -9883,16 +9882,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getSupportName"/></summary>
-		public Task<Help_SupportName> Help_GetSupportName()
-			=> CallAsync<Help_SupportName>(writer =>
+		public static Task<Help_SupportName> Help_GetSupportName(this Client client)
+			=> client.CallAsync<Help_SupportName>(writer =>
 			{
 				writer.Write(0xD360E72C);
 				return "Help_GetSupportName";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getUserInfo"/></summary>
-		public Task<Help_UserInfoBase> Help_GetUserInfo(InputUserBase user_id)
-			=> CallAsync<Help_UserInfoBase>(writer =>
+		public static Task<Help_UserInfoBase> Help_GetUserInfo(this Client client, InputUserBase user_id)
+			=> client.CallAsync<Help_UserInfoBase>(writer =>
 			{
 				writer.Write(0x038A08D3);
 				writer.WriteTLObject(user_id);
@@ -9900,8 +9899,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.editUserInfo"/></summary>
-		public Task<Help_UserInfoBase> Help_EditUserInfo(InputUserBase user_id, string message, MessageEntity[] entities)
-			=> CallAsync<Help_UserInfoBase>(writer =>
+		public static Task<Help_UserInfoBase> Help_EditUserInfo(this Client client, InputUserBase user_id, string message, MessageEntity[] entities)
+			=> client.CallAsync<Help_UserInfoBase>(writer =>
 			{
 				writer.Write(0x66B91B70);
 				writer.WriteTLObject(user_id);
@@ -9911,16 +9910,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getPromoData"/></summary>
-		public Task<Help_PromoDataBase> Help_GetPromoData()
-			=> CallAsync<Help_PromoDataBase>(writer =>
+		public static Task<Help_PromoDataBase> Help_GetPromoData(this Client client)
+			=> client.CallAsync<Help_PromoDataBase>(writer =>
 			{
 				writer.Write(0xC0977421);
 				return "Help_GetPromoData";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.hidePromoData"/></summary>
-		public Task<bool> Help_HidePromoData(InputPeer peer)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Help_HidePromoData(this Client client, InputPeer peer)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x1E251C95);
 				writer.WriteTLObject(peer);
@@ -9928,8 +9927,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.dismissSuggestion"/></summary>
-		public Task<bool> Help_DismissSuggestion(InputPeer peer, string suggestion)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Help_DismissSuggestion(this Client client, InputPeer peer, string suggestion)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xF50DBAA1);
 				writer.WriteTLObject(peer);
@@ -9938,8 +9937,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getCountriesList"/></summary>
-		public Task<Help_CountriesListBase> Help_GetCountriesList(string lang_code, int hash)
-			=> CallAsync<Help_CountriesListBase>(writer =>
+		public static Task<Help_CountriesListBase> Help_GetCountriesList(this Client client, string lang_code, int hash)
+			=> client.CallAsync<Help_CountriesListBase>(writer =>
 			{
 				writer.Write(0x735787A8);
 				writer.WriteTLString(lang_code);
@@ -9948,8 +9947,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.readHistory"/></summary>
-		public Task<bool> Channels_ReadHistory(InputChannelBase channel, int max_id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Channels_ReadHistory(this Client client, InputChannelBase channel, int max_id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xCC104937);
 				writer.WriteTLObject(channel);
@@ -9958,8 +9957,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.deleteMessages"/></summary>
-		public Task<Messages_AffectedMessages> Channels_DeleteMessages(InputChannelBase channel, int[] id)
-			=> CallAsync<Messages_AffectedMessages>(writer =>
+		public static Task<Messages_AffectedMessages> Channels_DeleteMessages(this Client client, InputChannelBase channel, int[] id)
+			=> client.CallAsync<Messages_AffectedMessages>(writer =>
 			{
 				writer.Write(0x84C1FD4E);
 				writer.WriteTLObject(channel);
@@ -9968,8 +9967,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.deleteUserHistory"/></summary>
-		public Task<Messages_AffectedHistory> Channels_DeleteUserHistory(InputChannelBase channel, InputUserBase user_id)
-			=> CallAsync<Messages_AffectedHistory>(writer =>
+		public static Task<Messages_AffectedHistory> Channels_DeleteUserHistory(this Client client, InputChannelBase channel, InputUserBase user_id)
+			=> client.CallAsync<Messages_AffectedHistory>(writer =>
 			{
 				writer.Write(0xD10DD71B);
 				writer.WriteTLObject(channel);
@@ -9978,8 +9977,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.reportSpam"/></summary>
-		public Task<bool> Channels_ReportSpam(InputChannelBase channel, InputUserBase user_id, int[] id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Channels_ReportSpam(this Client client, InputChannelBase channel, InputUserBase user_id, int[] id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xFE087810);
 				writer.WriteTLObject(channel);
@@ -9989,8 +9988,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getMessages"/></summary>
-		public Task<Messages_MessagesBase> Channels_GetMessages(InputChannelBase channel, InputMessage[] id)
-			=> CallAsync<Messages_MessagesBase>(writer =>
+		public static Task<Messages_MessagesBase> Channels_GetMessages(this Client client, InputChannelBase channel, InputMessage[] id)
+			=> client.CallAsync<Messages_MessagesBase>(writer =>
 			{
 				writer.Write(0xAD8C9A23);
 				writer.WriteTLObject(channel);
@@ -9999,8 +9998,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getParticipants"/></summary>
-		public Task<Channels_ChannelParticipantsBase> Channels_GetParticipants(InputChannelBase channel, ChannelParticipantsFilter filter, int offset, int limit, long hash)
-			=> CallAsync<Channels_ChannelParticipantsBase>(writer =>
+		public static Task<Channels_ChannelParticipantsBase> Channels_GetParticipants(this Client client, InputChannelBase channel, ChannelParticipantsFilter filter, int offset, int limit, long hash)
+			=> client.CallAsync<Channels_ChannelParticipantsBase>(writer =>
 			{
 				writer.Write(0x77CED9D0);
 				writer.WriteTLObject(channel);
@@ -10012,8 +10011,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getParticipant"/></summary>
-		public Task<Channels_ChannelParticipant> Channels_GetParticipant(InputChannelBase channel, InputPeer participant)
-			=> CallAsync<Channels_ChannelParticipant>(writer =>
+		public static Task<Channels_ChannelParticipant> Channels_GetParticipant(this Client client, InputChannelBase channel, InputPeer participant)
+			=> client.CallAsync<Channels_ChannelParticipant>(writer =>
 			{
 				writer.Write(0xA0AB6CC6);
 				writer.WriteTLObject(channel);
@@ -10022,8 +10021,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getChannels"/></summary>
-		public Task<Messages_ChatsBase> Channels_GetChannels(InputChannelBase[] id)
-			=> CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_ChatsBase> Channels_GetChannels(this Client client, InputChannelBase[] id)
+			=> client.CallAsync<Messages_ChatsBase>(writer =>
 			{
 				writer.Write(0x0A7F6BBB);
 				writer.WriteTLVector(id);
@@ -10031,8 +10030,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getFullChannel"/></summary>
-		public Task<Messages_ChatFull> Channels_GetFullChannel(InputChannelBase channel)
-			=> CallAsync<Messages_ChatFull>(writer =>
+		public static Task<Messages_ChatFull> Channels_GetFullChannel(this Client client, InputChannelBase channel)
+			=> client.CallAsync<Messages_ChatFull>(writer =>
 			{
 				writer.Write(0x08736A09);
 				writer.WriteTLObject(channel);
@@ -10040,8 +10039,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.createChannel"/></summary>
-		public Task<UpdatesBase> Channels_CreateChannel(string title, string about, bool broadcast = false, bool megagroup = false, bool for_import = false, InputGeoPointBase geo_point = null, string address = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_CreateChannel(this Client client, string title, string about, bool broadcast = false, bool megagroup = false, bool for_import = false, InputGeoPointBase geo_point = null, string address = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x3D5FB10F);
 				writer.Write((broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0) | (geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0));
@@ -10055,8 +10054,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.editAdmin"/></summary>
-		public Task<UpdatesBase> Channels_EditAdmin(InputChannelBase channel, InputUserBase user_id, ChatAdminRights admin_rights, string rank)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_EditAdmin(this Client client, InputChannelBase channel, InputUserBase user_id, ChatAdminRights admin_rights, string rank)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xD33C8902);
 				writer.WriteTLObject(channel);
@@ -10067,8 +10066,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.editTitle"/></summary>
-		public Task<UpdatesBase> Channels_EditTitle(InputChannelBase channel, string title)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_EditTitle(this Client client, InputChannelBase channel, string title)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x566DECD0);
 				writer.WriteTLObject(channel);
@@ -10077,8 +10076,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.editPhoto"/></summary>
-		public Task<UpdatesBase> Channels_EditPhoto(InputChannelBase channel, InputChatPhotoBase photo)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_EditPhoto(this Client client, InputChannelBase channel, InputChatPhotoBase photo)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xF12E57C9);
 				writer.WriteTLObject(channel);
@@ -10087,8 +10086,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.checkUsername"/></summary>
-		public Task<bool> Channels_CheckUsername(InputChannelBase channel, string username)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Channels_CheckUsername(this Client client, InputChannelBase channel, string username)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x10E6BD2C);
 				writer.WriteTLObject(channel);
@@ -10097,8 +10096,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.updateUsername"/></summary>
-		public Task<bool> Channels_UpdateUsername(InputChannelBase channel, string username)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Channels_UpdateUsername(this Client client, InputChannelBase channel, string username)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x3514B3DE);
 				writer.WriteTLObject(channel);
@@ -10107,8 +10106,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.joinChannel"/></summary>
-		public Task<UpdatesBase> Channels_JoinChannel(InputChannelBase channel)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_JoinChannel(this Client client, InputChannelBase channel)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x24B524C5);
 				writer.WriteTLObject(channel);
@@ -10116,8 +10115,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.leaveChannel"/></summary>
-		public Task<UpdatesBase> Channels_LeaveChannel(InputChannelBase channel)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_LeaveChannel(this Client client, InputChannelBase channel)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xF836AA95);
 				writer.WriteTLObject(channel);
@@ -10125,8 +10124,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.inviteToChannel"/></summary>
-		public Task<UpdatesBase> Channels_InviteToChannel(InputChannelBase channel, InputUserBase[] users)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_InviteToChannel(this Client client, InputChannelBase channel, InputUserBase[] users)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x199F3A6C);
 				writer.WriteTLObject(channel);
@@ -10135,8 +10134,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.deleteChannel"/></summary>
-		public Task<UpdatesBase> Channels_DeleteChannel(InputChannelBase channel)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_DeleteChannel(this Client client, InputChannelBase channel)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xC0111FE3);
 				writer.WriteTLObject(channel);
@@ -10144,8 +10143,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.exportMessageLink"/></summary>
-		public Task<ExportedMessageLink> Channels_ExportMessageLink(InputChannelBase channel, int id, bool grouped = false, bool thread = false)
-			=> CallAsync<ExportedMessageLink>(writer =>
+		public static Task<ExportedMessageLink> Channels_ExportMessageLink(this Client client, InputChannelBase channel, int id, bool grouped = false, bool thread = false)
+			=> client.CallAsync<ExportedMessageLink>(writer =>
 			{
 				writer.Write(0xE63FADEB);
 				writer.Write((grouped ? 0x1 : 0) | (thread ? 0x2 : 0));
@@ -10155,8 +10154,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.toggleSignatures"/></summary>
-		public Task<UpdatesBase> Channels_ToggleSignatures(InputChannelBase channel, bool enabled)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_ToggleSignatures(this Client client, InputChannelBase channel, bool enabled)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x1F69B606);
 				writer.WriteTLObject(channel);
@@ -10165,8 +10164,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getAdminedPublicChannels"/></summary>
-		public Task<Messages_ChatsBase> Channels_GetAdminedPublicChannels(bool by_location = false, bool check_limit = false)
-			=> CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_ChatsBase> Channels_GetAdminedPublicChannels(this Client client, bool by_location = false, bool check_limit = false)
+			=> client.CallAsync<Messages_ChatsBase>(writer =>
 			{
 				writer.Write(0xF8B036AF);
 				writer.Write((by_location ? 0x1 : 0) | (check_limit ? 0x2 : 0));
@@ -10174,8 +10173,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.editBanned"/></summary>
-		public Task<UpdatesBase> Channels_EditBanned(InputChannelBase channel, InputPeer participant, ChatBannedRights banned_rights)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_EditBanned(this Client client, InputChannelBase channel, InputPeer participant, ChatBannedRights banned_rights)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x96E6CD81);
 				writer.WriteTLObject(channel);
@@ -10185,8 +10184,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getAdminLog"/></summary>
-		public Task<Channels_AdminLogResults> Channels_GetAdminLog(InputChannelBase channel, string q, long max_id, long min_id, int limit, ChannelAdminLogEventsFilter events_filter = null, InputUserBase[] admins = null)
-			=> CallAsync<Channels_AdminLogResults>(writer =>
+		public static Task<Channels_AdminLogResults> Channels_GetAdminLog(this Client client, InputChannelBase channel, string q, long max_id, long min_id, int limit, ChannelAdminLogEventsFilter events_filter = null, InputUserBase[] admins = null)
+			=> client.CallAsync<Channels_AdminLogResults>(writer =>
 			{
 				writer.Write(0x33DDF480);
 				writer.Write((events_filter != null ? 0x1 : 0) | (admins != null ? 0x2 : 0));
@@ -10203,8 +10202,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.setStickers"/></summary>
-		public Task<bool> Channels_SetStickers(InputChannelBase channel, InputStickerSet stickerset)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Channels_SetStickers(this Client client, InputChannelBase channel, InputStickerSet stickerset)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xEA8CA4F9);
 				writer.WriteTLObject(channel);
@@ -10213,8 +10212,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.readMessageContents"/></summary>
-		public Task<bool> Channels_ReadMessageContents(InputChannelBase channel, int[] id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Channels_ReadMessageContents(this Client client, InputChannelBase channel, int[] id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xEAB5DC38);
 				writer.WriteTLObject(channel);
@@ -10223,8 +10222,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.deleteHistory"/></summary>
-		public Task<bool> Channels_DeleteHistory(InputChannelBase channel, int max_id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Channels_DeleteHistory(this Client client, InputChannelBase channel, int max_id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xAF369D42);
 				writer.WriteTLObject(channel);
@@ -10233,8 +10232,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.togglePreHistoryHidden"/></summary>
-		public Task<UpdatesBase> Channels_TogglePreHistoryHidden(InputChannelBase channel, bool enabled)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_TogglePreHistoryHidden(this Client client, InputChannelBase channel, bool enabled)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xEABBB94C);
 				writer.WriteTLObject(channel);
@@ -10243,8 +10242,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getLeftChannels"/></summary>
-		public Task<Messages_ChatsBase> Channels_GetLeftChannels(int offset)
-			=> CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_ChatsBase> Channels_GetLeftChannels(this Client client, int offset)
+			=> client.CallAsync<Messages_ChatsBase>(writer =>
 			{
 				writer.Write(0x8341ECC0);
 				writer.Write(offset);
@@ -10252,16 +10251,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getGroupsForDiscussion"/></summary>
-		public Task<Messages_ChatsBase> Channels_GetGroupsForDiscussion()
-			=> CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_ChatsBase> Channels_GetGroupsForDiscussion(this Client client)
+			=> client.CallAsync<Messages_ChatsBase>(writer =>
 			{
 				writer.Write(0xF5DAD378);
 				return "Channels_GetGroupsForDiscussion";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.setDiscussionGroup"/></summary>
-		public Task<bool> Channels_SetDiscussionGroup(InputChannelBase broadcast, InputChannelBase group)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Channels_SetDiscussionGroup(this Client client, InputChannelBase broadcast, InputChannelBase group)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x40582BB2);
 				writer.WriteTLObject(broadcast);
@@ -10270,8 +10269,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.editCreator"/></summary>
-		public Task<UpdatesBase> Channels_EditCreator(InputChannelBase channel, InputUserBase user_id, InputCheckPasswordSRPBase password)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_EditCreator(this Client client, InputChannelBase channel, InputUserBase user_id, InputCheckPasswordSRPBase password)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x8F38CD1F);
 				writer.WriteTLObject(channel);
@@ -10281,8 +10280,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.editLocation"/></summary>
-		public Task<bool> Channels_EditLocation(InputChannelBase channel, InputGeoPointBase geo_point, string address)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Channels_EditLocation(this Client client, InputChannelBase channel, InputGeoPointBase geo_point, string address)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x58E63F6D);
 				writer.WriteTLObject(channel);
@@ -10292,8 +10291,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.toggleSlowMode"/></summary>
-		public Task<UpdatesBase> Channels_ToggleSlowMode(InputChannelBase channel, int seconds)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_ToggleSlowMode(this Client client, InputChannelBase channel, int seconds)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xEDD49EF0);
 				writer.WriteTLObject(channel);
@@ -10302,16 +10301,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getInactiveChannels"/></summary>
-		public Task<Messages_InactiveChats> Channels_GetInactiveChannels()
-			=> CallAsync<Messages_InactiveChats>(writer =>
+		public static Task<Messages_InactiveChats> Channels_GetInactiveChannels(this Client client)
+			=> client.CallAsync<Messages_InactiveChats>(writer =>
 			{
 				writer.Write(0x11E831EE);
 				return "Channels_GetInactiveChannels";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.convertToGigagroup"/></summary>
-		public Task<UpdatesBase> Channels_ConvertToGigagroup(InputChannelBase channel)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Channels_ConvertToGigagroup(this Client client, InputChannelBase channel)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x0B290C69);
 				writer.WriteTLObject(channel);
@@ -10319,8 +10318,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.viewSponsoredMessage"/></summary>
-		public Task<bool> Channels_ViewSponsoredMessage(InputChannelBase channel, byte[] random_id)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Channels_ViewSponsoredMessage(this Client client, InputChannelBase channel, byte[] random_id)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xBEAEDB94);
 				writer.WriteTLObject(channel);
@@ -10329,8 +10328,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getSponsoredMessages"/></summary>
-		public Task<Messages_SponsoredMessages> Channels_GetSponsoredMessages(InputChannelBase channel)
-			=> CallAsync<Messages_SponsoredMessages>(writer =>
+		public static Task<Messages_SponsoredMessages> Channels_GetSponsoredMessages(this Client client, InputChannelBase channel)
+			=> client.CallAsync<Messages_SponsoredMessages>(writer =>
 			{
 				writer.Write(0xEC210FBF);
 				writer.WriteTLObject(channel);
@@ -10338,8 +10337,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/bots.sendCustomRequest"/></summary>
-		public Task<DataJSON> Bots_SendCustomRequest(string custom_method, DataJSON params_)
-			=> CallAsync<DataJSON>(writer =>
+		public static Task<DataJSON> Bots_SendCustomRequest(this Client client, string custom_method, DataJSON params_)
+			=> client.CallAsync<DataJSON>(writer =>
 			{
 				writer.Write(0xAA2769ED);
 				writer.WriteTLString(custom_method);
@@ -10348,8 +10347,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/bots.answerWebhookJSONQuery"/></summary>
-		public Task<bool> Bots_AnswerWebhookJSONQuery(long query_id, DataJSON data)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Bots_AnswerWebhookJSONQuery(this Client client, long query_id, DataJSON data)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xE6213F4D);
 				writer.Write(query_id);
@@ -10358,8 +10357,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/bots.setBotCommands"/></summary>
-		public Task<bool> Bots_SetBotCommands(BotCommandScope scope, string lang_code, BotCommand[] commands)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Bots_SetBotCommands(this Client client, BotCommandScope scope, string lang_code, BotCommand[] commands)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x0517165A);
 				writer.WriteTLObject(scope);
@@ -10369,8 +10368,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/bots.resetBotCommands"/></summary>
-		public Task<bool> Bots_ResetBotCommands(BotCommandScope scope, string lang_code)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Bots_ResetBotCommands(this Client client, BotCommandScope scope, string lang_code)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x3D8DE0F9);
 				writer.WriteTLObject(scope);
@@ -10379,8 +10378,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/bots.getBotCommands"/></summary>
-		public Task<BotCommand[]> Bots_GetBotCommands(BotCommandScope scope, string lang_code)
-			=> CallAsync<BotCommand[]>(writer =>
+		public static Task<BotCommand[]> Bots_GetBotCommands(this Client client, BotCommandScope scope, string lang_code)
+			=> client.CallAsync<BotCommand[]>(writer =>
 			{
 				writer.Write(0xE34C0DD6);
 				writer.WriteTLObject(scope);
@@ -10389,8 +10388,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/payments.getPaymentForm"/></summary>
-		public Task<Payments_PaymentForm> Payments_GetPaymentForm(InputPeer peer, int msg_id, DataJSON theme_params = null)
-			=> CallAsync<Payments_PaymentForm>(writer =>
+		public static Task<Payments_PaymentForm> Payments_GetPaymentForm(this Client client, InputPeer peer, int msg_id, DataJSON theme_params = null)
+			=> client.CallAsync<Payments_PaymentForm>(writer =>
 			{
 				writer.Write(0x8A333C8D);
 				writer.Write(theme_params != null ? 0x1 : 0);
@@ -10402,8 +10401,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/payments.getPaymentReceipt"/></summary>
-		public Task<Payments_PaymentReceipt> Payments_GetPaymentReceipt(InputPeer peer, int msg_id)
-			=> CallAsync<Payments_PaymentReceipt>(writer =>
+		public static Task<Payments_PaymentReceipt> Payments_GetPaymentReceipt(this Client client, InputPeer peer, int msg_id)
+			=> client.CallAsync<Payments_PaymentReceipt>(writer =>
 			{
 				writer.Write(0x2478D1CC);
 				writer.WriteTLObject(peer);
@@ -10412,8 +10411,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/payments.validateRequestedInfo"/></summary>
-		public Task<Payments_ValidatedRequestedInfo> Payments_ValidateRequestedInfo(InputPeer peer, int msg_id, PaymentRequestedInfo info, bool save = false)
-			=> CallAsync<Payments_ValidatedRequestedInfo>(writer =>
+		public static Task<Payments_ValidatedRequestedInfo> Payments_ValidateRequestedInfo(this Client client, InputPeer peer, int msg_id, PaymentRequestedInfo info, bool save = false)
+			=> client.CallAsync<Payments_ValidatedRequestedInfo>(writer =>
 			{
 				writer.Write(0xDB103170);
 				writer.Write(save ? 0x1 : 0);
@@ -10424,8 +10423,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/payments.sendPaymentForm"/></summary>
-		public Task<Payments_PaymentResultBase> Payments_SendPaymentForm(long form_id, InputPeer peer, int msg_id, InputPaymentCredentialsBase credentials, string requested_info_id = null, string shipping_option_id = null, long? tip_amount = null)
-			=> CallAsync<Payments_PaymentResultBase>(writer =>
+		public static Task<Payments_PaymentResultBase> Payments_SendPaymentForm(this Client client, long form_id, InputPeer peer, int msg_id, InputPaymentCredentialsBase credentials, string requested_info_id = null, string shipping_option_id = null, long? tip_amount = null)
+			=> client.CallAsync<Payments_PaymentResultBase>(writer =>
 			{
 				writer.Write(0x30C3BC9D);
 				writer.Write((requested_info_id != null ? 0x1 : 0) | (shipping_option_id != null ? 0x2 : 0) | (tip_amount != null ? 0x4 : 0));
@@ -10443,16 +10442,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/payments.getSavedInfo"/></summary>
-		public Task<Payments_SavedInfo> Payments_GetSavedInfo()
-			=> CallAsync<Payments_SavedInfo>(writer =>
+		public static Task<Payments_SavedInfo> Payments_GetSavedInfo(this Client client)
+			=> client.CallAsync<Payments_SavedInfo>(writer =>
 			{
 				writer.Write(0x227D824B);
 				return "Payments_GetSavedInfo";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/payments.clearSavedInfo"/></summary>
-		public Task<bool> Payments_ClearSavedInfo(bool credentials = false, bool info = false)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Payments_ClearSavedInfo(this Client client, bool credentials = false, bool info = false)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xD83D70C1);
 				writer.Write((credentials ? 0x1 : 0) | (info ? 0x2 : 0));
@@ -10460,8 +10459,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/payments.getBankCardData"/></summary>
-		public Task<Payments_BankCardData> Payments_GetBankCardData(string number)
-			=> CallAsync<Payments_BankCardData>(writer =>
+		public static Task<Payments_BankCardData> Payments_GetBankCardData(this Client client, string number)
+			=> client.CallAsync<Payments_BankCardData>(writer =>
 			{
 				writer.Write(0x2E79D779);
 				writer.WriteTLString(number);
@@ -10469,8 +10468,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stickers.createStickerSet"/></summary>
-		public Task<Messages_StickerSet> Stickers_CreateStickerSet(InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, bool masks = false, bool animated = false, InputDocumentBase thumb = null, string software = null)
-			=> CallAsync<Messages_StickerSet>(writer =>
+		public static Task<Messages_StickerSet> Stickers_CreateStickerSet(this Client client, InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, bool masks = false, bool animated = false, InputDocumentBase thumb = null, string software = null)
+			=> client.CallAsync<Messages_StickerSet>(writer =>
 			{
 				writer.Write(0x9021AB67);
 				writer.Write((masks ? 0x1 : 0) | (animated ? 0x2 : 0) | (thumb != null ? 0x4 : 0) | (software != null ? 0x8 : 0));
@@ -10486,8 +10485,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stickers.removeStickerFromSet"/></summary>
-		public Task<Messages_StickerSet> Stickers_RemoveStickerFromSet(InputDocumentBase sticker)
-			=> CallAsync<Messages_StickerSet>(writer =>
+		public static Task<Messages_StickerSet> Stickers_RemoveStickerFromSet(this Client client, InputDocumentBase sticker)
+			=> client.CallAsync<Messages_StickerSet>(writer =>
 			{
 				writer.Write(0xF7760F51);
 				writer.WriteTLObject(sticker);
@@ -10495,8 +10494,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stickers.changeStickerPosition"/></summary>
-		public Task<Messages_StickerSet> Stickers_ChangeStickerPosition(InputDocumentBase sticker, int position)
-			=> CallAsync<Messages_StickerSet>(writer =>
+		public static Task<Messages_StickerSet> Stickers_ChangeStickerPosition(this Client client, InputDocumentBase sticker, int position)
+			=> client.CallAsync<Messages_StickerSet>(writer =>
 			{
 				writer.Write(0xFFB6D4CA);
 				writer.WriteTLObject(sticker);
@@ -10505,8 +10504,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stickers.addStickerToSet"/></summary>
-		public Task<Messages_StickerSet> Stickers_AddStickerToSet(InputStickerSet stickerset, InputStickerSetItem sticker)
-			=> CallAsync<Messages_StickerSet>(writer =>
+		public static Task<Messages_StickerSet> Stickers_AddStickerToSet(this Client client, InputStickerSet stickerset, InputStickerSetItem sticker)
+			=> client.CallAsync<Messages_StickerSet>(writer =>
 			{
 				writer.Write(0x8653FEBE);
 				writer.WriteTLObject(stickerset);
@@ -10515,8 +10514,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stickers.setStickerSetThumb"/></summary>
-		public Task<Messages_StickerSet> Stickers_SetStickerSetThumb(InputStickerSet stickerset, InputDocumentBase thumb)
-			=> CallAsync<Messages_StickerSet>(writer =>
+		public static Task<Messages_StickerSet> Stickers_SetStickerSetThumb(this Client client, InputStickerSet stickerset, InputDocumentBase thumb)
+			=> client.CallAsync<Messages_StickerSet>(writer =>
 			{
 				writer.Write(0x9A364E30);
 				writer.WriteTLObject(stickerset);
@@ -10525,8 +10524,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stickers.checkShortName"/></summary>
-		public Task<bool> Stickers_CheckShortName(string short_name)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Stickers_CheckShortName(this Client client, string short_name)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x284B3639);
 				writer.WriteTLString(short_name);
@@ -10534,8 +10533,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stickers.suggestShortName"/></summary>
-		public Task<Stickers_SuggestedShortName> Stickers_SuggestShortName(string title)
-			=> CallAsync<Stickers_SuggestedShortName>(writer =>
+		public static Task<Stickers_SuggestedShortName> Stickers_SuggestShortName(this Client client, string title)
+			=> client.CallAsync<Stickers_SuggestedShortName>(writer =>
 			{
 				writer.Write(0x4DAFC503);
 				writer.WriteTLString(title);
@@ -10543,16 +10542,16 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.getCallConfig"/></summary>
-		public Task<DataJSON> Phone_GetCallConfig()
-			=> CallAsync<DataJSON>(writer =>
+		public static Task<DataJSON> Phone_GetCallConfig(this Client client)
+			=> client.CallAsync<DataJSON>(writer =>
 			{
 				writer.Write(0x55451FA9);
 				return "Phone_GetCallConfig";
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.requestCall"/></summary>
-		public Task<Phone_PhoneCall> Phone_RequestCall(InputUserBase user_id, int random_id, byte[] g_a_hash, PhoneCallProtocol protocol, bool video = false)
-			=> CallAsync<Phone_PhoneCall>(writer =>
+		public static Task<Phone_PhoneCall> Phone_RequestCall(this Client client, InputUserBase user_id, int random_id, byte[] g_a_hash, PhoneCallProtocol protocol, bool video = false)
+			=> client.CallAsync<Phone_PhoneCall>(writer =>
 			{
 				writer.Write(0x42FF96ED);
 				writer.Write(video ? 0x1 : 0);
@@ -10564,8 +10563,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.acceptCall"/></summary>
-		public Task<Phone_PhoneCall> Phone_AcceptCall(InputPhoneCall peer, byte[] g_b, PhoneCallProtocol protocol)
-			=> CallAsync<Phone_PhoneCall>(writer =>
+		public static Task<Phone_PhoneCall> Phone_AcceptCall(this Client client, InputPhoneCall peer, byte[] g_b, PhoneCallProtocol protocol)
+			=> client.CallAsync<Phone_PhoneCall>(writer =>
 			{
 				writer.Write(0x3BD2B4A0);
 				writer.WriteTLObject(peer);
@@ -10575,8 +10574,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.confirmCall"/></summary>
-		public Task<Phone_PhoneCall> Phone_ConfirmCall(InputPhoneCall peer, byte[] g_a, long key_fingerprint, PhoneCallProtocol protocol)
-			=> CallAsync<Phone_PhoneCall>(writer =>
+		public static Task<Phone_PhoneCall> Phone_ConfirmCall(this Client client, InputPhoneCall peer, byte[] g_a, long key_fingerprint, PhoneCallProtocol protocol)
+			=> client.CallAsync<Phone_PhoneCall>(writer =>
 			{
 				writer.Write(0x2EFE1722);
 				writer.WriteTLObject(peer);
@@ -10587,8 +10586,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.receivedCall"/></summary>
-		public Task<bool> Phone_ReceivedCall(InputPhoneCall peer)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Phone_ReceivedCall(this Client client, InputPhoneCall peer)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x17D54F61);
 				writer.WriteTLObject(peer);
@@ -10596,8 +10595,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.discardCall"/></summary>
-		public Task<UpdatesBase> Phone_DiscardCall(InputPhoneCall peer, int duration, PhoneCallDiscardReason reason, long connection_id, bool video = false)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_DiscardCall(this Client client, InputPhoneCall peer, int duration, PhoneCallDiscardReason reason, long connection_id, bool video = false)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xB2CBC1C0);
 				writer.Write(video ? 0x1 : 0);
@@ -10609,8 +10608,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.setCallRating"/></summary>
-		public Task<UpdatesBase> Phone_SetCallRating(InputPhoneCall peer, int rating, string comment, bool user_initiative = false)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_SetCallRating(this Client client, InputPhoneCall peer, int rating, string comment, bool user_initiative = false)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x59EAD627);
 				writer.Write(user_initiative ? 0x1 : 0);
@@ -10621,8 +10620,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.saveCallDebug"/></summary>
-		public Task<bool> Phone_SaveCallDebug(InputPhoneCall peer, DataJSON debug)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Phone_SaveCallDebug(this Client client, InputPhoneCall peer, DataJSON debug)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x277ADD7E);
 				writer.WriteTLObject(peer);
@@ -10631,8 +10630,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.sendSignalingData"/></summary>
-		public Task<bool> Phone_SendSignalingData(InputPhoneCall peer, byte[] data)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Phone_SendSignalingData(this Client client, InputPhoneCall peer, byte[] data)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xFF7A9383);
 				writer.WriteTLObject(peer);
@@ -10641,8 +10640,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.createGroupCall"/></summary>
-		public Task<UpdatesBase> Phone_CreateGroupCall(InputPeer peer, int random_id, string title = null, DateTime? schedule_date = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_CreateGroupCall(this Client client, InputPeer peer, int random_id, string title = null, DateTime? schedule_date = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x48CDC6D8);
 				writer.Write((title != null ? 0x1 : 0) | (schedule_date != null ? 0x2 : 0));
@@ -10656,8 +10655,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.joinGroupCall"/></summary>
-		public Task<UpdatesBase> Phone_JoinGroupCall(InputGroupCall call, InputPeer join_as, DataJSON params_, bool muted = false, bool video_stopped = false, string invite_hash = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_JoinGroupCall(this Client client, InputGroupCall call, InputPeer join_as, DataJSON params_, bool muted = false, bool video_stopped = false, string invite_hash = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xB132FF7B);
 				writer.Write((muted ? 0x1 : 0) | (video_stopped ? 0x4 : 0) | (invite_hash != null ? 0x2 : 0));
@@ -10670,8 +10669,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.leaveGroupCall"/></summary>
-		public Task<UpdatesBase> Phone_LeaveGroupCall(InputGroupCall call, int source)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_LeaveGroupCall(this Client client, InputGroupCall call, int source)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x500377F9);
 				writer.WriteTLObject(call);
@@ -10680,8 +10679,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.inviteToGroupCall"/></summary>
-		public Task<UpdatesBase> Phone_InviteToGroupCall(InputGroupCall call, InputUserBase[] users)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_InviteToGroupCall(this Client client, InputGroupCall call, InputUserBase[] users)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x7B393160);
 				writer.WriteTLObject(call);
@@ -10690,8 +10689,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.discardGroupCall"/></summary>
-		public Task<UpdatesBase> Phone_DiscardGroupCall(InputGroupCall call)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_DiscardGroupCall(this Client client, InputGroupCall call)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x7A777135);
 				writer.WriteTLObject(call);
@@ -10699,8 +10698,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.toggleGroupCallSettings"/></summary>
-		public Task<UpdatesBase> Phone_ToggleGroupCallSettings(InputGroupCall call, bool reset_invite_hash = false, bool? join_muted = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_ToggleGroupCallSettings(this Client client, InputGroupCall call, bool reset_invite_hash = false, bool? join_muted = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x74BBB43D);
 				writer.Write((reset_invite_hash ? 0x2 : 0) | (join_muted != null ? 0x1 : 0));
@@ -10711,8 +10710,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.getGroupCall"/></summary>
-		public Task<Phone_GroupCall> Phone_GetGroupCall(InputGroupCall call, int limit)
-			=> CallAsync<Phone_GroupCall>(writer =>
+		public static Task<Phone_GroupCall> Phone_GetGroupCall(this Client client, InputGroupCall call, int limit)
+			=> client.CallAsync<Phone_GroupCall>(writer =>
 			{
 				writer.Write(0x041845DB);
 				writer.WriteTLObject(call);
@@ -10721,8 +10720,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.getGroupParticipants"/></summary>
-		public Task<Phone_GroupParticipants> Phone_GetGroupParticipants(InputGroupCall call, InputPeer[] ids, int[] sources, string offset, int limit)
-			=> CallAsync<Phone_GroupParticipants>(writer =>
+		public static Task<Phone_GroupParticipants> Phone_GetGroupParticipants(this Client client, InputGroupCall call, InputPeer[] ids, int[] sources, string offset, int limit)
+			=> client.CallAsync<Phone_GroupParticipants>(writer =>
 			{
 				writer.Write(0xC558D8AB);
 				writer.WriteTLObject(call);
@@ -10734,8 +10733,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.checkGroupCall"/></summary>
-		public Task<int[]> Phone_CheckGroupCall(InputGroupCall call, int[] sources)
-			=> CallAsync<int[]>(writer =>
+		public static Task<int[]> Phone_CheckGroupCall(this Client client, InputGroupCall call, int[] sources)
+			=> client.CallAsync<int[]>(writer =>
 			{
 				writer.Write(0xB59CF977);
 				writer.WriteTLObject(call);
@@ -10744,8 +10743,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.toggleGroupCallRecord"/></summary>
-		public Task<UpdatesBase> Phone_ToggleGroupCallRecord(InputGroupCall call, bool start = false, bool video = false, string title = null, bool? video_portrait = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_ToggleGroupCallRecord(this Client client, InputGroupCall call, bool start = false, bool video = false, string title = null, bool? video_portrait = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xF128C708);
 				writer.Write((start ? 0x1 : 0) | (video ? 0x4 : 0) | (title != null ? 0x2 : 0) | (video_portrait != null ? 0x4 : 0));
@@ -10758,8 +10757,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.editGroupCallParticipant"/></summary>
-		public Task<UpdatesBase> Phone_EditGroupCallParticipant(InputGroupCall call, InputPeer participant, bool? muted = null, int? volume = null, bool? raise_hand = null, bool? video_stopped = null, bool? video_paused = null, bool? presentation_paused = null)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_EditGroupCallParticipant(this Client client, InputGroupCall call, InputPeer participant, bool? muted = null, int? volume = null, bool? raise_hand = null, bool? video_stopped = null, bool? video_paused = null, bool? presentation_paused = null)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xA5273ABF);
 				writer.Write((muted != null ? 0x1 : 0) | (volume != null ? 0x2 : 0) | (raise_hand != null ? 0x4 : 0) | (video_stopped != null ? 0x8 : 0) | (video_paused != null ? 0x10 : 0) | (presentation_paused != null ? 0x20 : 0));
@@ -10781,8 +10780,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.editGroupCallTitle"/></summary>
-		public Task<UpdatesBase> Phone_EditGroupCallTitle(InputGroupCall call, string title)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_EditGroupCallTitle(this Client client, InputGroupCall call, string title)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x1CA6AC0A);
 				writer.WriteTLObject(call);
@@ -10791,8 +10790,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.getGroupCallJoinAs"/></summary>
-		public Task<Phone_JoinAsPeers> Phone_GetGroupCallJoinAs(InputPeer peer)
-			=> CallAsync<Phone_JoinAsPeers>(writer =>
+		public static Task<Phone_JoinAsPeers> Phone_GetGroupCallJoinAs(this Client client, InputPeer peer)
+			=> client.CallAsync<Phone_JoinAsPeers>(writer =>
 			{
 				writer.Write(0xEF7C213A);
 				writer.WriteTLObject(peer);
@@ -10800,8 +10799,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.exportGroupCallInvite"/></summary>
-		public Task<Phone_ExportedGroupCallInvite> Phone_ExportGroupCallInvite(InputGroupCall call, bool can_self_unmute = false)
-			=> CallAsync<Phone_ExportedGroupCallInvite>(writer =>
+		public static Task<Phone_ExportedGroupCallInvite> Phone_ExportGroupCallInvite(this Client client, InputGroupCall call, bool can_self_unmute = false)
+			=> client.CallAsync<Phone_ExportedGroupCallInvite>(writer =>
 			{
 				writer.Write(0xE6AA647F);
 				writer.Write(can_self_unmute ? 0x1 : 0);
@@ -10810,8 +10809,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.toggleGroupCallStartSubscription"/></summary>
-		public Task<UpdatesBase> Phone_ToggleGroupCallStartSubscription(InputGroupCall call, bool subscribed)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_ToggleGroupCallStartSubscription(this Client client, InputGroupCall call, bool subscribed)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x219C34E6);
 				writer.WriteTLObject(call);
@@ -10820,8 +10819,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.startScheduledGroupCall"/></summary>
-		public Task<UpdatesBase> Phone_StartScheduledGroupCall(InputGroupCall call)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_StartScheduledGroupCall(this Client client, InputGroupCall call)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x5680E342);
 				writer.WriteTLObject(call);
@@ -10829,8 +10828,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.saveDefaultGroupCallJoinAs"/></summary>
-		public Task<bool> Phone_SaveDefaultGroupCallJoinAs(InputPeer peer, InputPeer join_as)
-			=> CallAsync<bool>(writer =>
+		public static Task<bool> Phone_SaveDefaultGroupCallJoinAs(this Client client, InputPeer peer, InputPeer join_as)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x575E1F8C);
 				writer.WriteTLObject(peer);
@@ -10839,8 +10838,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.joinGroupCallPresentation"/></summary>
-		public Task<UpdatesBase> Phone_JoinGroupCallPresentation(InputGroupCall call, DataJSON params_)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_JoinGroupCallPresentation(this Client client, InputGroupCall call, DataJSON params_)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xCBEA6BC4);
 				writer.WriteTLObject(call);
@@ -10849,8 +10848,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/phone.leaveGroupCallPresentation"/></summary>
-		public Task<UpdatesBase> Phone_LeaveGroupCallPresentation(InputGroupCall call)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Phone_LeaveGroupCallPresentation(this Client client, InputGroupCall call)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x1C50D144);
 				writer.WriteTLObject(call);
@@ -10858,8 +10857,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/langpack.getLangPack"/></summary>
-		public Task<LangPackDifference> Langpack_GetLangPack(string lang_pack, string lang_code)
-			=> CallAsync<LangPackDifference>(writer =>
+		public static Task<LangPackDifference> Langpack_GetLangPack(this Client client, string lang_pack, string lang_code)
+			=> client.CallAsync<LangPackDifference>(writer =>
 			{
 				writer.Write(0xF2F2330A);
 				writer.WriteTLString(lang_pack);
@@ -10868,8 +10867,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/langpack.getStrings"/></summary>
-		public Task<LangPackStringBase[]> Langpack_GetStrings(string lang_pack, string lang_code, string[] keys)
-			=> CallAsync<LangPackStringBase[]>(writer =>
+		public static Task<LangPackStringBase[]> Langpack_GetStrings(this Client client, string lang_pack, string lang_code, string[] keys)
+			=> client.CallAsync<LangPackStringBase[]>(writer =>
 			{
 				writer.Write(0xEFEA3803);
 				writer.WriteTLString(lang_pack);
@@ -10879,8 +10878,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/langpack.getDifference"/></summary>
-		public Task<LangPackDifference> Langpack_GetDifference(string lang_pack, string lang_code, int from_version)
-			=> CallAsync<LangPackDifference>(writer =>
+		public static Task<LangPackDifference> Langpack_GetDifference(this Client client, string lang_pack, string lang_code, int from_version)
+			=> client.CallAsync<LangPackDifference>(writer =>
 			{
 				writer.Write(0xCD984AA5);
 				writer.WriteTLString(lang_pack);
@@ -10890,8 +10889,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/langpack.getLanguages"/></summary>
-		public Task<LangPackLanguage[]> Langpack_GetLanguages(string lang_pack)
-			=> CallAsync<LangPackLanguage[]>(writer =>
+		public static Task<LangPackLanguage[]> Langpack_GetLanguages(this Client client, string lang_pack)
+			=> client.CallAsync<LangPackLanguage[]>(writer =>
 			{
 				writer.Write(0x42C6978F);
 				writer.WriteTLString(lang_pack);
@@ -10899,8 +10898,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/langpack.getLanguage"/></summary>
-		public Task<LangPackLanguage> Langpack_GetLanguage(string lang_pack, string lang_code)
-			=> CallAsync<LangPackLanguage>(writer =>
+		public static Task<LangPackLanguage> Langpack_GetLanguage(this Client client, string lang_pack, string lang_code)
+			=> client.CallAsync<LangPackLanguage>(writer =>
 			{
 				writer.Write(0x6A596502);
 				writer.WriteTLString(lang_pack);
@@ -10909,8 +10908,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/folders.editPeerFolders"/></summary>
-		public Task<UpdatesBase> Folders_EditPeerFolders(InputFolderPeer[] folder_peers)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Folders_EditPeerFolders(this Client client, InputFolderPeer[] folder_peers)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x6847D0AB);
 				writer.WriteTLVector(folder_peers);
@@ -10918,8 +10917,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/folders.deleteFolder"/></summary>
-		public Task<UpdatesBase> Folders_DeleteFolder(int folder_id)
-			=> CallAsync<UpdatesBase>(writer =>
+		public static Task<UpdatesBase> Folders_DeleteFolder(this Client client, int folder_id)
+			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x1C295881);
 				writer.Write(folder_id);
@@ -10927,8 +10926,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stats.getBroadcastStats"/></summary>
-		public Task<Stats_BroadcastStats> Stats_GetBroadcastStats(InputChannelBase channel, bool dark = false)
-			=> CallAsync<Stats_BroadcastStats>(writer =>
+		public static Task<Stats_BroadcastStats> Stats_GetBroadcastStats(this Client client, InputChannelBase channel, bool dark = false)
+			=> client.CallAsync<Stats_BroadcastStats>(writer =>
 			{
 				writer.Write(0xAB42441A);
 				writer.Write(dark ? 0x1 : 0);
@@ -10937,8 +10936,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stats.loadAsyncGraph"/></summary>
-		public Task<StatsGraphBase> Stats_LoadAsyncGraph(string token, long? x = null)
-			=> CallAsync<StatsGraphBase>(writer =>
+		public static Task<StatsGraphBase> Stats_LoadAsyncGraph(this Client client, string token, long? x = null)
+			=> client.CallAsync<StatsGraphBase>(writer =>
 			{
 				writer.Write(0x621D5FA0);
 				writer.Write(x != null ? 0x1 : 0);
@@ -10949,8 +10948,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stats.getMegagroupStats"/></summary>
-		public Task<Stats_MegagroupStats> Stats_GetMegagroupStats(InputChannelBase channel, bool dark = false)
-			=> CallAsync<Stats_MegagroupStats>(writer =>
+		public static Task<Stats_MegagroupStats> Stats_GetMegagroupStats(this Client client, InputChannelBase channel, bool dark = false)
+			=> client.CallAsync<Stats_MegagroupStats>(writer =>
 			{
 				writer.Write(0xDCDF8607);
 				writer.Write(dark ? 0x1 : 0);
@@ -10959,8 +10958,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stats.getMessagePublicForwards"/></summary>
-		public Task<Messages_MessagesBase> Stats_GetMessagePublicForwards(InputChannelBase channel, int msg_id, int offset_rate, InputPeer offset_peer, int offset_id, int limit)
-			=> CallAsync<Messages_MessagesBase>(writer =>
+		public static Task<Messages_MessagesBase> Stats_GetMessagePublicForwards(this Client client, InputChannelBase channel, int msg_id, int offset_rate, InputPeer offset_peer, int offset_id, int limit)
+			=> client.CallAsync<Messages_MessagesBase>(writer =>
 			{
 				writer.Write(0x5630281B);
 				writer.WriteTLObject(channel);
@@ -10973,8 +10972,8 @@ namespace WTelegram		// ---functions---
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stats.getMessageStats"/></summary>
-		public Task<Stats_MessageStats> Stats_GetMessageStats(InputChannelBase channel, int msg_id, bool dark = false)
-			=> CallAsync<Stats_MessageStats>(writer =>
+		public static Task<Stats_MessageStats> Stats_GetMessageStats(this Client client, InputChannelBase channel, int msg_id, bool dark = false)
+			=> client.CallAsync<Stats_MessageStats>(writer =>
 			{
 				writer.Write(0xB6E0A3F5);
 				writer.Write(dark ? 0x1 : 0);
