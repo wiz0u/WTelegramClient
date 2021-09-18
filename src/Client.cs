@@ -325,7 +325,7 @@ namespace WTelegram
 			if (await FullReadAsync(stream, overhead, 4, ct) != 4)
 				throw new ApplicationException("Could not read payload length : Connection shut down");
 			int length = BinaryPrimitives.ReadInt32LittleEndian(overhead);
-			if (length <= 0 || length >= 0x10000)
+			if (length <= 0)
 				throw new ApplicationException("Invalid frame_len");
 			var payload = new byte[length];
 			if (await FullReadAsync(stream, payload, length, ct) != length)

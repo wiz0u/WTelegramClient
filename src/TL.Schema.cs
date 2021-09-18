@@ -7073,8 +7073,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.updateStatus"/></summary>
-		public static Task<Bool> Account_UpdateStatus(this Client client, bool offline)
-			=> client.CallAsync<Bool>(writer =>
+		public static Task<bool> Account_UpdateStatus(this Client client, bool offline)
+			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x6628562C);
 				writer.Write(offline ? 0x997275B5 : 0xBC799737);
