@@ -204,7 +204,7 @@ namespace TL
 				bytes = reader.ReadBytes(length);
 			else
 			{
-				length = reader.ReadInt16() + (reader.ReadByte() << 16);
+				length = reader.ReadUInt16() + (reader.ReadByte() << 16);
 				bytes = reader.ReadBytes(length);
 				length += 3;
 			}
