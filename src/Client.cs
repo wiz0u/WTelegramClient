@@ -479,6 +479,7 @@ namespace WTelegram
 			if (tcs != null)
 			{
 				result = reader.ReadTLValue(type);
+				if (type.IsEnum) result = Enum.ToObject(type, result);
 				Log(1, "");
 				Task.Run(() => tcs.SetResult(result)); // in Task.Run to avoid deadlock, see https://blog.stephencleary.com/2012/12/dont-block-in-asynchronous-code.html
 			}

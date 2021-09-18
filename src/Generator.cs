@@ -17,6 +17,7 @@ namespace WTelegram
 		readonly Dictionary<int, Dictionary<string, TypeInfo>> typeInfosByLayer = new();
 		readonly Dictionary<string, int> knownStyles = new() { ["InitConnection"] = 1, ["Help_GetConfig"] = 0, ["HttpWait"] = -1 };
 		Dictionary<string, TypeInfo> typeInfos;
+		readonly HashSet<string> enumTypes = new();
 		int currentLayer;
 		string tabIndent;
 		private string currentJson;
@@ -225,7 +226,13 @@ namespace WTelegram
 				sw.WriteLine();
 				if (currentJson != "TL.MTProto")
 					sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/type/{typeInfo.Structs[0].type}\"/></summary>");
-				sw.WriteLine($"{tabIndent}public abstract partial class {parentClass} : ITLObject {{ }}");
+				if (typeInfo.Structs.All(ctor => ctor.@params.Length == 0))
+				{
+					WriteTypeAsEnum(sw, typeInfo);
+					return;
+				}
+				else
+					sw.WriteLine($"{tabIndent}public abstract partial class {parentClass} : ITLObject {{ }}");
 			}
 			int skipParams = 0;
 			foreach (var ctor in typeInfo.Structs)
@@ -326,6 +333,28 @@ namespace WTelegram
 				skipParams = typeInfo.NeedAbstract;
 			}
 		}
+
+		private void WriteTypeAsEnum(StreamWriter sw, TypeInfo typeInfo)
+		{
+			enumTypes.Add(typeInfo.ReturnName);
+			sw.WriteLine($"{tabIndent}public enum {typeInfo.ReturnName} : uint");
+			sw.WriteLine($"{tabIndent}{{");
+			string prefix = "";
+			while ((prefix += typeInfo.Structs[0].predicate[prefix.Length]) != null)
+				if (!typeInfo.Structs.All(ctor => ctor.predicate.StartsWith(prefix)))
+					break;
+			int prefixLen = CSharpName(prefix).Length - 1;
+			foreach (var ctor in typeInfo.Structs)
+			{
+				string className = CSharpName(ctor.predicate);
+				if (!allTypes.Add(className)) continue;
+				ctorToTypes.Remove(ctor.ID);
+				sw.WriteLine($"{tabIndent}\t///<summary>See <a href=\"https://core.telegram.org/constructor/{ctor.predicate}\"/></summary>");
+				sw.WriteLine($"{tabIndent}\t{className[prefixLen..]} = 0x{ctor.ID:X8},");
+			}
+			sw.WriteLine($"{tabIndent}}}");
+		}
+
 
 		private static string MapName(string name) => name switch
 		{
@@ -509,6 +538,8 @@ namespace WTelegram
 					default:
 						if (parmType.StartsWith("Vector<", StringComparison.OrdinalIgnoreCase))
 							sw.WriteLine($"{tabIndent}\twriter.WriteTLVector({parmName});");
+						else if (enumTypes.Contains(parmType))
+							sw.WriteLine($"{tabIndent}\twriter.Write((uint){parmName});");
 						else
 							sw.WriteLine($"{tabIndent}\twriter.WriteTLObject({parmName});");
 						break;

@@ -8,13 +8,13 @@ namespace TL
 	using Client = WTelegram.Client;
 
 	///<summary>See <a href="https://core.telegram.org/type/Bool"/></summary>
-	public abstract partial class Bool : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/boolFalse"/></summary>
-	[TLDef(0xBC799737)]
-	public partial class BoolFalse : Bool { }
-	///<summary>See <a href="https://core.telegram.org/constructor/boolTrue"/></summary>
-	[TLDef(0x997275B5)]
-	public partial class BoolTrue : Bool { }
+	public enum Bool : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/boolFalse"/></summary>
+		False = 0xBC799737,
+		///<summary>See <a href="https://core.telegram.org/constructor/boolTrue"/></summary>
+		True = 0x997275B5,
+	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/true"/></summary>
 	[TLDef(0x3FEDD339)]
@@ -410,37 +410,29 @@ namespace TL
 	public partial class PeerChannel : Peer { public long channel_id; }
 
 	///<summary>See <a href="https://core.telegram.org/type/storage.FileType"/></summary>
-	public abstract partial class Storage_FileType : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/storage.fileUnknown"/></summary>
-	[TLDef(0xAA963B05)]
-	public partial class Storage_FileUnknown : Storage_FileType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/storage.filePartial"/></summary>
-	[TLDef(0x40BC6F52)]
-	public partial class Storage_FilePartial : Storage_FileType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/storage.fileJpeg"/></summary>
-	[TLDef(0x007EFE0E)]
-	public partial class Storage_FileJpeg : Storage_FileType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/storage.fileGif"/></summary>
-	[TLDef(0xCAE1AADF)]
-	public partial class Storage_FileGif : Storage_FileType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/storage.filePng"/></summary>
-	[TLDef(0x0A4F63C0)]
-	public partial class Storage_FilePng : Storage_FileType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/storage.filePdf"/></summary>
-	[TLDef(0xAE1E508D)]
-	public partial class Storage_FilePdf : Storage_FileType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/storage.fileMp3"/></summary>
-	[TLDef(0x528A0677)]
-	public partial class Storage_FileMp3 : Storage_FileType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/storage.fileMov"/></summary>
-	[TLDef(0x4B09EBBC)]
-	public partial class Storage_FileMov : Storage_FileType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/storage.fileMp4"/></summary>
-	[TLDef(0xB3CEA0E4)]
-	public partial class Storage_FileMp4 : Storage_FileType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/storage.fileWebp"/></summary>
-	[TLDef(0x1081464C)]
-	public partial class Storage_FileWebp : Storage_FileType { }
+	public enum Storage_FileType : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileUnknown"/></summary>
+		Unknown = 0xAA963B05,
+		///<summary>See <a href="https://core.telegram.org/constructor/storage.filePartial"/></summary>
+		Partial = 0x40BC6F52,
+		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileJpeg"/></summary>
+		Jpeg = 0x007EFE0E,
+		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileGif"/></summary>
+		Gif = 0xCAE1AADF,
+		///<summary>See <a href="https://core.telegram.org/constructor/storage.filePng"/></summary>
+		Png = 0x0A4F63C0,
+		///<summary>See <a href="https://core.telegram.org/constructor/storage.filePdf"/></summary>
+		Pdf = 0xAE1E508D,
+		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileMp3"/></summary>
+		Mp3 = 0x528A0677,
+		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileMov"/></summary>
+		Mov = 0x4B09EBBC,
+		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileMp4"/></summary>
+		Mp4 = 0xB3CEA0E4,
+		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileWebp"/></summary>
+		Webp = 0x1081464C,
+	}
 
 	///<summary>See <a href="https://core.telegram.org/type/User"/></summary>
 	public abstract partial class UserBase : ITLObject { }
@@ -1230,31 +1222,25 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/ReportReason"/></summary>
-	public abstract partial class ReportReason : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonSpam"/></summary>
-	[TLDef(0x58DBCAB8)]
-	public partial class InputReportReasonSpam : ReportReason { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonViolence"/></summary>
-	[TLDef(0x1E22C78D)]
-	public partial class InputReportReasonViolence : ReportReason { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonPornography"/></summary>
-	[TLDef(0x2E59D922)]
-	public partial class InputReportReasonPornography : ReportReason { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonChildAbuse"/></summary>
-	[TLDef(0xADF44EE3)]
-	public partial class InputReportReasonChildAbuse : ReportReason { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonOther"/></summary>
-	[TLDef(0xC1E4A2B1)]
-	public partial class InputReportReasonOther : ReportReason { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonCopyright"/></summary>
-	[TLDef(0x9B89F93A)]
-	public partial class InputReportReasonCopyright : ReportReason { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonGeoIrrelevant"/></summary>
-	[TLDef(0xDBD4FEED)]
-	public partial class InputReportReasonGeoIrrelevant : ReportReason { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonFake"/></summary>
-	[TLDef(0xF5DDD6E7)]
-	public partial class InputReportReasonFake : ReportReason { }
+	public enum ReportReason : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonSpam"/></summary>
+		Spam = 0x58DBCAB8,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonViolence"/></summary>
+		Violence = 0x1E22C78D,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonPornography"/></summary>
+		Pornography = 0x2E59D922,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonChildAbuse"/></summary>
+		ChildAbuse = 0xADF44EE3,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonOther"/></summary>
+		Other = 0xC1E4A2B1,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonCopyright"/></summary>
+		Copyright = 0x9B89F93A,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonGeoIrrelevant"/></summary>
+		GeoIrrelevant = 0xDBD4FEED,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputReportReasonFake"/></summary>
+		Fake = 0xF5DDD6E7,
+	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/userFull"/></summary>
 	[TLDef(0xD697FF05)]
@@ -2753,58 +2739,46 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/InputPrivacyKey"/></summary>
-	public abstract partial class InputPrivacyKey : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyStatusTimestamp"/></summary>
-	[TLDef(0x4F96CB18)]
-	public partial class InputPrivacyKeyStatusTimestamp : InputPrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyChatInvite"/></summary>
-	[TLDef(0xBDFB0426)]
-	public partial class InputPrivacyKeyChatInvite : InputPrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyPhoneCall"/></summary>
-	[TLDef(0xFABADC5F)]
-	public partial class InputPrivacyKeyPhoneCall : InputPrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyPhoneP2P"/></summary>
-	[TLDef(0xDB9E70D2)]
-	public partial class InputPrivacyKeyPhoneP2P : InputPrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyForwards"/></summary>
-	[TLDef(0xA4DD4C08)]
-	public partial class InputPrivacyKeyForwards : InputPrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyProfilePhoto"/></summary>
-	[TLDef(0x5719BACC)]
-	public partial class InputPrivacyKeyProfilePhoto : InputPrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyPhoneNumber"/></summary>
-	[TLDef(0x0352DAFA)]
-	public partial class InputPrivacyKeyPhoneNumber : InputPrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyAddedByPhone"/></summary>
-	[TLDef(0xD1219BDD)]
-	public partial class InputPrivacyKeyAddedByPhone : InputPrivacyKey { }
+	public enum InputPrivacyKey : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyStatusTimestamp"/></summary>
+		StatusTimestamp = 0x4F96CB18,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyChatInvite"/></summary>
+		ChatInvite = 0xBDFB0426,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyPhoneCall"/></summary>
+		PhoneCall = 0xFABADC5F,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyPhoneP2P"/></summary>
+		PhoneP2P = 0xDB9E70D2,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyForwards"/></summary>
+		Forwards = 0xA4DD4C08,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyProfilePhoto"/></summary>
+		ProfilePhoto = 0x5719BACC,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyPhoneNumber"/></summary>
+		PhoneNumber = 0x0352DAFA,
+		///<summary>See <a href="https://core.telegram.org/constructor/inputPrivacyKeyAddedByPhone"/></summary>
+		AddedByPhone = 0xD1219BDD,
+	}
 
 	///<summary>See <a href="https://core.telegram.org/type/PrivacyKey"/></summary>
-	public abstract partial class PrivacyKey : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyStatusTimestamp"/></summary>
-	[TLDef(0xBC2EAB30)]
-	public partial class PrivacyKeyStatusTimestamp : PrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyChatInvite"/></summary>
-	[TLDef(0x500E6DFA)]
-	public partial class PrivacyKeyChatInvite : PrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyPhoneCall"/></summary>
-	[TLDef(0x3D662B7B)]
-	public partial class PrivacyKeyPhoneCall : PrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyPhoneP2P"/></summary>
-	[TLDef(0x39491CC8)]
-	public partial class PrivacyKeyPhoneP2P : PrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyForwards"/></summary>
-	[TLDef(0x69EC56A3)]
-	public partial class PrivacyKeyForwards : PrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyProfilePhoto"/></summary>
-	[TLDef(0x96151FED)]
-	public partial class PrivacyKeyProfilePhoto : PrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyPhoneNumber"/></summary>
-	[TLDef(0xD19AE46D)]
-	public partial class PrivacyKeyPhoneNumber : PrivacyKey { }
-	///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyAddedByPhone"/></summary>
-	[TLDef(0x42FFD42B)]
-	public partial class PrivacyKeyAddedByPhone : PrivacyKey { }
+	public enum PrivacyKey : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyStatusTimestamp"/></summary>
+		StatusTimestamp = 0xBC2EAB30,
+		///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyChatInvite"/></summary>
+		ChatInvite = 0x500E6DFA,
+		///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyPhoneCall"/></summary>
+		PhoneCall = 0x3D662B7B,
+		///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyPhoneP2P"/></summary>
+		PhoneP2P = 0x39491CC8,
+		///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyForwards"/></summary>
+		Forwards = 0x69EC56A3,
+		///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyProfilePhoto"/></summary>
+		ProfilePhoto = 0x96151FED,
+		///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyPhoneNumber"/></summary>
+		PhoneNumber = 0xD19AE46D,
+		///<summary>See <a href="https://core.telegram.org/constructor/privacyKeyAddedByPhone"/></summary>
+		AddedByPhone = 0x42FFD42B,
+	}
 
 	///<summary>See <a href="https://core.telegram.org/type/InputPrivacyRule"/></summary>
 	public abstract partial class InputPrivacyRule : ITLObject { }
@@ -3864,16 +3838,15 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/auth.CodeType"/></summary>
-	public abstract partial class Auth_CodeType : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/auth.codeTypeSms"/></summary>
-	[TLDef(0x72A3158C)]
-	public partial class Auth_CodeTypeSms : Auth_CodeType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/auth.codeTypeCall"/></summary>
-	[TLDef(0x741CD3E3)]
-	public partial class Auth_CodeTypeCall : Auth_CodeType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/auth.codeTypeFlashCall"/></summary>
-	[TLDef(0x226CCEFB)]
-	public partial class Auth_CodeTypeFlashCall : Auth_CodeType { }
+	public enum Auth_CodeType : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/auth.codeTypeSms"/></summary>
+		Sms = 0x72A3158C,
+		///<summary>See <a href="https://core.telegram.org/constructor/auth.codeTypeCall"/></summary>
+		Call = 0x741CD3E3,
+		///<summary>See <a href="https://core.telegram.org/constructor/auth.codeTypeFlashCall"/></summary>
+		FlashCall = 0x226CCEFB,
+	}
 
 	///<summary>See <a href="https://core.telegram.org/type/auth.SentCodeType"/></summary>
 	public abstract partial class Auth_SentCodeType : ITLObject { }
@@ -3957,31 +3930,25 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/TopPeerCategory"/></summary>
-	public abstract partial class TopPeerCategory : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryBotsPM"/></summary>
-	[TLDef(0xAB661B5B)]
-	public partial class TopPeerCategoryBotsPM : TopPeerCategory { }
-	///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryBotsInline"/></summary>
-	[TLDef(0x148677E2)]
-	public partial class TopPeerCategoryBotsInline : TopPeerCategory { }
-	///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryCorrespondents"/></summary>
-	[TLDef(0x0637B7ED)]
-	public partial class TopPeerCategoryCorrespondents : TopPeerCategory { }
-	///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryGroups"/></summary>
-	[TLDef(0xBD17A14A)]
-	public partial class TopPeerCategoryGroups : TopPeerCategory { }
-	///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryChannels"/></summary>
-	[TLDef(0x161D9628)]
-	public partial class TopPeerCategoryChannels : TopPeerCategory { }
-	///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryPhoneCalls"/></summary>
-	[TLDef(0x1E76A78C)]
-	public partial class TopPeerCategoryPhoneCalls : TopPeerCategory { }
-	///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryForwardUsers"/></summary>
-	[TLDef(0xA8406CA9)]
-	public partial class TopPeerCategoryForwardUsers : TopPeerCategory { }
-	///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryForwardChats"/></summary>
-	[TLDef(0xFBEEC0F0)]
-	public partial class TopPeerCategoryForwardChats : TopPeerCategory { }
+	public enum TopPeerCategory : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryBotsPM"/></summary>
+		BotsPM = 0xAB661B5B,
+		///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryBotsInline"/></summary>
+		BotsInline = 0x148677E2,
+		///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryCorrespondents"/></summary>
+		Correspondents = 0x0637B7ED,
+		///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryGroups"/></summary>
+		Groups = 0xBD17A14A,
+		///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryChannels"/></summary>
+		Channels = 0x161D9628,
+		///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryPhoneCalls"/></summary>
+		PhoneCalls = 0x1E76A78C,
+		///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryForwardUsers"/></summary>
+		ForwardUsers = 0xA8406CA9,
+		///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryForwardChats"/></summary>
+		ForwardChats = 0xFBEEC0F0,
+	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/topPeerCategoryPeers"/></summary>
 	[TLDef(0xFB834291)]
@@ -4412,19 +4379,17 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/PhoneCallDiscardReason"/></summary>
-	public abstract partial class PhoneCallDiscardReason : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/phoneCallDiscardReasonMissed"/></summary>
-	[TLDef(0x85E42301)]
-	public partial class PhoneCallDiscardReasonMissed : PhoneCallDiscardReason { }
-	///<summary>See <a href="https://core.telegram.org/constructor/phoneCallDiscardReasonDisconnect"/></summary>
-	[TLDef(0xE095C1A0)]
-	public partial class PhoneCallDiscardReasonDisconnect : PhoneCallDiscardReason { }
-	///<summary>See <a href="https://core.telegram.org/constructor/phoneCallDiscardReasonHangup"/></summary>
-	[TLDef(0x57ADC690)]
-	public partial class PhoneCallDiscardReasonHangup : PhoneCallDiscardReason { }
-	///<summary>See <a href="https://core.telegram.org/constructor/phoneCallDiscardReasonBusy"/></summary>
-	[TLDef(0xFAF7E8C9)]
-	public partial class PhoneCallDiscardReasonBusy : PhoneCallDiscardReason { }
+	public enum PhoneCallDiscardReason : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/phoneCallDiscardReasonMissed"/></summary>
+		Missed = 0x85E42301,
+		///<summary>See <a href="https://core.telegram.org/constructor/phoneCallDiscardReasonDisconnect"/></summary>
+		Disconnect = 0xE095C1A0,
+		///<summary>See <a href="https://core.telegram.org/constructor/phoneCallDiscardReasonHangup"/></summary>
+		Hangup = 0x57ADC690,
+		///<summary>See <a href="https://core.telegram.org/constructor/phoneCallDiscardReasonBusy"/></summary>
+		Busy = 0xFAF7E8C9,
+	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/dataJSON"/></summary>
 	[TLDef(0x7D748D04)]
@@ -5294,46 +5259,35 @@ namespace TL
 	public partial class SecurePlainEmail : SecurePlainData { public string email; }
 
 	///<summary>See <a href="https://core.telegram.org/type/SecureValueType"/></summary>
-	public abstract partial class SecureValueType : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypePersonalDetails"/></summary>
-	[TLDef(0x9D2A81E3)]
-	public partial class SecureValueTypePersonalDetails : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypePassport"/></summary>
-	[TLDef(0x3DAC6A00)]
-	public partial class SecureValueTypePassport : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeDriverLicense"/></summary>
-	[TLDef(0x06E425C4)]
-	public partial class SecureValueTypeDriverLicense : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeIdentityCard"/></summary>
-	[TLDef(0xA0D0744B)]
-	public partial class SecureValueTypeIdentityCard : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeInternalPassport"/></summary>
-	[TLDef(0x99A48F23)]
-	public partial class SecureValueTypeInternalPassport : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeAddress"/></summary>
-	[TLDef(0xCBE31E26)]
-	public partial class SecureValueTypeAddress : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeUtilityBill"/></summary>
-	[TLDef(0xFC36954E)]
-	public partial class SecureValueTypeUtilityBill : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeBankStatement"/></summary>
-	[TLDef(0x89137C0D)]
-	public partial class SecureValueTypeBankStatement : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeRentalAgreement"/></summary>
-	[TLDef(0x8B883488)]
-	public partial class SecureValueTypeRentalAgreement : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypePassportRegistration"/></summary>
-	[TLDef(0x99E3806A)]
-	public partial class SecureValueTypePassportRegistration : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeTemporaryRegistration"/></summary>
-	[TLDef(0xEA02EC33)]
-	public partial class SecureValueTypeTemporaryRegistration : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypePhone"/></summary>
-	[TLDef(0xB320AADB)]
-	public partial class SecureValueTypePhone : SecureValueType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeEmail"/></summary>
-	[TLDef(0x8E3CA7EE)]
-	public partial class SecureValueTypeEmail : SecureValueType { }
+	public enum SecureValueType : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypePersonalDetails"/></summary>
+		PersonalDetails = 0x9D2A81E3,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypePassport"/></summary>
+		Passport = 0x3DAC6A00,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeDriverLicense"/></summary>
+		DriverLicense = 0x06E425C4,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeIdentityCard"/></summary>
+		IdentityCard = 0xA0D0744B,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeInternalPassport"/></summary>
+		InternalPassport = 0x99A48F23,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeAddress"/></summary>
+		Address = 0xCBE31E26,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeUtilityBill"/></summary>
+		UtilityBill = 0xFC36954E,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeBankStatement"/></summary>
+		BankStatement = 0x89137C0D,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeRentalAgreement"/></summary>
+		RentalAgreement = 0x8B883488,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypePassportRegistration"/></summary>
+		PassportRegistration = 0x99E3806A,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeTemporaryRegistration"/></summary>
+		TemporaryRegistration = 0xEA02EC33,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypePhone"/></summary>
+		Phone = 0xB320AADB,
+		///<summary>See <a href="https://core.telegram.org/constructor/secureValueTypeEmail"/></summary>
+		Email = 0x8E3CA7EE,
+	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/secureValue"/></summary>
 	[TLDef(0x187FA0CA)]
@@ -6071,22 +6025,19 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/BaseTheme"/></summary>
-	public abstract partial class BaseTheme : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/baseThemeClassic"/></summary>
-	[TLDef(0xC3A12462)]
-	public partial class BaseThemeClassic : BaseTheme { }
-	///<summary>See <a href="https://core.telegram.org/constructor/baseThemeDay"/></summary>
-	[TLDef(0xFBD81688)]
-	public partial class BaseThemeDay : BaseTheme { }
-	///<summary>See <a href="https://core.telegram.org/constructor/baseThemeNight"/></summary>
-	[TLDef(0xB7B31EA8)]
-	public partial class BaseThemeNight : BaseTheme { }
-	///<summary>See <a href="https://core.telegram.org/constructor/baseThemeTinted"/></summary>
-	[TLDef(0x6D5F77EE)]
-	public partial class BaseThemeTinted : BaseTheme { }
-	///<summary>See <a href="https://core.telegram.org/constructor/baseThemeArctic"/></summary>
-	[TLDef(0x5B11125A)]
-	public partial class BaseThemeArctic : BaseTheme { }
+	public enum BaseTheme : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/baseThemeClassic"/></summary>
+		Classic = 0xC3A12462,
+		///<summary>See <a href="https://core.telegram.org/constructor/baseThemeDay"/></summary>
+		Day = 0xFBD81688,
+		///<summary>See <a href="https://core.telegram.org/constructor/baseThemeNight"/></summary>
+		Night = 0xB7B31EA8,
+		///<summary>See <a href="https://core.telegram.org/constructor/baseThemeTinted"/></summary>
+		Tinted = 0x6D5F77EE,
+		///<summary>See <a href="https://core.telegram.org/constructor/baseThemeArctic"/></summary>
+		Arctic = 0x5B11125A,
+	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/inputThemeSettings"/></summary>
 	[TLDef(0x8FDE504F)]
@@ -6558,22 +6509,19 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/InlineQueryPeerType"/></summary>
-	public abstract partial class InlineQueryPeerType : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeSameBotPM"/></summary>
-	[TLDef(0x3081ED9D)]
-	public partial class InlineQueryPeerTypeSameBotPM : InlineQueryPeerType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypePM"/></summary>
-	[TLDef(0x833C0FAC)]
-	public partial class InlineQueryPeerTypePM : InlineQueryPeerType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeChat"/></summary>
-	[TLDef(0xD766C50A)]
-	public partial class InlineQueryPeerTypeChat : InlineQueryPeerType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeMegagroup"/></summary>
-	[TLDef(0x5EC4BE43)]
-	public partial class InlineQueryPeerTypeMegagroup : InlineQueryPeerType { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeBroadcast"/></summary>
-	[TLDef(0x6334EE9A)]
-	public partial class InlineQueryPeerTypeBroadcast : InlineQueryPeerType { }
+	public enum InlineQueryPeerType : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeSameBotPM"/></summary>
+		SameBotPM = 0x3081ED9D,
+		///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypePM"/></summary>
+		PM = 0x833C0FAC,
+		///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeChat"/></summary>
+		Chat = 0xD766C50A,
+		///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeMegagroup"/></summary>
+		Megagroup = 0x5EC4BE43,
+		///<summary>See <a href="https://core.telegram.org/constructor/inlineQueryPeerTypeBroadcast"/></summary>
+		Broadcast = 0x6334EE9A,
+	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.historyImport"/></summary>
 	[TLDef(0x1662AF0B)]
@@ -7125,8 +7073,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.updateStatus"/></summary>
-		public static Task<bool> Account_UpdateStatus(this Client client, bool offline)
-			=> client.CallAsync<bool>(writer =>
+		public static Task<Bool> Account_UpdateStatus(this Client client, bool offline)
+			=> client.CallAsync<Bool>(writer =>
 			{
 				writer.Write(0x6628562C);
 				writer.Write(offline ? 0x997275B5 : 0xBC799737);
@@ -7148,7 +7096,7 @@ namespace TL
 			{
 				writer.Write(0xC5BA3D86);
 				writer.WriteTLObject(peer);
-				writer.WriteTLObject(reason);
+				writer.Write((uint)reason);
 				writer.WriteTLString(message);
 				return "Account_ReportPeer";
 			});
@@ -7176,7 +7124,7 @@ namespace TL
 			=> client.CallAsync<Account_PrivacyRules>(writer =>
 			{
 				writer.Write(0xDADBC950);
-				writer.WriteTLObject(key);
+				writer.Write((uint)key);
 				return "Account_GetPrivacy";
 			});
 
@@ -7185,7 +7133,7 @@ namespace TL
 			=> client.CallAsync<Account_PrivacyRules>(writer =>
 			{
 				writer.Write(0xC9F81CE8);
-				writer.WriteTLObject(key);
+				writer.Write((uint)key);
 				writer.WriteTLVector(rules);
 				return "Account_SetPrivacy";
 			});
@@ -7727,7 +7675,7 @@ namespace TL
 				writer.Write(0xFA8CC6F5);
 				writer.WriteTLObject(peer);
 				writer.WriteTLObject(photo_id);
-				writer.WriteTLObject(reason);
+				writer.Write((uint)reason);
 				writer.WriteTLString(message);
 				return "Account_ReportProfilePhoto";
 			});
@@ -7902,7 +7850,7 @@ namespace TL
 			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x1AE373AC);
-				writer.WriteTLObject(category);
+				writer.Write((uint)category);
 				writer.WriteTLObject(peer);
 				return "Contacts_ResetTopPeerRating";
 			});
@@ -8175,7 +8123,7 @@ namespace TL
 				writer.Write(0x8953AB4E);
 				writer.WriteTLObject(peer);
 				writer.WriteTLVector(id);
-				writer.WriteTLObject(reason);
+				writer.Write((uint)reason);
 				writer.WriteTLString(message);
 				return "Messages_Report";
 			});
@@ -10602,7 +10550,7 @@ namespace TL
 				writer.Write(video ? 0x1 : 0);
 				writer.WriteTLObject(peer);
 				writer.Write(duration);
-				writer.WriteTLObject(reason);
+				writer.Write((uint)reason);
 				writer.Write(connection_id);
 				return "Phone_DiscardCall";
 			});

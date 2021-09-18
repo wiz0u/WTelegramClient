@@ -89,13 +89,15 @@ namespace TL
 	[TLDef(0xA69DAE02)] //dh_gen_fail#a69dae02 nonce:int128 server_nonce:int128 new_nonce_hash3:int128 = Set_client_DH_params_answer
 	public partial class DhGenFail : SetClientDHParamsAnswer { public Int128 new_nonce_hash3; }
 
-	public abstract partial class DestroyAuthKeyRes : ITLObject { }
-	[TLDef(0xF660E1D4)] //destroy_auth_key_ok#f660e1d4 = DestroyAuthKeyRes
-	public partial class DestroyAuthKeyOk : DestroyAuthKeyRes { }
-	[TLDef(0x0A9F2259)] //destroy_auth_key_none#0a9f2259 = DestroyAuthKeyRes
-	public partial class DestroyAuthKeyNone : DestroyAuthKeyRes { }
-	[TLDef(0xEA109B13)] //destroy_auth_key_fail#ea109b13 = DestroyAuthKeyRes
-	public partial class DestroyAuthKeyFail : DestroyAuthKeyRes { }
+	public enum DestroyAuthKeyRes : uint
+	{
+		///<summary>See <a href="https://core.telegram.org/constructor/destroy_auth_key_ok"/></summary>
+		Ok = 0xF660E1D4,
+		///<summary>See <a href="https://core.telegram.org/constructor/destroy_auth_key_none"/></summary>
+		None = 0x0A9F2259,
+		///<summary>See <a href="https://core.telegram.org/constructor/destroy_auth_key_fail"/></summary>
+		Fail = 0xEA109B13,
+	}
 
 	[TLDef(0x62D6B459)] //msgs_ack#62d6b459 msg_ids:Vector<long> = MsgsAck
 	public partial class MsgsAck : ITLObject { public long[] msg_ids; }
