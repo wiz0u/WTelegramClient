@@ -43,6 +43,7 @@ namespace WTelegram
 		private readonly Dictionary<long, (Type type, TaskCompletionSource<object> tcs)> _pendingRequests = new();
 		private SemaphoreSlim _sendSemaphore = new(0);
 		private CancellationTokenSource _cts;
+		private int _reactorReconnects = 0;
 
 		/// <summary>Welcome to WTelegramClient! 😀</summary>
 		/// <param name="configProvider">Config callback, is queried for: api_id, api_hash, session_pathname</param>
@@ -164,7 +165,7 @@ namespace WTelegram
 				var authorization = await this.Auth_ImportAuthorization(exported.id, exported.bytes);
 				if (authorization is not Auth_Authorization { user: User user })
 					throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
-				_session.User = user.Serialize();
+				_session.User = user;
 			}
 		}
 
@@ -180,7 +181,6 @@ namespace WTelegram
 
 		private async Task Reactor(NetworkStream stream, CancellationTokenSource cts)
 		{
-			int reconnects = 0;
 			while (!cts.IsCancellationRequested)
 			{
 				ITLObject obj = null;
@@ -203,8 +203,8 @@ namespace WTelegram
 							_pendingRequests.Clear();
 							_bareRequest = 0;
 						}
-						reconnects = (reconnects + 1) % MaxAutoReconnects;
-						if (reconnects != 0)
+						_reactorReconnects = (_reactorReconnects + 1) % MaxAutoReconnects;
+						if (_reactorReconnects != 0)
 						{
 							Reset(false);
 							await ConnectAsync(); // start a new reactor
@@ -696,7 +696,7 @@ namespace WTelegram
 			{ 
 				try
 				{
-					var prevUser = Serialization.Deserialize<User>(_session.User);
+					var prevUser = _session.User;
 					if (prevUser?.id == int.Parse(botToken.Split(':')[0]))
 						return prevUser;
 				}
@@ -709,7 +709,7 @@ namespace WTelegram
 			var authorization = await this.Auth_ImportBotAuthorization(0, _apiId, _apiHash, botToken);
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
-			_session.User = user.Serialize();
+			_session.User = user;
 			_session.Save();
 			return user;
 		}
@@ -728,7 +728,7 @@ namespace WTelegram
 			{
 				try
 				{
-					var prevUser = Serialization.Deserialize<User>(_session.User);
+					var prevUser = _session.User;
 					var userId = _config("user_id"); // if config prefers to validate current user by its id, use it
 					if (userId == null || !int.TryParse(userId, out int id) || id != -1 && prevUser.id != id)
 					{
@@ -780,7 +780,7 @@ namespace WTelegram
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
 			//TODO: find better serialization for User not subject to TL changes?
-			_session.User = user.Serialize();
+			_session.User = user;
 			_session.Save();
 			return user;
 		}

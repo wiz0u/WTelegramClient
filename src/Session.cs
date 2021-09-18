@@ -16,12 +16,20 @@ namespace WTelegram
 		public long ServerTicksOffset;
 		public long LastSentMsgId;
 		public TL.DcOption DataCenter;
-		public byte[] User;     // serialization of TL.User
+		public TL.User User;
 
 		public DateTime SessionStart => _sessionStart;
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
 		private string _pathname;
 		private byte[] _apiHash;	// used as AES key for encryption of session file
+
+		private static readonly JsonSerializerOptions JsonOptions = new(Helpers.JsonOptions)
+		{
+			Converters = {
+				new Helpers.PolymorphicConverter<TL.UserProfilePhotoBase>(),
+				new Helpers.PolymorphicConverter<TL.UserStatus>()
+			}
+		};
 
 		internal static Session LoadOrCreate(string pathname, byte[] apiHash)
 		{
@@ -51,12 +59,12 @@ namespace WTelegram
 			var utf8Json = decryptor.TransformFinalBlock(input, 16, input.Length - 16);
 			if (!Encryption.Sha256.ComputeHash(utf8Json, 32, utf8Json.Length - 32).SequenceEqual(utf8Json[0..32]))
 				throw new ApplicationException("Integrity check failed in session loading");
-			return JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), Helpers.JsonOptions);
+			return JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), JsonOptions);
 		}
 
 		internal void Save()
 		{
-			var utf8Json = JsonSerializer.SerializeToUtf8Bytes(this, Helpers.JsonOptions);
+			var utf8Json = JsonSerializer.SerializeToUtf8Bytes(this, JsonOptions);
 			var finalBlock = new byte[16];
 			var output = new byte[(16 + 32 + utf8Json.Length + 16) & ~15];
 			Encryption.RNG.GetBytes(output, 0, 16);
@@ -91,7 +99,8 @@ namespace WTelegram
 		{
 			DataCenter = newDC;
 			AuthKeyID = Salt = Seqno = 0;
-			AuthKey = User = null;
+			AuthKey = null;
+			User = null;
 		}
 	}
 }

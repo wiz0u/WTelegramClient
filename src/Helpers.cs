@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace WTelegram
 {
@@ -9,7 +11,7 @@ namespace WTelegram
 		// int argument is the LogLevel: https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel
 		public static Action<int, string> Log { get; set; } = DefaultLogger;
 
-		public static readonly System.Text.Json.JsonSerializerOptions JsonOptions = new(System.Text.Json.JsonSerializerDefaults.Web) { IncludeFields = true, WriteIndented = true };
+		public static readonly JsonSerializerOptions JsonOptions = new() { IncludeFields = true, WriteIndented = true };
 
 		public static V GetOrCreate<K, V>(this Dictionary<K, V> dictionary, K key) where V : new()
 			=> dictionary.TryGetValue(key, out V value) ? value : dictionary[key] = new V();
@@ -21,6 +23,41 @@ namespace WTelegram
 			Console.ForegroundColor = LogLevelToColor[level];
 			Console.WriteLine(message);
 			Console.ResetColor();
+		}
+
+		internal class PolymorphicConverter<T> : JsonConverter<T> where T : class
+		{
+			public override bool HandleNull => true;
+
+			public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+			{
+				if (value == null)
+					writer.WriteNullValue();
+				else
+				{
+					writer.WriteStartObject();
+					writer.WritePropertyName(value.GetType().FullName);
+					JsonSerializer.Serialize(writer, value, value.GetType(), JsonOptions);
+					writer.WriteEndObject();
+				}
+			}
+
+			public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+			{
+				if (reader.TokenType == JsonTokenType.Null)
+					return null;
+				else if (reader.TokenType == JsonTokenType.StartObject)
+				{
+					if (!reader.Read() || reader.TokenType != JsonTokenType.PropertyName) throw new JsonException();
+					var returnType = typeToConvert.Assembly.GetType(reader.GetString());
+					if (!typeToConvert.IsAssignableFrom(returnType)) throw new JsonException();
+					var result = (T)JsonSerializer.Deserialize(ref reader, returnType, JsonOptions);
+					if (!reader.Read() || reader.TokenType != JsonTokenType.EndObject) throw new JsonException();
+					return result;
+				}
+				else
+					throw new JsonException();
+			}
 		}
 
 		public static long RandomLong()
