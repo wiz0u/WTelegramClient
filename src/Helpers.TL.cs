@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Web;
 
@@ -98,21 +99,78 @@ namespace TL
 	partial class Photo
 	{
 		public override long ID => id;
+
 		protected override InputPhotoBase ToInputPhoto() => new InputPhoto() { id = id, access_hash = access_hash, file_reference = file_reference };
+		public InputPhotoFileLocation ToFileLocation() => ToFileLocation(LargestPhotoSize);
 		public InputPhotoFileLocation ToFileLocation(PhotoSizeBase photoSize) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = photoSize.Type };
+		public PhotoSizeBase LargestPhotoSize => sizes.Aggregate((agg, next) => (long)next.Width * next.Height > (long)agg.Width * agg.Height ? next : agg);
 	}
 
-	partial class PhotoSizeBase { public abstract string Type { get; } }
-	partial class PhotoSizeEmpty { public override string Type => type; }
-	partial class PhotoSize { public override string Type => type; }
-	partial class PhotoCachedSize { public override string Type => type; }
-	partial class PhotoStrippedSize { public override string Type => type; }
-	partial class PhotoSizeProgressive { public override string Type => type; }
-	partial class PhotoPathSize { public override string Type => type; }
+	partial class PhotoSizeBase
+	{
+		public abstract string Type { get; }
+		public abstract int Width { get; }
+		public abstract int Height { get; }
+		public abstract int FileSize { get; }
+	}
+	partial class PhotoSizeEmpty
+	{
+		public override string Type => type;
+		public override int Width => 0;
+		public override int Height => 0;
+		public override int FileSize => 0;
+	}
+	partial class PhotoSize
+	{
+		public override string Type => type;
+		public override int Width => w;
+		public override int Height => h;
+		public override int FileSize => size;
+	}
+	partial class PhotoCachedSize
+	{
+		public override string Type => type;
+		public override int Width => w;
+		public override int Height => h;
+		public override int FileSize => bytes.Length;
+	}
+	partial class PhotoStrippedSize
+	{
+		public override string Type => type;
+		public override int Width => bytes[2];
+		public override int Height => bytes[1];
+		public override int FileSize => bytes.Length;
+	}
+	partial class PhotoSizeProgressive
+	{
+		public override string Type => type;
+		public override int Width => w;
+		public override int Height => h;
+		public override int FileSize => sizes.Last();
+	}
+	partial class PhotoPathSize
+	{
+		public override string Type => type;
+		public override int Width => -1;
+		public override int Height => -1;
+		public override int FileSize => bytes.Length;
+	}
 	namespace Layer23
 	{
-		partial class PhotoSize { public override string Type => type; }
-		partial class PhotoCachedSize { public override string Type => type; }
+		partial class PhotoSize
+		{
+			public override string Type => type;
+			public override int Width => w;
+			public override int Height => h;
+			public override int FileSize => size;
+		}
+		partial class PhotoCachedSize
+		{
+			public override string Type => type;
+			public override int Width => w;
+			public override int Height => h;
+			public override int FileSize => bytes.Length;
+		}
 	}
 
 	partial class DocumentBase
@@ -130,7 +188,7 @@ namespace TL
 	{
 		public override long ID => id;
 		protected override InputDocumentBase ToInputDocument() => new InputDocument() { id = id, access_hash = access_hash, file_reference = file_reference };
-		public InputDocumentFileLocation ToFileLocation(PhotoSizeBase photoSize) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = photoSize.Type };
+		public InputDocumentFileLocation ToFileLocation(PhotoSizeBase thumbSize = null) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = thumbSize?.Type };
 	}
 
 	partial class EncryptedFileBase
