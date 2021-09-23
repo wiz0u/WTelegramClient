@@ -162,8 +162,9 @@ namespace WTelegram
 			Helpers.Log(2, $"Connected to {(TLConfig.test_mode ? "Test DC" : "DC")} {TLConfig.this_dc}... {TLConfig.flags & (Config.Flags)~0xE00}");
 		}
 
-		public async Task MigrateDCAsync(int dcId)
+		public async Task MigrateDCAsync(int dcId = 0)
 		{
+			if (dcId == 0) dcId = _session.MainDC;
 			if (DCSession.DataCenter?.id == dcId) return;
 			Helpers.Log(2, $"Migrate to DC {dcId}...");
 			Auth_ExportedAuthorization exported = null;

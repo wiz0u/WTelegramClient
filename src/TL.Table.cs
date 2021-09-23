@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace TL
 {
-	static class Layer
+	public static class Layer
 	{
 		public const int Version = 133;					// fetched 17/09/2021 02:47:02
 		internal const uint VectorCtor = 0x1CB5C415;
