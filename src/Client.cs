@@ -181,12 +181,24 @@ namespace WTelegram
 
 		private async Task Reactor(NetworkStream stream, CancellationTokenSource cts)
 		{
+			const int MinBufferSize = 1024;
+			var data = new byte[MinBufferSize];
 			while (!cts.IsCancellationRequested)
 			{
 				ITLObject obj = null;
 				try
 				{
-					obj = await RecvAsync(stream, cts.Token);
+					if (await FullReadAsync(stream, data, 4, cts.Token) != 4)
+						throw new ApplicationException("Could not read payload length : Connection shut down");
+					int payloadLen = BinaryPrimitives.ReadInt32LittleEndian(data);
+					if (payloadLen > data.Length)
+						data = new byte[payloadLen];
+					else if (Math.Max(payloadLen, MinBufferSize) < data.Length / 4)
+						data = new byte[Math.Max(payloadLen, MinBufferSize)];
+					if (await FullReadAsync(stream, data, payloadLen, cts.Token) != payloadLen)
+						throw new ApplicationException("Could not read frame data : Connection shut down");
+
+					obj = ReadFrame(data, payloadLen);
 				}
 				catch (Exception ex) // an exception in RecvAsync is always fatal
 				{
@@ -223,27 +235,26 @@ namespace WTelegram
 			}
 		}
 
-		internal async Task<ITLObject> RecvAsync(NetworkStream stream, CancellationToken ct)
+		internal ITLObject ReadFrame(byte[] data, int dataLen)
 		{
-			var data = await RecvFrameAsync(stream, ct);
-			if (data.Length == 4 && data[3] == 0xFF)
+			if (dataLen == 4 && data[3] == 0xFF)
 			{
 				int error_code = -BinaryPrimitives.ReadInt32LittleEndian(data);
 				throw new RpcException(error_code, TransportError(error_code));
 			}
-			if (data.Length < 24) // authKeyId+msgId+length+ctorNb | authKeyId+msgKey
-				throw new ApplicationException($"Packet payload too small: {data.Length}");
+			if (dataLen < 24) // authKeyId+msgId+length+ctorNb | authKeyId+msgKey
+				throw new ApplicationException($"Packet payload too small: {dataLen}");
 
 			long authKeyId = BinaryPrimitives.ReadInt64LittleEndian(data);
 			if (authKeyId != _session.AuthKeyID)
 				throw new ApplicationException($"Received a packet encrypted with unexpected key {authKeyId:X}");
 			if (authKeyId == 0) // Unencrypted message
 			{
-				using var reader = new TL.BinaryReader(new MemoryStream(data, 8, data.Length - 8), this);
+				using var reader = new TL.BinaryReader(new MemoryStream(data, 8, dataLen - 8), this);
 				long msgId = _lastRecvMsgId = reader.ReadInt64();
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				int length = reader.ReadInt32();
-				if (length != data.Length - 20) throw new ApplicationException($"Unexpected unencrypted length {length} != {data.Length - 20}");
+				if (length != dataLen - 20) throw new ApplicationException($"Unexpected unencrypted length {length} != {dataLen - 20}");
 
 				var obj = reader.ReadTLObject();
 				Helpers.Log(1, $"Receiving {obj.GetType().Name,-50} {_session.MsgIdToStamp(msgId):u} {((msgId & 2) == 0 ? "" : "NAR")} unencrypted");
@@ -251,12 +262,7 @@ namespace WTelegram
 			}
 			else
 			{
-#if MTPROTO1
-				byte[] msgKeyLarge = data[4..24];
-#else
-				byte[] msgKeyLarge = data[0..24];
-#endif
-				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24), false, _session.AuthKey, msgKeyLarge);
+				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, dataLen - 24), false, _session.AuthKey, data, 8);
 				if (decrypted_data.Length < 36) // header below+ctorNb
 					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
 				using var reader = new TL.BinaryReader(new MemoryStream(decrypted_data), this);
@@ -318,24 +324,9 @@ namespace WTelegram
 			};
 		}
 
-
-		private static async Task<byte[]> RecvFrameAsync(NetworkStream stream, CancellationToken ct)
-		{
-			byte[] overhead = new byte[4];
-			if (await FullReadAsync(stream, overhead, 4, ct) != 4)
-				throw new ApplicationException("Could not read payload length : Connection shut down");
-			int length = BinaryPrimitives.ReadInt32LittleEndian(overhead);
-			if (length <= 0)
-				throw new ApplicationException("Invalid frame_len");
-			var payload = new byte[length];
-			if (await FullReadAsync(stream, payload, length, ct) != length)
-				throw new ApplicationException("Could not read frame data : Connection shut down");
-			return payload;
-		}
-
 		private static async Task<int> FullReadAsync(Stream stream, byte[] buffer, int length, CancellationToken ct = default)
 		{
-			for (int offset = 0; offset != length;)
+			for (int offset = 0; offset < length;)
 			{
 				var read = await stream.ReadAsync(buffer, offset, length - offset, ct);
 				if (read == 0) return offset;
@@ -406,7 +397,7 @@ namespace WTelegram
 					var msgKeyLarge = Sha256.ComputeHash(clearBuffer, 0, prepend + clearLength + padding);
 					const int msgKeyOffset = 8; // msg_key = middle 128-bits of SHA256(authkey_part+plaintext+padding)
 	#endif
-					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(prepend, clearLength + padding), true, _session.AuthKey, msgKeyLarge);
+					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(prepend, clearLength + padding), true, _session.AuthKey, msgKeyLarge, msgKeyOffset);
 
 					writer.Write(_session.AuthKeyID);				// int64 auth_key_id
 					writer.Write(msgKeyLarge, msgKeyOffset, 16);	// int128 msg_key

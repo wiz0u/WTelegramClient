@@ -277,29 +277,29 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 #endif
 		}
 
-		internal static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, byte[] authKey, byte[] msgKeyLarge)
+		internal static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, byte[] authKey, byte[] msgKey, int msgKeyOffset)
 		{
 			// first, construct AES key & IV
-			int x = encrypt ? 0 : 8;
 			byte[] aes_key = new byte[32], aes_iv = new byte[32];
+			int x = encrypt ? 0 : 8;
 #if MTPROTO1
 			var sha1 = encrypt ? Sha1 : Sha1Recv;
 			sha1.Initialize();
-			sha1.TransformBlock(msgKeyLarge, 4, 16, null, 0);   // msgKey
-			sha1.TransformFinalBlock(authKey, x, 32);           // authKey[x:32]
+			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
+			sha1.TransformFinalBlock(authKey, x, 32);                   // authKey[x:32]
 			var sha1_a = sha1.Hash;
 			sha1.Initialize();
-			sha1.TransformBlock(authKey, 32 + x, 16, null, 0);  // authKey[32+x:16]
-			sha1.TransformBlock(msgKeyLarge, 4, 16, null, 0);   // msgKey
-			sha1.TransformFinalBlock(authKey, 48 + x, 16);      // authKey[48+x:16]
+			sha1.TransformBlock(authKey, 32 + x, 16, null, 0);          // authKey[32+x:16]
+			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
+			sha1.TransformFinalBlock(authKey, 48 + x, 16);              // authKey[48+x:16]
 			var sha1_b = sha1.Hash;
 			sha1.Initialize();
-			sha1.TransformBlock(authKey, 64 + x, 32, null, 0);  // authKey[64+x:32]
-			sha1.TransformFinalBlock(msgKeyLarge, 4, 16);       // msgKey
+			sha1.TransformBlock(authKey, 64 + x, 32, null, 0);          // authKey[64+x:32]
+			sha1.TransformFinalBlock(msgKey, msgKeyOffset, 16);         // msgKey
 			var sha1_c = sha1.Hash;
 			sha1.Initialize();
-			sha1.TransformBlock(msgKeyLarge, 4, 16, null, 0);   // msgKey
-			sha1.TransformFinalBlock(authKey, 96 + x, 32);      // authKey[96+x:32]
+			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
+			sha1.TransformFinalBlock(authKey, 96 + x, 32);              // authKey[96+x:32]
 			var sha1_d = sha1.Hash;
 			Array.Copy(sha1_a, 0, aes_key, 0, 8);
 			Array.Copy(sha1_b, 8, aes_key, 8, 12);
@@ -311,12 +311,12 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 #else
 			var sha256 = encrypt ? Sha256 : Sha256Recv;
 			sha256.Initialize();
-			sha256.TransformBlock(msgKeyLarge, 8, 16, null, 0);   // msgKey
-			sha256.TransformFinalBlock(authKey, x, 36);           // authKey[x:36]
+			sha256.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);   // msgKey
+			sha256.TransformFinalBlock(authKey, x, 36);                 // authKey[x:36]
 			var sha256_a = sha256.Hash;
 			sha256.Initialize();
-			sha256.TransformBlock(authKey, 40 + x, 36, null, 0);  // authKey[40+x:36]
-			sha256.TransformFinalBlock(msgKeyLarge, 8, 16);       // msgKey
+			sha256.TransformBlock(authKey, 40 + x, 36, null, 0);        // authKey[40+x:36]
+			sha256.TransformFinalBlock(msgKey, msgKeyOffset, 16);       // msgKey
 			var sha256_b = sha256.Hash;
 			Array.Copy(sha256_a, 0, aes_key, 0, 8);
 			Array.Copy(sha256_b, 8, aes_key, 8, 16);
@@ -325,7 +325,6 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			Array.Copy(sha256_a, 8, aes_iv, 8, 16);
 			Array.Copy(sha256_b, 24, aes_iv, 24, 8);
 #endif
-
 			return AES_IGE_EncryptDecrypt(input, aes_key, aes_iv, encrypt);
 		}
 
