@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -8,17 +10,26 @@ namespace WTelegram
 {
 	internal class Session
 	{
-		public long AuthKeyID;
-		public byte[] AuthKey;		// 2048-bit = 256 bytes
-		public long Salt;
-		public long Id;
-		public int Seqno;
-		public long ServerTicksOffset;
-		public long LastSentMsgId;
-		public TL.DcOption DataCenter;
 		public TL.User User;
+		public int MainDC;
+		public Dictionary<int, DCSession> DCSessions = new();
+		public long Id;
+
+		public class DCSession
+		{
+			public long AuthKeyID;
+			public byte[] AuthKey;      // 2048-bit = 256 bytes
+			public long Salt;
+			public int Seqno;
+			public long ServerTicksOffset;
+			public long LastSentMsgId;
+			public TL.DcOption DataCenter;
+
+			internal IPEndPoint EndPoint => DataCenter == null ? null : new(IPAddress.Parse(DataCenter.ip_address), DataCenter.port);
+		}
 
 		public DateTime SessionStart => _sessionStart;
+		internal DCSession CurrentDCSession;
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
 		private string _pathname;
 		private byte[] _apiHash;	// used as AES key for encryption of session file
@@ -80,27 +91,25 @@ namespace WTelegram
 		internal (long msgId, int seqno) NewMsg(bool isContent)
 		{
 			int seqno;
-			long msgId = DateTime.UtcNow.Ticks + ServerTicksOffset - 621355968000000000L;
+			long msgId = DateTime.UtcNow.Ticks + CurrentDCSession.ServerTicksOffset - 621355968000000000L;
 			msgId = msgId * 428 + (msgId >> 24) * 25110956; // approximately unixtime*2^32 and divisible by 4
 			lock (this)
 			{
-				if (msgId <= LastSentMsgId) msgId = LastSentMsgId += 4; else LastSentMsgId = msgId;
+				if (msgId <= CurrentDCSession.LastSentMsgId) msgId = CurrentDCSession.LastSentMsgId += 4; else CurrentDCSession.LastSentMsgId = msgId;
 
-				seqno = isContent ? Seqno++ * 2 + 1 : Seqno * 2;
+				seqno = isContent ? CurrentDCSession.Seqno++ * 2 + 1 : CurrentDCSession.Seqno * 2;
 				Save();
 			}
 			return (msgId, seqno);
 		}
 
 		internal DateTime MsgIdToStamp(long serverMsgId)
-			=> new((serverMsgId >> 32) * 10000000 - ServerTicksOffset + 621355968000000000L, DateTimeKind.Utc);
+			=> new((serverMsgId >> 32) * 10000000 - CurrentDCSession.ServerTicksOffset + 621355968000000000L, DateTimeKind.Utc);
 
-		internal void Reset(TL.DcOption newDC = null)
+		internal void ChangeDC(int dc)
 		{
-			DataCenter = newDC;
-			AuthKeyID = Salt = Seqno = 0;
-			AuthKey = null;
-			User = null;
+			if (dc == 0) dc = MainDC;
+			CurrentDCSession = dc != 0 ? DCSessions[dc] : new();
 		}
 	}
 }

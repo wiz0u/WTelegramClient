@@ -24,7 +24,7 @@ namespace WTelegram
 #endif
 		private static readonly Dictionary<long, RSAPublicKey> PublicKeys = new();
 
-		internal static async Task CreateAuthorizationKey(Client client, Session session)
+		internal static async Task CreateAuthorizationKey(Client client, Session.DCSession session)
 		{
 			if (PublicKeys.Count == 0) LoadDefaultPublicKeys();
 
@@ -172,7 +172,6 @@ namespace WTelegram
 			session.AuthKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
 			session.AuthKey = authKey;
 			session.Salt = BinaryPrimitives.ReadInt64LittleEndian(pqInnerData.new_nonce.raw) ^ BinaryPrimitives.ReadInt64LittleEndian(resPQ.server_nonce.raw);
-			session.Save();
 
 			static (byte[] key, byte[] iv) ConstructTmpAESKeyIV(Int128 server_nonce, Int256 new_nonce)
 			{
