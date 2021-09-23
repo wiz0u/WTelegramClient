@@ -413,25 +413,25 @@ namespace TL
 	public enum Storage_FileType : uint
 	{
 		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileUnknown"/></summary>
-		Unknown = 0xAA963B05,
+		unknown = 0xAA963B05,
 		///<summary>See <a href="https://core.telegram.org/constructor/storage.filePartial"/></summary>
-		Partial = 0x40BC6F52,
+		partial = 0x40BC6F52,
 		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileJpeg"/></summary>
-		Jpeg = 0x007EFE0E,
+		jpeg = 0x007EFE0E,
 		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileGif"/></summary>
-		Gif = 0xCAE1AADF,
+		gif = 0xCAE1AADF,
 		///<summary>See <a href="https://core.telegram.org/constructor/storage.filePng"/></summary>
-		Png = 0x0A4F63C0,
+		png = 0x0A4F63C0,
 		///<summary>See <a href="https://core.telegram.org/constructor/storage.filePdf"/></summary>
-		Pdf = 0xAE1E508D,
+		pdf = 0xAE1E508D,
 		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileMp3"/></summary>
-		Mp3 = 0x528A0677,
+		mp3 = 0x528A0677,
 		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileMov"/></summary>
-		Mov = 0x4B09EBBC,
+		mov = 0x4B09EBBC,
 		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileMp4"/></summary>
-		Mp4 = 0xB3CEA0E4,
+		mp4 = 0xB3CEA0E4,
 		///<summary>See <a href="https://core.telegram.org/constructor/storage.fileWebp"/></summary>
-		Webp = 0x1081464C,
+		webp = 0x1081464C,
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/User"/></summary>

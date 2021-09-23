@@ -337,6 +337,7 @@ namespace WTelegram
 		private void WriteTypeAsEnum(StreamWriter sw, TypeInfo typeInfo)
 		{
 			enumTypes.Add(typeInfo.ReturnName);
+			bool lowercase = typeInfo.ReturnName == "Storage_FileType";
 			sw.WriteLine($"{tabIndent}public enum {typeInfo.ReturnName} : uint");
 			sw.WriteLine($"{tabIndent}{{");
 			string prefix = "";
@@ -348,6 +349,7 @@ namespace WTelegram
 			{
 				string className = CSharpName(ctor.predicate);
 				if (!allTypes.Add(className)) continue;
+				if (lowercase) className = className.ToLowerInvariant();
 				ctorToTypes.Remove(ctor.ID);
 				sw.WriteLine($"{tabIndent}\t///<summary>See <a href=\"https://core.telegram.org/constructor/{ctor.predicate}\"/></summary>");
 				sw.WriteLine($"{tabIndent}\t{className[prefixLen..]} = 0x{ctor.ID:X8},");

@@ -902,6 +902,48 @@ namespace WTelegram
 				return this.Messages_SendMedia(peer, media, text, Helpers.RandomLong(),
 					reply_to_msg_id: reply_to_msg_id, entities: entities, schedule_date: schedule_date);
 		}
+
+		/// <summary>Download given photo from Telegram into the outputStream</summary>
+		/// <param name="outputStream">stream to write to. This method does not close/dispose the stream</param>
+		/// <param name="photoSize">if unspecified, will download the largest version of the photo</param>
+		public async Task<Storage_FileType> DownloadFileAsync(Photo photo, Stream outputStream, PhotoSizeBase photoSize = null)
+		{
+			var fileLocation = photo.ToFileLocation(photoSize ?? photo.LargestPhotoSize);
+			await MigrateDCAsync(photo.dc_id);
+			return await DownloadFileAsync(fileLocation, outputStream);
+		}
+
+		/// <summary>Download given photo from Telegram into the outputStream</summary>
+		/// <param name="outputStream">stream to write to. This method does not close/dispose the stream</param>
+		/// <param name="thumbSize">if specified, will download the given thumbnail instead of the full document</param>
+		public async Task<Storage_FileType> DownloadFileAsync(Document document, Stream outputStream, PhotoSizeBase thumbSize = null)
+		{
+			var fileLocation = document.ToFileLocation(thumbSize);
+			await MigrateDCAsync(document.dc_id);
+			return await DownloadFileAsync(fileLocation, outputStream);
+		}
+
+		/// <summary>Download given file from Telegram into the outputStream</summary>
+		/// <param name="fileLocation">Telegram file identifier, typically obtained with a .ToFileLocation() call</param>
+		/// <param name="outputStream">stream to write to. This method does not close/dispose the stream</param>
+		public async Task<Storage_FileType> DownloadFileAsync(InputFileLocationBase fileLocation, Stream outputStream)
+		{
+			const int ChunkSize = 128 * 1024;
+			int fileSize = 0;
+			Upload_File fileData;
+			do
+			{
+				var fileBase = await this.Upload_GetFile(fileLocation, fileSize, ChunkSize);
+				fileData = fileBase as Upload_File;
+				if (fileData == null)
+					throw new ApplicationException("Upload_GetFile returned unsupported " + fileBase.GetType().Name);
+				await outputStream.WriteAsync(fileData.bytes, 0, fileData.bytes.Length);
+				fileSize += fileData.bytes.Length;
+				
+			} while (fileData.bytes.Length == ChunkSize);
+			await MigrateDCAsync(); // migrate back to main DC
+			return fileData.type;
+		}
 		#endregion
 
 		/// <summary>Enable the collection of id/access_hash pairs (experimental)</summary>
