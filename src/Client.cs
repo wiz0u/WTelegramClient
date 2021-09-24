@@ -38,7 +38,7 @@ namespace WTelegram
 		private long _lastRecvMsgId;
 		private readonly List<long> _msgsToAck = new();
 		private readonly Random _random = new();
-		private int _unexpectedSaltChange;
+		private int _saltChangeCounter;
 		private Task _reactorTask;
 		private long _bareRequest;
 		private readonly Dictionary<long, (Type type, TaskCompletionSource<object> tcs)> _pendingRequests = new();
@@ -128,6 +128,7 @@ namespace WTelegram
 			_networkStream = _tcpClient.GetStream();
 			await _networkStream.WriteAsync(IntermediateHeader, 0, 4);
 			_cts = new();
+			_saltChangeCounter = 0;
 			_reactorTask = Reactor(_networkStream, _cts);
 			_sendSemaphore.Release();
 
@@ -146,6 +147,7 @@ namespace WTelegram
 						Config("lang_pack"),
 						Config("lang_code"),
 						Schema.Help_GetConfig));
+				_saltChangeCounter = 0;
 				if (DCSession.DataCenter == null)
 				{
 					DCSession.DataCenter = TLConfig.dc_options.Where(dc => dc.id == TLConfig.this_dc)
@@ -197,6 +199,7 @@ namespace WTelegram
 			while (!ct.IsCancellationRequested)
 			{
 				await Task.Delay(60000, ct);
+				if (_saltChangeCounter > 0) --_saltChangeCounter;
 				await this.PingDelayDisconnect(ping_id++, 75);
 			}
 		}
@@ -295,12 +298,13 @@ namespace WTelegram
 				var length = reader.ReadInt32();                // int32 message_data_length
 				var msgStamp = _session.MsgIdToStamp(msgId);
 
-				if (serverSalt != DCSession.Salt)
+				if (serverSalt != DCSession.Salt) // salt change happens every 30 min
 				{
 					Helpers.Log(2, $"Server salt has changed: {DCSession.Salt:X} -> {serverSalt:X}");
 					DCSession.Salt = serverSalt;
-					if (++_unexpectedSaltChange >= 30)
-						throw new ApplicationException($"Server salt changed unexpectedly more than 30 times during this session");
+					_saltChangeCounter += 20; // counter is decreased by KeepAlive every minute (we have margin of 10)
+					if (_saltChangeCounter >= 30)
+						throw new ApplicationException($"Server salt changed too often! Security issue?");
 				}
 				if (sessionId != _session.Id) throw new ApplicationException($"Unexpected session ID {_session.Id} != {_session.Id}");
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
