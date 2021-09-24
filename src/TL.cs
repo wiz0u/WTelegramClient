@@ -154,14 +154,26 @@ namespace TL
 
 		internal static Array ReadTLVector(this BinaryReader reader, Type type)
 		{
-			var ctorNb = reader.ReadUInt32();
-			if (ctorNb != Layer.VectorCtor) throw new ApplicationException($"Cannot deserialize {type.Name} with ctor #{ctorNb:x}");
 			var elementType = type.GetElementType();
-			int count = reader.ReadInt32();
-			Array array = (Array)Activator.CreateInstance(type, count);
-			for (int i = 0; i < count; i++)
-				array.SetValue(reader.ReadTLValue(elementType), i);
-			return array;
+			uint ctorNb = reader.ReadUInt32();
+			if (ctorNb == Layer.VectorCtor)
+			{
+				int count = reader.ReadInt32();
+				Array array = (Array)Activator.CreateInstance(type, count);
+				for (int i = 0; i < count; i++)
+					array.SetValue(reader.ReadTLValue(elementType), i);
+				return array;
+			}
+			else if (ctorNb < 1024 && !elementType.IsAbstract && elementType.GetCustomAttribute<TLDefAttribute>() is TLDefAttribute attr)
+			{
+				int count = (int)ctorNb;
+				Array array = (Array)Activator.CreateInstance(type, count);
+				for (int i = 0; i < count; i++)
+					array.SetValue(reader.ReadTLObject(attr.CtorNb), i);
+				return array;
+			}
+			else
+				throw new ApplicationException($"Cannot deserialize {type.Name} with ctor #{ctorNb:x}");
 		}
 
 		internal static void WriteTLStamp(this BinaryWriter writer, DateTime datetime)
