@@ -170,7 +170,7 @@ namespace WTelegram
 			if (DCSession.DataCenter?.id == dcId) return;
 			Helpers.Log(2, $"Migrate to DC {dcId}...");
 			Auth_ExportedAuthorization exported = null;
-			if (_session.User != null && DCSession.DataCenter.id == _session.MainDC)
+			if (_session.User != null && DCSession.DataCenter.id == _session.MainDC && _session.DCSessions.GetValueOrDefault(dcId)?.UserId != _session.User.id)
 				exported = await this.Auth_ExportAuthorization(dcId);
 			if (CheckMsgsToAck() is MsgsAck msgsAck)
 				await SendAsync(MakeFunction(msgsAck), false);
@@ -190,6 +190,7 @@ namespace WTelegram
 				if (authorization is not Auth_Authorization { user: User user })
 					throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
 				_session.User = user;
+				DCSession.UserId = user.id;
 			}
 		}
 
@@ -728,6 +729,7 @@ namespace WTelegram
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
 			_session.User = user;
+			DCSession.UserId = user.id;
 			_session.Save();
 			return user;
 		}
@@ -767,6 +769,7 @@ namespace WTelegram
 					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to login...");
 				}
 				await this.Auth_LogOut();
+				_session.User = null;
 			}
 			phone_number ??= Config("phone_number");
 			var sentCode = await this.Auth_SendCode(phone_number, _apiId, _apiHash, settings ?? new());
@@ -799,6 +802,7 @@ namespace WTelegram
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
 			//TODO: find better serialization for User not subject to TL changes?
 			_session.User = user;
+			DCSession.UserId = user.id;
 			_session.Save();
 			return user;
 		}
@@ -913,8 +917,7 @@ namespace WTelegram
 		public async Task<Storage_FileType> DownloadFileAsync(Photo photo, Stream outputStream, PhotoSizeBase photoSize = null)
 		{
 			var fileLocation = photo.ToFileLocation(photoSize ?? photo.LargestPhotoSize);
-			await MigrateDCAsync(photo.dc_id);
-			return await DownloadFileAsync(fileLocation, outputStream);
+			return await DownloadFileAsync(fileLocation, outputStream, photo.dc_id);
 		}
 
 		/// <summary>Download given photo from Telegram into the outputStream</summary>
@@ -923,29 +926,36 @@ namespace WTelegram
 		public async Task<Storage_FileType> DownloadFileAsync(Document document, Stream outputStream, PhotoSizeBase thumbSize = null)
 		{
 			var fileLocation = document.ToFileLocation(thumbSize);
-			await MigrateDCAsync(document.dc_id);
-			return await DownloadFileAsync(fileLocation, outputStream);
+			return await DownloadFileAsync(fileLocation, outputStream, document.dc_id);
 		}
 
 		/// <summary>Download given file from Telegram into the outputStream</summary>
 		/// <param name="fileLocation">Telegram file identifier, typically obtained with a .ToFileLocation() call</param>
 		/// <param name="outputStream">stream to write to. This method does not close/dispose the stream</param>
-		public async Task<Storage_FileType> DownloadFileAsync(InputFileLocationBase fileLocation, Stream outputStream)
+		/// <param name="fileDC">(optional) DC on which the file is stored</param>
+		public async Task<Storage_FileType> DownloadFileAsync(InputFileLocationBase fileLocation, Stream outputStream, int fileDC = 0)
 		{
 			const int ChunkSize = 128 * 1024;
 			int fileSize = 0;
 			Upload_File fileData;
-			do
+			try
 			{
-				var fileBase = await this.Upload_GetFile(fileLocation, fileSize, ChunkSize);
-				fileData = fileBase as Upload_File;
-				if (fileData == null)
-					throw new ApplicationException("Upload_GetFile returned unsupported " + fileBase.GetType().Name);
-				await outputStream.WriteAsync(fileData.bytes, 0, fileData.bytes.Length);
-				fileSize += fileData.bytes.Length;
-				
-			} while (fileData.bytes.Length == ChunkSize);
-			await MigrateDCAsync(); // migrate back to main DC
+				if (fileDC != 0) await MigrateDCAsync(fileDC);
+				do
+				{
+					var fileBase = await this.Upload_GetFile(fileLocation, fileSize, ChunkSize);
+					fileData = fileBase as Upload_File;
+					if (fileData == null)
+						throw new ApplicationException("Upload_GetFile returned unsupported " + fileBase.GetType().Name);
+					await outputStream.WriteAsync(fileData.bytes, 0, fileData.bytes.Length);
+					fileSize += fileData.bytes.Length;
+
+				} while (fileData.bytes.Length == ChunkSize);
+			}
+			finally
+			{
+				await MigrateDCAsync(); // migrate back to main DC
+			}
 			return fileData.type;
 		}
 		#endregion

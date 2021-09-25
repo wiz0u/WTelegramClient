@@ -19,6 +19,7 @@ namespace WTelegram
 		{
 			public long AuthKeyID;
 			public byte[] AuthKey;      // 2048-bit = 256 bytes
+			public long UserId;
 			public long Salt;
 			public int Seqno;
 			public long ServerTicksOffset;
