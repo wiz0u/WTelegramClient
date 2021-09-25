@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TL;
 
@@ -21,10 +22,27 @@ namespace WTelegramClientTest
 			using var client = new WTelegram.Client(Config);// { CollectAccessHash = true };
 			client.Update += Client_Update;
 			await client.ConnectAsync();
-			var user = await client.LoginUserIfNeeded();
+			var my = await client.LoginUserIfNeeded();
+			users[my.id] = my;
 			// note that on logging, Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
-			Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name} (id {user.id})");
-			await client.Ping(42); // dummy API call.. this is used to force an acknowledge on past updates
+			Console.WriteLine($"We are logged-in as {my.username ?? my.first_name + " " + my.last_name} (id {my.id})");
+			var dialogsBase = await client.Messages_GetDialogs(default, 0, InputPeer.Empty, 0, 0);
+			if (dialogsBase is Messages_Dialogs dialogs)
+			{
+				foreach (var user in dialogs.users) users[user.ID] = user;
+				foreach (var chat in dialogs.chats) chats[chat.ID] = chat;
+			}
+			else if (dialogsBase is Messages_DialogsSlice slice)
+				while (slice.dialogs.Length != 0)
+				{
+					foreach (var user in slice.users) users[user.ID] = user;
+					foreach (var chat in slice.chats) chats[chat.ID] = chat;
+					var lastDialog = (Dialog)slice.dialogs[^1];
+					var lastMsg = slice.messages.LastOrDefault(m => m.Peer.ID == lastDialog.peer.ID && m.ID == lastDialog.top_message);
+					InputPeer offsetPeer = lastDialog.peer is PeerUser pu ? slice.users.First(u => u.ID == pu.ID)
+						 : slice.chats.First(u => u.ID == lastDialog.peer.ID);
+					slice = (Messages_DialogsSlice)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.top_message, offsetPeer, 500, 0);
+				}
 			Console.ReadKey();
 			await client.Ping(43); // dummy API call.. this is used to force an acknowledge on this session's updates
 		}

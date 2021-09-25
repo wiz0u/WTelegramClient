@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -83,6 +84,31 @@ namespace TL
 		public override string DisplayName => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
 		protected override InputPeer ToInputPeer() => new InputPeerUser { user_id = id, access_hash = access_hash };
 		protected override InputUserBase ToInputUser() => new InputUser { user_id = id, access_hash = access_hash };
+	}
+
+	partial class MessageBase
+	{
+		public abstract long ID { get; }
+		public abstract Peer Peer { get; }
+		public abstract DateTime Date { get; }
+	}
+	partial class MessageEmpty
+	{
+		public override long ID => id;
+		public override Peer Peer => peer_id;
+		public override DateTime Date => default;
+	}
+	public partial class Message
+	{
+		public override long ID => id;
+		public override Peer Peer => peer_id;
+		public override DateTime Date => date;
+	}
+	public partial class MessageService
+	{
+		public override long ID => id;
+		public override Peer Peer => peer_id;
+		public override DateTime Date => date;
 	}
 
 	partial class PhotoBase
