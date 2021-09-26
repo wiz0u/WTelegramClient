@@ -73,10 +73,9 @@ Below is an example of calling the [messages.getAllChats](https://core.telegram.
 ```csharp
 using TL;
 ...
-var chatsBase = await client.Messages_GetAllChats(null);
-if (chatsBase is not Messages_Chats { chats: var chats }) throw new Exception("hu?");
+var chats = await client.Messages_GetAllChats(null);
 Console.WriteLine("This user has joined the following:");
-foreach (var chat in chats)
+foreach (var chat in chats.chats)
     switch (chat)
     {
         case Chat smallgroup when (smallgroup.flags & Chat.Flags.deactivated) == 0:

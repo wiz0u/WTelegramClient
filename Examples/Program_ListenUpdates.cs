@@ -19,7 +19,7 @@ namespace WTelegramClientTest
 		{
 			Console.WriteLine("The program will display updates received for the logged-in user. Press any key to terminate");
 			WTelegram.Helpers.Log += (l, s) => System.Diagnostics.Debug.WriteLine(s);
-			using var client = new WTelegram.Client(Config);// { CollectAccessHash = true };
+			using var client = new WTelegram.Client(Config) { CollectAccessHash = true };
 			client.Update += Client_Update;
 			await client.ConnectAsync();
 			var my = await client.LoginUserIfNeeded();
@@ -28,20 +28,15 @@ namespace WTelegramClientTest
 			Console.WriteLine($"We are logged-in as {my.username ?? my.first_name + " " + my.last_name} (id {my.id})");
 			var dialogsBase = await client.Messages_GetDialogs(default, 0, InputPeer.Empty, 0, 0);
 			if (dialogsBase is Messages_Dialogs dialogs)
-			{
-				foreach (var user in dialogs.users) users[user.ID] = user;
-				foreach (var chat in dialogs.chats) chats[chat.ID] = chat;
-			}
-			else if (dialogsBase is Messages_DialogsSlice slice)
-				while (slice.dialogs.Length != 0)
+				while (dialogs.dialogs.Length != 0)
 				{
-					foreach (var user in slice.users) users[user.ID] = user;
-					foreach (var chat in slice.chats) chats[chat.ID] = chat;
-					var lastDialog = (Dialog)slice.dialogs[^1];
-					var lastMsg = slice.messages.LastOrDefault(m => m.Peer.ID == lastDialog.peer.ID && m.ID == lastDialog.top_message);
-					InputPeer offsetPeer = lastDialog.peer is PeerUser pu ? slice.users.First(u => u.ID == pu.ID)
-						 : slice.chats.First(u => u.ID == lastDialog.peer.ID);
-					slice = (Messages_DialogsSlice)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.top_message, offsetPeer, 500, 0);
+					foreach (var user in dialogs.users) users[user.ID] = user;
+					foreach (var chat in dialogs.chats) chats[chat.ID] = chat;
+					var lastDialog = (Dialog)dialogs.dialogs[^1];
+					var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.peer.ID && m.ID == lastDialog.top_message);
+					InputPeer offsetPeer = lastDialog.peer is PeerUser pu ? dialogs.users.First(u => u.ID == pu.ID)
+						 : dialogs.chats.First(u => u.ID == lastDialog.peer.ID);
+					dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.top_message, offsetPeer, 500, 0);
 				}
 			Console.ReadKey();
 			await client.Ping(43); // dummy API call.. this is used to force an acknowledge on this session's updates
@@ -83,10 +78,9 @@ namespace WTelegramClientTest
 			{
 				case UpdateNewMessage unm: DisplayMessage(unm.message); break;
 				case UpdateEditMessage uem: Console.Write("(Edit): "); DisplayMessage(uem.message); break;
-				case UpdateDeleteMessages udm: Console.WriteLine($"{udm.messages.Length} message(s) deleted"); break;
-				case UpdateNewChannelMessage uncm: DisplayMessage(uncm.message); break;
-				case UpdateEditChannelMessage uecm: Console.Write("(Edit): "); DisplayMessage(uecm.message); break;
 				case UpdateDeleteChannelMessages udcm: Console.WriteLine($"{udcm.messages.Length} message(s) deleted in {AChat(udcm.channel_id)}"); break;
+				case UpdateDeleteMessages udm: Console.WriteLine($"{udm.messages.Length} message(s) deleted"); break;
+				case UpdateEditChannelMessage uecm: Console.Write("(Edit): "); DisplayMessage(uecm.message); break;
 				case UpdateUserTyping uut: Console.WriteLine($"{AUser(uut.user_id)} is {uut.action.GetType().Name[11..^6]}"); break;
 				case UpdateChatUserTyping ucut: Console.WriteLine($"{APeer(ucut.from_id)} is {ucut.action.GetType().Name[11..^6]} in {AChat(ucut.chat_id)}"); break;
 				case UpdateChannelUserTyping ucut2: Console.WriteLine($"{APeer(ucut2.from_id)} is {ucut2.action.GetType().Name[11..^6]} in {AChat(ucut2.channel_id)}"); break;

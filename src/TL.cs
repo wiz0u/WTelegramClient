@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -32,9 +33,11 @@ namespace TL
 		{
 			if (obj == null) { writer.Write(Layer.NullCtor); return; }
 			var type = obj.GetType();
-			var ctorNb = type.GetCustomAttribute<TLDefAttribute>().CtorNb;
+			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
+			var ctorNb = tlDef.CtorNb;
 			writer.Write(ctorNb);
-			var fields = obj.GetType().GetFields().GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
+			IEnumerable<FieldInfo> fields = type.GetFields();
+			if (!tlDef.inheritAfter) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
@@ -55,8 +58,10 @@ namespace TL
 			if (ctorNb == Layer.NullCtor) return null;
 			if (!Layer.Table.TryGetValue(ctorNb, out var type))
 				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
+			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var obj = Activator.CreateInstance(type);
-			var fields = type.GetFields().GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
+			IEnumerable<FieldInfo> fields = type.GetFields();
+			if (!tlDef.inheritAfter) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
@@ -258,6 +263,7 @@ namespace TL
 	{
 		public readonly uint CtorNb;
 		public TLDefAttribute(uint ctorNb) => CtorNb = ctorNb;
+		public bool inheritAfter;
 	}
 
 	[AttributeUsage(AttributeTargets.Field)]

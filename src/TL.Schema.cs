@@ -648,12 +648,7 @@ namespace TL
 	public partial class ChatParticipantCreator : ChatParticipantBase { public long user_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/chatParticipantAdmin"/></summary>
 	[TLDef(0xA0933F5B)]
-	public partial class ChatParticipantAdmin : ChatParticipantBase
-	{
-		public long user_id;
-		public long inviter_id;
-		public DateTime date;
-	}
+	public partial class ChatParticipantAdmin : ChatParticipant { }
 
 	///<summary>See <a href="https://core.telegram.org/type/ChatParticipants"/></summary>
 	public abstract partial class ChatParticipantsBase : ITLObject { }
@@ -1312,25 +1307,17 @@ namespace TL
 		public UserBase[] users;
 	}
 
-	///<summary>See <a href="https://core.telegram.org/type/contacts.Blocked"/></summary>
-	public abstract partial class Contacts_BlockedBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/contacts.blocked"/></summary>
 	[TLDef(0x0ADE1591)]
-	public partial class Contacts_Blocked : Contacts_BlockedBase
+	public partial class Contacts_Blocked : ITLObject
 	{
 		public PeerBlocked[] blocked;
 		public ChatBase[] chats;
 		public UserBase[] users;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/contacts.blockedSlice"/></summary>
-	[TLDef(0xE1664194)]
-	public partial class Contacts_BlockedSlice : Contacts_BlockedBase
-	{
-		public int count;
-		public PeerBlocked[] blocked;
-		public ChatBase[] chats;
-		public UserBase[] users;
-	}
+	[TLDef(0xE1664194, inheritAfter = true)]
+	public partial class Contacts_BlockedSlice : Contacts_Blocked { public int count; }
 
 	///<summary>See <a href="https://core.telegram.org/type/messages.Dialogs"/></summary>
 	public abstract partial class Messages_DialogsBase : ITLObject { }
@@ -1344,15 +1331,8 @@ namespace TL
 		public UserBase[] users;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.dialogsSlice"/></summary>
-	[TLDef(0x71E094F3)]
-	public partial class Messages_DialogsSlice : Messages_DialogsBase
-	{
-		public int count;
-		public DialogBase[] dialogs;
-		public MessageBase[] messages;
-		public ChatBase[] chats;
-		public UserBase[] users;
-	}
+	[TLDef(0x71E094F3, inheritAfter = true)]
+	public partial class Messages_DialogsSlice : Messages_Dialogs { public int count; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.dialogsNotModified"/></summary>
 	[TLDef(0xF0E3E596)]
 	public partial class Messages_DialogsNotModified : Messages_DialogsBase { public int count; }
@@ -1368,17 +1348,14 @@ namespace TL
 		public UserBase[] users;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.messagesSlice"/></summary>
-	[TLDef(0x3A54685E)]
-	public partial class Messages_MessagesSlice : Messages_MessagesBase
+	[TLDef(0x3A54685E, inheritAfter = true)]
+	public partial class Messages_MessagesSlice : Messages_Messages
 	{
 		[Flags] public enum Flags { has_next_rate = 0x1, inexact = 0x2, has_offset_id_offset = 0x4 }
 		public Flags flags;
 		public int count;
 		[IfFlag(0)] public int next_rate;
 		[IfFlag(2)] public int offset_id_offset;
-		public MessageBase[] messages;
-		public ChatBase[] chats;
-		public UserBase[] users;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.channelMessages"/></summary>
 	[TLDef(0x64479808)]
@@ -1397,18 +1374,12 @@ namespace TL
 	[TLDef(0x74535F21)]
 	public partial class Messages_MessagesNotModified : Messages_MessagesBase { public int count; }
 
-	///<summary>See <a href="https://core.telegram.org/type/messages.Chats"/></summary>
-	public abstract partial class Messages_ChatsBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.chats"/></summary>
 	[TLDef(0x64FF9FD5)]
-	public partial class Messages_Chats : Messages_ChatsBase { public ChatBase[] chats; }
+	public partial class Messages_Chats : ITLObject { public ChatBase[] chats; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.chatsSlice"/></summary>
-	[TLDef(0x9CD81144)]
-	public partial class Messages_ChatsSlice : Messages_ChatsBase
-	{
-		public int count;
-		public ChatBase[] chats;
-	}
+	[TLDef(0x9CD81144, inheritAfter = true)]
+	public partial class Messages_ChatsSlice : Messages_Chats { public int count; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.chatFull"/></summary>
 	[TLDef(0xE5D7D19C)]
@@ -1685,12 +1656,7 @@ namespace TL
 	public partial class UpdateChannel : Update { public long channel_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateNewChannelMessage"/></summary>
 	[TLDef(0x62BA04D9)]
-	public partial class UpdateNewChannelMessage : Update
-	{
-		public MessageBase message;
-		public int pts;
-		public int pts_count;
-	}
+	public partial class UpdateNewChannelMessage : UpdateNewMessage { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateReadChannelInbox"/></summary>
 	[TLDef(0x922E6E10)]
 	public partial class UpdateReadChannelInbox : Update
@@ -1704,19 +1670,12 @@ namespace TL
 		public int pts;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateDeleteChannelMessages"/></summary>
-	[TLDef(0xC32D5B12)]
-	public partial class UpdateDeleteChannelMessages : Update
-	{
-		public long channel_id;
-		public int[] messages;
-		public int pts;
-		public int pts_count;
-	}
+	[TLDef(0xC32D5B12, inheritAfter = true)]
+	public partial class UpdateDeleteChannelMessages : UpdateDeleteMessages { public long channel_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelMessageViews"/></summary>
 	[TLDef(0xF226AC08)]
-	public partial class UpdateChannelMessageViews : Update
+	public partial class UpdateChannelMessageViews : UpdateChannel
 	{
-		public long channel_id;
 		public int id;
 		public int views;
 	}
@@ -1841,14 +1800,8 @@ namespace TL
 	[TLDef(0x3354678F)]
 	public partial class UpdatePtsChanged : Update { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelWebPage"/></summary>
-	[TLDef(0x2F2BA99F)]
-	public partial class UpdateChannelWebPage : Update
-	{
-		public long channel_id;
-		public WebPageBase webpage;
-		public int pts;
-		public int pts_count;
-	}
+	[TLDef(0x2F2BA99F, inheritAfter = true)]
+	public partial class UpdateChannelWebPage : UpdateWebPage { public long channel_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateDialogPinned"/></summary>
 	[TLDef(0x6E6FE51C)]
 	public partial class UpdateDialogPinned : Update
@@ -1915,21 +1868,13 @@ namespace TL
 	public partial class UpdateFavedStickers : Update { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelReadMessagesContents"/></summary>
 	[TLDef(0x44BDD535)]
-	public partial class UpdateChannelReadMessagesContents : Update
-	{
-		public long channel_id;
-		public int[] messages;
-	}
+	public partial class UpdateChannelReadMessagesContents : UpdateChannel { public int[] messages; }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateContactsReset"/></summary>
 	[TLDef(0x7084A7BE)]
 	public partial class UpdateContactsReset : Update { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelAvailableMessages"/></summary>
 	[TLDef(0xB23FC698)]
-	public partial class UpdateChannelAvailableMessages : Update
-	{
-		public long channel_id;
-		public int available_min_id;
-	}
+	public partial class UpdateChannelAvailableMessages : UpdateChannel { public int available_min_id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateDialogUnreadMark"/></summary>
 	[TLDef(0xE16459C3)]
 	public partial class UpdateDialogUnreadMark : Update
@@ -2030,9 +1975,8 @@ namespace TL
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChannelMessageForwards"/></summary>
 	[TLDef(0xD29A27F4)]
-	public partial class UpdateChannelMessageForwards : Update
+	public partial class UpdateChannelMessageForwards : UpdateChannel
 	{
-		public long channel_id;
 		public int id;
 		public int forwards;
 	}
@@ -2312,23 +2256,16 @@ namespace TL
 		[IfFlag(25)] public int ttl_period;
 	}
 
-	///<summary>See <a href="https://core.telegram.org/type/photos.Photos"/></summary>
-	public abstract partial class Photos_PhotosBase : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/photos.photos"/></summary>
 	[TLDef(0x8DCA6AA5)]
-	public partial class Photos_Photos : Photos_PhotosBase
+	public partial class Photos_Photos : ITLObject
 	{
 		public PhotoBase[] photos;
 		public UserBase[] users;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/photos.photosSlice"/></summary>
-	[TLDef(0x15051F54)]
-	public partial class Photos_PhotosSlice : Photos_PhotosBase
-	{
-		public int count;
-		public PhotoBase[] photos;
-		public UserBase[] users;
-	}
+	[TLDef(0x15051F54, inheritAfter = true)]
+	public partial class Photos_PhotosSlice : Photos_Photos { public int count; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/photos.photo"/></summary>
 	[TLDef(0x20212CA8)]
@@ -3180,11 +3117,7 @@ namespace TL
 	public partial class KeyboardButton : KeyboardButtonBase { public string text; }
 	///<summary>See <a href="https://core.telegram.org/constructor/keyboardButtonUrl"/></summary>
 	[TLDef(0x258AFF05)]
-	public partial class KeyboardButtonUrl : KeyboardButtonBase
-	{
-		public string text;
-		public string url;
-	}
+	public partial class KeyboardButtonUrl : KeyboardButton { public string url; }
 	///<summary>See <a href="https://core.telegram.org/constructor/keyboardButtonCallback"/></summary>
 	[TLDef(0x35BBDB6B)]
 	public partial class KeyboardButtonCallback : KeyboardButtonBase
@@ -3196,10 +3129,10 @@ namespace TL
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/keyboardButtonRequestPhone"/></summary>
 	[TLDef(0xB16A6C29)]
-	public partial class KeyboardButtonRequestPhone : KeyboardButtonBase { public string text; }
+	public partial class KeyboardButtonRequestPhone : KeyboardButton { }
 	///<summary>See <a href="https://core.telegram.org/constructor/keyboardButtonRequestGeoLocation"/></summary>
 	[TLDef(0xFC796B3F)]
-	public partial class KeyboardButtonRequestGeoLocation : KeyboardButtonBase { public string text; }
+	public partial class KeyboardButtonRequestGeoLocation : KeyboardButton { }
 	///<summary>See <a href="https://core.telegram.org/constructor/keyboardButtonSwitchInline"/></summary>
 	[TLDef(0x0568A748)]
 	public partial class KeyboardButtonSwitchInline : KeyboardButtonBase
@@ -3211,10 +3144,10 @@ namespace TL
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/keyboardButtonGame"/></summary>
 	[TLDef(0x50F41CCF)]
-	public partial class KeyboardButtonGame : KeyboardButtonBase { public string text; }
+	public partial class KeyboardButtonGame : KeyboardButton { }
 	///<summary>See <a href="https://core.telegram.org/constructor/keyboardButtonBuy"/></summary>
 	[TLDef(0xAFD93FBB)]
-	public partial class KeyboardButtonBuy : KeyboardButtonBase { public string text; }
+	public partial class KeyboardButtonBuy : KeyboardButton { }
 	///<summary>See <a href="https://core.telegram.org/constructor/keyboardButtonUrlAuth"/></summary>
 	[TLDef(0x10B78D29)]
 	public partial class KeyboardButtonUrlAuth : KeyboardButtonBase
@@ -3238,13 +3171,12 @@ namespace TL
 		public InputUserBase bot;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/keyboardButtonRequestPoll"/></summary>
-	[TLDef(0xBBC7515D)]
-	public partial class KeyboardButtonRequestPoll : KeyboardButtonBase
+	[TLDef(0xBBC7515D, inheritAfter = true)]
+	public partial class KeyboardButtonRequestPoll : KeyboardButton
 	{
 		[Flags] public enum Flags { has_quiz = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public bool quiz;
-		public string text;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/keyboardButtonRow"/></summary>
@@ -5393,20 +5325,10 @@ namespace TL
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/secureValueErrorTranslationFile"/></summary>
 	[TLDef(0xA1144770)]
-	public partial class SecureValueErrorTranslationFile : SecureValueErrorBase
-	{
-		public SecureValueType type;
-		public byte[] file_hash;
-		public string text;
-	}
+	public partial class SecureValueErrorTranslationFile : SecureValueErrorFile { }
 	///<summary>See <a href="https://core.telegram.org/constructor/secureValueErrorTranslationFiles"/></summary>
 	[TLDef(0x34636DD8)]
-	public partial class SecureValueErrorTranslationFiles : SecureValueErrorBase
-	{
-		public SecureValueType type;
-		public byte[][] file_hash;
-		public string text;
-	}
+	public partial class SecureValueErrorTranslationFiles : SecureValueErrorFiles { }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/secureCredentialsEncrypted"/></summary>
 	[TLDef(0x33F0EA47)]
@@ -6666,14 +6588,10 @@ namespace TL
 	public partial class BotCommandScopePeer : BotCommandScope { public InputPeer peer; }
 	///<summary>See <a href="https://core.telegram.org/constructor/botCommandScopePeerAdmins"/></summary>
 	[TLDef(0x3FD863D1)]
-	public partial class BotCommandScopePeerAdmins : BotCommandScope { public InputPeer peer; }
+	public partial class BotCommandScopePeerAdmins : BotCommandScopePeer { }
 	///<summary>See <a href="https://core.telegram.org/constructor/botCommandScopePeerUser"/></summary>
 	[TLDef(0x0A1321F3)]
-	public partial class BotCommandScopePeerUser : BotCommandScope
-	{
-		public InputPeer peer;
-		public InputUserBase user_id;
-	}
+	public partial class BotCommandScopePeerUser : BotCommandScopePeer { public InputUserBase user_id; }
 
 	///<summary>See <a href="https://core.telegram.org/type/account.ResetPasswordResult"/></summary>
 	public abstract partial class Account_ResetPasswordResult : ITLObject { }
@@ -7805,8 +7723,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getBlocked"/></summary>
-		public static Task<Contacts_BlockedBase> Contacts_GetBlocked(this Client client, int offset, int limit)
-			=> client.CallAsync<Contacts_BlockedBase>(writer =>
+		public static Task<Contacts_Blocked> Contacts_GetBlocked(this Client client, int offset, int limit)
+			=> client.CallAsync<Contacts_Blocked>(writer =>
 			{
 				writer.Write(0xF57C350F);
 				writer.Write(offset);
@@ -8129,8 +8047,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getChats"/></summary>
-		public static Task<Messages_ChatsBase> Messages_GetChats(this Client client, long[] id)
-			=> client.CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_Chats> Messages_GetChats(this Client client, long[] id)
+			=> client.CallAsync<Messages_Chats>(writer =>
 			{
 				writer.Write(0x49E9528F);
 				writer.WriteTLVector(id);
@@ -8799,8 +8717,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getCommonChats"/></summary>
-		public static Task<Messages_ChatsBase> Messages_GetCommonChats(this Client client, InputUserBase user_id, long max_id, int limit)
-			=> client.CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_Chats> Messages_GetCommonChats(this Client client, InputUserBase user_id, long max_id, int limit)
+			=> client.CallAsync<Messages_Chats>(writer =>
 			{
 				writer.Write(0xE40CA104);
 				writer.WriteTLObject(user_id);
@@ -8810,8 +8728,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getAllChats"/></summary>
-		public static Task<Messages_ChatsBase> Messages_GetAllChats(this Client client, long[] except_ids)
-			=> client.CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_Chats> Messages_GetAllChats(this Client client, long[] except_ids)
+			=> client.CallAsync<Messages_Chats>(writer =>
 			{
 				writer.Write(0x875F74BE);
 				writer.WriteTLVector(except_ids);
@@ -9602,8 +9520,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/photos.getUserPhotos"/></summary>
-		public static Task<Photos_PhotosBase> Photos_GetUserPhotos(this Client client, InputUserBase user_id, int offset, long max_id, int limit)
-			=> client.CallAsync<Photos_PhotosBase>(writer =>
+		public static Task<Photos_Photos> Photos_GetUserPhotos(this Client client, InputUserBase user_id, int offset, long max_id, int limit)
+			=> client.CallAsync<Photos_Photos>(writer =>
 			{
 				writer.Write(0x91CD32A8);
 				writer.WriteTLObject(user_id);
@@ -9969,8 +9887,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getChannels"/></summary>
-		public static Task<Messages_ChatsBase> Channels_GetChannels(this Client client, InputChannelBase[] id)
-			=> client.CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_Chats> Channels_GetChannels(this Client client, InputChannelBase[] id)
+			=> client.CallAsync<Messages_Chats>(writer =>
 			{
 				writer.Write(0x0A7F6BBB);
 				writer.WriteTLVector(id);
@@ -10112,8 +10030,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getAdminedPublicChannels"/></summary>
-		public static Task<Messages_ChatsBase> Channels_GetAdminedPublicChannels(this Client client, bool by_location = false, bool check_limit = false)
-			=> client.CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_Chats> Channels_GetAdminedPublicChannels(this Client client, bool by_location = false, bool check_limit = false)
+			=> client.CallAsync<Messages_Chats>(writer =>
 			{
 				writer.Write(0xF8B036AF);
 				writer.Write((by_location ? 0x1 : 0) | (check_limit ? 0x2 : 0));
@@ -10190,8 +10108,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getLeftChannels"/></summary>
-		public static Task<Messages_ChatsBase> Channels_GetLeftChannels(this Client client, int offset)
-			=> client.CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_Chats> Channels_GetLeftChannels(this Client client, int offset)
+			=> client.CallAsync<Messages_Chats>(writer =>
 			{
 				writer.Write(0x8341ECC0);
 				writer.Write(offset);
@@ -10199,8 +10117,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.getGroupsForDiscussion"/></summary>
-		public static Task<Messages_ChatsBase> Channels_GetGroupsForDiscussion(this Client client)
-			=> client.CallAsync<Messages_ChatsBase>(writer =>
+		public static Task<Messages_Chats> Channels_GetGroupsForDiscussion(this Client client)
+			=> client.CallAsync<Messages_Chats>(writer =>
 			{
 				writer.Write(0xF5DAD378);
 				return "Channels_GetGroupsForDiscussion";

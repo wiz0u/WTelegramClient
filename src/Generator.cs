@@ -14,9 +14,8 @@ namespace WTelegram
 	{
 		readonly Dictionary<int, string> ctorToTypes = new();
 		readonly HashSet<string> allTypes = new();
-		readonly Dictionary<int, Dictionary<string, TypeInfo>> typeInfosByLayer = new();
 		readonly Dictionary<string, int> knownStyles = new() { ["InitConnection"] = 1, ["Help_GetConfig"] = 0, ["HttpWait"] = -1 };
-		Dictionary<string, TypeInfo> typeInfos;
+		readonly Dictionary<string, TypeInfo> typeInfos = new();
 		readonly HashSet<string> enumTypes = new();
 		int currentLayer;
 		string tabIndent;
@@ -106,86 +105,96 @@ namespace WTelegram
 			sw.WriteLine("\tusing BinaryWriter = System.IO.BinaryWriter;");
 			sw.WriteLine("\tusing Client = WTelegram.Client;");
 			tabIndent = "\t";
-			var layers = schema.constructors.GroupBy(c => c.layer).OrderBy(g => g.Key);
-			foreach (var layer in layers)
+			foreach (var ctor in schema.constructors)
 			{
-				typeInfos = typeInfosByLayer.GetOrCreate(layer.Key);
-				if (layer.Key != 0)
+				if (ctorToTypes.ContainsKey(ctor.ID)) continue;
+				if (ctor.type == "Vector t") continue;
+				var structName = CSharpName(ctor.predicate);
+				ctorToTypes[ctor.ID] = ctor.layer == 0 ? structName : $"Layer{ctor.layer}.{structName}";
+				var typeInfo = typeInfos.GetOrCreate(ctor.type);
+				if (ctor.ID == 0x5BB8E511) { ctorToTypes[ctor.ID] = structName = ctor.predicate = ctor.type = "_Message"; }
+				if (typeInfo.ReturnName == null) typeInfo.ReturnName = CSharpName(ctor.type);
+				typeInfo.Structs.Add(ctor);
+				if (structName == typeInfo.ReturnName) typeInfo.MainClass = ctor;
+			}
+			foreach (var (name, typeInfo) in typeInfos)
+			{
+				if (allTypes.Contains(typeInfo.ReturnName))
 				{
-					sw.WriteLine();
-					sw.WriteLine("\tnamespace Layer" + layer.Key);
-					sw.Write("\t{");
-					tabIndent += "\t";
-				}
-				string layerPrefix = layer.Key == 0 ? "" : $"Layer{layer.Key}.";
-				foreach (var ctor in layer)
-				{
-					if (ctorToTypes.ContainsKey(ctor.ID)) continue;
-					if (ctor.type == "Vector t") continue;
-					var structName = CSharpName(ctor.predicate);
-					ctorToTypes[ctor.ID] = layerPrefix + structName;
-					var typeInfo = typeInfos.GetOrCreate(ctor.type);
-					if (ctor.ID == 0x5BB8E511) { ctorToTypes[ctor.ID] = structName = ctor.predicate = ctor.type = "_Message"; }
-					if (typeInfo.ReturnName == null) typeInfo.ReturnName = CSharpName(ctor.type);
-					typeInfo.Structs.Add(ctor);
-					if (structName == typeInfo.ReturnName) typeInfo.MainClass = ctor;
-				}
-				foreach (var (name, typeInfo) in typeInfos)
-				{
-					if (allTypes.Contains(typeInfo.ReturnName))
+					if (typeInfos.TryGetValue(typeInfo.ReturnName, out var existingType))
 					{
-						if (typeInfosByLayer[0].TryGetValue(typeInfo.ReturnName, out var existingType))
-						{
-							typeInfo.ReturnName = existingType.ReturnName;
-							typeInfo.MainClass = existingType.MainClass;
-						}
-						continue;
+						typeInfo.ReturnName = existingType.ReturnName;
+						typeInfo.MainClass = existingType.MainClass;
 					}
-					if (typeInfo.MainClass == null)
+					continue;
+				}
+				if (typeInfo.MainClass == null)
+				{
+					List<Param> fakeCtorParams = new();
+					if (typeInfo.Structs.Count > 1)
 					{
-						List<Param> fakeCtorParams = new();
-						if (typeInfo.Structs.Count > 1)
+						while (typeInfo.Structs[0].@params.Length > fakeCtorParams.Count)
 						{
+							fakeCtorParams.Add(typeInfo.Structs[0].@params[fakeCtorParams.Count]);
+							if (!typeInfo.Structs.All(ctor => HasPrefix(ctor, fakeCtorParams)))
+							{
+								fakeCtorParams.RemoveAt(fakeCtorParams.Count - 1);
+								break;
+							}
+						}
+						if (fakeCtorParams.Count == 0)
 							while (typeInfo.Structs[0].@params.Length > fakeCtorParams.Count)
 							{
-								fakeCtorParams.Add(typeInfo.Structs[0].@params[fakeCtorParams.Count]);
-								if (!typeInfo.Structs.All(ctor => HasPrefix(ctor, fakeCtorParams)))
+								fakeCtorParams.Insert(0, typeInfo.Structs[0].@params[^(fakeCtorParams.Count + 1)]);
+								if (!typeInfo.Structs.All(ctor => HasSuffix(ctor, fakeCtorParams)))
 								{
-									fakeCtorParams.RemoveAt(fakeCtorParams.Count - 1);
+									fakeCtorParams.RemoveAt(0);
 									break;
 								}
 							}
-						}
-						typeInfo.MainClass = new Constructor { id = null, @params = fakeCtorParams.ToArray(), predicate = typeInfo.ReturnName, type = name };
-						typeInfo.Structs.Insert(0, typeInfo.MainClass);
-						typeInfo.CommonFields = fakeCtorParams.Count; // generation of abstract main class with some common fields
 					}
-					else if (typeInfo.Structs.Count > 1)
+					typeInfo.MainClass = new Constructor { id = null, @params = fakeCtorParams.ToArray(), predicate = typeInfo.ReturnName, type = name };
+					typeInfo.Structs.Insert(0, typeInfo.MainClass);
+					typeInfo.CommonFields = fakeCtorParams.Count; // generation of abstract main class with some common fields
+				}
+				else if (typeInfo.Structs.Count > 1)
+				{
+					if (typeInfo.Structs.All(ctor => ctor == typeInfo.MainClass || HasPrefix(ctor, typeInfo.MainClass.@params) || HasSuffix(ctor, typeInfo.MainClass.@params)))
+						typeInfo.CommonFields = typeInfo.MainClass.@params.Length;
+					else
 					{
-						if (typeInfo.Structs.All(ctor => ctor == typeInfo.MainClass || HasPrefix(ctor, typeInfo.MainClass.@params)))
-							typeInfo.CommonFields = typeInfo.MainClass.@params.Length;
-						else
-						{
-							// the previous MainClass (ctor have the same name as ReturnName) is incompatible with other classes fields
-							typeInfo.MainClass = new Constructor { id = null, @params = Array.Empty<Param>(), predicate = typeInfo.ReturnName + "Base", type = name };
-							typeInfo.Structs.Insert(0, typeInfo.MainClass);
-							typeInfo.ReturnName = typeInfo.MainClass.predicate;
-						}
+						// the previous MainClass (ctor have the same name as ReturnName) is incompatible with other classes fields
+						typeInfo.MainClass = new Constructor { id = null, @params = Array.Empty<Param>(), predicate = typeInfo.ReturnName + "Base", type = name };
+						typeInfo.Structs.Insert(0, typeInfo.MainClass);
+						typeInfo.ReturnName = typeInfo.MainClass.predicate;
 					}
 				}
+			}
+			var layers = schema.constructors.Select(c => c.layer).Distinct().ToList();
+			if (layers.Count > 1) // multi-layer file => generate abstract classes out of layer namespaces first
 				foreach (var typeInfo in typeInfos.Values)
-					WriteTypeInfo(sw, typeInfo, layerPrefix, false);
-				if (layer.Key != 0)
+					WriteTypeInfo(sw, typeInfo, 0);
+			foreach (var layer in layers)
+			{
+				if (layer != 0)
+				{
+					sw.WriteLine();
+					sw.WriteLine("\tnamespace Layer" + layer);
+					sw.Write("\t{");
+					tabIndent += "\t";
+				}
+				foreach (var typeInfo in typeInfos.Values)
+					WriteTypeInfo(sw, typeInfo, layer);
+				if (layer != 0)
 				{
 					sw.WriteLine("\t}");
 					tabIndent = tabIndent[1..];
 				}
 			}
-			if (typeInfosByLayer[0].GetValueOrDefault("Message")?.MainClass.ID == 0x5BB8E511) typeInfosByLayer[0].Remove("Message");
+			if (typeInfos.GetValueOrDefault("Message")?.MainClass.ID == 0x5BB8E511) typeInfos.Remove("Message");
 
 			if (schema.methods.Count != 0)
 			{
-				typeInfos = typeInfosByLayer[0];
 				var ping = schema.methods.FirstOrDefault(m => m.method == "ping");
 				if (ping != null)
 				{
@@ -193,7 +202,7 @@ namespace WTelegram
 						new Constructor { id = ping.id, @params = ping.@params, predicate = ping.method, type = ping.type } };
 					typeInfo.Structs.Add(typeInfo.MainClass);
 					ctorToTypes[int.Parse(ping.id)] = CSharpName(ping.method);
-					WriteTypeInfo(sw, typeInfo, "", false);
+					WriteTypeInfo(sw, typeInfo, 0);
 				}
 				sw.WriteLine();
 				sw.WriteLine("\t// ---functions---");
@@ -217,17 +226,21 @@ namespace WTelegram
 			UpdateTable("TL.Table.cs");
 		}
 
-		void WriteTypeInfo(StreamWriter sw, TypeInfo typeInfo, string layerPrefix, bool isMethod)
+		void WriteTypeInfo(StreamWriter sw, TypeInfo typeInfo, int layer)
 		{
 			var genericType = typeInfo.ReturnName.Length == 1 ? $"<{typeInfo.ReturnName}>" : null;
 			bool needNewLine = true;
-			int skipParams = 0;
-			foreach (var ctor in typeInfo.Structs)
+			int commonFields = 0;
+			for (int i = 0; i < typeInfo.Structs.Count; i++)
 			{
+				var ctor = typeInfo.Structs[i];
+				if (ctor.layer != layer) continue;
 				int ctorId = ctor.ID;
 				string className = CSharpName(ctor.predicate) + genericType;
-				if (!allTypes.Add(layerPrefix + className)) continue;
+				if (!allTypes.Add((layer == 0 ? "" : $"Layer{layer}.") + className)) continue;
 				if (needNewLine) { needNewLine = false; sw.WriteLine(); }
+				var parentClass = ctor == typeInfo.MainClass ? "ITLObject" : typeInfo.ReturnName;
+				var parms = ctor.@params;
 				if (ctorId == 0)
 				{
 					if (currentJson != "TL.MTProto")
@@ -241,14 +254,49 @@ namespace WTelegram
 				}
 				else
 				{
-					if (currentJson != "TL.MTProto")
+					string tldefReverse = null;
+					if (commonFields != 0)
 					{
-						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/constructor/{ctor.predicate}\"/></summary>");
-						sw.WriteLine($"{tabIndent}[TLDef(0x{ctor.ID:X8})]");
+						if (ctor.@params[0].name == typeInfo.MainClass.@params[0].name)
+							parms = ctor.@params.Skip(commonFields).ToArray();
+						else
+						{
+							parms = ctor.@params.Take(ctor.@params.Length - commonFields).ToArray();
+							tldefReverse = ", inheritAfter = true";
+						}
 					}
 					else
 					{
-						sw.Write($"{tabIndent}[TLDef(0x{ctor.ID:X8})] //{ctor.predicate}#{ctor.ID:x8} ");
+						for (int j = i - 1; j >= 0; j--)
+						{
+							var otherParams = typeInfo.Structs[j].@params;
+							if (otherParams.Length <= commonFields) continue;
+							var otherPredicate = typeInfo.Structs[j].predicate;
+							if (!IsDerivedName(ctor.predicate, otherPredicate)) continue;
+							if (HasPrefix(ctor, otherParams))
+							{
+								parms = ctor.@params.Skip(otherParams.Length).ToArray();
+								tldefReverse = null;
+							}
+							else if (HasSuffix(ctor, otherParams))
+							{
+								parms = ctor.@params.Take(ctor.@params.Length - otherParams.Length).ToArray();
+								tldefReverse = ", inheritAfter = true";
+							}
+
+							else continue;
+							commonFields = otherParams.Length;
+							parentClass = CSharpName(otherPredicate) + genericType;
+						}
+					}
+					if (currentJson != "TL.MTProto")
+					{
+						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/constructor/{ctor.predicate}\"/></summary>");
+						sw.WriteLine($"{tabIndent}[TLDef(0x{ctor.ID:X8}{tldefReverse})]");
+					}
+					else
+					{
+						sw.Write($"{tabIndent}[TLDef(0x{ctor.ID:X8}{tldefReverse})] //{ctor.predicate}#{ctor.ID:x8} ");
 						if (genericType != null) sw.Write($"{{{typeInfo.ReturnName}:Type}} ");
 						foreach (var parm in ctor.@params) sw.Write($"{parm.name}:{parm.type} ");
 						sw.WriteLine($"= {ctor.type}");
@@ -257,11 +305,11 @@ namespace WTelegram
 					//sw.Write(skipParams == 0 && typeInfo.NeedAbstract > 0 ? "ITLObject" : parentClass);
 				}
 				sw.Write(" : ");
-				sw.Write(ctor == typeInfo.MainClass ? "ITLObject" : typeInfo.ReturnName);
-				var parms = ctor.@params.Skip(skipParams).ToArray();
+				sw.Write(parentClass);
 				if (parms.Length == 0)
 				{
 					sw.WriteLine(" { }");
+					commonFields = typeInfo.CommonFields;
 					continue;
 				}
 				var hasFlagEnum = parms.Any(p => p.type.StartsWith("flags."));
@@ -323,8 +371,22 @@ namespace WTelegram
 					sw.WriteLine(tabIndent + "}");
 				else
 					sw.WriteLine(" }");
-				skipParams = typeInfo.CommonFields;
+				commonFields = typeInfo.CommonFields;
 			}
+		}
+
+		private static bool IsDerivedName(string derived, string basename)
+		{
+			int left, right;
+			if (basename.Length >= derived.Length) return false;
+			for (left = 0; left < basename.Length; left++)
+				if (basename[left] != derived[left])
+					break;
+			if (left == 0) return false;
+			for (right = 1; left + right <= basename.Length; right++)
+				if (basename[^right] != derived[^right])
+					break;
+			return left + right > basename.Length;
 		}
 
 		private void WriteTypeAsEnum(StreamWriter sw, TypeInfo typeInfo)
@@ -397,9 +459,9 @@ namespace WTelegram
 				return typeInfo.ReturnName;
 			else
 			{	// try to find type in a lower layer
-				foreach (var layer in typeInfosByLayer.OrderByDescending(kvp => kvp.Key))
+				/*foreach (var layer in typeInfosByLayer.OrderByDescending(kvp => kvp.Key))
 					if (layer.Value.TryGetValue(type, out typeInfo))
-						return layer.Key == 0 ? typeInfo.ReturnName : $"Layer{layer.Key}.{typeInfo.ReturnName}";
+						return layer.Key == 0 ? typeInfo.ReturnName : $"Layer{layer.Key}.{typeInfo.ReturnName}";*/
 				return CSharpName(type);
 			}
 		}
@@ -584,6 +646,15 @@ namespace WTelegram
 			if (ctor.@params.Length < prefixParams.Count) return false;
 			for (int i = 0; i < prefixParams.Count; i++)
 				if (ctor.@params[i].name != prefixParams[i].name || ctor.@params[i].type != prefixParams[i].type)
+					return false;
+			return true;
+		}
+
+		private static bool HasSuffix(Constructor ctor, IList<Param> prefixParams)
+		{
+			if (ctor.@params.Length < prefixParams.Count) return false;
+			for (int i = 1; i <= prefixParams.Count; i++)
+				if (ctor.@params[^i].name != prefixParams[^i].name || ctor.@params[^i].type != prefixParams[^i].type)
 					return false;
 			return true;
 		}
