@@ -80,7 +80,6 @@ namespace WTelegramClientTest
 				case UpdateEditMessage uem: Console.Write("(Edit): "); DisplayMessage(uem.message); break;
 				case UpdateDeleteChannelMessages udcm: Console.WriteLine($"{udcm.messages.Length} message(s) deleted in {AChat(udcm.channel_id)}"); break;
 				case UpdateDeleteMessages udm: Console.WriteLine($"{udm.messages.Length} message(s) deleted"); break;
-				case UpdateEditChannelMessage uecm: Console.Write("(Edit): "); DisplayMessage(uecm.message); break;
 				case UpdateUserTyping uut: Console.WriteLine($"{AUser(uut.user_id)} is {uut.action.GetType().Name[11..^6]}"); break;
 				case UpdateChatUserTyping ucut: Console.WriteLine($"{APeer(ucut.from_id)} is {ucut.action.GetType().Name[11..^6]} in {AChat(ucut.chat_id)}"); break;
 				case UpdateChannelUserTyping ucut2: Console.WriteLine($"{APeer(ucut2.from_id)} is {ucut2.action.GetType().Name[11..^6]} in {AChat(ucut2.channel_id)}"); break;

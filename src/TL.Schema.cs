@@ -1491,9 +1491,8 @@ namespace TL
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChatUserTyping"/></summary>
 	[TLDef(0x83487AF0)]
-	public partial class UpdateChatUserTyping : Update
+	public partial class UpdateChatUserTyping : UpdateChat
 	{
-		public long chat_id;
 		public Peer from_id;
 		public SendMessageAction action;
 	}
@@ -1552,9 +1551,8 @@ namespace TL
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChatParticipantAdd"/></summary>
 	[TLDef(0x3DDA5451)]
-	public partial class UpdateChatParticipantAdd : Update
+	public partial class UpdateChatParticipantAdd : UpdateChat
 	{
-		public long chat_id;
 		public long user_id;
 		public long inviter_id;
 		public DateTime date;
@@ -1562,9 +1560,8 @@ namespace TL
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChatParticipantDelete"/></summary>
 	[TLDef(0xE32F3D77)]
-	public partial class UpdateChatParticipantDelete : Update
+	public partial class UpdateChatParticipantDelete : UpdateChat
 	{
-		public long chat_id;
 		public long user_id;
 		public int version;
 	}
@@ -1681,9 +1678,8 @@ namespace TL
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateChatParticipantAdmin"/></summary>
 	[TLDef(0xD7CA61A2)]
-	public partial class UpdateChatParticipantAdmin : Update
+	public partial class UpdateChatParticipantAdmin : UpdateChat
 	{
-		public long chat_id;
 		public long user_id;
 		public bool is_admin;
 		public int version;
@@ -1732,12 +1728,7 @@ namespace TL
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateEditChannelMessage"/></summary>
 	[TLDef(0x1B3F4DF7)]
-	public partial class UpdateEditChannelMessage : Update
-	{
-		public MessageBase message;
-		public int pts;
-		public int pts_count;
-	}
+	public partial class UpdateEditChannelMessage : UpdateEditMessage { }
 	///<summary>See <a href="https://core.telegram.org/constructor/updateBotCallbackQuery"/></summary>
 	[TLDef(0xB9CFC48D)]
 	public partial class UpdateBotCallbackQuery : Update

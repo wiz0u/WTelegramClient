@@ -231,9 +231,8 @@ namespace WTelegram
 			var genericType = typeInfo.ReturnName.Length == 1 ? $"<{typeInfo.ReturnName}>" : null;
 			bool needNewLine = true;
 			int commonFields = 0;
-			for (int i = 0; i < typeInfo.Structs.Count; i++)
+			foreach (var ctor in typeInfo.Structs)
 			{
-				var ctor = typeInfo.Structs[i];
 				if (ctor.layer != layer) continue;
 				int ctorId = ctor.ID;
 				string className = CSharpName(ctor.predicate) + genericType;
@@ -267,12 +266,12 @@ namespace WTelegram
 					}
 					else
 					{
-						for (int j = i - 1; j >= 0; j--)
+						foreach (var other in typeInfo.Structs)
 						{
-							var otherParams = typeInfo.Structs[j].@params;
+							if (other == ctor) continue;
+							var otherParams = other.@params;
 							if (otherParams.Length <= commonFields) continue;
-							var otherPredicate = typeInfo.Structs[j].predicate;
-							if (!IsDerivedName(ctor.predicate, otherPredicate)) continue;
+							if (!IsDerivedName(ctor.predicate, other.predicate)) continue;
 							if (HasPrefix(ctor, otherParams))
 							{
 								parms = ctor.@params.Skip(otherParams.Length).ToArray();
@@ -283,10 +282,9 @@ namespace WTelegram
 								parms = ctor.@params.Take(ctor.@params.Length - otherParams.Length).ToArray();
 								tldefReverse = ", inheritAfter = true";
 							}
-
 							else continue;
 							commonFields = otherParams.Length;
-							parentClass = CSharpName(otherPredicate) + genericType;
+							parentClass = CSharpName(other.predicate) + genericType;
 						}
 					}
 					if (currentJson != "TL.MTProto")
