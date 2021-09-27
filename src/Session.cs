@@ -88,12 +88,12 @@ namespace WTelegram
 			encryptor.TransformFinalBlock(finalBlock, 0, utf8Json.Length & 15).CopyTo(output.AsMemory(48 + utf8Json.Length & ~15));
 			if (!File.Exists(_pathname))
 				File.WriteAllBytes(_pathname, output);
-			else
-			{
-				string tempPathname = _pathname + ".tmp";
-				File.WriteAllBytes(tempPathname, output);
-				File.Replace(tempPathname, _pathname, null);
-			}
+			else lock (this)
+				{
+					string tempPathname = _pathname + ".tmp";
+					File.WriteAllBytes(tempPathname, output);
+					File.Replace(tempPathname, _pathname, null);
+				}
 		}
 
 		internal (long msgId, int seqno) NewMsg(bool isContent)
@@ -104,7 +104,6 @@ namespace WTelegram
 			lock (this)
 			{
 				if (msgId <= CurrentDCSession.LastSentMsgId) msgId = CurrentDCSession.LastSentMsgId += 4; else CurrentDCSession.LastSentMsgId = msgId;
-
 				seqno = isContent ? CurrentDCSession.Seqno++ * 2 + 1 : CurrentDCSession.Seqno * 2;
 				Save();
 			}
