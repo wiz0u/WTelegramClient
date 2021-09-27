@@ -231,11 +231,11 @@ namespace TL
 
 		internal static void WriteTLNull(this BinaryWriter writer, Type type)
 		{
-			if (!type.IsArray)
-				writer.Write(Layer.NullCtor);
+			if (type == typeof(string)) { }
+			else if (!type.IsArray) { writer.Write(Layer.NullCtor); return; }
 			else if (type != typeof(byte[]))
-				writer.Write(Layer.VectorCtor);
-			writer.Write(0);    // null arrays are serialized as empty
+				writer.Write(Layer.VectorCtor); // not raw bytes but a vector => needs a VectorCtor
+			writer.Write(0);    // null arrays/strings are serialized as empty
 		}
 
 		internal static ITLObject UnzipPacket(GzipPacked obj, WTelegram.Client client)

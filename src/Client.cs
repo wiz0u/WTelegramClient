@@ -201,7 +201,11 @@ namespace WTelegram
 			{
 				await Task.Delay(60000, ct);
 				if (_saltChangeCounter > 0) --_saltChangeCounter;
+#if DEBUG
+				await this.PingDelayDisconnect(ping_id++, 300);
+#else
 				await this.PingDelayDisconnect(ping_id++, 75);
+#endif
 			}
 		}
 
@@ -392,12 +396,12 @@ namespace WTelegram
 				{
 					using var clearStream = new MemoryStream(1024);
 					using var clearWriter = new BinaryWriter(clearStream, Encoding.UTF8);
-	#if MTPROTO1
+#if MTPROTO1
 					const int prepend = 0;
-	#else
+#else
 					const int prepend = 32;
 					clearWriter.Write(DCSession.AuthKey, 88, prepend);
-	#endif
+#endif
 					clearWriter.Write(DCSession.Salt);		// int64 salt
 					clearWriter.Write(_session.Id);			// int64 session_id
 					clearWriter.Write(msgId);				// int64 message_id
@@ -410,20 +414,20 @@ namespace WTelegram
 						Helpers.Log(1, $"Sending   {typeName,-50} {_session.MsgIdToStamp(msgId):u} (svc)");
 					int clearLength = (int)clearStream.Length - prepend;  // length before padding (= 32 + message_data_length)
 					int padding = (0x7FFFFFF0 - clearLength) % 16;
-	#if !MTPROTO1
+#if !MTPROTO1
 					padding += _random.Next(1, 64) * 16;		// MTProto 2.0 padding must be between 12..1024 with total length divisible by 16
-	#endif
+#endif
 					clearStream.SetLength(prepend + clearLength + padding);
 					byte[] clearBuffer = clearStream.GetBuffer();
 					BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(prepend + 28), clearLength - 32);    // patch message_data_length
 					RNG.GetBytes(clearBuffer, prepend + clearLength, padding);
-	#if MTPROTO1
+#if MTPROTO1
 					var msgKeyLarge = Sha1.ComputeHash(clearBuffer, 0, clearLength); // padding excluded from computation!
 					const int msgKeyOffset = 4;	// msg_key = low 128-bits of SHA1(plaintext)
-	#else
+#else
 					var msgKeyLarge = Sha256.ComputeHash(clearBuffer, 0, prepend + clearLength + padding);
 					const int msgKeyOffset = 8; // msg_key = middle 128-bits of SHA256(authkey_part+plaintext+padding)
-	#endif
+#endif
 					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(prepend, clearLength + padding), true, DCSession.AuthKey, msgKeyLarge, msgKeyOffset);
 
 					writer.Write(DCSession.AuthKeyID);				// int64 auth_key_id
@@ -807,7 +811,7 @@ namespace WTelegram
 			return user;
 		}
 
-		#region TL-Helpers
+#region TL-Helpers
 		/// <summary>Helper function to upload a file to Telegram</summary>
 		/// <returns>an <see cref="InputFile"/> or <see cref="InputFileBig"/> than can be used in various requests</returns>
 		public Task<InputFileBase> UploadFileAsync(string pathname)
@@ -923,10 +927,12 @@ namespace WTelegram
 		/// <summary>Download given photo from Telegram into the outputStream</summary>
 		/// <param name="outputStream">stream to write to. This method does not close/dispose the stream</param>
 		/// <param name="thumbSize">if specified, will download the given thumbnail instead of the full document</param>
-		public async Task<Storage_FileType> DownloadFileAsync(Document document, Stream outputStream, PhotoSizeBase thumbSize = null)
+		/// <returns>MIME type of the document or thumbnail</returns>
+		public async Task<string> DownloadFileAsync(Document document, Stream outputStream, PhotoSizeBase thumbSize = null)
 		{
 			var fileLocation = document.ToFileLocation(thumbSize);
-			return await DownloadFileAsync(fileLocation, outputStream, document.dc_id);
+			var fileType = await DownloadFileAsync(fileLocation, outputStream, document.dc_id);
+			return thumbSize == null ? document.mime_type : "image/" + fileType;
 		}
 
 		/// <summary>Download given file from Telegram into the outputStream</summary>
@@ -958,7 +964,7 @@ namespace WTelegram
 			}
 			return fileData.type;
 		}
-		#endregion
+#endregion
 
 		/// <summary>Enable the collection of id/access_hash pairs (experimental)</summary>
 		public bool CollectAccessHash { get; set; }
