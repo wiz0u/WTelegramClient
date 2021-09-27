@@ -241,7 +241,7 @@ namespace WTelegram
 						lock (_pendingRequests) // abort all pending requests
 						{
 							foreach (var (_, tcs) in _pendingRequests.Values)
-								_ = Task.Run(() => tcs.SetException(ex), default);
+								tcs.SetException(ex);
 							_pendingRequests.Clear();
 							_bareRequest = 0;
 						}
@@ -503,7 +503,7 @@ namespace WTelegram
 				result = reader.ReadTLValue(type);
 				if (type.IsEnum) result = Enum.ToObject(type, result);
 				Log(1, "");
-				Task.Run(() => tcs.SetResult(result)); // in Task.Run to avoid deadlock, see https://blog.stephencleary.com/2012/12/dont-block-in-asynchronous-code.html
+				tcs.SetResult(result);
 			}
 			else
 			{
@@ -537,7 +537,7 @@ namespace WTelegram
 		{
 			if (_bareRequest != 0) throw new ApplicationException("A bare request is already undergoing");
 			var msgId = await SendAsync(request, false);
-			var tcs = new TaskCompletionSource<object>();
+			var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 			lock (_pendingRequests)
 				_pendingRequests[msgId] = (typeof(X), tcs);
 			_bareRequest = msgId;
@@ -548,7 +548,7 @@ namespace WTelegram
 		{
 		retry:
 			var msgId = await SendAsync(request, true);
-			var tcs = new TaskCompletionSource<object>();
+			var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 			lock (_pendingRequests)
 				_pendingRequests[msgId] = (typeof(X), tcs);
 			var result = await tcs.Task;
@@ -660,11 +660,11 @@ namespace WTelegram
 				case BadMsgNotification badMsgNotification:
 					{
 						Helpers.Log(4, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
-						var (type, tcs) = PullPendingRequest(badMsgNotification.bad_msg_id);
+						var tcs = PullPendingRequest(badMsgNotification.bad_msg_id).tcs;
 						if (tcs != null)
 						{
 							if (_bareRequest == badMsgNotification.bad_msg_id) _bareRequest = 0;
-							_ = Task.Run(() => tcs.SetException(new ApplicationException($"BadMsgNotification {badMsgNotification.error_code}")));
+							tcs.SetException(new ApplicationException($"BadMsgNotification {badMsgNotification.error_code}"));
 						}
 						else
 							OnUpdate(obj);
@@ -677,7 +677,7 @@ namespace WTelegram
 						if (type?.IsAssignableFrom(obj.GetType()) == true)
 						{
 							_bareRequest = 0;
-							_ = Task.Run(() => tcs.SetResult(obj));
+							tcs.SetResult(obj);
 							break;
 						}
 					}
@@ -687,9 +687,9 @@ namespace WTelegram
 
 			void SetResult(long msgId, object result)
 			{
-				var (type, tcs) = PullPendingRequest(msgId);
+				var tcs = PullPendingRequest(msgId).tcs;
 				if (tcs != null)
-					_ = Task.Run(() => tcs.SetResult(result));
+					tcs.SetResult(result);
 				else
 					OnUpdate(obj);
 			}
@@ -924,7 +924,7 @@ namespace WTelegram
 			return await DownloadFileAsync(fileLocation, outputStream, photo.dc_id);
 		}
 
-		/// <summary>Download given photo from Telegram into the outputStream</summary>
+		/// <summary>Download given document from Telegram into the outputStream</summary>
 		/// <param name="outputStream">stream to write to. This method does not close/dispose the stream</param>
 		/// <param name="thumbSize">if specified, will download the given thumbnail instead of the full document</param>
 		/// <returns>MIME type of the document or thumbnail</returns>
