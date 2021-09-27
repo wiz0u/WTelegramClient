@@ -260,9 +260,9 @@ namespace TL
 	}
 
 	partial class Peer { public abstract long ID { get; }  }
-	partial class PeerUser { public override long ID => user_id; }
-	partial class PeerChat { public override long ID => chat_id; }
-	partial class PeerChannel { public override long ID => channel_id; }
+	partial class PeerUser { public override long ID => user_id; public override string ToString() => "user " + user_id; }
+	partial class PeerChat { public override long ID => chat_id; public override string ToString() => "chat " + chat_id; }
+	partial class PeerChannel { public override long ID => channel_id; public override string ToString() => "channel " + channel_id; }
 
 	partial class JsonObjectValue { public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }
 	partial class JsonNull { public override string ToString() => "null"; }

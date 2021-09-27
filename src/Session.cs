@@ -86,7 +86,14 @@ namespace WTelegram
 			encryptor.TransformBlock(utf8Json, 0, utf8Json.Length & ~15, output, 48);
 			utf8Json.AsSpan(utf8Json.Length & ~15).CopyTo(finalBlock);
 			encryptor.TransformFinalBlock(finalBlock, 0, utf8Json.Length & 15).CopyTo(output.AsMemory(48 + utf8Json.Length & ~15));
-			File.WriteAllBytes(_pathname, output);
+			if (!File.Exists(_pathname))
+				File.WriteAllBytes(_pathname, output);
+			else
+			{
+				string tempPathname = _pathname + ".tmp";
+				File.WriteAllBytes(tempPathname, output);
+				File.Replace(tempPathname, _pathname, null);
+			}
 		}
 
 		internal (long msgId, int seqno) NewMsg(bool isContent)
