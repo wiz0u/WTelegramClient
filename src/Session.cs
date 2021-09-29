@@ -35,6 +35,7 @@ namespace WTelegram
 		public DateTime SessionStart => _sessionStart;
 		public readonly SemaphoreSlim _sem = new(1);
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
+		private readonly SHA256 _sha256 = SHA256.Create();
 		private string _pathname;
 		private byte[] _apiHash;	// used as AES key for encryption of session file
 
@@ -69,10 +70,11 @@ namespace WTelegram
 		internal static Session Load(string pathname, byte[] apiHash)
 		{
 			var input = File.ReadAllBytes(pathname);
+			using var sha256 = SHA256.Create();
 			using var aes = Aes.Create();
 			using var decryptor = aes.CreateDecryptor(apiHash, input[0..16]);
 			var utf8Json = decryptor.TransformFinalBlock(input, 16, input.Length - 16);
-			if (!Encryption.Sha256.ComputeHash(utf8Json, 32, utf8Json.Length - 32).SequenceEqual(utf8Json[0..32]))
+			if (!sha256.ComputeHash(utf8Json, 32, utf8Json.Length - 32).SequenceEqual(utf8Json[0..32]))
 				throw new ApplicationException("Integrity check failed in session loading");
 			return JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), JsonOptions);
 		}
@@ -85,7 +87,7 @@ namespace WTelegram
 			Encryption.RNG.GetBytes(output, 0, 16);
 			using var aes = Aes.Create();
 			using var encryptor = aes.CreateEncryptor(_apiHash, output[0..16]);
-			encryptor.TransformBlock(Encryption.Sha256.ComputeHash(utf8Json), 0, 32, output, 16);
+			encryptor.TransformBlock(_sha256.ComputeHash(utf8Json), 0, 32, output, 16);
 			encryptor.TransformBlock(utf8Json, 0, utf8Json.Length & ~15, output, 48);
 			utf8Json.AsSpan(utf8Json.Length & ~15).CopyTo(finalBlock);
 			encryptor.TransformFinalBlock(finalBlock, 0, utf8Json.Length & 15).CopyTo(output.AsMemory(48 + utf8Json.Length & ~15));

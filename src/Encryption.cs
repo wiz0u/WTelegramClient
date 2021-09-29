@@ -15,18 +15,13 @@ namespace WTelegram
 	internal static class Encryption
 	{
 		internal static readonly RNGCryptoServiceProvider RNG = new();
-		internal static readonly SHA1 Sha1 = SHA1.Create();
-		internal static readonly SHA256 Sha256 = SHA256.Create();
-#if MTPROTO1
-		internal static readonly SHA1 Sha1Recv = SHA1.Create();
-#else
-		internal static readonly SHA256 Sha256Recv = SHA256.Create();
-#endif
 		private static readonly Dictionary<long, RSAPublicKey> PublicKeys = new();
 
 		internal static async Task CreateAuthorizationKey(Client client, Session.DCSession session)
 		{
 			if (PublicKeys.Count == 0) LoadDefaultPublicKeys();
+			var sha1 = SHA1.Create();
+			var sha256 = SHA256.Create();
 
 			//1)
 			var nonce = new Int128(RNG);
@@ -68,7 +63,7 @@ namespace WTelegram
 				if (clearLength > 255) throw new ApplicationException("PQInnerData too big");
 				byte[] clearBuffer = clearStream.GetBuffer();
 				RNG.GetBytes(clearBuffer, clearLength, 255 - clearLength);
-				Sha1.ComputeHash(clearBuffer, 20, clearLength - 20).CopyTo(clearBuffer, 0); // patch with SHA1
+				sha1.ComputeHash(clearBuffer, 20, clearLength - 20).CopyTo(clearBuffer, 0); // patch with SHA1
 				encrypted_data = BigInteger.ModPow(BigEndianInteger(clearBuffer), // encrypt with RSA key
 					BigEndianInteger(publicKey.e), BigEndianInteger(publicKey.n)).ToByteArray(true, true);
 #else
@@ -87,10 +82,10 @@ namespace WTelegram
 					if (clearLength > 144) throw new ApplicationException("PQInnerData too big");
 					byte[] clearBuffer = clearStream.GetBuffer();
 					RNG.GetBytes(clearBuffer, 32 + clearLength, 192 - clearLength);
-					Sha256.ComputeHash(clearBuffer, 0, 32 + 192).CopyTo(clearBuffer, 224); // append Sha256
+					sha256.ComputeHash(clearBuffer, 0, 32 + 192).CopyTo(clearBuffer, 224); // append Sha256
 					Array.Reverse(clearBuffer, 32, 192);
 					var aes_encrypted = AES_IGE_EncryptDecrypt(clearBuffer.AsSpan(32, 224), aes_key, zero_iv, true);
-					var hash_aes = Sha256.ComputeHash(aes_encrypted);
+					var hash_aes = sha256.ComputeHash(aes_encrypted);
 					for (int i = 0; i < 32; i++) // prefix aes_encrypted with temp_key_xor
 						clearBuffer[i] = (byte)(aes_key[i] ^ hash_aes[i]);
 					aes_encrypted.CopyTo(clearBuffer, 32);
@@ -115,7 +110,7 @@ namespace WTelegram
 			if (answerObj is not ServerDHInnerData serverDHinnerData) throw new ApplicationException("not server_DH_inner_data");
 			long padding = encryptedReader.BaseStream.Length - encryptedReader.BaseStream.Position;
 			if (padding >= 16) throw new ApplicationException("Too much pad");
-			if (!Enumerable.SequenceEqual(Sha1.ComputeHash(answer, 20, answer.Length - (int)padding - 20), answerHash))
+			if (!Enumerable.SequenceEqual(sha1.ComputeHash(answer, 20, answer.Length - (int)padding - 20), answerHash))
 				throw new ApplicationException("Answer SHA1 mismatch");
 			if (serverDHinnerData.nonce != nonce) throw new ApplicationException("Nonce mismatch");
 			if (serverDHinnerData.server_nonce != resPQ.server_nonce) throw new ApplicationException("Server Nonce mismatch");
@@ -147,7 +142,7 @@ namespace WTelegram
 				clearStream.SetLength(clearLength + paddingToAdd);
 				byte[] clearBuffer = clearStream.GetBuffer();
 				RNG.GetBytes(clearBuffer, clearLength, paddingToAdd);
-				Sha1.ComputeHash(clearBuffer, 20, clearLength - 20).CopyTo(clearBuffer, 0);
+				sha1.ComputeHash(clearBuffer, 20, clearLength - 20).CopyTo(clearBuffer, 0);
 
 				encrypted_data = AES_IGE_EncryptDecrypt(clearBuffer.AsSpan(0, clearLength + paddingToAdd), tmp_aes_key, tmp_aes_iv, true);
 			}
@@ -156,7 +151,7 @@ namespace WTelegram
 			var gab = BigInteger.ModPow(g_a, b, dh_prime);
 			var authKey = gab.ToByteArray(true, true);
 			//8)
-			var authKeyHash = Sha1.ComputeHash(authKey);
+			var authKeyHash = sha1.ComputeHash(authKey);
 			retry_id = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash); // (auth_key_aux_hash)
 			//9)
 			if (setClientDHparamsAnswer is not DhGenOk dhGenOk) throw new ApplicationException("not dh_gen_ok");
@@ -166,29 +161,29 @@ namespace WTelegram
 			pqInnerData.new_nonce.raw.CopyTo(expected_new_nonceN, 0);
 			expected_new_nonceN[32] = 1;
 			Array.Copy(authKeyHash, 0, expected_new_nonceN, 33, 8); // (auth_key_aux_hash)
-			if (!Enumerable.SequenceEqual(dhGenOk.new_nonce_hash1.raw, Sha1.ComputeHash(expected_new_nonceN).Skip(4)))
+			if (!Enumerable.SequenceEqual(dhGenOk.new_nonce_hash1.raw, sha1.ComputeHash(expected_new_nonceN).Skip(4)))
 				throw new ApplicationException("setClientDHparamsAnswer.new_nonce_hashN mismatch");
 
 			session.AuthKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
 			session.AuthKey = authKey;
 			session.Salt = BinaryPrimitives.ReadInt64LittleEndian(pqInnerData.new_nonce.raw) ^ BinaryPrimitives.ReadInt64LittleEndian(resPQ.server_nonce.raw);
 
-			static (byte[] key, byte[] iv) ConstructTmpAESKeyIV(Int128 server_nonce, Int256 new_nonce)
+			(byte[] key, byte[] iv) ConstructTmpAESKeyIV(Int128 server_nonce, Int256 new_nonce)
 			{
 				byte[] tmp_aes_key = new byte[32], tmp_aes_iv = new byte[32];
-				Sha1.Initialize();
-				Sha1.TransformBlock(new_nonce, 0, 32, null, 0);
-				Sha1.TransformFinalBlock(server_nonce, 0, 16);
-				Sha1.Hash.CopyTo(tmp_aes_key, 0);                   // tmp_aes_key := SHA1(new_nonce + server_nonce)
-				Sha1.Initialize();
-				Sha1.TransformBlock(server_nonce, 0, 16, null, 0);
-				Sha1.TransformFinalBlock(new_nonce, 0, 32);
-				Array.Copy(Sha1.Hash, 0, tmp_aes_key, 20, 12);      //              + SHA1(server_nonce, new_nonce)[0:12]
-				Array.Copy(Sha1.Hash, 12, tmp_aes_iv, 0, 8);        // tmp_aes_iv  != SHA1(server_nonce, new_nonce)[12:8]
-				Sha1.Initialize();
-				Sha1.TransformBlock(new_nonce, 0, 32, null, 0);
-				Sha1.TransformFinalBlock(new_nonce, 0, 32);
-				Sha1.Hash.CopyTo(tmp_aes_iv, 8);                    //              + SHA(new_nonce + new_nonce)
+				sha1.Initialize();
+				sha1.TransformBlock(new_nonce, 0, 32, null, 0);
+				sha1.TransformFinalBlock(server_nonce, 0, 16);
+				sha1.Hash.CopyTo(tmp_aes_key, 0);                   // tmp_aes_key := SHA1(new_nonce + server_nonce)
+				sha1.Initialize();
+				sha1.TransformBlock(server_nonce, 0, 16, null, 0);
+				sha1.TransformFinalBlock(new_nonce, 0, 32);
+				Array.Copy(sha1.Hash, 0, tmp_aes_key, 20, 12);      //              + SHA1(server_nonce, new_nonce)[0:12]
+				Array.Copy(sha1.Hash, 12, tmp_aes_iv, 0, 8);        // tmp_aes_iv  != SHA1(server_nonce, new_nonce)[12:8]
+				sha1.Initialize();
+				sha1.TransformBlock(new_nonce, 0, 32, null, 0);
+				sha1.TransformFinalBlock(new_nonce, 0, 32);
+				sha1.Hash.CopyTo(tmp_aes_iv, 8);                    //              + SHA(new_nonce + new_nonce)
 				Array.Copy(new_nonce, 0, tmp_aes_iv, 28, 4);        //              + new_nonce[0:4]
 				return (tmp_aes_key, tmp_aes_iv);
 			}
@@ -233,11 +228,12 @@ namespace WTelegram
 		public static void LoadPublicKey(string pem)
 		{
 			using var rsa = RSA.Create();
+			using var sha1 = SHA1.Create();
 			rsa.ImportFromPem(pem);
 			var rsaParam = rsa.ExportParameters(false);
 			var publicKey = new RSAPublicKey { n = rsaParam.Modulus, e = rsaParam.Exponent };
 			var bareData = publicKey.Serialize(); // bare serialization
-			var fingerprint = BinaryPrimitives.ReadInt64LittleEndian(Sha1.ComputeHash(bareData, 4, bareData.Length - 4).AsSpan(12)); // 64 lower-order bits of SHA1
+			var fingerprint = BinaryPrimitives.ReadInt64LittleEndian(sha1.ComputeHash(bareData, 4, bareData.Length - 4).AsSpan(12)); // 64 lower-order bits of SHA1
 			PublicKeys[fingerprint] = publicKey;
 			Helpers.Log(1, $"Loaded a public key with fingerprint {fingerprint:X}");
 		}
@@ -276,13 +272,12 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 #endif
 		}
 
-		internal static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, byte[] authKey, byte[] msgKey, int msgKeyOffset)
+#if MTPROTO1
+		internal static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, byte[] authKey, byte[] msgKey, int msgKeyOffset, SHA1 sha1)
 		{
 			// first, construct AES key & IV
 			byte[] aes_key = new byte[32], aes_iv = new byte[32];
 			int x = encrypt ? 0 : 8;
-#if MTPROTO1
-			var sha1 = encrypt ? Sha1 : Sha1Recv;
 			sha1.Initialize();
 			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
 			sha1.TransformFinalBlock(authKey, x, 32);                   // authKey[x:32]
@@ -307,8 +302,14 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			Array.Copy(sha1_b, 0, aes_iv, 12, 8);
 			Array.Copy(sha1_c, 16, aes_iv, 20, 4);
 			Array.Copy(sha1_d, 0, aes_iv, 24, 8);
+			return AES_IGE_EncryptDecrypt(input, aes_key, aes_iv, encrypt);
+		}
 #else
-			var sha256 = encrypt ? Sha256 : Sha256Recv;
+		internal static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, byte[] authKey, byte[] msgKey, int msgKeyOffset, SHA256 sha256)
+		{
+			// first, construct AES key & IV
+			byte[] aes_key = new byte[32], aes_iv = new byte[32];
+			int x = encrypt ? 0 : 8;
 			sha256.Initialize();
 			sha256.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);   // msgKey
 			sha256.TransformFinalBlock(authKey, x, 36);                 // authKey[x:36]
@@ -323,9 +324,9 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			Array.Copy(sha256_b, 0, aes_iv, 0, 8);
 			Array.Copy(sha256_a, 8, aes_iv, 8, 16);
 			Array.Copy(sha256_b, 24, aes_iv, 24, 8);
-#endif
 			return AES_IGE_EncryptDecrypt(input, aes_key, aes_iv, encrypt);
 		}
+#endif
 
 		private static byte[] AES_IGE_EncryptDecrypt(Span<byte> input, byte[] aes_key, byte[] aes_iv, bool encrypt)
 		{
@@ -372,32 +373,33 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			var g_256 = g.To256Bytes();
 			ValidityChecks(p, algo.g);
 
-			Sha256.Initialize();
-			Sha256.TransformBlock(algo.salt1, 0, algo.salt1.Length, null, 0);
-			Sha256.TransformBlock(passwordBytes, 0, passwordBytes.Length, null, 0);
-			Sha256.TransformFinalBlock(algo.salt1, 0, algo.salt1.Length);
-			var hash = Sha256.Hash;
-			Sha256.Initialize();
-			Sha256.TransformBlock(algo.salt2, 0, algo.salt2.Length, null, 0);
-			Sha256.TransformBlock(hash, 0, 32, null, 0);
-			Sha256.TransformFinalBlock(algo.salt2, 0, algo.salt2.Length);
-			hash = Sha256.Hash;
+			using var sha256 = SHA256.Create();
+			sha256.Initialize();
+			sha256.TransformBlock(algo.salt1, 0, algo.salt1.Length, null, 0);
+			sha256.TransformBlock(passwordBytes, 0, passwordBytes.Length, null, 0);
+			sha256.TransformFinalBlock(algo.salt1, 0, algo.salt1.Length);
+			var hash = sha256.Hash;
+			sha256.Initialize();
+			sha256.TransformBlock(algo.salt2, 0, algo.salt2.Length, null, 0);
+			sha256.TransformBlock(hash, 0, 32, null, 0);
+			sha256.TransformFinalBlock(algo.salt2, 0, algo.salt2.Length);
+			hash = sha256.Hash;
 #if NETCOREAPP2_0_OR_GREATER
 			using var derive = new Rfc2898DeriveBytes(hash, algo.salt1, 100000, HashAlgorithmName.SHA512);
 			var pbkdf2 = derive.GetBytes(64);
 #else
 			var pbkdf2 = PBKDF2_SHA512(hash, algo.salt1, 100000, 64);
 #endif
-			Sha256.Initialize();
-			Sha256.TransformBlock(algo.salt2, 0, algo.salt2.Length, null, 0);
-			Sha256.TransformBlock(pbkdf2, 0, 64, null, 0);
-			Sha256.TransformFinalBlock(algo.salt2, 0, algo.salt2.Length);
-			var x = BigEndianInteger(Sha256.Hash);
+			sha256.Initialize();
+			sha256.TransformBlock(algo.salt2, 0, algo.salt2.Length, null, 0);
+			sha256.TransformBlock(pbkdf2, 0, 64, null, 0);
+			sha256.TransformFinalBlock(algo.salt2, 0, algo.salt2.Length);
+			var x = BigEndianInteger(sha256.Hash);
 
-			Sha256.Initialize();
-			Sha256.TransformBlock(algo.p, 0, 256, null, 0);
-			Sha256.TransformFinalBlock(g_256, 0, 256);
-			var k = BigEndianInteger(Sha256.Hash);
+			sha256.Initialize();
+			sha256.TransformBlock(algo.p, 0, 256, null, 0);
+			sha256.TransformFinalBlock(g_256, 0, 256);
+			var k = BigEndianInteger(sha256.Hash);
 
 			var v = BigInteger.ModPow(g, x, p);
 			var k_v = (k * v) % p;
@@ -405,29 +407,29 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			var g_a = BigInteger.ModPow(g, a, p);
 			var g_a_256 = g_a.To256Bytes();
 
-			Sha256.Initialize();
-			Sha256.TransformBlock(g_a_256, 0, 256, null, 0);
-			Sha256.TransformFinalBlock(g_b_256, 0, 256);
-			var u = BigEndianInteger(Sha256.Hash);
+			sha256.Initialize();
+			sha256.TransformBlock(g_a_256, 0, 256, null, 0);
+			sha256.TransformFinalBlock(g_b_256, 0, 256);
+			var u = BigEndianInteger(sha256.Hash);
 
 			var t = (g_b - k_v) % p; //(positive modulo, if the result is negative increment by p)
 			if (t.Sign < 0) t += p;
 			var s_a = BigInteger.ModPow(t, a + u * x, p);
-			var k_a = Sha256.ComputeHash(s_a.To256Bytes());
+			var k_a = sha256.ComputeHash(s_a.To256Bytes());
 
-			hash = Sha256.ComputeHash(algo.p);
-			var h2 = Sha256.ComputeHash(g_256);
+			hash = sha256.ComputeHash(algo.p);
+			var h2 = sha256.ComputeHash(g_256);
 			for (int i = 0; i < 32; i++) hash[i] ^= h2[i];
-			var hs1 = Sha256.ComputeHash(algo.salt1);
-			var hs2 = Sha256.ComputeHash(algo.salt2);
-			Sha256.Initialize();
-			Sha256.TransformBlock(hash, 0, 32, null, 0);
-			Sha256.TransformBlock(hs1, 0, 32, null, 0);
-			Sha256.TransformBlock(hs2, 0, 32, null, 0);
-			Sha256.TransformBlock(g_a_256, 0, 256, null, 0);
-			Sha256.TransformBlock(g_b_256, 0, 256, null, 0);
-			Sha256.TransformFinalBlock(k_a, 0, 32);
-			var m1 = Sha256.Hash;
+			var hs1 = sha256.ComputeHash(algo.salt1);
+			var hs2 = sha256.ComputeHash(algo.salt2);
+			sha256.Initialize();
+			sha256.TransformBlock(hash, 0, 32, null, 0);
+			sha256.TransformBlock(hs1, 0, 32, null, 0);
+			sha256.TransformBlock(hs2, 0, 32, null, 0);
+			sha256.TransformBlock(g_a_256, 0, 256, null, 0);
+			sha256.TransformBlock(g_b_256, 0, 256, null, 0);
+			sha256.TransformFinalBlock(k_a, 0, 32);
+			var m1 = sha256.Hash;
 
 			return new InputCheckPasswordSRP { A = g_a_256, M1 = m1, srp_id = accountPassword.srp_id };
 		}

@@ -48,6 +48,13 @@ namespace WTelegram
 		private Task _connecting;
 		private CancellationTokenSource _cts;
 		private int _reactorReconnects = 0;
+#if MTPROTO1
+		private readonly SHA1 _sha1 = SHA1.Create();
+		private readonly SHA1 _sha1Recv = SHA1.Create();
+#else
+		private readonly SHA256 _sha256 = SHA256.Create();
+		private readonly SHA256 _sha256Recv = SHA256.Create();
+#endif
 
 		/// <summary>Welcome to WTelegramClient! 😀</summary>
 		/// <param name="configProvider">Config callback, is queried for: api_id, api_hash, session_pathname</param>
@@ -367,7 +374,11 @@ namespace WTelegram
 			}
 			else
 			{
-				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, dataLen - 24), false, _dcSession.AuthKey, data, 8);
+#if MTPROTO1
+				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, dataLen - 24), false, _dcSession.AuthKey, data, 8, _sha1Recv);
+#else
+				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, dataLen - 24), false, _dcSession.AuthKey, data, 8, _sha256Recv);
+#endif
 				if (decrypted_data.Length < 36) // header below+ctorNb
 					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
 				using var reader = new TL.BinaryReader(new MemoryStream(decrypted_data), this);
@@ -393,14 +404,14 @@ namespace WTelegram
 					return null;
 #if MTPROTO1
 				if (decrypted_data.Length - 32 - length is < 0 or > 15) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
-				if (!data.AsSpan(8, 16).SequenceEqual(Sha1Recv.ComputeHash(decrypted_data, 0, 32 + length).AsSpan(4)))
+				if (!data.AsSpan(8, 16).SequenceEqual(_sha1Recv.ComputeHash(decrypted_data, 0, 32 + length).AsSpan(4)))
 					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
 #else
 				if (decrypted_data.Length - 32 - length is < 12 or > 1024) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
-				Sha256Recv.Initialize();
-				Sha256Recv.TransformBlock(_dcSession.AuthKey, 96, 32, null, 0);
-				Sha256Recv.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
-				if (!data.AsSpan(8, 16).SequenceEqual(Sha256Recv.Hash.AsSpan(8, 16)))
+				_sha256Recv.Initialize();
+				_sha256Recv.TransformBlock(_dcSession.AuthKey, 96, 32, null, 0);
+				_sha256Recv.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
+				if (!data.AsSpan(8, 16).SequenceEqual(_sha256Recv.Hash.AsSpan(8, 16)))
 					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
 #endif
 				var ctorNb = reader.ReadUInt32();
@@ -497,13 +508,14 @@ namespace WTelegram
 					BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(prepend + 28), clearLength - 32);    // patch message_data_length
 					RNG.GetBytes(clearBuffer, prepend + clearLength, padding);
 #if MTPROTO1
-					var msgKeyLarge = Sha1.ComputeHash(clearBuffer, 0, clearLength); // padding excluded from computation!
+					var msgKeyLarge = _sha1.ComputeHash(clearBuffer, 0, clearLength); // padding excluded from computation!
 					const int msgKeyOffset = 4;	// msg_key = low 128-bits of SHA1(plaintext)
+					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(prepend, clearLength + padding), true, _dcSession.AuthKey, msgKeyLarge, msgKeyOffset, _sha1);
 #else
-					var msgKeyLarge = Sha256.ComputeHash(clearBuffer, 0, prepend + clearLength + padding);
+					var msgKeyLarge = _sha256.ComputeHash(clearBuffer, 0, prepend + clearLength + padding);
 					const int msgKeyOffset = 8; // msg_key = middle 128-bits of SHA256(authkey_part+plaintext+padding)
+					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(prepend, clearLength + padding), true, _dcSession.AuthKey, msgKeyLarge, msgKeyOffset, _sha256);
 #endif
-					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(prepend, clearLength + padding), true, _dcSession.AuthKey, msgKeyLarge, msgKeyOffset);
 
 					writer.Write(_dcSession.AuthKeyID);				// int64 auth_key_id
 					writer.Write(msgKeyLarge, msgKeyOffset, 16);	// int128 msg_key
