@@ -108,11 +108,11 @@ namespace WTelegram
 		public void Dispose()
 		{
 			Helpers.Log(2, $"{_dcSession.DcID}>Disposing the client");
-			Reset(IsMainDC);
+			Reset(false, IsMainDC);
 		}
 
-		// disconnect and eventually reset sessions (forget servers, current user)
-		public void Reset(bool resetSessions = true)
+		// disconnect and eventually forget user and disconnect other sessions
+		public void Reset(bool resetUser = true, bool resetSessions = true)
 		{
 			if (CheckMsgsToAck() is MsgsAck msgsAck)
 				SendAsync(MakeFunction(msgsAck), false).Wait(1000);
@@ -129,8 +129,9 @@ namespace WTelegram
 						altSession.Client.Dispose();
 						altSession.Client = null;
 					}
-				_session.User = null;
 			}
+			if (resetUser)
+				_session.User = null;
 		}
 
 		/// <summary>Establish connection to Telegram servers. Config callback is queried for: server_address</summary>
@@ -303,7 +304,7 @@ namespace WTelegram
 						if (_reactorReconnects != 0)
 						{
 							lock (_msgsToAck) _msgsToAck.Clear();
-							Reset(false);
+							Reset(false, false);
 							await Task.Delay(5000);
 							await ConnectAsync(); // start a new reactor after 5 secs
 							lock (_pendingRequests) // retry all pending requests
@@ -640,7 +641,7 @@ namespace WTelegram
 							Session.DCSession dcSession;
 							lock (_session)
 								dcSession = GetOrCreateDCSession(number);
-							Reset(false);
+							Reset(false, false);
 							_session.MainDC = number;
 							_dcSession.Client = null;
 							_dcSession = dcSession;
@@ -864,21 +865,36 @@ namespace WTelegram
 				_dcSession.UserId = 0;
 			}
 			phone_number ??= Config("phone_number");
-			var sentCode = await this.Auth_SendCode(phone_number, _apiId, _apiHash, settings ??= new());
-			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
-			var verification_code = Config("verification_code");
-			Auth_AuthorizationBase authorization;
+			Auth_SentCode sentCode;
 			try
 			{
-				authorization = await this.Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
+				sentCode = await this.Auth_SendCode(phone_number, _apiId, _apiHash, settings ??= new());
 			}
-			catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
+			catch (RpcException ex) when (ex.Code == 500 && ex.Message == "AUTH_RESTART")
 			{
-				var accountPassword = await this.Account_GetPassword();
-				Helpers.Log(3, $"This account has enabled 2FA. A password is needed. {accountPassword.hint}");
-				var checkPasswordSRP = Check2FA(accountPassword, Config("password"));
-				authorization = await this.Auth_CheckPassword(checkPasswordSRP);
+				sentCode = await this.Auth_SendCode(phone_number, _apiId, _apiHash, settings ??= new());
 			}
+			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
+			Auth_AuthorizationBase authorization;
+			for (int retry = 1; ; retry++)
+				try
+				{
+					var verification_code = Config("verification_code");
+					authorization = await this.Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
+					break;
+				}
+				catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
+				{
+					var accountPassword = await this.Account_GetPassword();
+					Helpers.Log(3, $"This account has enabled 2FA. A password is needed. {accountPassword.hint}");
+					var checkPasswordSRP = Check2FA(accountPassword, Config("password"));
+					authorization = await this.Auth_CheckPassword(checkPasswordSRP);
+					break;
+				}
+				catch (RpcException e) when (e.Code == 400 && e.Message == "PHONE_CODE_INVALID" && retry != 3)
+				{
+					continue;
+				}
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
 			{
 				var waitUntil = DateTime.UtcNow.AddSeconds(3);
