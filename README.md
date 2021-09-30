@@ -1,7 +1,7 @@
 ﻿[![NuGet version](https://img.shields.io/nuget/v/WTelegramClient)](https://www.nuget.org/packages/WTelegramClient/)
 [![Dev nuget](https://img.shields.io/badge/dynamic/json?color=ffc040&label=Dev%20nuget&query=%24.versions%5B0%5D&url=https%3A%2F%2Fpkgs.dev.azure.com%2Fwiz0u%2F81bd92b7-0bb9-4701-b426-09090b27e037%2F_packaging%2F46ce0497-7803-4bd4-8c6c-030583e7c371%2Fnuget%2Fv3%2Fflat2%2Fwtelegramclient%2Findex.json)](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
-[![API Layer](https://img.shields.io/badge/API_Layer-131-blueviolet)](https://schema.horner.tj)
+[![API Layer](https://img.shields.io/badge/API_Layer-133-blueviolet)](https://schema.horner.tj)
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 
 # <img src="logo.png" width="32"/> WTelegramClient
@@ -136,20 +136,13 @@ Here is a list of common issues and how to fix them so that your program work co
 6) Is every Telegram API call rejected? (typically with an exception message like `AUTH_RESTART`)
 <br/>The user authentification might have failed at some point (or the user revoked the authorization). It is therefore necessary to go through the authentification again. This can be done by deleting the WTelegram.session file, or at runtime by calling `client.Reset()`
 
-# Development status
-The library is usable for most scenarios including (sequential or parallel) automated steps based on API requests/responses, or real-time monitoring of incoming Updates/messages. Secret chats have not been tested yet.
+# Library uses and limitations
+This library can be used for any Telegram scenarios including:
+- Sequential or parallel automated steps based on API requests/responses
+- Real-time monitoring of incoming Updates/Messages
+- Download/upload of files/media
+- etc...
 
-Developers feedback are welcome in the Telegram channel [@WTelegramClient](https://t.me/WTelegramClient)
+Secret chats (end-to-end encryption, PFS) and connection to CDN DCs have not been tested yet.
 
-Here are the main expected developments:
-- [x] Encrypt session file
-- [x] Support SignUp of unregistered users
-- [x] Improve code Generator (import of TL-schema JSONs)
-- [x] Nuget deployment & public CI feed
-- [x] Convert API functions classes to real methods and serialize structures without using Reflection
-- [x] Separate background task for reading/handling update messages independently
-- [x] Support MTProto 2.0
-- [x] Support users with 2FA enabled
-- [x] Support main service messages
-- [x] Support older .NET Core/Frameworks
-- [ ] Support secret chats end-to-end encryption & PFS
+Developers feedbacks are welcome in the Telegram channel [@WTelegramClient](https://t.me/WTelegramClient)
