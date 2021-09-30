@@ -91,11 +91,11 @@ namespace TL
 
 	public enum DestroyAuthKeyRes : uint
 	{
-		///<summary>See <a href="https://core.telegram.org/constructor/destroy_auth_key_ok"/></summary>
+		///<summary>See <a href="https://corefork.telegram.org/constructor/destroy_auth_key_ok"/></summary>
 		Ok = 0xF660E1D4,
-		///<summary>See <a href="https://core.telegram.org/constructor/destroy_auth_key_none"/></summary>
+		///<summary>See <a href="https://corefork.telegram.org/constructor/destroy_auth_key_none"/></summary>
 		None = 0x0A9F2259,
-		///<summary>See <a href="https://core.telegram.org/constructor/destroy_auth_key_fail"/></summary>
+		///<summary>See <a href="https://corefork.telegram.org/constructor/destroy_auth_key_fail"/></summary>
 		Fail = 0xEA109B13,
 	}
 

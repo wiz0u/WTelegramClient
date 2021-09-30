@@ -131,7 +131,8 @@ namespace WTelegram
 				}
 				if (typeInfo.Structs.All(ctor => ctor.@params.Length == 0))
 					typeInfo.AsEnum = true;
-				var nullable = typeInfo.Structs.Where(c => c.predicate.EndsWith("Empty") || c.predicate.EndsWith("Unknown")).ToList();
+				var nullable = typeInfo.Structs.Where(c => c.predicate == "help.noAppUpdate" ||
+					c.predicate.EndsWith("Empty") || c.predicate.EndsWith("Unknown") || c.predicate.EndsWith("NotModified")).ToList();
 				if (nullable.Count == 1 && nullable[0].@params.Length == 0 && !typeInfo.AsEnum)
 				{
 					typeInfo.Nullable = nullable[0];
@@ -253,9 +254,9 @@ namespace WTelegram
 				if (ctorId == 0) // abstract parent
 				{
 					if (currentJson != "TL.MTProto")
-						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/type/{typeInfo.Structs[0].type}\"/></summary>");
+						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://corefork.telegram.org/type/{typeInfo.Structs[0].type}\"/></summary>");
 					if (typeInfo.Nullable != null)
-						sw.WriteLine($"{tabIndent}///<remarks>a <c>null</c> value means <a href=\"https://core.telegram.org/constructor/{typeInfo.Nullable.predicate}\">{typeInfo.Nullable.predicate}</a></remarks>");
+						sw.WriteLine($"{tabIndent}///<remarks>a <c>null</c> value means <a href=\"https://corefork.telegram.org/constructor/{typeInfo.Nullable.predicate}\">{typeInfo.Nullable.predicate}</a></remarks>");
 					if (typeInfo.AsEnum)
 					{
 						WriteTypeAsEnum(sw, typeInfo);
@@ -301,9 +302,9 @@ namespace WTelegram
 					}
 					if (currentJson != "TL.MTProto")
 					{
-						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/constructor/{ctor.predicate}\"/></summary>");
+						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://corefork.telegram.org/constructor/{ctor.predicate}\"/></summary>");
 						if (typeInfo.Nullable != null && ctor == typeInfo.MainClass)
-							sw.WriteLine($"{tabIndent}///<remarks>a <c>null</c> value means <a href=\"https://core.telegram.org/constructor/{typeInfo.Nullable.predicate}\">{typeInfo.Nullable.predicate}</a></remarks>");
+							sw.WriteLine($"{tabIndent}///<remarks>a <c>null</c> value means <a href=\"https://corefork.telegram.org/constructor/{typeInfo.Nullable.predicate}\">{typeInfo.Nullable.predicate}</a></remarks>");
 						sw.WriteLine($"{tabIndent}[TLDef(0x{ctor.ID:X8}{tldefReverse})]");
 					}
 					else
@@ -419,7 +420,7 @@ namespace WTelegram
 				if (!allTypes.Add(className)) continue;
 				if (lowercase) className = className.ToLowerInvariant();
 				ctorToTypes.Remove(ctor.ID);
-				sw.WriteLine($"{tabIndent}\t///<summary>See <a href=\"https://core.telegram.org/constructor/{ctor.predicate}\"/></summary>");
+				sw.WriteLine($"{tabIndent}\t///<summary>See <a href=\"https://corefork.telegram.org/constructor/{ctor.predicate}\"/></summary>");
 				sw.WriteLine($"{tabIndent}\t{className[prefixLen..]} = 0x{ctor.ID:X8},");
 			}
 			sw.WriteLine($"{tabIndent}}}");
@@ -515,7 +516,7 @@ namespace WTelegram
 			var callAsync = "CallAsync";
 			if (method.type.Length == 1 && style != 1) funcName += $"<{returnType}>";
 			if (currentJson != "TL.MTProto")
-				sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/method/{method.method}\"/></summary>");
+				sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://corefork.telegram.org/method/{method.method}\"/></summary>");
 			else
 			{
 				if (method.type is not "FutureSalts" and not "Pong") callAsync = "CallBareAsync";
