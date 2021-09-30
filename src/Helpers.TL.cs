@@ -6,14 +6,7 @@ using System.Web;
 
 namespace TL
 {
-	partial class InputChannel { public static InputPeerChannel Empty => new(); }
-	partial class InputDocument { public static InputDocumentEmpty Empty => new(); }
-	partial class InputPeer { public static InputPeerEmpty Empty => new(); }
 	partial class InputPeer { public static InputPeerSelf Self => new(); }
-	partial class InputPhoto { public static InputPhotoEmpty Empty => new(); }
-	partial class InputEncryptedFile { public static InputEncryptedFileEmpty Empty => new(); }
-	partial class InputStickerSet { public static InputStickerSetEmpty Empty => new(); }
-	partial class InputUser { public static InputUserEmpty Empty => new(); }
 	partial class InputUser { public static InputUserSelf Self => new(); }
 
 	partial class ChatBase
@@ -30,7 +23,7 @@ namespace TL
 		public override long ID => id;
 		public override string Title => null;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
-		protected override InputPeer ToInputPeer() => InputPeer.Empty;
+		protected override InputPeer ToInputPeer() => null;
 	}
 	partial class Chat
 	{
@@ -75,8 +68,8 @@ namespace TL
 	{
 		public override long ID => id;
 		public override string DisplayName => null;
-		protected override InputPeer ToInputPeer() => InputPeer.Empty;
-		protected override InputUserBase ToInputUser() => InputUser.Empty;
+		protected override InputPeer ToInputPeer() => null;
+		protected override InputUserBase ToInputUser() => null;
 	}
 	partial class User
 	{
@@ -114,19 +107,19 @@ namespace TL
 	partial class PhotoBase
 	{
 		public abstract long ID { get; }
-		protected abstract InputPhotoBase ToInputPhoto();
-		public static implicit operator InputPhotoBase(PhotoBase photo) => photo.ToInputPhoto();
+		protected abstract InputPhoto ToInputPhoto();
+		public static implicit operator InputPhoto(PhotoBase photo) => photo.ToInputPhoto();
 	}
 	partial class PhotoEmpty
 	{
 		public override long ID => id;
-		protected override InputPhotoBase ToInputPhoto() => InputPhoto.Empty;
+		protected override InputPhoto ToInputPhoto() => null;
 	}
 	partial class Photo
 	{
 		public override long ID => id;
 
-		protected override InputPhotoBase ToInputPhoto() => new InputPhoto() { id = id, access_hash = access_hash, file_reference = file_reference };
+		protected override InputPhoto ToInputPhoto() => new() { id = id, access_hash = access_hash, file_reference = file_reference };
 		public InputPhotoFileLocation ToFileLocation() => ToFileLocation(LargestPhotoSize);
 		public InputPhotoFileLocation ToFileLocation(PhotoSizeBase photoSize) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = photoSize.Type };
 		public PhotoSizeBase LargestPhotoSize => sizes.Aggregate((agg, next) => (long)next.Width * next.Height > (long)agg.Width * agg.Height ? next : agg);
@@ -202,33 +195,24 @@ namespace TL
 	partial class DocumentBase
 	{
 		public abstract long ID { get; }
-		protected abstract InputDocumentBase ToInputDocument();
-		public static implicit operator InputDocumentBase(DocumentBase document) => document.ToInputDocument();
+		protected abstract InputDocument ToInputDocument();
+		public static implicit operator InputDocument(DocumentBase document) => document.ToInputDocument();
 	}
 	partial class DocumentEmpty
 	{
 		public override long ID => id;
-		protected override InputDocumentBase ToInputDocument() => InputDocument.Empty;
+		protected override InputDocument ToInputDocument() => null;
 	}
 	partial class Document
 	{
 		public override long ID => id;
-		protected override InputDocumentBase ToInputDocument() => new InputDocument() { id = id, access_hash = access_hash, file_reference = file_reference };
+		protected override InputDocument ToInputDocument() => new() { id = id, access_hash = access_hash, file_reference = file_reference };
 		public InputDocumentFileLocation ToFileLocation(PhotoSizeBase thumbSize = null) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = thumbSize?.Type };
 	}
 
-	partial class EncryptedFileBase
-	{
-		protected abstract InputEncryptedFileBase ToInputEncryptedFile();
-		public static implicit operator InputEncryptedFileBase(EncryptedFileBase file) => file.ToInputEncryptedFile();
-	}
-	partial class EncryptedFileEmpty
-	{
-		protected override InputEncryptedFileBase ToInputEncryptedFile() => InputEncryptedFile.Empty;
-	}
 	partial class EncryptedFile
 	{
-		protected override InputEncryptedFileBase ToInputEncryptedFile() => new InputEncryptedFile { id = id, access_hash = access_hash };
+		public static implicit operator InputEncryptedFile(EncryptedFile file) => file == null ? null : new InputEncryptedFile { id = file.id, access_hash = file.access_hash };
 		public InputEncryptedFileLocation ToFileLocation() => new() { id = id, access_hash = access_hash };
 	}
 

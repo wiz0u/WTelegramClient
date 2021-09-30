@@ -29,9 +29,9 @@ namespace TL
 			return (T)reader.ReadTLObject();
 		}
 
-		internal static void WriteTLObject(this BinaryWriter writer, ITLObject obj)
+		internal static void WriteTLObject<T>(this BinaryWriter writer, T obj) where T : ITLObject
 		{
-			if (obj == null) { writer.Write(Layer.NullCtor); return; }
+			if (obj == null) { writer.WriteTLNull(typeof(T)); return; }
 			var type = obj.GetType();
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var ctorNb = tlDef.CtorNb;
@@ -44,10 +44,7 @@ namespace TL
 			{
 				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1 << ifFlag.Bit)) == 0) continue;
 				object value = field.GetValue(obj);
-				if (value == null)
-					writer.WriteTLNull(field.FieldType);
-				else
-					writer.WriteTLValue(value);
+				writer.WriteTLValue(value, field.FieldType);
 				if (field.Name.Equals("Flags", StringComparison.OrdinalIgnoreCase)) flags = (int)value;
 			}
 		}
@@ -55,9 +52,9 @@ namespace TL
 		internal static ITLObject ReadTLObject(this BinaryReader reader, uint ctorNb = 0)
 		{
 			if (ctorNb == 0) ctorNb = reader.ReadUInt32();
-			if (ctorNb == Layer.NullCtor) return null;
 			if (!Layer.Table.TryGetValue(ctorNb, out var type))
 				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
+			if (type == null) return null; // nullable ctor (class meaning is associated with null)
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var obj = Activator.CreateInstance(type);
 			IEnumerable<FieldInfo> fields = type.GetFields();
@@ -75,8 +72,13 @@ namespace TL
 			return type == typeof(GzipPacked) ? UnzipPacket((GzipPacked)obj, reader.Client) : (ITLObject)obj;
 		}
 
-		internal static void WriteTLValue(this BinaryWriter writer, object value)
+		internal static void WriteTLValue(this BinaryWriter writer, object value, Type valueType)
 		{
+			if (value == null)
+			{
+				writer.WriteTLNull(valueType);
+				return;
+			}
 			var type = value.GetType();
 			switch (Type.GetTypeCode(type))
 			{
@@ -153,8 +155,9 @@ namespace TL
 			if (array == null) { writer.Write(0); return; }
 			int count = array.Length;
 			writer.Write(count);
+			var elementType = array.GetType().GetElementType();
 			for (int i = 0; i < count; i++)
-				writer.WriteTLValue(array.GetValue(i));
+				writer.WriteTLValue(array.GetValue(i), elementType);
 		}
 
 		internal static Array ReadTLVector(this BinaryReader reader, Type type)
@@ -232,7 +235,11 @@ namespace TL
 		internal static void WriteTLNull(this BinaryWriter writer, Type type)
 		{
 			if (type == typeof(string)) { }
-			else if (!type.IsArray) { writer.Write(Layer.NullCtor); return; }
+			else if (!type.IsArray)
+			{
+				writer.Write(Layer.Nullables.TryGetValue(type, out uint nullCtor) ? nullCtor : Layer.NullCtor);
+				return;
+			}
 			else if (type != typeof(byte[]))
 				writer.Write(Layer.VectorCtor); // not raw bytes but a vector => needs a VectorCtor
 			writer.Write(0);    // null arrays/strings are serialized as empty

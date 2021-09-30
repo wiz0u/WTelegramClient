@@ -10,6 +10,7 @@ namespace TL
 	public abstract partial class DecryptedMessageBase : ITLObject { }
 
 	///<summary>See <a href="https://core.telegram.org/type/DecryptedMessageMedia"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/decryptedMessageMediaEmpty">decryptedMessageMediaEmpty</a></remarks>
 	public abstract partial class DecryptedMessageMedia : ITLObject { }
 
 	///<summary>See <a href="https://core.telegram.org/type/DecryptedMessageAction"/></summary>
@@ -38,9 +39,6 @@ namespace TL
 			public DecryptedMessageAction action;
 		}
 
-		///<summary>See <a href="https://core.telegram.org/constructor/decryptedMessageMediaEmpty"/></summary>
-		[TLDef(0x089F5C4A)]
-		public partial class DecryptedMessageMediaEmpty : DecryptedMessageMedia { }
 		///<summary>See <a href="https://core.telegram.org/constructor/decryptedMessageMediaPhoto"/></summary>
 		[TLDef(0x32798A8C)]
 		public partial class DecryptedMessageMediaPhoto : DecryptedMessageMedia

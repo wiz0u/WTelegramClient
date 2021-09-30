@@ -113,6 +113,7 @@ namespace WTelegram
 				ctorToTypes[ctor.ID] = ctor.layer == 0 ? structName : $"Layer{ctor.layer}.{structName}";
 				var typeInfo = typeInfos.GetOrCreate(ctor.type);
 				if (ctor.ID == 0x5BB8E511) { ctorToTypes[ctor.ID] = structName = ctor.predicate = ctor.type = "_Message"; }
+				else if (ctor.ID == TL.Layer.NullCtor) { ctorToTypes[ctor.ID] += "=null"; typeInfo.Nullable = ctor; }
 				if (typeInfo.ReturnName == null) typeInfo.ReturnName = CSharpName(ctor.type);
 				typeInfo.Structs.Add(ctor);
 				if (structName == typeInfo.ReturnName) typeInfo.MainClass = ctor;
@@ -127,6 +128,15 @@ namespace WTelegram
 						typeInfo.MainClass = existingType.MainClass;
 					}
 					continue;
+				}
+				if (typeInfo.Structs.All(ctor => ctor.@params.Length == 0))
+					typeInfo.AsEnum = true;
+				var nullable = typeInfo.Structs.Where(c => c.predicate.EndsWith("Empty") || c.predicate.EndsWith("Unknown")).ToList();
+				if (nullable.Count == 1 && nullable[0].@params.Length == 0 && !typeInfo.AsEnum)
+				{
+					typeInfo.Nullable = nullable[0];
+					typeInfo.Structs.Remove(typeInfo.Nullable);
+					ctorToTypes[typeInfo.Nullable.ID] += "=null";
 				}
 				if (typeInfo.MainClass == null)
 				{
@@ -240,11 +250,13 @@ namespace WTelegram
 				if (needNewLine) { needNewLine = false; sw.WriteLine(); }
 				var parentClass = ctor == typeInfo.MainClass ? "ITLObject" : typeInfo.ReturnName;
 				var parms = ctor.@params;
-				if (ctorId == 0)
+				if (ctorId == 0) // abstract parent
 				{
 					if (currentJson != "TL.MTProto")
 						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/type/{typeInfo.Structs[0].type}\"/></summary>");
-					if (typeInfo.Structs.All(ctor => ctor.@params.Length == 0))
+					if (typeInfo.Nullable != null)
+						sw.WriteLine($"{tabIndent}///<remarks>a <c>null</c> value means <a href=\"https://core.telegram.org/constructor/{typeInfo.Nullable.predicate}\">{typeInfo.Nullable.predicate}</a></remarks>");
+					if (typeInfo.AsEnum)
 					{
 						WriteTypeAsEnum(sw, typeInfo);
 						return;
@@ -290,6 +302,8 @@ namespace WTelegram
 					if (currentJson != "TL.MTProto")
 					{
 						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://core.telegram.org/constructor/{ctor.predicate}\"/></summary>");
+						if (typeInfo.Nullable != null && ctor == typeInfo.MainClass)
+							sw.WriteLine($"{tabIndent}///<remarks>a <c>null</c> value means <a href=\"https://core.telegram.org/constructor/{typeInfo.Nullable.predicate}\">{typeInfo.Nullable.predicate}</a></remarks>");
 						sw.WriteLine($"{tabIndent}[TLDef(0x{ctor.ID:X8}{tldefReverse})]");
 					}
 					else
@@ -610,8 +624,10 @@ namespace WTelegram
 
 		void UpdateTable(string tableCs)
 		{
+			int tableId = 0;
 			var myTag = $"\t\t\t// from {currentJson}:";
 			var seen_ids = new HashSet<int>();
+			var seen_nullables = new HashSet<string>();
 			using (var sr = new StreamReader(tableCs))
 			using (var sw = new StreamWriter(tableCs + ".new", false, Encoding.UTF8))
 			{
@@ -624,9 +640,22 @@ namespace WTelegram
 						sw.WriteLine(line);
 					if (line == myTag)
 					{
-						foreach (var ctor in ctorToTypes)
-							if (seen_ids.Add(ctor.Key))
-								sw.WriteLine($"\t\t\t[0x{ctor.Key:X8}] = typeof({ctor.Value}),");
+						switch (++tableId)
+						{
+							case 1:
+								foreach (var ctor in ctorToTypes)
+									if (seen_ids.Add(ctor.Key))
+										if (ctor.Value.EndsWith("=null"))
+											sw.WriteLine($"\t\t\t[0x{ctor.Key:X8}] = null,//{ctor.Value[..^5]}");
+										else
+											sw.WriteLine($"\t\t\t[0x{ctor.Key:X8}] = typeof({ctor.Value}),");
+								break;
+							case 2:
+								foreach (var typeInfo in typeInfos.Values)
+									if (typeInfo.Nullable != null && seen_nullables.Add(typeInfo.ReturnName))
+										sw.WriteLine($"\t\t\t[typeof({typeInfo.ReturnName})]{new string(' ', 30 - typeInfo.ReturnName.Length)} = 0x{typeInfo.Nullable.ID:X8}, //{typeInfo.Nullable.predicate}");
+								break;
+						}
 						while ((line = sr.ReadLine()) != null)
 							if (line.StartsWith("\t\t\t// "))
 								break;
@@ -634,6 +663,8 @@ namespace WTelegram
 					}
 					else if (line.StartsWith("\t\t\t[0x"))
 						seen_ids.Add(int.Parse(line[6..14], System.Globalization.NumberStyles.HexNumber));
+					else if (line.StartsWith("\t\t\t[typeof("))
+						seen_nullables.Add(line[11..line.IndexOf(')')]);
 				}
 			}
 			File.Replace(tableCs + ".new", tableCs, null);
@@ -672,8 +703,10 @@ namespace WTelegram
 		{
 			public string ReturnName;
 			public Constructor MainClass;
+			public Constructor Nullable;
 			public List<Constructor> Structs = new();
 			internal int CommonFields; // n fields are common among all those classes
+			internal bool AsEnum;
 		}
 
 #pragma warning disable IDE1006 // Naming Styles

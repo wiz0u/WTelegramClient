@@ -61,22 +61,22 @@ namespace TL
 			// from TL.Schema:
 			[0x3FEDD339] = typeof(True),
 			[0xC4B9F9BB] = typeof(Error),
-			[0x56730BCC] = typeof(Null),
-			[0x7F3B18EA] = typeof(InputPeerEmpty),
+			[0x56730BCC] = null,//Null
+			[0x7F3B18EA] = null,//InputPeerEmpty
 			[0x7DA07EC9] = typeof(InputPeerSelf),
 			[0x35A95CB9] = typeof(InputPeerChat),
 			[0xDDE8A54C] = typeof(InputPeerUser),
 			[0x27BCBBFC] = typeof(InputPeerChannel),
 			[0xA87B0A1C] = typeof(InputPeerUserFromMessage),
 			[0xBD2A0840] = typeof(InputPeerChannelFromMessage),
-			[0xB98886CF] = typeof(InputUserEmpty),
+			[0xB98886CF] = null,//InputUserEmpty
 			[0xF7C1B13F] = typeof(InputUserSelf),
 			[0xF21158C6] = typeof(InputUser),
 			[0x1DA448E2] = typeof(InputUserFromMessage),
 			[0xF392B7F4] = typeof(InputPhoneContact),
 			[0xF52FF27F] = typeof(InputFile),
 			[0xFA4F0BB5] = typeof(InputFileBig),
-			[0x9664F57F] = typeof(InputMediaEmpty),
+			[0x9664F57F] = null,//InputMediaEmpty
 			[0x1E287D04] = typeof(InputMediaUploadedPhoto),
 			[0xB3BA0635] = typeof(InputMediaPhoto),
 			[0xF9C44144] = typeof(InputMediaGeoPoint),
@@ -91,12 +91,12 @@ namespace TL
 			[0x971FA843] = typeof(InputMediaGeoLive),
 			[0x0F94E5F1] = typeof(InputMediaPoll),
 			[0xE66FBF7B] = typeof(InputMediaDice),
-			[0x1CA48F57] = typeof(InputChatPhotoEmpty),
+			[0x1CA48F57] = null,//InputChatPhotoEmpty
 			[0xC642724E] = typeof(InputChatUploadedPhoto),
 			[0x8953AD37] = typeof(InputChatPhoto),
-			[0xE4C123D6] = typeof(InputGeoPointEmpty),
+			[0xE4C123D6] = null,//InputGeoPointEmpty
 			[0x48222FAF] = typeof(InputGeoPoint),
-			[0x1CD7BF0D] = typeof(InputPhotoEmpty),
+			[0x1CD7BF0D] = null,//InputPhotoEmpty
 			[0x3BB3B94A] = typeof(InputPhoto),
 			[0xDFDAABE1] = typeof(InputFileLocation),
 			[0xF5235D55] = typeof(InputEncryptedFileLocation),
@@ -113,9 +113,9 @@ namespace TL
 			[0xA2A5371E] = typeof(PeerChannel),
 			[0xD3BC4B7A] = typeof(UserEmpty),
 			[0x3FF6ECB0] = typeof(User),
-			[0x4F11BAE1] = typeof(UserProfilePhotoEmpty),
+			[0x4F11BAE1] = null,//UserProfilePhotoEmpty
 			[0x82D1F706] = typeof(UserProfilePhoto),
-			[0x09D05049] = typeof(UserStatusEmpty),
+			[0x09D05049] = null,//UserStatusEmpty
 			[0xEDB93949] = typeof(UserStatusOnline),
 			[0x008C703F] = typeof(UserStatusOffline),
 			[0xE26F42F1] = typeof(UserStatusRecently),
@@ -133,12 +133,12 @@ namespace TL
 			[0xA0933F5B] = typeof(ChatParticipantAdmin),
 			[0x8763D3E1] = typeof(ChatParticipantsForbidden),
 			[0x3CBC93F8] = typeof(ChatParticipants),
-			[0x37C1011C] = typeof(ChatPhotoEmpty),
+			[0x37C1011C] = null,//ChatPhotoEmpty
 			[0x1C6E1C11] = typeof(ChatPhoto),
 			[0x90A6CA84] = typeof(MessageEmpty),
 			[0x85D6CBE2] = typeof(Message),
 			[0x2B085862] = typeof(MessageService),
-			[0x3DED6320] = typeof(MessageMediaEmpty),
+			[0x3DED6320] = null,//MessageMediaEmpty
 			[0x695150D7] = typeof(MessageMediaPhoto),
 			[0x56E0D474] = typeof(MessageMediaGeo),
 			[0x70322949] = typeof(MessageMediaContact),
@@ -151,7 +151,7 @@ namespace TL
 			[0xB940C666] = typeof(MessageMediaGeoLive),
 			[0x4BD6E798] = typeof(MessageMediaPoll),
 			[0x3F7EE58B] = typeof(MessageMediaDice),
-			[0xB6AEF7B0] = typeof(MessageActionEmpty),
+			[0xB6AEF7B0] = null,//MessageActionEmpty
 			[0xBD47CBAD] = typeof(MessageActionChatCreate),
 			[0xB5A1CE5A] = typeof(MessageActionChatEditTitle),
 			[0x7FCB13A8] = typeof(MessageActionChatEditPhoto),
@@ -190,7 +190,7 @@ namespace TL
 			[0xE0B0BC2E] = typeof(PhotoStrippedSize),
 			[0xFA3EFB95] = typeof(PhotoSizeProgressive),
 			[0xD8214D41] = typeof(PhotoPathSize),
-			[0x1117DD5F] = typeof(GeoPointEmpty),
+			[0x1117DD5F] = null,//GeoPointEmpty
 			[0xB2A2F663] = typeof(GeoPoint),
 			[0x5E002502] = typeof(Auth_SentCode),
 			[0xCD050916] = typeof(Auth_Authorization),
@@ -225,7 +225,7 @@ namespace TL
 			[0x9CD81144] = typeof(Messages_ChatsSlice),
 			[0xE5D7D19C] = typeof(Messages_ChatFull),
 			[0xB45C69D1] = typeof(Messages_AffectedHistory),
-			[0x57E2F66C] = typeof(InputMessagesFilterEmpty),
+			[0x57E2F66C] = null,//InputMessagesFilterEmpty
 			[0x9609A51C] = typeof(InputMessagesFilterPhotos),
 			[0x9FC00E65] = typeof(InputMessagesFilterVideo),
 			[0x56E9F0E4] = typeof(InputMessagesFilterPhotoVideo),
@@ -364,9 +364,9 @@ namespace TL
 			[0x61F0D4C7] = typeof(EncryptedChat),
 			[0x1E1C7C45] = typeof(EncryptedChatDiscarded),
 			[0xF141B5E1] = typeof(InputEncryptedChat),
-			[0xC21F497E] = typeof(EncryptedFileEmpty),
+			[0xC21F497E] = null,//EncryptedFileEmpty
 			[0x4A70994C] = typeof(EncryptedFile),
-			[0x1837C364] = typeof(InputEncryptedFileEmpty),
+			[0x1837C364] = null,//InputEncryptedFileEmpty
 			[0x64BD0306] = typeof(InputEncryptedFileUploaded),
 			[0x5A17B5E5] = typeof(InputEncryptedFile),
 			[0x2DC173C8] = typeof(InputEncryptedFileBigUploaded),
@@ -376,7 +376,7 @@ namespace TL
 			[0x2C221EDD] = typeof(Messages_DhConfig),
 			[0x560F8935] = typeof(Messages_SentEncryptedMessage),
 			[0x9493FF32] = typeof(Messages_SentEncryptedFile),
-			[0x72F0EAAE] = typeof(InputDocumentEmpty),
+			[0x72F0EAAE] = null,//InputDocumentEmpty
 			[0x1ABFB575] = typeof(InputDocument),
 			[0x36F8C871] = typeof(DocumentEmpty),
 			[0x1E87342B] = typeof(Document),
@@ -450,7 +450,7 @@ namespace TL
 			[0x5A686D7C] = typeof(ChatInviteAlready),
 			[0xDFC2F58E] = typeof(ChatInvite),
 			[0x61695CB0] = typeof(ChatInvitePeek),
-			[0xFFB62B95] = typeof(InputStickerSetEmpty),
+			[0xFFB62B95] = null,//InputStickerSetEmpty
 			[0x9DE7A269] = typeof(InputStickerSetID),
 			[0x861CC8A0] = typeof(InputStickerSetShortName),
 			[0x028703C8] = typeof(InputStickerSetAnimatedEmoji),
@@ -494,7 +494,7 @@ namespace TL
 			[0xBF0693D4] = typeof(MessageEntityStrike),
 			[0x020DF5D0] = typeof(MessageEntityBlockquote),
 			[0x761E6AF4] = typeof(MessageEntityBankCard),
-			[0xEE8C1E86] = typeof(InputChannelEmpty),
+			[0xEE8C1E86] = null,//InputChannelEmpty
 			[0xF35AEC28] = typeof(InputChannel),
 			[0x5B934F9D] = typeof(InputChannelFromMessage),
 			[0x7F077AD9] = typeof(Contacts_ResolvedPeer),
@@ -502,7 +502,7 @@ namespace TL
 			[0x3E11AFFB] = typeof(Updates_ChannelDifferenceEmpty),
 			[0xA4BCC6FE] = typeof(Updates_ChannelDifferenceTooLong),
 			[0x2064674E] = typeof(Updates_ChannelDifference),
-			[0x94D42EE7] = typeof(ChannelMessagesFilterEmpty),
+			[0x94D42EE7] = null,//ChannelMessagesFilterEmpty
 			[0xCD77D957] = typeof(ChannelMessagesFilter),
 			[0xC00C07C0] = typeof(ChannelParticipant),
 			[0x28A8BC67] = typeof(ChannelParticipantSelf),
@@ -580,7 +580,7 @@ namespace TL
 			[0xC331E80A] = typeof(InputGameShortName),
 			[0x73A379EB] = typeof(HighScore),
 			[0x9A3BFD99] = typeof(Messages_HighScores),
-			[0xDC3D824F] = typeof(TextEmpty),
+			[0xDC3D824F] = null,//TextEmpty
 			[0x744694E0] = typeof(TextPlain),
 			[0x6724ABC4] = typeof(TextBold),
 			[0xD912A59C] = typeof(TextItalic),
@@ -735,7 +735,7 @@ namespace TL
 			[0x28ECF961] = typeof(Help_TermsOfServiceUpdate),
 			[0x3334B0F0] = typeof(InputSecureFileUploaded),
 			[0x5367E5BE] = typeof(InputSecureFile),
-			[0x64199744] = typeof(SecureFileEmpty),
+			[0x64199744] = null,//SecureFileEmpty
 			[0xE0277A62] = typeof(SecureFile),
 			[0x8AEABEC3] = typeof(SecureData),
 			[0x7D6099DD] = typeof(SecurePlainPhone),
@@ -755,17 +755,17 @@ namespace TL
 			[0x33F0EA47] = typeof(SecureCredentialsEncrypted),
 			[0xAD2E1CD8] = typeof(Account_AuthorizationForm),
 			[0x811F854F] = typeof(Account_SentEmailCode),
-			[0x66AFA166] = typeof(Help_DeepLinkInfoEmpty),
+			[0x66AFA166] = null,//Help_DeepLinkInfoEmpty
 			[0x6A4EE832] = typeof(Help_DeepLinkInfo),
 			[0x1142BD56] = typeof(SavedPhoneContact),
 			[0x4DBA4501] = typeof(Account_Takeout),
-			[0xD45AB096] = typeof(PasswordKdfAlgoUnknown),
+			[0xD45AB096] = null,//PasswordKdfAlgoUnknown
 			[0x3A912D4A] = typeof(PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow),
-			[0x004A8537] = typeof(SecurePasswordKdfAlgoUnknown),
+			[0x004A8537] = null,//SecurePasswordKdfAlgoUnknown
 			[0xBBF2DDA0] = typeof(SecurePasswordKdfAlgoPBKDF2HMACSHA512iter100000),
 			[0x86471D92] = typeof(SecurePasswordKdfAlgoSHA512),
 			[0x1527BCAC] = typeof(SecureSecretSettings),
-			[0x9880F658] = typeof(InputCheckPasswordEmpty),
+			[0x9880F658] = null,//InputCheckPasswordEmpty
 			[0xD27FF082] = typeof(InputCheckPasswordSRP),
 			[0x829D99DA] = typeof(SecureRequiredType),
 			[0x027477B4] = typeof(SecureRequiredTypeOneOf),
@@ -789,7 +789,7 @@ namespace TL
 			[0xB390DC08] = typeof(PageRelatedArticle),
 			[0x98657F0D] = typeof(Page),
 			[0x8C05F1C9] = typeof(Help_SupportName),
-			[0xF3AE2EED] = typeof(Help_UserInfoEmpty),
+			[0xF3AE2EED] = null,//Help_UserInfoEmpty
 			[0x01EB3758] = typeof(Help_UserInfo),
 			[0x6CA9C2E9] = typeof(PollAnswer),
 			[0x86E18161] = typeof(Poll),
@@ -820,7 +820,7 @@ namespace TL
 			[0x92D33A0E] = typeof(UrlAuthResultRequest),
 			[0x8F8C0E4E] = typeof(UrlAuthResultAccepted),
 			[0xA9D6DB1F] = typeof(UrlAuthResultDefault),
-			[0xBFB5AD8B] = typeof(ChannelLocationEmpty),
+			[0xBFB5AD8B] = null,//ChannelLocationEmpty
 			[0x209B82DB] = typeof(ChannelLocation),
 			[0xCA461B5D] = typeof(PeerLocated),
 			[0xF8EC284B] = typeof(PeerSelfLocated),
@@ -911,23 +911,18 @@ namespace TL
 			[0x2A3C381F] = typeof(SponsoredMessage),
 			[0x65A4C7D5] = typeof(Messages_SponsoredMessages),
 			// from TL.Secret:
-			[0x91CC4674] = typeof(Layer73.DecryptedMessage),
 			[0xBB718624] = typeof(Layer66.SendMessageUploadRoundAction),
 			[0xE50511D8] = typeof(Layer45.DecryptedMessageMediaWebPage),
 			[0x8A0DF56F] = typeof(Layer45.DecryptedMessageMediaVenue),
-			[0xDED218E0] = typeof(Layer45.DocumentAttributeAudio),
-			[0x3A556302] = typeof(Layer45.DocumentAttributeSticker),
-			[0x7AFE8AE2] = typeof(Layer45.DecryptedMessageMediaDocument),
-			[0x970C8C0E] = typeof(Layer45.DecryptedMessageMediaVideo),
-			[0xF1FA8D78] = typeof(Layer45.DecryptedMessageMediaPhoto),
-			[0x36B091DE] = typeof(Layer45.DecryptedMessage),
 			[0xFA95B0DD] = typeof(Layer23.DecryptedMessageMediaExternalDocument),
 			[0x53D69076] = typeof(Layer23.FileLocation),
 			[0x7C596B46] = typeof(Layer23.FileLocationUnavailable),
 			[0xE9A734FA] = typeof(Layer23.PhotoCachedSize),
 			[0x77BFB61B] = typeof(Layer23.PhotoSize),
+			[0xDED218E0] = typeof(Layer45.DocumentAttributeAudio),
 			[0x051448E5] = typeof(Layer23.DocumentAttributeAudio),
 			[0x5910CCCB] = typeof(Layer23.DocumentAttributeVideo),
+			[0x3A556302] = typeof(Layer45.DocumentAttributeSticker),
 			[0xFB0A5727] = typeof(Layer23.DocumentAttributeSticker),
 			[0xA82FDD63] = typeof(Layer20.DecryptedMessageActionNoop),
 			[0xEC2E0B9B] = typeof(Layer20.DecryptedMessageActionCommitKey),
@@ -942,24 +937,66 @@ namespace TL
 			[0xE6AC8A6F] = typeof(Layer17.SendMessageUploadAudioAction),
 			[0x92042FF7] = typeof(Layer17.SendMessageUploadVideoAction),
 			[0x1BE31789] = typeof(Layer17.DecryptedMessageLayer),
-			[0x57E0A9CB] = typeof(Layer17.DecryptedMessageMediaAudio),
-			[0x524A415D] = typeof(Layer17.DecryptedMessageMediaVideo),
-			[0x73164160] = typeof(Layer17.DecryptedMessageService),
-			[0x204D3878] = typeof(Layer17.DecryptedMessage),
 			[0x6719E45C] = typeof(Layer8.DecryptedMessageActionFlushHistory),
 			[0x8AC1F475] = typeof(Layer8.DecryptedMessageActionScreenshotMessages),
 			[0x65614304] = typeof(Layer8.DecryptedMessageActionDeleteMessages),
 			[0x0C4F40BE] = typeof(Layer8.DecryptedMessageActionReadMessages),
+			[0x57E0A9CB] = typeof(Layer17.DecryptedMessageMediaAudio),
 			[0x6080758F] = typeof(Layer8.DecryptedMessageMediaAudio),
+			[0x7AFE8AE2] = typeof(Layer45.DecryptedMessageMediaDocument),
 			[0xB095434B] = typeof(Layer8.DecryptedMessageMediaDocument),
 			[0xA1733AEC] = typeof(Layer8.DecryptedMessageActionSetMessageTTL),
 			[0x588A0A97] = typeof(Layer8.DecryptedMessageMediaContact),
 			[0x35480A59] = typeof(Layer8.DecryptedMessageMediaGeoPoint),
+			[0x970C8C0E] = typeof(Layer45.DecryptedMessageMediaVideo),
+			[0x524A415D] = typeof(Layer17.DecryptedMessageMediaVideo),
 			[0x4CEE6EF3] = typeof(Layer8.DecryptedMessageMediaVideo),
+			[0xF1FA8D78] = typeof(Layer45.DecryptedMessageMediaPhoto),
 			[0x32798A8C] = typeof(Layer8.DecryptedMessageMediaPhoto),
-			[0x089F5C4A] = typeof(Layer8.DecryptedMessageMediaEmpty),
+			[0x089F5C4A] = null,//Layer8.DecryptedMessageMediaEmpty
+			[0x73164160] = typeof(Layer17.DecryptedMessageService),
 			[0xAA48327D] = typeof(Layer8.DecryptedMessageService),
+			[0x91CC4674] = typeof(Layer73.DecryptedMessage),
+			[0x36B091DE] = typeof(Layer45.DecryptedMessage),
+			[0x204D3878] = typeof(Layer17.DecryptedMessage),
 			[0x1F814F1F] = typeof(Layer8.DecryptedMessage),
+			// The End
+		};
+
+		internal readonly static Dictionary<Type, uint> Nullables = new()
+		{
+			// from TL.MTProto:
+			// from TL.Schema:
+			[typeof(Null)]                           = 0x56730BCC, //null
+			[typeof(InputPeer)]                      = 0x7F3B18EA, //inputPeerEmpty
+			[typeof(InputUserBase)]                  = 0xB98886CF, //inputUserEmpty
+			[typeof(InputMedia)]                     = 0x9664F57F, //inputMediaEmpty
+			[typeof(InputChatPhotoBase)]             = 0x1CA48F57, //inputChatPhotoEmpty
+			[typeof(InputGeoPoint)]                  = 0xE4C123D6, //inputGeoPointEmpty
+			[typeof(InputPhoto)]                     = 0x1CD7BF0D, //inputPhotoEmpty
+			[typeof(UserProfilePhoto)]               = 0x4F11BAE1, //userProfilePhotoEmpty
+			[typeof(UserStatus)]                     = 0x09D05049, //userStatusEmpty
+			[typeof(ChatPhoto)]                      = 0x37C1011C, //chatPhotoEmpty
+			[typeof(MessageMedia)]                   = 0x3DED6320, //messageMediaEmpty
+			[typeof(MessageAction)]                  = 0xB6AEF7B0, //messageActionEmpty
+			[typeof(GeoPoint)]                       = 0x1117DD5F, //geoPointEmpty
+			[typeof(MessagesFilter)]                 = 0x57E2F66C, //inputMessagesFilterEmpty
+			[typeof(EncryptedFile)]                  = 0xC21F497E, //encryptedFileEmpty
+			[typeof(InputEncryptedFileBase)]         = 0x1837C364, //inputEncryptedFileEmpty
+			[typeof(InputDocument)]                  = 0x72F0EAAE, //inputDocumentEmpty
+			[typeof(InputStickerSet)]                = 0xFFB62B95, //inputStickerSetEmpty
+			[typeof(InputChannelBase)]               = 0xEE8C1E86, //inputChannelEmpty
+			[typeof(ChannelMessagesFilter)]          = 0x94D42EE7, //channelMessagesFilterEmpty
+			[typeof(RichText)]                       = 0xDC3D824F, //textEmpty
+			[typeof(SecureFile)]                     = 0x64199744, //secureFileEmpty
+			[typeof(Help_DeepLinkInfo)]              = 0x66AFA166, //help.deepLinkInfoEmpty
+			[typeof(PasswordKdfAlgo)]                = 0xD45AB096, //passwordKdfAlgoUnknown
+			[typeof(SecurePasswordKdfAlgo)]          = 0x004A8537, //securePasswordKdfAlgoUnknown
+			[typeof(InputCheckPasswordSRP)]          = 0x9880F658, //inputCheckPasswordEmpty
+			[typeof(Help_UserInfo)]                  = 0xF3AE2EED, //help.userInfoEmpty
+			[typeof(ChannelLocation)]                = 0xBFB5AD8B, //channelLocationEmpty
+			// from TL.Secret:
+			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 			// The End
 		};
 	}

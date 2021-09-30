@@ -360,7 +360,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			return output;
 		}
 
-		internal static InputCheckPasswordSRPBase Check2FA(Account_Password accountPassword, string password)
+		internal static InputCheckPasswordSRP Check2FA(Account_Password accountPassword, string password)
 		{
 			if (accountPassword.current_algo is not PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow algo)
 				throw new ApplicationException("2FA authentication uses an unsupported algo: " + accountPassword.current_algo?.GetType().Name);

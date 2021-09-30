@@ -26,7 +26,7 @@ namespace WTelegramClientTest
 			users[my.id] = my;
 			// note that on logging, Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
 			Console.WriteLine($"We are logged-in as {my.username ?? my.first_name + " " + my.last_name} (id {my.id})");
-			var dialogsBase = await client.Messages_GetDialogs(default, 0, InputPeer.Empty, 0, 0);
+			var dialogsBase = await client.Messages_GetDialogs(default, 0, null, 0, 0);
 			if (dialogsBase is Messages_Dialogs dialogs)
 				while (dialogs.dialogs.Length != 0)
 				{

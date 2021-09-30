@@ -29,14 +29,13 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/null"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/null">null</a></remarks>
 	[TLDef(0x56730BCC)]
 	public partial class Null : ITLObject { }
 
 	///<summary>See <a href="https://core.telegram.org/type/InputPeer"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputPeerEmpty">inputPeerEmpty</a></remarks>
 	public abstract partial class InputPeer : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputPeerEmpty"/></summary>
-	[TLDef(0x7F3B18EA)]
-	public partial class InputPeerEmpty : InputPeer { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputPeerSelf"/></summary>
 	[TLDef(0x7DA07EC9)]
 	public partial class InputPeerSelf : InputPeer { }
@@ -75,10 +74,8 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/InputUser"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputUserEmpty">inputUserEmpty</a></remarks>
 	public abstract partial class InputUserBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputUserEmpty"/></summary>
-	[TLDef(0xB98886CF)]
-	public partial class InputUserEmpty : InputUserBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputUserSelf"/></summary>
 	[TLDef(0xF7C1B13F)]
 	public partial class InputUserSelf : InputUserBase { }
@@ -131,10 +128,8 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/InputMedia"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputMediaEmpty">inputMediaEmpty</a></remarks>
 	public abstract partial class InputMedia : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputMediaEmpty"/></summary>
-	[TLDef(0x9664F57F)]
-	public partial class InputMediaEmpty : InputMedia { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputMediaUploadedPhoto"/></summary>
 	[TLDef(0x1E287D04)]
 	public partial class InputMediaUploadedPhoto : InputMedia
@@ -142,7 +137,7 @@ namespace TL
 		[Flags] public enum Flags { has_stickers = 0x1, has_ttl_seconds = 0x2 }
 		public Flags flags;
 		public InputFileBase file;
-		[IfFlag(0)] public InputDocumentBase[] stickers;
+		[IfFlag(0)] public InputDocument[] stickers;
 		[IfFlag(1)] public int ttl_seconds;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputMediaPhoto"/></summary>
@@ -151,12 +146,12 @@ namespace TL
 	{
 		[Flags] public enum Flags { has_ttl_seconds = 0x1 }
 		public Flags flags;
-		public InputPhotoBase id;
+		public InputPhoto id;
 		[IfFlag(0)] public int ttl_seconds;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputMediaGeoPoint"/></summary>
 	[TLDef(0xF9C44144)]
-	public partial class InputMediaGeoPoint : InputMedia { public InputGeoPointBase geo_point; }
+	public partial class InputMediaGeoPoint : InputMedia { public InputGeoPoint geo_point; }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputMediaContact"/></summary>
 	[TLDef(0xF8AB7DFB)]
 	public partial class InputMediaContact : InputMedia
@@ -176,7 +171,7 @@ namespace TL
 		[IfFlag(2)] public InputFileBase thumb;
 		public string mime_type;
 		public DocumentAttribute[] attributes;
-		[IfFlag(0)] public InputDocumentBase[] stickers;
+		[IfFlag(0)] public InputDocument[] stickers;
 		[IfFlag(1)] public int ttl_seconds;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputMediaDocument"/></summary>
@@ -185,7 +180,7 @@ namespace TL
 	{
 		[Flags] public enum Flags { has_ttl_seconds = 0x1, has_query = 0x2 }
 		public Flags flags;
-		public InputDocumentBase id;
+		public InputDocument id;
 		[IfFlag(0)] public int ttl_seconds;
 		[IfFlag(1)] public string query;
 	}
@@ -193,7 +188,7 @@ namespace TL
 	[TLDef(0xC13D1C11)]
 	public partial class InputMediaVenue : InputMedia
 	{
-		public InputGeoPointBase geo_point;
+		public InputGeoPoint geo_point;
 		public string title;
 		public string address;
 		public string provider;
@@ -242,7 +237,7 @@ namespace TL
 	{
 		[Flags] public enum Flags { stopped = 0x1, has_period = 0x2, has_heading = 0x4, has_proximity_notification_radius = 0x8 }
 		public Flags flags;
-		public InputGeoPointBase geo_point;
+		public InputGeoPoint geo_point;
 		[IfFlag(2)] public int heading;
 		[IfFlag(1)] public int period;
 		[IfFlag(3)] public int proximity_notification_radius;
@@ -263,10 +258,8 @@ namespace TL
 	public partial class InputMediaDice : InputMedia { public string emoticon; }
 
 	///<summary>See <a href="https://core.telegram.org/type/InputChatPhoto"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputChatPhotoEmpty">inputChatPhotoEmpty</a></remarks>
 	public abstract partial class InputChatPhotoBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputChatPhotoEmpty"/></summary>
-	[TLDef(0x1CA48F57)]
-	public partial class InputChatPhotoEmpty : InputChatPhotoBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputChatUploadedPhoto"/></summary>
 	[TLDef(0xC642724E)]
 	public partial class InputChatUploadedPhoto : InputChatPhotoBase
@@ -279,16 +272,12 @@ namespace TL
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputChatPhoto"/></summary>
 	[TLDef(0x8953AD37)]
-	public partial class InputChatPhoto : InputChatPhotoBase { public InputPhotoBase id; }
+	public partial class InputChatPhoto : InputChatPhotoBase { public InputPhoto id; }
 
-	///<summary>See <a href="https://core.telegram.org/type/InputGeoPoint"/></summary>
-	public abstract partial class InputGeoPointBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputGeoPointEmpty"/></summary>
-	[TLDef(0xE4C123D6)]
-	public partial class InputGeoPointEmpty : InputGeoPointBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputGeoPoint"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputGeoPointEmpty">inputGeoPointEmpty</a></remarks>
 	[TLDef(0x48222FAF)]
-	public partial class InputGeoPoint : InputGeoPointBase
+	public partial class InputGeoPoint : ITLObject
 	{
 		[Flags] public enum Flags { has_accuracy_radius = 0x1 }
 		public Flags flags;
@@ -297,14 +286,10 @@ namespace TL
 		[IfFlag(0)] public int accuracy_radius;
 	}
 
-	///<summary>See <a href="https://core.telegram.org/type/InputPhoto"/></summary>
-	public abstract partial class InputPhotoBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputPhotoEmpty"/></summary>
-	[TLDef(0x1CD7BF0D)]
-	public partial class InputPhotoEmpty : InputPhotoBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputPhoto"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputPhotoEmpty">inputPhotoEmpty</a></remarks>
 	[TLDef(0x3BB3B94A)]
-	public partial class InputPhoto : InputPhotoBase
+	public partial class InputPhoto : ITLObject
 	{
 		public long id;
 		public long access_hash;
@@ -455,7 +440,7 @@ namespace TL
 		[IfFlag(2)] public string last_name;
 		[IfFlag(3)] public string username;
 		[IfFlag(4)] public string phone;
-		[IfFlag(5)] public UserProfilePhotoBase photo;
+		[IfFlag(5)] public UserProfilePhoto photo;
 		[IfFlag(6)] public UserStatus status;
 		[IfFlag(14)] public int bot_info_version;
 		[IfFlag(18)] public RestrictionReason[] restriction_reason;
@@ -463,14 +448,10 @@ namespace TL
 		[IfFlag(22)] public string lang_code;
 	}
 
-	///<summary>See <a href="https://core.telegram.org/type/UserProfilePhoto"/></summary>
-	public abstract partial class UserProfilePhotoBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/userProfilePhotoEmpty"/></summary>
-	[TLDef(0x4F11BAE1)]
-	public partial class UserProfilePhotoEmpty : UserProfilePhotoBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/userProfilePhoto"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/userProfilePhotoEmpty">userProfilePhotoEmpty</a></remarks>
 	[TLDef(0x82D1F706)]
-	public partial class UserProfilePhoto : UserProfilePhotoBase
+	public partial class UserProfilePhoto : ITLObject
 	{
 		[Flags] public enum Flags { has_video = 0x1, has_stripped_thumb = 0x2 }
 		public Flags flags;
@@ -480,10 +461,8 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/UserStatus"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/userStatusEmpty">userStatusEmpty</a></remarks>
 	public abstract partial class UserStatus : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/userStatusEmpty"/></summary>
-	[TLDef(0x09D05049)]
-	public partial class UserStatusEmpty : UserStatus { }
 	///<summary>See <a href="https://core.telegram.org/constructor/userStatusOnline"/></summary>
 	[TLDef(0xEDB93949)]
 	public partial class UserStatusOnline : UserStatus { public DateTime expires; }
@@ -514,7 +493,7 @@ namespace TL
 		public Flags flags;
 		public long id;
 		public string title;
-		public ChatPhotoBase photo;
+		public ChatPhoto photo;
 		public int participants_count;
 		public DateTime date;
 		public int version;
@@ -543,7 +522,7 @@ namespace TL
 		[IfFlag(13)] public long access_hash;
 		public string title;
 		[IfFlag(6)] public string username;
-		public ChatPhotoBase photo;
+		public ChatPhoto photo;
 		public DateTime date;
 		[IfFlag(9)] public RestrictionReason[] restriction_reason;
 		[IfFlag(14)] public ChatAdminRights admin_rights;
@@ -621,7 +600,7 @@ namespace TL
 		[IfFlag(9)] public int available_min_id;
 		[IfFlag(11)] public int folder_id;
 		[IfFlag(14)] public long linked_chat_id;
-		[IfFlag(15)] public ChannelLocationBase location;
+		[IfFlag(15)] public ChannelLocation location;
 		[IfFlag(17)] public int slowmode_seconds;
 		[IfFlag(18)] public DateTime slowmode_next_send_date;
 		[IfFlag(12)] public int stats_dc;
@@ -670,14 +649,10 @@ namespace TL
 		public int version;
 	}
 
-	///<summary>See <a href="https://core.telegram.org/type/ChatPhoto"/></summary>
-	public abstract partial class ChatPhotoBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/chatPhotoEmpty"/></summary>
-	[TLDef(0x37C1011C)]
-	public partial class ChatPhotoEmpty : ChatPhotoBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/chatPhoto"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/chatPhotoEmpty">chatPhotoEmpty</a></remarks>
 	[TLDef(0x1C6E1C11)]
-	public partial class ChatPhoto : ChatPhotoBase
+	public partial class ChatPhoto : ITLObject
 	{
 		[Flags] public enum Flags { has_video = 0x1, has_stripped_thumb = 0x2 }
 		public Flags flags;
@@ -744,10 +719,8 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/MessageMedia"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/messageMediaEmpty">messageMediaEmpty</a></remarks>
 	public abstract partial class MessageMedia : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/messageMediaEmpty"/></summary>
-	[TLDef(0x3DED6320)]
-	public partial class MessageMediaEmpty : MessageMedia { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageMediaPhoto"/></summary>
 	[TLDef(0x695150D7)]
 	public partial class MessageMediaPhoto : MessageMedia
@@ -759,7 +732,7 @@ namespace TL
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/messageMediaGeo"/></summary>
 	[TLDef(0x56E0D474)]
-	public partial class MessageMediaGeo : MessageMedia { public GeoPointBase geo; }
+	public partial class MessageMediaGeo : MessageMedia { public GeoPoint geo; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageMediaContact"/></summary>
 	[TLDef(0x70322949)]
 	public partial class MessageMediaContact : MessageMedia
@@ -789,7 +762,7 @@ namespace TL
 	[TLDef(0x2EC0533F)]
 	public partial class MessageMediaVenue : MessageMedia
 	{
-		public GeoPointBase geo;
+		public GeoPoint geo;
 		public string title;
 		public string address;
 		public string provider;
@@ -819,7 +792,7 @@ namespace TL
 	{
 		[Flags] public enum Flags { has_heading = 0x1, has_proximity_notification_radius = 0x2 }
 		public Flags flags;
-		public GeoPointBase geo;
+		public GeoPoint geo;
 		[IfFlag(0)] public int heading;
 		public int period;
 		[IfFlag(1)] public int proximity_notification_radius;
@@ -840,10 +813,8 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/MessageAction"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/messageActionEmpty">messageActionEmpty</a></remarks>
 	public abstract partial class MessageAction : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/messageActionEmpty"/></summary>
-	[TLDef(0xB6AEF7B0)]
-	public partial class MessageActionEmpty : MessageAction { }
 	///<summary>See <a href="https://core.telegram.org/constructor/messageActionChatCreate"/></summary>
 	[TLDef(0xBD47CBAD)]
 	public partial class MessageActionChatCreate : MessageAction
@@ -1086,14 +1057,10 @@ namespace TL
 		public byte[] bytes;
 	}
 
-	///<summary>See <a href="https://core.telegram.org/type/GeoPoint"/></summary>
-	public abstract partial class GeoPointBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/geoPointEmpty"/></summary>
-	[TLDef(0x1117DD5F)]
-	public partial class GeoPointEmpty : GeoPointBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/geoPoint"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/geoPointEmpty">geoPointEmpty</a></remarks>
 	[TLDef(0xB2A2F663)]
-	public partial class GeoPoint : GeoPointBase
+	public partial class GeoPoint : ITLObject
 	{
 		[Flags] public enum Flags { has_accuracy_radius = 0x1 }
 		public Flags flags;
@@ -1400,10 +1367,8 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/MessagesFilter"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputMessagesFilterEmpty">inputMessagesFilterEmpty</a></remarks>
 	public abstract partial class MessagesFilter : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputMessagesFilterEmpty"/></summary>
-	[TLDef(0x57E2F66C)]
-	public partial class InputMessagesFilterEmpty : MessagesFilter { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputMessagesFilterPhotos"/></summary>
 	[TLDef(0x9609A51C)]
 	public partial class InputMessagesFilterPhotos : MessagesFilter { }
@@ -1521,7 +1486,7 @@ namespace TL
 	{
 		public long user_id;
 		public DateTime date;
-		public UserProfilePhotoBase photo;
+		public UserProfilePhoto photo;
 		public bool previous;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/updateNewEncryptedMessage"/></summary>
@@ -1710,7 +1675,7 @@ namespace TL
 		public long query_id;
 		public long user_id;
 		public string query;
-		[IfFlag(0)] public GeoPointBase geo;
+		[IfFlag(0)] public GeoPoint geo;
 		[IfFlag(1)] public InlineQueryPeerType peer_type;
 		public string offset;
 	}
@@ -1722,7 +1687,7 @@ namespace TL
 		public Flags flags;
 		public long user_id;
 		public string query;
-		[IfFlag(0)] public GeoPointBase geo;
+		[IfFlag(0)] public GeoPoint geo;
 		public string id;
 		[IfFlag(1)] public InputBotInlineMessageIDBase msg_id;
 	}
@@ -2445,14 +2410,10 @@ namespace TL
 		public long access_hash;
 	}
 
-	///<summary>See <a href="https://core.telegram.org/type/EncryptedFile"/></summary>
-	public abstract partial class EncryptedFileBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/encryptedFileEmpty"/></summary>
-	[TLDef(0xC21F497E)]
-	public partial class EncryptedFileEmpty : EncryptedFileBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/encryptedFile"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/encryptedFileEmpty">encryptedFileEmpty</a></remarks>
 	[TLDef(0x4A70994C)]
-	public partial class EncryptedFile : EncryptedFileBase
+	public partial class EncryptedFile : ITLObject
 	{
 		public long id;
 		public long access_hash;
@@ -2462,10 +2423,8 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/InputEncryptedFile"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputEncryptedFileEmpty">inputEncryptedFileEmpty</a></remarks>
 	public abstract partial class InputEncryptedFileBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputEncryptedFileEmpty"/></summary>
-	[TLDef(0x1837C364)]
-	public partial class InputEncryptedFileEmpty : InputEncryptedFileBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputEncryptedFileUploaded"/></summary>
 	[TLDef(0x64BD0306)]
 	public partial class InputEncryptedFileUploaded : InputEncryptedFileBase
@@ -2501,7 +2460,7 @@ namespace TL
 		public int chat_id;
 		public DateTime date;
 		public byte[] bytes;
-		public EncryptedFileBase file;
+		public EncryptedFile file;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/encryptedMessageService"/></summary>
 	[TLDef(0x23734B06)]
@@ -2533,16 +2492,12 @@ namespace TL
 	public partial class Messages_SentEncryptedMessage : ITLObject { public DateTime date; }
 	///<summary>See <a href="https://core.telegram.org/constructor/messages.sentEncryptedFile"/></summary>
 	[TLDef(0x9493FF32)]
-	public partial class Messages_SentEncryptedFile : Messages_SentEncryptedMessage { public EncryptedFileBase file; }
+	public partial class Messages_SentEncryptedFile : Messages_SentEncryptedMessage { public EncryptedFile file; }
 
-	///<summary>See <a href="https://core.telegram.org/type/InputDocument"/></summary>
-	public abstract partial class InputDocumentBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputDocumentEmpty"/></summary>
-	[TLDef(0x72F0EAAE)]
-	public partial class InputDocumentEmpty : InputDocumentBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputDocument"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputDocumentEmpty">inputDocumentEmpty</a></remarks>
 	[TLDef(0x1ABFB575)]
-	public partial class InputDocument : InputDocumentBase
+	public partial class InputDocument : ITLObject
 	{
 		public long id;
 		public long access_hash;
@@ -3035,10 +2990,8 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/InputStickerSet"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputStickerSetEmpty">inputStickerSetEmpty</a></remarks>
 	public abstract partial class InputStickerSet : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputStickerSetEmpty"/></summary>
-	[TLDef(0xFFB62B95)]
-	public partial class InputStickerSetEmpty : InputStickerSet { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputStickerSetID"/></summary>
 	[TLDef(0x9DE7A269)]
 	public partial class InputStickerSetID : InputStickerSet
@@ -3269,10 +3222,8 @@ namespace TL
 	public partial class MessageEntityBankCard : MessageEntity { }
 
 	///<summary>See <a href="https://core.telegram.org/type/InputChannel"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputChannelEmpty">inputChannelEmpty</a></remarks>
 	public abstract partial class InputChannelBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputChannelEmpty"/></summary>
-	[TLDef(0xEE8C1E86)]
-	public partial class InputChannelEmpty : InputChannelBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputChannel"/></summary>
 	[TLDef(0xF35AEC28)]
 	public partial class InputChannel : InputChannelBase
@@ -3343,14 +3294,10 @@ namespace TL
 		public UserBase[] users;
 	}
 
-	///<summary>See <a href="https://core.telegram.org/type/ChannelMessagesFilter"/></summary>
-	public abstract partial class ChannelMessagesFilterBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/channelMessagesFilterEmpty"/></summary>
-	[TLDef(0x94D42EE7)]
-	public partial class ChannelMessagesFilterEmpty : ChannelMessagesFilterBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/channelMessagesFilter"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/channelMessagesFilterEmpty">channelMessagesFilterEmpty</a></remarks>
 	[TLDef(0xCD77D957)]
-	public partial class ChannelMessagesFilter : ChannelMessagesFilterBase
+	public partial class ChannelMessagesFilter : ITLObject
 	{
 		[Flags] public enum Flags { exclude_new_messages = 0x2 }
 		public Flags flags;
@@ -3520,7 +3467,7 @@ namespace TL
 	{
 		[Flags] public enum Flags { has_heading = 0x1, has_period = 0x2, has_reply_markup = 0x4, 
 			has_proximity_notification_radius = 0x8 }
-		public InputGeoPointBase geo_point;
+		public InputGeoPoint geo_point;
 		[IfFlag(0)] public int heading;
 		[IfFlag(1)] public int period;
 		[IfFlag(3)] public int proximity_notification_radius;
@@ -3531,7 +3478,7 @@ namespace TL
 	public partial class InputBotInlineMessageMediaVenue : InputBotInlineMessage
 	{
 		[Flags] public enum Flags { has_reply_markup = 0x4 }
-		public InputGeoPointBase geo_point;
+		public InputGeoPoint geo_point;
 		public string title;
 		public string address;
 		public string provider;
@@ -3595,7 +3542,7 @@ namespace TL
 	{
 		public string id;
 		public string type;
-		public InputPhotoBase photo;
+		public InputPhoto photo;
 		public InputBotInlineMessage send_message;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputBotInlineResultDocument"/></summary>
@@ -3608,7 +3555,7 @@ namespace TL
 		public string type;
 		[IfFlag(1)] public string title;
 		[IfFlag(2)] public string description;
-		public InputDocumentBase document;
+		public InputDocument document;
 		public InputBotInlineMessage send_message;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/inputBotInlineResultGame"/></summary>
@@ -3646,7 +3593,7 @@ namespace TL
 	{
 		[Flags] public enum Flags { has_heading = 0x1, has_period = 0x2, has_reply_markup = 0x4, 
 			has_proximity_notification_radius = 0x8 }
-		public GeoPointBase geo;
+		public GeoPoint geo;
 		[IfFlag(0)] public int heading;
 		[IfFlag(1)] public int period;
 		[IfFlag(3)] public int proximity_notification_radius;
@@ -3657,7 +3604,7 @@ namespace TL
 	public partial class BotInlineMessageMediaVenue : BotInlineMessage
 	{
 		[Flags] public enum Flags { has_reply_markup = 0x4 }
-		public GeoPointBase geo;
+		public GeoPoint geo;
 		public string title;
 		public string address;
 		public string provider;
@@ -3999,10 +3946,10 @@ namespace TL
 	public abstract partial class InputStickeredMedia : ITLObject { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputStickeredMediaPhoto"/></summary>
 	[TLDef(0x4A992157)]
-	public partial class InputStickeredMediaPhoto : InputStickeredMedia { public InputPhotoBase id; }
+	public partial class InputStickeredMediaPhoto : InputStickeredMedia { public InputPhoto id; }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputStickeredMediaDocument"/></summary>
 	[TLDef(0x0438865B)]
-	public partial class InputStickeredMediaDocument : InputStickeredMedia { public InputDocumentBase id; }
+	public partial class InputStickeredMediaDocument : InputStickeredMedia { public InputDocument id; }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/game"/></summary>
 	[TLDef(0xBDF9653B)]
@@ -4054,10 +4001,8 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/RichText"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/textEmpty">textEmpty</a></remarks>
 	public abstract partial class RichText : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/textEmpty"/></summary>
-	[TLDef(0xDC3D824F)]
-	public partial class TextEmpty : RichText { }
 	///<summary>See <a href="https://core.telegram.org/constructor/textPlain"/></summary>
 	[TLDef(0x744694E0)]
 	public partial class TextPlain : RichText { public string text; }
@@ -4294,7 +4239,7 @@ namespace TL
 	[TLDef(0xA44F3EF6)]
 	public partial class PageBlockMap : PageBlock
 	{
-		public GeoPointBase geo;
+		public GeoPoint geo;
 		public int zoom;
 		public int w;
 		public int h;
@@ -4427,7 +4372,7 @@ namespace TL
 	[TLDef(0x9F2221C9)]
 	public partial class InputWebFileGeoPointLocation : InputWebFileLocationBase
 	{
-		public InputGeoPointBase geo_point;
+		public InputGeoPoint geo_point;
 		public long access_hash;
 		public int w;
 		public int h;
@@ -4562,7 +4507,7 @@ namespace TL
 	{
 		[Flags] public enum Flags { has_mask_coords = 0x1 }
 		public Flags flags;
-		public InputDocumentBase document;
+		public InputDocument document;
 		public string emoji;
 		[IfFlag(0)] public MaskCoords mask_coords;
 	}
@@ -4873,8 +4818,8 @@ namespace TL
 	[TLDef(0x0E6B76AE)]
 	public partial class ChannelAdminLogEventActionChangeLocation : ChannelAdminLogEventAction
 	{
-		public ChannelLocationBase prev_value;
-		public ChannelLocationBase new_value;
+		public ChannelLocation prev_value;
+		public ChannelLocation new_value;
 	}
 	///<summary>See <a href="https://core.telegram.org/constructor/channelAdminLogEventActionToggleSlowMode"/></summary>
 	[TLDef(0x53909779)]
@@ -5145,14 +5090,10 @@ namespace TL
 		public long access_hash;
 	}
 
-	///<summary>See <a href="https://core.telegram.org/type/SecureFile"/></summary>
-	public abstract partial class SecureFileBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/secureFileEmpty"/></summary>
-	[TLDef(0x64199744)]
-	public partial class SecureFileEmpty : SecureFileBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/secureFile"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/secureFileEmpty">secureFileEmpty</a></remarks>
 	[TLDef(0xE0277A62)]
-	public partial class SecureFile : SecureFileBase
+	public partial class SecureFile : ITLObject
 	{
 		public long id;
 		public long access_hash;
@@ -5221,11 +5162,11 @@ namespace TL
 		public Flags flags;
 		public SecureValueType type;
 		[IfFlag(0)] public SecureData data;
-		[IfFlag(1)] public SecureFileBase front_side;
-		[IfFlag(2)] public SecureFileBase reverse_side;
-		[IfFlag(3)] public SecureFileBase selfie;
-		[IfFlag(6)] public SecureFileBase[] translation;
-		[IfFlag(4)] public SecureFileBase[] files;
+		[IfFlag(1)] public SecureFile front_side;
+		[IfFlag(2)] public SecureFile reverse_side;
+		[IfFlag(3)] public SecureFile selfie;
+		[IfFlag(6)] public SecureFile[] translation;
+		[IfFlag(4)] public SecureFile[] files;
 		[IfFlag(5)] public SecurePlainData plain_data;
 		public byte[] hash;
 	}
@@ -5351,14 +5292,10 @@ namespace TL
 		public int length;
 	}
 
-	///<summary>See <a href="https://core.telegram.org/type/help.DeepLinkInfo"/></summary>
-	public abstract partial class Help_DeepLinkInfoBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/help.deepLinkInfoEmpty"/></summary>
-	[TLDef(0x66AFA166)]
-	public partial class Help_DeepLinkInfoEmpty : Help_DeepLinkInfoBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/help.deepLinkInfo"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/help.deepLinkInfoEmpty">help.deepLinkInfoEmpty</a></remarks>
 	[TLDef(0x6A4EE832)]
-	public partial class Help_DeepLinkInfo : Help_DeepLinkInfoBase
+	public partial class Help_DeepLinkInfo : ITLObject
 	{
 		[Flags] public enum Flags { update_app = 0x1, has_entities = 0x2 }
 		public Flags flags;
@@ -5383,10 +5320,8 @@ namespace TL
 	public partial class Account_Takeout : ITLObject { public long id; }
 
 	///<summary>See <a href="https://core.telegram.org/type/PasswordKdfAlgo"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/passwordKdfAlgoUnknown">passwordKdfAlgoUnknown</a></remarks>
 	public abstract partial class PasswordKdfAlgo : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/passwordKdfAlgoUnknown"/></summary>
-	[TLDef(0xD45AB096)]
-	public partial class PasswordKdfAlgoUnknown : PasswordKdfAlgo { }
 	///<summary>See <a href="https://core.telegram.org/constructor/passwordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow"/></summary>
 	[TLDef(0x3A912D4A)]
 	public partial class PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow : PasswordKdfAlgo
@@ -5398,16 +5333,14 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://core.telegram.org/type/SecurePasswordKdfAlgo"/></summary>
-	public abstract partial class SecurePasswordKdfAlgo : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/securePasswordKdfAlgoUnknown"/></summary>
-	[TLDef(0x004A8537)]
-	public partial class SecurePasswordKdfAlgoUnknown : SecurePasswordKdfAlgo { }
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/securePasswordKdfAlgoUnknown">securePasswordKdfAlgoUnknown</a></remarks>
+	public abstract partial class SecurePasswordKdfAlgo : ITLObject { public byte[] salt; }
 	///<summary>See <a href="https://core.telegram.org/constructor/securePasswordKdfAlgoPBKDF2HMACSHA512iter100000"/></summary>
 	[TLDef(0xBBF2DDA0)]
-	public partial class SecurePasswordKdfAlgoPBKDF2HMACSHA512iter100000 : SecurePasswordKdfAlgo { public byte[] salt; }
+	public partial class SecurePasswordKdfAlgoPBKDF2HMACSHA512iter100000 : SecurePasswordKdfAlgo { }
 	///<summary>See <a href="https://core.telegram.org/constructor/securePasswordKdfAlgoSHA512"/></summary>
 	[TLDef(0x86471D92)]
-	public partial class SecurePasswordKdfAlgoSHA512 : SecurePasswordKdfAlgo { public byte[] salt; }
+	public partial class SecurePasswordKdfAlgoSHA512 : SecurePasswordKdfAlgo { }
 
 	///<summary>See <a href="https://core.telegram.org/constructor/secureSecretSettings"/></summary>
 	[TLDef(0x1527BCAC)]
@@ -5418,14 +5351,10 @@ namespace TL
 		public long secure_secret_id;
 	}
 
-	///<summary>See <a href="https://core.telegram.org/type/InputCheckPasswordSRP"/></summary>
-	public abstract partial class InputCheckPasswordSRPBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/inputCheckPasswordEmpty"/></summary>
-	[TLDef(0x9880F658)]
-	public partial class InputCheckPasswordEmpty : InputCheckPasswordSRPBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/inputCheckPasswordSRP"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/inputCheckPasswordEmpty">inputCheckPasswordEmpty</a></remarks>
 	[TLDef(0xD27FF082)]
-	public partial class InputCheckPasswordSRP : InputCheckPasswordSRPBase
+	public partial class InputCheckPasswordSRP : ITLObject
 	{
 		public long srp_id;
 		public byte[] A;
@@ -5575,14 +5504,10 @@ namespace TL
 	[TLDef(0x8C05F1C9)]
 	public partial class Help_SupportName : ITLObject { public string name; }
 
-	///<summary>See <a href="https://core.telegram.org/type/help.UserInfo"/></summary>
-	public abstract partial class Help_UserInfoBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/help.userInfoEmpty"/></summary>
-	[TLDef(0xF3AE2EED)]
-	public partial class Help_UserInfoEmpty : Help_UserInfoBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/help.userInfo"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/help.userInfoEmpty">help.userInfoEmpty</a></remarks>
 	[TLDef(0x01EB3758)]
-	public partial class Help_UserInfo : Help_UserInfoBase
+	public partial class Help_UserInfo : ITLObject
 	{
 		public string message;
 		public MessageEntity[] entities;
@@ -5775,7 +5700,7 @@ namespace TL
 		public Flags flags;
 		public int id;
 		public string title;
-		[IfFlag(3)] public ChatPhotoBase photo;
+		[IfFlag(3)] public ChatPhoto photo;
 	}
 
 	///<summary>See <a href="https://core.telegram.org/constructor/inputFolderPeer"/></summary>
@@ -5822,16 +5747,12 @@ namespace TL
 	[TLDef(0xA9D6DB1F)]
 	public partial class UrlAuthResultDefault : UrlAuthResult { }
 
-	///<summary>See <a href="https://core.telegram.org/type/ChannelLocation"/></summary>
-	public abstract partial class ChannelLocationBase : ITLObject { }
-	///<summary>See <a href="https://core.telegram.org/constructor/channelLocationEmpty"/></summary>
-	[TLDef(0xBFB5AD8B)]
-	public partial class ChannelLocationEmpty : ChannelLocationBase { }
 	///<summary>See <a href="https://core.telegram.org/constructor/channelLocation"/></summary>
+	///<remarks>a <c>null</c> value means <a href="https://core.telegram.org/constructor/channelLocationEmpty">channelLocationEmpty</a></remarks>
 	[TLDef(0x209B82DB)]
-	public partial class ChannelLocation : ChannelLocationBase
+	public partial class ChannelLocation : ITLObject
 	{
-		public GeoPointBase geo_point;
+		public GeoPoint geo_point;
 		public string address;
 	}
 
@@ -6819,7 +6740,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/auth.checkPassword"/></summary>
-		public static Task<Auth_AuthorizationBase> Auth_CheckPassword(this Client client, InputCheckPasswordSRPBase password)
+		public static Task<Auth_AuthorizationBase> Auth_CheckPassword(this Client client, InputCheckPasswordSRP password)
 			=> client.CallAsync<Auth_AuthorizationBase>(writer =>
 			{
 				writer.Write(0xD18B4D16);
@@ -7129,7 +7050,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getPasswordSettings"/></summary>
-		public static Task<Account_PasswordSettings> Account_GetPasswordSettings(this Client client, InputCheckPasswordSRPBase password)
+		public static Task<Account_PasswordSettings> Account_GetPasswordSettings(this Client client, InputCheckPasswordSRP password)
 			=> client.CallAsync<Account_PasswordSettings>(writer =>
 			{
 				writer.Write(0x9CD4EAF9);
@@ -7138,7 +7059,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.updatePasswordSettings"/></summary>
-		public static Task<bool> Account_UpdatePasswordSettings(this Client client, InputCheckPasswordSRPBase password, Account_PasswordInputSettings new_settings)
+		public static Task<bool> Account_UpdatePasswordSettings(this Client client, InputCheckPasswordSRP password, Account_PasswordInputSettings new_settings)
 			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xA59B102F);
@@ -7168,7 +7089,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.getTmpPassword"/></summary>
-		public static Task<Account_TmpPassword> Account_GetTmpPassword(this Client client, InputCheckPasswordSRPBase password, int period)
+		public static Task<Account_TmpPassword> Account_GetTmpPassword(this Client client, InputCheckPasswordSRP password, int period)
 			=> client.CallAsync<Account_TmpPassword>(writer =>
 			{
 				writer.Write(0x449E0B51);
@@ -7457,7 +7378,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.createTheme"/></summary>
-		public static Task<Theme> Account_CreateTheme(this Client client, string slug, string title, InputDocumentBase document = null, InputThemeSettings settings = null)
+		public static Task<Theme> Account_CreateTheme(this Client client, string slug, string title, InputDocument document = null, InputThemeSettings settings = null)
 			=> client.CallAsync<Theme>(writer =>
 			{
 				writer.Write(0x8432C21F);
@@ -7472,7 +7393,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.updateTheme"/></summary>
-		public static Task<Theme> Account_UpdateTheme(this Client client, string format, InputThemeBase theme, string slug = null, string title = null, InputDocumentBase document = null, InputThemeSettings settings = null)
+		public static Task<Theme> Account_UpdateTheme(this Client client, string format, InputThemeBase theme, string slug = null, string title = null, InputDocument document = null, InputThemeSettings settings = null)
 			=> client.CallAsync<Theme>(writer =>
 			{
 				writer.Write(0x5CB367D5);
@@ -7578,7 +7499,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/account.reportProfilePhoto"/></summary>
-		public static Task<bool> Account_ReportProfilePhoto(this Client client, InputPeer peer, InputPhotoBase photo_id, ReportReason reason, string message)
+		public static Task<bool> Account_ReportProfilePhoto(this Client client, InputPeer peer, InputPhoto photo_id, ReportReason reason, string message)
 			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xFA8CC6F5);
@@ -7812,7 +7733,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/contacts.getLocated"/></summary>
-		public static Task<UpdatesBase> Contacts_GetLocated(this Client client, InputGeoPointBase geo_point, bool background = false, int? self_expires = null)
+		public static Task<UpdatesBase> Contacts_GetLocated(this Client client, InputGeoPoint geo_point, bool background = false, int? self_expires = null)
 			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xD348BC44);
@@ -8416,7 +8337,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.saveGif"/></summary>
-		public static Task<bool> Messages_SaveGif(this Client client, InputDocumentBase id, bool unsave)
+		public static Task<bool> Messages_SaveGif(this Client client, InputDocument id, bool unsave)
 			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x327A30CB);
@@ -8426,7 +8347,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getInlineBotResults"/></summary>
-		public static Task<Messages_BotResults> Messages_GetInlineBotResults(this Client client, InputUserBase bot, InputPeer peer, string query, string offset, InputGeoPointBase geo_point = null)
+		public static Task<Messages_BotResults> Messages_GetInlineBotResults(this Client client, InputUserBase bot, InputPeer peer, string query, string offset, InputGeoPoint geo_point = null)
 			=> client.CallAsync<Messages_BotResults>(writer =>
 			{
 				writer.Write(0x514E999D);
@@ -8523,7 +8444,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.getBotCallbackAnswer"/></summary>
-		public static Task<Messages_BotCallbackAnswer> Messages_GetBotCallbackAnswer(this Client client, InputPeer peer, int msg_id, bool game = false, byte[] data = null, InputCheckPasswordSRPBase password = null)
+		public static Task<Messages_BotCallbackAnswer> Messages_GetBotCallbackAnswer(this Client client, InputPeer peer, int msg_id, bool game = false, byte[] data = null, InputCheckPasswordSRP password = null)
 			=> client.CallAsync<Messages_BotCallbackAnswer>(writer =>
 			{
 				writer.Write(0x9342CA07);
@@ -8613,7 +8534,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.saveRecentSticker"/></summary>
-		public static Task<bool> Messages_SaveRecentSticker(this Client client, InputDocumentBase id, bool unsave, bool attached = false)
+		public static Task<bool> Messages_SaveRecentSticker(this Client client, InputDocument id, bool unsave, bool attached = false)
 			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x392718F8);
@@ -8824,7 +8745,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.faveSticker"/></summary>
-		public static Task<bool> Messages_FaveSticker(this Client client, InputDocumentBase id, bool unfave)
+		public static Task<bool> Messages_FaveSticker(this Client client, InputDocument id, bool unfave)
 			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0xB9FFC55B);
@@ -8883,8 +8804,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/messages.uploadEncryptedFile"/></summary>
-		public static Task<EncryptedFileBase> Messages_UploadEncryptedFile(this Client client, InputEncryptedChat peer, InputEncryptedFileBase file)
-			=> client.CallAsync<EncryptedFileBase>(writer =>
+		public static Task<EncryptedFile> Messages_UploadEncryptedFile(this Client client, InputEncryptedChat peer, InputEncryptedFileBase file)
+			=> client.CallAsync<EncryptedFile>(writer =>
 			{
 				writer.Write(0x5057C497);
 				writer.WriteTLObject(peer);
@@ -9465,7 +9386,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/updates.getChannelDifference"/></summary>
-		public static Task<Updates_ChannelDifferenceBase> Updates_GetChannelDifference(this Client client, InputChannelBase channel, ChannelMessagesFilterBase filter, int pts, int limit, bool force = false)
+		public static Task<Updates_ChannelDifferenceBase> Updates_GetChannelDifference(this Client client, InputChannelBase channel, ChannelMessagesFilter filter, int pts, int limit, bool force = false)
 			=> client.CallAsync<Updates_ChannelDifferenceBase>(writer =>
 			{
 				writer.Write(0x03173D78);
@@ -9478,7 +9399,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/photos.updateProfilePhoto"/></summary>
-		public static Task<Photos_Photo> Photos_UpdateProfilePhoto(this Client client, InputPhotoBase id)
+		public static Task<Photos_Photo> Photos_UpdateProfilePhoto(this Client client, InputPhoto id)
 			=> client.CallAsync<Photos_Photo>(writer =>
 			{
 				writer.Write(0x72D4742C);
@@ -9502,7 +9423,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/photos.deletePhotos"/></summary>
-		public static Task<long[]> Photos_DeletePhotos(this Client client, InputPhotoBase[] id)
+		public static Task<long[]> Photos_DeletePhotos(this Client client, InputPhoto[] id)
 			=> client.CallAsync<long[]>(writer =>
 			{
 				writer.Write(0x87CF7F2F);
@@ -9704,8 +9625,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getDeepLinkInfo"/></summary>
-		public static Task<Help_DeepLinkInfoBase> Help_GetDeepLinkInfo(this Client client, string path)
-			=> client.CallAsync<Help_DeepLinkInfoBase>(writer =>
+		public static Task<Help_DeepLinkInfo> Help_GetDeepLinkInfo(this Client client, string path)
+			=> client.CallAsync<Help_DeepLinkInfo>(writer =>
 			{
 				writer.Write(0x3FEDC75F);
 				writer.WriteTLString(path);
@@ -9747,8 +9668,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.getUserInfo"/></summary>
-		public static Task<Help_UserInfoBase> Help_GetUserInfo(this Client client, InputUserBase user_id)
-			=> client.CallAsync<Help_UserInfoBase>(writer =>
+		public static Task<Help_UserInfo> Help_GetUserInfo(this Client client, InputUserBase user_id)
+			=> client.CallAsync<Help_UserInfo>(writer =>
 			{
 				writer.Write(0x038A08D3);
 				writer.WriteTLObject(user_id);
@@ -9756,8 +9677,8 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/help.editUserInfo"/></summary>
-		public static Task<Help_UserInfoBase> Help_EditUserInfo(this Client client, InputUserBase user_id, string message, MessageEntity[] entities)
-			=> client.CallAsync<Help_UserInfoBase>(writer =>
+		public static Task<Help_UserInfo> Help_EditUserInfo(this Client client, InputUserBase user_id, string message, MessageEntity[] entities)
+			=> client.CallAsync<Help_UserInfo>(writer =>
 			{
 				writer.Write(0x66B91B70);
 				writer.WriteTLObject(user_id);
@@ -9896,7 +9817,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.createChannel"/></summary>
-		public static Task<UpdatesBase> Channels_CreateChannel(this Client client, string title, string about, bool broadcast = false, bool megagroup = false, bool for_import = false, InputGeoPointBase geo_point = null, string address = null)
+		public static Task<UpdatesBase> Channels_CreateChannel(this Client client, string title, string about, bool broadcast = false, bool megagroup = false, bool for_import = false, InputGeoPoint geo_point = null, string address = null)
 			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x3D5FB10F);
@@ -10126,7 +10047,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.editCreator"/></summary>
-		public static Task<UpdatesBase> Channels_EditCreator(this Client client, InputChannelBase channel, InputUserBase user_id, InputCheckPasswordSRPBase password)
+		public static Task<UpdatesBase> Channels_EditCreator(this Client client, InputChannelBase channel, InputUserBase user_id, InputCheckPasswordSRP password)
 			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x8F38CD1F);
@@ -10137,7 +10058,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/channels.editLocation"/></summary>
-		public static Task<bool> Channels_EditLocation(this Client client, InputChannelBase channel, InputGeoPointBase geo_point, string address)
+		public static Task<bool> Channels_EditLocation(this Client client, InputChannelBase channel, InputGeoPoint geo_point, string address)
 			=> client.CallAsync<bool>(writer =>
 			{
 				writer.Write(0x58E63F6D);
@@ -10325,7 +10246,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stickers.createStickerSet"/></summary>
-		public static Task<Messages_StickerSet> Stickers_CreateStickerSet(this Client client, InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, bool masks = false, bool animated = false, InputDocumentBase thumb = null, string software = null)
+		public static Task<Messages_StickerSet> Stickers_CreateStickerSet(this Client client, InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, bool masks = false, bool animated = false, InputDocument thumb = null, string software = null)
 			=> client.CallAsync<Messages_StickerSet>(writer =>
 			{
 				writer.Write(0x9021AB67);
@@ -10342,7 +10263,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stickers.removeStickerFromSet"/></summary>
-		public static Task<Messages_StickerSet> Stickers_RemoveStickerFromSet(this Client client, InputDocumentBase sticker)
+		public static Task<Messages_StickerSet> Stickers_RemoveStickerFromSet(this Client client, InputDocument sticker)
 			=> client.CallAsync<Messages_StickerSet>(writer =>
 			{
 				writer.Write(0xF7760F51);
@@ -10351,7 +10272,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stickers.changeStickerPosition"/></summary>
-		public static Task<Messages_StickerSet> Stickers_ChangeStickerPosition(this Client client, InputDocumentBase sticker, int position)
+		public static Task<Messages_StickerSet> Stickers_ChangeStickerPosition(this Client client, InputDocument sticker, int position)
 			=> client.CallAsync<Messages_StickerSet>(writer =>
 			{
 				writer.Write(0xFFB6D4CA);
@@ -10371,7 +10292,7 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://core.telegram.org/method/stickers.setStickerSetThumb"/></summary>
-		public static Task<Messages_StickerSet> Stickers_SetStickerSetThumb(this Client client, InputStickerSet stickerset, InputDocumentBase thumb)
+		public static Task<Messages_StickerSet> Stickers_SetStickerSetThumb(this Client client, InputStickerSet stickerset, InputDocument thumb)
 			=> client.CallAsync<Messages_StickerSet>(writer =>
 			{
 				writer.Write(0x9A364E30);

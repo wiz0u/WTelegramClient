@@ -42,7 +42,7 @@ namespace WTelegram
 		private static readonly JsonSerializerOptions JsonOptions = new(Helpers.JsonOptions)
 		{
 			Converters = {
-				new Helpers.PolymorphicConverter<TL.UserProfilePhotoBase>(),
+				new Helpers.PolymorphicConverter<TL.UserProfilePhoto>(),
 				new Helpers.PolymorphicConverter<TL.UserStatus>()
 			}
 		};
