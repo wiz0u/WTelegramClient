@@ -26,7 +26,7 @@ namespace WTelegram
 		public Config TLConfig { get; private set; }
 		public int MaxAutoReconnects { get; set; } = 5; // number of automatic reconnections on connection/reactor failure
 		public bool IsMainDC => (_dcSession?.DataCenter?.id ?? 0) == _session.MainDC;
-		public bool Connected => _tcpClient?.Connected ?? false;
+		public bool Disconnected => _tcpClient != null && !(_tcpClient.Client?.Connected ?? false);
 
 		private readonly Func<string, string> _config;
 		private readonly int _apiId;
@@ -134,7 +134,6 @@ namespace WTelegram
 			_sendSemaphore = new(0);
 			_reactorTask = null;
 			_tcpClient?.Dispose();
-			_tcpClient = null;
 			_connecting = null;
 			if (resetSessions)
 			{
@@ -252,7 +251,7 @@ namespace WTelegram
 			lock (_session)
 			{
 				altSession = GetOrCreateDCSession(dcId, _dcSession.DataCenter.flags | (media_only ? DcOption.Flags.media_only : 0));
-				if (!altSession.Client.Connected) { altSession.Client.Dispose(); altSession.Client = null; }
+				if (altSession.Client?.Disconnected ?? false) { altSession.Client.Dispose(); altSession.Client = null; }
 				altSession.Client ??= new Client(this, altSession);
 			}
 			Helpers.Log(2, $"Requested connection to DC {dcId}...");
