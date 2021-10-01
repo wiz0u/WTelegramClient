@@ -14,6 +14,7 @@ namespace WTelegram
 		public TL.User User;
 		public int MainDC;
 		public Dictionary<int, DCSession> DCSessions = new();
+		public TL.DcOption[] DcOptions;
 
 		public class DCSession
 		{

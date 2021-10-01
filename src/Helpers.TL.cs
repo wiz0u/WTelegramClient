@@ -24,6 +24,7 @@ namespace TL
 		public override string Title => null;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		protected override InputPeer ToInputPeer() => null;
+		public override string ToString() => $"ChatEmpty {id}";
 	}
 	partial class Chat
 	{
@@ -31,6 +32,7 @@ namespace TL
 		public override string Title => title;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		protected override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
+		public override string ToString() => $"Chat \"{title}\"";
 	}
 	partial class ChatForbidden
 	{
@@ -38,6 +40,7 @@ namespace TL
 		public override string Title => title;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		protected override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
+		public override string ToString() => $"ChatForbidden {id} \"{title}\"";
 	}
 	partial class Channel
 	{
@@ -46,6 +49,8 @@ namespace TL
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((banned_rights?.flags ?? 0) & flags) != 0 || ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		protected override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
 		public static implicit operator InputChannel(Channel channel) => new() { channel_id = channel.id, access_hash = channel.access_hash };
+		public override string ToString() =>
+			(flags.HasFlag(Flags.broadcast) ? "Channel " : "Group ") + (username != null ? '@' + username : $"\"{title}\"");
 	}
 	partial class ChannelForbidden
 	{
@@ -53,6 +58,7 @@ namespace TL
 		public override string Title => title;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		protected override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
+		public override string ToString() => $"ChannelForbidden {id} \"{title}\"";
 	}
 
 	partial class UserBase

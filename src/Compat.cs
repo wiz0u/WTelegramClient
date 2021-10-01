@@ -50,7 +50,7 @@ namespace WTelegram
 
 		internal static IPEndPoint IPEndPoint_Parse(string addr)
 		{
-			int colon = addr.IndexOf(':');
+			int colon = addr.LastIndexOf(':');
 			return new IPEndPoint(IPAddress.Parse(addr[0..colon]), int.Parse(addr[(colon + 1)..]));
 		}
 
