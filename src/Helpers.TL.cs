@@ -279,4 +279,23 @@ namespace TL
 			return sb.Append('}').ToString();
 		}
 	}
+
+	partial class SendMessageAction
+	{
+		public override string ToString()
+		{
+			var type = GetType().Name[11..^6];
+			for (int i = 1; i < type.Length; i++)
+				if (char.IsUpper(type[i]))
+					return type.ToLowerInvariant().Insert(i, "ing ");
+			return type.ToLowerInvariant();
+		}
+	}
+	partial class SpeakingInGroupCallAction		{ public override string ToString() => "speaking in group call"; }
+	partial class SendMessageTypingAction		{ public override string ToString() => "typing"; }
+	partial class SendMessageCancelAction		{ public override string ToString() => "stopping"; }
+	partial class SendMessageGeoLocationAction	{ public override string ToString() => "selecting a location"; }
+	partial class SendMessageGamePlayAction		{ public override string ToString() => "playing a game"; }
+	partial class SendMessageHistoryImportAction{ public override string ToString() => "importing history"; }
+	
 }

@@ -1,7 +1,7 @@
 ﻿[![NuGet version](https://img.shields.io/nuget/v/WTelegramClient)](https://www.nuget.org/packages/WTelegramClient/)
 [![Dev nuget](https://img.shields.io/badge/dynamic/json?color=ffc040&label=Dev%20nuget&query=%24.versions%5B0%5D&url=https%3A%2F%2Fpkgs.dev.azure.com%2Fwiz0u%2F81bd92b7-0bb9-4701-b426-09090b27e037%2F_packaging%2F46ce0497-7803-4bd4-8c6c-030583e7c371%2Fnuget%2Fv3%2Fflat2%2Fwtelegramclient%2Findex.json)](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
-[![API Layer](https://img.shields.io/badge/API_Layer-133-blueviolet)](https://schema.horner.tj)
+[![API Layer](https://img.shields.io/badge/API_Layer-133-blueviolet)](https://corefork.telegram.org/methods)
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 
 # <img src="logo.png" width="32"/> WTelegramClient
@@ -27,7 +27,7 @@ Then it will attempt to sign-in as a user for which you must enter the **phone_n
 
 If the verification succeeds but the phone number is unknown to Telegram, the user might be prompted to sign-up (accepting the Terms of Service) and enter their **first_name** and **last_name**.
 
-And that's it, you now have access to the [full range of Telegram services](https://core.telegram.org/methods), mainly through calls to `await client.Some_TL_Method(...)`
+And that's it, you now have access to the [full range of Telegram services](https://corefork.telegram.org/methods), mainly through calls to `await client.Some_TL_Method(...)`
 
 # Saved session
 If you run this program again, you will notice that only **api_id** and **api_hash** are requested, the other prompts are gone and you are automatically logged-on and ready to go.
@@ -64,12 +64,12 @@ Its `int` argument is the log severity, compatible with the classic [LogLevel en
 
 ℹ️ The Telegram API makes extensive usage of base and derived classes, so be ready to use the various syntaxes C# offer to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
 
-To find which derived classes are available for a given base class, the fastest is to check our [TL.Schema.cs](src/TL.Schema.cs) source file as they are listed in groups.
+To find which derived classes are available for a given base class, the fastest is to check our [TL.Schema.cs](https://github.com/wiz0u/WTelegramClient/blob/master/src/TL.Schema.cs) source file as they are listed in groups.
 Intellisense tooltips on API structures/methods will also display a web link to the adequate Telegram documentation page.
 
-The Telegram [API object classes](https://core.telegram.org/schema) are defined in the `TL` namespace, and the [API functions](https://core.telegram.org/methods) are available as async methods of `Client`.
+The Telegram [API object classes](https://corefork.telegram.org/schema) are defined in the `TL` namespace, and the [API functions](https://corefork.telegram.org/methods) are available as async methods of `Client`.
 
-Below is an example of calling the [messages.getAllChats](https://core.telegram.org/method/messages.getAllChats) API function and enumerating the various groups/channels the user is in, and then using `client.SendMessageAsync` helper function to easily send a message:
+Below is an example of calling the [messages.getAllChats](https://corefork.telegram.org/method/messages.getAllChats) API function and enumerating the various groups/channels the user is in, and then using `client.SendMessageAsync` helper function to easily send a message:
 ```csharp
 using TL;
 ...
@@ -98,7 +98,7 @@ await client.SendMessageAsync(target, "Hello, World");
 
 The Client class also offers an `Update` event that is triggered when Telegram servers sends unsollicited Updates or notifications/information/status/service messages, independently of your API requests.
 
-An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://core.telegram.org/api/errors) of the problem.
+An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
 The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
 
@@ -106,7 +106,7 @@ Optional API parameters have a default value of `null` when unset. Passing `null
 
 I've added several useful converters or implicit cast to various API object so that they are more easy to manipulate.
 
-Beyond the TL async methods, the Client class offers a few other methods to simplify the sending of files, medias or messages.
+Beyond the TL async methods, the Client class offers a few other methods to simplify the sending/receiving of files, medias or messages.
 
 This library works best with **.NET 5.0+** and is also available for **.NET Standard 2.0** (.NET Framework 4.6.1+ & .NET Core 2.0+)
 

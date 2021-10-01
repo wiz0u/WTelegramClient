@@ -24,7 +24,7 @@ namespace WTelegramClientTest
 			await client.ConnectAsync();
 			var my = await client.LoginUserIfNeeded();
 			users[my.id] = my;
-			// note that on logging, Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
+			// note that on login Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
 			Console.WriteLine($"We are logged-in as {my.username ?? my.first_name + " " + my.last_name} (id {my.id})");
 			var dialogsBase = await client.Messages_GetDialogs(default, 0, null, 0, 0);
 			if (dialogsBase is Messages_Dialogs dialogs)
@@ -46,7 +46,7 @@ namespace WTelegramClientTest
 		private static readonly Dictionary<long, UserBase> users = new();
 		private static readonly Dictionary<long, ChatBase> chats = new();
 		private static string AUser(long user_id) => users.TryGetValue(user_id, out var user) ? user.DisplayName : $"User {user_id}";
-		private static string AChat(long chat_id) => chats.TryGetValue(chat_id, out var chat) ? chat.Title : $"Chat {chat_id}";
+		private static string AChat(long chat_id) => chats.TryGetValue(chat_id, out var chat) ? chat.ToString() : $"Chat {chat_id}";
 		private static string APeer(Peer peer) => peer is null ? null : peer is PeerUser user ? AUser(user.user_id)
 			: peer is PeerChat chat ? AChat(chat.chat_id) : peer is PeerChannel channel ? AChat(channel.channel_id) : $"Peer {peer.ID}";
 
@@ -80,9 +80,9 @@ namespace WTelegramClientTest
 				case UpdateEditMessage uem: Console.Write("(Edit): "); DisplayMessage(uem.message); break;
 				case UpdateDeleteChannelMessages udcm: Console.WriteLine($"{udcm.messages.Length} message(s) deleted in {AChat(udcm.channel_id)}"); break;
 				case UpdateDeleteMessages udm: Console.WriteLine($"{udm.messages.Length} message(s) deleted"); break;
-				case UpdateUserTyping uut: Console.WriteLine($"{AUser(uut.user_id)} is {uut.action.GetType().Name[11..^6]}"); break;
-				case UpdateChatUserTyping ucut: Console.WriteLine($"{APeer(ucut.from_id)} is {ucut.action.GetType().Name[11..^6]} in {AChat(ucut.chat_id)}"); break;
-				case UpdateChannelUserTyping ucut2: Console.WriteLine($"{APeer(ucut2.from_id)} is {ucut2.action.GetType().Name[11..^6]} in {AChat(ucut2.channel_id)}"); break;
+				case UpdateUserTyping uut: Console.WriteLine($"{AUser(uut.user_id)} is {uut.action}"); break;
+				case UpdateChatUserTyping ucut: Console.WriteLine($"{APeer(ucut.from_id)} is {ucut.action} in {AChat(ucut.chat_id)}"); break;
+				case UpdateChannelUserTyping ucut2: Console.WriteLine($"{APeer(ucut2.from_id)} is {ucut2.action} in {AChat(ucut2.channel_id)}"); break;
 				case UpdateChatParticipants { participants: ChatParticipants cp }: Console.WriteLine($"{cp.participants.Length} participants in {AChat(cp.chat_id)}"); break;
 				case UpdateUserStatus uus: Console.WriteLine($"{AUser(uus.user_id)} is now {uus.status.GetType().Name[10..]}"); break;
 				case UpdateUserName uun: Console.WriteLine($"{AUser(uun.user_id)} has changed profile name: @{uun.username} {uun.first_name} {uun.last_name}"); break;
