@@ -1150,7 +1150,6 @@ namespace WTelegram
 					Upload_FileBase fileBase;
 					try
 					{
-						Console.WriteLine($"LoadPart {offset}");
 						fileBase = await client.Upload_GetFile(fileLocation, offset, FilePartSize);
 					}
 					catch (RpcException ex) when (ex.Code == 303 && ex.Message.StartsWith("FILE_MIGRATE_"))
