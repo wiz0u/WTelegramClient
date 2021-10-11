@@ -8,18 +8,12 @@ namespace WTelegramClientTest
 {
 	class Program_ListenUpdates
 	{
-		static string Config(string what)
-		{
-			// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
-			if (what == "verification_code") { Console.Write("Code: "); return Console.ReadLine(); }
-			return Environment.GetEnvironmentVariable(what);
-		}
-
+		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main(string[] _)
 		{
 			Console.WriteLine("The program will display updates received for the logged-in user. Press any key to terminate");
 			WTelegram.Helpers.Log += (l, s) => System.Diagnostics.Debug.WriteLine(s);
-			using var client = new WTelegram.Client(Config) { CollectAccessHash = true };
+			using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 			client.Update += Client_Update;
 			await client.ConnectAsync();
 			var my = await client.LoginUserIfNeeded();

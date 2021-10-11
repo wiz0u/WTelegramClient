@@ -101,13 +101,14 @@ namespace WTelegram
 			"lang_pack" => "",
 			"lang_code" => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
 			"user_id" => "-1",
-			_ => null // api_id api_hash phone_number verification_code... it's up to you to reply to these correctly
+			"verification_code" => AskConfig(config),
+			_ => null // api_id api_hash phone_number... it's up to you to reply to these correctly
 		};
 
-		public static string DefaultConfigOrAsk(string config)
+		public static string DefaultConfigOrAsk(string config) => DefaultConfig(config) ?? AskConfig(config);
+
+		private static string AskConfig(string config)
 		{
-			var value = DefaultConfig(config);
-			if (value != null) return value;
 			Console.Write($"Enter {config.Replace('_', ' ')}: ");
 			return Console.ReadLine();
 		}

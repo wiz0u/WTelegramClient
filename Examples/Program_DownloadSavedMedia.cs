@@ -9,17 +9,11 @@ namespace WTelegramClientTest
 {
 	class Program_DownloadSavedMedia
 	{
-		static string Config(string what)
-		{
-			// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
-			if (what == "verification_code") { Console.Write("Code: "); return Console.ReadLine(); }
-			return Environment.GetEnvironmentVariable(what);
-		}
-
+		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main(string[] args)
 		{
 			Console.WriteLine("The program will download photos/medias from messages you send/forward to yourself (Saved Messages)");
-			using var client = new WTelegram.Client(Config);
+			using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 			await client.ConnectAsync();
 			var user = await client.LoginUserIfNeeded();
 			client.Update += Client_Update;
@@ -34,7 +28,7 @@ namespace WTelegramClientTest
 						continue; // if it's not a new saved message, ignore it
 					if (message.media is MessageMediaDocument { document: Document document })
 					{
-						int slash = document.mime_type.IndexOf('/'); // quick & dirty conversion from Mime to extension
+						int slash = document.mime_type.IndexOf('/'); // quick & dirty conversion from MIME type to file extension
 						var filename = slash > 0 ? $"{document.id}.{document.mime_type[(slash + 1)..]}" : $"{document.id}.bin";
 						Console.WriteLine("Downloading " + filename);
 						using var fileStream = File.Create(filename);
@@ -50,7 +44,7 @@ namespace WTelegramClientTest
 						fileStream.Close(); // necessary for the renaming
 						Console.WriteLine("Download finished");
 						if (type is not Storage_FileType.unknown and not Storage_FileType.partial)
-							File.Move(filename, Path.ChangeExtension(filename, type.ToString())); // rename extension
+							File.Move(filename, $"{photo.id}.{type}"); // rename extension
 					}
 				}
 			}

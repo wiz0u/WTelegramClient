@@ -46,16 +46,18 @@ static string Config(string what)
     if (what == "api_id") return "YOUR_API_ID";
     if (what == "api_hash") return "YOUR_API_HASH";
     if (what == "phone_number") return "+12025550156";
-    if (what == "verification_code") { Console.Write("Code: "); return Console.ReadLine(); }
-    if (what == "first_name") return "John";   // if sign-up is required
-    if (what == "last_name") return "Doe";     // if sign-up is required
-    if (what == "password") return "secret!";  // if user has enabled 2FA
+    if (what == "verification_code") return null; // let WTelegramClient ask the user with a console prompt 
+    if (what == "first_name") return "John";      // if sign-up is required
+    if (what == "last_name") return "Doe";        // if sign-up is required
+    if (what == "password") return "secret!";     // if user has enabled 2FA
     return null;
 }
 ...
 using var client = new WTelegram.Client(Config);
 ```
-There are other configuration items that are queried to your method but returning `null` let WTelegramClient choose a default adequate value. Those shown above are the only ones that have no default values and are required to be provided by your method.
+There are other configuration items that are queried to your method but returning `null` let WTelegramClient choose a default adequate value. Those shown above are the only ones that have no default values and should be provided by your method.
+
+Another simpler approach is to pass `Environment.GetEnvironmentVariable` as the config callback and define the above items as environment variables.
 
 Finally, if you want to redirect the library logs to your logger instead of the Console, you can install a delegate in the `WTelegram.Helpers.Log` static property.
 Its `int` argument is the log severity, compatible with the classic [LogLevel enum](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel)
