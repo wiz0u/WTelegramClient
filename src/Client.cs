@@ -1220,10 +1220,10 @@ namespace WTelegram
 			=> _accessHashes.GetValueOrDefault(typeof(T));
 		/// <summary>Retrieve the access_hash associated with this id (for a TL class)</summary>
 		/// <typeparam name="T">a TL object class. For example User, Channel or Photo</typeparam>
-		public long? GetAccessHashFor<T>(long id) where T : ITLObject
+		public long GetAccessHashFor<T>(long id) where T : ITLObject
 		{
 			lock (_accessHashes)
-				return _accessHashes.GetOrCreate(typeof(T)).TryGetValue(id, out var access_hash) ? access_hash : null;
+				return _accessHashes.GetOrCreate(typeof(T)).TryGetValue(id, out var access_hash) ? access_hash : 0;
 		}
 		public void SetAccessHashFor<T>(long id, long access_hash) where T : ITLObject
 		{
