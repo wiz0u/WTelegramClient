@@ -17,7 +17,7 @@ namespace WTelegramClientTest
 		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main(string[] _)
 		{
-			Console.WriteLine("The program demonstrate how load/save/use collected access hash.");
+			Console.WriteLine("The program demonstrate how to load/save/use collected access hash.");
 			WTelegram.Helpers.Log = (l, s) => System.Diagnostics.Debug.WriteLine(s);
 			using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 			client.CollectAccessHash = true;
