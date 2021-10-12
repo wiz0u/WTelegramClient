@@ -22,6 +22,8 @@ namespace WTelegram
 {
 	public sealed class Client : IDisposable
 	{
+		/// <summary>This event will be called when an unsollicited update/message is sent by Telegram servers</summary>
+		/// <remarks>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_ListenUpdate.cs">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
 		public event Action<ITLObject> Update;
 		public Config TLConfig { get; private set; }
 		public int MaxAutoReconnects { get; set; } = 5; // number of automatic reconnections on connection/reactor failure
@@ -1218,7 +1220,9 @@ namespace WTelegram
 		readonly Dictionary<Type, Dictionary<long, long>> _accessHashes = new();
 		public IEnumerable<KeyValuePair<long, long>> AllAccessHashesFor<T>() where T : ITLObject
 			=> _accessHashes.GetValueOrDefault(typeof(T));
-		/// <summary>Retrieve the access_hash associated with this id (for a TL class)</summary>
+		/// <summary>Retrieve the access_hash associated with this id (for a TL class) if it was collected</summary>
+		/// <remarks>This requires <see cref="CollectAccessHash"/> to be set to <see langword="true"/> first.
+		/// <br/>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_CollectAccessHash.cs">Examples/Program_CollectAccessHash.cs</see> for how to use this</remarks>
 		/// <typeparam name="T">a TL object class. For example User, Channel or Photo</typeparam>
 		public long GetAccessHashFor<T>(long id) where T : ITLObject
 		{

@@ -20,7 +20,7 @@ namespace WTelegramClientTest
 			users[my.id] = my;
 			// note that on login Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
 			Console.WriteLine($"We are logged-in as {my.username ?? my.first_name + " " + my.last_name} (id {my.id})");
-			var dialogsBase = await client.Messages_GetDialogs(default, 0, null, 0, 0);
+			var dialogsBase = await client.Messages_GetDialogs(default, 0, null, 0, 0); // dialogs = groups/channels/users
 			if (dialogsBase is Messages_Dialogs dialogs)
 				while (dialogs.dialogs.Length != 0)
 				{
@@ -33,7 +33,7 @@ namespace WTelegramClientTest
 					dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.top_message, offsetPeer, 500, 0);
 				}
 			Console.ReadKey();
-			await client.Ping(43); // dummy API call.. this is used to force an acknowledge on this session's updates
+			await client.Ping(42); // dummy API call
 		}
 
 

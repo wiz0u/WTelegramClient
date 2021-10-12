@@ -9,6 +9,7 @@ namespace WTelegramClientTest
 	class Program_GetAllChats
 	{
 		// This code is similar to what you should have obtained if you followed the README introduction
+		// I've just added a few comments to explain further what's going on
 
 		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
 		static string Config(string what)
@@ -30,7 +31,7 @@ namespace WTelegramClientTest
 			var user = await client.LoginUserIfNeeded();
 			Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name} (id {user.id})");
 
-			var chats = await client.Messages_GetAllChats(null);
+			var chats = await client.Messages_GetAllChats(null); // chats = groups/channels (does not include users dialogs)
 			Console.WriteLine("This user has joined the following:");
 			foreach (var chat in chats.chats)
 				switch (chat)
@@ -42,7 +43,7 @@ namespace WTelegramClientTest
 						Console.WriteLine($"{channel.id}: Channel {channel.username}: {channel.title}");
 						//Console.WriteLine($"              → access_hash = {channel.access_hash:X}");
 						break;
-					case Channel group:
+					case Channel group: // no broadcast flag => it's a big group, also called supergroup or megagroup
 						Console.WriteLine($"{group.id}: Group {group.username}: {group.title}");
 						//Console.WriteLine($"              → access_hash = {group.access_hash:X}");
 						break;
@@ -52,7 +53,7 @@ namespace WTelegramClientTest
 			long id = long.Parse(Console.ReadLine());
 			var target = chats.chats.First(chat => chat.ID == id);
 			Console.WriteLine($"Sending a message in chat {target.ID}: {target.Title}");
-			// This line implicitely creates an adequate InputPeer (with eventual access_hash) from ChatBase:
+			// Next line implicitely creates an adequate InputPeer from ChatBase: (with the access_hash if these is one)
 			InputPeer peer = target;
 			await client.SendMessageAsync(peer, "Hello, World");
 		}

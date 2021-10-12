@@ -99,15 +99,15 @@ await client.SendMessageAsync(target, "Hello, World");
 
 # Other things to know
 
-The Client class also offers an `Update` event that is triggered when Telegram servers sends unsollicited Updates or notifications/information/status/service messages, independently of your API requests.
+The Client class also offers an `Update` event that is triggered when Telegram servers sends unsollicited Updates or notifications/information/status/service messages, independently of your API requests. See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs)
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
 The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
 
-Optional API parameters have a default value of `null` when unset. Passing `null` for a required string/array is the same as *empty* (0-length). Required API parameters/fields can sometimes be set to 0 or `null` when unused (check API documentation).
+Optional API parameters have a default value of `null` when unset. Passing `null` for a required string/array is the same as *empty* (0-length). Required API parameters/fields can sometimes be set to 0 or `null` when unused (check API documentation or experiment).
 
-I've added several useful converters or implicit cast to various API object so that they are more easy to manipulate.
+I've added several useful converters, implicit cast or helper properties to various API object so that they are more easy to manipulate.
 
 Beyond the TL async methods, the Client class offers a few other methods to simplify the sending/receiving of files, medias or messages.
 
