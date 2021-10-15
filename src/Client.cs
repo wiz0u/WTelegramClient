@@ -111,6 +111,7 @@ namespace WTelegram
 
 		private static string AskConfig(string config)
 		{
+			if (config == "api_id") Console.WriteLine("You can obtain your api_id/api_hash at https://my.telegram.org/apps");
 			Console.Write($"Enter {config.Replace('_', ' ')}: ");
 			return Console.ReadLine();
 		}
@@ -885,6 +886,7 @@ namespace WTelegram
 		/// <returns>Detail about the logged bot</returns>
 		public async Task<User> LoginBotIfNeeded()
 		{
+			await ConnectAsync();
 			string botToken = Config("bot_token");
 			if (_session.User != null)
 			{ 
@@ -919,6 +921,7 @@ namespace WTelegram
 		/// <returns>Detail about the logged user</returns>
 		public async Task<User> LoginUserIfNeeded(CodeSettings settings = null)
 		{
+			await ConnectAsync();
 			string phone_number = null;
 			if (_session.User != null)
 			{
