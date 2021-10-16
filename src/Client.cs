@@ -111,7 +111,7 @@ namespace WTelegram
 
 		private static string AskConfig(string config)
 		{
-			if (config == "api_id") Console.WriteLine("You can obtain your api_id/api_hash at https://my.telegram.org/apps");
+			if (config == "api_id") Console.WriteLine("Welcome! You can obtain your api_id/api_hash at https://my.telegram.org/apps");
 			Console.Write($"Enter {config.Replace('_', ' ')}: ");
 			return Console.ReadLine();
 		}
