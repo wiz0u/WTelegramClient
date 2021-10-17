@@ -27,8 +27,8 @@ namespace WTelegramClientTest
 				Console.WriteLine("Loading previously saved access hashes from disk...");
 				using (var stateStream = File.OpenRead(StateFilename))
 					savedState = await JsonSerializer.DeserializeAsync<SavedState>(stateStream);
-				foreach ((long id, long access_hash) in savedState.Channels) client.SetAccessHashFor<Channel>(id, access_hash);
-				foreach ((long id, long access_hash) in savedState.Users) client.SetAccessHashFor<User>(id, access_hash);
+				foreach (var id_hash in savedState.Channels) client.SetAccessHashFor<Channel>(id_hash.Key, id_hash.Value);
+				foreach (var id_hash in savedState.Users) client.SetAccessHashFor<User>(id_hash.Key, id_hash.Value);
 			}
 
 			Console.WriteLine("Connecting to Telegram...");

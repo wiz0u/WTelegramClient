@@ -171,7 +171,6 @@ namespace WTelegram
 			(byte[] key, byte[] iv) ConstructTmpAESKeyIV(Int128 server_nonce, Int256 new_nonce)
 			{
 				byte[] tmp_aes_key = new byte[32], tmp_aes_iv = new byte[32];
-				sha1.Initialize();
 				sha1.TransformBlock(new_nonce, 0, 32, null, 0);
 				sha1.TransformFinalBlock(server_nonce, 0, 16);
 				sha1.Hash.CopyTo(tmp_aes_key, 0);                   // tmp_aes_key := SHA1(new_nonce + server_nonce)
@@ -185,6 +184,7 @@ namespace WTelegram
 				sha1.TransformFinalBlock(new_nonce, 0, 32);
 				sha1.Hash.CopyTo(tmp_aes_iv, 8);                    //              + SHA(new_nonce + new_nonce)
 				Array.Copy(new_nonce, 0, tmp_aes_iv, 28, 4);        //              + new_nonce[0:4]
+				sha1.Initialize();
 				return (tmp_aes_key, tmp_aes_iv);
 			}
 		}
@@ -231,6 +231,7 @@ namespace WTelegram
 			using var sha1 = SHA1.Create();
 			rsa.ImportFromPem(pem);
 			var rsaParam = rsa.ExportParameters(false);
+			if (rsaParam.Modulus[0] == 0) rsaParam.Modulus = rsaParam.Modulus[1..];
 			var publicKey = new RSAPublicKey { n = rsaParam.Modulus, e = rsaParam.Exponent };
 			var bareData = publicKey.Serialize(); // bare serialization
 			var fingerprint = BinaryPrimitives.ReadInt64LittleEndian(sha1.ComputeHash(bareData, 4, bareData.Length - 4).AsSpan(12)); // 64 lower-order bits of SHA1
@@ -278,7 +279,6 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			// first, construct AES key & IV
 			byte[] aes_key = new byte[32], aes_iv = new byte[32];
 			int x = encrypt ? 0 : 8;
-			sha1.Initialize();
 			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
 			sha1.TransformFinalBlock(authKey, x, 32);                   // authKey[x:32]
 			var sha1_a = sha1.Hash;
@@ -295,6 +295,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
 			sha1.TransformFinalBlock(authKey, 96 + x, 32);              // authKey[96+x:32]
 			var sha1_d = sha1.Hash;
+			sha1.Initialize();
 			Array.Copy(sha1_a, 0, aes_key, 0, 8);
 			Array.Copy(sha1_b, 8, aes_key, 8, 12);
 			Array.Copy(sha1_c, 4, aes_key, 20, 12);
@@ -310,7 +311,6 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			// first, construct AES key & IV
 			byte[] aes_key = new byte[32], aes_iv = new byte[32];
 			int x = encrypt ? 0 : 8;
-			sha256.Initialize();
 			sha256.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);   // msgKey
 			sha256.TransformFinalBlock(authKey, x, 36);                 // authKey[x:36]
 			var sha256_a = sha256.Hash;
@@ -318,6 +318,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			sha256.TransformBlock(authKey, 40 + x, 36, null, 0);        // authKey[40+x:36]
 			sha256.TransformFinalBlock(msgKey, msgKeyOffset, 16);       // msgKey
 			var sha256_b = sha256.Hash;
+			sha256.Initialize();
 			Array.Copy(sha256_a, 0, aes_key, 0, 8);
 			Array.Copy(sha256_b, 8, aes_key, 8, 16);
 			Array.Copy(sha256_a, 24, aes_key, 24, 8);
@@ -374,7 +375,6 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			ValidityChecks(p, algo.g);
 
 			using var sha256 = SHA256.Create();
-			sha256.Initialize();
 			sha256.TransformBlock(algo.salt1, 0, algo.salt1.Length, null, 0);
 			sha256.TransformBlock(passwordBytes, 0, passwordBytes.Length, null, 0);
 			sha256.TransformFinalBlock(algo.salt1, 0, algo.salt1.Length);

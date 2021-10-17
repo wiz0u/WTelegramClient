@@ -472,11 +472,11 @@ namespace WTelegram
 					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
 #else
 				if (decrypted_data.Length - 32 - length is < 12 or > 1024) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
-				_sha256Recv.Initialize();
 				_sha256Recv.TransformBlock(_dcSession.AuthKey, 96, 32, null, 0);
 				_sha256Recv.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
 				if (!data.AsSpan(8, 16).SequenceEqual(_sha256Recv.Hash.AsSpan(8, 16)))
 					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
+				_sha256Recv.Initialize();
 #endif
 				var ctorNb = reader.ReadUInt32();
 				if (ctorNb == Layer.MsgContainerCtor)
