@@ -97,11 +97,24 @@ Console.WriteLine($"Sending a message in chat {target.ID}: {target.Title}");
 await client.SendMessageAsync(target, "Hello, World");
 ```
 
+### Terminology in Telegram Client API
+
+Some of these terms/classnames can be confusing as they differ from the terms shown to end-users
+- `Channel` : A (large) chat group *(sometimes called supergroup)* or a broadcast channel (the `broadcast` flag differenciate those)
+- `Chat` : A private simple chat group with few people (it may be migrated to a supergroup/channel when it doesn't fit anymore)
+- Chats : In plural, it means either `Chat` or `Channel`
+- `Peer` : Either a `Chat`, `Channel` or a private chat with a `User`
+- Dialog : The current status of a chat with a `Peer` *(draft, last message, unread count, pinned...)*
+- DC (DataCenter) : There are a few datacenters depending on where in the world the user (or an uploaded media file) is from.
+- Access Hash : For more security, Telegram requires you to provide the specific `access_hash` for chats, files and other resources before interacting with them (not required for a simple `Chat`). This is like showing a pass that proves you are entitled to access it. You obtain this hash when you first gain access to a resource and occasionnally later when some events about this resource are happening or if you query the API. You should remember this hash if you want to access that resource later.
+
 # Other things to know
 
 The Client class also offers an `Update` event that is triggered when Telegram servers sends unsollicited Updates or notifications/information/status/service messages, independently of your API requests. See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs)
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
+
+You can find more code examples in [EXAMPLES.md](EXAMPLES.md) and in the Examples subdirectory.
 
 The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
 
