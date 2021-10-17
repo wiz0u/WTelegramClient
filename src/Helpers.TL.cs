@@ -64,7 +64,6 @@ namespace TL
 	partial class UserBase
 	{
 		public abstract long ID { get; }
-		public abstract string DisplayName { get; }
 		protected abstract InputPeer ToInputPeer();
 		protected abstract InputUserBase ToInputUser();
 		public static implicit operator InputPeer(UserBase user) => user.ToInputPeer();
@@ -73,14 +72,14 @@ namespace TL
 	partial class UserEmpty
 	{
 		public override long ID => id;
-		public override string DisplayName => null;
+		public override string ToString() => null;
 		protected override InputPeer ToInputPeer() => null;
 		protected override InputUserBase ToInputUser() => null;
 	}
 	partial class User
 	{
 		public override long ID => id;
-		public override string DisplayName => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
+		public override string ToString() => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
 		protected override InputPeer ToInputPeer() => new InputPeerUser { user_id = id, access_hash = access_hash };
 		protected override InputUserBase ToInputUser() => new InputUser { user_id = id, access_hash = access_hash };
 	}

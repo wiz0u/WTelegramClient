@@ -39,7 +39,7 @@ namespace WTelegramClientTest
 
 		private static readonly Dictionary<long, UserBase> users = new();
 		private static readonly Dictionary<long, ChatBase> chats = new();
-		private static string AUser(long user_id) => users.TryGetValue(user_id, out var user) ? user.DisplayName : $"User {user_id}";
+		private static string AUser(long user_id) => users.TryGetValue(user_id, out var user) ? user.ToString() : $"User {user_id}";
 		private static string AChat(long chat_id) => chats.TryGetValue(chat_id, out var chat) ? chat.ToString() : $"Chat {chat_id}";
 		private static string APeer(Peer peer) => peer is null ? null : peer is PeerUser user ? AUser(user.user_id)
 			: peer is PeerChat chat ? AChat(chat.chat_id) : peer is PeerChannel channel ? AChat(channel.channel_id) : $"Peer {peer.ID}";
@@ -71,7 +71,7 @@ namespace WTelegramClientTest
 			switch (update)
 			{
 				case UpdateNewMessage unm: DisplayMessage(unm.message); break;
-				case UpdateEditMessage uem: Console.Write("(Edit): "); DisplayMessage(uem.message); break;
+				case UpdateEditMessage uem: DisplayMessage(uem.message, true); break;
 				case UpdateDeleteChannelMessages udcm: Console.WriteLine($"{udcm.messages.Length} message(s) deleted in {AChat(udcm.channel_id)}"); break;
 				case UpdateDeleteMessages udm: Console.WriteLine($"{udm.messages.Length} message(s) deleted"); break;
 				case UpdateUserTyping uut: Console.WriteLine($"{AUser(uut.user_id)} is {uut.action}"); break;
@@ -85,8 +85,9 @@ namespace WTelegramClientTest
 			}
 		}
 
-		private static void DisplayMessage(MessageBase messageBase)
+		private static void DisplayMessage(MessageBase messageBase, bool edit = false)
 		{
+			if (edit) Console.Write("(Edit): ");
 			switch (messageBase)
 			{
 				case Message m: Console.WriteLine($"{APeer(m.from_id) ?? m.post_author} in {APeer(m.peer_id)}> {m.message}"); break;
