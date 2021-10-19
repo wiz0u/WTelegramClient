@@ -16,7 +16,6 @@ After installing WTelegramClient through Nuget, your first Console program will 
 static async Task Main(string[] _)
 {
     using var client = new WTelegram.Client();
-    await client.ConnectAsync();
     var user = await client.LoginUserIfNeeded();
     Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name} (id {user.id})");
 }
@@ -97,9 +96,9 @@ Console.WriteLine($"Sending a message in chat {target.ID}: {target.Title}");
 await client.SendMessageAsync(target, "Hello, World");
 ```
 
-### Terminology in Telegram Client API
+# Terminology in Telegram Client API
 
-Some of these terms/classnames can be confusing as they differ from the terms shown to end-users
+In the API, Telegram uses some terms/classnames that can be confusing as they differ from the terms shown to end-users:
 - `Channel` : A (large) chat group *(sometimes called supergroup)* or a broadcast channel (the `broadcast` flag differenciate those)
 - `Chat` : A private simple chat group with few people (it may be migrated to a supergroup/channel when it doesn't fit anymore)
 - Chats : In plural, it means either `Chat` or `Channel`
@@ -129,7 +128,7 @@ This library works best with **.NET 5.0+** and is also available for **.NET Stan
 # Troubleshooting guide
 
 Here is a list of common issues and how to fix them so that your program work correctly:
-1) Are you using the Nuget package instead of the library source code?
+1) Are you using the Nuget package or the library source code?
 <br/>It is not recommended to copy/compile the source code of the library for a normal usage.
 <br/>When built in DEBUG mode, the source code connects to Telegram test servers. So you can either:
     - **Recommended:** Use the [official Nuget package](https://www.nuget.org/packages/WTelegramClient) or the [private nuget feed of development builds](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)

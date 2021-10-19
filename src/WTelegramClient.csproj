@@ -12,7 +12,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PackageId>WTelegramClient</PackageId>
-    <Description>Telegram client library written 100% in C# and .NET Standard | Latest MTProto &amp; API layer version</Description>
+    <Description>Telegram Client API library written 100% in C# and .NET Standard | Latest MTProto &amp; API layer version</Description>
     <Authors>Wizou</Authors>
     <Copyright>Copyright © Olivier Marcoux 2021</Copyright>
     <PackageIcon>logo.png</PackageIcon>

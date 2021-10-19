@@ -34,7 +34,6 @@ namespace WTelegram
 		}
 
 		public DateTime SessionStart => _sessionStart;
-		public readonly SemaphoreSlim _sem = new(1);
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
 		private readonly SHA256 _sha256 = SHA256.Create();
 		private string _pathname;

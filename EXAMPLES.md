@@ -25,7 +25,7 @@ await client.LoginUserIfNeeded();
 var imported = await client.Contacts_ImportContacts(new[] { new InputPhoneContact { phone = "+PHONENUMBER" } });
 await client.SendMessageAsync(imported.users[0], "Hello!");
 ```
-### Get the list of all chats (groups/channels) the user is in and send a message to one
+### List all chats (groups/channels) the user is in and send a message to one
 
 See [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
 
