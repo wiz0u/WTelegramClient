@@ -98,6 +98,7 @@ namespace WTelegram
 			using var sw = new StreamWriter(outputCs, false, Encoding.UTF8);
 			sw.WriteLine("// This file is generated automatically using the Generator class");
 			sw.WriteLine("using System;");
+			sw.WriteLine("using System.Collections.Generic;");
 			if (schema.methods.Count != 0) sw.WriteLine("using System.Threading.Tasks;");
 			sw.WriteLine();
 			sw.WriteLine("namespace TL");
@@ -442,7 +443,13 @@ namespace WTelegram
 		private string MapType(string type, string name)
 		{
 			if (type.StartsWith("Vector<", StringComparison.OrdinalIgnoreCase))
+			{
+				if (name == "users" && type == "Vector<User>")
+					return $"Dictionary<long, " + MapType(type[7..^1], name) + ">";
+				else if (name == "chats" && type == "Vector<Chat>")
+					return $"Dictionary<long, " + MapType(type[7..^1], name) + ">";
 				return MapType(type[7..^1], name) + "[]";
+			}
 			else if (type == "Bool")
 				return "bool";
 			else if (type == "bytes")
@@ -471,7 +478,7 @@ namespace WTelegram
 			else if (typeInfos.TryGetValue(type, out var typeInfo))
 				return typeInfo.ReturnName;
 			else
-			{	// try to find type in a lower layer
+			{   // try to find type in a lower layer
 				/*foreach (var layer in typeInfosByLayer.OrderByDescending(kvp => kvp.Key))
 					if (layer.Value.TryGetValue(type, out typeInfo))
 						return layer.Key == 0 ? typeInfo.ReturnName : $"Layer{layer.Key}.{typeInfo.ReturnName}";*/

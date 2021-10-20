@@ -32,26 +32,26 @@ namespace WTelegramClientTest
 
 			var chats = await client.Messages_GetAllChats(null); // chats = groups/channels (does not include users dialogs)
 			Console.WriteLine("This user has joined the following:");
-			foreach (var chat in chats.chats)
+			foreach (var (id, chat) in chats.chats)
 				switch (chat)
 				{
 					case Chat smallgroup when (smallgroup.flags & Chat.Flags.deactivated) == 0:
-						Console.WriteLine($"{smallgroup.id}:  Small group: {smallgroup.title} with {smallgroup.participants_count} members");
+						Console.WriteLine($"{id}:  Small group: {smallgroup.title} with {smallgroup.participants_count} members");
 						break;
 					case Channel channel when (channel.flags & Channel.Flags.broadcast) != 0:
-						Console.WriteLine($"{channel.id}: Channel {channel.username}: {channel.title}");
+						Console.WriteLine($"{id}: Channel {channel.username}: {channel.title}");
 						//Console.WriteLine($"              → access_hash = {channel.access_hash:X}");
 						break;
 					case Channel group: // no broadcast flag => it's a big group, also called supergroup or megagroup
-						Console.WriteLine($"{group.id}: Group {group.username}: {group.title}");
+						Console.WriteLine($"{id}: Group {group.username}: {group.title}");
 						//Console.WriteLine($"              → access_hash = {group.access_hash:X}");
 						break;
 				}
 
 			Console.Write("Type a chat ID to send a message: ");
-			long id = long.Parse(Console.ReadLine());
-			var target = chats.chats.First(chat => chat.ID == id);
-			Console.WriteLine($"Sending a message in chat {target.ID}: {target.Title}");
+			long chatId = long.Parse(Console.ReadLine());
+			var target = chats.chats[chatId];
+			Console.WriteLine($"Sending a message in chat {chatId}: {target.Title}");
 			// Next line implicitely creates an adequate InputPeer from ChatBase: (with the access_hash if these is one)
 			InputPeer peer = target;
 			await client.SendMessageAsync(peer, "Hello, World");

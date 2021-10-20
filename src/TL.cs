@@ -141,6 +141,10 @@ namespace TL
 						return new Int128(reader);
 					else if (type == typeof(Int256))
 						return new Int256(reader);
+					else if (type == typeof(Dictionary<long, UserBase>))
+						return reader.ReadTLDictionary<UserBase>(u => u.ID);
+					else if (type == typeof(Dictionary<long, ChatBase>))
+						return reader.ReadTLDictionary<ChatBase>(c => c.ID);
 					else
 						return reader.ReadTLObject();
 				default:
@@ -182,6 +186,22 @@ namespace TL
 			}
 			else
 				throw new ApplicationException($"Cannot deserialize {type.Name} with ctor #{ctorNb:x}");
+		}
+
+		internal static Dictionary<long, T> ReadTLDictionary<T>(this BinaryReader reader, Func<T, long> getID)
+		{
+			uint ctorNb = reader.ReadUInt32();
+			var elementType = typeof(T);
+			if (ctorNb != Layer.VectorCtor)
+				throw new ApplicationException($"Cannot deserialize Vector<{elementType.Name}> with ctor #{ctorNb:x}");
+			int count = reader.ReadInt32();
+			var dict = new Dictionary<long, T>(count);
+			for (int i = 0; i < count; i++)
+			{
+				var value = (T)reader.ReadTLValue(elementType);
+				dict.Add(getID(value), value);
+			}
+			return dict;
 		}
 
 		internal static void WriteTLStamp(this BinaryWriter writer, DateTime datetime)

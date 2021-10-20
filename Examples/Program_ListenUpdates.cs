@@ -24,12 +24,11 @@ namespace WTelegramClientTest
 			if (dialogsBase is Messages_Dialogs dialogs)
 				while (dialogs.dialogs.Length != 0)
 				{
-					foreach (var user in dialogs.users) users[user.ID] = user;
-					foreach (var chat in dialogs.chats) chats[chat.ID] = chat;
+					foreach (var (id, user) in dialogs.users) users[id] = user;
+					foreach (var (id, chat) in dialogs.chats) chats[id] = chat;
 					var lastDialog = (Dialog)dialogs.dialogs[^1];
 					var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.peer.ID && m.ID == lastDialog.top_message);
-					InputPeer offsetPeer = lastDialog.peer is PeerUser pu ? dialogs.users.First(u => u.ID == pu.ID)
-						 : dialogs.chats.First(u => u.ID == lastDialog.peer.ID);
+					InputPeer offsetPeer = lastDialog.peer is PeerUser pu ? dialogs.users[pu.ID] : dialogs.chats[lastDialog.peer.ID];
 					dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.top_message, offsetPeer, 500, 0);
 				}
 			Console.ReadKey();
@@ -53,13 +52,13 @@ namespace WTelegramClientTest
 				case UpdateShortSentMessage: Console.WriteLine($"You sent a message"); break;
 				case UpdateShort updateShort: DisplayUpdate(updateShort.update); break;
 				case Updates u:
-					foreach (var user in u.users) users[user.ID] = user;
-					foreach (var chat in u.chats) chats[chat.ID] = chat;
+					foreach (var (id, user) in u.users) users[id] = user;
+					foreach (var (id, chat) in u.chats) chats[id] = chat;
 					foreach (var update in u.updates) DisplayUpdate(update);
 					break;
 				case UpdatesCombined uc:
-					foreach (var user in uc.users) users[user.ID] = user;
-					foreach (var chat in uc.chats) chats[chat.ID] = chat;
+					foreach (var (id, user) in uc.users) users[id] = user;
+					foreach (var (id, chat) in uc.chats) chats[id] = chat;
 					foreach (var update in uc.updates) DisplayUpdate(update);
 					break;
 				default: Console.WriteLine(arg.GetType().Name); break;

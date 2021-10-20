@@ -76,23 +76,23 @@ using TL;
 ...
 var chats = await client.Messages_GetAllChats(null);
 Console.WriteLine("This user has joined the following:");
-foreach (var chat in chats.chats)
+foreach (var (id, chat) in chats.chats)
     switch (chat)
     {
         case Chat smallgroup when (smallgroup.flags & Chat.Flags.deactivated) == 0:
-            Console.WriteLine($"{smallgroup.id}:  Small group: {smallgroup.title} with {smallgroup.participants_count} members");
+            Console.WriteLine($"{id}:  Small group: {smallgroup.title} with {smallgroup.participants_count} members");
             break;
         case Channel channel when (channel.flags & Channel.Flags.broadcast) != 0:
-            Console.WriteLine($"{channel.id}: Channel {channel.username}: {channel.title}");
+            Console.WriteLine($"{id}: Channel {channel.username}: {channel.title}");
             break;
         case Channel group:
-            Console.WriteLine($"{group.id}: Group {group.username}: {group.title}");
+            Console.WriteLine($"{id}: Group {group.username}: {group.title}");
             break;
     }
 Console.Write("Type a chat ID to send a message: ");
-long id = long.Parse(Console.ReadLine());
-var target = chats.chats.First(chat => chat.ID == id);
-Console.WriteLine($"Sending a message in chat {target.ID}: {target.Title}");
+long chatId = long.Parse(Console.ReadLine());
+var target = chats.chats[chatId];
+Console.WriteLine($"Sending a message in chat {chatId}: {target.Title}");
 await client.SendMessageAsync(target, "Hello, World");
 ```
 

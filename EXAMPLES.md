@@ -16,7 +16,7 @@ Remember that these are just simple example codes that you should adjust to your
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var resolved = await client.Contacts_ResolveUsername("USERNAME");
-await resolved.SendMessageAsync(result.users[0], "Hello!");
+await client.SendMessageAsync(resolved.users[0], "Hello!");
 ```
 ### Send a message to someone by phone number
 ```csharp
@@ -25,19 +25,20 @@ await client.LoginUserIfNeeded();
 var imported = await client.Contacts_ImportContacts(new[] { new InputPhoneContact { phone = "+PHONENUMBER" } });
 await client.SendMessageAsync(imported.users[0], "Hello!");
 ```
+*Note: To prevent spam, Telegram may restrict your ability to add new phone numbers.*
+
 ### List all chats (groups/channels) the user is in and send a message to one
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats(null);
-foreach (var chat in chats.chats)
-    Console.WriteLine($"{chat.ID} : {chat}");
+foreach (var (id, chat) in chats.chats)
+    Console.WriteLine($"{id} : {chat}");
 Console.Write("Choose a chat ID to send a message to: ");
-long id = long.Parse(Console.ReadLine());
-var target = chats.chats.First(chat => chat.ID == id);
-await client.SendMessageAsync(target, "Hello, World");
+long chatId = long.Parse(Console.ReadLine());
+await client.SendMessageAsync(chats.chats[chatId], "Hello, World");
 ```
-Note: the list returned by Messages_GetAllChats contains the `access_hash` for those chats.
+*Note: the list returned by Messages_GetAllChats contains the `access_hash` for those chats.*
 <br/>
 See a longer version of this example in [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
 
@@ -46,7 +47,7 @@ See a longer version of this example in [Examples/Program_GetAllChats.cs](Exampl
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats(null);
-InputPeer peer = chats.chats.First(chat => chat.ID == 1234567890); // the chat we want
+InputPeer peer = chats.chats[1234567890]; // the chat we want
 DateTime when = DateTime.UtcNow.AddMinutes(3);
 await client.SendMessageAsync(peer, "This will be posted in 3 minutes", schedule_date: when);
 ```
@@ -58,7 +59,7 @@ const string Filepath = @"C:\...\photo.jpg";
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats(null);
-InputPeer peer = chats.chats.First(chat => chat.ID == TargetChatId);
+InputPeer peer = chats.chats[TargetChatId];
 var inputFile = await client.UploadFileAsync(Filepath);
 await client.SendMediaAsync(peer, "Here is the photo", inputFile);
 ```
@@ -66,7 +67,7 @@ await client.SendMediaAsync(peer, "Here is the photo", inputFile);
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var dialogsBase = await client.Messages_GetDialogs(default, 0, null, 0, 0); // dialogs = groups/channels/users
+var dialogsBase = await client.Messages_GetDialogs(default, 0, null, 0, 0);
 if (dialogsBase is Messages_Dialogs dialogs)
     while (dialogs.dialogs.Length != 0)
     {
@@ -74,18 +75,17 @@ if (dialogsBase is Messages_Dialogs dialogs)
             if (dialog is Dialog { peer: var peer } || (dialog is DialogFolder dialogFolder && (peer = dialogFolder.peer) != null))
                 switch (peer)
                 {
-                    case PeerUser: Console.WriteLine("User " + dialogs.users.First(u => u.ID == peer.ID)); break;
-                    case PeerChannel or PeerChat: Console.WriteLine(dialogs.chats.First(c => c.ID == peer.ID)); break;
+                    case PeerUser: Console.WriteLine("User " + dialogs.users[peer.ID]); break;
+                    case PeerChannel or PeerChat: Console.WriteLine(dialogs.chats[peer.ID]); break;
                 }
         var lastDialog = (Dialog)dialogs.dialogs[^1];
         var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.peer.ID && m.ID == lastDialog.top_message);
-        InputPeer offsetPeer = lastDialog.peer is PeerUser pu ? dialogs.users.First(u => u.ID == pu.ID)
-            : dialogs.chats.First(u => u.ID == lastDialog.peer.ID);
+        InputPeer offsetPeer = lastDialog.peer is PeerUser pu ? dialogs.users[pu.ID] : dialogs.chats[lastDialog.peer.ID];
         dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.top_message, offsetPeer, 500, 0);
     }
 ```
 
-Note: the lists returned by Messages_GetDialogs contains the `access_hash` for those chats and users.
+*Note: the lists returned by Messages_GetDialogs contains the `access_hash` for those chats and users.*
 <br/>
 See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
@@ -104,7 +104,7 @@ For a Channel/Group:
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats(null);
-var channel = (Channel)chats.chats.First(chat => chat.ID == 1234567890); // the channel we want
+var channel = (Channel)chats.chats[1234567890]; // the channel we want
 for (int offset = 0; ;)
 {
     var participants = await client.Channels_GetParticipants(channel, null, offset, 1000, 0);
@@ -120,7 +120,7 @@ for (int offset = 0; ;)
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats(null);
-InputPeer peer = chats.chats.First(chat => chat.ID == 1234567890); // the chat we want
+InputPeer peer = chats.chats[1234567890]; // the chat we want
 for (int offset = 0; ;)
 {
     var messagesBase = await client.Messages_GetHistory(peer, 0, default, offset, 1000, 0, 0, 0);

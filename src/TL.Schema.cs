@@ -1,5 +1,6 @@
 ﻿// This file is generated automatically using the Generator class
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace TL
@@ -1257,7 +1258,7 @@ namespace TL
 	{
 		public Contact[] contacts;
 		public int saved_count;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/contacts.importedContacts"/></summary>
@@ -1267,7 +1268,7 @@ namespace TL
 		public ImportedContact[] imported;
 		public PopularContact[] popular_invites;
 		public long[] retry_contacts;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/contacts.blocked"/></summary>
@@ -1275,8 +1276,8 @@ namespace TL
 	public partial class Contacts_Blocked : ITLObject
 	{
 		public PeerBlocked[] blocked;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/contacts.blockedSlice"/></summary>
 	[TLDef(0xE1664194, inheritAfter = true)]
@@ -1290,8 +1291,8 @@ namespace TL
 	{
 		public DialogBase[] dialogs;
 		public MessageBase[] messages;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.dialogsSlice"/></summary>
 	[TLDef(0x71E094F3, inheritAfter = true)]
@@ -1307,8 +1308,8 @@ namespace TL
 	public partial class Messages_Messages : Messages_MessagesBase
 	{
 		public MessageBase[] messages;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.messagesSlice"/></summary>
 	[TLDef(0x3A54685E, inheritAfter = true)]
@@ -1330,8 +1331,8 @@ namespace TL
 		public int count;
 		[IfFlag(2)] public int offset_id_offset;
 		public MessageBase[] messages;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.messagesNotModified"/></summary>
 	[TLDef(0x74535F21)]
@@ -1339,7 +1340,7 @@ namespace TL
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.chats"/></summary>
 	[TLDef(0x64FF9FD5)]
-	public partial class Messages_Chats : ITLObject { public ChatBase[] chats; }
+	public partial class Messages_Chats : ITLObject { public Dictionary<long, ChatBase> chats; }
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.chatsSlice"/></summary>
 	[TLDef(0x9CD81144, inheritAfter = true)]
 	public partial class Messages_ChatsSlice : Messages_Chats { public int count; }
@@ -1349,8 +1350,8 @@ namespace TL
 	public partial class Messages_ChatFull : ITLObject
 	{
 		public ChatFullBase full_chat;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.affectedHistory"/></summary>
@@ -2102,8 +2103,8 @@ namespace TL
 		public MessageBase[] new_messages;
 		public EncryptedMessageBase[] new_encrypted_messages;
 		public Update[] other_updates;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 		public Updates_State state;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updates.differenceSlice"/></summary>
@@ -2113,8 +2114,8 @@ namespace TL
 		public MessageBase[] new_messages;
 		public EncryptedMessageBase[] new_encrypted_messages;
 		public Update[] other_updates;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 		public Updates_State intermediate_state;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updates.differenceTooLong"/></summary>
@@ -2177,8 +2178,8 @@ namespace TL
 	public partial class UpdatesCombined : UpdatesBase
 	{
 		public Update[] updates;
-		public UserBase[] users;
-		public ChatBase[] chats;
+		public Dictionary<long, UserBase> users;
+		public Dictionary<long, ChatBase> chats;
 		public DateTime date;
 		public int seq_start;
 		public int seq;
@@ -2188,8 +2189,8 @@ namespace TL
 	public partial class Updates : UpdatesBase
 	{
 		public Update[] updates;
-		public UserBase[] users;
-		public ChatBase[] chats;
+		public Dictionary<long, UserBase> users;
+		public Dictionary<long, ChatBase> chats;
 		public DateTime date;
 		public int seq;
 	}
@@ -2213,7 +2214,7 @@ namespace TL
 	public partial class Photos_Photos : ITLObject
 	{
 		public PhotoBase[] photos;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/photos.photosSlice"/></summary>
 	[TLDef(0x15051F54, inheritAfter = true)]
@@ -2224,7 +2225,7 @@ namespace TL
 	public partial class Photos_Photo : ITLObject
 	{
 		public PhotoBase photo;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/upload.File"/></summary>
@@ -2609,8 +2610,8 @@ namespace TL
 	{
 		public Peer[] my_results;
 		public Peer[] results;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/InputPrivacyKey"/></summary>
@@ -2714,8 +2715,8 @@ namespace TL
 	public partial class Account_PrivacyRules : ITLObject
 	{
 		public PrivacyRule[] rules;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/accountDaysTTL"/></summary>
@@ -3229,8 +3230,8 @@ namespace TL
 	public partial class Contacts_ResolvedPeer : ITLObject
 	{
 		public Peer peer;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messageRange"/></summary>
@@ -3261,8 +3262,8 @@ namespace TL
 		[IfFlag(1)] public int timeout;
 		public DialogBase dialog;
 		public MessageBase[] messages;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updates.channelDifference"/></summary>
 	[TLDef(0x2064674E)]
@@ -3274,8 +3275,8 @@ namespace TL
 		[IfFlag(1)] public int timeout;
 		public MessageBase[] new_messages;
 		public Update[] other_updates;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/channelMessagesFilter"/></summary>
@@ -3383,8 +3384,8 @@ namespace TL
 	{
 		public int count;
 		public ChannelParticipantBase[] participants;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/channels.channelParticipant"/></summary>
@@ -3392,8 +3393,8 @@ namespace TL
 	public partial class Channels_ChannelParticipant : ITLObject
 	{
 		public ChannelParticipantBase participant;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/help.termsOfService"/></summary>
@@ -3655,7 +3656,7 @@ namespace TL
 		[IfFlag(2)] public InlineBotSwitchPM switch_pm;
 		public BotInlineResultBase[] results;
 		public DateTime cache_time;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/exportedMessageLink"/></summary>
@@ -3762,8 +3763,8 @@ namespace TL
 	{
 		public DialogBase[] dialogs;
 		public MessageBase[] messages;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 		public Updates_State state;
 	}
 
@@ -3813,8 +3814,8 @@ namespace TL
 	public partial class Contacts_TopPeers : Contacts_TopPeersBase
 	{
 		public TopPeerCategoryPeers[] categories;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/contacts.topPeersDisabled"/></summary>
 	[TLDef(0xB52C939D)]
@@ -3967,7 +3968,7 @@ namespace TL
 	public partial class Messages_HighScores : ITLObject
 	{
 		public HighScore[] scores;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/RichText"/></summary>
@@ -4377,7 +4378,7 @@ namespace TL
 		[IfFlag(4)] public DataJSON native_params;
 		[IfFlag(0)] public PaymentRequestedInfo saved_info;
 		[IfFlag(1)] public PaymentSavedCredentials saved_credentials;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/payments.validatedRequestedInfo"/></summary>
@@ -4418,7 +4419,7 @@ namespace TL
 		public string currency;
 		public long total_amount;
 		public string credentials_title;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/payments.savedInfo"/></summary>
@@ -4607,7 +4608,7 @@ namespace TL
 	public partial class Phone_PhoneCall : ITLObject
 	{
 		public PhoneCallBase phone_call;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/upload.CdnFile"/></summary>
@@ -4862,8 +4863,8 @@ namespace TL
 	public partial class Channels_AdminLogResults : ITLObject
 	{
 		public ChannelAdminLogEvent[] events;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventsFilter"/></summary>
@@ -4917,8 +4918,8 @@ namespace TL
 	public partial class Help_RecentMeUrls : ITLObject
 	{
 		public RecentMeUrl[] urls;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputSingleMedia"/></summary>
@@ -4953,7 +4954,7 @@ namespace TL
 	public partial class Account_WebAuthorizations : ITLObject
 	{
 		public WebAuthorization[] authorizations;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/InputMessage"/></summary>
@@ -5242,7 +5243,7 @@ namespace TL
 		public SecureRequiredTypeBase[] required_types;
 		public SecureValue[] values;
 		public SecureValueErrorBase[] errors;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 		[IfFlag(0)] public string privacy_policy_url;
 	}
 
@@ -5804,8 +5805,8 @@ namespace TL
 	public partial class Messages_InactiveChats : ITLObject
 	{
 		public int[] dates;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/BaseTheme"/></summary>
@@ -5898,7 +5899,7 @@ namespace TL
 		public Flags flags;
 		public int count;
 		public MessageUserVoteBase[] votes;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 		[IfFlag(0)] public string next_offset;
 	}
 
@@ -6026,8 +6027,8 @@ namespace TL
 		public Flags flags;
 		public DateTime expires;
 		public Peer peer;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 		[IfFlag(1)] public string psa_type;
 		[IfFlag(2)] public string psa_message;
 	}
@@ -6092,7 +6093,7 @@ namespace TL
 		public StatsGroupTopPoster[] top_posters;
 		public StatsGroupTopAdmin[] top_admins;
 		public StatsGroupTopInviter[] top_inviters;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/globalPrivacySettings"/></summary>
@@ -6152,8 +6153,8 @@ namespace TL
 	public partial class Messages_MessageViews : ITLObject
 	{
 		public MessageViews[] views;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.discussionMessage"/></summary>
@@ -6167,8 +6168,8 @@ namespace TL
 		[IfFlag(1)] public int read_inbox_max_id;
 		[IfFlag(2)] public int read_outbox_max_id;
 		public int unread_count;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messageReplyHeader"/></summary>
@@ -6272,8 +6273,8 @@ namespace TL
 		public GroupCallBase call;
 		public GroupCallParticipant[] participants;
 		public string participants_next_offset;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/phone.groupParticipants"/></summary>
@@ -6283,8 +6284,8 @@ namespace TL
 		public int count;
 		public GroupCallParticipant[] participants;
 		public string next_offset;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 		public int version;
 	}
 
@@ -6340,7 +6341,7 @@ namespace TL
 	{
 		public int count;
 		public ExportedChatInvite[] invites;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/messages.ExportedChatInvite"/></summary>
@@ -6350,7 +6351,7 @@ namespace TL
 	public partial class Messages_ExportedChatInvite : Messages_ExportedChatInviteBase
 	{
 		public ExportedChatInvite invite;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.exportedChatInviteReplaced"/></summary>
 	[TLDef(0x222600EF)]
@@ -6358,7 +6359,7 @@ namespace TL
 	{
 		public ExportedChatInvite invite;
 		public ExportedChatInvite new_invite;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.chatInviteImporters"/></summary>
@@ -6367,7 +6368,7 @@ namespace TL
 	{
 		public int count;
 		public ChatInviteImporter[] importers;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatAdminWithInvites"/></summary>
@@ -6384,7 +6385,7 @@ namespace TL
 	public partial class Messages_ChatAdminsWithInvites : ITLObject
 	{
 		public ChatAdminWithInvites[] admins;
-		public UserBase[] users;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.checkedHistoryImportPeer"/></summary>
@@ -6396,8 +6397,8 @@ namespace TL
 	public partial class Phone_JoinAsPeers : ITLObject
 	{
 		public Peer[] peers;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/phone.exportedGroupCallInvite"/></summary>
@@ -6499,8 +6500,8 @@ namespace TL
 	public partial class Messages_SponsoredMessages : ITLObject
 	{
 		public SponsoredMessage[] messages;
-		public ChatBase[] chats;
-		public UserBase[] users;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
 	}
 
 	// ---functions---

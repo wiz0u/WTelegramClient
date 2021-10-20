@@ -1,5 +1,6 @@
 ﻿// This file is generated automatically using the Generator class
 using System;
+using System.Collections.Generic;
 
 namespace TL
 {
