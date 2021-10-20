@@ -5,7 +5,7 @@
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 
 # <img src="logo.png" width="32"/> WTelegramClient
-### _Telegram client library written 100% in C# and .NET Standard_
+### _Telegram Client API library written 100% in C# and .NET Standard_
 
 ## How to use
 

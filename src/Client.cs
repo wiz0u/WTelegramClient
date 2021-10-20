@@ -103,7 +103,7 @@ namespace WTelegram
 			"lang_pack" => "",
 			"lang_code" => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
 			"user_id" => "-1",
-			"verification_code" => AskConfig(config),
+			"verification_code" or "password" => AskConfig(config),
 			_ => null // api_id api_hash phone_number... it's up to you to reply to these correctly
 		};
 

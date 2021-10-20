@@ -26,10 +26,20 @@ var imported = await client.Contacts_ImportContacts(new[] { new InputPhoneContac
 await client.SendMessageAsync(imported.users[0], "Hello!");
 ```
 ### List all chats (groups/channels) the user is in and send a message to one
-
-See [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
-
+```csharp
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+await client.LoginUserIfNeeded();
+var chats = await client.Messages_GetAllChats(null);
+foreach (var chat in chats.chats)
+    Console.WriteLine($"{chat.ID} : {chat}");
+Console.Write("Choose a chat ID to send a message to: ");
+long id = long.Parse(Console.ReadLine());
+var target = chats.chats.First(chat => chat.ID == id);
+await client.SendMessageAsync(target, "Hello, World");
+```
 Note: the list returned by Messages_GetAllChats contains the `access_hash` for those chats.
+<br/>
+See a longer version of this example in [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
 
 ### Schedule a message to be sent to a chat
 ```csharp
@@ -76,7 +86,7 @@ if (dialogsBase is Messages_Dialogs dialogs)
 ```
 
 Note: the lists returned by Messages_GetDialogs contains the `access_hash` for those chats and users.
-
+<br/>
 See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
 ### Get all members from a chat
