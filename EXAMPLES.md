@@ -16,14 +16,14 @@ Remember that these are just simple example codes that you should adjust to your
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var resolved = await client.Contacts_ResolveUsername("USERNAME");
-await client.SendMessageAsync(resolved.users[0], "Hello!");
+await client.SendMessageAsync(resolved.users[resolved.peer.ID], "Hello!");
 ```
 ### Send a message to someone by phone number
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var imported = await client.Contacts_ImportContacts(new[] { new InputPhoneContact { phone = "+PHONENUMBER" } });
-await client.SendMessageAsync(imported.users[0], "Hello!");
+await client.SendMessageAsync(imported.users[imported.imported[0].user_id], "Hello!");
 ```
 *Note: To prevent spam, Telegram may restrict your ability to add new phone numbers.*
 
