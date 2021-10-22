@@ -9,45 +9,56 @@ namespace TL
 	partial class InputPeer { public static InputPeerSelf Self => new(); }
 	partial class InputUser { public static InputUserSelf Self => new(); }
 
-	partial class ChatBase
+	public interface IPeerInfo {
+		long ID { get; }
+		bool IsActive { get; }
+		InputPeer ToInputPeer();
+	}
+
+	partial class ChatBase : IPeerInfo
 	{
 		public abstract long ID { get; }
 		public abstract string Title { get; }
+		public abstract bool IsActive { get; }
 		/// <summary>returns true if you're banned of any of these rights</summary>
 		public abstract bool IsBanned(ChatBannedRights.Flags flags = 0);
-		protected abstract InputPeer ToInputPeer();
+		public abstract InputPeer ToInputPeer();
 		public static implicit operator InputPeer(ChatBase chat) => chat.ToInputPeer();
 	}
 	partial class ChatEmpty
 	{
 		public override long ID => id;
 		public override string Title => null;
+		public override bool IsActive => false;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
-		protected override InputPeer ToInputPeer() => null;
+		public override InputPeer ToInputPeer() => null;
 		public override string ToString() => $"ChatEmpty {id}";
 	}
 	partial class Chat
 	{
 		public override long ID => id;
 		public override string Title => title;
+		public override bool IsActive => (flags & (Flags.kicked | Flags.left | Flags.deactivated)) == 0;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((default_banned_rights?.flags ?? 0) & flags) != 0;
-		protected override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
+		public override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
 		public override string ToString() => $"Chat \"{title}\"";
 	}
 	partial class ChatForbidden
 	{
 		public override long ID => id;
 		public override string Title => title;
+		public override bool IsActive => false;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
-		protected override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
+		public override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
 		public override string ToString() => $"ChatForbidden {id} \"{title}\"";
 	}
 	partial class Channel
 	{
 		public override long ID => id;
 		public override string Title => title;
+		public override bool IsActive => (flags & Flags.left) == 0;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((banned_rights?.flags ?? 0) & flags) != 0 || ((default_banned_rights?.flags ?? 0) & flags) != 0;
-		protected override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
+		public override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
 		public static implicit operator InputChannel(Channel channel) => new() { channel_id = channel.id, access_hash = channel.access_hash };
 		public override string ToString() =>
 			(flags.HasFlag(Flags.broadcast) ? "Channel " : "Group ") + (username != null ? '@' + username : $"\"{title}\"");
@@ -56,15 +67,17 @@ namespace TL
 	{
 		public override long ID => id;
 		public override string Title => title;
+		public override bool IsActive => false;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
-		protected override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
+		public override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
 		public override string ToString() => $"ChannelForbidden {id} \"{title}\"";
 	}
 
-	partial class UserBase
+	partial class UserBase : IPeerInfo
 	{
 		public abstract long ID { get; }
-		protected abstract InputPeer ToInputPeer();
+		public abstract bool IsActive { get; }
+		public abstract InputPeer ToInputPeer();
 		protected abstract InputUserBase ToInputUser();
 		public static implicit operator InputPeer(UserBase user) => user.ToInputPeer();
 		public static implicit operator InputUserBase(UserBase user) => user.ToInputUser();
@@ -72,15 +85,17 @@ namespace TL
 	partial class UserEmpty
 	{
 		public override long ID => id;
+		public override bool IsActive => false;
 		public override string ToString() => null;
-		protected override InputPeer ToInputPeer() => null;
+		public override InputPeer ToInputPeer() => null;
 		protected override InputUserBase ToInputUser() => null;
 	}
 	partial class User
 	{
 		public override long ID => id;
+		public override bool IsActive => (flags & Flags.deleted) == 0;
 		public override string ToString() => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
-		protected override InputPeer ToInputPeer() => new InputPeerUser { user_id = id, access_hash = access_hash };
+		public override InputPeer ToInputPeer() => new InputPeerUser { user_id = id, access_hash = access_hash };
 		protected override InputUserBase ToInputUser() => new InputUser { user_id = id, access_hash = access_hash };
 	}
 
@@ -252,6 +267,36 @@ namespace TL
 	partial class PeerUser { public override long ID => user_id; public override string ToString() => "user " + user_id; }
 	partial class PeerChat { public override long ID => chat_id; public override string ToString() => "chat " + chat_id; }
 	partial class PeerChannel { public override long ID => channel_id; public override string ToString() => "channel " + channel_id; }
+
+	partial class DialogBase
+	{
+		public abstract Peer Peer { get; }
+		public abstract int TopMessage { get; }
+	}
+	partial class Dialog
+	{
+		public override Peer Peer => peer;
+		public override int TopMessage => top_message;
+	}
+	partial class DialogFolder
+	{
+		public override Peer Peer => peer;
+		public override int TopMessage => top_message;
+	}
+
+	partial class Messages_Dialogs
+	{
+		/// <summary>Find the matching User/Chat object for a dialog</summary>
+		/// <param name="dialog">The dialog which peer we want details on</param>
+		/// <returns>a UserBase or ChatBase derived instance</returns>
+		public IPeerInfo GetUserOrChat(DialogBase dialog) => dialog.Peer switch
+		{
+			PeerUser pu => users[pu.user_id],
+			PeerChat pc => chats[pc.chat_id],
+			PeerChannel pch => chats[pch.channel_id],
+			_ => null,
+		};
+	}
 
 	partial class JsonObjectValue { public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }
 	partial class JsonNull { public override string ToString() => "null"; }

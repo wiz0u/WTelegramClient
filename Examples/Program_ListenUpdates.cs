@@ -26,10 +26,10 @@ namespace WTelegramClientTest
 				{
 					foreach (var (id, user) in dialogs.users) users[id] = user;
 					foreach (var (id, chat) in dialogs.chats) chats[id] = chat;
-					var lastDialog = (Dialog)dialogs.dialogs[^1];
-					var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.peer.ID && m.ID == lastDialog.top_message);
-					InputPeer offsetPeer = lastDialog.peer is PeerUser pu ? dialogs.users[pu.ID] : dialogs.chats[lastDialog.peer.ID];
-					dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.top_message, offsetPeer, 500, 0);
+					var lastDialog = dialogs.dialogs[^1];
+					var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
+					var offsetPeer = dialogs.GetUserOrChat(lastDialog).ToInputPeer();
+					dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, 500, 0);
 				}
 			Console.ReadKey();
 			await client.Ping(42); // dummy API call

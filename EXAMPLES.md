@@ -22,8 +22,8 @@ await client.SendMessageAsync(resolved.users[resolved.peer.ID], "Hello!");
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var imported = await client.Contacts_ImportContacts(new[] { new InputPhoneContact { phone = "+PHONENUMBER" } });
-await client.SendMessageAsync(imported.users[imported.imported[0].user_id], "Hello!");
+var contacts = await client.Contacts_ImportContacts(new[] { new InputPhoneContact { phone = "+PHONENUMBER" } });
+await client.SendMessageAsync(contacts.users[contacts.imported[0].user_id], "Hello!");
 ```
 *Note: To prevent spam, Telegram may restrict your ability to add new phone numbers.*
 
@@ -33,7 +33,8 @@ using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats(null);
 foreach (var (id, chat) in chats.chats)
-    Console.WriteLine($"{id} : {chat}");
+    if (chat.IsActive)
+        Console.WriteLine($"{id} : {chat}");
 Console.Write("Choose a chat ID to send a message to: ");
 long chatId = long.Parse(Console.ReadLine());
 await client.SendMessageAsync(chats.chats[chatId], "Hello, World");
@@ -72,16 +73,15 @@ if (dialogsBase is Messages_Dialogs dialogs)
     while (dialogs.dialogs.Length != 0)
     {
         foreach (var dialog in dialogs.dialogs)
-            if (dialog is Dialog { peer: var peer } || (dialog is DialogFolder dialogFolder && (peer = dialogFolder.peer) != null))
-                switch (peer)
-                {
-                    case PeerUser: Console.WriteLine("User " + dialogs.users[peer.ID]); break;
-                    case PeerChannel or PeerChat: Console.WriteLine(dialogs.chats[peer.ID]); break;
-                }
-        var lastDialog = (Dialog)dialogs.dialogs[^1];
-        var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.peer.ID && m.ID == lastDialog.top_message);
-        InputPeer offsetPeer = lastDialog.peer is PeerUser pu ? dialogs.users[pu.ID] : dialogs.chats[lastDialog.peer.ID];
-        dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.top_message, offsetPeer, 500, 0);
+            switch (dialogs.GetUserOrChat(dialog))
+            {
+                case UserBase user when user.IsActive: Console.WriteLine("User " + user); break;
+                case ChatBase chat when chat.IsActive: Console.WriteLine(chat); break;
+            }
+        var lastDialog = dialogs.dialogs[^1];
+        var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
+        var offsetPeer = dialogs.GetUserOrChat(lastDialog).ToInputPeer();
+        dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, 500, 0);
     }
 ```
 
