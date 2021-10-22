@@ -99,6 +99,55 @@ namespace TL
 		protected override InputUserBase ToInputUser() => new InputUser { user_id = id, access_hash = access_hash };
 	}
 
+	partial class Peer { public abstract long ID { get; } }
+	partial class PeerUser { public override long ID => user_id; public override string ToString() => "user " + user_id; }
+	partial class PeerChat { public override long ID => chat_id; public override string ToString() => "chat " + chat_id; }
+	partial class PeerChannel { public override long ID => channel_id; public override string ToString() => "channel " + channel_id; }
+
+	partial class Contacts_ResolvedPeer
+	{
+		public static implicit operator InputPeer(Contacts_ResolvedPeer resolved) => resolved.UserOrChat.ToInputPeer();
+		public UserBase User => peer is PeerUser pu ? users[pu.user_id] : null;
+		public ChatBase Chat => peer is PeerChat or PeerChannel ? chats[peer.ID] : null;
+		public IPeerInfo UserOrChat => peer switch
+		{
+			PeerUser pu => users[pu.user_id],
+			PeerChat pc => chats[pc.chat_id],
+			PeerChannel pch => chats[pch.channel_id],
+			_ => null
+		};
+	}
+
+	partial class DialogBase
+	{
+		public abstract Peer Peer { get; }
+		public abstract int TopMessage { get; }
+	}
+	partial class Dialog
+	{
+		public override Peer Peer => peer;
+		public override int TopMessage => top_message;
+	}
+	partial class DialogFolder
+	{
+		public override Peer Peer => peer;
+		public override int TopMessage => top_message;
+	}
+
+	partial class Messages_Dialogs
+	{
+		/// <summary>Find the matching User/Chat object for a dialog</summary>
+		/// <param name="dialog">The dialog which peer we want details on</param>
+		/// <returns>a UserBase or ChatBase derived instance</returns>
+		public IPeerInfo GetUserOrChat(DialogBase dialog) => dialog.Peer switch
+		{
+			PeerUser pu => users[pu.user_id],
+			PeerChat pc => chats[pc.chat_id],
+			PeerChannel pch => chats[pch.channel_id],
+			_ => null,
+		};
+	}
+
 	partial class MessageBase
 	{
 		public abstract int ID { get; }
@@ -261,41 +310,6 @@ namespace TL
 	partial class StickerSet
 	{
 		public static implicit operator InputStickerSetID(StickerSet stickerSet) => new() { id = stickerSet.id, access_hash = stickerSet.access_hash };
-	}
-
-	partial class Peer { public abstract long ID { get; }  }
-	partial class PeerUser { public override long ID => user_id; public override string ToString() => "user " + user_id; }
-	partial class PeerChat { public override long ID => chat_id; public override string ToString() => "chat " + chat_id; }
-	partial class PeerChannel { public override long ID => channel_id; public override string ToString() => "channel " + channel_id; }
-
-	partial class DialogBase
-	{
-		public abstract Peer Peer { get; }
-		public abstract int TopMessage { get; }
-	}
-	partial class Dialog
-	{
-		public override Peer Peer => peer;
-		public override int TopMessage => top_message;
-	}
-	partial class DialogFolder
-	{
-		public override Peer Peer => peer;
-		public override int TopMessage => top_message;
-	}
-
-	partial class Messages_Dialogs
-	{
-		/// <summary>Find the matching User/Chat object for a dialog</summary>
-		/// <param name="dialog">The dialog which peer we want details on</param>
-		/// <returns>a UserBase or ChatBase derived instance</returns>
-		public IPeerInfo GetUserOrChat(DialogBase dialog) => dialog.Peer switch
-		{
-			PeerUser pu => users[pu.user_id],
-			PeerChat pc => chats[pc.chat_id],
-			PeerChannel pch => chats[pch.channel_id],
-			_ => null,
-		};
 	}
 
 	partial class JsonObjectValue { public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }

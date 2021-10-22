@@ -15,15 +15,18 @@ Remember that these are just simple example codes that you should adjust to your
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var resolved = await client.Contacts_ResolveUsername("USERNAME");
-await client.SendMessageAsync(resolved.users[resolved.peer.ID], "Hello!");
+var resolved = await client.Contacts_ResolveUsername("username");
+await client.SendMessageAsync(resolved, "Hello!");
 ```
+*Note: This also works if the @username points to a chat, but you must join the chat before posting there.
+You can check `resolved` properties to ensure it's a user or a chat. If the username is invalid/unused, the API call raises an exception.*
 ### Send a message to someone by phone number
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var contacts = await client.Contacts_ImportContacts(new[] { new InputPhoneContact { phone = "+PHONENUMBER" } });
-await client.SendMessageAsync(contacts.users[contacts.imported[0].user_id], "Hello!");
+if (contacts.imported.Length > 0)
+    await client.SendMessageAsync(contacts.users[contacts.imported[0].user_id], "Hello!");
 ```
 *Note: To prevent spam, Telegram may restrict your ability to add new phone numbers.*
 
@@ -95,7 +98,7 @@ For a simple Chat: (see Terminology in [ReadMe](README.md#Terminology-in-Telegra
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var chatFull = await client.Messages_GetFullChat(1234567890); // the chat we want
-foreach (var user in chatFull.users)
+foreach (var (id, user) in chatFull.users)
     Console.WriteLine(user);
 ```
 
@@ -108,7 +111,7 @@ var channel = (Channel)chats.chats[1234567890]; // the channel we want
 for (int offset = 0; ;)
 {
     var participants = await client.Channels_GetParticipants(channel, null, offset, 1000, 0);
-    foreach (var user in participants.users)
+    foreach (var (id, user) in participants.users)
         Console.WriteLine(user);
     offset += participants.participants.Length;
     if (offset >= participants.count) break;
