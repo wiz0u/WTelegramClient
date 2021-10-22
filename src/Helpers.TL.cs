@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,80 @@ using System.Web;
 
 namespace TL
 {
-	partial class InputPeer { public static InputPeerSelf Self => new(); }
-	partial class InputUser { public static InputUserSelf Self => new(); }
-
-	public interface IPeerInfo {
+	public interface IPeerInfo
+	{
 		long ID { get; }
 		bool IsActive { get; }
 		InputPeer ToInputPeer();
+	}
+
+	partial class InputPeer { public static InputPeerSelf Self => new(); }
+	partial class InputUser { public static InputUserSelf Self => new(); }
+
+	partial class InputFileBase
+	{
+		public abstract InputEncryptedFileBase ToInputEncryptedFile(int key_fingerprint);
+		public abstract InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret);
+	}
+	partial class InputFile
+	{
+		public override InputEncryptedFileBase ToInputEncryptedFile(int key_fingerprint) => new InputEncryptedFileUploaded { id = id, parts = parts, md5_checksum = md5_checksum, key_fingerprint = key_fingerprint };
+		public override InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret) => new InputSecureFileUploaded { id = id, parts = parts, md5_checksum = md5_checksum, file_hash = file_hash, secret = secret };
+	}
+	partial class InputFileBig
+	{
+		public override InputEncryptedFileBase ToInputEncryptedFile(int key_fingerprint) => new InputEncryptedFileBigUploaded { id = id, parts = parts, key_fingerprint = key_fingerprint };
+		public override InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret) => new InputSecureFileUploaded { id = id, parts = parts, file_hash = file_hash, secret = secret };
+	}
+
+	partial class Peer
+	{
+		public abstract long ID { get; }
+		abstract internal IPeerInfo UserOrChat(Dictionary<long, UserBase> users, Dictionary<long, ChatBase> chats);
+	}
+	partial class PeerUser
+	{
+		public override string ToString() => "user " + user_id;
+		public override long ID => user_id;
+		internal override IPeerInfo UserOrChat(Dictionary<long, UserBase> users, Dictionary<long, ChatBase> chats) => users[user_id];
+	}
+	partial class PeerChat
+	{
+		public override string ToString() => "chat " + chat_id;
+		public override long ID => chat_id;
+		internal override IPeerInfo UserOrChat(Dictionary<long, UserBase> users, Dictionary<long, ChatBase> chats) => chats[chat_id];
+	}
+	partial class PeerChannel
+	{
+		public override string ToString() => "channel " + channel_id;
+		public override long ID => channel_id;
+		internal override IPeerInfo UserOrChat(Dictionary<long, UserBase> users, Dictionary<long, ChatBase> chats) => chats[channel_id];
+	}
+
+	partial class UserBase : IPeerInfo
+	{
+		public abstract long ID { get; }
+		public abstract bool IsActive { get; }
+		public abstract InputPeer ToInputPeer();
+		protected abstract InputUserBase ToInputUser();
+		public static implicit operator InputPeer(UserBase user) => user.ToInputPeer();
+		public static implicit operator InputUserBase(UserBase user) => user.ToInputUser();
+	}
+	partial class UserEmpty
+	{
+		public override long ID => id;
+		public override bool IsActive => false;
+		public override string ToString() => null;
+		public override InputPeer ToInputPeer() => null;
+		protected override InputUserBase ToInputUser() => null;
+	}
+	partial class User
+	{
+		public override long ID => id;
+		public override bool IsActive => (flags & Flags.deleted) == 0;
+		public override string ToString() => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
+		public override InputPeer ToInputPeer() => new InputPeerUser { user_id = id, access_hash = access_hash };
+		protected override InputUserBase ToInputUser() => new InputUser { user_id = id, access_hash = access_hash };
 	}
 
 	partial class ChatBase : IPeerInfo
@@ -73,79 +141,24 @@ namespace TL
 		public override string ToString() => $"ChannelForbidden {id} \"{title}\"";
 	}
 
-	partial class UserBase : IPeerInfo
+	partial class ChatParticipantBase
 	{
-		public abstract long ID { get; }
-		public abstract bool IsActive { get; }
-		public abstract InputPeer ToInputPeer();
-		protected abstract InputUserBase ToInputUser();
-		public static implicit operator InputPeer(UserBase user) => user.ToInputPeer();
-		public static implicit operator InputUserBase(UserBase user) => user.ToInputUser();
+		public abstract long UserId { get; }
+		public abstract bool IsAdmin { get; }
 	}
-	partial class UserEmpty
+	partial class ChatParticipant
 	{
-		public override long ID => id;
-		public override bool IsActive => false;
-		public override string ToString() => null;
-		public override InputPeer ToInputPeer() => null;
-		protected override InputUserBase ToInputUser() => null;
+		public override long UserId => user_id;
+		public override bool IsAdmin => false;
 	}
-	partial class User
+	partial class ChatParticipantCreator
 	{
-		public override long ID => id;
-		public override bool IsActive => (flags & Flags.deleted) == 0;
-		public override string ToString() => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
-		public override InputPeer ToInputPeer() => new InputPeerUser { user_id = id, access_hash = access_hash };
-		protected override InputUserBase ToInputUser() => new InputUser { user_id = id, access_hash = access_hash };
+		public override long UserId => user_id;
+		public override bool IsAdmin => true;
 	}
-
-	partial class Peer { public abstract long ID { get; } }
-	partial class PeerUser { public override long ID => user_id; public override string ToString() => "user " + user_id; }
-	partial class PeerChat { public override long ID => chat_id; public override string ToString() => "chat " + chat_id; }
-	partial class PeerChannel { public override long ID => channel_id; public override string ToString() => "channel " + channel_id; }
-
-	partial class Contacts_ResolvedPeer
+	partial class ChatParticipantAdmin
 	{
-		public static implicit operator InputPeer(Contacts_ResolvedPeer resolved) => resolved.UserOrChat.ToInputPeer();
-		public UserBase User => peer is PeerUser pu ? users[pu.user_id] : null;
-		public ChatBase Chat => peer is PeerChat or PeerChannel ? chats[peer.ID] : null;
-		public IPeerInfo UserOrChat => peer switch
-		{
-			PeerUser pu => users[pu.user_id],
-			PeerChat pc => chats[pc.chat_id],
-			PeerChannel pch => chats[pch.channel_id],
-			_ => null
-		};
-	}
-
-	partial class DialogBase
-	{
-		public abstract Peer Peer { get; }
-		public abstract int TopMessage { get; }
-	}
-	partial class Dialog
-	{
-		public override Peer Peer => peer;
-		public override int TopMessage => top_message;
-	}
-	partial class DialogFolder
-	{
-		public override Peer Peer => peer;
-		public override int TopMessage => top_message;
-	}
-
-	partial class Messages_Dialogs
-	{
-		/// <summary>Find the matching User/Chat object for a dialog</summary>
-		/// <param name="dialog">The dialog which peer we want details on</param>
-		/// <returns>a UserBase or ChatBase derived instance</returns>
-		public IPeerInfo GetUserOrChat(DialogBase dialog) => dialog.Peer switch
-		{
-			PeerUser pu => users[pu.user_id],
-			PeerChat pc => chats[pc.chat_id],
-			PeerChannel pch => chats[pch.channel_id],
-			_ => null,
-		};
+		public override bool IsAdmin => true;
 	}
 
 	partial class MessageBase
@@ -171,6 +184,22 @@ namespace TL
 		public override int ID => id;
 		public override Peer Peer => peer_id;
 		public override DateTime Date => date;
+	}
+
+	partial class DialogBase
+	{
+		public abstract Peer Peer { get; }
+		public abstract int TopMessage { get; }
+	}
+	partial class Dialog
+	{
+		public override Peer Peer => peer;
+		public override int TopMessage => top_message;
+	}
+	partial class DialogFolder
+	{
+		public override Peer Peer => peer;
+		public override int TopMessage => top_message;
 	}
 
 	partial class PhotoBase
@@ -261,6 +290,83 @@ namespace TL
 		}
 	}
 
+	partial class Contacts_Blocked { public IPeerInfo UserOrChat(PeerBlocked peer) => peer.peer_id.UserOrChat(users, chats); }
+
+	partial class Messages_Dialogs
+	{
+		/// <summary>Find the matching User/Chat object for a dialog</summary>
+		/// <param name="dialog">The dialog which peer we want details on</param>
+		/// <returns>a UserBase or ChatBase derived instance</returns>
+		public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer.UserOrChat(users, chats);
+	}
+
+	partial class Messages_MessagesBase
+	{
+		public abstract int Count { get; }
+		public abstract MessageBase[] Messages { get; }
+	}
+	partial class Messages_Messages
+	{
+		public override int Count => messages.Length;
+		public override MessageBase[] Messages => messages;
+	}
+	partial class Messages_MessagesSlice
+	{
+		public override int Count => count;
+	}
+	partial class Messages_ChannelMessages
+	{
+		public override int Count => count;
+		public override MessageBase[] Messages => messages;
+	}
+	partial class Messages_MessagesNotModified
+	{
+		public override int Count => count;
+		public override MessageBase[] Messages => null;
+	}
+
+	partial class Updates_DifferenceBase
+	{
+		public abstract MessageBase[] NewMessages { get; }
+		public abstract EncryptedMessageBase[] NewEncryptedMessages { get; }
+		public abstract Update[] OtherUpdates { get; }
+		public abstract Updates_State State { get; }
+	}
+	partial class Updates_DifferenceEmpty
+	{
+		public override MessageBase[] NewMessages => Array.Empty<MessageBase>();
+		public override EncryptedMessageBase[] NewEncryptedMessages => Array.Empty<EncryptedMessageBase>();
+		public override Update[] OtherUpdates => Array.Empty<Update>();
+		public override Updates_State State => null;
+	}
+	partial class Updates_Difference
+	{
+		public override MessageBase[] NewMessages => new_messages;
+		public override EncryptedMessageBase[] NewEncryptedMessages => new_encrypted_messages;
+		public override Update[] OtherUpdates => other_updates;
+		public override Updates_State State => state;
+	}
+	partial class Updates_DifferenceSlice
+	{
+		public override MessageBase[] NewMessages => new_messages;
+		public override EncryptedMessageBase[] NewEncryptedMessages => new_encrypted_messages;
+		public override Update[] OtherUpdates => other_updates;
+		public override Updates_State State => intermediate_state;
+	}
+	partial class Updates_DifferenceTooLong
+	{
+		public override MessageBase[] NewMessages => null;
+		public override EncryptedMessageBase[] NewEncryptedMessages => null;
+		public override Update[] OtherUpdates => null;
+		public override Updates_State State => null;
+	}
+
+	partial class EncryptedFile
+	{
+		public static implicit operator InputEncryptedFile(EncryptedFile file) => file == null ? null : new InputEncryptedFile { id = file.id, access_hash = file.access_hash };
+		public InputEncryptedFileLocation ToFileLocation() => new() { id = id, access_hash = access_hash };
+	}
+
 	partial class DocumentBase
 	{
 		public abstract long ID { get; }
@@ -279,37 +385,74 @@ namespace TL
 		public InputDocumentFileLocation ToFileLocation(PhotoSizeBase thumbSize = null) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = thumbSize?.Type };
 	}
 
-	partial class EncryptedFile
+	partial class SendMessageAction
 	{
-		public static implicit operator InputEncryptedFile(EncryptedFile file) => file == null ? null : new InputEncryptedFile { id = file.id, access_hash = file.access_hash };
-		public InputEncryptedFileLocation ToFileLocation() => new() { id = id, access_hash = access_hash };
+		public override string ToString()
+		{
+			var type = GetType().Name[11..^6];
+			for (int i = 1; i < type.Length; i++)
+				if (char.IsUpper(type[i]))
+					return type.ToLowerInvariant().Insert(i, "ing ");
+			return type.ToLowerInvariant();
+		}
+	}
+	partial class SpeakingInGroupCallAction { public override string ToString() => "speaking in group call"; }
+	partial class SendMessageTypingAction { public override string ToString() => "typing"; }
+	partial class SendMessageCancelAction { public override string ToString() => "stopping"; }
+	partial class SendMessageGeoLocationAction { public override string ToString() => "selecting a location"; }
+	partial class SendMessageGamePlayAction { public override string ToString() => "playing a game"; }
+	partial class SendMessageHistoryImportAction { public override string ToString() => "importing history"; }
+
+	partial class StickerSet
+	{
+		public static implicit operator InputStickerSetID(StickerSet stickerSet) => new() { id = stickerSet.id, access_hash = stickerSet.access_hash };
+	}
+
+	partial class Contacts_ResolvedPeer
+	{
+		public static implicit operator InputPeer(Contacts_ResolvedPeer resolved) => resolved.UserOrChat.ToInputPeer();
+		public UserBase User => peer is PeerUser pu ? users[pu.user_id] : null;
+		public ChatBase Chat => peer is PeerChat or PeerChannel ? chats[peer.ID] : null;
+	}
+
+	partial class Updates_ChannelDifferenceBase
+	{
+		public abstract MessageBase[] NewMessages { get; }
+		public abstract Update[] OtherUpdates { get; }
+		public abstract bool Final { get; }
+		public abstract int Timeout { get; }
+	}
+	partial class Updates_ChannelDifferenceEmpty
+	{
+		public override MessageBase[] NewMessages => Array.Empty<MessageBase>();
+		public override Update[] OtherUpdates => Array.Empty<Update>();
+		public override bool Final => flags.HasFlag(Flags.final);
+		public override int Timeout => timeout;
+	}
+	partial class Updates_ChannelDifference
+	{
+		public override MessageBase[] NewMessages => new_messages;
+		public override Update[] OtherUpdates => other_updates;
+		public override bool Final => flags.HasFlag(Flags.final);
+		public override int Timeout => timeout;
+	}
+	partial class Updates_ChannelDifferenceTooLong
+	{
+		public override MessageBase[] NewMessages => messages;
+		public override Update[] OtherUpdates => null;
+		public override bool Final => flags.HasFlag(Flags.final);
+		public override int Timeout => timeout;
+	}
+
+	partial class Messages_PeerDialogs
+	{
+		public IPeerInfo UserOrChat(DialogBase dialog) => UserOrChat(dialog.Peer);
 	}
 
 	partial class SecureFile
 	{
 		public static implicit operator InputSecureFile(SecureFile file) => new() { id = file.id, access_hash = file.access_hash };
 		public InputSecureFileLocation ToFileLocation() => new() { id = id, access_hash = access_hash };
-	}
-
-	partial class InputFileBase
-	{
-		public abstract InputEncryptedFileBase ToInputEncryptedFile(int key_fingerprint);
-		public abstract InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret);
-	}
-	partial class InputFile
-	{
-		public override InputEncryptedFileBase ToInputEncryptedFile(int key_fingerprint) => new InputEncryptedFileUploaded { id = id, parts = parts, md5_checksum = md5_checksum, key_fingerprint = key_fingerprint };
-		public override InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret) => new InputSecureFileUploaded { id = id, parts = parts, md5_checksum = md5_checksum, file_hash = file_hash, secret = secret };
-	}
-	partial class InputFileBig
-	{
-		public override InputEncryptedFileBase ToInputEncryptedFile(int key_fingerprint) => new InputEncryptedFileBigUploaded { id = id, parts = parts, key_fingerprint = key_fingerprint };
-		public override InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret) => new InputSecureFileUploaded { id = id, parts = parts, file_hash = file_hash, secret = secret };
-	}
-
-	partial class StickerSet
-	{
-		public static implicit operator InputStickerSetID(StickerSet stickerSet) => new() { id = stickerSet.id, access_hash = stickerSet.access_hash };
 	}
 
 	partial class JsonObjectValue { public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }
@@ -337,23 +480,4 @@ namespace TL
 			return sb.Append('}').ToString();
 		}
 	}
-
-	partial class SendMessageAction
-	{
-		public override string ToString()
-		{
-			var type = GetType().Name[11..^6];
-			for (int i = 1; i < type.Length; i++)
-				if (char.IsUpper(type[i]))
-					return type.ToLowerInvariant().Insert(i, "ing ");
-			return type.ToLowerInvariant();
-		}
-	}
-	partial class SpeakingInGroupCallAction		{ public override string ToString() => "speaking in group call"; }
-	partial class SendMessageTypingAction		{ public override string ToString() => "typing"; }
-	partial class SendMessageCancelAction		{ public override string ToString() => "stopping"; }
-	partial class SendMessageGeoLocationAction	{ public override string ToString() => "selecting a location"; }
-	partial class SendMessageGamePlayAction		{ public override string ToString() => "playing a game"; }
-	partial class SendMessageHistoryImportAction{ public override string ToString() => "importing history"; }
-	
 }

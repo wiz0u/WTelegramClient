@@ -180,6 +180,7 @@ namespace WTelegram
 						typeInfo.Structs.Insert(0, typeInfo.MainClass);
 						typeInfo.ReturnName = typeInfo.MainClass.predicate;
 					}
+					typeInfo.AbstractUserOrChat = AbstractUserOrChatTypes.Contains(typeInfo.ReturnName);
 				}
 			}
 			var layers = schema.constructors.Select(c => c.layer).Distinct().ToList();
@@ -320,14 +321,14 @@ namespace WTelegram
 				}
 				sw.Write(" : ");
 				sw.Write(parentClass);
-				if (parms.Length == 0)
+				if (parms.Length == 0 && !typeInfo.AbstractUserOrChat)
 				{
 					sw.WriteLine(" { }");
 					commonFields = typeInfo.CommonFields;
 					continue;
 				}
 				var hasFlagEnum = parms.Any(p => p.type.StartsWith("flags."));
-				bool multiline = hasFlagEnum || parms.Length > 1;
+				bool multiline = hasFlagEnum || parms.Length > 1 || typeInfo.AbstractUserOrChat;
 				if (multiline)
 				{
 					sw.WriteLine();
@@ -380,6 +381,20 @@ namespace WTelegram
 					}
 					if (multiline) sw.WriteLine();
 				}
+				var hasUsersChats = parms.Contains(ParamUsers) && parms.Contains(ParamChats);
+				if (hasUsersChats || (typeInfo.AbstractUserOrChat && (ctor == typeInfo.MainClass || parentClass == typeInfo.ReturnName)))
+				{
+					var modifier = !typeInfo.AbstractUserOrChat ? null : ctorId == 0 ? "abstract " : "override ";
+					sw.Write($"{tabIndent}\tpublic {modifier}IPeerInfo UserOrChat");
+					if (!hasUsersChats || ctor.@params.Length != 3 || !parms.Contains(ParamPeer))
+						sw.Write("(Peer peer)");
+					if (modifier == "abstract ")
+						sw.WriteLine(";");
+					else if (hasUsersChats)
+						sw.WriteLine(" => peer.UserOrChat(users, chats);");
+					else
+						sw.WriteLine(" => null;");
+				}
 
 				if (multiline)
 					sw.WriteLine(tabIndent + "}");
@@ -388,6 +403,12 @@ namespace WTelegram
 				commonFields = typeInfo.CommonFields;
 			}
 		}
+		static readonly Param ParamPeer = new() { name = "peer", type = "Peer" };
+		static readonly Param ParamUsers = new() { name = "users", type = "Vector<User>" };
+		static readonly Param ParamChats = new() { name = "chats", type = "Vector<Chat>" };
+		static readonly HashSet<string> AbstractUserOrChatTypes = new() {
+			"Messages_MessagesBase", "Updates_DifferenceBase", "Updates_ChannelDifferenceBase"
+		};
 
 		private static bool IsDerivedName(string derived, string basename)
 		{
@@ -715,6 +736,7 @@ namespace WTelegram
 			public List<Constructor> Structs = new();
 			internal int CommonFields; // n fields are common among all those classes
 			internal bool AsEnum;
+			internal bool AbstractUserOrChat;
 		}
 
 #pragma warning disable IDE1006 // Naming Styles
@@ -739,6 +761,8 @@ namespace WTelegram
 		{
 			public string name { get; set; }
 			public string type { get; set; }
+			public override bool Equals(object obj) => obj is Param other && other.name == name && other.type == type;
+			public override int GetHashCode() => HashCode.Combine(name, type);
 		}
 
 		public class Method

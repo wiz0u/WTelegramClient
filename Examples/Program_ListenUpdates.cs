@@ -28,7 +28,7 @@ namespace WTelegramClientTest
 					foreach (var (id, chat) in dialogs.chats) chats[id] = chat;
 					var lastDialog = dialogs.dialogs[^1];
 					var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
-					var offsetPeer = dialogs.GetUserOrChat(lastDialog).ToInputPeer();
+					var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
 					dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, 500, 0);
 				}
 			Console.ReadKey();

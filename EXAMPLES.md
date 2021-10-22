@@ -76,14 +76,14 @@ if (dialogsBase is Messages_Dialogs dialogs)
     while (dialogs.dialogs.Length != 0)
     {
         foreach (var dialog in dialogs.dialogs)
-            switch (dialogs.GetUserOrChat(dialog))
+            switch (dialogs.UserOrChat(dialog))
             {
                 case UserBase user when user.IsActive: Console.WriteLine("User " + user); break;
                 case ChatBase chat when chat.IsActive: Console.WriteLine(chat); break;
             }
         var lastDialog = dialogs.dialogs[^1];
         var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
-        var offsetPeer = dialogs.GetUserOrChat(lastDialog).ToInputPeer();
+        var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
         dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, 500, 0);
     }
 ```
