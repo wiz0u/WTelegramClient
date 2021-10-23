@@ -85,8 +85,6 @@ namespace TL
 
 	partial class ChatBase : IPeerInfo
 	{
-		public abstract long ID { get; }
-		public abstract string Title { get; }
 		public abstract bool IsActive { get; }
 		/// <summary>returns true if you're banned of any of these rights</summary>
 		public abstract bool IsBanned(ChatBannedRights.Flags flags = 0);
@@ -95,8 +93,6 @@ namespace TL
 	}
 	partial class ChatEmpty
 	{
-		public override long ID => id;
-		public override string Title => null;
 		public override bool IsActive => false;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		public override InputPeer ToInputPeer() => null;
@@ -104,8 +100,6 @@ namespace TL
 	}
 	partial class Chat
 	{
-		public override long ID => id;
-		public override string Title => title;
 		public override bool IsActive => (flags & (Flags.kicked | Flags.left | Flags.deactivated)) == 0;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		public override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
@@ -113,8 +107,6 @@ namespace TL
 	}
 	partial class ChatForbidden
 	{
-		public override long ID => id;
-		public override string Title => title;
 		public override bool IsActive => false;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		public override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
@@ -122,8 +114,6 @@ namespace TL
 	}
 	partial class Channel
 	{
-		public override long ID => id;
-		public override string Title => title;
 		public override bool IsActive => (flags & Flags.left) == 0;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((banned_rights?.flags ?? 0) & flags) != 0 || ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		public override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
@@ -133,74 +123,16 @@ namespace TL
 	}
 	partial class ChannelForbidden
 	{
-		public override long ID => id;
-		public override string Title => title;
 		public override bool IsActive => false;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		public override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
 		public override string ToString() => $"ChannelForbidden {id} \"{title}\"";
 	}
 
-	partial class ChatParticipantBase
-	{
-		public abstract long UserId { get; }
-		public abstract bool IsAdmin { get; }
-	}
-	partial class ChatParticipant
-	{
-		public override long UserId => user_id;
-		public override bool IsAdmin => false;
-	}
-	partial class ChatParticipantCreator
-	{
-		public override long UserId => user_id;
-		public override bool IsAdmin => true;
-	}
-	partial class ChatParticipantAdmin
-	{
-		public override bool IsAdmin => true;
-	}
-
-	partial class MessageBase
-	{
-		public abstract int ID { get; }
-		public abstract Peer Peer { get; }
-		public abstract DateTime Date { get; }
-	}
-	partial class MessageEmpty
-	{
-		public override int ID => id;
-		public override Peer Peer => peer_id;
-		public override DateTime Date => default;
-	}
-	public partial class Message
-	{
-		public override int ID => id;
-		public override Peer Peer => peer_id;
-		public override DateTime Date => date;
-	}
-	public partial class MessageService
-	{
-		public override int ID => id;
-		public override Peer Peer => peer_id;
-		public override DateTime Date => date;
-	}
-
-	partial class DialogBase
-	{
-		public abstract Peer Peer { get; }
-		public abstract int TopMessage { get; }
-	}
-	partial class Dialog
-	{
-		public override Peer Peer => peer;
-		public override int TopMessage => top_message;
-	}
-	partial class DialogFolder
-	{
-		public override Peer Peer => peer;
-		public override int TopMessage => top_message;
-	}
+	partial class ChatParticipantBase		{ public abstract bool IsAdmin { get; } }
+	partial class ChatParticipant			{ public override bool IsAdmin => false; }
+	partial class ChatParticipantCreator	{ public override bool IsAdmin => true; }
+	partial class ChatParticipantAdmin		{ public override bool IsAdmin => true; }
 
 	partial class PhotoBase
 	{
@@ -216,7 +148,6 @@ namespace TL
 	partial class Photo
 	{
 		public override long ID => id;
-
 		protected override InputPhoto ToInputPhoto() => new() { id = id, access_hash = access_hash, file_reference = file_reference };
 		public InputPhotoFileLocation ToFileLocation() => ToFileLocation(LargestPhotoSize);
 		public InputPhotoFileLocation ToFileLocation(PhotoSizeBase photoSize) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = photoSize.Type };
@@ -225,49 +156,42 @@ namespace TL
 
 	partial class PhotoSizeBase
 	{
-		public abstract string Type { get; }
 		public abstract int Width { get; }
 		public abstract int Height { get; }
 		public abstract int FileSize { get; }
 	}
 	partial class PhotoSizeEmpty
 	{
-		public override string Type => type;
 		public override int Width => 0;
 		public override int Height => 0;
 		public override int FileSize => 0;
 	}
 	partial class PhotoSize
 	{
-		public override string Type => type;
 		public override int Width => w;
 		public override int Height => h;
 		public override int FileSize => size;
 	}
 	partial class PhotoCachedSize
 	{
-		public override string Type => type;
 		public override int Width => w;
 		public override int Height => h;
 		public override int FileSize => bytes.Length;
 	}
 	partial class PhotoStrippedSize
 	{
-		public override string Type => type;
 		public override int Width => bytes[2];
 		public override int Height => bytes[1];
 		public override int FileSize => bytes.Length;
 	}
 	partial class PhotoSizeProgressive
 	{
-		public override string Type => type;
 		public override int Width => w;
 		public override int Height => h;
 		public override int FileSize => sizes.Last();
 	}
 	partial class PhotoPathSize
 	{
-		public override string Type => type;
 		public override int Width => -1;
 		public override int Height => -1;
 		public override int FileSize => bytes.Length;
@@ -276,14 +200,12 @@ namespace TL
 	{
 		partial class PhotoSize
 		{
-			public override string Type => type;
 			public override int Width => w;
 			public override int Height => h;
 			public override int FileSize => size;
 		}
 		partial class PhotoCachedSize
 		{
-			public override string Type => type;
 			public override int Width => w;
 			public override int Height => h;
 			public override int FileSize => bytes.Length;
@@ -300,66 +222,17 @@ namespace TL
 		public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer.UserOrChat(users, chats);
 	}
 
-	partial class Messages_MessagesBase
-	{
-		public abstract int Count { get; }
-		public abstract MessageBase[] Messages { get; }
-	}
-	partial class Messages_Messages
-	{
-		public override int Count => messages.Length;
-		public override MessageBase[] Messages => messages;
-	}
-	partial class Messages_MessagesSlice
-	{
-		public override int Count => count;
-	}
-	partial class Messages_ChannelMessages
-	{
-		public override int Count => count;
-		public override MessageBase[] Messages => messages;
-	}
-	partial class Messages_MessagesNotModified
-	{
-		public override int Count => count;
-		public override MessageBase[] Messages => null;
-	}
+	partial class Messages_MessagesBase			{ public abstract int Count { get; } }
+	partial class Messages_Messages				{ public override int Count => messages.Length; }
+	partial class Messages_MessagesSlice		{ public override int Count => count; }
+	partial class Messages_ChannelMessages		{ public override int Count => count; }
+	partial class Messages_MessagesNotModified	{ public override int Count => count; }
 
-	partial class Updates_DifferenceBase
-	{
-		public abstract MessageBase[] NewMessages { get; }
-		public abstract EncryptedMessageBase[] NewEncryptedMessages { get; }
-		public abstract Update[] OtherUpdates { get; }
-		public abstract Updates_State State { get; }
-	}
-	partial class Updates_DifferenceEmpty
-	{
-		public override MessageBase[] NewMessages => Array.Empty<MessageBase>();
-		public override EncryptedMessageBase[] NewEncryptedMessages => Array.Empty<EncryptedMessageBase>();
-		public override Update[] OtherUpdates => Array.Empty<Update>();
-		public override Updates_State State => null;
-	}
-	partial class Updates_Difference
-	{
-		public override MessageBase[] NewMessages => new_messages;
-		public override EncryptedMessageBase[] NewEncryptedMessages => new_encrypted_messages;
-		public override Update[] OtherUpdates => other_updates;
-		public override Updates_State State => state;
-	}
-	partial class Updates_DifferenceSlice
-	{
-		public override MessageBase[] NewMessages => new_messages;
-		public override EncryptedMessageBase[] NewEncryptedMessages => new_encrypted_messages;
-		public override Update[] OtherUpdates => other_updates;
-		public override Updates_State State => intermediate_state;
-	}
-	partial class Updates_DifferenceTooLong
-	{
-		public override MessageBase[] NewMessages => null;
-		public override EncryptedMessageBase[] NewEncryptedMessages => null;
-		public override Update[] OtherUpdates => null;
-		public override Updates_State State => null;
-	}
+	partial class Updates_DifferenceBase		{ public abstract Updates_State State { get; } }
+	partial class Updates_DifferenceEmpty		{ public override Updates_State State => null; }
+	partial class Updates_Difference			{ public override Updates_State State => state; }
+	partial class Updates_DifferenceSlice		{ public override Updates_State State => intermediate_state; }
+	partial class Updates_DifferenceTooLong		{ public override Updates_State State => null; }
 
 	partial class EncryptedFile
 	{
@@ -396,12 +269,12 @@ namespace TL
 			return type.ToLowerInvariant();
 		}
 	}
-	partial class SpeakingInGroupCallAction { public override string ToString() => "speaking in group call"; }
-	partial class SendMessageTypingAction { public override string ToString() => "typing"; }
-	partial class SendMessageCancelAction { public override string ToString() => "stopping"; }
-	partial class SendMessageGeoLocationAction { public override string ToString() => "selecting a location"; }
-	partial class SendMessageGamePlayAction { public override string ToString() => "playing a game"; }
-	partial class SendMessageHistoryImportAction { public override string ToString() => "importing history"; }
+	partial class SpeakingInGroupCallAction			{ public override string ToString() => "speaking in group call"; }
+	partial class SendMessageTypingAction			{ public override string ToString() => "typing"; }
+	partial class SendMessageCancelAction			{ public override string ToString() => "stopping"; }
+	partial class SendMessageGeoLocationAction		{ public override string ToString() => "selecting a location"; }
+	partial class SendMessageGamePlayAction			{ public override string ToString() => "playing a game"; }
+	partial class SendMessageHistoryImportAction	{ public override string ToString() => "importing history"; }
 
 	partial class StickerSet
 	{
@@ -446,7 +319,7 @@ namespace TL
 
 	partial class Messages_PeerDialogs
 	{
-		public IPeerInfo UserOrChat(DialogBase dialog) => UserOrChat(dialog.Peer);
+		public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer.UserOrChat(users, chats);
 	}
 
 	partial class SecureFile
@@ -455,11 +328,11 @@ namespace TL
 		public InputSecureFileLocation ToFileLocation() => new() { id = id, access_hash = access_hash };
 	}
 
-	partial class JsonObjectValue { public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }
-	partial class JsonNull { public override string ToString() => "null"; }
-	partial class JsonBool { public override string ToString() => value ? "true" : "false"; }
-	partial class JsonNumber { public override string ToString() => value.ToString(CultureInfo.InvariantCulture); }
-	partial class JsonString { public override string ToString() => HttpUtility.JavaScriptStringEncode(value, true); }
+	partial class JsonObjectValue	{ public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }
+	partial class JsonNull			{ public override string ToString() => "null"; }
+	partial class JsonBool			{ public override string ToString() => value ? "true" : "false"; }
+	partial class JsonNumber		{ public override string ToString() => value.ToString(CultureInfo.InvariantCulture); }
+	partial class JsonString		{ public override string ToString() => HttpUtility.JavaScriptStringEncode(value, true); }
 	partial class JsonArray
 	{
 		public override string ToString()

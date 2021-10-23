@@ -130,6 +130,7 @@ namespace WTelegram
 					}
 					continue;
 				}
+
 				if (typeInfo.Structs.All(ctor => ctor.@params.Length == 0))
 					typeInfo.AsEnum = true;
 				var nullable = typeInfo.Structs.Where(c => c.predicate == "help.noAppUpdate" ||
@@ -181,6 +182,26 @@ namespace WTelegram
 						typeInfo.ReturnName = typeInfo.MainClass.predicate;
 					}
 					typeInfo.AbstractUserOrChat = AbstractUserOrChatTypes.Contains(typeInfo.ReturnName);
+					if (typeInfo.CommonFields == 0)
+					{
+						var autoProps = typeInfo.Structs.OrderByDescending(s => s.@params.Length).First().@params
+							.Where(p => !p.type.EndsWith("?true")).ToList();
+						if (typeInfo.AbstractUserOrChat) { autoProps.Remove(ParamUsers); autoProps.Remove(ParamChats); }
+						autoProps.Remove(ParamFlags);
+						int autoPropsCount = 0;
+						foreach (var str in typeInfo.Structs)
+						{
+							if (str.ID == 0 ||str.predicate.EndsWith("Empty") || str.predicate.EndsWith("TooLong") || str.predicate.EndsWith("NotModified")) continue;
+							for (int i = autoProps.Count - 1; i >= 0; i--)
+								if (!str.@params.Contains(autoProps[i]))
+									autoProps.RemoveAt(i);
+							if (autoProps.Count == 0) break;
+							++autoPropsCount;
+						}
+						if (autoProps.Count > 0 && autoPropsCount > 1)
+							typeInfo.AutoProps = autoProps;
+					}
+
 				}
 			}
 			var layers = schema.constructors.Select(c => c.layer).Distinct().ToList();
@@ -321,14 +342,14 @@ namespace WTelegram
 				}
 				sw.Write(" : ");
 				sw.Write(parentClass);
-				if (parms.Length == 0 && !typeInfo.AbstractUserOrChat)
+				if (parms.Length == 0 && !typeInfo.AbstractUserOrChat && typeInfo.AutoProps == null)
 				{
 					sw.WriteLine(" { }");
 					commonFields = typeInfo.CommonFields;
 					continue;
 				}
 				var hasFlagEnum = parms.Any(p => p.type.StartsWith("flags."));
-				bool multiline = hasFlagEnum || parms.Length > 1 || typeInfo.AbstractUserOrChat;
+				bool multiline = hasFlagEnum || parms.Length > 1 || typeInfo.AbstractUserOrChat || typeInfo.AutoProps != null;
 				if (multiline)
 				{
 					sw.WriteLine();
@@ -381,6 +402,30 @@ namespace WTelegram
 					}
 					if (multiline) sw.WriteLine();
 				}
+				if (typeInfo.AutoProps != null)
+				{
+					bool firstLine = parms.Length != 0;
+					string format = $"{tabIndent}\tpublic ";
+					if (ctorId == 0)
+						format += "abstract {0} {1} {{ get; }}";
+					else if (ctor == typeInfo.MainClass)
+						format += "virtual {0} {1} => {2};";
+					else
+						format += "override {0} {1} => {2};";
+					foreach (var parm in typeInfo.AutoProps)
+					{
+						var value = "default";
+						if (ctor.@params.Any(p => p.name == parm.name))
+							if (!parms.Any(p => p.name == parm.name)) continue;
+							else value = MapName(parm.name);
+						else if (parm.type.StartsWith("Vector<") && className.EndsWith("Empty"))
+							value = $"Array.Empty<{MapType(parm.type, parm.name).TrimEnd('[', ']')}>()";
+						string csName = CSharpName(parm.name);
+						if (csName.EndsWith("Id") && parm.type != "int" && parm.type != "long") csName = csName[..^2];
+						if (firstLine) { sw.WriteLine(); firstLine = false; }
+						sw.WriteLine(string.Format(format, MapType(parm.type, parm.name), csName, value));
+					}
+				}
 				var hasUsersChats = parms.Contains(ParamUsers) && parms.Contains(ParamChats);
 				if (hasUsersChats || (typeInfo.AbstractUserOrChat && (ctor == typeInfo.MainClass || parentClass == typeInfo.ReturnName)))
 				{
@@ -403,11 +448,13 @@ namespace WTelegram
 				commonFields = typeInfo.CommonFields;
 			}
 		}
+		static readonly Param ParamFlags = new() { name = "flags", type = "#" };
 		static readonly Param ParamPeer = new() { name = "peer", type = "Peer" };
 		static readonly Param ParamUsers = new() { name = "users", type = "Vector<User>" };
 		static readonly Param ParamChats = new() { name = "chats", type = "Vector<Chat>" };
 		static readonly HashSet<string> AbstractUserOrChatTypes = new() {
-			"Messages_MessagesBase", "Updates_DifferenceBase", "Updates_ChannelDifferenceBase"
+			"Messages_MessagesBase", "Updates_DifferenceBase", "Updates_ChannelDifferenceBase",
+			"Messages_DialogsBase"
 		};
 
 		private static bool IsDerivedName(string derived, string basename)
@@ -463,6 +510,7 @@ namespace WTelegram
 
 		private string MapType(string type, string name)
 		{
+			if (type.StartsWith("flags.")) type = type[(type.IndexOf('?') + 1)..];
 			if (type.StartsWith("Vector<", StringComparison.OrdinalIgnoreCase))
 			{
 				if (name == "users" && type == "Vector<User>")
@@ -719,6 +767,7 @@ namespace WTelegram
 
 		private static string CSharpName(string name)
 		{
+			if (name == "id") return "ID";
 			name = char.ToUpper(name[0]) + name[1..];
 			int i;
 			while ((i = name.IndexOf('_')) > 0)
@@ -737,6 +786,7 @@ namespace WTelegram
 			internal int CommonFields; // n fields are common among all those classes
 			internal bool AsEnum;
 			internal bool AbstractUserOrChat;
+			internal List<Param> AutoProps;
 		}
 
 #pragma warning disable IDE1006 // Naming Styles

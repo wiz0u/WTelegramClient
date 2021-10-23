@@ -130,7 +130,12 @@ namespace TL
 		public byte[] info;
 	}
 
-	public abstract partial class MsgDetailedInfoBase : ITLObject { }
+	public abstract partial class MsgDetailedInfoBase : ITLObject
+	{
+		public abstract long AnswerMsgId { get; }
+		public abstract int Bytes { get; }
+		public abstract int Status { get; }
+	}
 	[TLDef(0x276D3EC6)] //msg_detailed_info#276d3ec6 msg_id:long answer_msg_id:long bytes:int status:int = MsgDetailedInfo
 	public partial class MsgDetailedInfo : MsgDetailedInfoBase
 	{
@@ -138,6 +143,10 @@ namespace TL
 		public long answer_msg_id;
 		public int bytes;
 		public int status;
+
+		public override long AnswerMsgId => answer_msg_id;
+		public override int Bytes => bytes;
+		public override int Status => status;
 	}
 	[TLDef(0x809DB6DF)] //msg_new_detailed_info#809db6df answer_msg_id:long bytes:int status:int = MsgDetailedInfo
 	public partial class MsgNewDetailedInfo : MsgDetailedInfoBase
@@ -145,6 +154,10 @@ namespace TL
 		public long answer_msg_id;
 		public int bytes;
 		public int status;
+
+		public override long AnswerMsgId => answer_msg_id;
+		public override int Bytes => bytes;
+		public override int Status => status;
 	}
 
 	[TLDef(0x7D861A08)] //msg_resend_req#7d861a08 msg_ids:Vector<long> = MsgResendReq

@@ -8,7 +8,10 @@ namespace TL
 	using Client = WTelegram.Client;
 
 	///<summary>See <a href="https://corefork.telegram.org/type/DecryptedMessage"/></summary>
-	public abstract partial class DecryptedMessageBase : ITLObject { }
+	public abstract partial class DecryptedMessageBase : ITLObject
+	{
+		public abstract long RandomId { get; }
+	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/DecryptedMessageMedia"/></summary>
 	///<remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaEmpty">decryptedMessageMediaEmpty</a></remarks>
@@ -18,7 +21,12 @@ namespace TL
 	public abstract partial class DecryptedMessageAction : ITLObject { }
 
 	///<summary>See <a href="https://corefork.telegram.org/type/FileLocation"/></summary>
-	public abstract partial class FileLocationBase : ITLObject { }
+	public abstract partial class FileLocationBase : ITLObject
+	{
+		public abstract long VolumeId { get; }
+		public abstract int LocalId { get; }
+		public abstract long Secret { get; }
+	}
 
 	namespace Layer8
 	{
@@ -30,6 +38,8 @@ namespace TL
 			public byte[] random_bytes;
 			public string message;
 			public DecryptedMessageMedia media;
+
+			public override long RandomId => random_id;
 		}
 		///<summary>See <a href="https://corefork.telegram.org/constructor/decryptedMessageService"/></summary>
 		[TLDef(0xAA48327D)]
@@ -38,6 +48,8 @@ namespace TL
 			public long random_id;
 			public byte[] random_bytes;
 			public DecryptedMessageAction action;
+
+			public override long RandomId => random_id;
 		}
 
 		///<summary>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaPhoto"/></summary>
@@ -146,6 +158,8 @@ namespace TL
 			public int ttl;
 			public string message;
 			public DecryptedMessageMedia media;
+
+			public override long RandomId => random_id;
 		}
 		///<summary>See <a href="https://corefork.telegram.org/constructor/decryptedMessageService"/></summary>
 		[TLDef(0x73164160)]
@@ -153,6 +167,8 @@ namespace TL
 		{
 			public long random_id;
 			public DecryptedMessageAction action;
+
+			public override long RandomId => random_id;
 		}
 
 		///<summary>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVideo"/></summary>
@@ -238,6 +254,8 @@ namespace TL
 			[IfFlag(7)] public MessageEntity[] entities;
 			[IfFlag(11)] public string via_bot_name;
 			[IfFlag(3)] public long reply_to_random_id;
+
+			public override long RandomId => random_id;
 		}
 
 		///<summary>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaPhoto"/></summary>
@@ -317,6 +335,8 @@ namespace TL
 			[IfFlag(11)] public string via_bot_name;
 			[IfFlag(3)] public long reply_to_random_id;
 			[IfFlag(17)] public long grouped_id;
+
+			public override long RandomId => random_id;
 		}
 	}
 
@@ -363,6 +383,8 @@ namespace TL
 			public int w;
 			public int h;
 			public int size;
+
+			public override string Type => type;
 		}
 		///<summary>See <a href="https://corefork.telegram.org/constructor/photoCachedSize"/></summary>
 		[TLDef(0xE9A734FA)]
@@ -373,6 +395,8 @@ namespace TL
 			public int w;
 			public int h;
 			public byte[] bytes;
+
+			public override string Type => type;
 		}
 
 		///<summary>See <a href="https://corefork.telegram.org/constructor/documentAttributeSticker"/></summary>
@@ -411,6 +435,10 @@ namespace TL
 			public long volume_id;
 			public int local_id;
 			public long secret;
+
+			public override long VolumeId => volume_id;
+			public override int LocalId => local_id;
+			public override long Secret => secret;
 		}
 		///<summary>See <a href="https://corefork.telegram.org/constructor/fileLocation"/></summary>
 		[TLDef(0x53D69076)]
@@ -420,6 +448,10 @@ namespace TL
 			public long volume_id;
 			public int local_id;
 			public long secret;
+
+			public override long VolumeId => volume_id;
+			public override int LocalId => local_id;
+			public override long Secret => secret;
 		}
 	}
 

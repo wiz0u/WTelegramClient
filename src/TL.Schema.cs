@@ -109,7 +109,12 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/InputFile"/></summary>
-	public abstract partial class InputFileBase : ITLObject { }
+	public abstract partial class InputFileBase : ITLObject
+	{
+		public abstract long ID { get; }
+		public abstract int Parts { get; }
+		public abstract string Name { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputFile"/></summary>
 	[TLDef(0xF52FF27F)]
 	public partial class InputFile : InputFileBase
@@ -118,6 +123,10 @@ namespace TL
 		public int parts;
 		public string name;
 		public byte[] md5_checksum;
+
+		public override long ID => id;
+		public override int Parts => parts;
+		public override string Name => name;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputFileBig"/></summary>
 	[TLDef(0xFA4F0BB5)]
@@ -126,6 +135,10 @@ namespace TL
 		public long id;
 		public int parts;
 		public string name;
+
+		public override long ID => id;
+		public override int Parts => parts;
+		public override string Name => name;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/InputMedia"/></summary>
@@ -481,10 +494,20 @@ namespace TL
 	public partial class UserStatusLastMonth : UserStatus { }
 
 	///<summary>See <a href="https://corefork.telegram.org/type/Chat"/></summary>
-	public abstract partial class ChatBase : ITLObject { }
+	public abstract partial class ChatBase : ITLObject
+	{
+		public abstract long ID { get; }
+		public abstract string Title { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatEmpty"/></summary>
 	[TLDef(0x29562865)]
-	public partial class ChatEmpty : ChatBase { public long id; }
+	public partial class ChatEmpty : ChatBase
+	{
+		public long id;
+
+		public override long ID => id;
+		public override string Title => default;
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chat"/></summary>
 	[TLDef(0x41CBF256)]
 	public partial class Chat : ChatBase
@@ -501,6 +524,9 @@ namespace TL
 		[IfFlag(6)] public InputChannelBase migrated_to;
 		[IfFlag(14)] public ChatAdminRights admin_rights;
 		[IfFlag(18)] public ChatBannedRights default_banned_rights;
+
+		public override long ID => id;
+		public override string Title => title;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatForbidden"/></summary>
 	[TLDef(0x6592A1A7)]
@@ -508,6 +534,9 @@ namespace TL
 	{
 		public long id;
 		public string title;
+
+		public override long ID => id;
+		public override string Title => title;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/channel"/></summary>
 	[TLDef(0x8261AC61)]
@@ -530,6 +559,9 @@ namespace TL
 		[IfFlag(15)] public ChatBannedRights banned_rights;
 		[IfFlag(18)] public ChatBannedRights default_banned_rights;
 		[IfFlag(17)] public int participants_count;
+
+		public override long ID => id;
+		public override string Title => title;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/channelForbidden"/></summary>
 	[TLDef(0x17D493D5)]
@@ -541,10 +573,19 @@ namespace TL
 		public long access_hash;
 		public string title;
 		[IfFlag(16)] public DateTime until_date;
+
+		public override long ID => id;
+		public override string Title => title;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/ChatFull"/></summary>
-	public abstract partial class ChatFullBase : ITLObject { }
+	public abstract partial class ChatFullBase : ITLObject
+	{
+		public abstract long ID { get; }
+		public abstract string About { get; }
+		public abstract PeerNotifySettings NotifySettings { get; }
+		public abstract int Folder { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatFull"/></summary>
 	[TLDef(0x4DBDC099)]
 	public partial class ChatFull : ChatFullBase
@@ -566,6 +607,11 @@ namespace TL
 		[IfFlag(14)] public int ttl_period;
 		[IfFlag(15)] public Peer groupcall_default_join_as;
 		[IfFlag(16)] public string theme_emoticon;
+
+		public override long ID => id;
+		public override string About => about;
+		public override PeerNotifySettings NotifySettings => notify_settings;
+		public override int Folder => folder_id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/channelFull"/></summary>
 	[TLDef(0xE9B27A17)]
@@ -611,10 +657,18 @@ namespace TL
 		[IfFlag(25)] public string[] pending_suggestions;
 		[IfFlag(26)] public Peer groupcall_default_join_as;
 		[IfFlag(27)] public string theme_emoticon;
+
+		public override long ID => id;
+		public override string About => about;
+		public override PeerNotifySettings NotifySettings => notify_settings;
+		public override int Folder => folder_id;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/ChatParticipant"/></summary>
-	public abstract partial class ChatParticipantBase : ITLObject { }
+	public abstract partial class ChatParticipantBase : ITLObject
+	{
+		public abstract long UserId { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatParticipant"/></summary>
 	[TLDef(0xC02D4007)]
 	public partial class ChatParticipant : ChatParticipantBase
@@ -622,16 +676,28 @@ namespace TL
 		public long user_id;
 		public long inviter_id;
 		public DateTime date;
+
+		public override long UserId => user_id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatParticipantCreator"/></summary>
 	[TLDef(0xE46BCEE4)]
-	public partial class ChatParticipantCreator : ChatParticipantBase { public long user_id; }
+	public partial class ChatParticipantCreator : ChatParticipantBase
+	{
+		public long user_id;
+
+		public override long UserId => user_id;
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatParticipantAdmin"/></summary>
 	[TLDef(0xA0933F5B)]
-	public partial class ChatParticipantAdmin : ChatParticipant { }
+	public partial class ChatParticipantAdmin : ChatParticipant
+	{
+	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/ChatParticipants"/></summary>
-	public abstract partial class ChatParticipantsBase : ITLObject { }
+	public abstract partial class ChatParticipantsBase : ITLObject
+	{
+		public abstract long ChatId { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatParticipantsForbidden"/></summary>
 	[TLDef(0x8763D3E1)]
 	public partial class ChatParticipantsForbidden : ChatParticipantsBase
@@ -640,6 +706,8 @@ namespace TL
 		public Flags flags;
 		public long chat_id;
 		[IfFlag(0)] public ChatParticipantBase self_participant;
+
+		public override long ChatId => chat_id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatParticipants"/></summary>
 	[TLDef(0x3CBC93F8)]
@@ -648,6 +716,8 @@ namespace TL
 		public long chat_id;
 		public ChatParticipantBase[] participants;
 		public int version;
+
+		public override long ChatId => chat_id;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatPhoto"/></summary>
@@ -663,7 +733,15 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/Message"/></summary>
-	public abstract partial class MessageBase : ITLObject { }
+	public abstract partial class MessageBase : ITLObject
+	{
+		public abstract int ID { get; }
+		public abstract Peer From { get; }
+		public abstract Peer Peer { get; }
+		public abstract MessageReplyHeader ReplyTo { get; }
+		public abstract DateTime Date { get; }
+		public abstract int TtlPeriod { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messageEmpty"/></summary>
 	[TLDef(0x90A6CA84)]
 	public partial class MessageEmpty : MessageBase
@@ -672,6 +750,13 @@ namespace TL
 		public Flags flags;
 		public int id;
 		[IfFlag(0)] public Peer peer_id;
+
+		public override int ID => id;
+		public override Peer From => default;
+		public override Peer Peer => peer_id;
+		public override MessageReplyHeader ReplyTo => default;
+		public override DateTime Date => default;
+		public override int TtlPeriod => default;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/message"/></summary>
 	[TLDef(0x85D6CBE2)]
@@ -702,6 +787,13 @@ namespace TL
 		[IfFlag(17)] public long grouped_id;
 		[IfFlag(22)] public RestrictionReason[] restriction_reason;
 		[IfFlag(25)] public int ttl_period;
+
+		public override int ID => id;
+		public override Peer From => from_id;
+		public override Peer Peer => peer_id;
+		public override MessageReplyHeader ReplyTo => reply_to;
+		public override DateTime Date => date;
+		public override int TtlPeriod => ttl_period;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messageService"/></summary>
 	[TLDef(0x2B085862)]
@@ -717,6 +809,13 @@ namespace TL
 		public DateTime date;
 		public MessageAction action;
 		[IfFlag(25)] public int ttl_period;
+
+		public override int ID => id;
+		public override Peer From => from_id;
+		public override Peer Peer => peer_id;
+		public override MessageReplyHeader ReplyTo => reply_to;
+		public override DateTime Date => date;
+		public override int TtlPeriod => ttl_period;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/MessageMedia"/></summary>
@@ -958,7 +1057,11 @@ namespace TL
 	public partial class MessageActionSetChatTheme : MessageAction { public string emoticon; }
 
 	///<summary>See <a href="https://corefork.telegram.org/type/Dialog"/></summary>
-	public abstract partial class DialogBase : ITLObject { }
+	public abstract partial class DialogBase : ITLObject
+	{
+		public abstract Peer Peer { get; }
+		public abstract int TopMessage { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/dialog"/></summary>
 	[TLDef(0x2C171F72)]
 	public partial class Dialog : DialogBase
@@ -975,6 +1078,9 @@ namespace TL
 		[IfFlag(0)] public int pts;
 		[IfFlag(1)] public DraftMessageBase draft;
 		[IfFlag(4)] public int folder_id;
+
+		public override Peer Peer => peer;
+		public override int TopMessage => top_message;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/dialogFolder"/></summary>
 	[TLDef(0x71BD134C)]
@@ -989,6 +1095,9 @@ namespace TL
 		public int unread_unmuted_peers_count;
 		public int unread_muted_messages_count;
 		public int unread_unmuted_messages_count;
+
+		public override Peer Peer => peer;
+		public override int TopMessage => top_message;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/Photo"/></summary>
@@ -1012,10 +1121,18 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/PhotoSize"/></summary>
-	public abstract partial class PhotoSizeBase : ITLObject { }
+	public abstract partial class PhotoSizeBase : ITLObject
+	{
+		public abstract string Type { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/photoSizeEmpty"/></summary>
 	[TLDef(0x0E17E23C)]
-	public partial class PhotoSizeEmpty : PhotoSizeBase { public string type; }
+	public partial class PhotoSizeEmpty : PhotoSizeBase
+	{
+		public string type;
+
+		public override string Type => type;
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/photoSize"/></summary>
 	[TLDef(0x75C78E60)]
 	public partial class PhotoSize : PhotoSizeBase
@@ -1024,6 +1141,8 @@ namespace TL
 		public int w;
 		public int h;
 		public int size;
+
+		public override string Type => type;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/photoCachedSize"/></summary>
 	[TLDef(0x021E1AD6)]
@@ -1033,6 +1152,8 @@ namespace TL
 		public int w;
 		public int h;
 		public byte[] bytes;
+
+		public override string Type => type;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/photoStrippedSize"/></summary>
 	[TLDef(0xE0B0BC2E)]
@@ -1040,6 +1161,8 @@ namespace TL
 	{
 		public string type;
 		public byte[] bytes;
+
+		public override string Type => type;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/photoSizeProgressive"/></summary>
 	[TLDef(0xFA3EFB95)]
@@ -1049,6 +1172,8 @@ namespace TL
 		public int w;
 		public int h;
 		public int[] sizes;
+
+		public override string Type => type;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/photoPathSize"/></summary>
 	[TLDef(0xD8214D41)]
@@ -1056,6 +1181,8 @@ namespace TL
 	{
 		public string type;
 		public byte[] bytes;
+
+		public override string Type => type;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/geoPoint"/></summary>
@@ -1161,7 +1288,11 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/WallPaper"/></summary>
-	public abstract partial class WallPaperBase : ITLObject { }
+	public abstract partial class WallPaperBase : ITLObject
+	{
+		public abstract long ID { get; }
+		public abstract WallPaperSettings Settings { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/wallPaper"/></summary>
 	[TLDef(0xA437C3ED)]
 	public partial class WallPaper : WallPaperBase
@@ -1173,6 +1304,9 @@ namespace TL
 		public string slug;
 		public DocumentBase document;
 		[IfFlag(2)] public WallPaperSettings settings;
+
+		public override long ID => id;
+		public override WallPaperSettings Settings => settings;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/wallPaperNoFile"/></summary>
 	[TLDef(0xE0804116)]
@@ -1182,6 +1316,9 @@ namespace TL
 		public long id;
 		public Flags flags;
 		[IfFlag(2)] public WallPaperSettings settings;
+
+		public override long ID => id;
+		public override WallPaperSettings Settings => settings;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/ReportReason"/></summary>
@@ -1285,7 +1422,12 @@ namespace TL
 	public partial class Contacts_BlockedSlice : Contacts_Blocked { public int count; }
 
 	///<summary>See <a href="https://corefork.telegram.org/type/messages.Dialogs"/></summary>
-	public abstract partial class Messages_DialogsBase : ITLObject { }
+	public abstract partial class Messages_DialogsBase : ITLObject
+	{
+		public abstract DialogBase[] Dialogs { get; }
+		public abstract MessageBase[] Messages { get; }
+		public abstract IPeerInfo UserOrChat(Peer peer);
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.dialogs"/></summary>
 	[TLDef(0x15BA6C40)]
 	public partial class Messages_Dialogs : Messages_DialogsBase
@@ -1294,18 +1436,32 @@ namespace TL
 		public MessageBase[] messages;
 		public Dictionary<long, ChatBase> chats;
 		public Dictionary<long, UserBase> users;
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+
+		public override DialogBase[] Dialogs => dialogs;
+		public override MessageBase[] Messages => messages;
+		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.dialogsSlice"/></summary>
 	[TLDef(0x71E094F3, inheritAfter = true)]
-	public partial class Messages_DialogsSlice : Messages_Dialogs { public int count; }
+	public partial class Messages_DialogsSlice : Messages_Dialogs
+	{
+		public int count;
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.dialogsNotModified"/></summary>
 	[TLDef(0xF0E3E596)]
-	public partial class Messages_DialogsNotModified : Messages_DialogsBase { public int count; }
+	public partial class Messages_DialogsNotModified : Messages_DialogsBase
+	{
+		public int count;
+
+		public override DialogBase[] Dialogs => default;
+		public override MessageBase[] Messages => default;
+		public override IPeerInfo UserOrChat(Peer peer) => null;
+	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/messages.Messages"/></summary>
 	public abstract partial class Messages_MessagesBase : ITLObject
 	{
+		public abstract MessageBase[] Messages { get; }
 		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.messages"/></summary>
@@ -1315,6 +1471,8 @@ namespace TL
 		public MessageBase[] messages;
 		public Dictionary<long, ChatBase> chats;
 		public Dictionary<long, UserBase> users;
+
+		public override MessageBase[] Messages => messages;
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.messagesSlice"/></summary>
@@ -1339,6 +1497,8 @@ namespace TL
 		public MessageBase[] messages;
 		public Dictionary<long, ChatBase> chats;
 		public Dictionary<long, UserBase> users;
+
+		public override MessageBase[] Messages => messages;
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.messagesNotModified"/></summary>
@@ -1346,6 +1506,8 @@ namespace TL
 	public partial class Messages_MessagesNotModified : Messages_MessagesBase
 	{
 		public int count;
+
+		public override MessageBase[] Messages => default;
 		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 
@@ -2102,6 +2264,9 @@ namespace TL
 	///<summary>See <a href="https://corefork.telegram.org/type/updates.Difference"/></summary>
 	public abstract partial class Updates_DifferenceBase : ITLObject
 	{
+		public abstract MessageBase[] NewMessages { get; }
+		public abstract EncryptedMessageBase[] NewEncryptedMessages { get; }
+		public abstract Update[] OtherUpdates { get; }
 		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updates.differenceEmpty"/></summary>
@@ -2110,6 +2275,10 @@ namespace TL
 	{
 		public DateTime date;
 		public int seq;
+
+		public override MessageBase[] NewMessages => Array.Empty<MessageBase>();
+		public override EncryptedMessageBase[] NewEncryptedMessages => Array.Empty<EncryptedMessageBase>();
+		public override Update[] OtherUpdates => Array.Empty<Update>();
 		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updates.difference"/></summary>
@@ -2122,6 +2291,10 @@ namespace TL
 		public Dictionary<long, ChatBase> chats;
 		public Dictionary<long, UserBase> users;
 		public Updates_State state;
+
+		public override MessageBase[] NewMessages => new_messages;
+		public override EncryptedMessageBase[] NewEncryptedMessages => new_encrypted_messages;
+		public override Update[] OtherUpdates => other_updates;
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updates.differenceSlice"/></summary>
@@ -2134,6 +2307,10 @@ namespace TL
 		public Dictionary<long, ChatBase> chats;
 		public Dictionary<long, UserBase> users;
 		public Updates_State intermediate_state;
+
+		public override MessageBase[] NewMessages => new_messages;
+		public override EncryptedMessageBase[] NewEncryptedMessages => new_encrypted_messages;
+		public override Update[] OtherUpdates => other_updates;
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updates.differenceTooLong"/></summary>
@@ -2141,14 +2318,24 @@ namespace TL
 	public partial class Updates_DifferenceTooLong : Updates_DifferenceBase
 	{
 		public int pts;
+
+		public override MessageBase[] NewMessages => default;
+		public override EncryptedMessageBase[] NewEncryptedMessages => default;
+		public override Update[] OtherUpdates => default;
 		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/Updates"/></summary>
-	public abstract partial class UpdatesBase : ITLObject { }
+	public abstract partial class UpdatesBase : ITLObject
+	{
+		public abstract DateTime Date { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updatesTooLong"/></summary>
 	[TLDef(0xE317AF7E)]
-	public partial class UpdatesTooLong : UpdatesBase { }
+	public partial class UpdatesTooLong : UpdatesBase
+	{
+		public override DateTime Date => default;
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updateShortMessage"/></summary>
 	[TLDef(0x313BC7F8)]
 	public partial class UpdateShortMessage : UpdatesBase
@@ -2167,6 +2354,8 @@ namespace TL
 		[IfFlag(3)] public MessageReplyHeader reply_to;
 		[IfFlag(7)] public MessageEntity[] entities;
 		[IfFlag(25)] public int ttl_period;
+
+		public override DateTime Date => date;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updateShortChatMessage"/></summary>
 	[TLDef(0x4D6DEEA5)]
@@ -2187,6 +2376,8 @@ namespace TL
 		[IfFlag(3)] public MessageReplyHeader reply_to;
 		[IfFlag(7)] public MessageEntity[] entities;
 		[IfFlag(25)] public int ttl_period;
+
+		public override DateTime Date => date;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updateShort"/></summary>
 	[TLDef(0x78D4DEC1)]
@@ -2194,6 +2385,8 @@ namespace TL
 	{
 		public Update update;
 		public DateTime date;
+
+		public override DateTime Date => date;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updatesCombined"/></summary>
 	[TLDef(0x725B04C3)]
@@ -2205,6 +2398,8 @@ namespace TL
 		public DateTime date;
 		public int seq_start;
 		public int seq;
+
+		public override DateTime Date => date;
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updates"/></summary>
@@ -2216,6 +2411,8 @@ namespace TL
 		public Dictionary<long, ChatBase> chats;
 		public DateTime date;
 		public int seq;
+
+		public override DateTime Date => date;
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updateShortSentMessage"/></summary>
@@ -2231,6 +2428,8 @@ namespace TL
 		[IfFlag(9)] public MessageMedia media;
 		[IfFlag(7)] public MessageEntity[] entities;
 		[IfFlag(25)] public int ttl_period;
+
+		public override DateTime Date => date;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/photos.photos"/></summary>
@@ -2370,10 +2569,18 @@ namespace TL
 	public partial class Help_InviteText : ITLObject { public string message; }
 
 	///<summary>See <a href="https://corefork.telegram.org/type/EncryptedChat"/></summary>
-	public abstract partial class EncryptedChatBase : ITLObject { }
+	public abstract partial class EncryptedChatBase : ITLObject
+	{
+		public abstract int ID { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/encryptedChatEmpty"/></summary>
 	[TLDef(0xAB7EC0A0)]
-	public partial class EncryptedChatEmpty : EncryptedChatBase { public int id; }
+	public partial class EncryptedChatEmpty : EncryptedChatBase
+	{
+		public int id;
+
+		public override int ID => id;
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/encryptedChatWaiting"/></summary>
 	[TLDef(0x66B25953)]
 	public partial class EncryptedChatWaiting : EncryptedChatBase
@@ -2383,6 +2590,8 @@ namespace TL
 		public DateTime date;
 		public long admin_id;
 		public long participant_id;
+
+		public override int ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/encryptedChatRequested"/></summary>
 	[TLDef(0x48F1D94C)]
@@ -2397,6 +2606,8 @@ namespace TL
 		public long admin_id;
 		public long participant_id;
 		public byte[] g_a;
+
+		public override int ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/encryptedChat"/></summary>
 	[TLDef(0x61F0D4C7)]
@@ -2409,6 +2620,8 @@ namespace TL
 		public long participant_id;
 		public byte[] g_a_or_b;
 		public long key_fingerprint;
+
+		public override int ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/encryptedChatDiscarded"/></summary>
 	[TLDef(0x1E1C7C45)]
@@ -2417,6 +2630,8 @@ namespace TL
 		[Flags] public enum Flags { history_deleted = 0x1 }
 		public Flags flags;
 		public int id;
+
+		public override int ID => id;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputEncryptedChat"/></summary>
@@ -2441,7 +2656,10 @@ namespace TL
 
 	///<summary>See <a href="https://corefork.telegram.org/type/InputEncryptedFile"/></summary>
 	///<remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/inputEncryptedFileEmpty">inputEncryptedFileEmpty</a></remarks>
-	public abstract partial class InputEncryptedFileBase : ITLObject { }
+	public abstract partial class InputEncryptedFileBase : ITLObject
+	{
+		public abstract long ID { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputEncryptedFileUploaded"/></summary>
 	[TLDef(0x64BD0306)]
 	public partial class InputEncryptedFileUploaded : InputEncryptedFileBase
@@ -2450,6 +2668,8 @@ namespace TL
 		public int parts;
 		public byte[] md5_checksum;
 		public int key_fingerprint;
+
+		public override long ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputEncryptedFile"/></summary>
 	[TLDef(0x5A17B5E5)]
@@ -2457,6 +2677,8 @@ namespace TL
 	{
 		public long id;
 		public long access_hash;
+
+		public override long ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputEncryptedFileBigUploaded"/></summary>
 	[TLDef(0x2DC173C8)]
@@ -2465,10 +2687,18 @@ namespace TL
 		public long id;
 		public int parts;
 		public int key_fingerprint;
+
+		public override long ID => id;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/EncryptedMessage"/></summary>
-	public abstract partial class EncryptedMessageBase : ITLObject { }
+	public abstract partial class EncryptedMessageBase : ITLObject
+	{
+		public abstract long RandomId { get; }
+		public abstract int ChatId { get; }
+		public abstract DateTime Date { get; }
+		public abstract byte[] Bytes { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/encryptedMessage"/></summary>
 	[TLDef(0xED18C118)]
 	public partial class EncryptedMessage : EncryptedMessageBase
@@ -2478,6 +2708,11 @@ namespace TL
 		public DateTime date;
 		public byte[] bytes;
 		public EncryptedFile file;
+
+		public override long RandomId => random_id;
+		public override int ChatId => chat_id;
+		public override DateTime Date => date;
+		public override byte[] Bytes => bytes;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/encryptedMessageService"/></summary>
 	[TLDef(0x23734B06)]
@@ -2487,6 +2722,11 @@ namespace TL
 		public int chat_id;
 		public DateTime date;
 		public byte[] bytes;
+
+		public override long RandomId => random_id;
+		public override int ChatId => chat_id;
+		public override DateTime Date => date;
+		public override byte[] Bytes => bytes;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/messages.DhConfig"/></summary>
@@ -2834,16 +3074,26 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/WebPage"/></summary>
-	public abstract partial class WebPageBase : ITLObject { }
+	public abstract partial class WebPageBase : ITLObject
+	{
+		public abstract long ID { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/webPageEmpty"/></summary>
 	[TLDef(0xEB1477E8)]
-	public partial class WebPageEmpty : WebPageBase { public long id; }
+	public partial class WebPageEmpty : WebPageBase
+	{
+		public long id;
+
+		public override long ID => id;
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/webPagePending"/></summary>
 	[TLDef(0xC586DA1C)]
 	public partial class WebPagePending : WebPageBase
 	{
 		public long id;
 		public DateTime date;
+
+		public override long ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/webPage"/></summary>
 	[TLDef(0xE89C45B2)]
@@ -2871,6 +3121,8 @@ namespace TL
 		[IfFlag(9)] public DocumentBase document;
 		[IfFlag(10)] public Page cached_page;
 		[IfFlag(12)] public WebPageAttribute[] attributes;
+
+		public override long ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/webPageNotModified"/></summary>
 	[TLDef(0x7311CA11)]
@@ -2879,6 +3131,8 @@ namespace TL
 		[Flags] public enum Flags { has_cached_page_views = 0x1 }
 		public Flags flags;
 		[IfFlag(0)] public int cached_page_views;
+
+		public override long ID => default;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/authorization"/></summary>
@@ -3066,13 +3320,24 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/KeyboardButton"/></summary>
-	public abstract partial class KeyboardButtonBase : ITLObject { }
+	public abstract partial class KeyboardButtonBase : ITLObject
+	{
+		public abstract string Text { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/keyboardButton"/></summary>
 	[TLDef(0xA2FA4880)]
-	public partial class KeyboardButton : KeyboardButtonBase { public string text; }
+	public partial class KeyboardButton : KeyboardButtonBase
+	{
+		public string text;
+
+		public override string Text => text;
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/keyboardButtonUrl"/></summary>
 	[TLDef(0x258AFF05)]
-	public partial class KeyboardButtonUrl : KeyboardButton { public string url; }
+	public partial class KeyboardButtonUrl : KeyboardButton
+	{
+		public string url;
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/keyboardButtonCallback"/></summary>
 	[TLDef(0x35BBDB6B)]
 	public partial class KeyboardButtonCallback : KeyboardButtonBase
@@ -3081,13 +3346,19 @@ namespace TL
 		public Flags flags;
 		public string text;
 		public byte[] data;
+
+		public override string Text => text;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRequestPhone"/></summary>
 	[TLDef(0xB16A6C29)]
-	public partial class KeyboardButtonRequestPhone : KeyboardButton { }
+	public partial class KeyboardButtonRequestPhone : KeyboardButton
+	{
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRequestGeoLocation"/></summary>
 	[TLDef(0xFC796B3F)]
-	public partial class KeyboardButtonRequestGeoLocation : KeyboardButton { }
+	public partial class KeyboardButtonRequestGeoLocation : KeyboardButton
+	{
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/keyboardButtonSwitchInline"/></summary>
 	[TLDef(0x0568A748)]
 	public partial class KeyboardButtonSwitchInline : KeyboardButtonBase
@@ -3096,13 +3367,19 @@ namespace TL
 		public Flags flags;
 		public string text;
 		public string query;
+
+		public override string Text => text;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/keyboardButtonGame"/></summary>
 	[TLDef(0x50F41CCF)]
-	public partial class KeyboardButtonGame : KeyboardButton { }
+	public partial class KeyboardButtonGame : KeyboardButton
+	{
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/keyboardButtonBuy"/></summary>
 	[TLDef(0xAFD93FBB)]
-	public partial class KeyboardButtonBuy : KeyboardButton { }
+	public partial class KeyboardButtonBuy : KeyboardButton
+	{
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/keyboardButtonUrlAuth"/></summary>
 	[TLDef(0x10B78D29)]
 	public partial class KeyboardButtonUrlAuth : KeyboardButtonBase
@@ -3113,6 +3390,8 @@ namespace TL
 		[IfFlag(0)] public string fwd_text;
 		public string url;
 		public int button_id;
+
+		public override string Text => text;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputKeyboardButtonUrlAuth"/></summary>
 	[TLDef(0xD02E7FD4)]
@@ -3124,6 +3403,8 @@ namespace TL
 		[IfFlag(1)] public string fwd_text;
 		public string url;
 		public InputUserBase bot;
+
+		public override string Text => text;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRequestPoll"/></summary>
 	[TLDef(0xBBC7515D, inheritAfter = true)]
@@ -3234,13 +3515,18 @@ namespace TL
 
 	///<summary>See <a href="https://corefork.telegram.org/type/InputChannel"/></summary>
 	///<remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/inputChannelEmpty">inputChannelEmpty</a></remarks>
-	public abstract partial class InputChannelBase : ITLObject { }
+	public abstract partial class InputChannelBase : ITLObject
+	{
+		public abstract long ChannelId { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputChannel"/></summary>
 	[TLDef(0xF35AEC28)]
 	public partial class InputChannel : InputChannelBase
 	{
 		public long channel_id;
 		public long access_hash;
+
+		public override long ChannelId => channel_id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputChannelFromMessage"/></summary>
 	[TLDef(0x5B934F9D)]
@@ -3249,6 +3535,8 @@ namespace TL
 		public InputPeer peer;
 		public int msg_id;
 		public long channel_id;
+
+		public override long ChannelId => channel_id;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/contacts.resolvedPeer"/></summary>
@@ -3532,7 +3820,11 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/InputBotInlineResult"/></summary>
-	public abstract partial class InputBotInlineResultBase : ITLObject { }
+	public abstract partial class InputBotInlineResultBase : ITLObject
+	{
+		public abstract string ID { get; }
+		public abstract InputBotInlineMessage SendMessage { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputBotInlineResult"/></summary>
 	[TLDef(0x88BF9319)]
 	public partial class InputBotInlineResult : InputBotInlineResultBase
@@ -3547,6 +3839,9 @@ namespace TL
 		[IfFlag(4)] public InputWebDocument thumb;
 		[IfFlag(5)] public InputWebDocument content;
 		public InputBotInlineMessage send_message;
+
+		public override string ID => id;
+		public override InputBotInlineMessage SendMessage => send_message;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputBotInlineResultPhoto"/></summary>
 	[TLDef(0xA8D864A7)]
@@ -3556,6 +3851,9 @@ namespace TL
 		public string type;
 		public InputPhoto photo;
 		public InputBotInlineMessage send_message;
+
+		public override string ID => id;
+		public override InputBotInlineMessage SendMessage => send_message;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputBotInlineResultDocument"/></summary>
 	[TLDef(0xFFF8FDC4)]
@@ -3569,6 +3867,9 @@ namespace TL
 		[IfFlag(2)] public string description;
 		public InputDocument document;
 		public InputBotInlineMessage send_message;
+
+		public override string ID => id;
+		public override InputBotInlineMessage SendMessage => send_message;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputBotInlineResultGame"/></summary>
 	[TLDef(0x4FA417F2)]
@@ -3577,6 +3878,9 @@ namespace TL
 		public string id;
 		public string short_name;
 		public InputBotInlineMessage send_message;
+
+		public override string ID => id;
+		public override InputBotInlineMessage SendMessage => send_message;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/BotInlineMessage"/></summary>
@@ -3649,7 +3953,12 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/BotInlineResult"/></summary>
-	public abstract partial class BotInlineResultBase : ITLObject { }
+	public abstract partial class BotInlineResultBase : ITLObject
+	{
+		public abstract string ID { get; }
+		public abstract string Type { get; }
+		public abstract BotInlineMessage SendMessage { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/botInlineResult"/></summary>
 	[TLDef(0x11965F3A)]
 	public partial class BotInlineResult : BotInlineResultBase
@@ -3664,6 +3973,10 @@ namespace TL
 		[IfFlag(4)] public WebDocumentBase thumb;
 		[IfFlag(5)] public WebDocumentBase content;
 		public BotInlineMessage send_message;
+
+		public override string ID => id;
+		public override string Type => type;
+		public override BotInlineMessage SendMessage => send_message;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/botInlineMediaResult"/></summary>
 	[TLDef(0x17DB940B)]
@@ -3678,6 +3991,10 @@ namespace TL
 		[IfFlag(2)] public string title;
 		[IfFlag(3)] public string description;
 		public BotInlineMessage send_message;
+
+		public override string ID => id;
+		public override string Type => type;
+		public override BotInlineMessage SendMessage => send_message;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.botResults"/></summary>
@@ -3765,7 +4082,11 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/InputBotInlineMessageID"/></summary>
-	public abstract partial class InputBotInlineMessageIDBase : ITLObject { }
+	public abstract partial class InputBotInlineMessageIDBase : ITLObject
+	{
+		public abstract int DcId { get; }
+		public abstract long AccessHash { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageID"/></summary>
 	[TLDef(0x890C3D89)]
 	public partial class InputBotInlineMessageID : InputBotInlineMessageIDBase
@@ -3773,6 +4094,9 @@ namespace TL
 		public int dc_id;
 		public long id;
 		public long access_hash;
+
+		public override int DcId => dc_id;
+		public override long AccessHash => access_hash;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageID64"/></summary>
 	[TLDef(0xB6D915D7)]
@@ -3782,6 +4106,9 @@ namespace TL
 		public long owner_id;
 		public int id;
 		public long access_hash;
+
+		public override int DcId => dc_id;
+		public override long AccessHash => access_hash;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inlineBotSwitchPM"/></summary>
@@ -3924,13 +4251,18 @@ namespace TL
 	public partial class Messages_StickerSetInstallResultArchive : Messages_StickerSetInstallResult { public StickerSetCoveredBase[] sets; }
 
 	///<summary>See <a href="https://corefork.telegram.org/type/StickerSetCovered"/></summary>
-	public abstract partial class StickerSetCoveredBase : ITLObject { }
+	public abstract partial class StickerSetCoveredBase : ITLObject
+	{
+		public abstract StickerSet Set { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/stickerSetCovered"/></summary>
 	[TLDef(0x6410A5D2)]
 	public partial class StickerSetCovered : StickerSetCoveredBase
 	{
 		public StickerSet set;
 		public DocumentBase cover;
+
+		public override StickerSet Set => set;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/stickerSetMultiCovered"/></summary>
 	[TLDef(0x3407E51B)]
@@ -3938,6 +4270,8 @@ namespace TL
 	{
 		public StickerSet set;
 		public DocumentBase[] covers;
+
+		public override StickerSet Set => set;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/maskCoords"/></summary>
@@ -4336,7 +4670,13 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/WebDocument"/></summary>
-	public abstract partial class WebDocumentBase : ITLObject { }
+	public abstract partial class WebDocumentBase : ITLObject
+	{
+		public abstract string Url { get; }
+		public abstract int Size { get; }
+		public abstract string MimeType { get; }
+		public abstract DocumentAttribute[] Attributes { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/webDocument"/></summary>
 	[TLDef(0x1C570ED1)]
 	public partial class WebDocument : WebDocumentBase
@@ -4346,6 +4686,11 @@ namespace TL
 		public int size;
 		public string mime_type;
 		public DocumentAttribute[] attributes;
+
+		public override string Url => url;
+		public override int Size => size;
+		public override string MimeType => mime_type;
+		public override DocumentAttribute[] Attributes => attributes;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/webDocumentNoProxy"/></summary>
 	[TLDef(0xF9C8BCC6)]
@@ -4355,6 +4700,11 @@ namespace TL
 		public int size;
 		public string mime_type;
 		public DocumentAttribute[] attributes;
+
+		public override string Url => url;
+		public override int Size => size;
+		public override string MimeType => mime_type;
+		public override DocumentAttribute[] Attributes => attributes;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputWebDocument"/></summary>
@@ -4368,13 +4718,18 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/InputWebFileLocation"/></summary>
-	public abstract partial class InputWebFileLocationBase : ITLObject { }
+	public abstract partial class InputWebFileLocationBase : ITLObject
+	{
+		public abstract long AccessHash { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputWebFileLocation"/></summary>
 	[TLDef(0xC239D686)]
 	public partial class InputWebFileLocation : InputWebFileLocationBase
 	{
 		public string url;
 		public long access_hash;
+
+		public override long AccessHash => access_hash;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputWebFileGeoPointLocation"/></summary>
 	[TLDef(0x9F2221C9)]
@@ -4386,6 +4741,8 @@ namespace TL
 		public int h;
 		public int zoom;
 		public int scale;
+
+		public override long AccessHash => access_hash;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/upload.webFile"/></summary>
@@ -4529,10 +4886,18 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/PhoneCall"/></summary>
-	public abstract partial class PhoneCallBase : ITLObject { }
+	public abstract partial class PhoneCallBase : ITLObject
+	{
+		public abstract long ID { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/phoneCallEmpty"/></summary>
 	[TLDef(0x5366C915)]
-	public partial class PhoneCallEmpty : PhoneCallBase { public long id; }
+	public partial class PhoneCallEmpty : PhoneCallBase
+	{
+		public long id;
+
+		public override long ID => id;
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/phoneCallWaiting"/></summary>
 	[TLDef(0xC5226F17)]
 	public partial class PhoneCallWaiting : PhoneCallBase
@@ -4546,6 +4911,8 @@ namespace TL
 		public long participant_id;
 		public PhoneCallProtocol protocol;
 		[IfFlag(0)] public DateTime receive_date;
+
+		public override long ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/phoneCallRequested"/></summary>
 	[TLDef(0x14B0ED0C)]
@@ -4560,6 +4927,8 @@ namespace TL
 		public long participant_id;
 		public byte[] g_a_hash;
 		public PhoneCallProtocol protocol;
+
+		public override long ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/phoneCallAccepted"/></summary>
 	[TLDef(0x3660C311)]
@@ -4574,6 +4943,8 @@ namespace TL
 		public long participant_id;
 		public byte[] g_b;
 		public PhoneCallProtocol protocol;
+
+		public override long ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/phoneCall"/></summary>
 	[TLDef(0x967F7C67)]
@@ -4591,6 +4962,8 @@ namespace TL
 		public PhoneCallProtocol protocol;
 		public PhoneConnectionBase[] connections;
 		public DateTime start_date;
+
+		public override long ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/phoneCallDiscarded"/></summary>
 	[TLDef(0x50CA4DE1)]
@@ -4601,10 +4974,18 @@ namespace TL
 		public long id;
 		[IfFlag(0)] public PhoneCallDiscardReason reason;
 		[IfFlag(1)] public int duration;
+
+		public override long ID => id;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/PhoneConnection"/></summary>
-	public abstract partial class PhoneConnectionBase : ITLObject { }
+	public abstract partial class PhoneConnectionBase : ITLObject
+	{
+		public abstract long ID { get; }
+		public abstract string Ip { get; }
+		public abstract string Ipv6 { get; }
+		public abstract int Port { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/phoneConnection"/></summary>
 	[TLDef(0x9D4C17C0)]
 	public partial class PhoneConnection : PhoneConnectionBase
@@ -4614,6 +4995,11 @@ namespace TL
 		public string ipv6;
 		public int port;
 		public byte[] peer_tag;
+
+		public override long ID => id;
+		public override string Ip => ip;
+		public override string Ipv6 => ipv6;
+		public override int Port => port;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/phoneConnectionWebrtc"/></summary>
 	[TLDef(0x635FE375)]
@@ -4627,6 +5013,11 @@ namespace TL
 		public int port;
 		public string username;
 		public string password;
+
+		public override long ID => id;
+		public override string Ip => ip;
+		public override string Ipv6 => ipv6;
+		public override int Port => port;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/phoneCallProtocol"/></summary>
@@ -4670,13 +5061,18 @@ namespace TL
 	public partial class CdnConfig : ITLObject { public CdnPublicKey[] public_keys; }
 
 	///<summary>See <a href="https://corefork.telegram.org/type/LangPackString"/></summary>
-	public abstract partial class LangPackStringBase : ITLObject { }
+	public abstract partial class LangPackStringBase : ITLObject
+	{
+		public abstract string Key { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/langPackString"/></summary>
 	[TLDef(0xCAD181F6)]
 	public partial class LangPackString : LangPackStringBase
 	{
 		public string key;
 		public string value;
+
+		public override string Key => key;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/langPackStringPluralized"/></summary>
 	[TLDef(0x6C47AC9F)]
@@ -4692,10 +5088,17 @@ namespace TL
 		[IfFlag(3)] public string few_value;
 		[IfFlag(4)] public string many_value;
 		public string other_value;
+
+		public override string Key => key;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/langPackStringDeleted"/></summary>
 	[TLDef(0x2979EEB2)]
-	public partial class LangPackStringDeleted : LangPackStringBase { public string key; }
+	public partial class LangPackStringDeleted : LangPackStringBase
+	{
+		public string key;
+
+		public override string Key => key;
+	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/langPackDifference"/></summary>
 	[TLDef(0xF385C1F6)]
@@ -5073,7 +5476,10 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/InputSecureFile"/></summary>
-	public abstract partial class InputSecureFileBase : ITLObject { }
+	public abstract partial class InputSecureFileBase : ITLObject
+	{
+		public abstract long ID { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputSecureFileUploaded"/></summary>
 	[TLDef(0x3334B0F0)]
 	public partial class InputSecureFileUploaded : InputSecureFileBase
@@ -5083,6 +5489,8 @@ namespace TL
 		public byte[] md5_checksum;
 		public byte[] file_hash;
 		public byte[] secret;
+
+		public override long ID => id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputSecureFile"/></summary>
 	[TLDef(0x5367E5BE)]
@@ -5090,6 +5498,8 @@ namespace TL
 	{
 		public long id;
 		public long access_hash;
+
+		public override long ID => id;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/secureFile"/></summary>
@@ -5199,7 +5609,11 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/SecureValueError"/></summary>
-	public abstract partial class SecureValueErrorBase : ITLObject { }
+	public abstract partial class SecureValueErrorBase : ITLObject
+	{
+		public abstract SecureValueType Type { get; }
+		public abstract string Text { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/secureValueErrorData"/></summary>
 	[TLDef(0xE8A40BD9)]
 	public partial class SecureValueErrorData : SecureValueErrorBase
@@ -5208,6 +5622,9 @@ namespace TL
 		public byte[] data_hash;
 		public string field;
 		public string text;
+
+		public override SecureValueType Type => type;
+		public override string Text => text;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/secureValueErrorFrontSide"/></summary>
 	[TLDef(0x00BE3DFA)]
@@ -5216,6 +5633,9 @@ namespace TL
 		public SecureValueType type;
 		public byte[] file_hash;
 		public string text;
+
+		public override SecureValueType Type => type;
+		public override string Text => text;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/secureValueErrorReverseSide"/></summary>
 	[TLDef(0x868A2AA5)]
@@ -5224,6 +5644,9 @@ namespace TL
 		public SecureValueType type;
 		public byte[] file_hash;
 		public string text;
+
+		public override SecureValueType Type => type;
+		public override string Text => text;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/secureValueErrorSelfie"/></summary>
 	[TLDef(0xE537CED6)]
@@ -5232,6 +5655,9 @@ namespace TL
 		public SecureValueType type;
 		public byte[] file_hash;
 		public string text;
+
+		public override SecureValueType Type => type;
+		public override string Text => text;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/secureValueErrorFile"/></summary>
 	[TLDef(0x7A700873)]
@@ -5240,6 +5666,9 @@ namespace TL
 		public SecureValueType type;
 		public byte[] file_hash;
 		public string text;
+
+		public override SecureValueType Type => type;
+		public override string Text => text;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/secureValueErrorFiles"/></summary>
 	[TLDef(0x666220E9)]
@@ -5248,6 +5677,9 @@ namespace TL
 		public SecureValueType type;
 		public byte[][] file_hash;
 		public string text;
+
+		public override SecureValueType Type => type;
+		public override string Text => text;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/secureValueError"/></summary>
 	[TLDef(0x869D758F)]
@@ -5256,13 +5688,20 @@ namespace TL
 		public SecureValueType type;
 		public byte[] hash;
 		public string text;
+
+		public override SecureValueType Type => type;
+		public override string Text => text;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/secureValueErrorTranslationFile"/></summary>
 	[TLDef(0xA1144770)]
-	public partial class SecureValueErrorTranslationFile : SecureValueErrorFile { }
+	public partial class SecureValueErrorTranslationFile : SecureValueErrorFile
+	{
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/secureValueErrorTranslationFiles"/></summary>
 	[TLDef(0x34636DD8)]
-	public partial class SecureValueErrorTranslationFiles : SecureValueErrorFiles { }
+	public partial class SecureValueErrorTranslationFiles : SecureValueErrorFiles
+	{
+	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/secureCredentialsEncrypted"/></summary>
 	[TLDef(0x33F0EA47)]
@@ -5751,7 +6190,10 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/PeerLocated"/></summary>
-	public abstract partial class PeerLocatedBase : ITLObject { }
+	public abstract partial class PeerLocatedBase : ITLObject
+	{
+		public abstract DateTime Expires { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/peerLocated"/></summary>
 	[TLDef(0xCA461B5D)]
 	public partial class PeerLocated : PeerLocatedBase
@@ -5759,10 +6201,17 @@ namespace TL
 		public Peer peer;
 		public DateTime expires;
 		public int distance;
+
+		public override DateTime Expires => expires;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/peerSelfLocated"/></summary>
 	[TLDef(0xF8EC284B)]
-	public partial class PeerSelfLocated : PeerLocatedBase { public DateTime expires; }
+	public partial class PeerSelfLocated : PeerLocatedBase
+	{
+		public DateTime expires;
+
+		public override DateTime Expires => expires;
+	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/restrictionReason"/></summary>
 	[TLDef(0xD072ACB4)]
@@ -5906,7 +6355,11 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/MessageUserVote"/></summary>
-	public abstract partial class MessageUserVoteBase : ITLObject { }
+	public abstract partial class MessageUserVoteBase : ITLObject
+	{
+		public abstract long UserId { get; }
+		public abstract DateTime Date { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messageUserVote"/></summary>
 	[TLDef(0x34D247B4)]
 	public partial class MessageUserVote : MessageUserVoteBase
@@ -5914,6 +6367,9 @@ namespace TL
 		public long user_id;
 		public byte[] option;
 		public DateTime date;
+
+		public override long UserId => user_id;
+		public override DateTime Date => date;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messageUserVoteInputOption"/></summary>
 	[TLDef(0x3CA5B0EC)]
@@ -5921,6 +6377,9 @@ namespace TL
 	{
 		public long user_id;
 		public DateTime date;
+
+		public override long UserId => user_id;
+		public override DateTime Date => date;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messageUserVoteMultiple"/></summary>
 	[TLDef(0x8A65E557)]
@@ -5929,6 +6388,9 @@ namespace TL
 		public long user_id;
 		public byte[][] options;
 		public DateTime date;
+
+		public override long UserId => user_id;
+		public override DateTime Date => date;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.votesList"/></summary>
@@ -6253,7 +6715,11 @@ namespace TL
 	public partial class Stats_MessageStats : ITLObject { public StatsGraphBase views_graph; }
 
 	///<summary>See <a href="https://corefork.telegram.org/type/GroupCall"/></summary>
-	public abstract partial class GroupCallBase : ITLObject { }
+	public abstract partial class GroupCallBase : ITLObject
+	{
+		public abstract long ID { get; }
+		public abstract long AccessHash { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/groupCallDiscarded"/></summary>
 	[TLDef(0x7780BCB4)]
 	public partial class GroupCallDiscarded : GroupCallBase
@@ -6261,6 +6727,9 @@ namespace TL
 		public long id;
 		public long access_hash;
 		public int duration;
+
+		public override long ID => id;
+		public override long AccessHash => access_hash;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/groupCall"/></summary>
 	[TLDef(0xD597650C)]
@@ -6280,6 +6749,9 @@ namespace TL
 		[IfFlag(10)] public int unmuted_video_count;
 		public int unmuted_video_limit;
 		public int version;
+
+		public override long ID => id;
+		public override long AccessHash => access_hash;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputGroupCall"/></summary>
@@ -6390,13 +6862,20 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/messages.ExportedChatInvite"/></summary>
-	public abstract partial class Messages_ExportedChatInviteBase : ITLObject { }
+	public abstract partial class Messages_ExportedChatInviteBase : ITLObject
+	{
+		public abstract ExportedChatInvite Invite { get; }
+		public abstract Dictionary<long, UserBase> Users { get; }
+	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.exportedChatInvite"/></summary>
 	[TLDef(0x1871BE50)]
 	public partial class Messages_ExportedChatInvite : Messages_ExportedChatInviteBase
 	{
 		public ExportedChatInvite invite;
 		public Dictionary<long, UserBase> users;
+
+		public override ExportedChatInvite Invite => invite;
+		public override Dictionary<long, UserBase> Users => users;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.exportedChatInviteReplaced"/></summary>
 	[TLDef(0x222600EF)]
@@ -6405,6 +6884,9 @@ namespace TL
 		public ExportedChatInvite invite;
 		public ExportedChatInvite new_invite;
 		public Dictionary<long, UserBase> users;
+
+		public override ExportedChatInvite Invite => invite;
+		public override Dictionary<long, UserBase> Users => users;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.chatInviteImporters"/></summary>
