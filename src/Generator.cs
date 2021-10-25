@@ -201,7 +201,6 @@ namespace WTelegram
 						if (autoProps.Count > 0 && autoPropsCount > 1)
 							typeInfo.AutoProps = autoProps;
 					}
-
 				}
 			}
 			var layers = schema.constructors.Select(c => c.layer).Distinct().ToList();

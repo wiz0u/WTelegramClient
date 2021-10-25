@@ -25,6 +25,8 @@ namespace WTelegram
 		/// <summary>This event will be called when an unsollicited update/message is sent by Telegram servers</summary>
 		/// <remarks>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_ListenUpdate.cs">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
 		public event Action<ITLObject> Update;
+		public delegate Task<TcpClient> TcpFactory(string address, int port);
+		public TcpFactory TcpHandler = DefaultTcpHandler; // return a connected TcpClient or throw an exception
 		public Config TLConfig { get; private set; }
 		public int MaxAutoReconnects { get; set; } = 5; // number of automatic reconnections on connection/reactor failure
 		public bool IsMainDC => (_dcSession?.DataCenter?.id ?? 0) == _session.MainDC;
@@ -163,16 +165,31 @@ namespace WTelegram
 			await _connecting;
 		}
 
+		static async Task<TcpClient> DefaultTcpHandler(string host, int port)
+		{
+			var tcpClient = new TcpClient();
+			try
+			{
+				await tcpClient.ConnectAsync(host, port);
+			}
+			catch (Exception)
+			{
+				tcpClient.Dispose();
+				throw;
+			}
+			return tcpClient;
+		}
+
 		private async Task DoConnectAsync()
 		{
 			var endpoint = _dcSession?.EndPoint ?? Compat.IPEndPoint_Parse(Config("server_address"));
 			Helpers.Log(2, $"Connecting to {endpoint}...");
-			var tcpClient = new TcpClient(AddressFamily.InterNetworkV6) { Client = { DualMode = true } }; // this allows both IPv4 & IPv6
+			TcpClient tcpClient = null;
 			try
 			{
 				try
 				{
-					await tcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
+					tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
 				}
 				catch (SocketException ex) // cannot connect to target endpoint, try to find an alternate
 				{
@@ -192,14 +209,14 @@ namespace WTelegram
 							Helpers.Log(2, $"Connecting to {endpoint}...");
 							try
 							{
-								await tcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
+								tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
 								_dcSession.DataCenter = dcOption;
 								break;
 							}
 							catch (SocketException) { }
 						}
 					}
-					if (!tcpClient.Connected)
+					if (tcpClient == null)
 					{
 						endpoint = Compat.IPEndPoint_Parse(Config("server_address")); // re-ask callback for an address
 						if (!triedEndpoints.Add(endpoint)) throw;
@@ -209,13 +226,13 @@ namespace WTelegram
 						_dcSession ??= new() { Id = Helpers.RandomLong() };
 						_dcSession.Client = this;
 						Helpers.Log(2, $"Connecting to {endpoint}...");
-						await tcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
+						tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
 					}
 				}
 			}
 			catch (Exception)
 			{
-				tcpClient.Dispose();
+				tcpClient?.Dispose();
 				throw;
 			}
 			_tcpClient = tcpClient;

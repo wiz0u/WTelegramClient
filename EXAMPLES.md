@@ -160,3 +160,16 @@ You can automate the collection of `access_hash` for the various resources obtai
 
 This is done by activating the experimental `client.CollectAccessHash` system.
 See [Examples/Program_CollectAccessHash.cs](Examples/Program_CollectAccessHash.cs) for how to enable it, and save/restore them for later use.
+
+### Use a proxy to connect to Telegram
+This can be done using the client.TcpHandler delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/):
+```csharp
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+client.TcpHandler = async (address, port) =>
+{
+    var proxy = new Socks5ProxyClient(ProxyHost, ProxyPort, ProxyUsername, ProxyPassword);
+    return proxy.CreateConnection(address, port);
+};
+var user = await client.LoginUserIfNeeded();
+Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name}");
+```
