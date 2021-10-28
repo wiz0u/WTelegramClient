@@ -907,17 +907,22 @@ namespace WTelegram
 		{
 			await ConnectAsync();
 			string botToken = Config("bot_token");
-			if (_session.User != null)
+			var prevUser = _session.User;
+			if (prevUser != null)
 			{ 
 				try
 				{
-					var prevUser = _session.User;
-					if (prevUser?.id == int.Parse(botToken.Split(':')[0]))
+					if (prevUser.id == int.Parse(botToken.Split(':')[0]))
+					{
+						var udpatesState = await this.Updates_GetState(); // this call enables incoming Updates
+						OnUpdate(udpatesState);
 						return prevUser;
+					}
+					Helpers.Log(3, $"Current logged user {prevUser.id} mismatched bot_token. Logging out and in...");
 				}
 				catch (Exception ex)
 				{
-					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to login...");
+					Helpers.Log(4, $"Error while verifying current bot! ({ex.Message}) Proceeding to login...");
 				}
 				await this.Auth_LogOut();
 				_dcSession.UserId = 0;
@@ -942,29 +947,31 @@ namespace WTelegram
 		{
 			await ConnectAsync();
 			string phone_number = null;
-			if (_session.User != null)
+			var prevUser = _session.User;
+			if (prevUser != null)
 			{
 				try
 				{
-					var prevUser = _session.User;
+					bool sameUser = true;
 					var userId = _config("user_id"); // if config prefers to validate current user by its id, use it
 					if (userId == null || !int.TryParse(userId, out int id) || id != -1 && prevUser.id != id)
 					{
 						phone_number = Config("phone_number"); // otherwise, validation is done by the phone number
-						if (prevUser?.phone != string.Concat(phone_number.Where(char.IsDigit)))
-							prevUser = null;
+						if (prevUser.phone != string.Concat(phone_number.Where(char.IsDigit)))
+							sameUser = false;
 					}
-					if (prevUser != null)
+					if (sameUser)
 					{
 						// TODO: implement a more complete Updates gaps handling system? https://core.telegram.org/api/updates
 						var udpatesState = await this.Updates_GetState(); // this call enables incoming Updates
 						OnUpdate(udpatesState);
 						return prevUser;
 					}
+					Helpers.Log(3, $"Current logged user {prevUser.id} mismatched user_id or phone_number. Logging out and in...");
 				}
 				catch (Exception ex)
 				{
-					Helpers.Log(4, $"Error deserializing User! ({ex.Message}) Proceeding to login...");
+					Helpers.Log(4, $"Error while verifying current user! ({ex.Message}) Proceeding to login...");
 				}
 				await this.Auth_LogOut();
 				_dcSession.UserId = 0;
