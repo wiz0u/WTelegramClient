@@ -402,6 +402,8 @@ namespace WTelegram
 								_pendingRequests.Clear();
 								_bareRequest = 0;
 							}
+							var udpatesState = await this.Updates_GetState(); // this call reenables incoming Updates
+							OnUpdate(udpatesState);
 						}
 						else
 							throw;
@@ -955,7 +957,7 @@ namespace WTelegram
 					if (prevUser != null)
 					{
 						// TODO: implement a more complete Updates gaps handling system? https://core.telegram.org/api/updates
-						var udpatesState = await this.Updates_GetState();
+						var udpatesState = await this.Updates_GetState(); // this call enables incoming Updates
 						OnUpdate(udpatesState);
 						return prevUser;
 					}
