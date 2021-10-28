@@ -42,14 +42,17 @@ To do this, you need to write a method that will provide the answers, and pass i
 ```csharp
 static string Config(string what)
 {
-    if (what == "api_id") return "YOUR_API_ID";
-    if (what == "api_hash") return "YOUR_API_HASH";
-    if (what == "phone_number") return "+12025550156";
-    if (what == "verification_code") return null; // let WTelegramClient ask the user with a console prompt 
-    if (what == "first_name") return "John";      // if sign-up is required
-    if (what == "last_name") return "Doe";        // if sign-up is required
-    if (what == "password") return "secret!";     // if user has enabled 2FA
-    return null;
+    switch (what)
+    {
+        case "api_id": return "YOUR_API_ID";
+        case "api_hash": return "YOUR_API_HASH";
+        case "phone_number": return "+12025550156";
+        case "verification_code": return null; // let WTelegramClient ask the user with a console prompt 
+        case "first_name": return "John";      // if sign-up is required
+        case "last_name": return "Doe";        // if sign-up is required
+        case "password": return "secret!";     // if user has enabled 2FA
+        default: return null;                  // let WTelegramClient decide the default config
+    }
 }
 ...
 using var client = new WTelegram.Client(Config);
@@ -161,3 +164,5 @@ This library can be used for any Telegram scenarios including:
 Secret chats (end-to-end encryption, PFS) and connection to CDN DCs have not been tested yet.
 
 Developers feedbacks are welcome in the Telegram channel [@WTelegramClient](https://t.me/WTelegramClient)
+
+If you like this library, please [consider a donation](http://wizou.fr/donate.html). ❤ This will help the project keep going.

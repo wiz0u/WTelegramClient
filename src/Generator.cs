@@ -92,7 +92,7 @@ namespace WTelegram
 			FromSchema(schema, outputCs);
 		}
 
-		public void FromSchema(SchemaJson schema, string outputCs)
+		internal void FromSchema(SchemaJson schema, string outputCs)
 		{
 			currentJson = Path.GetFileNameWithoutExtension(outputCs);
 			using var sw = new StreamWriter(outputCs, false, Encoding.UTF8);
@@ -789,13 +789,13 @@ namespace WTelegram
 		}
 
 #pragma warning disable IDE1006 // Naming Styles
-		public class SchemaJson
+		internal class SchemaJson
 		{
 			public List<Constructor> constructors { get; set; }
 			public List<Method> methods { get; set; }
 		}
 
-		public class Constructor
+		internal class Constructor
 		{
 			public string id { get; set; }
 			public string predicate { get; set; }
@@ -806,7 +806,7 @@ namespace WTelegram
 			public int ID => string.IsNullOrEmpty(id) ? 0 : int.Parse(id);
 		}
 
-		public class Param
+		internal class Param
 		{
 			public string name { get; set; }
 			public string type { get; set; }
@@ -814,7 +814,7 @@ namespace WTelegram
 			public override int GetHashCode() => HashCode.Combine(name, type);
 		}
 
-		public class Method
+		internal class Method
 		{
 			public string id { get; set; }
 			public string method { get; set; }

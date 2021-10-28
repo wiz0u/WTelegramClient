@@ -130,9 +130,7 @@ for (int offset = 0; ;)
     if (messagesBase is not Messages_ChannelMessages channelMessages) break;
     foreach (var msgBase in channelMessages.messages)
         if (msgBase is Message msg)
-        {
-            // process the message
-        }
+            Console.WriteLine(msg.message);
     offset += channelMessages.messages.Length;
     if (offset >= channelMessages.count) break;
 }
@@ -150,7 +148,7 @@ See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](Examples/
 
 You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.
 
-### Download media files you save/forward to yourself
+### Download media files you forward to yourself (Saved Messages)
 
 See [Examples/Program_DownloadSavedMedia.cs](Examples/Program_DownloadSavedMedia.cs).
 
@@ -162,7 +160,7 @@ This is done by activating the experimental `client.CollectAccessHash` system.
 See [Examples/Program_CollectAccessHash.cs](Examples/Program_CollectAccessHash.cs) for how to enable it, and save/restore them for later use.
 
 ### Use a proxy to connect to Telegram
-This can be done using the client.TcpHandler delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/):
+This can be done using the `client.TcpHandler` delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/):
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 client.TcpHandler = async (address, port) =>
