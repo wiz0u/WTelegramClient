@@ -420,7 +420,7 @@ namespace TL
 							var url = sb.ToString(urlStart, urlLength);
 							sb.Remove(urlStart, urlLength + 1);
 							offset = urlStart;
-							if (url.StartsWith("tg://user?id=") && long.TryParse(url[13..], out var user_id) && client.GetAccessHashFor<User>(user_id) is long hash && hash != 0)
+							if (url.StartsWith("tg://user?id=") && long.TryParse(url[13..], out var user_id) && client.GetAccessHashFor<User>(user_id) is long hash)
 								entities[lastIndex] = new InputMessageEntityMentionName { offset = entity.offset, length = entity.length, user_id = new InputUser { user_id = user_id, access_hash = hash } };
 							else
 								((MessageEntityTextUrl)entity).url = url;

@@ -40,6 +40,7 @@ var entities = client.MarkdownToEntities(ref text);
 await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
 ```
 See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) for details.
+<br/>For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#Collect-Access-Hash-and-save-them-for-later-use))
 
 ### List all chats (groups/channels) the user is in and send a message to one
 ```csharp
