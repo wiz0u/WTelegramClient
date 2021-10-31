@@ -436,7 +436,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 
 #if !NETCOREAPP2_0_OR_GREATER
 		// adapted from https://github.com/dotnet/aspnetcore/blob/main/src/DataProtection/Cryptography.KeyDerivation/src/PBKDF2/ManagedPbkdf2Provider.cs
-		public static byte[] PBKDF2_SHA512(byte[] password, byte[] salt, int iterationCount, int numBytesRequested)
+		private static byte[] PBKDF2_SHA512(byte[] password, byte[] salt, int iterationCount, int numBytesRequested)
 		{
 			// PBKDF2 is defined in NIST SP800-132, Sec. 5.3: http://csrc.nist.gov/publications/nistpubs/800-132/nist-sp800-132.pdf
 			byte[] retVal = new byte[numBytesRequested];

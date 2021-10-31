@@ -15,11 +15,12 @@ Remember that these are just simple example codes that you should adjust to your
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var resolved = await client.Contacts_ResolveUsername("username");
+var resolved = await client.Contacts_ResolveUsername("username"); // without the @
 await client.SendMessageAsync(resolved, "Hello!");
 ```
 *Note: This also works if the @username points to a chat, but you must join the chat before posting there.
 You can check `resolved` properties to ensure it's a user or a chat. If the username is invalid/unused, the API call raises an exception.*
+
 ### Send a message to someone by phone number
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -29,6 +30,16 @@ if (contacts.imported.Length > 0)
     await client.SendMessageAsync(contacts.users[contacts.imported[0].user_id], "Hello!");
 ```
 *Note: To prevent spam, Telegram may restrict your ability to add new phone numbers.*
+
+### Send a Markdown message to ourself (Saved Messages)
+```csharp
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+await client.LoginUserIfNeeded();
+var text = "Hello __dear *friend*__!\nEnjoy this `userbot` written with [WTelegramClient](https://github.com/wiz0u/WTelegramClient)";
+var entities = client.MarkdownToEntities(ref text);
+await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
+```
+See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) for details.
 
 ### List all chats (groups/channels) the user is in and send a message to one
 ```csharp
