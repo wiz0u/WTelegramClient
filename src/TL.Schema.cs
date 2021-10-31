@@ -587,12 +587,12 @@ namespace TL
 		public abstract int Folder { get; }
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatFull"/></summary>
-	[TLDef(0x4DBDC099)]
+	[TLDef(0x46A6FFB4)]
 	public partial class ChatFull : ChatFullBase
 	{
 		[Flags] public enum Flags { has_chat_photo = 0x4, has_bot_info = 0x8, has_pinned_msg_id = 0x40, can_set_username = 0x80, 
 			has_scheduled = 0x100, has_folder_id = 0x800, has_call = 0x1000, has_exported_invite = 0x2000, has_ttl_period = 0x4000, 
-			has_groupcall_default_join_as = 0x8000, has_theme_emoticon = 0x10000 }
+			has_groupcall_default_join_as = 0x8000, has_theme_emoticon = 0x10000, has_requests_pending = 0x20000 }
 		public Flags flags;
 		public long id;
 		public string about;
@@ -607,6 +607,8 @@ namespace TL
 		[IfFlag(14)] public int ttl_period;
 		[IfFlag(15)] public Peer groupcall_default_join_as;
 		[IfFlag(16)] public string theme_emoticon;
+		[IfFlag(17)] public int requests_pending;
+		[IfFlag(17)] public long[] recent_requesters;
 
 		public override long ID => id;
 		public override string About => about;
@@ -614,7 +616,7 @@ namespace TL
 		public override int Folder => folder_id;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/channelFull"/></summary>
-	[TLDef(0xE9B27A17)]
+	[TLDef(0x59CFF963)]
 	public partial class ChannelFull : ChatFullBase
 	{
 		[Flags] public enum Flags { has_participants_count = 0x1, has_admins_count = 0x2, has_kicked_count = 0x4, 
@@ -624,7 +626,7 @@ namespace TL
 			can_set_location = 0x10000, has_slowmode_seconds = 0x20000, has_slowmode_next_send_date = 0x40000, has_scheduled = 0x80000, 
 			can_view_stats = 0x100000, has_call = 0x200000, blocked = 0x400000, has_exported_invite = 0x800000, 
 			has_ttl_period = 0x1000000, has_pending_suggestions = 0x2000000, has_groupcall_default_join_as = 0x4000000, 
-			has_theme_emoticon = 0x8000000 }
+			has_theme_emoticon = 0x8000000, has_requests_pending = 0x10000000 }
 		public Flags flags;
 		public long id;
 		public string about;
@@ -657,6 +659,8 @@ namespace TL
 		[IfFlag(25)] public string[] pending_suggestions;
 		[IfFlag(26)] public Peer groupcall_default_join_as;
 		[IfFlag(27)] public string theme_emoticon;
+		[IfFlag(28)] public int requests_pending;
+		[IfFlag(28)] public long[] recent_requesters;
 
 		public override long ID => id;
 		public override string About => about;
@@ -1055,6 +1059,9 @@ namespace TL
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messageActionSetChatTheme"/></summary>
 	[TLDef(0xAA786345)]
 	public partial class MessageActionSetChatTheme : MessageAction { public string emoticon; }
+	///<summary>See <a href="https://corefork.telegram.org/constructor/messageActionChatJoinedByRequest"/></summary>
+	[TLDef(0xEBBCA3CB)]
+	public partial class MessageActionChatJoinedByRequest : MessageAction { }
 
 	///<summary>See <a href="https://corefork.telegram.org/type/Dialog"/></summary>
 	public abstract partial class DialogBase : ITLObject
@@ -2249,6 +2256,25 @@ namespace TL
 		public long bot_id;
 		public BotCommand[] commands;
 	}
+	///<summary>See <a href="https://corefork.telegram.org/constructor/updatePendingJoinRequests"/></summary>
+	[TLDef(0x7063C3DB)]
+	public partial class UpdatePendingJoinRequests : Update
+	{
+		public Peer peer;
+		public int requests_pending;
+		public long[] recent_requesters;
+	}
+	///<summary>See <a href="https://corefork.telegram.org/constructor/updateBotChatInviteRequester"/></summary>
+	[TLDef(0x11DFA986)]
+	public partial class UpdateBotChatInviteRequester : Update
+	{
+		public Peer peer;
+		public DateTime date;
+		public long user_id;
+		public string about;
+		public ExportedChatInvite invite;
+		public int qts;
+	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/updates.state"/></summary>
 	[TLDef(0xA56C2A3E)]
@@ -2858,10 +2884,11 @@ namespace TL
 	[TLDef(0xB05AC6B1)]
 	public partial class SendMessageChooseStickerAction : SendMessageAction { }
 	///<summary>See <a href="https://corefork.telegram.org/constructor/sendMessageEmojiInteraction"/></summary>
-	[TLDef(0x6A3233B6)]
+	[TLDef(0x25972BCB)]
 	public partial class SendMessageEmojiInteraction : SendMessageAction
 	{
 		public string emoticon;
+		public int msg_id;
 		public DataJSON interaction;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/sendMessageEmojiInteractionSeen"/></summary>
@@ -3215,11 +3242,11 @@ namespace TL
 	///<summary>See <a href="https://corefork.telegram.org/type/ExportedChatInvite"/></summary>
 	public abstract partial class ExportedChatInvite : ITLObject { }
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatInviteExported"/></summary>
-	[TLDef(0xB18105E8)]
+	[TLDef(0x0AB4A819)]
 	public partial class ChatInviteExported : ExportedChatInvite
 	{
 		[Flags] public enum Flags { revoked = 0x1, has_expire_date = 0x2, has_usage_limit = 0x4, has_usage = 0x8, 
-			has_start_date = 0x10, permanent = 0x20 }
+			has_start_date = 0x10, permanent = 0x20, request_needed = 0x40, has_requested = 0x80, has_title = 0x100 }
 		public Flags flags;
 		public string link;
 		public long admin_id;
@@ -3228,6 +3255,8 @@ namespace TL
 		[IfFlag(1)] public DateTime expire_date;
 		[IfFlag(2)] public int usage_limit;
 		[IfFlag(3)] public int usage;
+		[IfFlag(7)] public int requested;
+		[IfFlag(8)] public string title;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/type/ChatInvite"/></summary>
@@ -3236,12 +3265,14 @@ namespace TL
 	[TLDef(0x5A686D7C)]
 	public partial class ChatInviteAlready : ChatInviteBase { public ChatBase chat; }
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatInvite"/></summary>
-	[TLDef(0xDFC2F58E)]
+	[TLDef(0x300C44C1)]
 	public partial class ChatInvite : ChatInviteBase
 	{
-		[Flags] public enum Flags { channel = 0x1, broadcast = 0x2, public_ = 0x4, megagroup = 0x8, has_participants = 0x10 }
+		[Flags] public enum Flags { channel = 0x1, broadcast = 0x2, public_ = 0x4, megagroup = 0x8, has_participants = 0x10, 
+			has_about = 0x20, request_needed = 0x40 }
 		public Flags flags;
 		public string title;
+		[IfFlag(5)] public string about;
 		public PhotoBase photo;
 		public int participants_count;
 		[IfFlag(4)] public UserBase[] participants;
@@ -3273,6 +3304,9 @@ namespace TL
 	///<summary>See <a href="https://corefork.telegram.org/constructor/inputStickerSetDice"/></summary>
 	[TLDef(0xE67F520E)]
 	public partial class InputStickerSetDice : InputStickerSet { public string emoticon; }
+	///<summary>See <a href="https://corefork.telegram.org/constructor/inputStickerSetAnimatedEmojiAnimations"/></summary>
+	[TLDef(0x0CDE3739)]
+	public partial class InputStickerSetAnimatedEmojiAnimations : InputStickerSet { }
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/stickerSet"/></summary>
 	[TLDef(0xD7DF217A)]
@@ -3620,9 +3654,11 @@ namespace TL
 		public DateTime date;
 	}
 	///<summary>See <a href="https://corefork.telegram.org/constructor/channelParticipantSelf"/></summary>
-	[TLDef(0x28A8BC67)]
+	[TLDef(0x35A8BFA7)]
 	public partial class ChannelParticipantSelf : ChannelParticipantBase
 	{
+		[Flags] public enum Flags { via_invite = 0x1 }
+		public Flags flags;
 		public long user_id;
 		public long inviter_id;
 		public DateTime date;
@@ -5280,12 +5316,12 @@ namespace TL
 		public int prev_value;
 		public int new_value;
 	}
-	///<summary>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionChangeTheme"/></summary>
-	[TLDef(0xFE69018D)]
-	public partial class ChannelAdminLogEventActionChangeTheme : ChannelAdminLogEventAction
+	///<summary>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionParticipantJoinByRequest"/></summary>
+	[TLDef(0xAFB6144A)]
+	public partial class ChannelAdminLogEventActionParticipantJoinByRequest : ChannelAdminLogEventAction
 	{
-		public string prev_value;
-		public string new_value;
+		public ExportedChatInvite invite;
+		public long approved_by;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEvent"/></summary>
@@ -6236,18 +6272,19 @@ namespace TL
 	public partial class InputThemeSlug : InputThemeBase { public string slug; }
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/theme"/></summary>
-	[TLDef(0xE802B8DC)]
+	[TLDef(0xA00E67D6)]
 	public partial class Theme : ITLObject
 	{
 		[Flags] public enum Flags { creator = 0x1, default_ = 0x2, has_document = 0x4, has_settings = 0x8, has_installs_count = 0x10, 
-			for_chat = 0x20 }
+			for_chat = 0x20, has_emoticon = 0x40 }
 		public Flags flags;
 		public long id;
 		public long access_hash;
 		public string slug;
 		public string title;
 		[IfFlag(2)] public DocumentBase document;
-		[IfFlag(3)] public ThemeSettings settings;
+		[IfFlag(3)] public ThemeSettings[] settings;
+		[IfFlag(6)] public string emoticon;
 		[IfFlag(4)] public int installs_count;
 	}
 
@@ -6845,11 +6882,15 @@ namespace TL
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/chatInviteImporter"/></summary>
-	[TLDef(0x0B5CD5F4)]
+	[TLDef(0x8C5ADFD9)]
 	public partial class ChatInviteImporter : ITLObject
 	{
+		[Flags] public enum Flags { requested = 0x1, has_approved_by = 0x2, has_about = 0x4 }
+		public Flags flags;
 		public long user_id;
 		public DateTime date;
+		[IfFlag(2)] public string about;
+		[IfFlag(1)] public long approved_by;
 	}
 
 	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.exportedChatInvites"/></summary>
@@ -6992,32 +7033,15 @@ namespace TL
 	[TLDef(0xE926D63E)]
 	public partial class Account_ResetPasswordOk : Account_ResetPasswordResult { }
 
-	///<summary>See <a href="https://corefork.telegram.org/constructor/chatTheme"/></summary>
-	[TLDef(0xED0B5C33)]
-	public partial class ChatTheme : ITLObject
-	{
-		public string emoticon;
-		public Theme theme;
-		public Theme dark_theme;
-	}
-
-	///<summary>See <a href="https://corefork.telegram.org/constructor/account.chatThemes"/></summary>
-	///<remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.chatThemesNotModified">account.chatThemesNotModified</a></remarks>
-	[TLDef(0xFE4CBEBD)]
-	public partial class Account_ChatThemes : ITLObject
-	{
-		public int hash;
-		public ChatTheme[] themes;
-	}
-
 	///<summary>See <a href="https://corefork.telegram.org/constructor/sponsoredMessage"/></summary>
-	[TLDef(0x2A3C381F)]
+	[TLDef(0xD151E19A)]
 	public partial class SponsoredMessage : ITLObject
 	{
-		[Flags] public enum Flags { has_start_param = 0x1, has_entities = 0x2 }
+		[Flags] public enum Flags { has_start_param = 0x1, has_entities = 0x2, has_channel_post = 0x4 }
 		public Flags flags;
 		public byte[] random_id;
 		public Peer from_id;
+		[IfFlag(2)] public int channel_post;
 		[IfFlag(0)] public string start_param;
 		public string message;
 		[IfFlag(1)] public MessageEntity[] entities;
@@ -7031,6 +7055,52 @@ namespace TL
 		public Dictionary<long, ChatBase> chats;
 		public Dictionary<long, UserBase> users;
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+	}
+
+	///<summary>See <a href="https://corefork.telegram.org/constructor/searchResultsCalendarPeriod"/></summary>
+	[TLDef(0xC9B0539F)]
+	public partial class SearchResultsCalendarPeriod : ITLObject
+	{
+		public DateTime date;
+		public int min_msg_id;
+		public int max_msg_id;
+		public int count;
+	}
+
+	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.searchResultsCalendar"/></summary>
+	[TLDef(0x147EE23C)]
+	public partial class Messages_SearchResultsCalendar : ITLObject
+	{
+		[Flags] public enum Flags { inexact = 0x1, has_offset_id_offset = 0x2 }
+		public Flags flags;
+		public int count;
+		public DateTime min_date;
+		public int min_msg_id;
+		[IfFlag(1)] public int offset_id_offset;
+		public SearchResultsCalendarPeriod[] periods;
+		public MessageBase[] messages;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, UserBase> users;
+		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+	}
+
+	///<summary>See <a href="https://corefork.telegram.org/type/SearchResultsPosition"/></summary>
+	public abstract partial class SearchResultsPosition : ITLObject { }
+	///<summary>See <a href="https://corefork.telegram.org/constructor/searchResultPosition"/></summary>
+	[TLDef(0x7F648B67)]
+	public partial class SearchResultPosition : SearchResultsPosition
+	{
+		public int msg_id;
+		public DateTime date;
+		public int offset;
+	}
+
+	///<summary>See <a href="https://corefork.telegram.org/constructor/messages.searchResultsPositions"/></summary>
+	[TLDef(0x53B22BAF)]
+	public partial class Messages_SearchResultsPositions : ITLObject
+	{
+		public int count;
+		public SearchResultsPosition[] positions;
 	}
 
 	// ---functions---
@@ -7850,25 +7920,25 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/account.createTheme"/></summary>
-		public static Task<Theme> Account_CreateTheme(this Client client, string slug, string title, InputDocument document = null, InputThemeSettings settings = null)
+		public static Task<Theme> Account_CreateTheme(this Client client, string slug, string title, InputDocument document = null, InputThemeSettings[] settings = null)
 			=> client.CallAsync<Theme>(writer =>
 			{
-				writer.Write(0x8432C21F);
+				writer.Write(0x652E4400);
 				writer.Write((document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0));
 				writer.WriteTLString(slug);
 				writer.WriteTLString(title);
 				if (document != null)
 					writer.WriteTLObject(document);
 				if (settings != null)
-					writer.WriteTLObject(settings);
+					writer.WriteTLVector(settings);
 				return "Account_CreateTheme";
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/account.updateTheme"/></summary>
-		public static Task<Theme> Account_UpdateTheme(this Client client, string format, InputThemeBase theme, string slug = null, string title = null, InputDocument document = null, InputThemeSettings settings = null)
+		public static Task<Theme> Account_UpdateTheme(this Client client, string format, InputThemeBase theme, string slug = null, string title = null, InputDocument document = null, InputThemeSettings[] settings = null)
 			=> client.CallAsync<Theme>(writer =>
 			{
-				writer.Write(0x5CB367D5);
+				writer.Write(0x2BF40CCC);
 				writer.Write((slug != null ? 0x1 : 0) | (title != null ? 0x2 : 0) | (document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0));
 				writer.WriteTLString(format);
 				writer.WriteTLObject(theme);
@@ -7879,7 +7949,7 @@ namespace TL
 				if (document != null)
 					writer.WriteTLObject(document);
 				if (settings != null)
-					writer.WriteTLObject(settings);
+					writer.WriteTLVector(settings);
 				return "Account_UpdateTheme";
 			});
 
@@ -7894,15 +7964,17 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/account.installTheme"/></summary>
-		public static Task<bool> Account_InstallTheme(this Client client, bool dark = false, string format = null, InputThemeBase theme = null)
+		public static Task<bool> Account_InstallTheme(this Client client, bool dark = false, InputThemeBase theme = null, string format = null, BaseTheme base_theme = default)
 			=> client.CallAsync<bool>(writer =>
 			{
-				writer.Write(0x7AE43737);
-				writer.Write((dark ? 0x1 : 0) | (format != null ? 0x2 : 0) | (theme != null ? 0x2 : 0));
-				if (format != null)
-					writer.WriteTLString(format);
+				writer.Write(0xC727BB3B);
+				writer.Write((dark ? 0x1 : 0) | (theme != null ? 0x2 : 0) | (format != null ? 0x4 : 0) | (base_theme != default ? 0x8 : 0));
 				if (theme != null)
 					writer.WriteTLObject(theme);
+				if (format != null)
+					writer.WriteTLString(format);
+				if (base_theme != default)
+					writer.Write((uint)base_theme);
 				return "Account_InstallTheme";
 			});
 
@@ -7999,10 +8071,10 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/account.getChatThemes"/></summary>
-		public static Task<Account_ChatThemes> Account_GetChatThemes(this Client client, int hash)
-			=> client.CallAsync<Account_ChatThemes>(writer =>
+		public static Task<Account_Themes> Account_GetChatThemes(this Client client, long hash)
+			=> client.CallAsync<Account_Themes>(writer =>
 			{
-				writer.Write(0xD6D71D7B);
+				writer.Write(0xD638DE89);
 				writer.Write(hash);
 				return "Account_GetChatThemes";
 			});
@@ -8302,13 +8374,17 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/messages.deleteHistory"/></summary>
-		public static Task<Messages_AffectedHistory> Messages_DeleteHistory(this Client client, InputPeer peer, int max_id, bool just_clear = false, bool revoke = false)
+		public static Task<Messages_AffectedHistory> Messages_DeleteHistory(this Client client, InputPeer peer, int max_id, bool just_clear = false, bool revoke = false, DateTime? min_date = null, DateTime? max_date = null)
 			=> client.CallAsync<Messages_AffectedHistory>(writer =>
 			{
-				writer.Write(0x1C015B09);
-				writer.Write((just_clear ? 0x1 : 0) | (revoke ? 0x2 : 0));
+				writer.Write(0xB08F922A);
+				writer.Write((just_clear ? 0x1 : 0) | (revoke ? 0x2 : 0) | (min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0));
 				writer.WriteTLObject(peer);
 				writer.Write(max_id);
+				if (min_date != null)
+					writer.WriteTLStamp(min_date.Value);
+				if (max_date != null)
+					writer.WriteTLStamp(max_date.Value);
 				return "Messages_DeleteHistory";
 			});
 
@@ -8657,16 +8733,18 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/messages.exportChatInvite"/></summary>
-		public static Task<ExportedChatInvite> Messages_ExportChatInvite(this Client client, InputPeer peer, bool legacy_revoke_permanent = false, DateTime? expire_date = null, int? usage_limit = null)
+		public static Task<ExportedChatInvite> Messages_ExportChatInvite(this Client client, InputPeer peer, bool legacy_revoke_permanent = false, bool request_needed = false, DateTime? expire_date = null, int? usage_limit = null, string title = null)
 			=> client.CallAsync<ExportedChatInvite>(writer =>
 			{
-				writer.Write(0x14B9BCD7);
-				writer.Write((legacy_revoke_permanent ? 0x4 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0));
+				writer.Write(0xA02CE5D5);
+				writer.Write((legacy_revoke_permanent ? 0x4 : 0) | (request_needed ? 0x8 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (title != null ? 0x10 : 0));
 				writer.WriteTLObject(peer);
 				if (expire_date != null)
 					writer.WriteTLStamp(expire_date.Value);
 				if (usage_limit != null)
 					writer.Write(usage_limit.Value);
+				if (title != null)
+					writer.WriteTLString(title);
 				return "Messages_ExportChatInvite";
 			});
 
@@ -9371,17 +9449,6 @@ namespace TL
 				return "Messages_GetOnlines";
 			});
 
-		///<summary>See <a href="https://corefork.telegram.org/method/messages.getStatsURL"/></summary>
-		public static Task<StatsURL> Messages_GetStatsURL(this Client client, InputPeer peer, string params_, bool dark = false)
-			=> client.CallAsync<StatsURL>(writer =>
-			{
-				writer.Write(0x812C2AE6);
-				writer.Write(dark ? 0x1 : 0);
-				writer.WriteTLObject(peer);
-				writer.WriteTLString(params_);
-				return "Messages_GetStatsURL";
-			});
-
 		///<summary>See <a href="https://corefork.telegram.org/method/messages.editChatAbout"/></summary>
 		public static Task<bool> Messages_EditChatAbout(this Client client, InputPeer peer, string about)
 			=> client.CallAsync<bool>(writer =>
@@ -9740,17 +9807,21 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/messages.editExportedChatInvite"/></summary>
-		public static Task<Messages_ExportedChatInviteBase> Messages_EditExportedChatInvite(this Client client, InputPeer peer, string link, bool revoked = false, DateTime? expire_date = null, int? usage_limit = null)
+		public static Task<Messages_ExportedChatInviteBase> Messages_EditExportedChatInvite(this Client client, InputPeer peer, string link, bool revoked = false, DateTime? expire_date = null, int? usage_limit = null, bool? request_needed = default, string title = null)
 			=> client.CallAsync<Messages_ExportedChatInviteBase>(writer =>
 			{
-				writer.Write(0x02E4FFBE);
-				writer.Write((revoked ? 0x4 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0));
+				writer.Write(0xBDCA2F75);
+				writer.Write((revoked ? 0x4 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (request_needed != default ? 0x8 : 0) | (title != null ? 0x10 : 0));
 				writer.WriteTLObject(peer);
 				writer.WriteTLString(link);
 				if (expire_date != null)
 					writer.WriteTLStamp(expire_date.Value);
 				if (usage_limit != null)
 					writer.Write(usage_limit.Value);
+				if (request_needed != default)
+					writer.Write(request_needed.Value ? 0x997275B5 : 0xBC799737);
+				if (title != null)
+					writer.WriteTLString(title);
 				return "Messages_EditExportedChatInvite";
 			});
 
@@ -9784,12 +9855,16 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/messages.getChatInviteImporters"/></summary>
-		public static Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(this Client client, InputPeer peer, string link, DateTime offset_date, InputUserBase offset_user, int limit)
+		public static Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(this Client client, InputPeer peer, DateTime offset_date, InputUserBase offset_user, int limit, bool requested = false, string link = null, string q = null)
 			=> client.CallAsync<Messages_ChatInviteImporters>(writer =>
 			{
-				writer.Write(0x26FB7289);
+				writer.Write(0xDF04DD4E);
+				writer.Write((requested ? 0x1 : 0) | (link != null ? 0x2 : 0) | (q != null ? 0x4 : 0));
 				writer.WriteTLObject(peer);
-				writer.WriteTLString(link);
+				if (link != null)
+					writer.WriteTLString(link);
+				if (q != null)
+					writer.WriteTLString(q);
 				writer.WriteTLStamp(offset_date);
 				writer.WriteTLObject(offset_user);
 				writer.Write(limit);
@@ -9833,6 +9908,41 @@ namespace TL
 				writer.WriteTLObject(peer);
 				writer.Write(msg_id);
 				return "Messages_GetMessageReadParticipants";
+			});
+
+		///<summary>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsCalendar"/></summary>
+		public static Task<Messages_SearchResultsCalendar> Messages_GetSearchResultsCalendar(this Client client, InputPeer peer, MessagesFilter filter, int offset_id, DateTime offset_date)
+			=> client.CallAsync<Messages_SearchResultsCalendar>(writer =>
+			{
+				writer.Write(0x49F0BDE9);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(filter);
+				writer.Write(offset_id);
+				writer.WriteTLStamp(offset_date);
+				return "Messages_GetSearchResultsCalendar";
+			});
+
+		///<summary>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsPositions"/></summary>
+		public static Task<Messages_SearchResultsPositions> Messages_GetSearchResultsPositions(this Client client, InputPeer peer, MessagesFilter filter, int offset_id, int limit)
+			=> client.CallAsync<Messages_SearchResultsPositions>(writer =>
+			{
+				writer.Write(0x6E9583A3);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(filter);
+				writer.Write(offset_id);
+				writer.Write(limit);
+				return "Messages_GetSearchResultsPositions";
+			});
+
+		///<summary>See <a href="https://corefork.telegram.org/method/messages.hideChatJoinRequest"/></summary>
+		public static Task<UpdatesBase> Messages_HideChatJoinRequest(this Client client, InputPeer peer, InputUserBase user_id, bool approved = false)
+			=> client.CallAsync<UpdatesBase>(writer =>
+			{
+				writer.Write(0x7FE7E815);
+				writer.Write(approved ? 0x1 : 0);
+				writer.WriteTLObject(peer);
+				writer.WriteTLObject(user_id);
+				return "Messages_HideChatJoinRequest";
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/updates.getState"/></summary>
@@ -10948,13 +11058,13 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/phone.toggleGroupCallSettings"/></summary>
-		public static Task<UpdatesBase> Phone_ToggleGroupCallSettings(this Client client, InputGroupCall call, bool reset_invite_hash = false, bool? join_muted = null)
+		public static Task<UpdatesBase> Phone_ToggleGroupCallSettings(this Client client, InputGroupCall call, bool reset_invite_hash = false, bool? join_muted = default)
 			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0x74BBB43D);
-				writer.Write((reset_invite_hash ? 0x2 : 0) | (join_muted != null ? 0x1 : 0));
+				writer.Write((reset_invite_hash ? 0x2 : 0) | (join_muted != default ? 0x1 : 0));
 				writer.WriteTLObject(call);
-				if (join_muted != null)
+				if (join_muted != default)
 					writer.Write(join_muted.Value ? 0x997275B5 : 0xBC799737);
 				return "Phone_ToggleGroupCallSettings";
 			});
@@ -10993,38 +11103,38 @@ namespace TL
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/phone.toggleGroupCallRecord"/></summary>
-		public static Task<UpdatesBase> Phone_ToggleGroupCallRecord(this Client client, InputGroupCall call, bool start = false, bool video = false, string title = null, bool? video_portrait = null)
+		public static Task<UpdatesBase> Phone_ToggleGroupCallRecord(this Client client, InputGroupCall call, bool start = false, bool video = false, string title = null, bool? video_portrait = default)
 			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xF128C708);
-				writer.Write((start ? 0x1 : 0) | (video ? 0x4 : 0) | (title != null ? 0x2 : 0) | (video_portrait != null ? 0x4 : 0));
+				writer.Write((start ? 0x1 : 0) | (video ? 0x4 : 0) | (title != null ? 0x2 : 0) | (video_portrait != default ? 0x4 : 0));
 				writer.WriteTLObject(call);
 				if (title != null)
 					writer.WriteTLString(title);
-				if (video_portrait != null)
+				if (video_portrait != default)
 					writer.Write(video_portrait.Value ? 0x997275B5 : 0xBC799737);
 				return "Phone_ToggleGroupCallRecord";
 			});
 
 		///<summary>See <a href="https://corefork.telegram.org/method/phone.editGroupCallParticipant"/></summary>
-		public static Task<UpdatesBase> Phone_EditGroupCallParticipant(this Client client, InputGroupCall call, InputPeer participant, bool? muted = null, int? volume = null, bool? raise_hand = null, bool? video_stopped = null, bool? video_paused = null, bool? presentation_paused = null)
+		public static Task<UpdatesBase> Phone_EditGroupCallParticipant(this Client client, InputGroupCall call, InputPeer participant, bool? muted = default, int? volume = null, bool? raise_hand = default, bool? video_stopped = default, bool? video_paused = default, bool? presentation_paused = default)
 			=> client.CallAsync<UpdatesBase>(writer =>
 			{
 				writer.Write(0xA5273ABF);
-				writer.Write((muted != null ? 0x1 : 0) | (volume != null ? 0x2 : 0) | (raise_hand != null ? 0x4 : 0) | (video_stopped != null ? 0x8 : 0) | (video_paused != null ? 0x10 : 0) | (presentation_paused != null ? 0x20 : 0));
+				writer.Write((muted != default ? 0x1 : 0) | (volume != null ? 0x2 : 0) | (raise_hand != default ? 0x4 : 0) | (video_stopped != default ? 0x8 : 0) | (video_paused != default ? 0x10 : 0) | (presentation_paused != default ? 0x20 : 0));
 				writer.WriteTLObject(call);
 				writer.WriteTLObject(participant);
-				if (muted != null)
+				if (muted != default)
 					writer.Write(muted.Value ? 0x997275B5 : 0xBC799737);
 				if (volume != null)
 					writer.Write(volume.Value);
-				if (raise_hand != null)
+				if (raise_hand != default)
 					writer.Write(raise_hand.Value ? 0x997275B5 : 0xBC799737);
-				if (video_stopped != null)
+				if (video_stopped != default)
 					writer.Write(video_stopped.Value ? 0x997275B5 : 0xBC799737);
-				if (video_paused != null)
+				if (video_paused != default)
 					writer.Write(video_paused.Value ? 0x997275B5 : 0xBC799737);
-				if (presentation_paused != null)
+				if (presentation_paused != default)
 					writer.Write(presentation_paused.Value ? 0x997275B5 : 0xBC799737);
 				return "Phone_EditGroupCallParticipant";
 			});

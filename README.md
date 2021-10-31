@@ -3,6 +3,7 @@
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
 [![API Layer](https://img.shields.io/badge/API_Layer-133-blueviolet)](https://corefork.telegram.org/methods)
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
+[![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://wizou.fr/donate.html)
 
 # <img src="logo.png" width="32"/> WTelegramClient
 ### _Telegram Client API library written 100% in C# and .NET Standard_

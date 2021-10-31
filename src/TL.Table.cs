@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 133;					// fetched 17/09/2021 02:47:02
+		public const int Version = 134;					// fetched 31/10/2021 02:19:13
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -127,8 +127,8 @@ namespace TL
 			[0x6592A1A7] = typeof(ChatForbidden),
 			[0x8261AC61] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
-			[0x4DBDC099] = typeof(ChatFull),
-			[0xE9B27A17] = typeof(ChannelFull),
+			[0x46A6FFB4] = typeof(ChatFull),
+			[0x59CFF963] = typeof(ChannelFull),
 			[0xC02D4007] = typeof(ChatParticipant),
 			[0xE46BCEE4] = typeof(ChatParticipantCreator),
 			[0xA0933F5B] = typeof(ChatParticipantAdmin),
@@ -181,6 +181,7 @@ namespace TL
 			[0xAA1AFBFD] = typeof(MessageActionSetMessagesTTL),
 			[0xB3A07661] = typeof(MessageActionGroupCallScheduled),
 			[0xAA786345] = typeof(MessageActionSetChatTheme),
+			[0xEBBCA3CB] = typeof(MessageActionChatJoinedByRequest),
 			[0x2C171F72] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -336,6 +337,8 @@ namespace TL
 			[0xC4870A49] = typeof(UpdateBotStopped),
 			[0x0B783982] = typeof(UpdateGroupCallConnection),
 			[0x4D712F2E] = typeof(UpdateBotCommands),
+			[0x7063C3DB] = typeof(UpdatePendingJoinRequests),
+			[0x11DFA986] = typeof(UpdateBotChatInviteRequester),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -402,7 +405,7 @@ namespace TL
 			[0xD92C2285] = typeof(SpeakingInGroupCallAction),
 			[0xDBDA9246] = typeof(SendMessageHistoryImportAction),
 			[0xB05AC6B1] = typeof(SendMessageChooseStickerAction),
-			[0x6A3233B6] = typeof(SendMessageEmojiInteraction),
+			[0x25972BCB] = typeof(SendMessageEmojiInteraction),
 			[0xB665902E] = typeof(SendMessageEmojiInteractionSeen),
 			[0xB3134D9D] = typeof(Contacts_Found),
 			[0x0D09E07B] = typeof(InputPrivacyValueAllowContacts),
@@ -447,15 +450,16 @@ namespace TL
 			[0xC23727C9] = typeof(Account_PasswordInputSettings),
 			[0x137948A5] = typeof(Auth_PasswordRecovery),
 			[0xA384B779] = typeof(ReceivedNotifyMessage),
-			[0xB18105E8] = typeof(ChatInviteExported),
+			[0x0AB4A819] = typeof(ChatInviteExported),
 			[0x5A686D7C] = typeof(ChatInviteAlready),
-			[0xDFC2F58E] = typeof(ChatInvite),
+			[0x300C44C1] = typeof(ChatInvite),
 			[0x61695CB0] = typeof(ChatInvitePeek),
 			[0xFFB62B95] = null,//InputStickerSetEmpty
 			[0x9DE7A269] = typeof(InputStickerSetID),
 			[0x861CC8A0] = typeof(InputStickerSetShortName),
 			[0x028703C8] = typeof(InputStickerSetAnimatedEmoji),
 			[0xE67F520E] = typeof(InputStickerSetDice),
+			[0x0CDE3739] = typeof(InputStickerSetAnimatedEmojiAnimations),
 			[0xD7DF217A] = typeof(StickerSet),
 			[0xB60A24A6] = typeof(Messages_StickerSet),
 			[0xC27AC8C7] = typeof(BotCommand),
@@ -506,7 +510,7 @@ namespace TL
 			[0x94D42EE7] = null,//ChannelMessagesFilterEmpty
 			[0xCD77D957] = typeof(ChannelMessagesFilter),
 			[0xC00C07C0] = typeof(ChannelParticipant),
-			[0x28A8BC67] = typeof(ChannelParticipantSelf),
+			[0x35A8BFA7] = typeof(ChannelParticipantSelf),
 			[0x2FE601D3] = typeof(ChannelParticipantCreator),
 			[0x34C3BB53] = typeof(ChannelParticipantAdmin),
 			[0x6DF8014E] = typeof(ChannelParticipantBanned),
@@ -704,7 +708,7 @@ namespace TL
 			[0xE90EBB59] = typeof(ChannelAdminLogEventActionExportedInviteEdit),
 			[0x3E7F6847] = typeof(ChannelAdminLogEventActionParticipantVolume),
 			[0x6E941A38] = typeof(ChannelAdminLogEventActionChangeHistoryTTL),
-			[0xFE69018D] = typeof(ChannelAdminLogEventActionChangeTheme),
+			[0xAFB6144A] = typeof(ChannelAdminLogEventActionParticipantJoinByRequest),
 			[0x1FAD68CD] = typeof(ChannelAdminLogEvent),
 			[0xED8AF74D] = typeof(Channels_AdminLogResults),
 			[0xEA107AE4] = typeof(ChannelAdminLogEventsFilter),
@@ -828,7 +832,7 @@ namespace TL
 			[0xD072ACB4] = typeof(RestrictionReason),
 			[0x3C5693E9] = typeof(InputTheme),
 			[0xF5890DF1] = typeof(InputThemeSlug),
-			[0xE802B8DC] = typeof(Theme),
+			[0xA00E67D6] = typeof(Theme),
 			[0xF41EB622] = null,//Account_ThemesNotModified
 			[0x9A3D8C6D] = typeof(Account_Themes),
 			[0x629F1980] = typeof(Auth_LoginToken),
@@ -883,7 +887,7 @@ namespace TL
 			[0x1662AF0B] = typeof(Messages_HistoryImport),
 			[0x5E0FB7B9] = typeof(Messages_HistoryImportParsed),
 			[0xEF8D3E6C] = typeof(Messages_AffectedFoundMessages),
-			[0x0B5CD5F4] = typeof(ChatInviteImporter),
+			[0x8C5ADFD9] = typeof(ChatInviteImporter),
 			[0xBDC62DCC] = typeof(Messages_ExportedChatInvites),
 			[0x1871BE50] = typeof(Messages_ExportedChatInvite),
 			[0x222600EF] = typeof(Messages_ExportedChatInviteReplaced),
@@ -906,11 +910,12 @@ namespace TL
 			[0xE3779861] = typeof(Account_ResetPasswordFailedWait),
 			[0xE9EFFC7D] = typeof(Account_ResetPasswordRequestedWait),
 			[0xE926D63E] = typeof(Account_ResetPasswordOk),
-			[0xED0B5C33] = typeof(ChatTheme),
-			[0xE011E1C4] = null,//Account_ChatThemesNotModified
-			[0xFE4CBEBD] = typeof(Account_ChatThemes),
-			[0x2A3C381F] = typeof(SponsoredMessage),
+			[0xD151E19A] = typeof(SponsoredMessage),
 			[0x65A4C7D5] = typeof(Messages_SponsoredMessages),
+			[0xC9B0539F] = typeof(SearchResultsCalendarPeriod),
+			[0x147EE23C] = typeof(Messages_SearchResultsCalendar),
+			[0x7F648B67] = typeof(SearchResultPosition),
+			[0x53B22BAF] = typeof(Messages_SearchResultsPositions),
 			// from TL.Secret:
 			[0xBB718624] = typeof(Layer66.SendMessageUploadRoundAction),
 			[0xE50511D8] = typeof(Layer45.DecryptedMessageMediaWebPage),
@@ -1010,7 +1015,6 @@ namespace TL
 			[typeof(ChannelLocation)]                = 0xBFB5AD8B, //channelLocationEmpty
 			[typeof(Account_Themes)]                 = 0xF41EB622, //account.themesNotModified
 			[typeof(Help_CountriesList)]             = 0x93CC1F32, //help.countriesListNotModified
-			[typeof(Account_ChatThemes)]             = 0xE011E1C4, //account.chatThemesNotModified
 			// from TL.Secret:
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 			// The End

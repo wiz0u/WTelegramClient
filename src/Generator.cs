@@ -627,8 +627,10 @@ namespace WTelegram
 				}
 				else
 				{
-					sw.Write($"{MapOptionalType(parm.type[(qm + 1)..], parm.name)} {parmName} = null");
-					flagExpr += $" | ({parmName} != null ? 0x{1 << bit:X} : 0)";
+					var parmType = parm.type[(qm + 1)..];
+					var nullValue = enumTypes.Contains(parmType) ? "default" : "null";
+					sw.Write($"{MapOptionalType(parmType, parm.name)} {parmName} = {nullValue}");
+					flagExpr += $" | ({parmName} != {nullValue} ? 0x{1 << bit:X} : 0)";
 				}
 			}
 			if (flagExpr != null) flagExpr = flagExpr.IndexOf('|', 3) >= 0 ? flagExpr[3..] : flagExpr[4..^1];
@@ -647,7 +649,8 @@ namespace WTelegram
 					if (parmType.EndsWith("?true")) continue;
 					int qm = parmType.IndexOf('?');
 					parmType = parmType[(qm + 1)..];
-					sw.WriteLine($"{tabIndent}\tif ({parmName} != null)");
+					var nullValue = enumTypes.Contains(parmType) ? "default" : "null";
+					sw.WriteLine($"{tabIndent}\tif ({parmName} != {nullValue})");
 					sw.Write('\t');
 					if (MapOptionalType(parmType, parm.name).EndsWith("?"))
 						parmName += ".Value";
@@ -710,8 +713,8 @@ namespace WTelegram
 				string line;
 				while ((line = sr.ReadLine()) != null)
 				{
-					if (currentLayer != 0 && line.StartsWith("\t\tpublic const int Layer"))
-						sw.WriteLine($"\t\tpublic const int Layer = {currentLayer};\t\t\t\t\t// fetched {DateTime.UtcNow}");
+					if (currentLayer != 0 && line.StartsWith("\t\tpublic const int Version"))
+						sw.WriteLine($"\t\tpublic const int Version = {currentLayer};\t\t\t\t\t// fetched {DateTime.UtcNow}");
 					else
 						sw.WriteLine(line);
 					if (line == myTag)
