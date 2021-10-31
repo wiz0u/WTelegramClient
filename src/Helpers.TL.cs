@@ -354,7 +354,7 @@ namespace TL
 		}
 	}
 
-	public static class Helpers
+	public static class Markdown
 	{
 		public static MessageEntity[] MarkdownToEntities(this WTelegram.Client client, ref string text)
 		{
@@ -365,9 +365,8 @@ namespace TL
 				switch (sb[offset])
 				{
 					case '\\': sb.Remove(offset++, 1); break;
-					case '*':
-						ProcessEntity<MessageEntityBold>();
-						break;
+					case '*': ProcessEntity<MessageEntityBold>(); break;
+					case '~': ProcessEntity<MessageEntityStrike>(); break;
 					case '_':
 						if (offset + 1 < sb.Length && sb[offset + 1] == '_')
 						{
@@ -377,69 +376,82 @@ namespace TL
 						else
 							ProcessEntity<MessageEntityItalic>();
 						break;
-					case '~':
-						ProcessEntity<MessageEntityStrike>();
-						break;
 					case '`':
 						if (offset + 2 < sb.Length && sb[offset + 1] == '`' && sb[offset + 2] == '`')
 						{
-							int header = 3;
-							if (entities.FindLast(e => e.length == 0) is MessageEntityPre pre)
+							int len = 3;
+							if (entities.FindLast(e => e.length == -1) is MessageEntityPre pre)
 								pre.length = offset - pre.offset;
 							else
 							{
-								while (offset + header < sb.Length && !char.IsWhiteSpace(sb[offset + header]))
-									header++;
-								entities.Add(new MessageEntityPre { offset = offset, language = sb.ToString(offset + 3, header - 3) });
+								while (offset + len < sb.Length && !char.IsWhiteSpace(sb[offset + len]))
+									len++;
+								entities.Add(new MessageEntityPre { offset = offset, length = -1, language = sb.ToString(offset + 3, len - 3) });
 							}
-							sb.Remove(offset, header);
+							sb.Remove(offset, len);
 						}
 						else
 							ProcessEntity<MessageEntityCode>();
 						break;
 					case '[':
-						entities.Add(new MessageEntityTextUrl { offset = offset });
+						entities.Add(new MessageEntityTextUrl { offset = offset, length = -1 });
 						sb.Remove(offset, 1);
 						break;
 					case ']':
-						if (offset + 1 < sb.Length && sb[offset + 1] == '(' && entities.FindLast(e => e.length == 0) is MessageEntityTextUrl textUrl)
+						if (offset + 2 < sb.Length && sb[offset + 1] == '(')
 						{
-							textUrl.length = offset - textUrl.offset;
-							sb.Remove(offset, 2);
+							var lastIndex = entities.FindLastIndex(e => e.length == -1);
+							if (lastIndex >= 0 && entities[lastIndex] is MessageEntityTextUrl textUrl)
+							{
+								textUrl.length = offset - textUrl.offset;
+								int offset2 = offset + 2;
+								while (offset2 < sb.Length)
+								{
+									char c = sb[offset2++];
+									if (c == '\\') sb.Remove(offset2 - 1, 1);
+									else if (c == ')') break;
+								}
+								textUrl.url = sb.ToString(offset + 2, offset2 - offset - 3);
+								if (textUrl.url.StartsWith("tg://user?id=") && long.TryParse(textUrl.url[13..], out var user_id) && client.GetAccessHashFor<User>(user_id) is long hash)
+									entities[lastIndex] = new InputMessageEntityMentionName { offset = textUrl.offset, length = textUrl.length, user_id = new InputUser { user_id = user_id, access_hash = hash } };
+								sb.Remove(offset, offset2 - offset);
+								break;
+							}
 						}
-						else
-							offset++;
-						break;
-					case ')':
-						var lastIndex = entities.FindLastIndex(e => e.length == 0 || e is MessageEntityTextUrl { url: null });
-						MessageEntity entity;
-						if (lastIndex >= 0 && (entity = entities[lastIndex]).length != 0)
-						{
-							var urlStart = entity.offset + entity.length;
-							var urlLength = offset - urlStart;
-							var url = sb.ToString(urlStart, urlLength);
-							sb.Remove(urlStart, urlLength + 1);
-							offset = urlStart;
-							if (url.StartsWith("tg://user?id=") && long.TryParse(url[13..], out var user_id) && client.GetAccessHashFor<User>(user_id) is long hash)
-								entities[lastIndex] = new InputMessageEntityMentionName { offset = entity.offset, length = entity.length, user_id = new InputUser { user_id = user_id, access_hash = hash } };
-							else
-								((MessageEntityTextUrl)entity).url = url;
-						}
+						offset++;
 						break;
 					default: offset++; break;
 				}
 
 				void ProcessEntity<T>() where T : MessageEntity, new()
 				{
-					if (entities.LastOrDefault(e => e.length == 0) is T prevEntity)
+					if (entities.LastOrDefault(e => e.length == -1) is T prevEntity)
 						prevEntity.length = offset - prevEntity.offset;
 					else
-						entities.Add(new T { offset = offset });
+						entities.Add(new T { offset = offset, length = -1 });
 					sb.Remove(offset, 1);
 				}
 			}
 			text = sb.ToString();
 			return entities.Count == 0 ? null : entities.ToArray();
+		}
+
+
+		public static string Escape(string text)
+		{
+			StringBuilder sb = null;
+			for (int index = 0, added = 0; index < text.Length; index++)
+			{
+				switch (text[index])
+				{
+					case '_': case '*': case '~': case '`': case '#': case '+': case '-': case '=': case '.': case '!':
+					case '[': case ']': case '(': case ')': case '{': case '}': case '>': case '|': case '\\':
+						sb ??= new StringBuilder(text, text.Length + 32);
+						sb.Insert(index + added++, '\\');
+						break;
+				}
+			}
+			return sb?.ToString() ?? text;
 		}
 	}
 }
