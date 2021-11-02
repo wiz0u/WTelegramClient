@@ -183,3 +183,18 @@ client.TcpHandler = async (address, port) =>
 var user = await client.LoginUserIfNeeded();
 Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name}");
 ```
+
+# Change logging settings
+Log to VS Output debugging pane in addition to default Console screen logging:
+```csharp
+WTelegram.Helpers.Log += (lvl, str) => System.Diagnostics.Debug.WriteLine(str);
+```
+Log to file in replacement of default Console screen logging:
+```csharp
+WTelegram.Helpers.Log = (lvl, str) => File.AppendAllText("WTelegram.log", str + Environment.NewLine);
+```
+More efficient example with a static variable and detailed logging to file:
+```csharp
+static StreamWriter WTelegramLogs = new StreamWriter("WTelegram.log", true, Encoding.UTF8) { AutoFlush = true };
+...
+WTelegram.Helpers.Log = (lvl, str) => WTelegramLogs.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{"TDIWE!"[lvl]}] {str}");

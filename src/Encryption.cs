@@ -117,6 +117,7 @@ namespace WTelegram
 			var g_a = BigEndianInteger(serverDHinnerData.g_a);
 			var dh_prime = BigEndianInteger(serverDHinnerData.dh_prime);
 			ValidityChecks(dh_prime, serverDHinnerData.g);
+			session.LastSentMsgId = 0;
 			session.ServerTicksOffset = (serverDHinnerData.server_time - localTime).Ticks;
 			Helpers.Log(1, $"Time offset: {session.ServerTicksOffset} | Server: {serverDHinnerData.server_time.TimeOfDay} UTC | Local: {localTime.TimeOfDay} UTC");
 			//6)
