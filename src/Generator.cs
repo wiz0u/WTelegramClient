@@ -17,6 +17,8 @@ namespace WTelegram
 		readonly Dictionary<string, int> knownStyles = new() { ["InitConnection"] = 1, ["Help_GetConfig"] = 0, ["HttpWait"] = -1 };
 		readonly Dictionary<string, TypeInfo> typeInfos = new();
 		readonly HashSet<string> enumTypes = new();
+		readonly Dictionary<string, string> enumValues = new();
+		readonly HashSet<string> nullableCtor = new();
 		int currentLayer;
 		string tabIndent;
 		private string currentJson;
@@ -114,7 +116,7 @@ namespace WTelegram
 				ctorToTypes[ctor.ID] = ctor.layer == 0 ? structName : $"Layer{ctor.layer}.{structName}";
 				var typeInfo = typeInfos.GetOrCreate(ctor.type);
 				if (ctor.ID == 0x5BB8E511) { ctorToTypes[ctor.ID] = structName = ctor.predicate = ctor.type = "_Message"; }
-				else if (ctor.ID == TL.Layer.NullCtor) { ctorToTypes[ctor.ID] += "=null"; typeInfo.Nullable = ctor; }
+				else if (ctor.ID == TL.Layer.NullCtor) { ctorToTypes[ctor.ID] += "=null"; typeInfo.Nullable = ctor; nullableCtor.Add(ctor.predicate); }
 				if (typeInfo.ReturnName == null) typeInfo.ReturnName = CSharpName(ctor.type);
 				typeInfo.Structs.Add(ctor);
 				if (structName == typeInfo.ReturnName) typeInfo.MainClass = ctor;
@@ -140,6 +142,7 @@ namespace WTelegram
 					typeInfo.Nullable = nullable[0];
 					typeInfo.Structs.Remove(typeInfo.Nullable);
 					ctorToTypes[typeInfo.Nullable.ID] += "=null";
+					nullableCtor.Add(typeInfo.Nullable.predicate);
 				}
 				if (typeInfo.MainClass == null)
 				{
@@ -191,7 +194,7 @@ namespace WTelegram
 						int autoPropsCount = 0;
 						foreach (var str in typeInfo.Structs)
 						{
-							if (str.ID == 0 ||str.predicate.EndsWith("Empty") || str.predicate.EndsWith("TooLong") || str.predicate.EndsWith("NotModified")) continue;
+							if (str.ID == 0 || str.predicate.EndsWith("Empty") || str.predicate.EndsWith("TooLong") || str.predicate.EndsWith("NotModified")) continue;
 							for (int i = autoProps.Count - 1; i >= 0; i--)
 								if (!str.@params.Contains(autoProps[i]))
 									autoProps.RemoveAt(i);
@@ -200,6 +203,25 @@ namespace WTelegram
 						}
 						if (autoProps.Count > 0 && autoPropsCount > 1)
 							typeInfo.AutoProps = autoProps;
+					}
+				}
+				if (typeInfo.AsEnum && typeInfo.MainClass.id == null)
+				{
+					enumTypes.Add(typeInfo.ReturnName);
+					bool lowercase = typeInfo.ReturnName == "Storage_FileType";
+					string prefix = "";
+					while ((prefix += typeInfo.Structs[1].predicate[prefix.Length]) != null)
+						if (!typeInfo.Structs.All(ctor => ctor.id == null || ctor.predicate.StartsWith(prefix)))
+							break;
+					int prefixLen = CSharpName(prefix).Length - 1;
+					foreach (var ctor in typeInfo.Structs)
+					{
+						if (ctor.id == null) continue;
+						string className = CSharpName(ctor.predicate);
+						if (!allTypes.Add(className)) continue;
+						if (lowercase) className = className.ToLowerInvariant();
+						enumValues.Add(ctor.predicate, $"{typeInfo.ReturnName}.{className[prefixLen..]}");
+						ctorToTypes.Remove(ctor.ID);
 					}
 				}
 			}
@@ -273,18 +295,21 @@ namespace WTelegram
 				if (needNewLine) { needNewLine = false; sw.WriteLine(); }
 				var parentClass = ctor == typeInfo.MainClass ? "ITLObject" : typeInfo.ReturnName;
 				var parms = ctor.@params;
+				var webDoc = WriteXmlDoc(sw, typeInfo, ctor);
 				if (ctorId == 0) // abstract parent
 				{
-					if (currentJson != "TL.MTProto")
-						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://corefork.telegram.org/type/{typeInfo.Structs[0].type}\"/></summary>");
-					if (typeInfo.Nullable != null)
-						sw.WriteLine($"{tabIndent}///<remarks>a <c>null</c> value means <a href=\"https://corefork.telegram.org/constructor/{typeInfo.Nullable.predicate}\">{typeInfo.Nullable.predicate}</a></remarks>");
 					if (typeInfo.AsEnum)
 					{
-						WriteTypeAsEnum(sw, typeInfo);
+						WriteTypeAsEnum(sw, typeInfo, webDoc);
 						return;
 					}
 					sw.Write($"{tabIndent}public abstract partial class {ctor.predicate}");
+					if (webDoc != null && (parms.Length > 0 || typeInfo.AutoProps != null))
+					{
+						var len = Math.Max(parms.Length, typeInfo.AutoProps?.Count ?? 0);
+						var webDoc2 = ParseWebDoc($"constructor/{typeInfo.Structs.Skip(1).First(s => s.@params.Length >= len).predicate}");
+						webDoc["Parameters"] = webDoc2["Parameters"];
+					}
 				}
 				else
 				{
@@ -323,12 +348,7 @@ namespace WTelegram
 						}
 					}
 					if (currentJson != "TL.MTProto")
-					{
-						sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://corefork.telegram.org/constructor/{ctor.predicate}\"/></summary>");
-						if (typeInfo.Nullable != null && ctor == typeInfo.MainClass)
-							sw.WriteLine($"{tabIndent}///<remarks>a <c>null</c> value means <a href=\"https://corefork.telegram.org/constructor/{typeInfo.Nullable.predicate}\">{typeInfo.Nullable.predicate}</a></remarks>");
 						sw.WriteLine($"{tabIndent}[TLDef(0x{ctor.ID:X8}{tldefReverse})]");
-					}
 					else
 					{
 						sw.Write($"{tabIndent}[TLDef(0x{ctor.ID:X8}{tldefReverse})] //{ctor.predicate}#{ctor.ID:x8} ");
@@ -347,63 +367,64 @@ namespace WTelegram
 					commonFields = typeInfo.CommonFields;
 					continue;
 				}
+				var paramDoc = webDoc?.GetValueOrDefault("Parameters").table;
 				var hasFlagEnum = parms.Any(p => p.type.StartsWith("flags."));
-				bool multiline = hasFlagEnum || parms.Length > 1 || typeInfo.AbstractUserOrChat || typeInfo.AutoProps != null;
-				if (multiline)
+				sw.WriteLine();
+				sw.WriteLine(tabIndent + "{");
+				foreach (var parm in parms)
 				{
-					sw.WriteLine();
-					sw.WriteLine(tabIndent + "{");
+					if (parm.type.EndsWith("?true")) continue;
+					var doc = paramDoc?.GetValueOrDefault(parm.name);
+					if (doc != null) sw.WriteLine($"{tabIndent}\t/// <summary>{doc}</summary>");
+					if (parm.type == "#")
+						sw.WriteLine($"{tabIndent}\tpublic {(hasFlagEnum ? "Flags" : "int")} {parm.name};");
+					else
+					{
+						if (parm.type.StartsWith("flags."))
+						{
+							int qm = parm.type.IndexOf('?');
+							sw.WriteLine($"{tabIndent}\t[IfFlag({parm.type[6..qm]})] public {MapType(parm.type[(qm + 1)..], parm.name)} {MapName(parm.name)};");
+						}
+						else
+							sw.WriteLine($"{tabIndent}\tpublic {MapType(parm.type, parm.name)} {MapName(parm.name)};");
+					}
 				}
-				else
-					sw.Write(" { ");
 				if (hasFlagEnum)
 				{
+					sw.WriteLine();
 					var list = new SortedList<int, string>();
+					var flagDoc = new Dictionary<int, string>();
 					foreach (var parm in parms)
 					{
 						if (!parm.type.StartsWith("flags.") || !parm.type.EndsWith("?true")) continue;
 						var mask = 1 << int.Parse(parm.type[6..parm.type.IndexOf('?')]);
-						if (!list.ContainsKey(mask)) list[mask] = MapName(parm.name);
+						if (list.ContainsKey(mask)) continue;
+						var doc = paramDoc?.GetValueOrDefault(parm.name);
+						if (doc != null) flagDoc[mask] = doc;
+						list[mask] = MapName(parm.name);
 					}
 					foreach (var parm in parms)
 					{
 						if (!parm.type.StartsWith("flags.") || parm.type.EndsWith("?true")) continue;
 						var mask = 1 << int.Parse(parm.type[6..parm.type.IndexOf('?')]);
 						if (list.ContainsKey(mask)) continue;
+						flagDoc[mask] = $"Field <see cref=\"{parm.name}\"/> has a value";
 						var name = MapName("has_" + parm.name);
 						if (list.Values.Contains(name)) name += "_field";
 						list[mask] = name;
 					}
-					string line = tabIndent + "\t[Flags] public enum Flags { ";
+					sw.WriteLine(tabIndent + "\t[Flags] public enum Flags");
+					sw.WriteLine(tabIndent + "\t{");
 					foreach (var (mask, name) in list)
 					{
-						var str = $"{name} = 0x{mask:X}, ";
-						if (line.Length + str.Length + tabIndent.Length * 3 >= 134) { sw.WriteLine(line); line = tabIndent + "\t\t"; }
-						line += str;
+						if (flagDoc.TryGetValue(mask, out var summary)) sw.WriteLine($"{tabIndent}\t\t/// <summary>{summary}</summary>");
+						sw.WriteLine($"{tabIndent}\t\t{name} = 0x{mask:X},");
 					}
-					sw.WriteLine(line.TrimEnd(',', ' ') + " }");
-				}
-				foreach (var parm in parms)
-				{
-					if (parm.type.EndsWith("?true")) continue;
-					if (multiline) sw.Write(tabIndent + "\t");
-					if (parm.type == "#")
-						sw.Write($"public {(hasFlagEnum ? "Flags" : "int")} {parm.name};");
-					else
-					{
-						if (parm.type.StartsWith("flags."))
-						{
-							int qm = parm.type.IndexOf('?');
-							sw.Write($"[IfFlag({parm.type[6..qm]})] public {MapType(parm.type[(qm + 1)..], parm.name)} {MapName(parm.name)};");
-						}
-						else
-							sw.Write($"public {MapType(parm.type, parm.name)} {MapName(parm.name)};");
-					}
-					if (multiline) sw.WriteLine();
+					sw.WriteLine(tabIndent + "\t}");
 				}
 				if (typeInfo.AutoProps != null)
 				{
-					bool firstLine = parms.Length != 0;
+					bool firstLine = parms.Length != 0 || hasFlagEnum;
 					string format = $"{tabIndent}\tpublic ";
 					if (ctorId == 0)
 						format += "abstract {0} {1} {{ get; }}";
@@ -422,6 +443,8 @@ namespace WTelegram
 						string csName = CSharpName(parm.name);
 						if (csName.EndsWith("Id") && parm.type != "int" && parm.type != "long") csName = csName[..^2];
 						if (firstLine) { sw.WriteLine(); firstLine = false; }
+						var doc = paramDoc?.GetValueOrDefault(parm.name);
+						if (doc != null) sw.WriteLine($"{tabIndent}\t/// <summary>{doc}</summary>");
 						sw.WriteLine(string.Format(format, MapType(parm.type, parm.name), csName, value));
 					}
 				}
@@ -429,8 +452,10 @@ namespace WTelegram
 				if (hasUsersChats || (typeInfo.AbstractUserOrChat && (ctor == typeInfo.MainClass || parentClass == typeInfo.ReturnName)))
 				{
 					var modifier = !typeInfo.AbstractUserOrChat ? null : ctorId == 0 ? "abstract " : "override ";
+					bool withArg = !hasUsersChats || ctor.@params.Length != 3 || !parms.Contains(ParamPeer);
+					sw.WriteLine($"{tabIndent}\t/// <summary>returns a <see cref=\"UserBase\"/> or <see cref=\"ChatBase\"/> for {(withArg ? "the given Peer" : "the result")}</summary>");
 					sw.Write($"{tabIndent}\tpublic {modifier}IPeerInfo UserOrChat");
-					if (!hasUsersChats || ctor.@params.Length != 3 || !parms.Contains(ParamPeer))
+					if (withArg)
 						sw.Write("(Peer peer)");
 					if (modifier == "abstract ")
 						sw.WriteLine(";");
@@ -440,13 +465,131 @@ namespace WTelegram
 						sw.WriteLine(" => null;");
 				}
 
-				if (multiline)
-					sw.WriteLine(tabIndent + "}");
-				else
-					sw.WriteLine(" }");
+				sw.WriteLine(tabIndent + "}");
 				commonFields = typeInfo.CommonFields;
 			}
 		}
+
+		private Dictionary<string, (string descr, Dictionary<string, string> table)> WriteXmlDoc(StreamWriter sw, TypeInfo typeInfo, Constructor ctor)
+		{
+			if (currentJson == "TL.MTProto") return null;
+			var url = ctor.id == null ? $"type/{ctor.type}" : $"constructor/{ctor.predicate}";
+			var webDoc = ParseWebDoc(url);
+			var summary = webDoc?.GetValueOrDefault(ctor.predicate).descr;
+			var derived = webDoc?.GetValueOrDefault("Constructors").table;
+			if (derived != null && !typeInfo.AsEnum)
+				summary += $"\t\t<br/>Derived classes: {string.Join(", ", derived.Keys.Where(k => k != "<see langword=\"null\"/>"))}";
+			summary += $"\t\t<br/>See <a href=\"https://corefork.telegram.org/{url}\"/>";
+			sw.WriteLine($"{tabIndent}/// <summary>{summary.Trim()}</summary>");
+			if (typeInfo.Nullable != null && ctor == typeInfo.MainClass)
+				sw.WriteLine($"{tabIndent}/// <remarks>a <c>null</c> value means <a href=\"https://corefork.telegram.org/constructor/{typeInfo.Nullable.predicate}\">{typeInfo.Nullable.predicate}</a></remarks>");
+			return webDoc;
+		}
+
+		private void WriteXmlDoc(StreamWriter sw, Method method)
+		{
+			if (currentJson == "TL.MTProto") return;
+			var webDoc = ParseWebDoc($"method/{method.method}");
+			var summary = webDoc?.GetValueOrDefault(method.method).descr;
+			var paramDoc = webDoc?.GetValueOrDefault("Parameters").table;
+			var excepDoc = webDoc?.GetValueOrDefault("Possible errors").table;
+			summary += $"\t\t<br/>See <a href=\"https://corefork.telegram.org/method/{method.method}\"/>";
+			sw.WriteLine($"{tabIndent}/// <summary>{summary.Trim()}</summary>");
+			if (paramDoc != null)
+				foreach (var (name, doc) in paramDoc)
+					if (name != "flags")
+						sw.WriteLine($"{tabIndent}/// <param name=\"{MapName(name)}\">{doc}</param>");
+			if (typeInfos.GetValueOrDefault(method.type)?.Nullable is Constructor nullable)
+				sw.WriteLine($"{tabIndent}/// <returns>a <c>null</c> value means <a href=\"https://corefork.telegram.org/constructor/{nullable.predicate}\">{nullable.predicate}</a></returns>");
+		}
+
+		///
+		private Dictionary<string, (string descr, Dictionary<string, string> table)> ParseWebDoc(string url)
+		{
+			var path = $@"{Environment.GetEnvironmentVariable("telegram-crawler")}\data\corefork.telegram.org\{url}";
+			if (!File.Exists(path))
+				if (!File.Exists(path += ".html"))
+					return null;
+			var result = new Dictionary<string, (string descr, Dictionary<string, string> table)>();
+			var html = File.ReadAllText(path);
+			foreach (var section in html[html.IndexOf("<h1")..].Split(new[] { "<h3>" }, StringSplitOptions.None))
+			{
+				var index = 0;
+				do { index = section.IndexOf('>', index) + 1; } while (section[index] == '<');
+				var title = section[index..section.IndexOf("</h")];
+				var rest = section[(index + title.Length + 5)..].Trim();
+				string descr = null;
+				if ((index = rest.IndexOf("<p>")) >= 0)
+				{
+					descr = rest[(index + 3)..rest.IndexOf("</p>", index)];
+					rest = rest[(index + 7 + descr.Length)..].Trim();
+					descr = ProcessDescr(descr);
+				}
+				Dictionary<string, string> table = null;
+				if (rest.StartsWith("<table "))
+				{
+					table = new();
+					int rowIndex = 0;
+					while ((rowIndex = rest.IndexOf("<tr>", rowIndex)) >= 0)
+					{
+						var row = rest[(rowIndex + 4)..rest.IndexOf("</tr>", rowIndex)];
+						rowIndex += row.Length;
+						index = row.IndexOf("<td");
+						if (index < 0) continue;
+						index = row.IndexOf('>', index) + 1;
+						var name = row[index..row.IndexOf("</td", index)];
+						if (name.StartsWith("<strong>") && name.EndsWith("</strong>")) name = name[8..^9];
+						index = row.IndexOf("<td", index);
+						index = row.IndexOf('>', index) + 1;
+						var value = row[index..row.IndexOf("</td", index)];
+						index = row.IndexOf("<td", index);
+						if (index >= 0)
+						{
+							index = row.IndexOf('>', index) + 1;
+							value = row[index..row.IndexOf("</td", index)];
+						}
+						table[ProcessDescr(name)] = ProcessDescr(value);
+					}
+				}
+				if (descr != null || table != null)
+					result[title] = (descr, table);
+			}
+			return result;
+
+			string ProcessDescr(string str)
+			{
+				int index = -1;
+				while ((index = str.IndexOf("<a href=\"", index + 1)) >= 0)
+				{
+					var url = str[(index + 9)..str.IndexOf('"', index + 9)];
+					var close = str.IndexOf("</a>", index) + 4;
+					if (url.StartsWith("/constructor/"))
+						if (url == "/constructor/decryptedMessageActionSetMessageTTL")
+							str = $"{str[0..index]}<see cref=\"Layer8.DecryptedMessageActionSetMessageTTL\"/>{str[close..]}";
+						else if (nullableCtor.Contains(url[13..]))
+							str = $"{str[0..index]}<see langword=\"null\"/>{str[close..]}";
+						else
+							str = $"{str[0..index]}<see cref=\"{MapType(url[13..], "")}\"/>{str[close..]}";
+					else if (url.StartsWith("/type/"))
+						if (url == "/type/DecryptedMessage")
+							str = $"{str[0..index]}<see cref=\"DecryptedMessageBase\"/>{str[close..]}";
+						else
+							str = $"{str[0..index]}<see cref=\"{MapType(url[6..], "")}\"/>{str[close..]}";
+					else if (url.StartsWith("/"))
+						str = str.Insert(index + 9, "https://corefork.telegram.org");
+				}
+				index = -1;
+				while ((index = str.IndexOf("<img ", index + 1)) >= 0)
+				{
+					var close = str.IndexOf("/>", index) + 2;
+					var tag = str[index..close];
+					var alt = tag.IndexOf(" alt=\"");
+					if (alt > 0) str = $"{str[0..index]}{tag[(alt + 6)..tag.IndexOf('"', alt + 6)]}{str[close..]}";
+				}
+				return str.Replace("\r", "").Replace("\n", "").Replace("<br>", "<br/>").Replace("code>", "c>");
+			}
+		}
+
 		static readonly Param ParamFlags = new() { name = "flags", type = "#" };
 		static readonly Param ParamPeer = new() { name = "peer", type = "Peer" };
 		static readonly Param ParamUsers = new() { name = "users", type = "Vector<User>" };
@@ -470,26 +613,18 @@ namespace WTelegram
 			return left + right > basename.Length;
 		}
 
-		private void WriteTypeAsEnum(StreamWriter sw, TypeInfo typeInfo)
+		private void WriteTypeAsEnum(StreamWriter sw, TypeInfo typeInfo, Dictionary<string, (string descr, Dictionary<string, string> table)> webDoc)
 		{
-			enumTypes.Add(typeInfo.ReturnName);
-			bool lowercase = typeInfo.ReturnName == "Storage_FileType";
+			var valuesDoc = webDoc?["Constructors"].table;
 			sw.WriteLine($"{tabIndent}public enum {typeInfo.ReturnName} : uint");
 			sw.WriteLine($"{tabIndent}{{");
-			string prefix = "";
-			while ((prefix += typeInfo.Structs[1].predicate[prefix.Length]) != null)
-				if (!typeInfo.Structs.All(ctor => ctor.id == null || ctor.predicate.StartsWith(prefix)))
-					break;
-			int prefixLen = CSharpName(prefix).Length - 1;
 			foreach (var ctor in typeInfo.Structs)
 			{
 				if (ctor.id == null) continue;
-				string className = CSharpName(ctor.predicate);
-				if (!allTypes.Add(className)) continue;
-				if (lowercase) className = className.ToLowerInvariant();
-				ctorToTypes.Remove(ctor.ID);
-				sw.WriteLine($"{tabIndent}\t///<summary>See <a href=\"https://corefork.telegram.org/constructor/{ctor.predicate}\"/></summary>");
-				sw.WriteLine($"{tabIndent}\t{className[prefixLen..]} = 0x{ctor.ID:X8},");
+				string enumValue = enumValues[ctor.predicate];
+				var summary = valuesDoc?[$"<see cref=\"{enumValue}\"/>"] ?? $"See <a href=\"https://corefork.telegram.org/constructor/{ctor.predicate}\"/>";
+				sw.WriteLine($"{tabIndent}\t///<summary>{summary}</summary>");
+				sw.WriteLine($"{tabIndent}\t{enumValue[(enumValue.IndexOf('.') + 1)..]} = 0x{ctor.ID:X8},");
 			}
 			sw.WriteLine($"{tabIndent}}}");
 		}
@@ -545,6 +680,8 @@ namespace WTelegram
 				return type;
 			else if (typeInfos.TryGetValue(type, out var typeInfo))
 				return typeInfo.ReturnName;
+			else if (enumValues.TryGetValue(type, out var enumValue))
+				return enumValue;
 			else
 			{   // try to find type in a lower layer
 				/*foreach (var layer in typeInfosByLayer.OrderByDescending(kvp => kvp.Key))
@@ -587,12 +724,11 @@ namespace WTelegram
 			// styles: 0 = static string, 1 = static ITLFunction<>, 2 = Task<>, -1 = skip method
 			if (style == -1) return;
 			sw.WriteLine();
+			WriteXmlDoc(sw, method);
 
 			var callAsync = "CallAsync";
 			if (method.type.Length == 1 && style != 1) funcName += $"<{returnType}>";
-			if (currentJson != "TL.MTProto")
-				sw.WriteLine($"{tabIndent}///<summary>See <a href=\"https://corefork.telegram.org/method/{method.method}\"/></summary>");
-			else
+			if (currentJson == "TL.MTProto")
 			{
 				if (method.type is not "FutureSalts" and not "Pong") callAsync = "CallBareAsync";
 				sw.Write($"{tabIndent}//{method.method}#{ctorNb:x8} ");
