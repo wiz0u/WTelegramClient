@@ -475,11 +475,11 @@ namespace WTelegram
 			if (currentJson == "TL.MTProto") return null;
 			var url = ctor.id == null ? $"type/{ctor.type}" : $"constructor/{ctor.predicate}";
 			var webDoc = ParseWebDoc(url);
-			var summary = webDoc?.GetValueOrDefault(ctor.predicate).descr;
+			var summary = webDoc?.GetValueOrDefault(ctor.id == null ? ctor.type : ctor.predicate).descr;
 			var derived = webDoc?.GetValueOrDefault("Constructors").table;
 			if (derived != null && !typeInfo.AsEnum)
-				summary += $"\t\t<br/>Derived classes: {string.Join(", ", derived.Keys.Where(k => k != "<see langword=\"null\"/>"))}";
-			summary += $"\t\t<br/>See <a href=\"https://corefork.telegram.org/{url}\"/>";
+				summary += $"\t\t<para>Derived classes: {string.Join(", ", derived.Keys.Where(k => k != "<see langword=\"null\"/>"))}</para>";
+			summary += $"\t\t<para>See <a href=\"https://corefork.telegram.org/{url}\"/></para>";
 			sw.WriteLine($"{tabIndent}/// <summary>{summary.Trim()}</summary>");
 			if (typeInfo.Nullable != null && ctor == typeInfo.MainClass)
 				sw.WriteLine($"{tabIndent}/// <remarks>a <c>null</c> value means <a href=\"https://corefork.telegram.org/constructor/{typeInfo.Nullable.predicate}\">{typeInfo.Nullable.predicate}</a></remarks>");
@@ -493,7 +493,7 @@ namespace WTelegram
 			var summary = webDoc?.GetValueOrDefault(method.method).descr;
 			var paramDoc = webDoc?.GetValueOrDefault("Parameters").table;
 			var excepDoc = webDoc?.GetValueOrDefault("Possible errors").table;
-			summary += $"\t\t<br/>See <a href=\"https://corefork.telegram.org/method/{method.method}\"/>";
+			summary += $"\t\t<para>See <a href=\"https://corefork.telegram.org/method/{method.method}\"/></para>";
 			sw.WriteLine($"{tabIndent}/// <summary>{summary.Trim()}</summary>");
 			if (paramDoc != null)
 				foreach (var (name, doc) in paramDoc)
@@ -501,9 +501,10 @@ namespace WTelegram
 						sw.WriteLine($"{tabIndent}/// <param name=\"{MapName(name)}\">{doc}</param>");
 			if (typeInfos.GetValueOrDefault(method.type)?.Nullable is Constructor nullable)
 				sw.WriteLine($"{tabIndent}/// <returns>a <c>null</c> value means <a href=\"https://corefork.telegram.org/constructor/{nullable.predicate}\">{nullable.predicate}</a></returns>");
+			if (excepDoc != null)
+				sw.WriteLine($"{tabIndent}/// <exception cref=\"RpcException\">Possible errors: {string.Join(",", new SortedSet<string>(excepDoc.Keys))} (<a href=\"https://corefork.telegram.org/method/{method.method}#possible-errors\">details</a>)</exception>");
 		}
 
-		///
 		private Dictionary<string, (string descr, Dictionary<string, string> table)> ParseWebDoc(string url)
 		{
 			var path = $@"{Environment.GetEnvironmentVariable("telegram-crawler")}\data\corefork.telegram.org\{url}";
@@ -545,6 +546,7 @@ namespace WTelegram
 						index = row.IndexOf("<td", index);
 						if (index >= 0)
 						{
+							//if (!value.StartsWith("<") && value != "!X") name = $"{name} {value}";
 							index = row.IndexOf('>', index) + 1;
 							value = row[index..row.IndexOf("</td", index)];
 						}

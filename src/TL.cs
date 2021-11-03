@@ -333,6 +333,7 @@ namespace TL
 	{
 		public readonly int Code;
 		public RpcException(int code, string message) : base(message) => Code = code;
+		public override string ToString() => $"RpcException: {Code} {Message}";
 	}
 
 	public class ReactorError : ITLObject

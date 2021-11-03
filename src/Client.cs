@@ -521,7 +521,7 @@ namespace WTelegram
 			{
 				404 => "Auth key not found",
 				429 => "Transport flood",
-				_ => ((HttpStatusCode)error_code).ToString(),
+				_ => Enum.GetName(typeof(HttpStatusCode), error_code) ?? "Transport error"
 			};
 		}
 
