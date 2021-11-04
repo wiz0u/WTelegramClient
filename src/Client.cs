@@ -74,7 +74,8 @@ namespace WTelegram
 			if (_session.MainDC != 0) _session.DCSessions.TryGetValue(_session.MainDC, out _dcSession);
 			_dcSession ??= new() { Id = Helpers.RandomLong() };
 			_dcSession.Client = this;
-			Helpers.Log(1, $"WTelegramClient {Assembly.GetExecutingAssembly().GetName().Version} running under {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
+			var version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+			Helpers.Log(1, $"WTelegramClient {version[..version.IndexOf('+')]} running under {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
 		}
 
 		private Client(Client cloneOf, Session.DCSession dcSession)
