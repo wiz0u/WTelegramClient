@@ -21,7 +21,7 @@
     <PackageProjectUrl>https://github.com/wiz0u/WTelegramClient</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wiz0u/WTelegramClient.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <!--<PackageReadmeFile>README.md</PackageReadmeFile> see https://github.com/NuGet/Home/issues/10791 -->
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <None Include="..\.github\dev.yml" Link="Data\dev.yml" />
+    <None Include="..\EXAMPLES.md" Link="Data\EXAMPLES.md" />
     <None Include="..\logo.png" Link="Data\logo.png" Pack="true" PackagePath="\" />
     <None Include="..\README.md" Link="Data\README.md" Pack="true" PackagePath="\" />
     <None Include="..\.github\release.yml" Link="Data\release.yml" />
