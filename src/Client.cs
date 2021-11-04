@@ -916,8 +916,10 @@ namespace WTelegram
 				{
 					if (prevUser.id == int.Parse(botToken.Split(':')[0]))
 					{
-						var udpatesState = await this.Updates_GetState(); // this call enables incoming Updates
-						OnUpdate(udpatesState);
+						// Update our info about the user, and reenable incoming Updates
+						var users = await this.Users_GetUsers(new[] { InputUser.Self });
+						if (users.Length > 0 && users[0] is User self)
+							_session.User = prevUser = self;
 						return prevUser;
 					}
 					Helpers.Log(3, $"Current logged user {prevUser.id} mismatched bot_token. Logging out and in...");
@@ -965,8 +967,10 @@ namespace WTelegram
 					if (sameUser)
 					{
 						// TODO: implement a more complete Updates gaps handling system? https://core.telegram.org/api/updates
-						var udpatesState = await this.Updates_GetState(); // this call enables incoming Updates
-						OnUpdate(udpatesState);
+						// Update our info about the user, and reenable incoming Updates
+						var users = await this.Users_GetUsers(new[] { InputUser.Self });
+						if (users.Length > 0 && users[0] is User self)
+							_session.User = prevUser = self;
 						return prevUser;
 					}
 					Helpers.Log(3, $"Current logged user {prevUser.id} mismatched user_id or phone_number. Logging out and in...");

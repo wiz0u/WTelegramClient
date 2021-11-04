@@ -24,8 +24,11 @@ namespace WTelegramClientTest
 				if (arg is not Updates { updates: var updates }) return;
 				foreach (var update in updates)
 				{
-					if (update is not UpdateNewMessage { message: Message message } || message.peer_id.ID != user.ID)
-						continue; // if it's not a new saved message, ignore it
+					if (update is not UpdateNewMessage { message: Message message })
+						continue; // if it's not about a new message, ignore the update
+					if (message.peer_id.ID != user.ID)
+						continue; // if it's not in the "Saved messages" chat, ignore it
+
 					if (message.media is MessageMediaDocument { document: Document document })
 					{
 						int slash = document.mime_type.IndexOf('/'); // quick & dirty conversion from MIME type to file extension
@@ -44,7 +47,7 @@ namespace WTelegramClientTest
 						fileStream.Close(); // necessary for the renaming
 						Console.WriteLine("Download finished");
 						if (type is not Storage_FileType.unknown and not Storage_FileType.partial)
-							File.Move(filename, $"{photo.id}.{type}"); // rename extension
+							File.Move(filename, $"{photo.id}.{type}", true); // rename extension
 					}
 				}
 			}
