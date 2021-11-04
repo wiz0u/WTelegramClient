@@ -6,25 +6,24 @@
     <LangVersion>latest</LangVersion>
     <RootNamespace>WTelegram</RootNamespace>
     <Deterministic>true</Deterministic>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PackageId>WTelegramClient</PackageId>
-    <Description>Telegram Client API library written 100% in C# and .NET Standard | Latest MTProto &amp; API layer version</Description>
+    <Version>0.0.0</Version>
     <Authors>Wizou</Authors>
+    <Description>Telegram Client API library written 100% in C# and .NET Standard | Latest MTProto &amp; API layer version</Description>
     <Copyright>Copyright © Olivier Marcoux 2021</Copyright>
-    <PackageIcon>logo.png</PackageIcon>
-    <PackageTags>Telegram;Client;Api;UserBot;MTProto;TLSharp;OpenTl</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/wiz0u/WTelegramClient</PackageProjectUrl>
+    <PackageIcon>logo.png</PackageIcon>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/wiz0u/WTelegramClient.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <InformationalVersion>source</InformationalVersion>
+    <PackageTags>Telegram;Client;Api;UserBot;MTProto;TLSharp;OpenTl</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <NoWarn>IDE0079;0419;1573;1591</NoWarn>
   </PropertyGroup>
 
