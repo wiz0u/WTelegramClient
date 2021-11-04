@@ -1,4 +1,4 @@
-﻿// This file is generated automatically using the Generator class
+﻿// This file is generated automatically
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

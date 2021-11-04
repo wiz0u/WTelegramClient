@@ -213,14 +213,7 @@ namespace TL
 	}
 
 	partial class Contacts_Blocked { public IPeerInfo UserOrChat(PeerBlocked peer) => peer.peer_id.UserOrChat(users, chats); }
-
-	partial class Messages_Dialogs
-	{
-		/// <summary>Find the matching User/Chat object for a dialog</summary>
-		/// <param name="dialog">The dialog which peer we want details on</param>
-		/// <returns>a UserBase or ChatBase derived instance</returns>
-		public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer.UserOrChat(users, chats);
-	}
+	partial class Messages_Dialogs { public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer.UserOrChat(users, chats); }
 
 	partial class Messages_MessagesBase			{ public abstract int Count { get; } }
 	partial class Messages_Messages				{ public override int Count => messages.Length; }
@@ -317,10 +310,7 @@ namespace TL
 		public override int Timeout => timeout;
 	}
 
-	partial class Messages_PeerDialogs
-	{
-		public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer.UserOrChat(users, chats);
-	}
+	partial class Messages_PeerDialogs { public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer.UserOrChat(users, chats); }
 
 	partial class SecureFile
 	{
