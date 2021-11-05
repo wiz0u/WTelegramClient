@@ -103,7 +103,7 @@ namespace TL
 		public override bool IsActive => (flags & (Flags.kicked | Flags.left | Flags.deactivated)) == 0;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		public override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
-		public override string ToString() => $"Chat \"{title}\"";
+		public override string ToString() => $"Chat \"{title}\"" + (flags.HasFlag(Flags.deactivated) ? " [deactivated]" : null);
 	}
 	partial class ChatForbidden
 	{
