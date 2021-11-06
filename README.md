@@ -5,8 +5,7 @@
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://wizou.fr/donate.html)
 
-# <img src="logo.png" width="32"/> WTelegramClient
-### _Telegram Client API library written 100% in C# and .NET Standard_
+## _Telegram Client API library written 100% in C# and .NET Standard_
 
 ## How to use
 
@@ -120,7 +119,7 @@ The Client class also offers an `Update` event that is triggered when Telegram s
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
-You can find more code examples in [EXAMPLES.md](EXAMPLES.md) and in the Examples subdirectory.
+You can find more code examples in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md) and in the Examples subdirectory.
 
 The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
 
