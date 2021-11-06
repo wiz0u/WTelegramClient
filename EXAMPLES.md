@@ -184,7 +184,7 @@ var user = await client.LoginUserIfNeeded();
 Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name}");
 ```
 
-# Change logging settings
+### Change logging settings
 Log to VS Output debugging pane in addition to default Console screen logging:
 ```csharp
 WTelegram.Helpers.Log += (lvl, str) => System.Diagnostics.Debug.WriteLine(str);

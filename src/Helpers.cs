@@ -8,9 +8,10 @@ namespace WTelegram
 {
 	public static class Helpers
 	{
-		// int argument is the LogLevel: https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel
+		/// <summary>Callback for logging a line (string) with the associated <see href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel">severity level</see> (int)</summary>
 		public static Action<int, string> Log { get; set; } = DefaultLogger;
 
+		/// <summary>For serializing indented Json with fields included</summary>
 		public static readonly JsonSerializerOptions JsonOptions = new() { IncludeFields = true, WriteIndented = true };
 
 		public static V GetOrCreate<K, V>(this Dictionary<K, V> dictionary, K key) where V : new()
@@ -60,6 +61,7 @@ namespace WTelegram
 			}
 		}
 
+		/// <summary>Get a cryptographic random 64-bit value</summary>
 		public static long RandomLong()
 		{
 #if NETCOREAPP2_1_OR_GREATER
@@ -73,7 +75,7 @@ namespace WTelegram
 #endif
 		}
 
-		public static byte[] ToBigEndian(ulong value) // variable-size buffer
+		internal static byte[] ToBigEndian(ulong value) // variable-size buffer
 		{
 			int i;
 			var temp = value;
@@ -83,7 +85,7 @@ namespace WTelegram
 			return result;
 		}
 
-		public static ulong FromBigEndian(byte[] bytes) // variable-size buffer
+		internal static ulong FromBigEndian(byte[] bytes) // variable-size buffer
 		{
 			if (bytes.Length > 8) throw new ArgumentException($"expected bytes length <= 8 but got {bytes.Length}");
 			ulong result = 0;
@@ -185,7 +187,8 @@ namespace WTelegram
 
 		public static int MillerRabinIterations { get; set; } = 64; // 64 is OpenSSL default for 2048-bits numbers
 		private static readonly HashSet<BigInteger> GoodPrimes = new();
-		// Miller–Rabin primality test
+		/// <summary>Miller–Rabin primality test</summary>
+		/// <param name="n">The number to check for primality</param>
 		public static bool IsProbablePrime(this BigInteger n)
 		{
 			var n_minus_one = n - BigInteger.One;

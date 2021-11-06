@@ -346,6 +346,10 @@ namespace TL
 
 	public static class Markdown
 	{
+		/// <summary>Converts a Markdown text into the (Entities + plain text) format used by Telegram messages</summary>
+		/// <param name="client">Client, used for getting access_hash for <c>tg://user?id=</c> URLs</param>
+		/// <param name="text">[in] The Markdown text<br/>[out] The same (plain) text, stripped of all Markdown notation</param>
+		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="WTelegram.Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="WTelegram.Client.SendMediaAsync">SendMediaAsync</see></returns>
 		public static MessageEntity[] MarkdownToEntities(this WTelegram.Client client, ref string text)
 		{
 			var entities = new List<MessageEntity>();
@@ -426,7 +430,9 @@ namespace TL
 			return entities.Count == 0 ? null : entities.ToArray();
 		}
 
-
+		/// <summary>Insert backslashes in front of Markdown reserved characters</summary>
+		/// <param name="text">The text to escape</param>
+		/// <returns>The escaped text, ready to be used in <see cref="MarkdownToEntities">MarkdownToEntities</see> without problems</returns>
 		public static string Escape(string text)
 		{
 			StringBuilder sb = null;

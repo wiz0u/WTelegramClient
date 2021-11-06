@@ -26,10 +26,15 @@ namespace WTelegram
 		/// <remarks>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_ListenUpdate.cs">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
 		public event Action<ITLObject> Update;
 		public delegate Task<TcpClient> TcpFactory(string address, int port);
-		public TcpFactory TcpHandler = DefaultTcpHandler; // return a connected TcpClient or throw an exception
+		/// <summary>Used to create a TcpClient connected to the given address/port, or throw an exception on failure</summary>
+		public TcpFactory TcpHandler = DefaultTcpHandler;
+		/// <summary>Telegram configuration, obtained at connection time</summary>
 		public Config TLConfig { get; private set; }
-		public int MaxAutoReconnects { get; set; } = 5; // number of automatic reconnections on connection/reactor failure
+		/// <summary>Number of automatic reconnections on connection/reactor failure</summary>
+		public int MaxAutoReconnects { get; set; } = 5;
+		/// <summary>Is this Client instance the main or a secondary DC session</summary>
 		public bool IsMainDC => (_dcSession?.DataCenter?.id ?? 0) == _session.MainDC;
+		/// <summary>Is this Client currently disconnected?</summary>
 		public bool Disconnected => _tcpClient != null && !(_tcpClient.Client?.Connected ?? false);
 
 		private readonly Func<string, string> _config;
@@ -63,8 +68,8 @@ namespace WTelegram
 		private readonly SHA256 _sha256Recv = SHA256.Create();
 #endif
 
-		/// <summary>Welcome to WTelegramClient! 😀</summary>
-		/// <param name="configProvider">Config callback, is queried for: api_id, api_hash, session_pathname</param>
+		/// <summary>Welcome to WTelegramClient! 🙂</summary>
+		/// <param name="configProvider">Config callback, is queried for: <b>api_id</b>, <b>api_hash</b>, <b>session_pathname</b></param>
 		public Client(Func<string, string> configProvider = null)
 		{
 			_config = configProvider ?? DefaultConfigOrAsk;
@@ -87,9 +92,10 @@ namespace WTelegram
 			_dcSession = dcSession;
 		}
 
-		public string Config(string config)
+		internal string Config(string config)
 			=> _config(config) ?? DefaultConfig(config) ?? throw new ApplicationException("You must provide a config value for " + config);
 
+		/// <summary>Default config values, used if your Config callback returns <see langword="null"/></summary>
 		public static string DefaultConfig(string config) => config switch
 		{
 			"session_pathname" => Path.Combine(
@@ -111,7 +117,7 @@ namespace WTelegram
 			_ => null // api_id api_hash phone_number... it's up to you to reply to these correctly
 		};
 
-		public static string DefaultConfigOrAsk(string config) => DefaultConfig(config) ?? AskConfig(config);
+		internal static string DefaultConfigOrAsk(string config) => DefaultConfig(config) ?? AskConfig(config);
 
 		private static string AskConfig(string config)
 		{
@@ -120,8 +126,9 @@ namespace WTelegram
 			return Console.ReadLine();
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822")]
-		public void LoadPublicKey(string pem) => Encryption.LoadPublicKey(pem);
+		/// <summary>Load a specific Telegram server public key</summary>
+		/// <param name="pem">A string starting with <c>-----BEGIN RSA PUBLIC KEY-----</c></param>
+		public static void LoadPublicKey(string pem) => Encryption.LoadPublicKey(pem);
 
 		public void Dispose()
 		{
@@ -129,7 +136,9 @@ namespace WTelegram
 			Reset(false, IsMainDC);
 		}
 
-		// disconnect and eventually forget user and disconnect other sessions
+		/// <summary>Disconnect from Telegram <i>(shouldn't be needed in normal usage)</i></summary>
+		/// <param name="resetUser">Forget about logged-in user</param>
+		/// <param name="resetSessions">Disconnect secondary sessions with other DCs</param>
 		public void Reset(bool resetUser = true, bool resetSessions = true)
 		{
 			try
@@ -158,8 +167,9 @@ namespace WTelegram
 				_session.User = null;
 		}
 
-		/// <summary>Establish connection to Telegram servers. Config callback is queried for: server_address</summary>
-		/// <returns>Most methods of this class are async Task, so please use <see langword="await"/></returns>
+		/// <summary>Establish connection to Telegram servers</summary>
+		/// <remarks>Config callback is queried for: <b>server_address</b></remarks>
+		/// <returns>Most methods of this class are async (Task), so please use <see langword="await"/></returns>
 		public async Task ConnectAsync()
 		{
 			lock (this)
@@ -278,6 +288,11 @@ namespace WTelegram
 			Helpers.Log(2, $"Connected to {(TLConfig.test_mode ? "Test DC" : "DC")} {TLConfig.this_dc}... {TLConfig.flags & (Config.Flags)~0xE00}");
 		}
 
+		/// <summary>Obtain/create a Client for a secondary session on a specific Data Center</summary>
+		/// <param name="dcId">ID of the Data Center</param>
+		/// <param name="media_only">Session will be used only for transferring media</param>
+		/// <param name="connect">Connect immediately</param>
+		/// <returns></returns>
 		public async Task<Client> GetClientForDC(int dcId, bool media_only = true, bool connect = true)
 		{
 			if (_dcSession.DataCenter?.id == dcId) return this;
@@ -724,6 +739,10 @@ namespace WTelegram
 			return (X)await tcs.Task;
 		}
 
+		/// <summary>Call the given TL method <i>(You shouldn't need to call this, usually)</i></summary>
+		/// <typeparam name="X">Expected type of the returned object</typeparam>
+		/// <param name="request">TL method serializer</param>
+		/// <returns>Wait for the reply and return the resulting object, or throws an RpcException if an error was replied</returns>
 		public async Task<X> CallAsync<X>(ITLFunction request)
 		{
 		retry:
@@ -900,18 +919,17 @@ namespace WTelegram
 			}
 		}
 
-		/// <summary>
-		/// Login as bot (if not already done).
-		/// Config callback is queried for: bot_token
-		/// </summary>
-		/// <returns>Detail about the logged bot</returns>
+		/// <summary>Login as a bot (if not already logged-in).</summary>
+		/// <remarks>Config callback is queried for: <b>bot_token</b>
+		/// <br/>Bots can only call API methods marked with [bots: ✓] in their documentation. </remarks>
+		/// <returns>Detail about the logged-in bot</returns>
 		public async Task<User> LoginBotIfNeeded()
 		{
 			await ConnectAsync();
 			string botToken = Config("bot_token");
 			var prevUser = _session.User;
 			if (prevUser != null)
-			{ 
+			{
 				try
 				{
 					if (prevUser.id == int.Parse(botToken.Split(':')[0]))
@@ -940,13 +958,12 @@ namespace WTelegram
 			return user;
 		}
 
-		/// <summary>
-		/// Login as a user (if not already done).
-		/// Config callback is queried for: phone_number, verification_code
-		/// <br/>and eventually first_name, last_name (signup required), password (2FA auth), user_id (alt validation)
-		/// </summary>
-		/// <param name="settings"></param>
-		/// <returns>Detail about the logged user</returns>
+		/// <summary>Login as a user (if not already logged-in).
+		/// <br/><i>(this method calls ConnectAsync if necessary)</i></summary>
+		/// <remarks>Config callback is queried for: <b>phone_number</b>, <b>verification_code</b> <br/>and eventually <b>first_name</b>, <b>last_name</b> (signup required), <b>password</b> (2FA auth), <b>user_id</b> (alt validation)</remarks>
+		/// <param name="settings">(optional) Preference for verification_code sending</param>
+		/// <returns>Detail about the logged-in user
+		/// <br/>Most methods of this class are async (Task), so please use <see langword="await"/> to get the result</returns>
 		public async Task<User> LoginUserIfNeeded(CodeSettings settings = null)
 		{
 			await ConnectAsync();
@@ -1034,10 +1051,15 @@ namespace WTelegram
 
 #region TL-Helpers
 		/// <summary>Helper function to upload a file to Telegram</summary>
+		/// <param name="pathname">Path to the file to upload</param>
 		/// <returns>an <see cref="InputFile"/> or <see cref="InputFileBig"/> than can be used in various requests</returns>
 		public Task<InputFileBase> UploadFileAsync(string pathname)
 			=> UploadFileAsync(File.OpenRead(pathname), Path.GetFileName(pathname));
 
+		/// <summary>Helper function to upload a file to Telegram</summary>
+		/// <param name="stream">Content of the file to upload</param>
+		/// <param name="filename">Name of the file</param>
+		/// <returns>an <see cref="InputFile"/> or <see cref="InputFileBig"/> than can be used in various requests</returns>
 		public async Task<InputFileBase> UploadFileAsync(Stream stream, string filename)
 		{
 			using var md5 = MD5.Create();
@@ -1093,11 +1115,14 @@ namespace WTelegram
 		}
 
 		/// <summary>Helper function to send a text or media message more easily</summary>
-		/// <param name="peer">destination of message</param>
-		/// <param name="caption">media caption</param>
-		/// <param name="mediaFile">media file already uploaded to TG <i>(see <see cref="UploadFileAsync"/>)</i></param>
+		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>
+		/// <param name="caption">Caption for the media <i>(in plain text)</i> or <see langword="null"/></param>
+		/// <param name="mediaFile">Media file already uploaded to TG <i>(see <see cref="UploadFileAsync">UploadFileAsync</see>)</i></param>
 		/// <param name="mimeType"><see langword="null"/> for automatic detection, <c>"photo"</c> for an inline photo, or a MIME type to send as a document</param>
-		public Task<UpdatesBase> SendMediaAsync(InputPeer peer, string caption, InputFileBase mediaFile, string mimeType = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, bool disable_preview = false)
+		/// <param name="reply_to_msg_id">Your message is a reply to an existing message with this ID, in the same chat</param>
+		/// <param name="entities">Text formatting entities for the caption. You can use <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
+		/// <param name="schedule_date">UTC timestamp when the message should be sent</param>
+		public Task<UpdatesBase> SendMediaAsync(InputPeer peer, string caption, InputFileBase mediaFile, string mimeType = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
 		{
 			var filename = mediaFile is InputFile iFile ? iFile.name : (mediaFile as InputFileBig)?.name;
 			mimeType ??= Path.GetExtension(filename).ToLowerInvariant() switch
@@ -1112,18 +1137,22 @@ namespace WTelegram
 			};
 			if (mimeType == "photo")
 				return SendMessageAsync(peer, caption, new InputMediaUploadedPhoto { file = mediaFile },
-					reply_to_msg_id, entities, schedule_date, disable_preview);
+					reply_to_msg_id, entities, schedule_date);
 			var attributes = filename == null ? Array.Empty<DocumentAttribute>() : new[] { new DocumentAttributeFilename { file_name = filename } };
 			return SendMessageAsync(peer, caption, new InputMediaUploadedDocument
 			{
 				file = mediaFile, mime_type = mimeType, attributes = attributes
-			}, reply_to_msg_id, entities, schedule_date, disable_preview);
+			}, reply_to_msg_id, entities, schedule_date);
 		}
 
-		/// <summary>Helper function to send a text or media message</summary>
-		/// <param name="peer">destination of message</param>
-		/// <param name="text">text, or media caption</param>
-		/// <param name="media">media specification or <see langword="null"/></param>
+		/// <summary>Helper function to send a text or media message easily</summary>
+		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>
+		/// <param name="text">The plain text of the message (or media caption)</param>
+		/// <param name="media">An instance of <see cref="InputMedia">InputMedia</see>-derived class, or <see langword="null"/> if there is no associated media</param>
+		/// <param name="reply_to_msg_id">Your message is a reply to an existing message with this ID, in the same chat</param>
+		/// <param name="entities">Text formatting entities. You can use <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
+		/// <param name="schedule_date">UTC timestamp when the message should be sent</param>
+		/// <param name="disable_preview">Should website/media preview be shown or not, for URLs in your message</param>
 		public Task<UpdatesBase> SendMessageAsync(InputPeer peer, string text, InputMedia media = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, bool disable_preview = false)
 		{
 			if (media == null)
@@ -1134,9 +1163,11 @@ namespace WTelegram
 					reply_to_msg_id: reply_to_msg_id, entities: entities, schedule_date: schedule_date);
 		}
 
-		/// <summary>Download given photo from Telegram into the outputStream</summary>
-		/// <param name="outputStream">stream to write to. This method does not close/dispose the stream</param>
-		/// <param name="photoSize">if unspecified, will download the largest version of the photo</param>
+		/// <summary>Download a photo from Telegram into the outputStream</summary>
+		/// <param name="photo">The photo to download</param>
+		/// <param name="outputStream">Stream to write the file content to. This method does not close/dispose the stream</param>
+		/// <param name="photoSize">A specific size/version of the photo, or <see langword="null"/> to download the largest version of the photo</param>
+		/// <returns>The file type of the photo</returns>
 		public async Task<Storage_FileType> DownloadFileAsync(Photo photo, Stream outputStream, PhotoSizeBase photoSize = null)
 		{
 			photoSize ??= photo.LargestPhotoSize;
@@ -1144,10 +1175,11 @@ namespace WTelegram
 			return await DownloadFileAsync(fileLocation, outputStream, photo.dc_id, photoSize.FileSize);
 		}
 
-		/// <summary>Download given document from Telegram into the outputStream</summary>
-		/// <param name="outputStream">stream to write to. This method does not close/dispose the stream</param>
-		/// <param name="thumbSize">if specified, will download the given thumbnail instead of the full document</param>
-		/// <returns>MIME type of the document or thumbnail</returns>
+		/// <summary>Download a document from Telegram into the outputStream</summary>
+		/// <param name="document">The document to download</param>
+		/// <param name="outputStream">Stream to write the file content to. This method does not close/dispose the stream</param>
+		/// <param name="thumbSize">A specific size/version of the document thumbnail to download, or <see langword="null"/> to download the document itself</param>
+		/// <returns>MIME type of the document/thumbnail</returns>
 		public async Task<string> DownloadFileAsync(Document document, Stream outputStream, PhotoSizeBase thumbSize = null)
 		{
 			var fileLocation = document.ToFileLocation(thumbSize);
@@ -1155,11 +1187,12 @@ namespace WTelegram
 			return thumbSize == null ? document.mime_type : "image/" + fileType;
 		}
 
-		/// <summary>Download given file from Telegram into the outputStream</summary>
+		/// <summary>Download a file from Telegram into the outputStream</summary>
 		/// <param name="fileLocation">Telegram file identifier, typically obtained with a .ToFileLocation() call</param>
-		/// <param name="outputStream">stream to write to. This method does not close/dispose the stream</param>
+		/// <param name="outputStream">Stream to write file content to. This method does not close/dispose the stream</param>
 		/// <param name="fileDC">(optional) DC on which the file is stored</param>
-		/// <param name="fileSize">(optional) expected file size</param>
+		/// <param name="fileSize">(optional) Expected file size</param>
+		/// <returns>The file type</returns>
 		public async Task<Storage_FileType> DownloadFileAsync(InputFileLocationBase fileLocation, Stream outputStream, int fileDC = 0, int fileSize = 0)
 		{
 			Storage_FileType fileType = Storage_FileType.unknown;
