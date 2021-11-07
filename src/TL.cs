@@ -9,12 +9,12 @@ using System.Text;
 
 namespace TL
 {
-	public interface ITLObject { }
-	public interface ITLMethod<ReturnType> : ITLObject { }
+	public interface IObject { }
+	public interface IMethod<ReturnType> : IObject { }
 
 	public static class Serialization
 	{
-		internal static byte[] Serialize(this ITLObject msg)
+		internal static byte[] Serialize(this IObject msg)
 		{
 			using var memStream = new MemoryStream(1024);
 			using (var writer = new BinaryWriter(memStream))
@@ -22,14 +22,14 @@ namespace TL
 			return memStream.ToArray();
 		}
 
-		internal static T Deserialize<T>(byte[] bytes) where T : ITLObject
+		internal static T Deserialize<T>(byte[] bytes) where T : IObject
 		{
 			using var memStream = new MemoryStream(bytes);
 			using var reader = new BinaryReader(memStream, null);
 			return (T)reader.ReadTLObject();
 		}
 
-		internal static void WriteTLObject<T>(this BinaryWriter writer, T obj) where T : ITLObject
+		internal static void WriteTLObject<T>(this BinaryWriter writer, T obj) where T : IObject
 		{
 			if (obj == null) { writer.WriteTLNull(typeof(T)); return; }
 			var type = obj.GetType();
@@ -49,7 +49,7 @@ namespace TL
 			}
 		}
 
-		internal static ITLObject ReadTLObject(this BinaryReader reader, uint ctorNb = 0)
+		internal static IObject ReadTLObject(this BinaryReader reader, uint ctorNb = 0)
 		{
 			if (ctorNb == 0) ctorNb = reader.ReadUInt32();
 			if (!Layer.Table.TryGetValue(ctorNb, out var type))
@@ -69,7 +69,7 @@ namespace TL
 				if (field.Name == "flags") flags = (int)value;
 				else if (field.Name == "access_hash") reader.Client?.UpdateAccessHash(obj, type, value);
 			}
-			return type == typeof(GzipPacked) ? UnzipPacket((GzipPacked)obj, reader.Client) : (ITLObject)obj;
+			return type == typeof(GzipPacked) ? UnzipPacket((GzipPacked)obj, reader.Client) : (IObject)obj;
 		}
 
 		internal static void WriteTLValue(this BinaryWriter writer, object value, Type valueType)
@@ -102,7 +102,7 @@ namespace TL
 						writer.Write(int128);
 					else if (value is Int256 int256)
 						writer.Write(int256);
-					else if (value is ITLObject tlObject)
+					else if (value is IObject tlObject)
 						WriteTLObject(writer, tlObject);
 					else
 						ShouldntBeHere();
@@ -290,7 +290,7 @@ namespace TL
 			writer.Write(0);    // null arrays/strings are serialized as empty
 		}
 
-		internal static ITLObject UnzipPacket(GzipPacked obj, WTelegram.Client client)
+		internal static IObject UnzipPacket(GzipPacked obj, WTelegram.Client client)
 		{
 			using var reader = new BinaryReader(new GZipStream(new MemoryStream(obj.packed_data), CompressionMode.Decompress), client);
 			var result = reader.ReadTLObject();
@@ -358,7 +358,7 @@ namespace TL
 		public override string ToString() => $"RpcException: {Code} {Message}";
 	}
 
-	public class ReactorError : ITLObject
+	public class ReactorError : IObject
 	{
 		public Exception Exception;
 	}
@@ -366,7 +366,7 @@ namespace TL
 	// Below TL types are commented "parsed manually" from https://github.com/telegramdesktop/tdesktop/blob/dev/Telegram/Resources/tl/mtproto.tl
 
 	[TLDef(0xF35C6D01)] //rpc_result#f35c6d01 req_msg_id:long result:Object = RpcResult
-	public partial class RpcResult : ITLObject
+	public partial class RpcResult : IObject
 	{
 		public long req_msg_id;
 		public object result;
@@ -379,14 +379,14 @@ namespace TL
 		public long msg_id;
 		public int seqno;
 		public int bytes;
-		public ITLObject body;
+		public IObject body;
 	}
 
 	[TLDef(0x73F1F8DC)] //msg_container#73f1f8dc messages:vector<%Message> = MessageContainer
-	public partial class MsgContainer : ITLObject { public _Message[] messages; }
+	public partial class MsgContainer : IObject { public _Message[] messages; }
 	[TLDef(0xE06046B2)] //msg_copy#e06046b2 orig_message:Message = MessageCopy
-	public partial class MsgCopy : ITLObject { public _Message orig_message; }
+	public partial class MsgCopy : IObject { public _Message orig_message; }
 
 	[TLDef(0x3072CFA1)] //gzip_packed#3072cfa1 packed_data:bytes = Object
-	public partial class GzipPacked : ITLObject { public byte[] packed_data; }
+	public partial class GzipPacked : IObject { public byte[] packed_data; }
 }

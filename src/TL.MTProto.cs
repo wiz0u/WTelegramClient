@@ -9,7 +9,7 @@ namespace TL
 	using Client = WTelegram.Client;
 
 	[TLDef(0x05162463)] //resPQ#05162463 nonce:int128 server_nonce:int128 pq:bytes server_public_key_fingerprints:Vector<long> = ResPQ
-	public partial class ResPQ : ITLObject
+	public partial class ResPQ : IObject
 	{
 		public Int128 nonce;
 		public Int128 server_nonce;
@@ -18,7 +18,7 @@ namespace TL
 	}
 
 	[TLDef(0x83C95AEC)] //p_q_inner_data#83c95aec pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 = P_Q_inner_data
-	public partial class PQInnerData : ITLObject
+	public partial class PQInnerData : IObject
 	{
 		public byte[] pq;
 		public byte[] p;
@@ -45,7 +45,7 @@ namespace TL
 	}
 
 	[TLDef(0x75A3F765)] //bind_auth_key_inner#75a3f765 nonce:long temp_auth_key_id:long perm_auth_key_id:long temp_session_id:long expires_at:int = BindAuthKeyInner
-	public partial class BindAuthKeyInner : ITLObject
+	public partial class BindAuthKeyInner : IObject
 	{
 		public long nonce;
 		public long temp_auth_key_id;
@@ -54,7 +54,7 @@ namespace TL
 		public DateTime expires_at;
 	}
 
-	public abstract partial class ServerDHParams : ITLObject
+	public abstract partial class ServerDHParams : IObject
 	{
 		public Int128 nonce;
 		public Int128 server_nonce;
@@ -71,7 +71,7 @@ namespace TL
 	}
 
 	[TLDef(0xB5890DBA)] //server_DH_inner_data#b5890dba nonce:int128 server_nonce:int128 g:int dh_prime:bytes g_a:bytes server_time:int = Server_DH_inner_data
-	public partial class ServerDHInnerData : ITLObject
+	public partial class ServerDHInnerData : IObject
 	{
 		public Int128 nonce;
 		public Int128 server_nonce;
@@ -82,7 +82,7 @@ namespace TL
 	}
 
 	[TLDef(0x6643B654)] //client_DH_inner_data#6643b654 nonce:int128 server_nonce:int128 retry_id:long g_b:bytes = Client_DH_Inner_Data
-	public partial class ClientDHInnerData : ITLObject
+	public partial class ClientDHInnerData : IObject
 	{
 		public Int128 nonce;
 		public Int128 server_nonce;
@@ -90,7 +90,7 @@ namespace TL
 		public byte[] g_b;
 	}
 
-	public abstract partial class SetClientDHParamsAnswer : ITLObject
+	public abstract partial class SetClientDHParamsAnswer : IObject
 	{
 		public Int128 nonce;
 		public Int128 server_nonce;
@@ -122,13 +122,13 @@ namespace TL
 	}
 
 	[TLDef(0x62D6B459)] //msgs_ack#62d6b459 msg_ids:Vector<long> = MsgsAck
-	public partial class MsgsAck : ITLObject
+	public partial class MsgsAck : IObject
 	{
 		public long[] msg_ids;
 	}
 
 	[TLDef(0xA7EFF811)] //bad_msg_notification#a7eff811 bad_msg_id:long bad_msg_seqno:int error_code:int = BadMsgNotification
-	public partial class BadMsgNotification : ITLObject
+	public partial class BadMsgNotification : IObject
 	{
 		public long bad_msg_id;
 		public int bad_msg_seqno;
@@ -141,26 +141,26 @@ namespace TL
 	}
 
 	[TLDef(0xDA69FB52)] //msgs_state_req#da69fb52 msg_ids:Vector<long> = MsgsStateReq
-	public partial class MsgsStateReq : ITLObject
+	public partial class MsgsStateReq : IObject
 	{
 		public long[] msg_ids;
 	}
 
 	[TLDef(0x04DEB57D)] //msgs_state_info#04deb57d req_msg_id:long info:bytes = MsgsStateInfo
-	public partial class MsgsStateInfo : ITLObject
+	public partial class MsgsStateInfo : IObject
 	{
 		public long req_msg_id;
 		public byte[] info;
 	}
 
 	[TLDef(0x8CC0D131)] //msgs_all_info#8cc0d131 msg_ids:Vector<long> info:bytes = MsgsAllInfo
-	public partial class MsgsAllInfo : ITLObject
+	public partial class MsgsAllInfo : IObject
 	{
 		public long[] msg_ids;
 		public byte[] info;
 	}
 
-	public abstract partial class MsgDetailedInfoBase : ITLObject
+	public abstract partial class MsgDetailedInfoBase : IObject
 	{
 		public abstract long AnswerMsgId { get; }
 		public abstract int Bytes { get; }
@@ -191,19 +191,19 @@ namespace TL
 	}
 
 	[TLDef(0x7D861A08)] //msg_resend_req#7d861a08 msg_ids:Vector<long> = MsgResendReq
-	public partial class MsgResendReq : ITLObject
+	public partial class MsgResendReq : IObject
 	{
 		public long[] msg_ids;
 	}
 
 	[TLDef(0x2144CA19)] //rpc_error#2144ca19 error_code:int error_message:string = RpcError
-	public partial class RpcError : ITLObject
+	public partial class RpcError : IObject
 	{
 		public int error_code;
 		public string error_message;
 	}
 
-	public abstract partial class RpcDropAnswer : ITLObject { }
+	public abstract partial class RpcDropAnswer : IObject { }
 	[TLDef(0x5E2AD36E)] //rpc_answer_unknown#5e2ad36e = RpcDropAnswer
 	public partial class RpcAnswerUnknown : RpcDropAnswer { }
 	[TLDef(0xCD78E586)] //rpc_answer_dropped_running#cd78e586 = RpcDropAnswer
@@ -217,7 +217,7 @@ namespace TL
 	}
 
 	[TLDef(0x0949D9DC)] //future_salt#0949d9dc valid_since:int valid_until:int salt:long = FutureSalt
-	public partial class FutureSalt : ITLObject
+	public partial class FutureSalt : IObject
 	{
 		public DateTime valid_since;
 		public DateTime valid_until;
@@ -225,7 +225,7 @@ namespace TL
 	}
 
 	[TLDef(0xAE500895)] //future_salts#ae500895 req_msg_id:long now:int salts:vector<future_salt> = FutureSalts
-	public partial class FutureSalts : ITLObject
+	public partial class FutureSalts : IObject
 	{
 		public long req_msg_id;
 		public DateTime now;
@@ -233,13 +233,13 @@ namespace TL
 	}
 
 	[TLDef(0x347773C5)] //pong#347773c5 msg_id:long ping_id:long = Pong
-	public partial class Pong : ITLObject
+	public partial class Pong : IObject
 	{
 		public long msg_id;
 		public long ping_id;
 	}
 
-	public abstract partial class DestroySessionRes : ITLObject
+	public abstract partial class DestroySessionRes : IObject
 	{
 		public long session_id;
 	}
@@ -248,7 +248,7 @@ namespace TL
 	[TLDef(0x62D350C9)] //destroy_session_none#62d350c9 session_id:long = DestroySessionRes
 	public partial class DestroySessionNone : DestroySessionRes { }
 
-	public abstract partial class NewSession : ITLObject { }
+	public abstract partial class NewSession : IObject { }
 	[TLDef(0x9EC20908)] //new_session_created#9ec20908 first_msg_id:long unique_id:long server_salt:long = NewSession
 	public partial class NewSessionCreated : NewSession
 	{
@@ -258,7 +258,7 @@ namespace TL
 	}
 
 	[TLDef(0x9299359F)] //http_wait#9299359f max_delay:int wait_after:int max_wait:int = HttpWait
-	public partial class HttpWait : ITLObject
+	public partial class HttpWait : IObject
 	{
 		public int max_delay;
 		public int wait_after;
@@ -266,7 +266,7 @@ namespace TL
 	}
 
 	[TLDef(0xD433AD73)] //ipPort#d433ad73 ipv4:int port:int = IpPort
-	public partial class IpPort : ITLObject
+	public partial class IpPort : IObject
 	{
 		public int ipv4;
 		public int port;
@@ -278,7 +278,7 @@ namespace TL
 	}
 
 	[TLDef(0x4679B65F)] //accessPointRule#4679b65f phone_prefix_rules:bytes dc_id:int ips:vector<IpPort> = AccessPointRule
-	public partial class AccessPointRule : ITLObject
+	public partial class AccessPointRule : IObject
 	{
 		public byte[] phone_prefix_rules;
 		public int dc_id;
@@ -286,7 +286,7 @@ namespace TL
 	}
 
 	[TLDef(0x5A592A6C)] //help.configSimple#5a592a6c date:int expires:int rules:vector<AccessPointRule> = help.ConfigSimple
-	public partial class Help_ConfigSimple : ITLObject
+	public partial class Help_ConfigSimple : IObject
 	{
 		public DateTime date;
 		public DateTime expires;
@@ -298,7 +298,7 @@ namespace TL
 	public static class MTProto
 	{
 		[TLDef(0x60469778)] //req_pq#60469778 nonce:int128 = ResPQ
-		public partial class ReqPq_ : ITLMethod<ResPQ>
+		public partial class ReqPq_ : IMethod<ResPQ>
 		{
 			public Int128 nonce;
 		}
@@ -309,7 +309,7 @@ namespace TL
 			});
 
 		[TLDef(0xBE7E8EF1)] //req_pq_multi#be7e8ef1 nonce:int128 = ResPQ
-		public partial class ReqPqMulti_ : ITLMethod<ResPQ>
+		public partial class ReqPqMulti_ : IMethod<ResPQ>
 		{
 			public Int128 nonce;
 		}
@@ -320,7 +320,7 @@ namespace TL
 			});
 
 		[TLDef(0xD712E4BE)] //req_DH_params#d712e4be nonce:int128 server_nonce:int128 p:bytes q:bytes public_key_fingerprint:long encrypted_data:bytes = Server_DH_Params
-		public partial class ReqDHParams_ : ITLMethod<ServerDHParams>
+		public partial class ReqDHParams_ : IMethod<ServerDHParams>
 		{
 			public Int128 nonce;
 			public Int128 server_nonce;
@@ -341,7 +341,7 @@ namespace TL
 			});
 
 		[TLDef(0xF5045F1F)] //set_client_DH_params#f5045f1f nonce:int128 server_nonce:int128 encrypted_data:bytes = Set_client_DH_params_answer
-		public partial class SetClientDHParams_ : ITLMethod<SetClientDHParamsAnswer>
+		public partial class SetClientDHParams_ : IMethod<SetClientDHParamsAnswer>
 		{
 			public Int128 nonce;
 			public Int128 server_nonce;
@@ -356,14 +356,14 @@ namespace TL
 			});
 
 		[TLDef(0xD1435160)] //destroy_auth_key#d1435160 = DestroyAuthKeyRes
-		public partial class DestroyAuthKey_ : ITLMethod<DestroyAuthKeyRes> { }
+		public partial class DestroyAuthKey_ : IMethod<DestroyAuthKeyRes> { }
 		public static Task<DestroyAuthKeyRes> DestroyAuthKey(this Client client)
 			=> client.CallBareAsync(new DestroyAuthKey_
 			{
 			});
 
 		[TLDef(0x58E4A740)] //rpc_drop_answer#58e4a740 req_msg_id:long = RpcDropAnswer
-		public partial class RpcDropAnswer_ : ITLMethod<RpcDropAnswer>
+		public partial class RpcDropAnswer_ : IMethod<RpcDropAnswer>
 		{
 			public long req_msg_id;
 		}
@@ -374,7 +374,7 @@ namespace TL
 			});
 
 		[TLDef(0xB921BD04)] //get_future_salts#b921bd04 num:int = FutureSalts
-		public partial class GetFutureSalts_ : ITLMethod<FutureSalts>
+		public partial class GetFutureSalts_ : IMethod<FutureSalts>
 		{
 			public int num;
 		}
@@ -385,7 +385,7 @@ namespace TL
 			});
 
 		[TLDef(0x7ABE77EC)] //ping#7abe77ec ping_id:long = Pong
-		public partial class Ping_ : ITLMethod<Pong>
+		public partial class Ping_ : IMethod<Pong>
 		{
 			public long ping_id;
 		}
@@ -396,7 +396,7 @@ namespace TL
 			});
 
 		[TLDef(0xF3427B8C)] //ping_delay_disconnect#f3427b8c ping_id:long disconnect_delay:int = Pong
-		public partial class PingDelayDisconnect_ : ITLMethod<Pong>
+		public partial class PingDelayDisconnect_ : IMethod<Pong>
 		{
 			public long ping_id;
 			public int disconnect_delay;
@@ -409,7 +409,7 @@ namespace TL
 			});
 
 		[TLDef(0xE7512126)] //destroy_session#e7512126 session_id:long = DestroySessionRes
-		public partial class DestroySession_ : ITLMethod<DestroySessionRes>
+		public partial class DestroySession_ : IMethod<DestroySessionRes>
 		{
 			public long session_id;
 		}

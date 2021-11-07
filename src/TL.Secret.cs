@@ -8,7 +8,7 @@ namespace TL
 	using Client = WTelegram.Client;
 
 	/// <summary>Object describes the contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessage"/></para></summary>
-	public abstract partial class DecryptedMessageBase : ITLObject
+	public abstract partial class DecryptedMessageBase : IObject
 	{
 		/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 		public abstract long RandomId { get; }
@@ -16,13 +16,13 @@ namespace TL
 
 	/// <summary>Object describes media contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageMedia"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaEmpty">decryptedMessageMediaEmpty</a></remarks>
-	public abstract partial class DecryptedMessageMedia : ITLObject { }
+	public abstract partial class DecryptedMessageMedia : IObject { }
 
 	/// <summary>Object describes the action to which a service message is linked.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageAction"/></para></summary>
-	public abstract partial class DecryptedMessageAction : ITLObject { }
+	public abstract partial class DecryptedMessageAction : IObject { }
 
 	/// <summary>Indicates the location of a photo, will be deprecated soon		<para>See <a href="https://corefork.telegram.org/type/FileLocation"/></para></summary>
-	public abstract partial class FileLocationBase : ITLObject
+	public abstract partial class FileLocationBase : IObject
 	{
 		/// <summary>Server volume</summary>
 		public abstract long VolumeId { get; }
@@ -307,7 +307,7 @@ namespace TL
 
 		/// <summary>Sets the layer number for the contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageLayer"/></para></summary>
 		[TLDef(0x1BE31789)]
-		public partial class DecryptedMessageLayer : ITLObject
+		public partial class DecryptedMessageLayer : IObject
 		{
 			/// <summary>Set of random bytes to prevent content recognition in short encrypted messages.<br/>Clients are required to check that there are at least 15 random bytes included in each message. Messages with less than 15 random bytes must be ignored.<br/>Parameter moved here from <see cref="DecryptedMessage"/> in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
 			public byte[] random_bytes;

@@ -43,7 +43,7 @@ namespace WTelegramClientTest
 		private static string APeer(Peer peer) => peer is null ? null : peer is PeerUser user ? AUser(user.user_id)
 			: peer is PeerChat chat ? AChat(chat.chat_id) : peer is PeerChannel channel ? AChat(channel.channel_id) : $"Peer {peer.ID}";
 
-		private static void Client_Update(ITLObject arg)
+		private static void Client_Update(IObject arg)
 		{
 			switch (arg)
 			{

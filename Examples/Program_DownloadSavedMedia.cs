@@ -19,7 +19,7 @@ namespace WTelegramClientTest
 			client.Update += Client_Update;
 			Console.ReadKey();
 
-			async void Client_Update(ITLObject arg)
+			async void Client_Update(IObject arg)
 			{
 				if (arg is not Updates { updates: var updates }) return;
 				foreach (var update in updates)

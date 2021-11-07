@@ -23,7 +23,7 @@ namespace WTelegram
 	{
 		/// <summary>This event will be called when an unsollicited update/message is sent by Telegram servers</summary>
 		/// <remarks>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_ListenUpdate.cs">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
-		public event Action<ITLObject> Update;
+		public event Action<IObject> Update;
 		public delegate Task<TcpClient> TcpFactory(string address, int port);
 		/// <summary>Used to create a TcpClient connected to the given address/port, or throw an exception on failure</summary>
 		public TcpFactory TcpHandler = DefaultTcpHandler;
@@ -44,7 +44,7 @@ namespace WTelegram
 		private static readonly byte[] IntermediateHeader = new byte[4] { 0xee, 0xee, 0xee, 0xee };
 		private TcpClient _tcpClient;
 		private NetworkStream _networkStream;
-		private ITLObject _lastSentMsg;
+		private IObject _lastSentMsg;
 		private long _lastRecvMsgId;
 		private readonly List<long> _msgsToAck = new();
 		private readonly Random _random = new();
@@ -382,7 +382,7 @@ namespace WTelegram
 			var data = new byte[MinBufferSize];
 			while (!cts.IsCancellationRequested)
 			{
-				ITLObject obj = null;
+				IObject obj = null;
 				try
 				{
 					if (await FullReadAsync(stream, data, 4, cts.Token) != 4)
@@ -449,7 +449,7 @@ namespace WTelegram
 			}
 		}
 
-		internal ITLObject ReadFrame(byte[] data, int dataLen)
+		internal IObject ReadFrame(byte[] data, int dataLen)
 		{
 			if (dataLen == 4 && data[3] == 0xFF)
 			{
@@ -554,7 +554,7 @@ namespace WTelegram
 			return length;
 		}
 
-		private async Task<long> SendAsync(ITLObject msg, bool isContent)
+		private async Task<long> SendAsync(IObject msg, bool isContent)
 		{
 			if (_dcSession.AuthKeyID != 0 && isContent && CheckMsgsToAck() is MsgsAck msgsAck)
 			{
@@ -723,7 +723,7 @@ namespace WTelegram
 			return request;
 		}
 
-		internal async Task<X> CallBareAsync<X>(ITLMethod<X> request)
+		internal async Task<X> CallBareAsync<X>(IMethod<X> request)
 		{
 			if (_bareRequest != 0) throw new ApplicationException("A bare request is already undergoing");
 			var msgId = await SendAsync(request, false);
@@ -738,7 +738,7 @@ namespace WTelegram
 		/// <typeparam name="X">Expected type of the returned object</typeparam>
 		/// <param name="request">TL method object</param>
 		/// <returns>Wait for the reply and return the resulting object, or throws an RpcException if an error was replied</returns>
-		public async Task<X> CallAsync<X>(ITLMethod<X> request)
+		public async Task<X> CallAsync<X>(IMethod<X> request)
 		{
 		retry:
 			var msgId = await SendAsync(request, true);
@@ -802,7 +802,7 @@ namespace WTelegram
 			}
 		}
 
-		private static MsgContainer MakeContainer(params (ITLObject obj, (long msgId, int seqno))[] msgs)
+		private static MsgContainer MakeContainer(params (IObject obj, (long msgId, int seqno))[] msgs)
 			=> new()
 			{
 				messages = msgs.Select(msg => new _Message
@@ -813,7 +813,7 @@ namespace WTelegram
 				}).ToArray()
 			};
 
-		private async Task HandleMessageAsync(ITLObject obj)
+		private async Task HandleMessageAsync(IObject obj)
 		{
 			switch (obj)
 			{
@@ -890,7 +890,7 @@ namespace WTelegram
 			}
 		}
 
-		private void OnUpdate(ITLObject obj)
+		private void OnUpdate(IObject obj)
 		{
 			try
 			{
@@ -1256,18 +1256,18 @@ namespace WTelegram
 		/// <summary>Enable the collection of id/access_hash pairs (experimental)</summary>
 		public bool CollectAccessHash { get; set; }
 		readonly Dictionary<Type, Dictionary<long, long>> _accessHashes = new();
-		public IEnumerable<KeyValuePair<long, long>> AllAccessHashesFor<T>() where T : ITLObject
+		public IEnumerable<KeyValuePair<long, long>> AllAccessHashesFor<T>() where T : IObject
 			=> _accessHashes.GetValueOrDefault(typeof(T));
 		/// <summary>Retrieve the access_hash associated with this id (for a TL class) if it was collected</summary>
 		/// <remarks>This requires <see cref="CollectAccessHash"/> to be set to <see langword="true"/> first.
 		/// <br/>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_CollectAccessHash.cs">Examples/Program_CollectAccessHash.cs</see> for how to use this</remarks>
 		/// <typeparam name="T">a TL object class. For example User, Channel or Photo</typeparam>
-		public long GetAccessHashFor<T>(long id) where T : ITLObject
+		public long GetAccessHashFor<T>(long id) where T : IObject
 		{
 			lock (_accessHashes)
 				return _accessHashes.GetOrCreate(typeof(T)).TryGetValue(id, out var access_hash) ? access_hash : 0;
 		}
-		public void SetAccessHashFor<T>(long id, long access_hash) where T : ITLObject
+		public void SetAccessHashFor<T>(long id, long access_hash) where T : IObject
 		{
 			lock (_accessHashes)
 				_accessHashes.GetOrCreate(typeof(T))[id] = access_hash;
