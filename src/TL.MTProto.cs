@@ -293,111 +293,130 @@ namespace TL
 		public AccessPointRule[] rules;
 	}
 
-	[TLDef(0x7ABE77EC)] //ping#7abe77ec ping_id:long = Pong
-	public partial class Ping : ITLObject
-	{
-		public long ping_id;
-	}
-
 	// ---functions---
 
 	public static class MTProto
 	{
-		//req_pq#60469778 nonce:int128 = ResPQ
+		[TLDef(0x60469778)] //req_pq#60469778 nonce:int128 = ResPQ
+		public partial class ReqPq_ : ITLMethod<ResPQ>
+		{
+			public Int128 nonce;
+		}
 		public static Task<ResPQ> ReqPq(this Client client, Int128 nonce)
-			=> client.CallBareAsync<ResPQ>(writer =>
+			=> client.CallBareAsync(new ReqPq_
 			{
-				writer.Write(0x60469778);
-				writer.Write(nonce);
-				return "ReqPq";
+				nonce = nonce,
 			});
 
-		//req_pq_multi#be7e8ef1 nonce:int128 = ResPQ
+		[TLDef(0xBE7E8EF1)] //req_pq_multi#be7e8ef1 nonce:int128 = ResPQ
+		public partial class ReqPqMulti_ : ITLMethod<ResPQ>
+		{
+			public Int128 nonce;
+		}
 		public static Task<ResPQ> ReqPqMulti(this Client client, Int128 nonce)
-			=> client.CallBareAsync<ResPQ>(writer =>
+			=> client.CallBareAsync(new ReqPqMulti_
 			{
-				writer.Write(0xBE7E8EF1);
-				writer.Write(nonce);
-				return "ReqPqMulti";
+				nonce = nonce,
 			});
 
-		//req_DH_params#d712e4be nonce:int128 server_nonce:int128 p:bytes q:bytes public_key_fingerprint:long encrypted_data:bytes = Server_DH_Params
+		[TLDef(0xD712E4BE)] //req_DH_params#d712e4be nonce:int128 server_nonce:int128 p:bytes q:bytes public_key_fingerprint:long encrypted_data:bytes = Server_DH_Params
+		public partial class ReqDHParams_ : ITLMethod<ServerDHParams>
+		{
+			public Int128 nonce;
+			public Int128 server_nonce;
+			public byte[] p;
+			public byte[] q;
+			public long public_key_fingerprint;
+			public byte[] encrypted_data;
+		}
 		public static Task<ServerDHParams> ReqDHParams(this Client client, Int128 nonce, Int128 server_nonce, byte[] p, byte[] q, long public_key_fingerprint, byte[] encrypted_data)
-			=> client.CallBareAsync<ServerDHParams>(writer =>
+			=> client.CallBareAsync(new ReqDHParams_
 			{
-				writer.Write(0xD712E4BE);
-				writer.Write(nonce);
-				writer.Write(server_nonce);
-				writer.WriteTLBytes(p);
-				writer.WriteTLBytes(q);
-				writer.Write(public_key_fingerprint);
-				writer.WriteTLBytes(encrypted_data);
-				return "ReqDHParams";
+				nonce = nonce,
+				server_nonce = server_nonce,
+				p = p,
+				q = q,
+				public_key_fingerprint = public_key_fingerprint,
+				encrypted_data = encrypted_data,
 			});
 
-		//set_client_DH_params#f5045f1f nonce:int128 server_nonce:int128 encrypted_data:bytes = Set_client_DH_params_answer
+		[TLDef(0xF5045F1F)] //set_client_DH_params#f5045f1f nonce:int128 server_nonce:int128 encrypted_data:bytes = Set_client_DH_params_answer
+		public partial class SetClientDHParams_ : ITLMethod<SetClientDHParamsAnswer>
+		{
+			public Int128 nonce;
+			public Int128 server_nonce;
+			public byte[] encrypted_data;
+		}
 		public static Task<SetClientDHParamsAnswer> SetClientDHParams(this Client client, Int128 nonce, Int128 server_nonce, byte[] encrypted_data)
-			=> client.CallBareAsync<SetClientDHParamsAnswer>(writer =>
+			=> client.CallBareAsync(new SetClientDHParams_
 			{
-				writer.Write(0xF5045F1F);
-				writer.Write(nonce);
-				writer.Write(server_nonce);
-				writer.WriteTLBytes(encrypted_data);
-				return "SetClientDHParams";
+				nonce = nonce,
+				server_nonce = server_nonce,
+				encrypted_data = encrypted_data,
 			});
 
-		//destroy_auth_key#d1435160 = DestroyAuthKeyRes
+		[TLDef(0xD1435160)] //destroy_auth_key#d1435160 = DestroyAuthKeyRes
+		public partial class DestroyAuthKey_ : ITLMethod<DestroyAuthKeyRes> { }
 		public static Task<DestroyAuthKeyRes> DestroyAuthKey(this Client client)
-			=> client.CallBareAsync<DestroyAuthKeyRes>(writer =>
+			=> client.CallBareAsync(new DestroyAuthKey_
 			{
-				writer.Write(0xD1435160);
-				return "DestroyAuthKey";
 			});
 
-		//rpc_drop_answer#58e4a740 req_msg_id:long = RpcDropAnswer
+		[TLDef(0x58E4A740)] //rpc_drop_answer#58e4a740 req_msg_id:long = RpcDropAnswer
+		public partial class RpcDropAnswer_ : ITLMethod<RpcDropAnswer>
+		{
+			public long req_msg_id;
+		}
 		public static Task<RpcDropAnswer> RpcDropAnswer(this Client client, long req_msg_id)
-			=> client.CallBareAsync<RpcDropAnswer>(writer =>
+			=> client.CallBareAsync(new RpcDropAnswer_
 			{
-				writer.Write(0x58E4A740);
-				writer.Write(req_msg_id);
-				return "RpcDropAnswer";
+				req_msg_id = req_msg_id,
 			});
 
-		//get_future_salts#b921bd04 num:int = FutureSalts
+		[TLDef(0xB921BD04)] //get_future_salts#b921bd04 num:int = FutureSalts
+		public partial class GetFutureSalts_ : ITLMethod<FutureSalts>
+		{
+			public int num;
+		}
 		public static Task<FutureSalts> GetFutureSalts(this Client client, int num)
-			=> client.CallAsync<FutureSalts>(writer =>
+			=> client.CallAsync(new GetFutureSalts_
 			{
-				writer.Write(0xB921BD04);
-				writer.Write(num);
-				return "GetFutureSalts";
+				num = num,
 			});
 
-		//ping#7abe77ec ping_id:long = Pong
+		[TLDef(0x7ABE77EC)] //ping#7abe77ec ping_id:long = Pong
+		public partial class Ping_ : ITLMethod<Pong>
+		{
+			public long ping_id;
+		}
 		public static Task<Pong> Ping(this Client client, long ping_id)
-			=> client.CallAsync<Pong>(writer =>
+			=> client.CallAsync(new Ping_
 			{
-				writer.Write(0x7ABE77EC);
-				writer.Write(ping_id);
-				return "Ping";
+				ping_id = ping_id,
 			});
 
-		//ping_delay_disconnect#f3427b8c ping_id:long disconnect_delay:int = Pong
+		[TLDef(0xF3427B8C)] //ping_delay_disconnect#f3427b8c ping_id:long disconnect_delay:int = Pong
+		public partial class PingDelayDisconnect_ : ITLMethod<Pong>
+		{
+			public long ping_id;
+			public int disconnect_delay;
+		}
 		public static Task<Pong> PingDelayDisconnect(this Client client, long ping_id, int disconnect_delay)
-			=> client.CallAsync<Pong>(writer =>
+			=> client.CallAsync(new PingDelayDisconnect_
 			{
-				writer.Write(0xF3427B8C);
-				writer.Write(ping_id);
-				writer.Write(disconnect_delay);
-				return "PingDelayDisconnect";
+				ping_id = ping_id,
+				disconnect_delay = disconnect_delay,
 			});
 
-		//destroy_session#e7512126 session_id:long = DestroySessionRes
+		[TLDef(0xE7512126)] //destroy_session#e7512126 session_id:long = DestroySessionRes
+		public partial class DestroySession_ : ITLMethod<DestroySessionRes>
+		{
+			public long session_id;
+		}
 		public static Task<DestroySessionRes> DestroySession(this Client client, long session_id)
-			=> client.CallBareAsync<DestroySessionRes>(writer =>
+			=> client.CallBareAsync(new DestroySession_
 			{
-				writer.Write(0xE7512126);
-				writer.Write(session_id);
-				return "DestroySession";
+				session_id = session_id,
 			});
 	}
 }

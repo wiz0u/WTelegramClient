@@ -44,7 +44,7 @@ namespace WTelegram
 		private static readonly byte[] IntermediateHeader = new byte[4] { 0xee, 0xee, 0xee, 0xee };
 		private TcpClient _tcpClient;
 		private NetworkStream _networkStream;
-		private ITLFunction _lastSentMsg;
+		private ITLObject _lastSentMsg;
 		private long _lastRecvMsgId;
 		private readonly List<long> _msgsToAck = new();
 		private readonly Random _random = new();
@@ -143,7 +143,7 @@ namespace WTelegram
 			try
 			{
 				if (CheckMsgsToAck() is MsgsAck msgsAck)
-					SendAsync(MakeFunction(msgsAck), false).Wait(1000);
+					SendAsync(msgsAck, false).Wait(1000);
 			}
 			catch (Exception)
 			{
@@ -260,15 +260,18 @@ namespace WTelegram
 					await CreateAuthorizationKey(this, _dcSession);
 
 				var keepAliveTask = KeepAlive(_cts.Token);
-				TLConfig = await this.InvokeWithLayer<Config>(Layer.Version,
-					Schema.InitConnection(_apiId,
-						Config("device_model"),
-						Config("system_version"),
-						Config("app_version"),
-						Config("system_lang_code"),
-						Config("lang_pack"),
-						Config("lang_code"),
-						Schema.Help_GetConfig));
+				TLConfig = await this.InvokeWithLayer(Layer.Version,
+					new Schema.InitConnection_<Config>
+					{
+						api_id = _apiId,
+						device_model = Config("device_model"),
+						system_version = Config("system_version"),
+						app_version = Config("app_version"),
+						system_lang_code = Config("system_lang_code"),
+						lang_pack = Config("lang_pack"),
+						lang_code = Config("lang_code"),
+						query = new Schema.Help_GetConfig_()
+					});
 				_session.DcOptions = TLConfig.dc_options;
 				_saltChangeCounter = 0;
 				if (_dcSession.DataCenter == null)
@@ -551,13 +554,13 @@ namespace WTelegram
 			return length;
 		}
 
-		private async Task<long> SendAsync(ITLFunction func, bool isContent)
+		private async Task<long> SendAsync(ITLObject msg, bool isContent)
 		{
 			if (_dcSession.AuthKeyID != 0 && isContent && CheckMsgsToAck() is MsgsAck msgsAck)
 			{
 				var ackMsg = NewMsgId(false);
 				var mainMsg = NewMsgId(true);
-				await SendAsync(MakeContainer((MakeFunction(msgsAck), ackMsg), (func, mainMsg)), false);
+				await SendAsync(MakeContainer((msgsAck, ackMsg), (msg, mainMsg)), false);
 				return mainMsg.msgId;
 			}
 			(long msgId, int seqno) = NewMsgId(isContent && _dcSession.AuthKeyID != 0);
@@ -573,8 +576,8 @@ namespace WTelegram
 					writer.Write(0L);						// int64 auth_key_id = 0 (Unencrypted)
 					writer.Write(msgId);					// int64 message_id
 					writer.Write(0);						// int32 message_data_length (to be patched)
-					var typeName = func(writer);			// bytes message_data
-					Helpers.Log(1, $"{_dcSession.DcID}>Sending   {typeName}...");
+					writer.WriteTLObject(msg);				// bytes message_data
+					Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name}...");
 					BinaryPrimitives.WriteInt32LittleEndian(memStream.GetBuffer().AsSpan(20), (int)memStream.Length - 24);    // patch message_data_length
 				}
 				else
@@ -592,11 +595,11 @@ namespace WTelegram
 					clearWriter.Write(msgId);				// int64 message_id
 					clearWriter.Write(seqno);				// int32 msg_seqno
 					clearWriter.Write(0);					// int32 message_data_length (to be patched)
-					var typeName = func(clearWriter);		// bytes message_data
+					clearWriter.WriteTLObject(msg);			// bytes message_data
 					if ((seqno & 1) != 0)
-						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {typeName,-40} #{(short)msgId.GetHashCode():X4}");
+						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name,-40} #{(short)msgId.GetHashCode():X4}");
 					else
-						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {typeName,-40} {MsgIdToStamp(msgId):u} (svc)");
+						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name,-40} {MsgIdToStamp(msgId):u} (svc)");
 					int clearLength = (int)clearStream.Length - prepend;  // length before padding (= 32 + message_data_length)
 					int padding = (0x7FFFFFF0 - clearLength) % 16;
 #if !MTPROTO1
@@ -626,7 +629,7 @@ namespace WTelegram
 				//TODO: support Transport obfuscation?
 
 				await _networkStream.WriteAsync(memStream.GetBuffer(), 0, frameLength);
-				_lastSentMsg = func;
+				_lastSentMsg = msg;
 			}
 			finally
 			{
@@ -634,13 +637,6 @@ namespace WTelegram
 			}
 			return msgId;
 		}
-
-		private static ITLFunction MakeFunction(ITLObject msg)
-			=> writer =>
-			{
-				writer.WriteTLObject(msg);
-				return msg.GetType().Name;
-			};
 
 		internal MsgContainer ReadMsgContainer(TL.BinaryReader reader)
 		{
@@ -727,7 +723,7 @@ namespace WTelegram
 			return request;
 		}
 
-		internal async Task<X> CallBareAsync<X>(ITLFunction request)
+		internal async Task<X> CallBareAsync<X>(ITLMethod<X> request)
 		{
 			if (_bareRequest != 0) throw new ApplicationException("A bare request is already undergoing");
 			var msgId = await SendAsync(request, false);
@@ -740,9 +736,9 @@ namespace WTelegram
 
 		/// <summary>Call the given TL method <i>(You shouldn't need to call this, usually)</i></summary>
 		/// <typeparam name="X">Expected type of the returned object</typeparam>
-		/// <param name="request">TL method serializer</param>
+		/// <param name="request">TL method object</param>
 		/// <returns>Wait for the reply and return the resulting object, or throws an RpcException if an error was replied</returns>
-		public async Task<X> CallAsync<X>(ITLFunction request)
+		public async Task<X> CallAsync<X>(ITLMethod<X> request)
 		{
 		retry:
 			var msgId = await SendAsync(request, true);
@@ -806,27 +802,15 @@ namespace WTelegram
 			}
 		}
 
-		private ITLFunction MakeContainer(params (ITLFunction func, (long msgId, int seqno))[] msgs)
-			=> writer =>
+		private static MsgContainer MakeContainer(params (ITLObject obj, (long msgId, int seqno))[] msgs)
+			=> new()
 			{
-				writer.Write(0x73F1F8DC);
-				writer.Write(msgs.Length);
-				foreach (var (func, (msgId, seqno)) in msgs)
+				messages = msgs.Select(msg => new _Message
 				{
-					writer.Write(msgId);
-					writer.Write(seqno);
-					var patchPos = writer.BaseStream.Position;
-					writer.Write(0);
-					var typeName = func(writer);
-					if ((seqno & 1) != 0)
-						Helpers.Log(1, $"  Sending → {typeName,-40} #{(short)msgId.GetHashCode():X4}");
-					else
-						Helpers.Log(1, $"  Sending → {typeName,-40} {MsgIdToStamp(msgId):u} (svc)");
-					writer.BaseStream.Position = patchPos;
-					writer.Write((int)(writer.BaseStream.Length - patchPos - 4)); // patch bytes field
-					writer.Seek(0, SeekOrigin.End);
-				}
-				return "as MsgContainer";
+					msg_id = msg.Item2.msgId,
+					seqno = msg.Item2.seqno,
+					body = msg.obj
+				}).ToArray()
 			};
 
 		private async Task HandleMessageAsync(ITLObject obj)
@@ -855,8 +839,8 @@ namespace WTelegram
 							}
 					}
 					break;
-				case Ping ping:
-					_ = SendAsync(MakeFunction(new Pong { msg_id = _lastRecvMsgId, ping_id = ping.ping_id }), false);
+				case MTProto.Ping_ ping:
+					_ = SendAsync(new Pong { msg_id = _lastRecvMsgId, ping_id = ping.ping_id }, false);
 					break;
 				case Pong pong:
 					SetResult(pong.msg_id, pong);

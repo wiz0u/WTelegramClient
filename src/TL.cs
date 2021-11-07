@@ -10,7 +10,7 @@ using System.Text;
 namespace TL
 {
 	public interface ITLObject { }
-	public delegate string ITLFunction(BinaryWriter writer);
+	public interface ITLMethod<ReturnType> : ITLObject { }
 
 	public static class Serialization
 	{
@@ -94,6 +94,8 @@ namespace TL
 					if (type.IsArray)
 						if (value is byte[] bytes)
 							writer.WriteTLBytes(bytes);
+						else if (value is _Message[] messages)
+							writer.WriteTLMessages(messages);
 						else
 							writer.WriteTLVector((Array)value);
 					else if (value is Int128 int128)
@@ -162,6 +164,26 @@ namespace TL
 			var elementType = array.GetType().GetElementType();
 			for (int i = 0; i < count; i++)
 				writer.WriteTLValue(array.GetValue(i), elementType);
+		}
+
+		internal static void WriteTLMessages(this BinaryWriter writer, _Message[] messages)
+		{
+			writer.Write(messages.Length);
+			foreach (var msg in messages)
+			{
+				writer.Write(msg.msg_id);
+				writer.Write(msg.seqno);
+				var patchPos = writer.BaseStream.Position;
+				writer.Write(0);						// patched below
+				writer.WriteTLObject(msg.body);
+				if ((msg.seqno & 1) != 0)
+					WTelegram.Helpers.Log(1, $"  Sending → {msg.body.GetType().Name,-40} #{(short)msg.msg_id.GetHashCode():X4}");
+				else
+					WTelegram.Helpers.Log(1, $"  Sending → {msg.body.GetType().Name,-40}");
+				writer.BaseStream.Position = patchPos;
+				writer.Write((int)(writer.BaseStream.Length - patchPos - 4)); // patch bytes field
+				writer.Seek(0, SeekOrigin.End);
+			}
 		}
 
 		internal static Array ReadTLVector(this BinaryReader reader, Type type)

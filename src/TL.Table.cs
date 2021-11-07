@@ -34,7 +34,7 @@ namespace TL
 			[0x3BCBF734] = typeof(DhGenOk),
 			[0x46DC1FB9] = typeof(DhGenRetry),
 			[0xA69DAE02] = typeof(DhGenFail),
-			[0x7ABE77EC] = typeof(Ping),
+			[0x7ABE77EC] = typeof(MTProto.Ping_),
 			[0x62D6B459] = typeof(MsgsAck),
 			[0xA7EFF811] = typeof(BadMsgNotification),
 			[0xEDAB447B] = typeof(BadServerSalt),
