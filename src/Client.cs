@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -164,7 +163,7 @@ namespace WTelegram
 					}
 			}
 			if (resetUser)
-				_session.User = null;
+				_session.UserId = 0;
 		}
 
 		/// <summary>Establish connection to Telegram servers</summary>
@@ -310,7 +309,7 @@ namespace WTelegram
 				try
 				{
 					Auth_ExportedAuthorization exported = null;
-					if (_session.User != null && IsMainDC && altSession.UserId != _session.User.id)
+					if (_session.UserId != 0 && IsMainDC && altSession.UserId != _session.UserId)
 						exported = await this.Auth_ExportAuthorization(dcId);
 					await altSession.Client.ConnectAsync();
 					if (exported != null)
@@ -318,7 +317,6 @@ namespace WTelegram
 						var authorization = await altSession.Client.Auth_ImportAuthorization(exported.id, exported.bytes);
 						if (authorization is not Auth_Authorization { user: User user })
 							throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
-						_session.User = user;
 						altSession.UserId = user.id;
 					}
 				}
@@ -419,6 +417,7 @@ namespace WTelegram
 								_pendingRequests.Clear();
 								_bareRequest = 0;
 							}
+							// TODO: implement an Updates gaps handling system? https://core.telegram.org/api/updates
 							var udpatesState = await this.Updates_GetState(); // this call reenables incoming Updates
 							OnUpdate(udpatesState);
 						}
@@ -785,7 +784,7 @@ namespace WTelegram
 					}
 					else if (rpcError.error_code == 500 && rpcError.error_message == "AUTH_RESTART")
 					{
-						_session.User = null; // force a full login authorization flow, next time
+						_session.UserId = 0; // force a full login authorization flow, next time
 						_session.Save();
 					}
 					throw new RpcException(rpcError.error_code, rpcError.error_message);
@@ -927,33 +926,30 @@ namespace WTelegram
 		{
 			await ConnectAsync();
 			string botToken = Config("bot_token");
-			var prevUser = _session.User;
-			if (prevUser != null)
+			if (_session.UserId != 0) // a user is already logged-in
 			{
 				try
 				{
-					if (prevUser.id == int.Parse(botToken.Split(':')[0]))
+					var users = await this.Users_GetUsers(new[] { InputUser.Self }); // this calls also reenable incoming Updates
+					var self = users[0] as User;
+					if (self.id == long.Parse(botToken.Split(':')[0]))
 					{
-						// Update our info about the user, and reenable incoming Updates
-						var users = await this.Users_GetUsers(new[] { InputUser.Self });
-						if (users.Length > 0 && users[0] is User self)
-							_session.User = prevUser = self;
-						return prevUser;
+						_session.UserId = _dcSession.UserId = self.id;
+						return self;
 					}
-					Helpers.Log(3, $"Current logged user {prevUser.id} mismatched bot_token. Logging out and in...");
+					Helpers.Log(3, $"Current logged user {self.id} mismatched bot_token. Logging out and in...");
 				}
 				catch (Exception ex)
 				{
 					Helpers.Log(4, $"Error while verifying current bot! ({ex.Message}) Proceeding to login...");
 				}
 				await this.Auth_LogOut();
-				_dcSession.UserId = 0;
+				_session.UserId = _dcSession.UserId = 0;
 			}
 			var authorization = await this.Auth_ImportBotAuthorization(0, _apiId, _apiHash, botToken);
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
-			_session.User = user;
-			_dcSession.UserId = user.id;
+			_session.UserId = _dcSession.UserId = user.id;
 			_session.Save();
 			return user;
 		}
@@ -968,36 +964,27 @@ namespace WTelegram
 		{
 			await ConnectAsync();
 			string phone_number = null;
-			var prevUser = _session.User;
-			if (prevUser != null)
+			if (_session.UserId != 0) // a user is already logged-in
 			{
 				try
 				{
-					bool sameUser = true;
-					var userId = _config("user_id"); // if config prefers to validate current user by its id, use it
-					if (userId == null || !int.TryParse(userId, out int id) || id != -1 && prevUser.id != id)
+					var users = await this.Users_GetUsers(new[] { InputUser.Self }); // this calls also reenable incoming Updates
+					var self = users[0] as User;
+					// check user_id or phone_number match currently logged-in user
+					if ((int.TryParse(_config("user_id"), out int id) && (id == -1 || self.id == id)) ||
+						self.phone == string.Concat((phone_number = Config("phone_number")).Where(char.IsDigit)))
 					{
-						phone_number = Config("phone_number"); // otherwise, validation is done by the phone number
-						if (prevUser.phone != string.Concat(phone_number.Where(char.IsDigit)))
-							sameUser = false;
+						_session.UserId = _dcSession.UserId = self.id;
+						return self;
 					}
-					if (sameUser)
-					{
-						// TODO: implement a more complete Updates gaps handling system? https://core.telegram.org/api/updates
-						// Update our info about the user, and reenable incoming Updates
-						var users = await this.Users_GetUsers(new[] { InputUser.Self });
-						if (users.Length > 0 && users[0] is User self)
-							_session.User = prevUser = self;
-						return prevUser;
-					}
-					Helpers.Log(3, $"Current logged user {prevUser.id} mismatched user_id or phone_number. Logging out and in...");
+					Helpers.Log(3, $"Current logged user {self.id} mismatched user_id or phone_number. Logging out and in...");
 				}
 				catch (Exception ex)
 				{
 					Helpers.Log(4, $"Error while verifying current user! ({ex.Message}) Proceeding to login...");
 				}
 				await this.Auth_LogOut();
-				_dcSession.UserId = 0;
+				_session.UserId = _dcSession.UserId = 0;
 			}
 			phone_number ??= Config("phone_number");
 			Auth_SentCode sentCode;
@@ -1043,8 +1030,7 @@ namespace WTelegram
 			}
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
-			_session.User = user;
-			_dcSession.UserId = user.id;
+			_session.UserId = _dcSession.UserId = user.id;
 			_session.Save();
 			return user;
 		}

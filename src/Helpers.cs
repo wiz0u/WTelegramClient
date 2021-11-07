@@ -26,41 +26,6 @@ namespace WTelegram
 			Console.ResetColor();
 		}
 
-		internal class PolymorphicConverter<T> : JsonConverter<T> where T : class
-		{
-			public override bool HandleNull => true;
-
-			public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
-			{
-				if (value == null)
-					writer.WriteNullValue();
-				else
-				{
-					writer.WriteStartObject();
-					writer.WritePropertyName(value.GetType().FullName);
-					JsonSerializer.Serialize(writer, value, value.GetType(), JsonOptions);
-					writer.WriteEndObject();
-				}
-			}
-
-			public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-			{
-				if (reader.TokenType == JsonTokenType.Null)
-					return null;
-				else if (reader.TokenType == JsonTokenType.StartObject)
-				{
-					if (!reader.Read() || reader.TokenType != JsonTokenType.PropertyName) throw new JsonException();
-					var returnType = typeToConvert.Assembly.GetType(reader.GetString());
-					if (!typeToConvert.IsAssignableFrom(returnType)) throw new JsonException();
-					var result = (T)JsonSerializer.Deserialize(ref reader, returnType, JsonOptions);
-					if (!reader.Read() || reader.TokenType != JsonTokenType.EndObject) throw new JsonException();
-					return result;
-				}
-				else
-					throw new JsonException();
-			}
-		}
-
 		/// <summary>Get a cryptographic random 64-bit value</summary>
 		public static long RandomLong()
 		{

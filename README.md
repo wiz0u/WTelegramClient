@@ -7,7 +7,7 @@
 
 ## _Telegram Client API library written 100% in C# and .NET Standard_
 
-## How to use
+# How to use
 
 ⚠️ This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this before proceeding.
 
@@ -165,6 +165,8 @@ This library can be used for any Telegram scenarios including:
 - etc...
 
 Secret chats (end-to-end encryption, PFS) and connection to CDN DCs have not been tested yet.
+
+Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos) or you might get banned from Telegram servers.
 
 Developers feedbacks are welcome in the Telegram channel [@WTelegramClient](https://t.me/WTelegramClient)
 

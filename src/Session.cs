@@ -5,16 +5,18 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text.Json;
-using System.Threading;
 
 namespace WTelegram
 {
 	internal class Session
 	{
-		public TL.User User;
+		public long UserId;
 		public int MainDC;
 		public Dictionary<int, DCSession> DCSessions = new();
 		public TL.DcOption[] DcOptions;
+
+		public UserShim User; // obsolete, to be removed
+		public class UserShim { public long id; } // to be removed
 
 		public class DCSession
 		{
@@ -39,14 +41,6 @@ namespace WTelegram
 		private string _pathname;
 		private byte[] _apiHash;	// used as AES key for encryption of session file
 
-		private static readonly JsonSerializerOptions JsonOptions = new(Helpers.JsonOptions)
-		{
-			Converters = {
-				new Helpers.PolymorphicConverter<TL.UserProfilePhoto>(),
-				new Helpers.PolymorphicConverter<TL.UserStatus>()
-			}
-		};
-
 		internal static Session LoadOrCreate(string pathname, byte[] apiHash)
 		{
 			if (File.Exists(pathname))
@@ -54,6 +48,7 @@ namespace WTelegram
 				try
 				{
 					var session = Load(pathname, apiHash);
+					if (session.User != null) { session.UserId = session.User.id; session.User.id = 0; session.User = null; }
 					session._pathname = pathname;
 					session._apiHash = apiHash;
 					Helpers.Log(2, "Loaded previous session");
@@ -76,12 +71,12 @@ namespace WTelegram
 			var utf8Json = decryptor.TransformFinalBlock(input, 16, input.Length - 16);
 			if (!sha256.ComputeHash(utf8Json, 32, utf8Json.Length - 32).SequenceEqual(utf8Json[0..32]))
 				throw new ApplicationException("Integrity check failed in session loading");
-			return JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), JsonOptions);
+			return JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), Helpers.JsonOptions);
 		}
 
 		internal void Save()
 		{
-			var utf8Json = JsonSerializer.SerializeToUtf8Bytes(this, JsonOptions);
+			var utf8Json = JsonSerializer.SerializeToUtf8Bytes(this, Helpers.JsonOptions);
 			var finalBlock = new byte[16];
 			var output = new byte[(16 + 32 + utf8Json.Length + 16) & ~15];
 			Encryption.RNG.GetBytes(output, 0, 16);
