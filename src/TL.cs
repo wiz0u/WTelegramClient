@@ -37,7 +37,7 @@ namespace TL
 			var ctorNb = tlDef.CtorNb;
 			writer.Write(ctorNb);
 			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-			if (!tlDef.inheritAfter) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
+			if (tlDef.inheritBefore) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
@@ -58,7 +58,7 @@ namespace TL
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var obj = Activator.CreateInstance(type);
 			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-			if (!tlDef.inheritAfter) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
+			if (tlDef.inheritBefore) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
@@ -315,7 +315,7 @@ namespace TL
 	{
 		public readonly uint CtorNb;
 		public TLDefAttribute(uint ctorNb) => CtorNb = ctorNb;
-		public bool inheritAfter;
+		public bool inheritBefore;
 	}
 
 	[AttributeUsage(AttributeTargets.Field)]

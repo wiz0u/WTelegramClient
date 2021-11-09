@@ -2621,7 +2621,7 @@ namespace TL
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Incomplete list of blocked users.		<para>See <a href="https://corefork.telegram.org/constructor/contacts.blockedSlice"/></para></summary>
-	[TLDef(0xE1664194, inheritAfter = true)]
+	[TLDef(0xE1664194)]
 	public partial class Contacts_BlockedSlice : Contacts_Blocked
 	{
 		/// <summary>Total number of elements in the list</summary>
@@ -2659,7 +2659,7 @@ namespace TL
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Incomplete list of dialogs with messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.dialogsSlice"/></para></summary>
-	[TLDef(0x71E094F3, inheritAfter = true)]
+	[TLDef(0x71E094F3)]
 	public partial class Messages_DialogsSlice : Messages_Dialogs
 	{
 		/// <summary>Total number of dialogs</summary>
@@ -2703,7 +2703,7 @@ namespace TL
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Incomplete list of messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.messagesSlice"/></para></summary>
-	[TLDef(0x3A54685E, inheritAfter = true)]
+	[TLDef(0x3A54685E)]
 	public partial class Messages_MessagesSlice : Messages_Messages
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -2777,7 +2777,7 @@ namespace TL
 		public Dictionary<long, ChatBase> chats;
 	}
 	/// <summary>Partial list of chats, more would have to be fetched with <a href="https://corefork.telegram.org/api/offsets">pagination</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.chatsSlice"/></para></summary>
-	[TLDef(0x9CD81144, inheritAfter = true)]
+	[TLDef(0x9CD81144)]
 	public partial class Messages_ChatsSlice : Messages_Chats
 	{
 		/// <summary>Total number of results that were found server-side (not all are included in <c>chats</c>)</summary>
@@ -2915,7 +2915,7 @@ namespace TL
 		public SendMessageAction action;
 	}
 	/// <summary>The user is preparing a message in a group; typing, recording, uploading, etc. This update is valid for 6 seconds. If no repeated update received after 6 seconds, it should be considered that the user stopped doing whatever he's been doing.		<para>See <a href="https://corefork.telegram.org/constructor/updateChatUserTyping"/></para></summary>
-	[TLDef(0x83487AF0)]
+	[TLDef(0x83487AF0, inheritBefore = true)]
 	public partial class UpdateChatUserTyping : UpdateChat
 	{
 		/// <summary>Peer that started typing (can be the chat itself, in case of anonymous admins).</summary>
@@ -3002,7 +3002,7 @@ namespace TL
 		public DateTime date;
 	}
 	/// <summary>New group member.		<para>See <a href="https://corefork.telegram.org/constructor/updateChatParticipantAdd"/></para></summary>
-	[TLDef(0x3DDA5451)]
+	[TLDef(0x3DDA5451, inheritBefore = true)]
 	public partial class UpdateChatParticipantAdd : UpdateChat
 	{
 		/// <summary>ID of the new member</summary>
@@ -3015,7 +3015,7 @@ namespace TL
 		public int version;
 	}
 	/// <summary>A member has left the group.		<para>See <a href="https://corefork.telegram.org/constructor/updateChatParticipantDelete"/></para></summary>
-	[TLDef(0xE32F3D77)]
+	[TLDef(0xE32F3D77, inheritBefore = true)]
 	public partial class UpdateChatParticipantDelete : UpdateChat
 	{
 		/// <summary>ID of the user</summary>
@@ -3193,14 +3193,14 @@ namespace TL
 		}
 	}
 	/// <summary>Some messages in a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a> were deleted		<para>See <a href="https://corefork.telegram.org/constructor/updateDeleteChannelMessages"/></para></summary>
-	[TLDef(0xC32D5B12, inheritAfter = true)]
+	[TLDef(0xC32D5B12)]
 	public partial class UpdateDeleteChannelMessages : UpdateDeleteMessages
 	{
 		/// <summary>Channel ID</summary>
 		public long channel_id;
 	}
 	/// <summary>The view counter of a message in a channel has changed		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelMessageViews"/></para></summary>
-	[TLDef(0xF226AC08)]
+	[TLDef(0xF226AC08, inheritBefore = true)]
 	public partial class UpdateChannelMessageViews : UpdateChannel
 	{
 		/// <summary>ID of the message</summary>
@@ -3209,7 +3209,7 @@ namespace TL
 		public int views;
 	}
 	/// <summary>Admin permissions of a user in a <a href="https://corefork.telegram.org/api/channel">legacy group</a> were changed		<para>See <a href="https://corefork.telegram.org/constructor/updateChatParticipantAdmin"/></para></summary>
-	[TLDef(0xD7CA61A2)]
+	[TLDef(0xD7CA61A2, inheritBefore = true)]
 	public partial class UpdateChatParticipantAdmin : UpdateChat
 	{
 		/// <summary>ID of the (de)admined user</summary>
@@ -3400,7 +3400,7 @@ namespace TL
 	[TLDef(0x3354678F)]
 	public partial class UpdatePtsChanged : Update { }
 	/// <summary>A webpage preview of a link in a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> message was generated		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelWebPage"/></para></summary>
-	[TLDef(0x2F2BA99F, inheritAfter = true)]
+	[TLDef(0x2F2BA99F)]
 	public partial class UpdateChannelWebPage : UpdateWebPage
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a> ID</summary>
@@ -3529,7 +3529,7 @@ namespace TL
 	[TLDef(0xE511996D)]
 	public partial class UpdateFavedStickers : Update { }
 	/// <summary>The specified <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> messages were read		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelReadMessagesContents"/></para></summary>
-	[TLDef(0x44BDD535)]
+	[TLDef(0x44BDD535, inheritBefore = true)]
 	public partial class UpdateChannelReadMessagesContents : UpdateChannel
 	{
 		/// <summary>IDs of messages that were read</summary>
@@ -3539,7 +3539,7 @@ namespace TL
 	[TLDef(0x7084A7BE)]
 	public partial class UpdateContactsReset : Update { }
 	/// <summary>The history of a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> was hidden.		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelAvailableMessages"/></para></summary>
-	[TLDef(0xB23FC698)]
+	[TLDef(0xB23FC698, inheritBefore = true)]
 	public partial class UpdateChannelAvailableMessages : UpdateChannel
 	{
 		/// <summary>Identifier of a maximum unavailable message in a channel due to hidden history.</summary>
@@ -3702,7 +3702,7 @@ namespace TL
 		public byte[] data;
 	}
 	/// <summary>The forward counter of a message in a channel has changed		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelMessageForwards"/></para></summary>
-	[TLDef(0xD29A27F4)]
+	[TLDef(0xD29A27F4, inheritBefore = true)]
 	public partial class UpdateChannelMessageForwards : UpdateChannel
 	{
 		/// <summary>ID of the message</summary>
@@ -4317,7 +4317,7 @@ namespace TL
 		public Dictionary<long, UserBase> users;
 	}
 	/// <summary>Incomplete list of photos with auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/photos.photosSlice"/></para></summary>
-	[TLDef(0x15051F54, inheritAfter = true)]
+	[TLDef(0x15051F54)]
 	public partial class Photos_PhotosSlice : Photos_Photos
 	{
 		/// <summary>Total number of photos</summary>
@@ -4850,7 +4850,7 @@ namespace TL
 		public DateTime date;
 	}
 	/// <summary>Message with a file enclosure sent to a protected chat		<para>See <a href="https://corefork.telegram.org/constructor/messages.sentEncryptedFile"/></para></summary>
-	[TLDef(0x9493FF32)]
+	[TLDef(0x9493FF32, inheritBefore = true)]
 	public partial class Messages_SentEncryptedFile : Messages_SentEncryptedMessage
 	{
 		/// <summary>Attached file</summary>
@@ -5844,7 +5844,7 @@ namespace TL
 		public override string Text => text;
 	}
 	/// <summary>URL button		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonUrl"/></para></summary>
-	[TLDef(0x258AFF05)]
+	[TLDef(0x258AFF05, inheritBefore = true)]
 	public partial class KeyboardButtonUrl : KeyboardButton
 	{
 		/// <summary>URL</summary>
@@ -5961,7 +5961,7 @@ namespace TL
 		public override string Text => text;
 	}
 	/// <summary>A button that allows the user to create and send a poll when pressed; available only in private		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRequestPoll"/></para></summary>
-	[TLDef(0xBBC7515D, inheritAfter = true)]
+	[TLDef(0xBBC7515D)]
 	public partial class KeyboardButtonRequestPoll : KeyboardButton
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -6085,28 +6085,28 @@ namespace TL
 	[TLDef(0x28A20571)]
 	public partial class MessageEntityCode : MessageEntity { }
 	/// <summary>Message entity representing a preformatted <c>codeblock</c>, allowing the user to specify a programming language for the codeblock.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityPre"/></para></summary>
-	[TLDef(0x73924BE0)]
+	[TLDef(0x73924BE0, inheritBefore = true)]
 	public partial class MessageEntityPre : MessageEntity
 	{
 		/// <summary>Programming language of the code</summary>
 		public string language;
 	}
 	/// <summary>Message entity representing a <a href="https://google.com">text url</a>: for in-text urls like <a href="https://google.com">https://google.com</a> use <see cref="MessageEntityUrl"/>.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityTextUrl"/></para></summary>
-	[TLDef(0x76A6D327)]
+	[TLDef(0x76A6D327, inheritBefore = true)]
 	public partial class MessageEntityTextUrl : MessageEntity
 	{
 		/// <summary>The actual URL</summary>
 		public string url;
 	}
 	/// <summary>Message entity representing a <a href="https://corefork.telegram.org/api/mentions">user mention</a>: for <em>creating</em> a mention use <see cref="InputMessageEntityMentionName"/>.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityMentionName"/></para></summary>
-	[TLDef(0xDC7B1140)]
+	[TLDef(0xDC7B1140, inheritBefore = true)]
 	public partial class MessageEntityMentionName : MessageEntity
 	{
 		/// <summary>Identifier of the user that was mentioned</summary>
 		public long user_id;
 	}
 	/// <summary>Message entity that can be used to create a user <a href="https://corefork.telegram.org/api/mentions">user mention</a>: received mentions use the <see cref="MessageEntityMentionName"/> constructor, instead.		<para>See <a href="https://corefork.telegram.org/constructor/inputMessageEntityMentionName"/></para></summary>
-	[TLDef(0x208E68C9)]
+	[TLDef(0x208E68C9, inheritBefore = true)]
 	public partial class InputMessageEntityMentionName : MessageEntity
 	{
 		/// <summary>Identifier of the user that was mentioned</summary>
@@ -6527,7 +6527,7 @@ namespace TL
 		public int flags;
 	}
 	/// <summary>A media		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageMediaAuto"/></para></summary>
-	[TLDef(0x3380C786)]
+	[TLDef(0x3380C786, inheritBefore = true)]
 	public partial class InputBotInlineMessageMediaAuto : InputBotInlineMessage
 	{
 		/// <summary>Caption</summary>
@@ -6546,7 +6546,7 @@ namespace TL
 		}
 	}
 	/// <summary>Simple text message		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageText"/></para></summary>
-	[TLDef(0x3DCD7A87)]
+	[TLDef(0x3DCD7A87, inheritBefore = true)]
 	public partial class InputBotInlineMessageText : InputBotInlineMessage
 	{
 		/// <summary>Message</summary>
@@ -6567,7 +6567,7 @@ namespace TL
 		}
 	}
 	/// <summary>Geolocation		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageMediaGeo"/></para></summary>
-	[TLDef(0x96929A85)]
+	[TLDef(0x96929A85, inheritBefore = true)]
 	public partial class InputBotInlineMessageMediaGeo : InputBotInlineMessage
 	{
 		/// <summary>Geolocation</summary>
@@ -6594,7 +6594,7 @@ namespace TL
 		}
 	}
 	/// <summary>Venue		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageMediaVenue"/></para></summary>
-	[TLDef(0x417BBF11)]
+	[TLDef(0x417BBF11, inheritBefore = true)]
 	public partial class InputBotInlineMessageMediaVenue : InputBotInlineMessage
 	{
 		/// <summary>Geolocation</summary>
@@ -6619,7 +6619,7 @@ namespace TL
 		}
 	}
 	/// <summary>A contact		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageMediaContact"/></para></summary>
-	[TLDef(0xA6EDBFFD)]
+	[TLDef(0xA6EDBFFD, inheritBefore = true)]
 	public partial class InputBotInlineMessageMediaContact : InputBotInlineMessage
 	{
 		/// <summary>Phone number</summary>
@@ -6640,7 +6640,7 @@ namespace TL
 		}
 	}
 	/// <summary>A game		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageGame"/></para></summary>
-	[TLDef(0x4B425864)]
+	[TLDef(0x4B425864, inheritBefore = true)]
 	public partial class InputBotInlineMessageGame : InputBotInlineMessage
 	{
 		/// <summary>Inline keyboard</summary>
@@ -6653,7 +6653,7 @@ namespace TL
 		}
 	}
 	/// <summary>An invoice		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageMediaInvoice"/></para></summary>
-	[TLDef(0xD7E78225)]
+	[TLDef(0xD7E78225, inheritBefore = true)]
 	public partial class InputBotInlineMessageMediaInvoice : InputBotInlineMessage
 	{
 		/// <summary>Product name, 1-32 characters</summary>
@@ -6806,7 +6806,7 @@ namespace TL
 		public int flags;
 	}
 	/// <summary>Send whatever media is attached to the <see cref="BotInlineMediaResult"/>		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageMediaAuto"/></para></summary>
-	[TLDef(0x764CF810)]
+	[TLDef(0x764CF810, inheritBefore = true)]
 	public partial class BotInlineMessageMediaAuto : BotInlineMessage
 	{
 		/// <summary>Caption</summary>
@@ -6825,7 +6825,7 @@ namespace TL
 		}
 	}
 	/// <summary>Send a simple text message		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageText"/></para></summary>
-	[TLDef(0x8C7F65E2)]
+	[TLDef(0x8C7F65E2, inheritBefore = true)]
 	public partial class BotInlineMessageText : BotInlineMessage
 	{
 		/// <summary>The message</summary>
@@ -6846,7 +6846,7 @@ namespace TL
 		}
 	}
 	/// <summary>Send a geolocation		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageMediaGeo"/></para></summary>
-	[TLDef(0x051846FD)]
+	[TLDef(0x051846FD, inheritBefore = true)]
 	public partial class BotInlineMessageMediaGeo : BotInlineMessage
 	{
 		/// <summary>Geolocation</summary>
@@ -6873,7 +6873,7 @@ namespace TL
 		}
 	}
 	/// <summary>Send a venue		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageMediaVenue"/></para></summary>
-	[TLDef(0x8A86659C)]
+	[TLDef(0x8A86659C, inheritBefore = true)]
 	public partial class BotInlineMessageMediaVenue : BotInlineMessage
 	{
 		/// <summary>Geolocation of venue</summary>
@@ -6898,7 +6898,7 @@ namespace TL
 		}
 	}
 	/// <summary>Send a contact		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageMediaContact"/></para></summary>
-	[TLDef(0x18D1CDC2)]
+	[TLDef(0x18D1CDC2, inheritBefore = true)]
 	public partial class BotInlineMessageMediaContact : BotInlineMessage
 	{
 		/// <summary>Phone number</summary>
@@ -6919,7 +6919,7 @@ namespace TL
 		}
 	}
 	/// <summary>Send an invoice		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageMediaInvoice"/></para></summary>
-	[TLDef(0x354A9B09)]
+	[TLDef(0x354A9B09, inheritBefore = true)]
 	public partial class BotInlineMessageMediaInvoice : BotInlineMessage
 	{
 		/// <summary>Product name, 1-32 characters</summary>
@@ -9309,28 +9309,28 @@ namespace TL
 	[TLDef(0x46E1D13D)]
 	public partial class RecentMeUrlUnknown : RecentMeUrl { }
 	/// <summary>Recent t.me link to a user		<para>See <a href="https://corefork.telegram.org/constructor/recentMeUrlUser"/></para></summary>
-	[TLDef(0xB92C09E2)]
+	[TLDef(0xB92C09E2, inheritBefore = true)]
 	public partial class RecentMeUrlUser : RecentMeUrl
 	{
 		/// <summary>User ID</summary>
 		public long user_id;
 	}
 	/// <summary>Recent t.me link to a chat		<para>See <a href="https://corefork.telegram.org/constructor/recentMeUrlChat"/></para></summary>
-	[TLDef(0xB2DA71D2)]
+	[TLDef(0xB2DA71D2, inheritBefore = true)]
 	public partial class RecentMeUrlChat : RecentMeUrl
 	{
 		/// <summary>Chat ID</summary>
 		public long chat_id;
 	}
 	/// <summary>Recent t.me invite link to a chat		<para>See <a href="https://corefork.telegram.org/constructor/recentMeUrlChatInvite"/></para></summary>
-	[TLDef(0xEB49081D)]
+	[TLDef(0xEB49081D, inheritBefore = true)]
 	public partial class RecentMeUrlChatInvite : RecentMeUrl
 	{
 		/// <summary>Chat invitation</summary>
 		public ChatInviteBase chat_invite;
 	}
 	/// <summary>Recent t.me stickerset installation URL		<para>See <a href="https://corefork.telegram.org/constructor/recentMeUrlStickerSet"/></para></summary>
-	[TLDef(0xBC0A57DC)]
+	[TLDef(0xBC0A57DC, inheritBefore = true)]
 	public partial class RecentMeUrlStickerSet : RecentMeUrl
 	{
 		/// <summary>Stickerset</summary>
@@ -10199,14 +10199,14 @@ namespace TL
 		public string num;
 	}
 	/// <summary>Ordered list of text items		<para>See <a href="https://corefork.telegram.org/constructor/pageListOrderedItemText"/></para></summary>
-	[TLDef(0x5E068047)]
+	[TLDef(0x5E068047, inheritBefore = true)]
 	public partial class PageListOrderedItemText : PageListOrderedItem
 	{
 		/// <summary>Text</summary>
 		public RichText text;
 	}
 	/// <summary>Ordered list of <a href="https://instantview.telegram.org">IV</a> blocks		<para>See <a href="https://corefork.telegram.org/constructor/pageListOrderedItemBlocks"/></para></summary>
-	[TLDef(0x98DD8936)]
+	[TLDef(0x98DD8936, inheritBefore = true)]
 	public partial class PageListOrderedItemBlocks : PageListOrderedItem
 	{
 		/// <summary>Item contents</summary>
@@ -12109,7 +12109,7 @@ namespace TL
 	[TLDef(0x3FD863D1)]
 	public partial class BotCommandScopePeerAdmins : BotCommandScopePeer { }
 	/// <summary>The specified bot commands will be valid only for a specific user in the specified <a href="https://corefork.telegram.org/api/channel">group or supergroup</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botCommandScopePeerUser"/></para></summary>
-	[TLDef(0x0A1321F3)]
+	[TLDef(0x0A1321F3, inheritBefore = true)]
 	public partial class BotCommandScopePeerUser : BotCommandScopePeer
 	{
 		/// <summary>The user</summary>

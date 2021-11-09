@@ -27,17 +27,17 @@ namespace TL
 		public Int128 server_nonce;
 		public Int256 new_nonce;
 	}
-	[TLDef(0xA9F55F95)] //p_q_inner_data_dc#a9f55f95 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int = P_Q_inner_data
+	[TLDef(0xA9F55F95, inheritBefore = true)] //p_q_inner_data_dc#a9f55f95 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int = P_Q_inner_data
 	public partial class PQInnerDataDc : PQInnerData
 	{
 		public int dc;
 	}
-	[TLDef(0x3C6A84D4)] //p_q_inner_data_temp#3c6a84d4 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 expires_in:int = P_Q_inner_data
+	[TLDef(0x3C6A84D4, inheritBefore = true)] //p_q_inner_data_temp#3c6a84d4 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 expires_in:int = P_Q_inner_data
 	public partial class PQInnerDataTemp : PQInnerData
 	{
 		public int expires_in;
 	}
-	[TLDef(0x56FDDF88)] //p_q_inner_data_temp_dc#56fddf88 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int expires_in:int = P_Q_inner_data
+	[TLDef(0x56FDDF88, inheritBefore = true)] //p_q_inner_data_temp_dc#56fddf88 pq:bytes p:bytes q:bytes nonce:int128 server_nonce:int128 new_nonce:int256 dc:int expires_in:int = P_Q_inner_data
 	public partial class PQInnerDataTempDc : PQInnerData
 	{
 		public int dc;
@@ -59,12 +59,12 @@ namespace TL
 		public Int128 nonce;
 		public Int128 server_nonce;
 	}
-	[TLDef(0x79CB045D)] //server_DH_params_fail#79cb045d nonce:int128 server_nonce:int128 new_nonce_hash:int128 = Server_DH_Params
+	[TLDef(0x79CB045D, inheritBefore = true)] //server_DH_params_fail#79cb045d nonce:int128 server_nonce:int128 new_nonce_hash:int128 = Server_DH_Params
 	public partial class ServerDHParamsFail : ServerDHParams
 	{
 		public Int128 new_nonce_hash;
 	}
-	[TLDef(0xD0E8075C)] //server_DH_params_ok#d0e8075c nonce:int128 server_nonce:int128 encrypted_answer:bytes = Server_DH_Params
+	[TLDef(0xD0E8075C, inheritBefore = true)] //server_DH_params_ok#d0e8075c nonce:int128 server_nonce:int128 encrypted_answer:bytes = Server_DH_Params
 	public partial class ServerDHParamsOk : ServerDHParams
 	{
 		public byte[] encrypted_answer;
@@ -95,17 +95,17 @@ namespace TL
 		public Int128 nonce;
 		public Int128 server_nonce;
 	}
-	[TLDef(0x3BCBF734)] //dh_gen_ok#3bcbf734 nonce:int128 server_nonce:int128 new_nonce_hash1:int128 = Set_client_DH_params_answer
+	[TLDef(0x3BCBF734, inheritBefore = true)] //dh_gen_ok#3bcbf734 nonce:int128 server_nonce:int128 new_nonce_hash1:int128 = Set_client_DH_params_answer
 	public partial class DhGenOk : SetClientDHParamsAnswer
 	{
 		public Int128 new_nonce_hash1;
 	}
-	[TLDef(0x46DC1FB9)] //dh_gen_retry#46dc1fb9 nonce:int128 server_nonce:int128 new_nonce_hash2:int128 = Set_client_DH_params_answer
+	[TLDef(0x46DC1FB9, inheritBefore = true)] //dh_gen_retry#46dc1fb9 nonce:int128 server_nonce:int128 new_nonce_hash2:int128 = Set_client_DH_params_answer
 	public partial class DhGenRetry : SetClientDHParamsAnswer
 	{
 		public Int128 new_nonce_hash2;
 	}
-	[TLDef(0xA69DAE02)] //dh_gen_fail#a69dae02 nonce:int128 server_nonce:int128 new_nonce_hash3:int128 = Set_client_DH_params_answer
+	[TLDef(0xA69DAE02, inheritBefore = true)] //dh_gen_fail#a69dae02 nonce:int128 server_nonce:int128 new_nonce_hash3:int128 = Set_client_DH_params_answer
 	public partial class DhGenFail : SetClientDHParamsAnswer
 	{
 		public Int128 new_nonce_hash3;
@@ -134,7 +134,7 @@ namespace TL
 		public int bad_msg_seqno;
 		public int error_code;
 	}
-	[TLDef(0xEDAB447B)] //bad_server_salt#edab447b bad_msg_id:long bad_msg_seqno:int error_code:int new_server_salt:long = BadMsgNotification
+	[TLDef(0xEDAB447B, inheritBefore = true)] //bad_server_salt#edab447b bad_msg_id:long bad_msg_seqno:int error_code:int new_server_salt:long = BadMsgNotification
 	public partial class BadServerSalt : BadMsgNotification
 	{
 		public long new_server_salt;
@@ -271,7 +271,7 @@ namespace TL
 		public int ipv4;
 		public int port;
 	}
-	[TLDef(0x37982646)] //ipPortSecret#37982646 ipv4:int port:int secret:bytes = IpPort
+	[TLDef(0x37982646, inheritBefore = true)] //ipPortSecret#37982646 ipv4:int port:int secret:bytes = IpPort
 	public partial class IpPortSecret : IpPort
 	{
 		public byte[] secret;
