@@ -36,7 +36,7 @@ namespace TL
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var ctorNb = tlDef.CtorNb;
 			writer.Write(ctorNb);
-			IEnumerable<FieldInfo> fields = type.GetFields();
+			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 			if (!tlDef.inheritAfter) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
@@ -57,7 +57,7 @@ namespace TL
 			if (type == null) return null; // nullable ctor (class meaning is associated with null)
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var obj = Activator.CreateInstance(type);
-			IEnumerable<FieldInfo> fields = type.GetFields();
+			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 			if (!tlDef.inheritAfter) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			int flags = 0;
 			IfFlagAttribute ifFlag;
@@ -177,9 +177,9 @@ namespace TL
 				writer.Write(0);						// patched below
 				writer.WriteTLObject(msg.body);
 				if ((msg.seqno & 1) != 0)
-					WTelegram.Helpers.Log(1, $"  Sending → {msg.body.GetType().Name,-40} #{(short)msg.msg_id.GetHashCode():X4}");
+					WTelegram.Helpers.Log(1, $"  Sending → {msg.body.GetType().Name.TrimEnd('_'),-40} #{(short)msg.msg_id.GetHashCode():X4}");
 				else
-					WTelegram.Helpers.Log(1, $"  Sending → {msg.body.GetType().Name,-40}");
+					WTelegram.Helpers.Log(1, $"  Sending → {msg.body.GetType().Name.TrimEnd('_'),-40}");
 				writer.BaseStream.Position = patchPos;
 				writer.Write((int)(writer.BaseStream.Length - patchPos - 4)); // patch bytes field
 				writer.Seek(0, SeekOrigin.End);

@@ -577,7 +577,7 @@ namespace WTelegram
 					writer.Write(msgId);					// int64 message_id
 					writer.Write(0);						// int32 message_data_length (to be patched)
 					writer.WriteTLObject(msg);				// bytes message_data
-					Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name}...");
+					Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_')}...");
 					BinaryPrimitives.WriteInt32LittleEndian(memStream.GetBuffer().AsSpan(20), (int)memStream.Length - 24);    // patch message_data_length
 				}
 				else
@@ -597,9 +597,9 @@ namespace WTelegram
 					clearWriter.Write(0);					// int32 message_data_length (to be patched)
 					clearWriter.WriteTLObject(msg);			// bytes message_data
 					if ((seqno & 1) != 0)
-						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name,-40} #{(short)msgId.GetHashCode():X4}");
+						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_'),-40} #{(short)msgId.GetHashCode():X4}");
 					else
-						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name,-40} {MsgIdToStamp(msgId):u} (svc)");
+						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_'),-40} {MsgIdToStamp(msgId):u} (svc)");
 					int clearLength = (int)clearStream.Length - prepend;  // length before padding (= 32 + message_data_length)
 					int padding = (0x7FFFFFF0 - clearLength) % 16;
 #if !MTPROTO1
@@ -1092,7 +1092,8 @@ namespace WTelegram
 		/// <param name="reply_to_msg_id">Your message is a reply to an existing message with this ID, in the same chat</param>
 		/// <param name="entities">Text formatting entities for the caption. You can use <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
 		/// <param name="schedule_date">UTC timestamp when the message should be sent</param>
-		public Task<UpdatesBase> SendMediaAsync(InputPeer peer, string caption, InputFileBase mediaFile, string mimeType = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
+		/// <returns>The transmitted message confirmed by Telegram</returns>
+		public Task<Message> SendMediaAsync(InputPeer peer, string caption, InputFileBase mediaFile, string mimeType = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
 		{
 			var filename = mediaFile is InputFile iFile ? iFile.name : (mediaFile as InputFileBig)?.name;
 			mimeType ??= Path.GetExtension(filename).ToLowerInvariant() switch
@@ -1123,15 +1124,52 @@ namespace WTelegram
 		/// <param name="entities">Text formatting entities. You can use <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
 		/// <param name="schedule_date">UTC timestamp when the message should be sent</param>
 		/// <param name="disable_preview">Should website/media preview be shown or not, for URLs in your message</param>
-		public Task<UpdatesBase> SendMessageAsync(InputPeer peer, string text, InputMedia media = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, bool disable_preview = false)
+		/// <returns>The transmitted message as confirmed by Telegram</returns>
+		public async Task<Message> SendMessageAsync(InputPeer peer, string text, InputMedia media = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, bool disable_preview = false)
 		{
+			UpdatesBase updates;
+			long random_id = Helpers.RandomLong();
 			if (media == null)
-				return this.Messages_SendMessage(peer, text, Helpers.RandomLong(),
-					no_webpage: disable_preview, reply_to_msg_id: reply_to_msg_id, entities: entities, schedule_date: schedule_date);
-			else
-				return this.Messages_SendMedia(peer, media, text, Helpers.RandomLong(),
+				updates = await this.Messages_SendMessage(peer, text, random_id, no_webpage: disable_preview,
 					reply_to_msg_id: reply_to_msg_id, entities: entities, schedule_date: schedule_date);
+			else
+				updates = await this.Messages_SendMedia(peer, media, text, random_id,
+					reply_to_msg_id: reply_to_msg_id, entities: entities, schedule_date: schedule_date);
+			OnUpdate(updates);
+			int msgId = -1;
+			foreach (var update in updates.UpdateList)
+			{
+				switch (update)
+				{
+					case UpdateMessageID updMsgId when updMsgId.random_id == random_id: msgId = updMsgId.id; break;
+					case UpdateNewMessage { message: Message message } when message.id == msgId: return message;
+					case UpdateNewScheduledMessage { message: Message schedMsg } when schedMsg.id == msgId: return schedMsg;
+				}
+			}
+			if (updates is UpdateShortSentMessage sent)
+			{
+				return new Message
+				{
+					flags = (Message.Flags)sent.flags | (reply_to_msg_id == 0 ? 0 : Message.Flags.has_reply_to) | (peer is InputPeerSelf ? 0 : Message.Flags.has_from_id),
+					id = sent.id, date = sent.date, message = text, entities = sent.entities, media = sent.media, ttl_period = sent.ttl_period,
+					reply_to = reply_to_msg_id == 0 ? null : new MessageReplyHeader { reply_to_msg_id = reply_to_msg_id },
+					from_id = peer is InputPeerSelf ? null : new PeerUser { user_id = _session.UserId },
+					peer_id = InputToPeer(peer)
+				};
+			}
+			return null;
 		}
+
+		private Peer InputToPeer(InputPeer peer) => peer switch
+		{
+			InputPeerSelf => new PeerUser { user_id = _session.UserId },
+			InputPeerUser ipu => new PeerUser { user_id = ipu.user_id },
+			InputPeerChat ipc => new PeerChat { chat_id = ipc.chat_id },
+			InputPeerChannel ipch => new PeerChannel { channel_id = ipch.channel_id },
+			InputPeerUserFromMessage ipufm => new PeerUser { user_id = ipufm.user_id },
+			InputPeerChannelFromMessage ipcfm => new PeerChannel { channel_id = ipcfm.channel_id },
+			_ => null,
+		};
 
 		/// <summary>Download a photo from Telegram into the outputStream</summary>
 		/// <param name="photo">The photo to download</param>

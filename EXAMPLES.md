@@ -83,21 +83,20 @@ await client.SendMediaAsync(peer, "Here is the photo", inputFile);
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var dialogsBase = await client.Messages_GetDialogs(default, 0, null, 0, 0);
-if (dialogsBase is Messages_Dialogs dialogs)
-    while (dialogs.dialogs.Length != 0)
-    {
-        foreach (var dialog in dialogs.dialogs)
-            switch (dialogs.UserOrChat(dialog))
-            {
-                case UserBase user when user.IsActive: Console.WriteLine("User " + user); break;
-                case ChatBase chat when chat.IsActive: Console.WriteLine(chat); break;
-            }
-        var lastDialog = dialogs.dialogs[^1];
-        var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
-        var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
-        dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, 500, 0);
-    }
+var dialogs = await client.Messages_GetDialogs(default, 0, null, 0, 0);
+while (dialogs.Dialogs.Length != 0)
+{
+    foreach (var dialog in dialogs.Dialogs)
+        switch (dialogs.UserOrChat(dialog))
+        {
+            case UserBase user when user.IsActive: Console.WriteLine("User " + user); break;
+            case ChatBase chat when chat.IsActive: Console.WriteLine(chat); break;
+        }
+    var lastDialog = dialogs.Dialogs[^1];
+    var lastMsg = dialogs.Messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
+    var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
+    dialogs = await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, 500, 0);
+}
 ```
 
 *Note: the lists returned by Messages_GetDialogs contains the `access_hash` for those chats and users.*
@@ -138,13 +137,12 @@ var chats = await client.Messages_GetAllChats(null);
 InputPeer peer = chats.chats[1234567890]; // the chat we want
 for (int offset = 0; ;)
 {
-    var messagesBase = await client.Messages_GetHistory(peer, 0, default, offset, 1000, 0, 0, 0);
-    if (messagesBase is not Messages_ChannelMessages channelMessages) break;
-    foreach (var msgBase in channelMessages.messages)
+    var messages = await client.Messages_GetHistory(peer, 0, default, offset, 1000, 0, 0, 0);
+    foreach (var msgBase in messages.Messages)
         if (msgBase is Message msg)
             Console.WriteLine(msg.message);
-    offset += channelMessages.messages.Length;
-    if (offset >= channelMessages.count) break;
+    offset += messages.Messages.Length;
+    if (offset >= messages.Count) break;
 }
 ```
 ### Monitor all Telegram events happening for the user

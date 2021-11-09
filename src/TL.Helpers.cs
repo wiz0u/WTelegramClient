@@ -120,6 +120,8 @@ namespace TL
 		public static implicit operator InputChannel(Channel channel) => new() { channel_id = channel.id, access_hash = channel.access_hash };
 		public override string ToString() =>
 			(flags.HasFlag(Flags.broadcast) ? "Channel " : "Group ") + (username != null ? '@' + username : $"\"{title}\"");
+		public bool IsChannel => (flags & Flags.broadcast) != 0;
+		public bool IsGroup => (flags & Flags.broadcast) == 0;
 	}
 	partial class ChannelForbidden
 	{
@@ -213,7 +215,7 @@ namespace TL
 	}
 
 	partial class Contacts_Blocked { public IPeerInfo UserOrChat(PeerBlocked peer) => peer.peer_id.UserOrChat(users, chats); }
-	partial class Messages_Dialogs { public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer.UserOrChat(users, chats); }
+	partial class Messages_DialogsBase { public IPeerInfo UserOrChat(DialogBase dialog) => UserOrChat(dialog.Peer); }
 
 	partial class Messages_MessagesBase			{ public abstract int Count { get; } }
 	partial class Messages_Messages				{ public override int Count => messages.Length; }
@@ -309,6 +311,35 @@ namespace TL
 		public override bool Final => flags.HasFlag(Flags.final);
 		public override int Timeout => timeout;
 	}
+
+	partial class UpdatesBase				{ public abstract Update[] UpdateList { get; } }
+	partial class UpdatesTooLong			{ public override Update[] UpdateList => Array.Empty<Update>(); }
+	partial class UpdateShort				{ public override Update[] UpdateList => new[] { update }; }
+	partial class UpdatesCombined			{ public override Update[] UpdateList => updates; }
+	partial class Updates					{ public override Update[] UpdateList => updates; }
+	partial class UpdateShortSentMessage	{ public override Update[] UpdateList => Array.Empty<Update>(); }
+	partial class UpdateShortMessage		{ public override Update[] UpdateList => new[] { new UpdateNewMessage
+	{
+		message = new Message
+		{
+			flags = (Message.Flags)flags, id = id, date = date,
+			message = message, entities = entities, reply_to = reply_to,
+			from_id = new PeerUser { user_id = user_id },
+			peer_id = new PeerUser { user_id = user_id },
+			fwd_from = fwd_from, via_bot_id = via_bot_id, ttl_period = ttl_period
+		}, pts = pts, pts_count = pts_count
+	} }; }
+	partial class UpdateShortChatMessage { public override Update[] UpdateList => new[] { new UpdateNewMessage
+	{
+		message = new Message
+		{
+			flags = (Message.Flags)flags, id = id, date = date,
+			message = message, entities = entities, reply_to = reply_to,
+			from_id = new PeerUser { user_id = from_id },
+			peer_id = new PeerChat { chat_id = chat_id },
+			fwd_from = fwd_from, via_bot_id = via_bot_id, ttl_period = ttl_period
+		}, pts = pts, pts_count = pts_count
+	} }; }
 
 	partial class Messages_PeerDialogs { public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer.UserOrChat(users, chats); }
 

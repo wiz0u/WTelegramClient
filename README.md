@@ -164,6 +164,8 @@ This library can be used for any Telegram scenarios including:
 - Download/upload of files/media
 - etc...
 
+It has been tested in a Console app, WinForms app, ASP.NET webservice.
+
 Secret chats (end-to-end encryption, PFS) and connection to CDN DCs have not been tested yet.
 
 Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos) or you might get banned from Telegram servers.

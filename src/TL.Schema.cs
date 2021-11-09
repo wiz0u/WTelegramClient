@@ -4250,7 +4250,7 @@ namespace TL
 		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updates"/></para></summary>
+	/// <summary>Full constructor of updates		<para>See <a href="https://corefork.telegram.org/constructor/updates"/></para></summary>
 	[TLDef(0x74AE4240)]
 	public partial class Updates : UpdatesBase
 	{
@@ -4819,7 +4819,7 @@ namespace TL
 		public override byte[] Bytes => bytes;
 	}
 
-	/// <summary><para>Derived classes: <see cref="Messages_DhConfigNotModified"/>, <see cref="Messages_DhConfig"/></para>		<para>See <a href="https://corefork.telegram.org/type/messages.DhConfig"/></para></summary>
+	/// <summary>Contains info on cofiguring parameters for key generation by Diffie-Hellman protocol.		<para>Derived classes: <see cref="Messages_DhConfigNotModified"/>, <see cref="Messages_DhConfig"/></para>		<para>See <a href="https://corefork.telegram.org/type/messages.DhConfig"/></para></summary>
 	public abstract partial class Messages_DhConfigBase : IObject { }
 	/// <summary>Configuring parameters did not change.		<para>See <a href="https://corefork.telegram.org/constructor/messages.dhConfigNotModified"/></para></summary>
 	[TLDef(0xC0E24635)]
@@ -7323,7 +7323,7 @@ namespace TL
 		public TopPeer[] peers;
 	}
 
-	/// <summary><para>Derived classes: <see cref="Contacts_TopPeers"/>, <see cref="Contacts_TopPeersDisabled"/></para>		<para>See <a href="https://corefork.telegram.org/type/contacts.TopPeers"/></para></summary>
+	/// <summary>Top peers		<para>Derived classes: <see cref="Contacts_TopPeers"/>, <see cref="Contacts_TopPeersDisabled"/></para>		<para>See <a href="https://corefork.telegram.org/type/contacts.TopPeers"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/contacts.topPeersNotModified">contacts.topPeersNotModified</a></remarks>
 	public abstract partial class Contacts_TopPeersBase : IObject { }
 	/// <summary>Top peers		<para>See <a href="https://corefork.telegram.org/constructor/contacts.topPeers"/></para></summary>
@@ -7386,7 +7386,7 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>Derived classes: <see cref="Messages_FeaturedStickersNotModified"/>, <see cref="Messages_FeaturedStickers"/></para>		<para>See <a href="https://corefork.telegram.org/type/messages.FeaturedStickers"/></para></summary>
+	/// <summary>Featured stickers		<para>Derived classes: <see cref="Messages_FeaturedStickersNotModified"/>, <see cref="Messages_FeaturedStickers"/></para>		<para>See <a href="https://corefork.telegram.org/type/messages.FeaturedStickers"/></para></summary>
 	public abstract partial class Messages_FeaturedStickersBase : IObject { }
 	/// <summary>Featured stickers haven't changed		<para>See <a href="https://corefork.telegram.org/constructor/messages.featuredStickersNotModified"/></para></summary>
 	[TLDef(0xC6DC0C66)]
@@ -7434,7 +7434,7 @@ namespace TL
 		public StickerSetCoveredBase[] sets;
 	}
 
-	/// <summary><para>Derived classes: <see cref="Messages_StickerSetInstallResultSuccess"/>, <see cref="Messages_StickerSetInstallResultArchive"/></para>		<para>See <a href="https://corefork.telegram.org/type/messages.StickerSetInstallResult"/></para></summary>
+	/// <summary>Result of stickerset installation process		<para>Derived classes: <see cref="Messages_StickerSetInstallResultSuccess"/>, <see cref="Messages_StickerSetInstallResultArchive"/></para>		<para>See <a href="https://corefork.telegram.org/type/messages.StickerSetInstallResult"/></para></summary>
 	public abstract partial class Messages_StickerSetInstallResult : IObject { }
 	/// <summary>The stickerset was installed successfully		<para>See <a href="https://corefork.telegram.org/constructor/messages.stickerSetInstallResultSuccess"/></para></summary>
 	[TLDef(0x38641628)]
@@ -8320,7 +8320,7 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.validatedRequestedInfo"/></para></summary>
+	/// <summary>Validated user-provided info		<para>See <a href="https://corefork.telegram.org/constructor/payments.validatedRequestedInfo"/></para></summary>
 	[TLDef(0xD1451883)]
 	public partial class Payments_ValidatedRequestedInfo : IObject
 	{
@@ -8340,7 +8340,7 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>Derived classes: <see cref="Payments_PaymentResult"/>, <see cref="Payments_PaymentVerificationNeeded"/></para>		<para>See <a href="https://corefork.telegram.org/type/payments.PaymentResult"/></para></summary>
+	/// <summary>Payment result		<para>Derived classes: <see cref="Payments_PaymentResult"/>, <see cref="Payments_PaymentVerificationNeeded"/></para>		<para>See <a href="https://corefork.telegram.org/type/payments.PaymentResult"/></para></summary>
 	public abstract partial class Payments_PaymentResultBase : IObject { }
 	/// <summary>Payment result		<para>See <a href="https://corefork.telegram.org/constructor/payments.paymentResult"/></para></summary>
 	[TLDef(0x4E5F810D)]
@@ -9481,7 +9481,7 @@ namespace TL
 		public StickerSetCoveredBase[] sets;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/fileHash"/></para></summary>
+	/// <summary>SHA256 Hash of an uploaded file, to be checked for validity after download		<para>See <a href="https://corefork.telegram.org/constructor/fileHash"/></para></summary>
 	[TLDef(0x6242C773)]
 	public partial class FileHash : IObject
 	{
@@ -9503,7 +9503,7 @@ namespace TL
 		public int port;
 	}
 
-	/// <summary><para>Derived classes: <see cref="Help_TermsOfServiceUpdateEmpty"/>, <see cref="Help_TermsOfServiceUpdate"/></para>		<para>See <a href="https://corefork.telegram.org/type/help.TermsOfServiceUpdate"/></para></summary>
+	/// <summary>Update of Telegram's terms of service		<para>Derived classes: <see cref="Help_TermsOfServiceUpdateEmpty"/>, <see cref="Help_TermsOfServiceUpdate"/></para>		<para>See <a href="https://corefork.telegram.org/type/help.TermsOfServiceUpdate"/></para></summary>
 	public abstract partial class Help_TermsOfServiceUpdateBase : IObject { }
 	/// <summary>No changes were made to telegram's terms of service		<para>See <a href="https://corefork.telegram.org/constructor/help.termsOfServiceUpdateEmpty"/></para></summary>
 	[TLDef(0xE3309F7F)]
@@ -18461,7 +18461,7 @@ namespace TL
 				bytes = bytes,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/upload.getWebFile"/></para></summary>
+		/// <summary>Returns content of an HTTP file or a part, by proxying the request through telegram.		<para>See <a href="https://corefork.telegram.org/method/upload.getWebFile"/></para></summary>
 		[TLDef(0x24E6818D)]
 		public partial class Upload_GetWebFile_ : IMethod<Upload_WebFile>
 		{
@@ -18472,7 +18472,7 @@ namespace TL
 			/// <summary>Number of bytes to be returned</summary>
 			public int limit;
 		}
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/upload.getWebFile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.getWebFile#possible-errors">details</a>)</para></summary>
+		/// <summary>Returns content of an HTTP file or a part, by proxying the request through telegram.		<para>See <a href="https://corefork.telegram.org/method/upload.getWebFile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.getWebFile#possible-errors">details</a>)</para></summary>
 		/// <param name="location">The file to download</param>
 		/// <param name="offset">Number of bytes to be skipped</param>
 		/// <param name="limit">Number of bytes to be returned</param>
