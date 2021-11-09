@@ -11,6 +11,7 @@ namespace TL
 {
 	public interface IObject { }
 	public interface IMethod<ReturnType> : IObject { }
+	public interface IPeerResolver { IPeerInfo UserOrChat(Peer peer); }
 
 	public static class Serialization
 	{

@@ -2609,7 +2609,7 @@ namespace TL
 
 	/// <summary>Full list of blocked users.		<para>See <a href="https://corefork.telegram.org/constructor/contacts.blocked"/></para></summary>
 	[TLDef(0x0ADE1591)]
-	public partial class Contacts_Blocked : IObject
+	public partial class Contacts_Blocked : IObject, IPeerResolver
 	{
 		/// <summary>List of blocked users</summary>
 		public PeerBlocked[] blocked;
@@ -2629,7 +2629,7 @@ namespace TL
 	}
 
 	/// <summary>Object contains a list of chats with messages and auxiliary data.		<para>Derived classes: <see cref="Messages_Dialogs"/>, <see cref="Messages_DialogsSlice"/>, <see cref="Messages_DialogsNotModified"/></para>		<para>See <a href="https://corefork.telegram.org/type/messages.Dialogs"/></para></summary>
-	public abstract partial class Messages_DialogsBase : IObject
+	public abstract partial class Messages_DialogsBase : IObject, IPeerResolver
 	{
 		/// <summary>List of chats</summary>
 		public abstract DialogBase[] Dialogs { get; }
@@ -2640,7 +2640,7 @@ namespace TL
 	}
 	/// <summary>Full list of chats with messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.dialogs"/></para></summary>
 	[TLDef(0x15BA6C40)]
-	public partial class Messages_Dialogs : Messages_DialogsBase
+	public partial class Messages_Dialogs : Messages_DialogsBase, IPeerResolver
 	{
 		/// <summary>List of chats</summary>
 		public DialogBase[] dialogs;
@@ -2660,14 +2660,14 @@ namespace TL
 	}
 	/// <summary>Incomplete list of dialogs with messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.dialogsSlice"/></para></summary>
 	[TLDef(0x71E094F3)]
-	public partial class Messages_DialogsSlice : Messages_Dialogs
+	public partial class Messages_DialogsSlice : Messages_Dialogs, IPeerResolver
 	{
 		/// <summary>Total number of dialogs</summary>
 		public int count;
 	}
 	/// <summary>Dialogs haven't changed		<para>See <a href="https://corefork.telegram.org/constructor/messages.dialogsNotModified"/></para></summary>
 	[TLDef(0xF0E3E596)]
-	public partial class Messages_DialogsNotModified : Messages_DialogsBase
+	public partial class Messages_DialogsNotModified : Messages_DialogsBase, IPeerResolver
 	{
 		/// <summary>Number of dialogs found server-side by the query</summary>
 		public int count;
@@ -2679,7 +2679,7 @@ namespace TL
 	}
 
 	/// <summary>Object contains infor on list of messages with auxiliary data.		<para>Derived classes: <see cref="Messages_Messages"/>, <see cref="Messages_MessagesSlice"/>, <see cref="Messages_ChannelMessages"/>, <see cref="Messages_MessagesNotModified"/></para>		<para>See <a href="https://corefork.telegram.org/type/messages.Messages"/></para></summary>
-	public abstract partial class Messages_MessagesBase : IObject
+	public abstract partial class Messages_MessagesBase : IObject, IPeerResolver
 	{
 		/// <summary>List of messages</summary>
 		public abstract MessageBase[] Messages { get; }
@@ -2688,7 +2688,7 @@ namespace TL
 	}
 	/// <summary>Full list of messages with auxilary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.messages"/></para></summary>
 	[TLDef(0x8C718E87)]
-	public partial class Messages_Messages : Messages_MessagesBase
+	public partial class Messages_Messages : Messages_MessagesBase, IPeerResolver
 	{
 		/// <summary>List of messages</summary>
 		public MessageBase[] messages;
@@ -2704,7 +2704,7 @@ namespace TL
 	}
 	/// <summary>Incomplete list of messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.messagesSlice"/></para></summary>
 	[TLDef(0x3A54685E)]
-	public partial class Messages_MessagesSlice : Messages_Messages
+	public partial class Messages_MessagesSlice : Messages_Messages, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -2727,7 +2727,7 @@ namespace TL
 	}
 	/// <summary>Channel messages		<para>See <a href="https://corefork.telegram.org/constructor/messages.channelMessages"/></para></summary>
 	[TLDef(0x64479808)]
-	public partial class Messages_ChannelMessages : Messages_MessagesBase
+	public partial class Messages_ChannelMessages : Messages_MessagesBase, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -2759,7 +2759,7 @@ namespace TL
 	}
 	/// <summary>No new messages matching the query were found		<para>See <a href="https://corefork.telegram.org/constructor/messages.messagesNotModified"/></para></summary>
 	[TLDef(0x74535F21)]
-	public partial class Messages_MessagesNotModified : Messages_MessagesBase
+	public partial class Messages_MessagesNotModified : Messages_MessagesBase, IPeerResolver
 	{
 		/// <summary>Number of results found server-side by the given query</summary>
 		public int count;
@@ -2786,7 +2786,7 @@ namespace TL
 
 	/// <summary>Extended info on chat and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.chatFull"/></para></summary>
 	[TLDef(0xE5D7D19C)]
-	public partial class Messages_ChatFull : IObject
+	public partial class Messages_ChatFull : IObject, IPeerResolver
 	{
 		/// <summary>Extended info on a chat</summary>
 		public ChatFullBase full_chat;
@@ -4002,7 +4002,7 @@ namespace TL
 	}
 
 	/// <summary>Occurred changes.		<para>Derived classes: <see cref="Updates_DifferenceEmpty"/>, <see cref="Updates_Difference"/>, <see cref="Updates_DifferenceSlice"/>, <see cref="Updates_DifferenceTooLong"/></para>		<para>See <a href="https://corefork.telegram.org/type/updates.Difference"/></para></summary>
-	public abstract partial class Updates_DifferenceBase : IObject
+	public abstract partial class Updates_DifferenceBase : IObject, IPeerResolver
 	{
 		/// <summary>List of new messages</summary>
 		public abstract MessageBase[] NewMessages { get; }
@@ -4015,7 +4015,7 @@ namespace TL
 	}
 	/// <summary>No events.		<para>See <a href="https://corefork.telegram.org/constructor/updates.differenceEmpty"/></para></summary>
 	[TLDef(0x5D75A138)]
-	public partial class Updates_DifferenceEmpty : Updates_DifferenceBase
+	public partial class Updates_DifferenceEmpty : Updates_DifferenceBase, IPeerResolver
 	{
 		/// <summary>Current date</summary>
 		public DateTime date;
@@ -4030,7 +4030,7 @@ namespace TL
 	}
 	/// <summary>Full list of occurred events.		<para>See <a href="https://corefork.telegram.org/constructor/updates.difference"/></para></summary>
 	[TLDef(0x00F49CA0)]
-	public partial class Updates_Difference : Updates_DifferenceBase
+	public partial class Updates_Difference : Updates_DifferenceBase, IPeerResolver
 	{
 		/// <summary>List of new messages</summary>
 		public MessageBase[] new_messages;
@@ -4056,7 +4056,7 @@ namespace TL
 	}
 	/// <summary>Incomplete list of occurred events.		<para>See <a href="https://corefork.telegram.org/constructor/updates.differenceSlice"/></para></summary>
 	[TLDef(0xA8FB1981)]
-	public partial class Updates_DifferenceSlice : Updates_DifferenceBase
+	public partial class Updates_DifferenceSlice : Updates_DifferenceBase, IPeerResolver
 	{
 		/// <summary>List of new messgaes</summary>
 		public MessageBase[] new_messages;
@@ -4082,7 +4082,7 @@ namespace TL
 	}
 	/// <summary>The difference is <a href="https://corefork.telegram.org/api/updates#recovering-gaps">too long</a>, and the specified state must be used to refetch updates.		<para>See <a href="https://corefork.telegram.org/constructor/updates.differenceTooLong"/></para></summary>
 	[TLDef(0x4AFE8F6D)]
-	public partial class Updates_DifferenceTooLong : Updates_DifferenceBase
+	public partial class Updates_DifferenceTooLong : Updates_DifferenceBase, IPeerResolver
 	{
 		/// <summary>The new state to use.</summary>
 		public int pts;
@@ -4230,7 +4230,7 @@ namespace TL
 	}
 	/// <summary>Constructor for a group of updates.		<para>See <a href="https://corefork.telegram.org/constructor/updatesCombined"/></para></summary>
 	[TLDef(0x725B04C3)]
-	public partial class UpdatesCombined : UpdatesBase
+	public partial class UpdatesCombined : UpdatesBase, IPeerResolver
 	{
 		/// <summary>List of updates</summary>
 		public Update[] updates;
@@ -4252,7 +4252,7 @@ namespace TL
 	}
 	/// <summary>Full constructor of updates		<para>See <a href="https://corefork.telegram.org/constructor/updates"/></para></summary>
 	[TLDef(0x74AE4240)]
-	public partial class Updates : UpdatesBase
+	public partial class Updates : UpdatesBase, IPeerResolver
 	{
 		/// <summary>List of updates</summary>
 		public Update[] updates;
@@ -5039,7 +5039,7 @@ namespace TL
 
 	/// <summary>Users found by name substring and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/contacts.found"/></para></summary>
 	[TLDef(0xB3134D9D)]
-	public partial class Contacts_Found : IObject
+	public partial class Contacts_Found : IObject, IPeerResolver
 	{
 		/// <summary>Personalized results</summary>
 		public Peer[] my_results;
@@ -5183,7 +5183,7 @@ namespace TL
 
 	/// <summary>Privacy rules		<para>See <a href="https://corefork.telegram.org/constructor/account.privacyRules"/></para></summary>
 	[TLDef(0x50A04E45)]
-	public partial class Account_PrivacyRules : IObject
+	public partial class Account_PrivacyRules : IObject, IPeerResolver
 	{
 		/// <summary>Privacy rules</summary>
 		public PrivacyRule[] rules;
@@ -6190,14 +6190,14 @@ namespace TL
 	}
 
 	/// <summary>Contains the difference (new messages) between our local channel state and the remote state		<para>Derived classes: <see cref="Updates_ChannelDifferenceEmpty"/>, <see cref="Updates_ChannelDifferenceTooLong"/>, <see cref="Updates_ChannelDifference"/></para>		<para>See <a href="https://corefork.telegram.org/type/updates.ChannelDifference"/></para></summary>
-	public abstract partial class Updates_ChannelDifferenceBase : IObject
+	public abstract partial class Updates_ChannelDifferenceBase : IObject, IPeerResolver
 	{
 		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
 	/// <summary>There are no new updates		<para>See <a href="https://corefork.telegram.org/constructor/updates.channelDifferenceEmpty"/></para></summary>
 	[TLDef(0x3E11AFFB)]
-	public partial class Updates_ChannelDifferenceEmpty : Updates_ChannelDifferenceBase
+	public partial class Updates_ChannelDifferenceEmpty : Updates_ChannelDifferenceBase, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -6218,7 +6218,7 @@ namespace TL
 	}
 	/// <summary>The provided <c>pts + limit &lt; remote pts</c>. Simply, there are too many updates to be fetched (more than <c>limit</c>), the client has to resolve the update gap in one of the following ways:		<para>See <a href="https://corefork.telegram.org/constructor/updates.channelDifferenceTooLong"/></para></summary>
 	[TLDef(0xA4BCC6FE)]
-	public partial class Updates_ChannelDifferenceTooLong : Updates_ChannelDifferenceBase
+	public partial class Updates_ChannelDifferenceTooLong : Updates_ChannelDifferenceBase, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -6245,7 +6245,7 @@ namespace TL
 	}
 	/// <summary>The new updates		<para>See <a href="https://corefork.telegram.org/constructor/updates.channelDifference"/></para></summary>
 	[TLDef(0x2064674E)]
-	public partial class Updates_ChannelDifference : Updates_ChannelDifferenceBase
+	public partial class Updates_ChannelDifference : Updates_ChannelDifferenceBase, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -6457,7 +6457,7 @@ namespace TL
 	/// <summary>Represents multiple channel participants		<para>See <a href="https://corefork.telegram.org/constructor/channels.channelParticipants"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/channels.channelParticipantsNotModified">channels.channelParticipantsNotModified</a></remarks>
 	[TLDef(0x9AB0FEAF)]
-	public partial class Channels_ChannelParticipants : IObject
+	public partial class Channels_ChannelParticipants : IObject, IPeerResolver
 	{
 		/// <summary>Total number of participants that correspond to the given query</summary>
 		public int count;
@@ -6473,7 +6473,7 @@ namespace TL
 
 	/// <summary>Represents a channel participant		<para>See <a href="https://corefork.telegram.org/constructor/channels.channelParticipant"/></para></summary>
 	[TLDef(0xDFB80317)]
-	public partial class Channels_ChannelParticipant : IObject
+	public partial class Channels_ChannelParticipant : IObject, IPeerResolver
 	{
 		/// <summary>The channel participant</summary>
 		public ChannelParticipantBase participant;
@@ -7264,7 +7264,7 @@ namespace TL
 
 	/// <summary>Dialog info of multiple peers		<para>See <a href="https://corefork.telegram.org/constructor/messages.peerDialogs"/></para></summary>
 	[TLDef(0x3371C354)]
-	public partial class Messages_PeerDialogs : IObject
+	public partial class Messages_PeerDialogs : IObject, IPeerResolver
 	{
 		/// <summary>Dialog info</summary>
 		public DialogBase[] dialogs;
@@ -7328,7 +7328,7 @@ namespace TL
 	public abstract partial class Contacts_TopPeersBase : IObject { }
 	/// <summary>Top peers		<para>See <a href="https://corefork.telegram.org/constructor/contacts.topPeers"/></para></summary>
 	[TLDef(0x70B772A8)]
-	public partial class Contacts_TopPeers : Contacts_TopPeersBase
+	public partial class Contacts_TopPeers : Contacts_TopPeersBase, IPeerResolver
 	{
 		/// <summary>Top peers by top peer category</summary>
 		public TopPeerCategoryPeers[] categories;
@@ -9220,7 +9220,7 @@ namespace TL
 
 	/// <summary>Admin log events		<para>See <a href="https://corefork.telegram.org/constructor/channels.adminLogResults"/></para></summary>
 	[TLDef(0xED8AF74D)]
-	public partial class Channels_AdminLogResults : IObject
+	public partial class Channels_AdminLogResults : IObject, IPeerResolver
 	{
 		/// <summary>Admin log events</summary>
 		public ChannelAdminLogEvent[] events;
@@ -9339,7 +9339,7 @@ namespace TL
 
 	/// <summary>Recent t.me URLs		<para>See <a href="https://corefork.telegram.org/constructor/help.recentMeUrls"/></para></summary>
 	[TLDef(0x0E0310D7)]
-	public partial class Help_RecentMeUrls : IObject
+	public partial class Help_RecentMeUrls : IObject, IPeerResolver
 	{
 		/// <summary>URLs</summary>
 		public RecentMeUrl[] urls;
@@ -10927,7 +10927,7 @@ namespace TL
 
 	/// <summary>Inactive chat list		<para>See <a href="https://corefork.telegram.org/constructor/messages.inactiveChats"/></para></summary>
 	[TLDef(0xA927FEC5)]
-	public partial class Messages_InactiveChats : IObject
+	public partial class Messages_InactiveChats : IObject, IPeerResolver
 	{
 		/// <summary>When was the chat last active</summary>
 		public int[] dates;
@@ -11336,8 +11336,8 @@ namespace TL
 			/// <summary>Field <see cref="psa_message"/> has a value</summary>
 			has_psa_message = 0x4,
 		}
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the result</summary>
+		public IPeerInfo UserOrChat => peer.UserOrChat(users, chats);
 	}
 
 	/// <summary><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> in MPEG4 format		<para>See <a href="https://corefork.telegram.org/constructor/videoSize"/></para></summary>
@@ -11539,7 +11539,7 @@ namespace TL
 
 	/// <summary>View, forward counter + info about replies		<para>See <a href="https://corefork.telegram.org/constructor/messages.messageViews"/></para></summary>
 	[TLDef(0xB6C4F543)]
-	public partial class Messages_MessageViews : IObject
+	public partial class Messages_MessageViews : IObject, IPeerResolver
 	{
 		/// <summary>View, forward counter + info about replies</summary>
 		public MessageViews[] views;
@@ -11553,7 +11553,7 @@ namespace TL
 
 	/// <summary>Information about a <a href="https://corefork.telegram.org/api/threads">message thread</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.discussionMessage"/></para></summary>
 	[TLDef(0xA6341782)]
-	public partial class Messages_DiscussionMessage : IObject
+	public partial class Messages_DiscussionMessage : IObject, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -11814,7 +11814,7 @@ namespace TL
 
 	/// <summary>Contains info about a group call, and partial info about its participants.		<para>See <a href="https://corefork.telegram.org/constructor/phone.groupCall"/></para></summary>
 	[TLDef(0x9E727AAD)]
-	public partial class Phone_GroupCall : IObject
+	public partial class Phone_GroupCall : IObject, IPeerResolver
 	{
 		/// <summary>Info about the group call</summary>
 		public GroupCallBase call;
@@ -11832,7 +11832,7 @@ namespace TL
 
 	/// <summary>Info about the participants of a group call or livestream		<para>See <a href="https://corefork.telegram.org/constructor/phone.groupParticipants"/></para></summary>
 	[TLDef(0xF47751B6)]
-	public partial class Phone_GroupParticipants : IObject
+	public partial class Phone_GroupParticipants : IObject, IPeerResolver
 	{
 		/// <summary>Number of participants</summary>
 		public int count;
@@ -12024,7 +12024,7 @@ namespace TL
 
 	/// <summary>A list of peers that can be used to join a group call, presenting yourself as a specific user/channel.		<para>See <a href="https://corefork.telegram.org/constructor/phone.joinAsPeers"/></para></summary>
 	[TLDef(0xAFE5623F)]
-	public partial class Phone_JoinAsPeers : IObject
+	public partial class Phone_JoinAsPeers : IObject, IPeerResolver
 	{
 		/// <summary>Peers</summary>
 		public Peer[] peers;
@@ -12167,7 +12167,7 @@ namespace TL
 
 	/// <summary>A set of sponsored messages associated to a channel		<para>See <a href="https://corefork.telegram.org/constructor/messages.sponsoredMessages"/></para></summary>
 	[TLDef(0x65A4C7D5)]
-	public partial class Messages_SponsoredMessages : IObject
+	public partial class Messages_SponsoredMessages : IObject, IPeerResolver
 	{
 		/// <summary>Sponsored messages</summary>
 		public SponsoredMessage[] messages;
@@ -12191,7 +12191,7 @@ namespace TL
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.searchResultsCalendar"/></para></summary>
 	[TLDef(0x147EE23C)]
-	public partial class Messages_SearchResultsCalendar : IObject
+	public partial class Messages_SearchResultsCalendar : IObject, IPeerResolver
 	{
 		public Flags flags;
 		public int count;
