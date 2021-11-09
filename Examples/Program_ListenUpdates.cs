@@ -12,76 +12,57 @@ namespace WTelegramClientTest
 		static async Task Main(string[] _)
 		{
 			Console.WriteLine("The program will display updates received for the logged-in user. Press any key to terminate");
-			WTelegram.Helpers.Log += (l, s) => System.Diagnostics.Debug.WriteLine(s);
+			WTelegram.Helpers.Log = (l, s) => System.Diagnostics.Debug.WriteLine(s);
 			using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 			client.Update += Client_Update;
-			await client.ConnectAsync();
 			var my = await client.LoginUserIfNeeded();
-			users[my.id] = my;
-			// note that on login Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
+			_users[my.id] = my;
+			// Note that on login Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
 			Console.WriteLine($"We are logged-in as {my.username ?? my.first_name + " " + my.last_name} (id {my.id})");
+			// We collect all infos about the users/chats so that updates can be printed with their names
 			var dialogsBase = await client.Messages_GetDialogs(default, 0, null, 0, 0); // dialogs = groups/channels/users
 			if (dialogsBase is Messages_Dialogs dialogs)
 				while (dialogs.dialogs.Length != 0)
 				{
-					foreach (var (id, user) in dialogs.users) users[id] = user;
-					foreach (var (id, chat) in dialogs.chats) chats[id] = chat;
+					foreach (var (id, user) in dialogs.users) _users[id] = user;
+					foreach (var (id, chat) in dialogs.chats) _chats[id] = chat;
 					var lastDialog = dialogs.dialogs[^1];
 					var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
 					var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
 					dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, 500, 0);
 				}
 			Console.ReadKey();
-			await client.Ping(42); // dummy API call
 		}
 
 
-		private static readonly Dictionary<long, UserBase> users = new();
-		private static readonly Dictionary<long, ChatBase> chats = new();
-		private static string AUser(long user_id) => users.TryGetValue(user_id, out var user) ? user.ToString() : $"User {user_id}";
-		private static string AChat(long chat_id) => chats.TryGetValue(chat_id, out var chat) ? chat.ToString() : $"Chat {chat_id}";
-		private static string APeer(Peer peer) => peer is null ? null : peer is PeerUser user ? AUser(user.user_id)
-			: peer is PeerChat chat ? AChat(chat.chat_id) : peer is PeerChannel channel ? AChat(channel.channel_id) : $"Peer {peer.ID}";
+		private static readonly Dictionary<long, UserBase> _users = new();
+		private static readonly Dictionary<long, ChatBase> _chats = new();
+		private static string User(long id) => _users.TryGetValue(id, out var user) ? user.ToString() : $"User {id}";
+		private static string Chat(long id) => _chats.TryGetValue(id, out var chat) ? chat.ToString() : $"Chat {id}";
+		private static string Peer(Peer peer) => peer is null ? null : peer is PeerUser user ? User(user.user_id)
+			: peer is PeerChat or PeerChannel ? Chat(peer.ID) : $"Peer {peer.ID}";
 
 		private static void Client_Update(IObject arg)
 		{
-			switch (arg)
-			{
-				case UpdateShortMessage usm: Console.WriteLine($"{AUser(usm.user_id)}> {usm.message}"); break;
-				case UpdateShortChatMessage uscm: Console.WriteLine($"{AUser(uscm.from_id)} in {AChat(uscm.chat_id)}> {uscm.message}"); break;
-				case UpdateShortSentMessage: Console.WriteLine($"You sent a message"); break;
-				case UpdateShort updateShort: DisplayUpdate(updateShort.update); break;
-				case Updates u:
-					foreach (var (id, user) in u.users) users[id] = user;
-					foreach (var (id, chat) in u.chats) chats[id] = chat;
-					foreach (var update in u.updates) DisplayUpdate(update);
-					break;
-				case UpdatesCombined uc:
-					foreach (var (id, user) in uc.users) users[id] = user;
-					foreach (var (id, chat) in uc.chats) chats[id] = chat;
-					foreach (var update in uc.updates) DisplayUpdate(update);
-					break;
-				default: Console.WriteLine(arg.GetType().Name); break;
-			}
-		}
-
-		private static void DisplayUpdate(Update update)
-		{
-			switch (update)
-			{
-				case UpdateNewMessage unm: DisplayMessage(unm.message); break;
-				case UpdateEditMessage uem: DisplayMessage(uem.message, true); break;
-				case UpdateDeleteChannelMessages udcm: Console.WriteLine($"{udcm.messages.Length} message(s) deleted in {AChat(udcm.channel_id)}"); break;
-				case UpdateDeleteMessages udm: Console.WriteLine($"{udm.messages.Length} message(s) deleted"); break;
-				case UpdateUserTyping uut: Console.WriteLine($"{AUser(uut.user_id)} is {uut.action}"); break;
-				case UpdateChatUserTyping ucut: Console.WriteLine($"{APeer(ucut.from_id)} is {ucut.action} in {AChat(ucut.chat_id)}"); break;
-				case UpdateChannelUserTyping ucut2: Console.WriteLine($"{APeer(ucut2.from_id)} is {ucut2.action} in {AChat(ucut2.channel_id)}"); break;
-				case UpdateChatParticipants { participants: ChatParticipants cp }: Console.WriteLine($"{cp.participants.Length} participants in {AChat(cp.chat_id)}"); break;
-				case UpdateUserStatus uus: Console.WriteLine($"{AUser(uus.user_id)} is now {uus.status.GetType().Name[10..]}"); break;
-				case UpdateUserName uun: Console.WriteLine($"{AUser(uun.user_id)} has changed profile name: @{uun.username} {uun.first_name} {uun.last_name}"); break;
-				case UpdateUserPhoto uup: Console.WriteLine($"{AUser(uup.user_id)} has changed profile photo"); break;
-				default: Console.WriteLine(update.GetType().Name); break;
-			}
+			if (arg is not UpdatesBase updates) return;
+			foreach(var (id, user) in updates.Users) _users[id] = user;
+			foreach(var (id, chat) in updates.Chats) _chats[id] = chat;
+			foreach (var update in updates.UpdateList)
+				switch (update)
+				{
+					case UpdateNewMessage unm: DisplayMessage(unm.message); break;
+					case UpdateEditMessage uem: DisplayMessage(uem.message, true); break;
+					case UpdateDeleteChannelMessages udcm: Console.WriteLine($"{udcm.messages.Length} message(s) deleted in {Chat(udcm.channel_id)}"); break;
+					case UpdateDeleteMessages udm: Console.WriteLine($"{udm.messages.Length} message(s) deleted"); break;
+					case UpdateUserTyping uut: Console.WriteLine($"{User(uut.user_id)} is {uut.action}"); break;
+					case UpdateChatUserTyping ucut: Console.WriteLine($"{Peer(ucut.from_id)} is {ucut.action} in {Chat(ucut.chat_id)}"); break;
+					case UpdateChannelUserTyping ucut2: Console.WriteLine($"{Peer(ucut2.from_id)} is {ucut2.action} in {Chat(ucut2.channel_id)}"); break;
+					case UpdateChatParticipants { participants: ChatParticipants cp }: Console.WriteLine($"{cp.participants.Length} participants in {Chat(cp.chat_id)}"); break;
+					case UpdateUserStatus uus: Console.WriteLine($"{User(uus.user_id)} is now {uus.status.GetType().Name[10..]}"); break;
+					case UpdateUserName uun: Console.WriteLine($"{User(uun.user_id)} has changed profile name: @{uun.username} {uun.first_name} {uun.last_name}"); break;
+					case UpdateUserPhoto uup: Console.WriteLine($"{User(uup.user_id)} has changed profile photo"); break;
+					default: Console.WriteLine(update.GetType().Name); break;
+				}
 		}
 
 		private static void DisplayMessage(MessageBase messageBase, bool edit = false)
@@ -89,8 +70,8 @@ namespace WTelegramClientTest
 			if (edit) Console.Write("(Edit): ");
 			switch (messageBase)
 			{
-				case Message m: Console.WriteLine($"{APeer(m.from_id) ?? m.post_author} in {APeer(m.peer_id)}> {m.message}"); break;
-				case MessageService ms: Console.WriteLine($"{APeer(ms.from_id)} in {APeer(ms.peer_id)} [{ms.action.GetType().Name[13..]}]"); break;
+				case Message m: Console.WriteLine($"{Peer(m.from_id) ?? m.post_author} in {Peer(m.peer_id)}> {m.message}"); break;
+				case MessageService ms: Console.WriteLine($"{Peer(ms.from_id)} in {Peer(ms.peer_id)} [{ms.action.GetType().Name[13..]}]"); break;
 			}
 		}
 	}

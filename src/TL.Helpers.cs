@@ -311,18 +311,35 @@ namespace TL
 		public override bool Final => flags.HasFlag(Flags.final);
 		public override int Timeout => timeout;
 	}
-
-	partial class UpdatesBase				{ public abstract Update[] UpdateList { get; } }
+	
+	partial class UpdatesBase
+	{
+		public abstract Update[] UpdateList { get; }
+		public virtual Dictionary<long, UserBase> Users => NoUsers;
+		public virtual Dictionary<long, ChatBase> Chats => NoChats;
+		private static readonly Dictionary<long, UserBase> NoUsers = new();
+		private static readonly Dictionary<long, ChatBase> NoChats = new();
+	}
+	partial class UpdatesCombined
+	{
+		public override Update[] UpdateList => updates;
+		public override Dictionary<long, UserBase> Users => users;
+		public override Dictionary<long, ChatBase> Chats => chats;
+	}
+	partial class Updates
+	{
+		public override Update[] UpdateList => updates;
+		public override Dictionary<long, UserBase> Users => users;
+		public override Dictionary<long, ChatBase> Chats => chats;
+	}
 	partial class UpdatesTooLong			{ public override Update[] UpdateList => Array.Empty<Update>(); }
 	partial class UpdateShort				{ public override Update[] UpdateList => new[] { update }; }
-	partial class UpdatesCombined			{ public override Update[] UpdateList => updates; }
-	partial class Updates					{ public override Update[] UpdateList => updates; }
 	partial class UpdateShortSentMessage	{ public override Update[] UpdateList => Array.Empty<Update>(); }
 	partial class UpdateShortMessage		{ public override Update[] UpdateList => new[] { new UpdateNewMessage
 	{
 		message = new Message
 		{
-			flags = (Message.Flags)flags, id = id, date = date,
+			flags = (Message.Flags)flags | Message.Flags.has_from_id, id = id, date = date,
 			message = message, entities = entities, reply_to = reply_to,
 			from_id = new PeerUser { user_id = user_id },
 			peer_id = new PeerUser { user_id = user_id },
@@ -333,7 +350,7 @@ namespace TL
 	{
 		message = new Message
 		{
-			flags = (Message.Flags)flags, id = id, date = date,
+			flags = (Message.Flags)flags | Message.Flags.has_from_id, id = id, date = date,
 			message = message, entities = entities, reply_to = reply_to,
 			from_id = new PeerUser { user_id = from_id },
 			peer_id = new PeerChat { chat_id = chat_id },
