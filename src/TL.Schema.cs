@@ -12233,82 +12233,28 @@ namespace TL
 	}
 
 	// ---functions---
+	#pragma warning disable IDE1006
 
 	public static class Schema
 	{
-		/// <summary>Invokes a query after successfull completion of one of the previous queries.		<para>See <a href="https://corefork.telegram.org/method/invokeAfterMsg"/></para></summary>
 		[TLDef(0xCB9F372D)]
-		public partial class InvokeAfterMsg_<X> : IMethod<X>
-		{
-			/// <summary>Message identifier on which a current query depends</summary>
-			public long msg_id;
-			/// <summary>The query itself</summary>
-			public IMethod<X> query;
-		}
+		public record InvokeAfterMsg_<X>(long msg_id, IMethod<X> query) : IMethod<X>;
 		/// <summary>Invokes a query after successfull completion of one of the previous queries.		<para>See <a href="https://corefork.telegram.org/method/invokeAfterMsg"/></para></summary>
 		/// <param name="msg_id">Message identifier on which a current query depends</param>
 		/// <param name="query">The query itself</param>
 		public static Task<X> InvokeAfterMsg<X>(this Client client, long msg_id, IMethod<X> query)
-			=> client.CallAsync(new InvokeAfterMsg_<X>
-			{
-				msg_id = msg_id,
-				query = query,
-			});
+			=> client.CallAsync(new InvokeAfterMsg_<X>(msg_id, query));
 
-		/// <summary>Invokes a query after a successfull completion of previous queries		<para>See <a href="https://corefork.telegram.org/method/invokeAfterMsgs"/></para></summary>
 		[TLDef(0x3DC4B4F0)]
-		public partial class InvokeAfterMsgs_<X> : IMethod<X>
-		{
-			/// <summary>List of messages on which a current query depends</summary>
-			public long[] msg_ids;
-			/// <summary>The query itself</summary>
-			public IMethod<X> query;
-		}
+		public record InvokeAfterMsgs_<X>(long[] msg_ids, IMethod<X> query) : IMethod<X>;
 		/// <summary>Invokes a query after a successfull completion of previous queries		<para>See <a href="https://corefork.telegram.org/method/invokeAfterMsgs"/></para></summary>
 		/// <param name="msg_ids">List of messages on which a current query depends</param>
 		/// <param name="query">The query itself</param>
 		public static Task<X> InvokeAfterMsgs<X>(this Client client, long[] msg_ids, IMethod<X> query)
-			=> client.CallAsync(new InvokeAfterMsgs_<X>
-			{
-				msg_ids = msg_ids,
-				query = query,
-			});
+			=> client.CallAsync(new InvokeAfterMsgs_<X>(msg_ids, query));
 
-		/// <summary>Initialize connection		<para>See <a href="https://corefork.telegram.org/method/initConnection"/></para></summary>
 		[TLDef(0xC1CD5EA9)]
-		public partial class InitConnection_<X> : IMethod<X>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Application identifier (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</summary>
-			public int api_id;
-			/// <summary>Device model</summary>
-			public string device_model;
-			/// <summary>Operation system version</summary>
-			public string system_version;
-			/// <summary>Application version</summary>
-			public string app_version;
-			/// <summary>Code for the language used on the device's OS, ISO 639-1 standard</summary>
-			public string system_lang_code;
-			/// <summary>Language pack to use</summary>
-			public string lang_pack;
-			/// <summary>Code for the language used on the client, ISO 639-1 standard</summary>
-			public string lang_code;
-			/// <summary>Info about an MTProto proxy</summary>
-			[IfFlag(0)] public InputClientProxy proxy;
-			/// <summary>Additional initConnection parameters. <br/>For now, only the <c>tz_offset</c> field is supported, for specifying timezone offset in seconds.</summary>
-			[IfFlag(1)] public JSONValue params_;
-			/// <summary>The query itself</summary>
-			public IMethod<X> query;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="proxy"/> has a value</summary>
-				has_proxy = 0x1,
-				/// <summary>Field <see cref="params_"/> has a value</summary>
-				has_params = 0x2,
-			}
-		}
+		public record InitConnection_<X>(int flags, int api_id, string device_model, string system_version, string app_version, string system_lang_code, string lang_pack, string lang_code, [field:IfFlag(0)] InputClientProxy proxy, [field:IfFlag(1)] JSONValue params_, IMethod<X> query) : IMethod<X>;
 		/// <summary>Initialize connection		<para>See <a href="https://corefork.telegram.org/method/initConnection"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/initConnection#possible-errors">details</a>)</para></summary>
 		/// <param name="api_id">Application identifier (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="device_model">Device model</param>
@@ -12321,471 +12267,192 @@ namespace TL
 		/// <param name="params_">Additional initConnection parameters. <br/>For now, only the <c>tz_offset</c> field is supported, for specifying timezone offset in seconds.</param>
 		/// <param name="query">The query itself</param>
 		public static Task<X> InitConnection<X>(this Client client, int api_id, string device_model, string system_version, string app_version, string system_lang_code, string lang_pack, string lang_code, IMethod<X> query, InputClientProxy proxy = null, JSONValue params_ = null)
-			=> client.CallAsync(new InitConnection_<X>
-			{
-				flags = (InitConnection_<X>.Flags)((proxy != null ? 0x1 : 0) | (params_ != null ? 0x2 : 0)),
-				api_id = api_id,
-				device_model = device_model,
-				system_version = system_version,
-				app_version = app_version,
-				system_lang_code = system_lang_code,
-				lang_pack = lang_pack,
-				lang_code = lang_code,
-				proxy = proxy,
-				params_ = params_,
-				query = query,
-			});
+			=> client.CallAsync(new InitConnection_<X>((proxy != null ? 0x1 : 0) | (params_ != null ? 0x2 : 0),
+				api_id, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, proxy, params_, query));
 
-		/// <summary>Invoke the specified query using the specified API <a href="https://corefork.telegram.org/api/invoking#layers">layer</a>		<para>See <a href="https://corefork.telegram.org/method/invokeWithLayer"/></para></summary>
 		[TLDef(0xDA9B0D0D)]
-		public partial class InvokeWithLayer_<X> : IMethod<X>
-		{
-			/// <summary>The layer to use</summary>
-			public int layer;
-			/// <summary>The query</summary>
-			public IMethod<X> query;
-		}
+		public record InvokeWithLayer_<X>(int layer, IMethod<X> query) : IMethod<X>;
 		/// <summary>Invoke the specified query using the specified API <a href="https://corefork.telegram.org/api/invoking#layers">layer</a>		<para>See <a href="https://corefork.telegram.org/method/invokeWithLayer"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/invokeWithLayer#possible-errors">details</a>)</para></summary>
 		/// <param name="layer">The layer to use</param>
 		/// <param name="query">The query</param>
 		public static Task<X> InvokeWithLayer<X>(this Client client, int layer, IMethod<X> query)
-			=> client.CallAsync(new InvokeWithLayer_<X>
-			{
-				layer = layer,
-				query = query,
-			});
+			=> client.CallAsync(new InvokeWithLayer_<X>(layer, query));
 
-		/// <summary>Invoke a request without subscribing the used connection for <a href="https://corefork.telegram.org/api/updates">updates</a> (this is enabled by default for <a href="https://corefork.telegram.org/api/files">file queries</a>).		<para>See <a href="https://corefork.telegram.org/method/invokeWithoutUpdates"/></para></summary>
 		[TLDef(0xBF9459B7)]
-		public partial class InvokeWithoutUpdates_<X> : IMethod<X>
-		{
-			/// <summary>The query</summary>
-			public IMethod<X> query;
-		}
+		public record InvokeWithoutUpdates_<X>(IMethod<X> query) : IMethod<X>;
 		/// <summary>Invoke a request without subscribing the used connection for <a href="https://corefork.telegram.org/api/updates">updates</a> (this is enabled by default for <a href="https://corefork.telegram.org/api/files">file queries</a>).		<para>See <a href="https://corefork.telegram.org/method/invokeWithoutUpdates"/></para></summary>
 		/// <param name="query">The query</param>
 		public static Task<X> InvokeWithoutUpdates<X>(this Client client, IMethod<X> query)
-			=> client.CallAsync(new InvokeWithoutUpdates_<X>
-			{
-				query = query,
-			});
+			=> client.CallAsync(new InvokeWithoutUpdates_<X>(query));
 
-		/// <summary>Invoke with the given message range		<para>See <a href="https://corefork.telegram.org/method/invokeWithMessagesRange"/></para></summary>
 		[TLDef(0x365275F2)]
-		public partial class InvokeWithMessagesRange_<X> : IMethod<X>
-		{
-			/// <summary>Message range</summary>
-			public MessageRange range;
-			/// <summary>Query</summary>
-			public IMethod<X> query;
-		}
+		public record InvokeWithMessagesRange_<X>(MessageRange range, IMethod<X> query) : IMethod<X>;
 		/// <summary>Invoke with the given message range		<para>See <a href="https://corefork.telegram.org/method/invokeWithMessagesRange"/></para></summary>
 		/// <param name="range">Message range</param>
 		/// <param name="query">Query</param>
 		public static Task<X> InvokeWithMessagesRange<X>(this Client client, MessageRange range, IMethod<X> query)
-			=> client.CallAsync(new InvokeWithMessagesRange_<X>
-			{
-				range = range,
-				query = query,
-			});
+			=> client.CallAsync(new InvokeWithMessagesRange_<X>(range, query));
 
-		/// <summary>Invoke a method within a takeout session		<para>See <a href="https://corefork.telegram.org/method/invokeWithTakeout"/></para></summary>
 		[TLDef(0xACA9FD2E)]
-		public partial class InvokeWithTakeout_<X> : IMethod<X>
-		{
-			/// <summary>Takeout session ID</summary>
-			public long takeout_id;
-			/// <summary>Query</summary>
-			public IMethod<X> query;
-		}
+		public record InvokeWithTakeout_<X>(long takeout_id, IMethod<X> query) : IMethod<X>;
 		/// <summary>Invoke a method within a takeout session		<para>See <a href="https://corefork.telegram.org/method/invokeWithTakeout"/></para></summary>
 		/// <param name="takeout_id">Takeout session ID</param>
 		/// <param name="query">Query</param>
 		public static Task<X> InvokeWithTakeout<X>(this Client client, long takeout_id, IMethod<X> query)
-			=> client.CallAsync(new InvokeWithTakeout_<X>
-			{
-				takeout_id = takeout_id,
-				query = query,
-			});
+			=> client.CallAsync(new InvokeWithTakeout_<X>(takeout_id, query));
 
-		/// <summary>Send the verification code for login		<para>See <a href="https://corefork.telegram.org/method/auth.sendCode"/></para></summary>
 		[TLDef(0xA677244F)]
-		public partial class Auth_SendCode_ : IMethod<Auth_SentCode>
-		{
-			/// <summary>Phone number in international format</summary>
-			public string phone_number;
-			/// <summary>Application identifier (see <a href="https://corefork.telegram.org/myapp">App configuration</a>)</summary>
-			public int api_id;
-			/// <summary>Application secret hash (see <a href="https://corefork.telegram.org/myapp">App configuration</a>)</summary>
-			public string api_hash;
-			/// <summary>Settings for the code type to send</summary>
-			public CodeSettings settings;
-		}
+		public record Auth_SendCode_(string phone_number, int api_id, string api_hash, CodeSettings settings) : IMethod<Auth_SentCode>;
 		/// <summary>Send the verification code for login		<para>See <a href="https://corefork.telegram.org/method/auth.sendCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 303,400,401,406 (<a href="https://corefork.telegram.org/method/auth.sendCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">Phone number in international format</param>
 		/// <param name="api_id">Application identifier (see <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="api_hash">Application secret hash (see <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="settings">Settings for the code type to send</param>
 		public static Task<Auth_SentCode> Auth_SendCode(this Client client, string phone_number, int api_id, string api_hash, CodeSettings settings)
-			=> client.CallAsync(new Auth_SendCode_
-			{
-				phone_number = phone_number,
-				api_id = api_id,
-				api_hash = api_hash,
-				settings = settings,
-			});
+			=> client.CallAsync(new Auth_SendCode_(phone_number, api_id, api_hash, settings));
 
-		/// <summary>Registers a validated phone number in the system.		<para>See <a href="https://corefork.telegram.org/method/auth.signUp"/></para></summary>
 		[TLDef(0x80EEE427)]
-		public partial class Auth_SignUp_ : IMethod<Auth_AuthorizationBase>
-		{
-			/// <summary>Phone number in the international format</summary>
-			public string phone_number;
-			/// <summary>SMS-message ID</summary>
-			public string phone_code_hash;
-			/// <summary>New user first name</summary>
-			public string first_name;
-			/// <summary>New user last name</summary>
-			public string last_name;
-		}
+		public record Auth_SignUp_(string phone_number, string phone_code_hash, string first_name, string last_name) : IMethod<Auth_AuthorizationBase>;
 		/// <summary>Registers a validated phone number in the system.		<para>See <a href="https://corefork.telegram.org/method/auth.signUp"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.signUp#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">Phone number in the international format</param>
 		/// <param name="phone_code_hash">SMS-message ID</param>
 		/// <param name="first_name">New user first name</param>
 		/// <param name="last_name">New user last name</param>
 		public static Task<Auth_AuthorizationBase> Auth_SignUp(this Client client, string phone_number, string phone_code_hash, string first_name, string last_name)
-			=> client.CallAsync(new Auth_SignUp_
-			{
-				phone_number = phone_number,
-				phone_code_hash = phone_code_hash,
-				first_name = first_name,
-				last_name = last_name,
-			});
+			=> client.CallAsync(new Auth_SignUp_(phone_number, phone_code_hash, first_name, last_name));
 
-		/// <summary>Signs in a user with a validated phone number.		<para>See <a href="https://corefork.telegram.org/method/auth.signIn"/></para></summary>
 		[TLDef(0xBCD51581)]
-		public partial class Auth_SignIn_ : IMethod<Auth_AuthorizationBase>
-		{
-			/// <summary>Phone number in the international format</summary>
-			public string phone_number;
-			/// <summary>SMS-message ID, obtained from <a href="https://corefork.telegram.org/method/auth.sendCode">auth.sendCode</a></summary>
-			public string phone_code_hash;
-			/// <summary>Valid numerical code from the SMS-message</summary>
-			public string phone_code;
-		}
+		public record Auth_SignIn_(string phone_number, string phone_code_hash, string phone_code) : IMethod<Auth_AuthorizationBase>;
 		/// <summary>Signs in a user with a validated phone number.		<para>See <a href="https://corefork.telegram.org/method/auth.signIn"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.signIn#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">Phone number in the international format</param>
 		/// <param name="phone_code_hash">SMS-message ID, obtained from <a href="https://corefork.telegram.org/method/auth.sendCode">auth.sendCode</a></param>
 		/// <param name="phone_code">Valid numerical code from the SMS-message</param>
 		public static Task<Auth_AuthorizationBase> Auth_SignIn(this Client client, string phone_number, string phone_code_hash, string phone_code)
-			=> client.CallAsync(new Auth_SignIn_
-			{
-				phone_number = phone_number,
-				phone_code_hash = phone_code_hash,
-				phone_code = phone_code,
-			});
+			=> client.CallAsync(new Auth_SignIn_(phone_number, phone_code_hash, phone_code));
 
-		/// <summary>Logs out the user.		<para>See <a href="https://corefork.telegram.org/method/auth.logOut"/></para></summary>
 		[TLDef(0x5717DA40)]
-		public partial class Auth_LogOut_ : IMethod<bool> { }
+		public record Auth_LogOut_() : IMethod<bool>;
 		/// <summary>Logs out the user.		<para>See <a href="https://corefork.telegram.org/method/auth.logOut"/> [bots: ✓]</para></summary>
 		public static Task<bool> Auth_LogOut(this Client client)
-			=> client.CallAsync(new Auth_LogOut_
-			{
-			});
+			=> client.CallAsync(new Auth_LogOut_());
 
-		/// <summary>Terminates all user's authorized sessions except for the current one.		<para>See <a href="https://corefork.telegram.org/method/auth.resetAuthorizations"/></para></summary>
 		[TLDef(0x9FAB0D1A)]
-		public partial class Auth_ResetAuthorizations_ : IMethod<bool> { }
+		public record Auth_ResetAuthorizations_() : IMethod<bool>;
 		/// <summary>Terminates all user's authorized sessions except for the current one.		<para>See <a href="https://corefork.telegram.org/method/auth.resetAuthorizations"/></para>		<para>Possible <see cref="RpcException"/> codes: 406 (<a href="https://corefork.telegram.org/method/auth.resetAuthorizations#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Auth_ResetAuthorizations(this Client client)
-			=> client.CallAsync(new Auth_ResetAuthorizations_
-			{
-			});
+			=> client.CallAsync(new Auth_ResetAuthorizations_());
 
-		/// <summary>Returns data for copying authorization to another data-centre.		<para>See <a href="https://corefork.telegram.org/method/auth.exportAuthorization"/></para></summary>
 		[TLDef(0xE5BFFFCD)]
-		public partial class Auth_ExportAuthorization_ : IMethod<Auth_ExportedAuthorization>
-		{
-			/// <summary>Number of a target data-centre</summary>
-			public int dc_id;
-		}
+		public record Auth_ExportAuthorization_(int dc_id) : IMethod<Auth_ExportedAuthorization>;
 		/// <summary>Returns data for copying authorization to another data-centre.		<para>See <a href="https://corefork.telegram.org/method/auth.exportAuthorization"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.exportAuthorization#possible-errors">details</a>)</para></summary>
 		/// <param name="dc_id">Number of a target data-centre</param>
 		public static Task<Auth_ExportedAuthorization> Auth_ExportAuthorization(this Client client, int dc_id)
-			=> client.CallAsync(new Auth_ExportAuthorization_
-			{
-				dc_id = dc_id,
-			});
+			=> client.CallAsync(new Auth_ExportAuthorization_(dc_id));
 
-		/// <summary>Logs in a user using a key transmitted from his native data-centre.		<para>See <a href="https://corefork.telegram.org/method/auth.importAuthorization"/></para></summary>
 		[TLDef(0xA57A7DAD)]
-		public partial class Auth_ImportAuthorization_ : IMethod<Auth_AuthorizationBase>
-		{
-			/// <summary>User ID</summary>
-			public long id;
-			/// <summary>Authorization key</summary>
-			public byte[] bytes;
-		}
+		public record Auth_ImportAuthorization_(long id, byte[] bytes) : IMethod<Auth_AuthorizationBase>;
 		/// <summary>Logs in a user using a key transmitted from his native data-centre.		<para>See <a href="https://corefork.telegram.org/method/auth.importAuthorization"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.importAuthorization#possible-errors">details</a>)</para></summary>
 		/// <param name="id">User ID</param>
 		/// <param name="bytes">Authorization key</param>
 		public static Task<Auth_AuthorizationBase> Auth_ImportAuthorization(this Client client, long id, byte[] bytes)
-			=> client.CallAsync(new Auth_ImportAuthorization_
-			{
-				id = id,
-				bytes = bytes,
-			});
+			=> client.CallAsync(new Auth_ImportAuthorization_(id, bytes));
 
-		/// <summary>Binds a temporary authorization key <c>temp_auth_key_id</c> to the permanent authorization key <c>perm_auth_key_id</c>. Each permanent key may only be bound to one temporary key at a time, binding a new temporary key overwrites the previous one.		<para>See <a href="https://corefork.telegram.org/method/auth.bindTempAuthKey"/></para></summary>
 		[TLDef(0xCDD42A05)]
-		public partial class Auth_BindTempAuthKey_ : IMethod<bool>
-		{
-			/// <summary>Permanent auth_key_id to bind to</summary>
-			public long perm_auth_key_id;
-			/// <summary>Random long from <a href="#binding-message-contents">Binding message contents</a></summary>
-			public long nonce;
-			/// <summary>Unix timestamp to invalidate temporary key, see <a href="#binding-message-contents">Binding message contents</a></summary>
-			public DateTime expires_at;
-			/// <summary>See <a href="#generating-encrypted-message">Generating encrypted_message</a></summary>
-			public byte[] encrypted_message;
-		}
+		public record Auth_BindTempAuthKey_(long perm_auth_key_id, long nonce, DateTime expires_at, byte[] encrypted_message) : IMethod<bool>;
 		/// <summary>Binds a temporary authorization key <c>temp_auth_key_id</c> to the permanent authorization key <c>perm_auth_key_id</c>. Each permanent key may only be bound to one temporary key at a time, binding a new temporary key overwrites the previous one.		<para>See <a href="https://corefork.telegram.org/method/auth.bindTempAuthKey"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.bindTempAuthKey#possible-errors">details</a>)</para></summary>
 		/// <param name="perm_auth_key_id">Permanent auth_key_id to bind to</param>
 		/// <param name="nonce">Random long from <a href="#binding-message-contents">Binding message contents</a></param>
 		/// <param name="expires_at">Unix timestamp to invalidate temporary key, see <a href="#binding-message-contents">Binding message contents</a></param>
 		/// <param name="encrypted_message">See <a href="#generating-encrypted-message">Generating encrypted_message</a></param>
 		public static Task<bool> Auth_BindTempAuthKey(this Client client, long perm_auth_key_id, long nonce, DateTime expires_at, byte[] encrypted_message)
-			=> client.CallAsync(new Auth_BindTempAuthKey_
-			{
-				perm_auth_key_id = perm_auth_key_id,
-				nonce = nonce,
-				expires_at = expires_at,
-				encrypted_message = encrypted_message,
-			});
+			=> client.CallAsync(new Auth_BindTempAuthKey_(perm_auth_key_id, nonce, expires_at, encrypted_message));
 
-		/// <summary>Login as a bot		<para>See <a href="https://corefork.telegram.org/method/auth.importBotAuthorization"/></para></summary>
 		[TLDef(0x67A3FF2C)]
-		public partial class Auth_ImportBotAuthorization_ : IMethod<Auth_AuthorizationBase>
-		{
-			/// <summary>Reserved for future use</summary>
-			public int flags;
-			/// <summary>Application identifier (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</summary>
-			public int api_id;
-			/// <summary>Application identifier hash (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</summary>
-			public string api_hash;
-			/// <summary>Bot token (see <a href="https://corefork.telegram.org/bots">bots</a>)</summary>
-			public string bot_auth_token;
-		}
+		public record Auth_ImportBotAuthorization_(int flags, int api_id, string api_hash, string bot_auth_token) : IMethod<Auth_AuthorizationBase>;
 		/// <summary>Login as a bot		<para>See <a href="https://corefork.telegram.org/method/auth.importBotAuthorization"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,401 (<a href="https://corefork.telegram.org/method/auth.importBotAuthorization#possible-errors">details</a>)</para></summary>
 		/// <param name="api_id">Application identifier (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="api_hash">Application identifier hash (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="bot_auth_token">Bot token (see <a href="https://corefork.telegram.org/bots">bots</a>)</param>
 		public static Task<Auth_AuthorizationBase> Auth_ImportBotAuthorization(this Client client, int flags, int api_id, string api_hash, string bot_auth_token)
-			=> client.CallAsync(new Auth_ImportBotAuthorization_
-			{
-				flags = flags,
-				api_id = api_id,
-				api_hash = api_hash,
-				bot_auth_token = bot_auth_token,
-			});
+			=> client.CallAsync(new Auth_ImportBotAuthorization_(flags, api_id, api_hash, bot_auth_token));
 
-		/// <summary>Try logging to an account protected by a <a href="https://corefork.telegram.org/api/srp">2FA password</a>.		<para>See <a href="https://corefork.telegram.org/method/auth.checkPassword"/></para></summary>
 		[TLDef(0xD18B4D16)]
-		public partial class Auth_CheckPassword_ : IMethod<Auth_AuthorizationBase>
-		{
-			/// <summary>The account's password (see <a href="https://corefork.telegram.org/api/srp">SRP</a>)</summary>
-			public InputCheckPasswordSRP password;
-		}
+		public record Auth_CheckPassword_(InputCheckPasswordSRP password) : IMethod<Auth_AuthorizationBase>;
 		/// <summary>Try logging to an account protected by a <a href="https://corefork.telegram.org/api/srp">2FA password</a>.		<para>See <a href="https://corefork.telegram.org/method/auth.checkPassword"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.checkPassword#possible-errors">details</a>)</para></summary>
 		/// <param name="password">The account's password (see <a href="https://corefork.telegram.org/api/srp">SRP</a>)</param>
 		public static Task<Auth_AuthorizationBase> Auth_CheckPassword(this Client client, InputCheckPasswordSRP password)
-			=> client.CallAsync(new Auth_CheckPassword_
-			{
-				password = password,
-			});
+			=> client.CallAsync(new Auth_CheckPassword_(password));
 
-		/// <summary>Request recovery code of a <a href="https://corefork.telegram.org/api/srp">2FA password</a>, only for accounts with a <a href="https://corefork.telegram.org/api/srp#email-verification">recovery email configured</a>.		<para>See <a href="https://corefork.telegram.org/method/auth.requestPasswordRecovery"/></para></summary>
 		[TLDef(0xD897BC66)]
-		public partial class Auth_RequestPasswordRecovery_ : IMethod<Auth_PasswordRecovery> { }
+		public record Auth_RequestPasswordRecovery_() : IMethod<Auth_PasswordRecovery>;
 		/// <summary>Request recovery code of a <a href="https://corefork.telegram.org/api/srp">2FA password</a>, only for accounts with a <a href="https://corefork.telegram.org/api/srp#email-verification">recovery email configured</a>.		<para>See <a href="https://corefork.telegram.org/method/auth.requestPasswordRecovery"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.requestPasswordRecovery#possible-errors">details</a>)</para></summary>
 		public static Task<Auth_PasswordRecovery> Auth_RequestPasswordRecovery(this Client client)
-			=> client.CallAsync(new Auth_RequestPasswordRecovery_
-			{
-			});
+			=> client.CallAsync(new Auth_RequestPasswordRecovery_());
 
-		/// <summary>Reset the <a href="https://corefork.telegram.org/api/srp">2FA password</a> using the recovery code sent using <a href="https://corefork.telegram.org/method/auth.requestPasswordRecovery">auth.requestPasswordRecovery</a>.		<para>See <a href="https://corefork.telegram.org/method/auth.recoverPassword"/></para></summary>
 		[TLDef(0x37096C70)]
-		public partial class Auth_RecoverPassword_ : IMethod<Auth_AuthorizationBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Code received via email</summary>
-			public string code;
-			/// <summary>New password</summary>
-			[IfFlag(0)] public Account_PasswordInputSettings new_settings;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="new_settings"/> has a value</summary>
-				has_new_settings = 0x1,
-			}
-		}
+		public record Auth_RecoverPassword_(int flags, string code, [field:IfFlag(0)] Account_PasswordInputSettings new_settings) : IMethod<Auth_AuthorizationBase>;
 		/// <summary>Reset the <a href="https://corefork.telegram.org/api/srp">2FA password</a> using the recovery code sent using <a href="https://corefork.telegram.org/method/auth.requestPasswordRecovery">auth.requestPasswordRecovery</a>.		<para>See <a href="https://corefork.telegram.org/method/auth.recoverPassword"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.recoverPassword#possible-errors">details</a>)</para></summary>
 		/// <param name="code">Code received via email</param>
 		/// <param name="new_settings">New password</param>
 		public static Task<Auth_AuthorizationBase> Auth_RecoverPassword(this Client client, string code, Account_PasswordInputSettings new_settings = null)
-			=> client.CallAsync(new Auth_RecoverPassword_
-			{
-				flags = (Auth_RecoverPassword_.Flags)(new_settings != null ? 0x1 : 0),
-				code = code,
-				new_settings = new_settings,
-			});
+			=> client.CallAsync(new Auth_RecoverPassword_(new_settings != null ? 0x1 : 0,
+				code, new_settings));
 
-		/// <summary>Resend the login code via another medium, the phone code type is determined by the return value of the previous auth.sendCode/auth.resendCode: see <a href="https://corefork.telegram.org/api/auth">login</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/auth.resendCode"/></para></summary>
 		[TLDef(0x3EF1A9BF)]
-		public partial class Auth_ResendCode_ : IMethod<Auth_SentCode>
-		{
-			/// <summary>The phone number</summary>
-			public string phone_number;
-			/// <summary>The phone code hash obtained from <a href="https://corefork.telegram.org/method/auth.sendCode">auth.sendCode</a></summary>
-			public string phone_code_hash;
-		}
+		public record Auth_ResendCode_(string phone_number, string phone_code_hash) : IMethod<Auth_SentCode>;
 		/// <summary>Resend the login code via another medium, the phone code type is determined by the return value of the previous auth.sendCode/auth.resendCode: see <a href="https://corefork.telegram.org/api/auth">login</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/auth.resendCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/auth.resendCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">The phone number</param>
 		/// <param name="phone_code_hash">The phone code hash obtained from <a href="https://corefork.telegram.org/method/auth.sendCode">auth.sendCode</a></param>
 		public static Task<Auth_SentCode> Auth_ResendCode(this Client client, string phone_number, string phone_code_hash)
-			=> client.CallAsync(new Auth_ResendCode_
-			{
-				phone_number = phone_number,
-				phone_code_hash = phone_code_hash,
-			});
+			=> client.CallAsync(new Auth_ResendCode_(phone_number, phone_code_hash));
 
-		/// <summary>Cancel the login verification code		<para>See <a href="https://corefork.telegram.org/method/auth.cancelCode"/></para></summary>
 		[TLDef(0x1F040578)]
-		public partial class Auth_CancelCode_ : IMethod<bool>
-		{
-			/// <summary>Phone number</summary>
-			public string phone_number;
-			/// <summary>Phone code hash from <a href="https://corefork.telegram.org/method/auth.sendCode">auth.sendCode</a></summary>
-			public string phone_code_hash;
-		}
+		public record Auth_CancelCode_(string phone_number, string phone_code_hash) : IMethod<bool>;
 		/// <summary>Cancel the login verification code		<para>See <a href="https://corefork.telegram.org/method/auth.cancelCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.cancelCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">Phone number</param>
 		/// <param name="phone_code_hash">Phone code hash from <a href="https://corefork.telegram.org/method/auth.sendCode">auth.sendCode</a></param>
 		public static Task<bool> Auth_CancelCode(this Client client, string phone_number, string phone_code_hash)
-			=> client.CallAsync(new Auth_CancelCode_
-			{
-				phone_number = phone_number,
-				phone_code_hash = phone_code_hash,
-			});
+			=> client.CallAsync(new Auth_CancelCode_(phone_number, phone_code_hash));
 
-		/// <summary>Delete all temporary authorization keys <strong>except for</strong> the ones specified		<para>See <a href="https://corefork.telegram.org/method/auth.dropTempAuthKeys"/></para></summary>
 		[TLDef(0x8E48A188)]
-		public partial class Auth_DropTempAuthKeys_ : IMethod<bool>
-		{
-			/// <summary>The auth keys that <strong>shouldn't</strong> be dropped.</summary>
-			public long[] except_auth_keys;
-		}
+		public record Auth_DropTempAuthKeys_(long[] except_auth_keys) : IMethod<bool>;
 		/// <summary>Delete all temporary authorization keys <strong>except for</strong> the ones specified		<para>See <a href="https://corefork.telegram.org/method/auth.dropTempAuthKeys"/> [bots: ✓]</para></summary>
 		/// <param name="except_auth_keys">The auth keys that <strong>shouldn't</strong> be dropped.</param>
 		public static Task<bool> Auth_DropTempAuthKeys(this Client client, long[] except_auth_keys)
-			=> client.CallAsync(new Auth_DropTempAuthKeys_
-			{
-				except_auth_keys = except_auth_keys,
-			});
+			=> client.CallAsync(new Auth_DropTempAuthKeys_(except_auth_keys));
 
-		/// <summary>Generate a login token, for <a href="https://corefork.telegram.org/api/qr-login">login via QR code</a>.<br/>The generated login token should be encoded using base64url, then shown as a <c>tg://login?token=base64encodedtoken</c> URL in the QR code.		<para>See <a href="https://corefork.telegram.org/method/auth.exportLoginToken"/></para></summary>
 		[TLDef(0xB7E085FE)]
-		public partial class Auth_ExportLoginToken_ : IMethod<Auth_LoginTokenBase>
-		{
-			/// <summary>Application identifier (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</summary>
-			public int api_id;
-			/// <summary>Application identifier hash (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</summary>
-			public string api_hash;
-			/// <summary>List of already logged-in user IDs, to prevent logging in twice with the same user</summary>
-			public long[] except_ids;
-		}
+		public record Auth_ExportLoginToken_(int api_id, string api_hash, long[] except_ids) : IMethod<Auth_LoginTokenBase>;
 		/// <summary>Generate a login token, for <a href="https://corefork.telegram.org/api/qr-login">login via QR code</a>.<br/>The generated login token should be encoded using base64url, then shown as a <c>tg://login?token=base64encodedtoken</c> URL in the QR code.		<para>See <a href="https://corefork.telegram.org/method/auth.exportLoginToken"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.exportLoginToken#possible-errors">details</a>)</para></summary>
 		/// <param name="api_id">Application identifier (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="api_hash">Application identifier hash (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="except_ids">List of already logged-in user IDs, to prevent logging in twice with the same user</param>
 		public static Task<Auth_LoginTokenBase> Auth_ExportLoginToken(this Client client, int api_id, string api_hash, long[] except_ids)
-			=> client.CallAsync(new Auth_ExportLoginToken_
-			{
-				api_id = api_id,
-				api_hash = api_hash,
-				except_ids = except_ids,
-			});
+			=> client.CallAsync(new Auth_ExportLoginToken_(api_id, api_hash, except_ids));
 
-		/// <summary>Login using a redirected login token, generated in case of DC mismatch during <a href="https://corefork.telegram.org/api/qr-login">QR code login</a>.		<para>See <a href="https://corefork.telegram.org/method/auth.importLoginToken"/></para></summary>
 		[TLDef(0x95AC5CE4)]
-		public partial class Auth_ImportLoginToken_ : IMethod<Auth_LoginTokenBase>
-		{
-			/// <summary>Login token</summary>
-			public byte[] token;
-		}
+		public record Auth_ImportLoginToken_(byte[] token) : IMethod<Auth_LoginTokenBase>;
 		/// <summary>Login using a redirected login token, generated in case of DC mismatch during <a href="https://corefork.telegram.org/api/qr-login">QR code login</a>.		<para>See <a href="https://corefork.telegram.org/method/auth.importLoginToken"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.importLoginToken#possible-errors">details</a>)</para></summary>
 		/// <param name="token">Login token</param>
 		public static Task<Auth_LoginTokenBase> Auth_ImportLoginToken(this Client client, byte[] token)
-			=> client.CallAsync(new Auth_ImportLoginToken_
-			{
-				token = token,
-			});
+			=> client.CallAsync(new Auth_ImportLoginToken_(token));
 
-		/// <summary>Accept QR code login token, logging in the app that generated it.		<para>See <a href="https://corefork.telegram.org/method/auth.acceptLoginToken"/></para></summary>
 		[TLDef(0xE894AD4D)]
-		public partial class Auth_AcceptLoginToken_ : IMethod<Authorization>
-		{
-			/// <summary>Login token embedded in QR code, for more info, see <a href="https://corefork.telegram.org/api/qr-login">login via QR code</a>.</summary>
-			public byte[] token;
-		}
+		public record Auth_AcceptLoginToken_(byte[] token) : IMethod<Authorization>;
 		/// <summary>Accept QR code login token, logging in the app that generated it.		<para>See <a href="https://corefork.telegram.org/method/auth.acceptLoginToken"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.acceptLoginToken#possible-errors">details</a>)</para></summary>
 		/// <param name="token">Login token embedded in QR code, for more info, see <a href="https://corefork.telegram.org/api/qr-login">login via QR code</a>.</param>
 		public static Task<Authorization> Auth_AcceptLoginToken(this Client client, byte[] token)
-			=> client.CallAsync(new Auth_AcceptLoginToken_
-			{
-				token = token,
-			});
+			=> client.CallAsync(new Auth_AcceptLoginToken_(token));
 
-		/// <summary>Check if the <a href="https://corefork.telegram.org/api/srp">2FA recovery code</a> sent using <a href="https://corefork.telegram.org/method/auth.requestPasswordRecovery">auth.requestPasswordRecovery</a> is valid, before passing it to <a href="https://corefork.telegram.org/method/auth.recoverPassword">auth.recoverPassword</a>.		<para>See <a href="https://corefork.telegram.org/method/auth.checkRecoveryPassword"/></para></summary>
 		[TLDef(0x0D36BF79)]
-		public partial class Auth_CheckRecoveryPassword_ : IMethod<bool>
-		{
-			/// <summary>Code received via email</summary>
-			public string code;
-		}
+		public record Auth_CheckRecoveryPassword_(string code) : IMethod<bool>;
 		/// <summary>Check if the <a href="https://corefork.telegram.org/api/srp">2FA recovery code</a> sent using <a href="https://corefork.telegram.org/method/auth.requestPasswordRecovery">auth.requestPasswordRecovery</a> is valid, before passing it to <a href="https://corefork.telegram.org/method/auth.recoverPassword">auth.recoverPassword</a>.		<para>See <a href="https://corefork.telegram.org/method/auth.checkRecoveryPassword"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.checkRecoveryPassword#possible-errors">details</a>)</para></summary>
 		/// <param name="code">Code received via email</param>
 		public static Task<bool> Auth_CheckRecoveryPassword(this Client client, string code)
-			=> client.CallAsync(new Auth_CheckRecoveryPassword_
-			{
-				code = code,
-			});
+			=> client.CallAsync(new Auth_CheckRecoveryPassword_(code));
 
-		/// <summary>Register device to receive <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>		<para>See <a href="https://corefork.telegram.org/method/account.registerDevice"/></para></summary>
 		[TLDef(0xEC86017A)]
-		public partial class Account_RegisterDevice_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Device token type.<br/><strong>Possible values</strong>:<br/><c>1</c> - APNS (device token for apple push)<br/><c>2</c> - FCM (firebase token for google firebase)<br/><c>3</c> - MPNS (channel URI for microsoft push)<br/><c>4</c> - Simple push (endpoint for firefox's simple push API)<br/><c>5</c> - Ubuntu phone (token for ubuntu push)<br/><c>6</c> - Blackberry (token for blackberry push)<br/><c>7</c> - Unused<br/><c>8</c> - WNS (windows push)<br/><c>9</c> - APNS VoIP (token for apple push VoIP)<br/><c>10</c> - Web push (web push, see below)<br/><c>11</c> - MPNS VoIP (token for microsoft push VoIP)<br/><c>12</c> - Tizen (token for tizen push)<br/><br/>For <c>10</c> web push, the token must be a JSON-encoded object containing the keys described in <a href="https://corefork.telegram.org/api/push-updates">PUSH updates</a></summary>
-			public int token_type;
-			/// <summary>Device token</summary>
-			public string token;
-			/// <summary>If <see cref="Bool.True"/> is transmitted, a sandbox-certificate will be used during transmission.</summary>
-			public bool app_sandbox;
-			/// <summary>For FCM and APNS VoIP, optional encryption key used to encrypt push notifications</summary>
-			public byte[] secret;
-			/// <summary>List of user identifiers of other users currently using the client</summary>
-			public long[] other_uids;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Avoid receiving (silent and invisible background) notifications. Useful to save battery.</summary>
-				no_muted = 0x1,
-			}
-		}
+		public record Account_RegisterDevice_(int flags, int token_type, string token, bool app_sandbox, byte[] secret, long[] other_uids) : IMethod<bool>;
 		/// <summary>Register device to receive <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>		<para>See <a href="https://corefork.telegram.org/method/account.registerDevice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.registerDevice#possible-errors">details</a>)</para></summary>
 		/// <param name="no_muted">Avoid receiving (silent and invisible background) notifications. Useful to save battery.</param>
 		/// <param name="token_type">Device token type.<br/><strong>Possible values</strong>:<br/><c>1</c> - APNS (device token for apple push)<br/><c>2</c> - FCM (firebase token for google firebase)<br/><c>3</c> - MPNS (channel URI for microsoft push)<br/><c>4</c> - Simple push (endpoint for firefox's simple push API)<br/><c>5</c> - Ubuntu phone (token for ubuntu push)<br/><c>6</c> - Blackberry (token for blackberry push)<br/><c>7</c> - Unused<br/><c>8</c> - WNS (windows push)<br/><c>9</c> - APNS VoIP (token for apple push VoIP)<br/><c>10</c> - Web push (web push, see below)<br/><c>11</c> - MPNS VoIP (token for microsoft push VoIP)<br/><c>12</c> - Tizen (token for tizen push)<br/><br/>For <c>10</c> web push, the token must be a JSON-encoded object containing the keys described in <a href="https://corefork.telegram.org/api/push-updates">PUSH updates</a></param>
@@ -12794,585 +12461,261 @@ namespace TL
 		/// <param name="secret">For FCM and APNS VoIP, optional encryption key used to encrypt push notifications</param>
 		/// <param name="other_uids">List of user identifiers of other users currently using the client</param>
 		public static Task<bool> Account_RegisterDevice(this Client client, int token_type, string token, bool app_sandbox, byte[] secret, long[] other_uids, bool no_muted = false)
-			=> client.CallAsync(new Account_RegisterDevice_
-			{
-				flags = (Account_RegisterDevice_.Flags)(no_muted ? 0x1 : 0),
-				token_type = token_type,
-				token = token,
-				app_sandbox = app_sandbox,
-				secret = secret,
-				other_uids = other_uids,
-			});
+			=> client.CallAsync(new Account_RegisterDevice_(no_muted ? 0x1 : 0, token_type, token, app_sandbox, secret, other_uids));
 
-		/// <summary>Deletes a device by its token, stops sending PUSH-notifications to it.		<para>See <a href="https://corefork.telegram.org/method/account.unregisterDevice"/></para></summary>
 		[TLDef(0x6A0D3206)]
-		public partial class Account_UnregisterDevice_ : IMethod<bool>
-		{
-			/// <summary>Device token type.<br/><strong>Possible values</strong>:<br/><c>1</c> - APNS (device token for apple push)<br/><c>2</c> - FCM (firebase token for google firebase)<br/><c>3</c> - MPNS (channel URI for microsoft push)<br/><c>4</c> - Simple push (endpoint for firefox's simple push API)<br/><c>5</c> - Ubuntu phone (token for ubuntu push)<br/><c>6</c> - Blackberry (token for blackberry push)<br/><c>7</c> - Unused<br/><c>8</c> - WNS (windows push)<br/><c>9</c> - APNS VoIP (token for apple push VoIP)<br/><c>10</c> - Web push (web push, see below)<br/><c>11</c> - MPNS VoIP (token for microsoft push VoIP)<br/><c>12</c> - Tizen (token for tizen push)<br/><br/>For <c>10</c> web push, the token must be a JSON-encoded object containing the keys described in <a href="https://corefork.telegram.org/api/push-updates">PUSH updates</a></summary>
-			public int token_type;
-			/// <summary>Device token</summary>
-			public string token;
-			/// <summary>List of user identifiers of other users currently using the client</summary>
-			public long[] other_uids;
-		}
+		public record Account_UnregisterDevice_(int token_type, string token, long[] other_uids) : IMethod<bool>;
 		/// <summary>Deletes a device by its token, stops sending PUSH-notifications to it.		<para>See <a href="https://corefork.telegram.org/method/account.unregisterDevice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.unregisterDevice#possible-errors">details</a>)</para></summary>
 		/// <param name="token_type">Device token type.<br/><strong>Possible values</strong>:<br/><c>1</c> - APNS (device token for apple push)<br/><c>2</c> - FCM (firebase token for google firebase)<br/><c>3</c> - MPNS (channel URI for microsoft push)<br/><c>4</c> - Simple push (endpoint for firefox's simple push API)<br/><c>5</c> - Ubuntu phone (token for ubuntu push)<br/><c>6</c> - Blackberry (token for blackberry push)<br/><c>7</c> - Unused<br/><c>8</c> - WNS (windows push)<br/><c>9</c> - APNS VoIP (token for apple push VoIP)<br/><c>10</c> - Web push (web push, see below)<br/><c>11</c> - MPNS VoIP (token for microsoft push VoIP)<br/><c>12</c> - Tizen (token for tizen push)<br/><br/>For <c>10</c> web push, the token must be a JSON-encoded object containing the keys described in <a href="https://corefork.telegram.org/api/push-updates">PUSH updates</a></param>
 		/// <param name="token">Device token</param>
 		/// <param name="other_uids">List of user identifiers of other users currently using the client</param>
 		public static Task<bool> Account_UnregisterDevice(this Client client, int token_type, string token, long[] other_uids)
-			=> client.CallAsync(new Account_UnregisterDevice_
-			{
-				token_type = token_type,
-				token = token,
-				other_uids = other_uids,
-			});
+			=> client.CallAsync(new Account_UnregisterDevice_(token_type, token, other_uids));
 
-		/// <summary>Edits notification settings from a given user/group, from all users/all groups.		<para>See <a href="https://corefork.telegram.org/method/account.updateNotifySettings"/></para></summary>
 		[TLDef(0x84BE5B93)]
-		public partial class Account_UpdateNotifySettings_ : IMethod<bool>
-		{
-			/// <summary>Notification source</summary>
-			public InputNotifyPeerBase peer;
-			/// <summary>Notification settings</summary>
-			public InputPeerNotifySettings settings;
-		}
+		public record Account_UpdateNotifySettings_(InputNotifyPeerBase peer, InputPeerNotifySettings settings) : IMethod<bool>;
 		/// <summary>Edits notification settings from a given user/group, from all users/all groups.		<para>See <a href="https://corefork.telegram.org/method/account.updateNotifySettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.updateNotifySettings#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Notification source</param>
 		/// <param name="settings">Notification settings</param>
 		public static Task<bool> Account_UpdateNotifySettings(this Client client, InputNotifyPeerBase peer, InputPeerNotifySettings settings)
-			=> client.CallAsync(new Account_UpdateNotifySettings_
-			{
-				peer = peer,
-				settings = settings,
-			});
+			=> client.CallAsync(new Account_UpdateNotifySettings_(peer, settings));
 
-		/// <summary>Gets current notification settings for a given user/group, from all users/all groups.		<para>See <a href="https://corefork.telegram.org/method/account.getNotifySettings"/></para></summary>
 		[TLDef(0x12B3AD31)]
-		public partial class Account_GetNotifySettings_ : IMethod<PeerNotifySettings>
-		{
-			/// <summary>Notification source</summary>
-			public InputNotifyPeerBase peer;
-		}
+		public record Account_GetNotifySettings_(InputNotifyPeerBase peer) : IMethod<PeerNotifySettings>;
 		/// <summary>Gets current notification settings for a given user/group, from all users/all groups.		<para>See <a href="https://corefork.telegram.org/method/account.getNotifySettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.getNotifySettings#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Notification source</param>
 		public static Task<PeerNotifySettings> Account_GetNotifySettings(this Client client, InputNotifyPeerBase peer)
-			=> client.CallAsync(new Account_GetNotifySettings_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Account_GetNotifySettings_(peer));
 
-		/// <summary>Resets all notification settings from users and groups.		<para>See <a href="https://corefork.telegram.org/method/account.resetNotifySettings"/></para></summary>
 		[TLDef(0xDB7E1747)]
-		public partial class Account_ResetNotifySettings_ : IMethod<bool> { }
+		public record Account_ResetNotifySettings_() : IMethod<bool>;
 		/// <summary>Resets all notification settings from users and groups.		<para>See <a href="https://corefork.telegram.org/method/account.resetNotifySettings"/></para></summary>
 		public static Task<bool> Account_ResetNotifySettings(this Client client)
-			=> client.CallAsync(new Account_ResetNotifySettings_
-			{
-			});
+			=> client.CallAsync(new Account_ResetNotifySettings_());
 
-		/// <summary>Updates user profile.		<para>See <a href="https://corefork.telegram.org/method/account.updateProfile"/></para></summary>
 		[TLDef(0x78515775)]
-		public partial class Account_UpdateProfile_ : IMethod<UserBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>New user first name</summary>
-			[IfFlag(0)] public string first_name;
-			/// <summary>New user last name</summary>
-			[IfFlag(1)] public string last_name;
-			/// <summary>New bio</summary>
-			[IfFlag(2)] public string about;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="first_name"/> has a value</summary>
-				has_first_name = 0x1,
-				/// <summary>Field <see cref="last_name"/> has a value</summary>
-				has_last_name = 0x2,
-				/// <summary>Field <see cref="about"/> has a value</summary>
-				has_about = 0x4,
-			}
-		}
+		public record Account_UpdateProfile_(int flags, [field:IfFlag(0)] string first_name, [field:IfFlag(1)] string last_name, [field:IfFlag(2)] string about) : IMethod<UserBase>;
 		/// <summary>Updates user profile.		<para>See <a href="https://corefork.telegram.org/method/account.updateProfile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.updateProfile#possible-errors">details</a>)</para></summary>
 		/// <param name="first_name">New user first name</param>
 		/// <param name="last_name">New user last name</param>
 		/// <param name="about">New bio</param>
 		public static Task<UserBase> Account_UpdateProfile(this Client client, string first_name = null, string last_name = null, string about = null)
-			=> client.CallAsync(new Account_UpdateProfile_
-			{
-				flags = (Account_UpdateProfile_.Flags)((first_name != null ? 0x1 : 0) | (last_name != null ? 0x2 : 0) | (about != null ? 0x4 : 0)),
-				first_name = first_name,
-				last_name = last_name,
-				about = about,
-			});
+			=> client.CallAsync(new Account_UpdateProfile_((first_name != null ? 0x1 : 0) | (last_name != null ? 0x2 : 0) | (about != null ? 0x4 : 0),
+				first_name, last_name, about));
 
-		/// <summary>Updates online user status.		<para>See <a href="https://corefork.telegram.org/method/account.updateStatus"/></para></summary>
 		[TLDef(0x6628562C)]
-		public partial class Account_UpdateStatus_ : IMethod<bool>
-		{
-			/// <summary>If <see cref="Bool.True"/> is transmitted, user status will change to <see cref="UserStatusOffline"/>.</summary>
-			public bool offline;
-		}
+		public record Account_UpdateStatus_(bool offline) : IMethod<bool>;
 		/// <summary>Updates online user status.		<para>See <a href="https://corefork.telegram.org/method/account.updateStatus"/></para></summary>
 		/// <param name="offline">If <see cref="Bool.True"/> is transmitted, user status will change to <see cref="UserStatusOffline"/>.</param>
 		public static Task<bool> Account_UpdateStatus(this Client client, bool offline)
-			=> client.CallAsync(new Account_UpdateStatus_
-			{
-				offline = offline,
-			});
+			=> client.CallAsync(new Account_UpdateStatus_(offline));
 
-		/// <summary>Returns a list of available wallpapers.		<para>See <a href="https://corefork.telegram.org/method/account.getWallPapers"/></para></summary>
 		[TLDef(0x07967D36)]
-		public partial class Account_GetWallPapers_ : IMethod<Account_WallPapers>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Account_GetWallPapers_(long hash) : IMethod<Account_WallPapers>;
 		/// <summary>Returns a list of available wallpapers.		<para>See <a href="https://corefork.telegram.org/method/account.getWallPapers"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.wallPapersNotModified">account.wallPapersNotModified</a></returns>
 		public static Task<Account_WallPapers> Account_GetWallPapers(this Client client, long hash)
-			=> client.CallAsync(new Account_GetWallPapers_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Account_GetWallPapers_(hash));
 
-		/// <summary>Report a peer for violation of telegram's Terms of Service		<para>See <a href="https://corefork.telegram.org/method/account.reportPeer"/></para></summary>
 		[TLDef(0xC5BA3D86)]
-		public partial class Account_ReportPeer_ : IMethod<bool>
-		{
-			/// <summary>The peer to report</summary>
-			public InputPeer peer;
-			/// <summary>The reason why this peer is being reported</summary>
-			public ReportReason reason;
-			/// <summary>Comment for report moderation</summary>
-			public string message;
-		}
+		public record Account_ReportPeer_(InputPeer peer, ReportReason reason, string message) : IMethod<bool>;
 		/// <summary>Report a peer for violation of telegram's Terms of Service		<para>See <a href="https://corefork.telegram.org/method/account.reportPeer"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.reportPeer#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The peer to report</param>
 		/// <param name="reason">The reason why this peer is being reported</param>
 		/// <param name="message">Comment for report moderation</param>
 		public static Task<bool> Account_ReportPeer(this Client client, InputPeer peer, ReportReason reason, string message)
-			=> client.CallAsync(new Account_ReportPeer_
-			{
-				peer = peer,
-				reason = reason,
-				message = message,
-			});
+			=> client.CallAsync(new Account_ReportPeer_(peer, reason, message));
 
-		/// <summary>Validates a username and checks availability.		<para>See <a href="https://corefork.telegram.org/method/account.checkUsername"/></para></summary>
 		[TLDef(0x2714D86C)]
-		public partial class Account_CheckUsername_ : IMethod<bool>
-		{
-			/// <summary>username<br/>Accepted characters: A-z (case-insensitive), 0-9 and underscores.<br/>Length: 5-32 characters.</summary>
-			public string username;
-		}
+		public record Account_CheckUsername_(string username) : IMethod<bool>;
 		/// <summary>Validates a username and checks availability.		<para>See <a href="https://corefork.telegram.org/method/account.checkUsername"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.checkUsername#possible-errors">details</a>)</para></summary>
 		/// <param name="username">username<br/>Accepted characters: A-z (case-insensitive), 0-9 and underscores.<br/>Length: 5-32 characters.</param>
 		public static Task<bool> Account_CheckUsername(this Client client, string username)
-			=> client.CallAsync(new Account_CheckUsername_
-			{
-				username = username,
-			});
+			=> client.CallAsync(new Account_CheckUsername_(username));
 
-		/// <summary>Changes username for the current user.		<para>See <a href="https://corefork.telegram.org/method/account.updateUsername"/></para></summary>
 		[TLDef(0x3E0BDD7C)]
-		public partial class Account_UpdateUsername_ : IMethod<UserBase>
-		{
-			/// <summary>username or empty string if username is to be removed<br/>Accepted characters: a-z (case-insensitive), 0-9 and underscores.<br/>Length: 5-32 characters.</summary>
-			public string username;
-		}
+		public record Account_UpdateUsername_(string username) : IMethod<UserBase>;
 		/// <summary>Changes username for the current user.		<para>See <a href="https://corefork.telegram.org/method/account.updateUsername"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,401 (<a href="https://corefork.telegram.org/method/account.updateUsername#possible-errors">details</a>)</para></summary>
 		/// <param name="username">username or empty string if username is to be removed<br/>Accepted characters: a-z (case-insensitive), 0-9 and underscores.<br/>Length: 5-32 characters.</param>
 		public static Task<UserBase> Account_UpdateUsername(this Client client, string username)
-			=> client.CallAsync(new Account_UpdateUsername_
-			{
-				username = username,
-			});
+			=> client.CallAsync(new Account_UpdateUsername_(username));
 
-		/// <summary>Get privacy settings of current account		<para>See <a href="https://corefork.telegram.org/method/account.getPrivacy"/></para></summary>
 		[TLDef(0xDADBC950)]
-		public partial class Account_GetPrivacy_ : IMethod<Account_PrivacyRules>
-		{
-			/// <summary>Peer category whose privacy settings should be fetched</summary>
-			public InputPrivacyKey key;
-		}
+		public record Account_GetPrivacy_(InputPrivacyKey key) : IMethod<Account_PrivacyRules>;
 		/// <summary>Get privacy settings of current account		<para>See <a href="https://corefork.telegram.org/method/account.getPrivacy"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.getPrivacy#possible-errors">details</a>)</para></summary>
 		/// <param name="key">Peer category whose privacy settings should be fetched</param>
 		public static Task<Account_PrivacyRules> Account_GetPrivacy(this Client client, InputPrivacyKey key)
-			=> client.CallAsync(new Account_GetPrivacy_
-			{
-				key = key,
-			});
+			=> client.CallAsync(new Account_GetPrivacy_(key));
 
-		/// <summary>Change privacy settings of current account		<para>See <a href="https://corefork.telegram.org/method/account.setPrivacy"/></para></summary>
 		[TLDef(0xC9F81CE8)]
-		public partial class Account_SetPrivacy_ : IMethod<Account_PrivacyRules>
-		{
-			/// <summary>Peers to which the privacy rules apply</summary>
-			public InputPrivacyKey key;
-			/// <summary>New privacy rules</summary>
-			public InputPrivacyRule[] rules;
-		}
+		public record Account_SetPrivacy_(InputPrivacyKey key, InputPrivacyRule[] rules) : IMethod<Account_PrivacyRules>;
 		/// <summary>Change privacy settings of current account		<para>See <a href="https://corefork.telegram.org/method/account.setPrivacy"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.setPrivacy#possible-errors">details</a>)</para></summary>
 		/// <param name="key">Peers to which the privacy rules apply</param>
 		/// <param name="rules">New privacy rules</param>
 		public static Task<Account_PrivacyRules> Account_SetPrivacy(this Client client, InputPrivacyKey key, InputPrivacyRule[] rules)
-			=> client.CallAsync(new Account_SetPrivacy_
-			{
-				key = key,
-				rules = rules,
-			});
+			=> client.CallAsync(new Account_SetPrivacy_(key, rules));
 
-		/// <summary>Delete the user's account from the telegram servers. Can be used, for example, to delete the account of a user that provided the login code, but forgot the <a href="https://corefork.telegram.org/api/srp">2FA password and no recovery method is configured</a>.		<para>See <a href="https://corefork.telegram.org/method/account.deleteAccount"/></para></summary>
 		[TLDef(0x418D4E0B)]
-		public partial class Account_DeleteAccount_ : IMethod<bool>
-		{
-			/// <summary>Why is the account being deleted, can be empty</summary>
-			public string reason;
-		}
+		public record Account_DeleteAccount_(string reason) : IMethod<bool>;
 		/// <summary>Delete the user's account from the telegram servers. Can be used, for example, to delete the account of a user that provided the login code, but forgot the <a href="https://corefork.telegram.org/api/srp">2FA password and no recovery method is configured</a>.		<para>See <a href="https://corefork.telegram.org/method/account.deleteAccount"/></para>		<para>Possible <see cref="RpcException"/> codes: 420 (<a href="https://corefork.telegram.org/method/account.deleteAccount#possible-errors">details</a>)</para></summary>
 		/// <param name="reason">Why is the account being deleted, can be empty</param>
 		public static Task<bool> Account_DeleteAccount(this Client client, string reason)
-			=> client.CallAsync(new Account_DeleteAccount_
-			{
-				reason = reason,
-			});
+			=> client.CallAsync(new Account_DeleteAccount_(reason));
 
-		/// <summary>Get days to live of account		<para>See <a href="https://corefork.telegram.org/method/account.getAccountTTL"/></para></summary>
 		[TLDef(0x08FC711D)]
-		public partial class Account_GetAccountTTL_ : IMethod<AccountDaysTTL> { }
+		public record Account_GetAccountTTL_() : IMethod<AccountDaysTTL>;
 		/// <summary>Get days to live of account		<para>See <a href="https://corefork.telegram.org/method/account.getAccountTTL"/></para></summary>
 		public static Task<AccountDaysTTL> Account_GetAccountTTL(this Client client)
-			=> client.CallAsync(new Account_GetAccountTTL_
-			{
-			});
+			=> client.CallAsync(new Account_GetAccountTTL_());
 
-		/// <summary>Set account self-destruction period		<para>See <a href="https://corefork.telegram.org/method/account.setAccountTTL"/></para></summary>
 		[TLDef(0x2442485E)]
-		public partial class Account_SetAccountTTL_ : IMethod<bool>
-		{
-			/// <summary>Time to live in days</summary>
-			public AccountDaysTTL ttl;
-		}
+		public record Account_SetAccountTTL_(AccountDaysTTL ttl) : IMethod<bool>;
 		/// <summary>Set account self-destruction period		<para>See <a href="https://corefork.telegram.org/method/account.setAccountTTL"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.setAccountTTL#possible-errors">details</a>)</para></summary>
 		/// <param name="ttl">Time to live in days</param>
 		public static Task<bool> Account_SetAccountTTL(this Client client, AccountDaysTTL ttl)
-			=> client.CallAsync(new Account_SetAccountTTL_
-			{
-				ttl = ttl,
-			});
+			=> client.CallAsync(new Account_SetAccountTTL_(ttl));
 
-		/// <summary>Verify a new phone number to associate to the current account		<para>See <a href="https://corefork.telegram.org/method/account.sendChangePhoneCode"/></para></summary>
 		[TLDef(0x82574AE5)]
-		public partial class Account_SendChangePhoneCode_ : IMethod<Auth_SentCode>
-		{
-			/// <summary>New phone number</summary>
-			public string phone_number;
-			/// <summary>Phone code settings</summary>
-			public CodeSettings settings;
-		}
+		public record Account_SendChangePhoneCode_(string phone_number, CodeSettings settings) : IMethod<Auth_SentCode>;
 		/// <summary>Verify a new phone number to associate to the current account		<para>See <a href="https://corefork.telegram.org/method/account.sendChangePhoneCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/account.sendChangePhoneCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">New phone number</param>
 		/// <param name="settings">Phone code settings</param>
 		public static Task<Auth_SentCode> Account_SendChangePhoneCode(this Client client, string phone_number, CodeSettings settings)
-			=> client.CallAsync(new Account_SendChangePhoneCode_
-			{
-				phone_number = phone_number,
-				settings = settings,
-			});
+			=> client.CallAsync(new Account_SendChangePhoneCode_(phone_number, settings));
 
-		/// <summary>Change the phone number of the current account		<para>See <a href="https://corefork.telegram.org/method/account.changePhone"/></para></summary>
 		[TLDef(0x70C32EDB)]
-		public partial class Account_ChangePhone_ : IMethod<UserBase>
-		{
-			/// <summary>New phone number</summary>
-			public string phone_number;
-			/// <summary>Phone code hash received when calling <a href="https://corefork.telegram.org/method/account.sendChangePhoneCode">account.sendChangePhoneCode</a></summary>
-			public string phone_code_hash;
-			/// <summary>Phone code received when calling <a href="https://corefork.telegram.org/method/account.sendChangePhoneCode">account.sendChangePhoneCode</a></summary>
-			public string phone_code;
-		}
+		public record Account_ChangePhone_(string phone_number, string phone_code_hash, string phone_code) : IMethod<UserBase>;
 		/// <summary>Change the phone number of the current account		<para>See <a href="https://corefork.telegram.org/method/account.changePhone"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.changePhone#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">New phone number</param>
 		/// <param name="phone_code_hash">Phone code hash received when calling <a href="https://corefork.telegram.org/method/account.sendChangePhoneCode">account.sendChangePhoneCode</a></param>
 		/// <param name="phone_code">Phone code received when calling <a href="https://corefork.telegram.org/method/account.sendChangePhoneCode">account.sendChangePhoneCode</a></param>
 		public static Task<UserBase> Account_ChangePhone(this Client client, string phone_number, string phone_code_hash, string phone_code)
-			=> client.CallAsync(new Account_ChangePhone_
-			{
-				phone_number = phone_number,
-				phone_code_hash = phone_code_hash,
-				phone_code = phone_code,
-			});
+			=> client.CallAsync(new Account_ChangePhone_(phone_number, phone_code_hash, phone_code));
 
-		/// <summary>When client-side passcode lock feature is enabled, will not show message texts in incoming <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>.		<para>See <a href="https://corefork.telegram.org/method/account.updateDeviceLocked"/></para></summary>
 		[TLDef(0x38DF3532)]
-		public partial class Account_UpdateDeviceLocked_ : IMethod<bool>
-		{
-			/// <summary>Inactivity period after which to start hiding message texts in <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>.</summary>
-			public int period;
-		}
+		public record Account_UpdateDeviceLocked_(int period) : IMethod<bool>;
 		/// <summary>When client-side passcode lock feature is enabled, will not show message texts in incoming <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>.		<para>See <a href="https://corefork.telegram.org/method/account.updateDeviceLocked"/></para></summary>
 		/// <param name="period">Inactivity period after which to start hiding message texts in <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>.</param>
 		public static Task<bool> Account_UpdateDeviceLocked(this Client client, int period)
-			=> client.CallAsync(new Account_UpdateDeviceLocked_
-			{
-				period = period,
-			});
+			=> client.CallAsync(new Account_UpdateDeviceLocked_(period));
 
-		/// <summary>Get logged-in sessions		<para>See <a href="https://corefork.telegram.org/method/account.getAuthorizations"/></para></summary>
 		[TLDef(0xE320C158)]
-		public partial class Account_GetAuthorizations_ : IMethod<Account_Authorizations> { }
+		public record Account_GetAuthorizations_() : IMethod<Account_Authorizations>;
 		/// <summary>Get logged-in sessions		<para>See <a href="https://corefork.telegram.org/method/account.getAuthorizations"/></para></summary>
 		public static Task<Account_Authorizations> Account_GetAuthorizations(this Client client)
-			=> client.CallAsync(new Account_GetAuthorizations_
-			{
-			});
+			=> client.CallAsync(new Account_GetAuthorizations_());
 
-		/// <summary>Log out an active <a href="https://corefork.telegram.org/api/auth">authorized session</a> by its hash		<para>See <a href="https://corefork.telegram.org/method/account.resetAuthorization"/></para></summary>
 		[TLDef(0xDF77F3BC)]
-		public partial class Account_ResetAuthorization_ : IMethod<bool>
-		{
-			/// <summary>Session hash</summary>
-			public long hash;
-		}
+		public record Account_ResetAuthorization_(long hash) : IMethod<bool>;
 		/// <summary>Log out an active <a href="https://corefork.telegram.org/api/auth">authorized session</a> by its hash		<para>See <a href="https://corefork.telegram.org/method/account.resetAuthorization"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/account.resetAuthorization#possible-errors">details</a>)</para></summary>
 		/// <param name="hash">Session hash</param>
 		public static Task<bool> Account_ResetAuthorization(this Client client, long hash)
-			=> client.CallAsync(new Account_ResetAuthorization_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Account_ResetAuthorization_(hash));
 
-		/// <summary>Obtain configuration for two-factor authorization with password		<para>See <a href="https://corefork.telegram.org/method/account.getPassword"/></para></summary>
 		[TLDef(0x548A30F5)]
-		public partial class Account_GetPassword_ : IMethod<Account_Password> { }
+		public record Account_GetPassword_() : IMethod<Account_Password>;
 		/// <summary>Obtain configuration for two-factor authorization with password		<para>See <a href="https://corefork.telegram.org/method/account.getPassword"/></para></summary>
 		public static Task<Account_Password> Account_GetPassword(this Client client)
-			=> client.CallAsync(new Account_GetPassword_
-			{
-			});
+			=> client.CallAsync(new Account_GetPassword_());
 
-		/// <summary>Get private info associated to the password info (recovery email, telegram <a href="https://corefork.telegram.org/passport">passport</a> info &amp; so on)		<para>See <a href="https://corefork.telegram.org/method/account.getPasswordSettings"/></para></summary>
 		[TLDef(0x9CD4EAF9)]
-		public partial class Account_GetPasswordSettings_ : IMethod<Account_PasswordSettings>
-		{
-			/// <summary>The password (see <a href="https://corefork.telegram.org/api/srp">SRP</a>)</summary>
-			public InputCheckPasswordSRP password;
-		}
+		public record Account_GetPasswordSettings_(InputCheckPasswordSRP password) : IMethod<Account_PasswordSettings>;
 		/// <summary>Get private info associated to the password info (recovery email, telegram <a href="https://corefork.telegram.org/passport">passport</a> info &amp; so on)		<para>See <a href="https://corefork.telegram.org/method/account.getPasswordSettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.getPasswordSettings#possible-errors">details</a>)</para></summary>
 		/// <param name="password">The password (see <a href="https://corefork.telegram.org/api/srp">SRP</a>)</param>
 		public static Task<Account_PasswordSettings> Account_GetPasswordSettings(this Client client, InputCheckPasswordSRP password)
-			=> client.CallAsync(new Account_GetPasswordSettings_
-			{
-				password = password,
-			});
+			=> client.CallAsync(new Account_GetPasswordSettings_(password));
 
-		/// <summary>Set a new 2FA password		<para>See <a href="https://corefork.telegram.org/method/account.updatePasswordSettings"/></para></summary>
 		[TLDef(0xA59B102F)]
-		public partial class Account_UpdatePasswordSettings_ : IMethod<bool>
-		{
-			/// <summary>The old password (see <a href="https://corefork.telegram.org/api/srp">SRP</a>)</summary>
-			public InputCheckPasswordSRP password;
-			/// <summary>The new password (see <a href="https://corefork.telegram.org/api/srp">SRP</a>)</summary>
-			public Account_PasswordInputSettings new_settings;
-		}
+		public record Account_UpdatePasswordSettings_(InputCheckPasswordSRP password, Account_PasswordInputSettings new_settings) : IMethod<bool>;
 		/// <summary>Set a new 2FA password		<para>See <a href="https://corefork.telegram.org/method/account.updatePasswordSettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.updatePasswordSettings#possible-errors">details</a>)</para></summary>
 		/// <param name="password">The old password (see <a href="https://corefork.telegram.org/api/srp">SRP</a>)</param>
 		/// <param name="new_settings">The new password (see <a href="https://corefork.telegram.org/api/srp">SRP</a>)</param>
 		public static Task<bool> Account_UpdatePasswordSettings(this Client client, InputCheckPasswordSRP password, Account_PasswordInputSettings new_settings)
-			=> client.CallAsync(new Account_UpdatePasswordSettings_
-			{
-				password = password,
-				new_settings = new_settings,
-			});
+			=> client.CallAsync(new Account_UpdatePasswordSettings_(password, new_settings));
 
-		/// <summary>Send confirmation code to cancel account deletion, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a>		<para>See <a href="https://corefork.telegram.org/method/account.sendConfirmPhoneCode"/></para></summary>
 		[TLDef(0x1B3FAA88)]
-		public partial class Account_SendConfirmPhoneCode_ : IMethod<Auth_SentCode>
-		{
-			/// <summary>The hash from the service notification, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a></summary>
-			public string hash;
-			/// <summary>Phone code settings</summary>
-			public CodeSettings settings;
-		}
+		public record Account_SendConfirmPhoneCode_(string hash, CodeSettings settings) : IMethod<Auth_SentCode>;
 		/// <summary>Send confirmation code to cancel account deletion, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a>		<para>See <a href="https://corefork.telegram.org/method/account.sendConfirmPhoneCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.sendConfirmPhoneCode#possible-errors">details</a>)</para></summary>
 		/// <param name="hash">The hash from the service notification, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a></param>
 		/// <param name="settings">Phone code settings</param>
 		public static Task<Auth_SentCode> Account_SendConfirmPhoneCode(this Client client, string hash, CodeSettings settings)
-			=> client.CallAsync(new Account_SendConfirmPhoneCode_
-			{
-				hash = hash,
-				settings = settings,
-			});
+			=> client.CallAsync(new Account_SendConfirmPhoneCode_(hash, settings));
 
-		/// <summary>Confirm a phone number to cancel account deletion, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a>		<para>See <a href="https://corefork.telegram.org/method/account.confirmPhone"/></para></summary>
 		[TLDef(0x5F2178C3)]
-		public partial class Account_ConfirmPhone_ : IMethod<bool>
-		{
-			/// <summary>Phone code hash, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a></summary>
-			public string phone_code_hash;
-			/// <summary>SMS code, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a></summary>
-			public string phone_code;
-		}
+		public record Account_ConfirmPhone_(string phone_code_hash, string phone_code) : IMethod<bool>;
 		/// <summary>Confirm a phone number to cancel account deletion, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a>		<para>See <a href="https://corefork.telegram.org/method/account.confirmPhone"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.confirmPhone#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_code_hash">Phone code hash, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a></param>
 		/// <param name="phone_code">SMS code, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a></param>
 		public static Task<bool> Account_ConfirmPhone(this Client client, string phone_code_hash, string phone_code)
-			=> client.CallAsync(new Account_ConfirmPhone_
-			{
-				phone_code_hash = phone_code_hash,
-				phone_code = phone_code,
-			});
+			=> client.CallAsync(new Account_ConfirmPhone_(phone_code_hash, phone_code));
 
-		/// <summary>Get temporary payment password		<para>See <a href="https://corefork.telegram.org/method/account.getTmpPassword"/></para></summary>
 		[TLDef(0x449E0B51)]
-		public partial class Account_GetTmpPassword_ : IMethod<Account_TmpPassword>
-		{
-			/// <summary>SRP password parameters</summary>
-			public InputCheckPasswordSRP password;
-			/// <summary>Time during which the temporary password will be valid, in seconds; should be between 60 and 86400</summary>
-			public int period;
-		}
+		public record Account_GetTmpPassword_(InputCheckPasswordSRP password, int period) : IMethod<Account_TmpPassword>;
 		/// <summary>Get temporary payment password		<para>See <a href="https://corefork.telegram.org/method/account.getTmpPassword"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.getTmpPassword#possible-errors">details</a>)</para></summary>
 		/// <param name="password">SRP password parameters</param>
 		/// <param name="period">Time during which the temporary password will be valid, in seconds; should be between 60 and 86400</param>
 		public static Task<Account_TmpPassword> Account_GetTmpPassword(this Client client, InputCheckPasswordSRP password, int period)
-			=> client.CallAsync(new Account_GetTmpPassword_
-			{
-				password = password,
-				period = period,
-			});
+			=> client.CallAsync(new Account_GetTmpPassword_(password, period));
 
-		/// <summary>Get web <a href="https://corefork.telegram.org/widgets/login">login widget</a> authorizations		<para>See <a href="https://corefork.telegram.org/method/account.getWebAuthorizations"/></para></summary>
 		[TLDef(0x182E6D6F)]
-		public partial class Account_GetWebAuthorizations_ : IMethod<Account_WebAuthorizations> { }
+		public record Account_GetWebAuthorizations_() : IMethod<Account_WebAuthorizations>;
 		/// <summary>Get web <a href="https://corefork.telegram.org/widgets/login">login widget</a> authorizations		<para>See <a href="https://corefork.telegram.org/method/account.getWebAuthorizations"/></para></summary>
 		public static Task<Account_WebAuthorizations> Account_GetWebAuthorizations(this Client client)
-			=> client.CallAsync(new Account_GetWebAuthorizations_
-			{
-			});
+			=> client.CallAsync(new Account_GetWebAuthorizations_());
 
-		/// <summary>Log out an active web <a href="https://corefork.telegram.org/widgets/login">telegram login</a> session		<para>See <a href="https://corefork.telegram.org/method/account.resetWebAuthorization"/></para></summary>
 		[TLDef(0x2D01B9EF)]
-		public partial class Account_ResetWebAuthorization_ : IMethod<bool>
-		{
-			/// <summary><see cref="WebAuthorization"/> hash</summary>
-			public long hash;
-		}
+		public record Account_ResetWebAuthorization_(long hash) : IMethod<bool>;
 		/// <summary>Log out an active web <a href="https://corefork.telegram.org/widgets/login">telegram login</a> session		<para>See <a href="https://corefork.telegram.org/method/account.resetWebAuthorization"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.resetWebAuthorization#possible-errors">details</a>)</para></summary>
 		/// <param name="hash"><see cref="WebAuthorization"/> hash</param>
 		public static Task<bool> Account_ResetWebAuthorization(this Client client, long hash)
-			=> client.CallAsync(new Account_ResetWebAuthorization_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Account_ResetWebAuthorization_(hash));
 
-		/// <summary>Reset all active web <a href="https://corefork.telegram.org/widgets/login">telegram login</a> sessions		<para>See <a href="https://corefork.telegram.org/method/account.resetWebAuthorizations"/></para></summary>
 		[TLDef(0x682D2594)]
-		public partial class Account_ResetWebAuthorizations_ : IMethod<bool> { }
+		public record Account_ResetWebAuthorizations_() : IMethod<bool>;
 		/// <summary>Reset all active web <a href="https://corefork.telegram.org/widgets/login">telegram login</a> sessions		<para>See <a href="https://corefork.telegram.org/method/account.resetWebAuthorizations"/></para></summary>
 		public static Task<bool> Account_ResetWebAuthorizations(this Client client)
-			=> client.CallAsync(new Account_ResetWebAuthorizations_
-			{
-			});
+			=> client.CallAsync(new Account_ResetWebAuthorizations_());
 
-		/// <summary>Get all saved <a href="https://corefork.telegram.org/passport">Telegram Passport</a> documents, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/method/account.getAllSecureValues"/></para></summary>
 		[TLDef(0xB288BC7D)]
-		public partial class Account_GetAllSecureValues_ : IMethod<SecureValue[]> { }
+		public record Account_GetAllSecureValues_() : IMethod<SecureValue[]>;
 		/// <summary>Get all saved <a href="https://corefork.telegram.org/passport">Telegram Passport</a> documents, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/method/account.getAllSecureValues"/></para></summary>
 		public static Task<SecureValue[]> Account_GetAllSecureValues(this Client client)
-			=> client.CallAsync(new Account_GetAllSecureValues_
-			{
-			});
+			=> client.CallAsync(new Account_GetAllSecureValues_());
 
-		/// <summary>Get saved <a href="https://corefork.telegram.org/passport">Telegram Passport</a> document, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/method/account.getSecureValue"/></para></summary>
 		[TLDef(0x73665BC2)]
-		public partial class Account_GetSecureValue_ : IMethod<SecureValue[]>
-		{
-			/// <summary>Requested value types</summary>
-			public SecureValueType[] types;
-		}
+		public record Account_GetSecureValue_(SecureValueType[] types) : IMethod<SecureValue[]>;
 		/// <summary>Get saved <a href="https://corefork.telegram.org/passport">Telegram Passport</a> document, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/method/account.getSecureValue"/></para></summary>
 		/// <param name="types">Requested value types</param>
 		public static Task<SecureValue[]> Account_GetSecureValue(this Client client, SecureValueType[] types)
-			=> client.CallAsync(new Account_GetSecureValue_
-			{
-				types = types,
-			});
+			=> client.CallAsync(new Account_GetSecureValue_(types));
 
-		/// <summary>Securely save <a href="https://corefork.telegram.org/passport">Telegram Passport</a> document, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/method/account.saveSecureValue"/></para></summary>
 		[TLDef(0x899FE31D)]
-		public partial class Account_SaveSecureValue_ : IMethod<SecureValue>
-		{
-			/// <summary>Secure value, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a></summary>
-			public InputSecureValue value;
-			/// <summary>Passport secret hash, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a></summary>
-			public long secure_secret_id;
-		}
+		public record Account_SaveSecureValue_(InputSecureValue value, long secure_secret_id) : IMethod<SecureValue>;
 		/// <summary>Securely save <a href="https://corefork.telegram.org/passport">Telegram Passport</a> document, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/method/account.saveSecureValue"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.saveSecureValue#possible-errors">details</a>)</para></summary>
 		/// <param name="value">Secure value, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a></param>
 		/// <param name="secure_secret_id">Passport secret hash, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a></param>
 		public static Task<SecureValue> Account_SaveSecureValue(this Client client, InputSecureValue value, long secure_secret_id)
-			=> client.CallAsync(new Account_SaveSecureValue_
-			{
-				value = value,
-				secure_secret_id = secure_secret_id,
-			});
+			=> client.CallAsync(new Account_SaveSecureValue_(value, secure_secret_id));
 
-		/// <summary>Delete stored <a href="https://corefork.telegram.org/passport">Telegram Passport</a> documents, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/method/account.deleteSecureValue"/></para></summary>
 		[TLDef(0xB880BC4B)]
-		public partial class Account_DeleteSecureValue_ : IMethod<bool>
-		{
-			/// <summary>Document types to delete</summary>
-			public SecureValueType[] types;
-		}
+		public record Account_DeleteSecureValue_(SecureValueType[] types) : IMethod<bool>;
 		/// <summary>Delete stored <a href="https://corefork.telegram.org/passport">Telegram Passport</a> documents, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/method/account.deleteSecureValue"/></para></summary>
 		/// <param name="types">Document types to delete</param>
 		public static Task<bool> Account_DeleteSecureValue(this Client client, SecureValueType[] types)
-			=> client.CallAsync(new Account_DeleteSecureValue_
-			{
-				types = types,
-			});
+			=> client.CallAsync(new Account_DeleteSecureValue_(types));
 
-		/// <summary>Returns a Telegram Passport authorization form for sharing data with a service		<para>See <a href="https://corefork.telegram.org/method/account.getAuthorizationForm"/></para></summary>
 		[TLDef(0xA929597A)]
-		public partial class Account_GetAuthorizationForm_ : IMethod<Account_AuthorizationForm>
-		{
-			/// <summary>User identifier of the service's bot</summary>
-			public long bot_id;
-			/// <summary>Telegram Passport element types requested by the service</summary>
-			public string scope;
-			/// <summary>Service's public key</summary>
-			public string public_key;
-		}
+		public record Account_GetAuthorizationForm_(long bot_id, string scope, string public_key) : IMethod<Account_AuthorizationForm>;
 		/// <summary>Returns a Telegram Passport authorization form for sharing data with a service		<para>See <a href="https://corefork.telegram.org/method/account.getAuthorizationForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.getAuthorizationForm#possible-errors">details</a>)</para></summary>
 		/// <param name="bot_id">User identifier of the service's bot</param>
 		/// <param name="scope">Telegram Passport element types requested by the service</param>
 		/// <param name="public_key">Service's public key</param>
 		public static Task<Account_AuthorizationForm> Account_GetAuthorizationForm(this Client client, long bot_id, string scope, string public_key)
-			=> client.CallAsync(new Account_GetAuthorizationForm_
-			{
-				bot_id = bot_id,
-				scope = scope,
-				public_key = public_key,
-			});
+			=> client.CallAsync(new Account_GetAuthorizationForm_(bot_id, scope, public_key));
 
-		/// <summary>Sends a Telegram Passport authorization form, effectively sharing data with the service		<para>See <a href="https://corefork.telegram.org/method/account.acceptAuthorization"/></para></summary>
 		[TLDef(0xF3ED4C73)]
-		public partial class Account_AcceptAuthorization_ : IMethod<bool>
-		{
-			/// <summary>Bot ID</summary>
-			public long bot_id;
-			/// <summary>Telegram Passport element types requested by the service</summary>
-			public string scope;
-			/// <summary>Service's public key</summary>
-			public string public_key;
-			/// <summary>Types of values sent and their hashes</summary>
-			public SecureValueHash[] value_hashes;
-			/// <summary>Encrypted values</summary>
-			public SecureCredentialsEncrypted credentials;
-		}
+		public record Account_AcceptAuthorization_(long bot_id, string scope, string public_key, SecureValueHash[] value_hashes, SecureCredentialsEncrypted credentials) : IMethod<bool>;
 		/// <summary>Sends a Telegram Passport authorization form, effectively sharing data with the service		<para>See <a href="https://corefork.telegram.org/method/account.acceptAuthorization"/></para></summary>
 		/// <param name="bot_id">Bot ID</param>
 		/// <param name="scope">Telegram Passport element types requested by the service</param>
@@ -13380,116 +12723,42 @@ namespace TL
 		/// <param name="value_hashes">Types of values sent and their hashes</param>
 		/// <param name="credentials">Encrypted values</param>
 		public static Task<bool> Account_AcceptAuthorization(this Client client, long bot_id, string scope, string public_key, SecureValueHash[] value_hashes, SecureCredentialsEncrypted credentials)
-			=> client.CallAsync(new Account_AcceptAuthorization_
-			{
-				bot_id = bot_id,
-				scope = scope,
-				public_key = public_key,
-				value_hashes = value_hashes,
-				credentials = credentials,
-			});
+			=> client.CallAsync(new Account_AcceptAuthorization_(bot_id, scope, public_key, value_hashes, credentials));
 
-		/// <summary>Send the verification phone code for telegram <a href="https://corefork.telegram.org/passport">passport</a>.		<para>See <a href="https://corefork.telegram.org/method/account.sendVerifyPhoneCode"/></para></summary>
 		[TLDef(0xA5A356F9)]
-		public partial class Account_SendVerifyPhoneCode_ : IMethod<Auth_SentCode>
-		{
-			/// <summary>The phone number to verify</summary>
-			public string phone_number;
-			/// <summary>Phone code settings</summary>
-			public CodeSettings settings;
-		}
+		public record Account_SendVerifyPhoneCode_(string phone_number, CodeSettings settings) : IMethod<Auth_SentCode>;
 		/// <summary>Send the verification phone code for telegram <a href="https://corefork.telegram.org/passport">passport</a>.		<para>See <a href="https://corefork.telegram.org/method/account.sendVerifyPhoneCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.sendVerifyPhoneCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">The phone number to verify</param>
 		/// <param name="settings">Phone code settings</param>
 		public static Task<Auth_SentCode> Account_SendVerifyPhoneCode(this Client client, string phone_number, CodeSettings settings)
-			=> client.CallAsync(new Account_SendVerifyPhoneCode_
-			{
-				phone_number = phone_number,
-				settings = settings,
-			});
+			=> client.CallAsync(new Account_SendVerifyPhoneCode_(phone_number, settings));
 
-		/// <summary>Verify a phone number for telegram <a href="https://corefork.telegram.org/passport">passport</a>.		<para>See <a href="https://corefork.telegram.org/method/account.verifyPhone"/></para></summary>
 		[TLDef(0x4DD3A7F6)]
-		public partial class Account_VerifyPhone_ : IMethod<bool>
-		{
-			/// <summary>Phone number</summary>
-			public string phone_number;
-			/// <summary>Phone code hash received from the call to <a href="https://corefork.telegram.org/method/account.sendVerifyPhoneCode">account.sendVerifyPhoneCode</a></summary>
-			public string phone_code_hash;
-			/// <summary>Code received after the call to <a href="https://corefork.telegram.org/method/account.sendVerifyPhoneCode">account.sendVerifyPhoneCode</a></summary>
-			public string phone_code;
-		}
+		public record Account_VerifyPhone_(string phone_number, string phone_code_hash, string phone_code) : IMethod<bool>;
 		/// <summary>Verify a phone number for telegram <a href="https://corefork.telegram.org/passport">passport</a>.		<para>See <a href="https://corefork.telegram.org/method/account.verifyPhone"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.verifyPhone#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">Phone number</param>
 		/// <param name="phone_code_hash">Phone code hash received from the call to <a href="https://corefork.telegram.org/method/account.sendVerifyPhoneCode">account.sendVerifyPhoneCode</a></param>
 		/// <param name="phone_code">Code received after the call to <a href="https://corefork.telegram.org/method/account.sendVerifyPhoneCode">account.sendVerifyPhoneCode</a></param>
 		public static Task<bool> Account_VerifyPhone(this Client client, string phone_number, string phone_code_hash, string phone_code)
-			=> client.CallAsync(new Account_VerifyPhone_
-			{
-				phone_number = phone_number,
-				phone_code_hash = phone_code_hash,
-				phone_code = phone_code,
-			});
+			=> client.CallAsync(new Account_VerifyPhone_(phone_number, phone_code_hash, phone_code));
 
-		/// <summary>Send the verification email code for telegram <a href="https://corefork.telegram.org/passport">passport</a>.		<para>See <a href="https://corefork.telegram.org/method/account.sendVerifyEmailCode"/></para></summary>
 		[TLDef(0x7011509F)]
-		public partial class Account_SendVerifyEmailCode_ : IMethod<Account_SentEmailCode>
-		{
-			/// <summary>The email where to send the code</summary>
-			public string email;
-		}
+		public record Account_SendVerifyEmailCode_(string email) : IMethod<Account_SentEmailCode>;
 		/// <summary>Send the verification email code for telegram <a href="https://corefork.telegram.org/passport">passport</a>.		<para>See <a href="https://corefork.telegram.org/method/account.sendVerifyEmailCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.sendVerifyEmailCode#possible-errors">details</a>)</para></summary>
 		/// <param name="email">The email where to send the code</param>
 		public static Task<Account_SentEmailCode> Account_SendVerifyEmailCode(this Client client, string email)
-			=> client.CallAsync(new Account_SendVerifyEmailCode_
-			{
-				email = email,
-			});
+			=> client.CallAsync(new Account_SendVerifyEmailCode_(email));
 
-		/// <summary>Verify an email address for telegram <a href="https://corefork.telegram.org/passport">passport</a>.		<para>See <a href="https://corefork.telegram.org/method/account.verifyEmail"/></para></summary>
 		[TLDef(0xECBA39DB)]
-		public partial class Account_VerifyEmail_ : IMethod<bool>
-		{
-			/// <summary>The email to verify</summary>
-			public string email;
-			/// <summary>The verification code that was received</summary>
-			public string code;
-		}
+		public record Account_VerifyEmail_(string email, string code) : IMethod<bool>;
 		/// <summary>Verify an email address for telegram <a href="https://corefork.telegram.org/passport">passport</a>.		<para>See <a href="https://corefork.telegram.org/method/account.verifyEmail"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.verifyEmail#possible-errors">details</a>)</para></summary>
 		/// <param name="email">The email to verify</param>
 		/// <param name="code">The verification code that was received</param>
 		public static Task<bool> Account_VerifyEmail(this Client client, string email, string code)
-			=> client.CallAsync(new Account_VerifyEmail_
-			{
-				email = email,
-				code = code,
-			});
+			=> client.CallAsync(new Account_VerifyEmail_(email, code));
 
-		/// <summary>Initialize account takeout session		<para>See <a href="https://corefork.telegram.org/method/account.initTakeoutSession"/></para></summary>
 		[TLDef(0xF05B4804)]
-		public partial class Account_InitTakeoutSession_ : IMethod<Account_Takeout>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Maximum size of files to export</summary>
-			[IfFlag(5)] public int file_max_size;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to export contacts</summary>
-				contacts = 0x1,
-				/// <summary>Whether to export messages in private chats</summary>
-				message_users = 0x2,
-				/// <summary>Whether to export messages in <a href="https://corefork.telegram.org/api/channel">legacy groups</a></summary>
-				message_chats = 0x4,
-				/// <summary>Whether to export messages in <a href="https://corefork.telegram.org/api/channel">supergroups</a></summary>
-				message_megagroups = 0x8,
-				/// <summary>Whether to export messages in <a href="https://corefork.telegram.org/api/channel">channels</a></summary>
-				message_channels = 0x10,
-				/// <summary>Whether to export files</summary>
-				files = 0x20,
-			}
-		}
+		public record Account_InitTakeoutSession_(int flags, [field:IfFlag(5)] int file_max_size) : IMethod<Account_Takeout>;
 		/// <summary>Initialize account takeout session		<para>See <a href="https://corefork.telegram.org/method/account.initTakeoutSession"/></para>		<para>Possible <see cref="RpcException"/> codes: 420 (<a href="https://corefork.telegram.org/method/account.initTakeoutSession#possible-errors">details</a>)</para></summary>
 		/// <param name="contacts">Whether to export contacts</param>
 		/// <param name="message_users">Whether to export messages in private chats</param>
@@ -13499,348 +12768,135 @@ namespace TL
 		/// <param name="files">Whether to export files</param>
 		/// <param name="file_max_size">Maximum size of files to export</param>
 		public static Task<Account_Takeout> Account_InitTakeoutSession(this Client client, bool contacts = false, bool message_users = false, bool message_chats = false, bool message_megagroups = false, bool message_channels = false, bool files = false, int? file_max_size = null)
-			=> client.CallAsync(new Account_InitTakeoutSession_
-			{
-				flags = (Account_InitTakeoutSession_.Flags)((contacts ? 0x1 : 0) | (message_users ? 0x2 : 0) | (message_chats ? 0x4 : 0) | (message_megagroups ? 0x8 : 0) | (message_channels ? 0x10 : 0) | (files ? 0x20 : 0) | (file_max_size != null ? 0x20 : 0)),
-				file_max_size = file_max_size.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Account_InitTakeoutSession_((contacts ? 0x1 : 0) | (message_users ? 0x2 : 0) | (message_chats ? 0x4 : 0) | (message_megagroups ? 0x8 : 0) | (message_channels ? 0x10 : 0) | (files ? 0x20 : 0) | (file_max_size != null ? 0x20 : 0),
+				file_max_size.GetValueOrDefault()));
 
-		/// <summary>Finish account takeout session		<para>See <a href="https://corefork.telegram.org/method/account.finishTakeoutSession"/></para></summary>
 		[TLDef(0x1D2652EE)]
-		public partial class Account_FinishTakeoutSession_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Data exported successfully</summary>
-				success = 0x1,
-			}
-		}
+		public record Account_FinishTakeoutSession_(int flags) : IMethod<bool>;
 		/// <summary>Finish account takeout session		<para>See <a href="https://corefork.telegram.org/method/account.finishTakeoutSession"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/account.finishTakeoutSession#possible-errors">details</a>)</para></summary>
 		/// <param name="success">Data exported successfully</param>
 		public static Task<bool> Account_FinishTakeoutSession(this Client client, bool success = false)
-			=> client.CallAsync(new Account_FinishTakeoutSession_
-			{
-				flags = (Account_FinishTakeoutSession_.Flags)(success ? 0x1 : 0),
-			});
+			=> client.CallAsync(new Account_FinishTakeoutSession_(success ? 0x1 : 0));
 
-		/// <summary>Verify an email to use as <a href="https://corefork.telegram.org/api/srp">2FA recovery method</a>.		<para>See <a href="https://corefork.telegram.org/method/account.confirmPasswordEmail"/></para></summary>
 		[TLDef(0x8FDF1920)]
-		public partial class Account_ConfirmPasswordEmail_ : IMethod<bool>
-		{
-			/// <summary>The phone code that was received after <a href="https://corefork.telegram.org/api/srp#email-verification">setting a recovery email</a></summary>
-			public string code;
-		}
+		public record Account_ConfirmPasswordEmail_(string code) : IMethod<bool>;
 		/// <summary>Verify an email to use as <a href="https://corefork.telegram.org/api/srp">2FA recovery method</a>.		<para>See <a href="https://corefork.telegram.org/method/account.confirmPasswordEmail"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.confirmPasswordEmail#possible-errors">details</a>)</para></summary>
 		/// <param name="code">The phone code that was received after <a href="https://corefork.telegram.org/api/srp#email-verification">setting a recovery email</a></param>
 		public static Task<bool> Account_ConfirmPasswordEmail(this Client client, string code)
-			=> client.CallAsync(new Account_ConfirmPasswordEmail_
-			{
-				code = code,
-			});
+			=> client.CallAsync(new Account_ConfirmPasswordEmail_(code));
 
-		/// <summary>Resend the code to verify an email to use as <a href="https://corefork.telegram.org/api/srp">2FA recovery method</a>.		<para>See <a href="https://corefork.telegram.org/method/account.resendPasswordEmail"/></para></summary>
 		[TLDef(0x7A7F2A15)]
-		public partial class Account_ResendPasswordEmail_ : IMethod<bool> { }
+		public record Account_ResendPasswordEmail_() : IMethod<bool>;
 		/// <summary>Resend the code to verify an email to use as <a href="https://corefork.telegram.org/api/srp">2FA recovery method</a>.		<para>See <a href="https://corefork.telegram.org/method/account.resendPasswordEmail"/></para></summary>
 		public static Task<bool> Account_ResendPasswordEmail(this Client client)
-			=> client.CallAsync(new Account_ResendPasswordEmail_
-			{
-			});
+			=> client.CallAsync(new Account_ResendPasswordEmail_());
 
-		/// <summary>Cancel the code that was sent to verify an email to use as <a href="https://corefork.telegram.org/api/srp">2FA recovery method</a>.		<para>See <a href="https://corefork.telegram.org/method/account.cancelPasswordEmail"/></para></summary>
 		[TLDef(0xC1CBD5B6)]
-		public partial class Account_CancelPasswordEmail_ : IMethod<bool> { }
+		public record Account_CancelPasswordEmail_() : IMethod<bool>;
 		/// <summary>Cancel the code that was sent to verify an email to use as <a href="https://corefork.telegram.org/api/srp">2FA recovery method</a>.		<para>See <a href="https://corefork.telegram.org/method/account.cancelPasswordEmail"/></para></summary>
 		public static Task<bool> Account_CancelPasswordEmail(this Client client)
-			=> client.CallAsync(new Account_CancelPasswordEmail_
-			{
-			});
+			=> client.CallAsync(new Account_CancelPasswordEmail_());
 
-		/// <summary>Whether the user will receive notifications when contacts sign up		<para>See <a href="https://corefork.telegram.org/method/account.getContactSignUpNotification"/></para></summary>
 		[TLDef(0x9F07C728)]
-		public partial class Account_GetContactSignUpNotification_ : IMethod<bool> { }
+		public record Account_GetContactSignUpNotification_() : IMethod<bool>;
 		/// <summary>Whether the user will receive notifications when contacts sign up		<para>See <a href="https://corefork.telegram.org/method/account.getContactSignUpNotification"/></para></summary>
 		public static Task<bool> Account_GetContactSignUpNotification(this Client client)
-			=> client.CallAsync(new Account_GetContactSignUpNotification_
-			{
-			});
+			=> client.CallAsync(new Account_GetContactSignUpNotification_());
 
-		/// <summary>Toggle contact sign up notifications		<para>See <a href="https://corefork.telegram.org/method/account.setContactSignUpNotification"/></para></summary>
 		[TLDef(0xCFF43F61)]
-		public partial class Account_SetContactSignUpNotification_ : IMethod<bool>
-		{
-			/// <summary>Whether to disable contact sign up notifications</summary>
-			public bool silent;
-		}
+		public record Account_SetContactSignUpNotification_(bool silent) : IMethod<bool>;
 		/// <summary>Toggle contact sign up notifications		<para>See <a href="https://corefork.telegram.org/method/account.setContactSignUpNotification"/></para></summary>
 		/// <param name="silent">Whether to disable contact sign up notifications</param>
 		public static Task<bool> Account_SetContactSignUpNotification(this Client client, bool silent)
-			=> client.CallAsync(new Account_SetContactSignUpNotification_
-			{
-				silent = silent,
-			});
+			=> client.CallAsync(new Account_SetContactSignUpNotification_(silent));
 
-		/// <summary>Returns list of chats with non-default notification settings		<para>See <a href="https://corefork.telegram.org/method/account.getNotifyExceptions"/></para></summary>
 		[TLDef(0x53577479)]
-		public partial class Account_GetNotifyExceptions_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>If specified, only chats of the specified category will be returned</summary>
-			[IfFlag(0)] public InputNotifyPeerBase peer;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="peer"/> has a value</summary>
-				has_peer = 0x1,
-				/// <summary>If true, chats with non-default sound will also be returned</summary>
-				compare_sound = 0x2,
-			}
-		}
+		public record Account_GetNotifyExceptions_(int flags, [field:IfFlag(0)] InputNotifyPeerBase peer) : IMethod<UpdatesBase>;
 		/// <summary>Returns list of chats with non-default notification settings		<para>See <a href="https://corefork.telegram.org/method/account.getNotifyExceptions"/></para></summary>
 		/// <param name="compare_sound">If true, chats with non-default sound will also be returned</param>
 		/// <param name="peer">If specified, only chats of the specified category will be returned</param>
 		public static Task<UpdatesBase> Account_GetNotifyExceptions(this Client client, bool compare_sound = false, InputNotifyPeerBase peer = null)
-			=> client.CallAsync(new Account_GetNotifyExceptions_
-			{
-				flags = (Account_GetNotifyExceptions_.Flags)((compare_sound ? 0x2 : 0) | (peer != null ? 0x1 : 0)),
-				peer = peer,
-			});
+			=> client.CallAsync(new Account_GetNotifyExceptions_((compare_sound ? 0x2 : 0) | (peer != null ? 0x1 : 0),
+				peer));
 
-		/// <summary>Get info about a certain wallpaper		<para>See <a href="https://corefork.telegram.org/method/account.getWallPaper"/></para></summary>
 		[TLDef(0xFC8DDBEA)]
-		public partial class Account_GetWallPaper_ : IMethod<WallPaperBase>
-		{
-			/// <summary>The wallpaper to get info about</summary>
-			public InputWallPaperBase wallpaper;
-		}
+		public record Account_GetWallPaper_(InputWallPaperBase wallpaper) : IMethod<WallPaperBase>;
 		/// <summary>Get info about a certain wallpaper		<para>See <a href="https://corefork.telegram.org/method/account.getWallPaper"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.getWallPaper#possible-errors">details</a>)</para></summary>
 		/// <param name="wallpaper">The wallpaper to get info about</param>
 		public static Task<WallPaperBase> Account_GetWallPaper(this Client client, InputWallPaperBase wallpaper)
-			=> client.CallAsync(new Account_GetWallPaper_
-			{
-				wallpaper = wallpaper,
-			});
+			=> client.CallAsync(new Account_GetWallPaper_(wallpaper));
 
-		/// <summary>Create and upload a new wallpaper		<para>See <a href="https://corefork.telegram.org/method/account.uploadWallPaper"/></para></summary>
 		[TLDef(0xDD853661)]
-		public partial class Account_UploadWallPaper_ : IMethod<WallPaperBase>
-		{
-			/// <summary>The JPG/PNG wallpaper</summary>
-			public InputFileBase file;
-			/// <summary>MIME type of uploaded wallpaper</summary>
-			public string mime_type;
-			/// <summary>Wallpaper settings</summary>
-			public WallPaperSettings settings;
-		}
+		public record Account_UploadWallPaper_(InputFileBase file, string mime_type, WallPaperSettings settings) : IMethod<WallPaperBase>;
 		/// <summary>Create and upload a new wallpaper		<para>See <a href="https://corefork.telegram.org/method/account.uploadWallPaper"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.uploadWallPaper#possible-errors">details</a>)</para></summary>
 		/// <param name="file">The JPG/PNG wallpaper</param>
 		/// <param name="mime_type">MIME type of uploaded wallpaper</param>
 		/// <param name="settings">Wallpaper settings</param>
 		public static Task<WallPaperBase> Account_UploadWallPaper(this Client client, InputFileBase file, string mime_type, WallPaperSettings settings)
-			=> client.CallAsync(new Account_UploadWallPaper_
-			{
-				file = file,
-				mime_type = mime_type,
-				settings = settings,
-			});
+			=> client.CallAsync(new Account_UploadWallPaper_(file, mime_type, settings));
 
-		/// <summary>Install/uninstall wallpaper		<para>See <a href="https://corefork.telegram.org/method/account.saveWallPaper"/></para></summary>
 		[TLDef(0x6C5A5B37)]
-		public partial class Account_SaveWallPaper_ : IMethod<bool>
-		{
-			/// <summary>Wallpaper to save</summary>
-			public InputWallPaperBase wallpaper;
-			/// <summary>Uninstall wallpaper?</summary>
-			public bool unsave;
-			/// <summary>Wallpaper settings</summary>
-			public WallPaperSettings settings;
-		}
+		public record Account_SaveWallPaper_(InputWallPaperBase wallpaper, bool unsave, WallPaperSettings settings) : IMethod<bool>;
 		/// <summary>Install/uninstall wallpaper		<para>See <a href="https://corefork.telegram.org/method/account.saveWallPaper"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.saveWallPaper#possible-errors">details</a>)</para></summary>
 		/// <param name="wallpaper">Wallpaper to save</param>
 		/// <param name="unsave">Uninstall wallpaper?</param>
 		/// <param name="settings">Wallpaper settings</param>
 		public static Task<bool> Account_SaveWallPaper(this Client client, InputWallPaperBase wallpaper, bool unsave, WallPaperSettings settings)
-			=> client.CallAsync(new Account_SaveWallPaper_
-			{
-				wallpaper = wallpaper,
-				unsave = unsave,
-				settings = settings,
-			});
+			=> client.CallAsync(new Account_SaveWallPaper_(wallpaper, unsave, settings));
 
-		/// <summary>Install wallpaper		<para>See <a href="https://corefork.telegram.org/method/account.installWallPaper"/></para></summary>
 		[TLDef(0xFEED5769)]
-		public partial class Account_InstallWallPaper_ : IMethod<bool>
-		{
-			/// <summary>Wallpaper to install</summary>
-			public InputWallPaperBase wallpaper;
-			/// <summary>Wallpaper settings</summary>
-			public WallPaperSettings settings;
-		}
+		public record Account_InstallWallPaper_(InputWallPaperBase wallpaper, WallPaperSettings settings) : IMethod<bool>;
 		/// <summary>Install wallpaper		<para>See <a href="https://corefork.telegram.org/method/account.installWallPaper"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.installWallPaper#possible-errors">details</a>)</para></summary>
 		/// <param name="wallpaper">Wallpaper to install</param>
 		/// <param name="settings">Wallpaper settings</param>
 		public static Task<bool> Account_InstallWallPaper(this Client client, InputWallPaperBase wallpaper, WallPaperSettings settings)
-			=> client.CallAsync(new Account_InstallWallPaper_
-			{
-				wallpaper = wallpaper,
-				settings = settings,
-			});
+			=> client.CallAsync(new Account_InstallWallPaper_(wallpaper, settings));
 
-		/// <summary>Delete installed wallpapers		<para>See <a href="https://corefork.telegram.org/method/account.resetWallPapers"/></para></summary>
 		[TLDef(0xBB3B9804)]
-		public partial class Account_ResetWallPapers_ : IMethod<bool> { }
+		public record Account_ResetWallPapers_() : IMethod<bool>;
 		/// <summary>Delete installed wallpapers		<para>See <a href="https://corefork.telegram.org/method/account.resetWallPapers"/></para></summary>
 		public static Task<bool> Account_ResetWallPapers(this Client client)
-			=> client.CallAsync(new Account_ResetWallPapers_
-			{
-			});
+			=> client.CallAsync(new Account_ResetWallPapers_());
 
-		/// <summary>Get media autodownload settings		<para>See <a href="https://corefork.telegram.org/method/account.getAutoDownloadSettings"/></para></summary>
 		[TLDef(0x56DA0B3F)]
-		public partial class Account_GetAutoDownloadSettings_ : IMethod<Account_AutoDownloadSettings> { }
+		public record Account_GetAutoDownloadSettings_() : IMethod<Account_AutoDownloadSettings>;
 		/// <summary>Get media autodownload settings		<para>See <a href="https://corefork.telegram.org/method/account.getAutoDownloadSettings"/></para></summary>
 		public static Task<Account_AutoDownloadSettings> Account_GetAutoDownloadSettings(this Client client)
-			=> client.CallAsync(new Account_GetAutoDownloadSettings_
-			{
-			});
+			=> client.CallAsync(new Account_GetAutoDownloadSettings_());
 
-		/// <summary>Change media autodownload settings		<para>See <a href="https://corefork.telegram.org/method/account.saveAutoDownloadSettings"/></para></summary>
 		[TLDef(0x76F36233)]
-		public partial class Account_SaveAutoDownloadSettings_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Media autodownload settings</summary>
-			public AutoDownloadSettings settings;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to save settings in the low data usage preset</summary>
-				low = 0x1,
-				/// <summary>Whether to save settings in the high data usage preset</summary>
-				high = 0x2,
-			}
-		}
+		public record Account_SaveAutoDownloadSettings_(int flags, AutoDownloadSettings settings) : IMethod<bool>;
 		/// <summary>Change media autodownload settings		<para>See <a href="https://corefork.telegram.org/method/account.saveAutoDownloadSettings"/></para></summary>
 		/// <param name="low">Whether to save settings in the low data usage preset</param>
 		/// <param name="high">Whether to save settings in the high data usage preset</param>
 		/// <param name="settings">Media autodownload settings</param>
 		public static Task<bool> Account_SaveAutoDownloadSettings(this Client client, AutoDownloadSettings settings, bool low = false, bool high = false)
-			=> client.CallAsync(new Account_SaveAutoDownloadSettings_
-			{
-				flags = (Account_SaveAutoDownloadSettings_.Flags)((low ? 0x1 : 0) | (high ? 0x2 : 0)),
-				settings = settings,
-			});
+			=> client.CallAsync(new Account_SaveAutoDownloadSettings_((low ? 0x1 : 0) | (high ? 0x2 : 0),
+				settings));
 
-		/// <summary>Upload theme		<para>See <a href="https://corefork.telegram.org/method/account.uploadTheme"/></para></summary>
 		[TLDef(0x1C3DB333)]
-		public partial class Account_UploadTheme_ : IMethod<DocumentBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Theme file uploaded as described in <a href="https://corefork.telegram.org/api/files">files »</a></summary>
-			public InputFileBase file;
-			/// <summary>Thumbnail</summary>
-			[IfFlag(0)] public InputFileBase thumb;
-			/// <summary>File name</summary>
-			public string file_name;
-			/// <summary>MIME type, must be <c>application/x-tgtheme-{format}</c>, where <c>format</c> depends on the client</summary>
-			public string mime_type;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="thumb"/> has a value</summary>
-				has_thumb = 0x1,
-			}
-		}
+		public record Account_UploadTheme_(int flags, InputFileBase file, [field:IfFlag(0)] InputFileBase thumb, string file_name, string mime_type) : IMethod<DocumentBase>;
 		/// <summary>Upload theme		<para>See <a href="https://corefork.telegram.org/method/account.uploadTheme"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.uploadTheme#possible-errors">details</a>)</para></summary>
 		/// <param name="file">Theme file uploaded as described in <a href="https://corefork.telegram.org/api/files">files »</a></param>
 		/// <param name="thumb">Thumbnail</param>
 		/// <param name="file_name">File name</param>
 		/// <param name="mime_type">MIME type, must be <c>application/x-tgtheme-{format}</c>, where <c>format</c> depends on the client</param>
 		public static Task<DocumentBase> Account_UploadTheme(this Client client, InputFileBase file, string file_name, string mime_type, InputFileBase thumb = null)
-			=> client.CallAsync(new Account_UploadTheme_
-			{
-				flags = (Account_UploadTheme_.Flags)(thumb != null ? 0x1 : 0),
-				file = file,
-				thumb = thumb,
-				file_name = file_name,
-				mime_type = mime_type,
-			});
+			=> client.CallAsync(new Account_UploadTheme_(thumb != null ? 0x1 : 0, file, thumb, file_name, mime_type));
 
-		/// <summary>Create a theme		<para>See <a href="https://corefork.telegram.org/method/account.createTheme"/></para></summary>
 		[TLDef(0x652E4400)]
-		public partial class Account_CreateTheme_ : IMethod<Theme>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Unique theme ID</summary>
-			public string slug;
-			/// <summary>Theme name</summary>
-			public string title;
-			/// <summary>Theme file</summary>
-			[IfFlag(2)] public InputDocument document;
-			/// <summary>Theme settings</summary>
-			[IfFlag(3)] public InputThemeSettings[] settings;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="document"/> has a value</summary>
-				has_document = 0x4,
-				/// <summary>Field <see cref="settings"/> has a value</summary>
-				has_settings = 0x8,
-			}
-		}
+		public record Account_CreateTheme_(int flags, string slug, string title, [field:IfFlag(2)] InputDocument document, [field:IfFlag(3)] InputThemeSettings[] settings) : IMethod<Theme>;
 		/// <summary>Create a theme		<para>See <a href="https://corefork.telegram.org/method/account.createTheme"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.createTheme#possible-errors">details</a>)</para></summary>
 		/// <param name="slug">Unique theme ID</param>
 		/// <param name="title">Theme name</param>
 		/// <param name="document">Theme file</param>
 		/// <param name="settings">Theme settings</param>
 		public static Task<Theme> Account_CreateTheme(this Client client, string slug, string title, InputDocument document = null, InputThemeSettings[] settings = null)
-			=> client.CallAsync(new Account_CreateTheme_
-			{
-				flags = (Account_CreateTheme_.Flags)((document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0)),
-				slug = slug,
-				title = title,
-				document = document,
-				settings = settings,
-			});
+			=> client.CallAsync(new Account_CreateTheme_((document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0),
+				slug, title, document, settings));
 
-		/// <summary>Update theme		<para>See <a href="https://corefork.telegram.org/method/account.updateTheme"/></para></summary>
 		[TLDef(0x2BF40CCC)]
-		public partial class Account_UpdateTheme_ : IMethod<Theme>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Theme format, a string that identifies the theming engines supported by the client</summary>
-			public string format;
-			/// <summary>Theme to update</summary>
-			public InputThemeBase theme;
-			/// <summary>Unique theme ID</summary>
-			[IfFlag(0)] public string slug;
-			/// <summary>Theme name</summary>
-			[IfFlag(1)] public string title;
-			/// <summary>Theme file</summary>
-			[IfFlag(2)] public InputDocument document;
-			/// <summary>Theme settings</summary>
-			[IfFlag(3)] public InputThemeSettings[] settings;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="slug"/> has a value</summary>
-				has_slug = 0x1,
-				/// <summary>Field <see cref="title"/> has a value</summary>
-				has_title = 0x2,
-				/// <summary>Field <see cref="document"/> has a value</summary>
-				has_document = 0x4,
-				/// <summary>Field <see cref="settings"/> has a value</summary>
-				has_settings = 0x8,
-			}
-		}
+		public record Account_UpdateTheme_(int flags, string format, InputThemeBase theme, [field:IfFlag(0)] string slug, [field:IfFlag(1)] string title, [field:IfFlag(2)] InputDocument document, [field:IfFlag(3)] InputThemeSettings[] settings) : IMethod<Theme>;
 		/// <summary>Update theme		<para>See <a href="https://corefork.telegram.org/method/account.updateTheme"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.updateTheme#possible-errors">details</a>)</para></summary>
 		/// <param name="format">Theme format, a string that identifies the theming engines supported by the client</param>
 		/// <param name="theme">Theme to update</param>
@@ -13849,496 +12905,211 @@ namespace TL
 		/// <param name="document">Theme file</param>
 		/// <param name="settings">Theme settings</param>
 		public static Task<Theme> Account_UpdateTheme(this Client client, string format, InputThemeBase theme, string slug = null, string title = null, InputDocument document = null, InputThemeSettings[] settings = null)
-			=> client.CallAsync(new Account_UpdateTheme_
-			{
-				flags = (Account_UpdateTheme_.Flags)((slug != null ? 0x1 : 0) | (title != null ? 0x2 : 0) | (document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0)),
-				format = format,
-				theme = theme,
-				slug = slug,
-				title = title,
-				document = document,
-				settings = settings,
-			});
+			=> client.CallAsync(new Account_UpdateTheme_((slug != null ? 0x1 : 0) | (title != null ? 0x2 : 0) | (document != null ? 0x4 : 0) | (settings != null ? 0x8 : 0),
+				format, theme, slug, title, document, settings));
 
-		/// <summary>Save a theme		<para>See <a href="https://corefork.telegram.org/method/account.saveTheme"/></para></summary>
 		[TLDef(0xF257106C)]
-		public partial class Account_SaveTheme_ : IMethod<bool>
-		{
-			/// <summary>Theme to save</summary>
-			public InputThemeBase theme;
-			/// <summary>Unsave</summary>
-			public bool unsave;
-		}
+		public record Account_SaveTheme_(InputThemeBase theme, bool unsave) : IMethod<bool>;
 		/// <summary>Save a theme		<para>See <a href="https://corefork.telegram.org/method/account.saveTheme"/></para></summary>
 		/// <param name="theme">Theme to save</param>
 		/// <param name="unsave">Unsave</param>
 		public static Task<bool> Account_SaveTheme(this Client client, InputThemeBase theme, bool unsave)
-			=> client.CallAsync(new Account_SaveTheme_
-			{
-				theme = theme,
-				unsave = unsave,
-			});
+			=> client.CallAsync(new Account_SaveTheme_(theme, unsave));
 
-		/// <summary>Install a theme		<para>See <a href="https://corefork.telegram.org/method/account.installTheme"/></para></summary>
 		[TLDef(0xC727BB3B)]
-		public partial class Account_InstallTheme_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Theme to install</summary>
-			[IfFlag(1)] public InputThemeBase theme;
-			/// <summary>Theme format, a string that identifies the theming engines supported by the client</summary>
-			[IfFlag(2)] public string format;
-			[IfFlag(3)] public BaseTheme base_theme;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to install the dark version</summary>
-				dark = 0x1,
-				/// <summary>Field <see cref="theme"/> has a value</summary>
-				has_theme = 0x2,
-				/// <summary>Field <see cref="format"/> has a value</summary>
-				has_format = 0x4,
-				/// <summary>Field <see cref="base_theme"/> has a value</summary>
-				has_base_theme = 0x8,
-			}
-		}
+		public record Account_InstallTheme_(int flags, [field:IfFlag(1)] InputThemeBase theme, [field:IfFlag(2)] string format, [field:IfFlag(3)] BaseTheme base_theme) : IMethod<bool>;
 		/// <summary>Install a theme		<para>See <a href="https://corefork.telegram.org/method/account.installTheme"/></para></summary>
 		/// <param name="dark">Whether to install the dark version</param>
 		/// <param name="format">Theme format, a string that identifies the theming engines supported by the client</param>
 		/// <param name="theme">Theme to install</param>
 		public static Task<bool> Account_InstallTheme(this Client client, bool dark = false, InputThemeBase theme = null, string format = null, BaseTheme base_theme = default)
-			=> client.CallAsync(new Account_InstallTheme_
-			{
-				flags = (Account_InstallTheme_.Flags)((dark ? 0x1 : 0) | (theme != null ? 0x2 : 0) | (format != null ? 0x4 : 0) | (base_theme != default ? 0x8 : 0)),
-				theme = theme,
-				format = format,
-				base_theme = base_theme,
-			});
+			=> client.CallAsync(new Account_InstallTheme_((dark ? 0x1 : 0) | (theme != null ? 0x2 : 0) | (format != null ? 0x4 : 0) | (base_theme != default ? 0x8 : 0),
+				theme, format, base_theme));
 
-		/// <summary>Get theme information		<para>See <a href="https://corefork.telegram.org/method/account.getTheme"/></para></summary>
 		[TLDef(0x8D9D742B)]
-		public partial class Account_GetTheme_ : IMethod<Theme>
-		{
-			/// <summary>Theme format, a string that identifies the theming engines supported by the client</summary>
-			public string format;
-			/// <summary>Theme</summary>
-			public InputThemeBase theme;
-			/// <summary>Document ID</summary>
-			public long document_id;
-		}
+		public record Account_GetTheme_(string format, InputThemeBase theme, long document_id) : IMethod<Theme>;
 		/// <summary>Get theme information		<para>See <a href="https://corefork.telegram.org/method/account.getTheme"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.getTheme#possible-errors">details</a>)</para></summary>
 		/// <param name="format">Theme format, a string that identifies the theming engines supported by the client</param>
 		/// <param name="theme">Theme</param>
 		/// <param name="document_id">Document ID</param>
 		public static Task<Theme> Account_GetTheme(this Client client, string format, InputThemeBase theme, long document_id)
-			=> client.CallAsync(new Account_GetTheme_
-			{
-				format = format,
-				theme = theme,
-				document_id = document_id,
-			});
+			=> client.CallAsync(new Account_GetTheme_(format, theme, document_id));
 
-		/// <summary>Get installed themes		<para>See <a href="https://corefork.telegram.org/method/account.getThemes"/></para></summary>
 		[TLDef(0x7206E458)]
-		public partial class Account_GetThemes_ : IMethod<Account_Themes>
-		{
-			/// <summary>Theme format, a string that identifies the theming engines supported by the client</summary>
-			public string format;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Account_GetThemes_(string format, long hash) : IMethod<Account_Themes>;
 		/// <summary>Get installed themes		<para>See <a href="https://corefork.telegram.org/method/account.getThemes"/></para></summary>
 		/// <param name="format">Theme format, a string that identifies the theming engines supported by the client</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.themesNotModified">account.themesNotModified</a></returns>
 		public static Task<Account_Themes> Account_GetThemes(this Client client, string format, long hash)
-			=> client.CallAsync(new Account_GetThemes_
-			{
-				format = format,
-				hash = hash,
-			});
+			=> client.CallAsync(new Account_GetThemes_(format, hash));
 
-		/// <summary>Set sensitive content settings (for viewing or hiding NSFW content)		<para>See <a href="https://corefork.telegram.org/method/account.setContentSettings"/></para></summary>
 		[TLDef(0xB574B16B)]
-		public partial class Account_SetContentSettings_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Enable NSFW content</summary>
-				sensitive_enabled = 0x1,
-			}
-		}
+		public record Account_SetContentSettings_(int flags) : IMethod<bool>;
 		/// <summary>Set sensitive content settings (for viewing or hiding NSFW content)		<para>See <a href="https://corefork.telegram.org/method/account.setContentSettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/account.setContentSettings#possible-errors">details</a>)</para></summary>
 		/// <param name="sensitive_enabled">Enable NSFW content</param>
 		public static Task<bool> Account_SetContentSettings(this Client client, bool sensitive_enabled = false)
-			=> client.CallAsync(new Account_SetContentSettings_
-			{
-				flags = (Account_SetContentSettings_.Flags)(sensitive_enabled ? 0x1 : 0),
-			});
+			=> client.CallAsync(new Account_SetContentSettings_(sensitive_enabled ? 0x1 : 0));
 
-		/// <summary>Get sensitive content settings		<para>See <a href="https://corefork.telegram.org/method/account.getContentSettings"/></para></summary>
 		[TLDef(0x8B9B4DAE)]
-		public partial class Account_GetContentSettings_ : IMethod<Account_ContentSettings> { }
+		public record Account_GetContentSettings_() : IMethod<Account_ContentSettings>;
 		/// <summary>Get sensitive content settings		<para>See <a href="https://corefork.telegram.org/method/account.getContentSettings"/></para></summary>
 		public static Task<Account_ContentSettings> Account_GetContentSettings(this Client client)
-			=> client.CallAsync(new Account_GetContentSettings_
-			{
-			});
+			=> client.CallAsync(new Account_GetContentSettings_());
 
-		/// <summary>Get info about multiple wallpapers		<para>See <a href="https://corefork.telegram.org/method/account.getMultiWallPapers"/></para></summary>
 		[TLDef(0x65AD71DC)]
-		public partial class Account_GetMultiWallPapers_ : IMethod<WallPaperBase[]>
-		{
-			/// <summary>Wallpapers to fetch info about</summary>
-			public InputWallPaperBase[] wallpapers;
-		}
+		public record Account_GetMultiWallPapers_(InputWallPaperBase[] wallpapers) : IMethod<WallPaperBase[]>;
 		/// <summary>Get info about multiple wallpapers		<para>See <a href="https://corefork.telegram.org/method/account.getMultiWallPapers"/></para></summary>
 		/// <param name="wallpapers">Wallpapers to fetch info about</param>
 		public static Task<WallPaperBase[]> Account_GetMultiWallPapers(this Client client, InputWallPaperBase[] wallpapers)
-			=> client.CallAsync(new Account_GetMultiWallPapers_
-			{
-				wallpapers = wallpapers,
-			});
+			=> client.CallAsync(new Account_GetMultiWallPapers_(wallpapers));
 
-		/// <summary>Get global privacy settings		<para>See <a href="https://corefork.telegram.org/method/account.getGlobalPrivacySettings"/></para></summary>
 		[TLDef(0xEB2B4CF6)]
-		public partial class Account_GetGlobalPrivacySettings_ : IMethod<GlobalPrivacySettings> { }
+		public record Account_GetGlobalPrivacySettings_() : IMethod<GlobalPrivacySettings>;
 		/// <summary>Get global privacy settings		<para>See <a href="https://corefork.telegram.org/method/account.getGlobalPrivacySettings"/></para></summary>
 		public static Task<GlobalPrivacySettings> Account_GetGlobalPrivacySettings(this Client client)
-			=> client.CallAsync(new Account_GetGlobalPrivacySettings_
-			{
-			});
+			=> client.CallAsync(new Account_GetGlobalPrivacySettings_());
 
-		/// <summary>Set global privacy settings		<para>See <a href="https://corefork.telegram.org/method/account.setGlobalPrivacySettings"/></para></summary>
 		[TLDef(0x1EDAAAC2)]
-		public partial class Account_SetGlobalPrivacySettings_ : IMethod<GlobalPrivacySettings>
-		{
-			/// <summary>Global privacy settings</summary>
-			public GlobalPrivacySettings settings;
-		}
+		public record Account_SetGlobalPrivacySettings_(GlobalPrivacySettings settings) : IMethod<GlobalPrivacySettings>;
 		/// <summary>Set global privacy settings		<para>See <a href="https://corefork.telegram.org/method/account.setGlobalPrivacySettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.setGlobalPrivacySettings#possible-errors">details</a>)</para></summary>
 		/// <param name="settings">Global privacy settings</param>
 		public static Task<GlobalPrivacySettings> Account_SetGlobalPrivacySettings(this Client client, GlobalPrivacySettings settings)
-			=> client.CallAsync(new Account_SetGlobalPrivacySettings_
-			{
-				settings = settings,
-			});
+			=> client.CallAsync(new Account_SetGlobalPrivacySettings_(settings));
 
-		/// <summary>Report a profile photo of a dialog		<para>See <a href="https://corefork.telegram.org/method/account.reportProfilePhoto"/></para></summary>
 		[TLDef(0xFA8CC6F5)]
-		public partial class Account_ReportProfilePhoto_ : IMethod<bool>
-		{
-			/// <summary>The dialog</summary>
-			public InputPeer peer;
-			/// <summary>Dialog photo ID</summary>
-			public InputPhoto photo_id;
-			/// <summary>Report reason</summary>
-			public ReportReason reason;
-			/// <summary>Comment for report moderation</summary>
-			public string message;
-		}
+		public record Account_ReportProfilePhoto_(InputPeer peer, InputPhoto photo_id, ReportReason reason, string message) : IMethod<bool>;
 		/// <summary>Report a profile photo of a dialog		<para>See <a href="https://corefork.telegram.org/method/account.reportProfilePhoto"/></para></summary>
 		/// <param name="peer">The dialog</param>
 		/// <param name="photo_id">Dialog photo ID</param>
 		/// <param name="reason">Report reason</param>
 		/// <param name="message">Comment for report moderation</param>
 		public static Task<bool> Account_ReportProfilePhoto(this Client client, InputPeer peer, InputPhoto photo_id, ReportReason reason, string message)
-			=> client.CallAsync(new Account_ReportProfilePhoto_
-			{
-				peer = peer,
-				photo_id = photo_id,
-				reason = reason,
-				message = message,
-			});
+			=> client.CallAsync(new Account_ReportProfilePhoto_(peer, photo_id, reason, message));
 
-		/// <summary>Initiate a 2FA password reset: can only be used if the user is already logged-in, <a href="https://corefork.telegram.org/api/srp#password-reset">see here for more info »</a>		<para>See <a href="https://corefork.telegram.org/method/account.resetPassword"/></para></summary>
 		[TLDef(0x9308CE1B)]
-		public partial class Account_ResetPassword_ : IMethod<Account_ResetPasswordResult> { }
+		public record Account_ResetPassword_() : IMethod<Account_ResetPasswordResult>;
 		/// <summary>Initiate a 2FA password reset: can only be used if the user is already logged-in, <a href="https://corefork.telegram.org/api/srp#password-reset">see here for more info »</a>		<para>See <a href="https://corefork.telegram.org/method/account.resetPassword"/></para></summary>
 		public static Task<Account_ResetPasswordResult> Account_ResetPassword(this Client client)
-			=> client.CallAsync(new Account_ResetPassword_
-			{
-			});
+			=> client.CallAsync(new Account_ResetPassword_());
 
-		/// <summary>Abort a pending 2FA password reset, <a href="https://corefork.telegram.org/api/srp#password-reset">see here for more info »</a>		<para>See <a href="https://corefork.telegram.org/method/account.declinePasswordReset"/></para></summary>
 		[TLDef(0x4C9409F6)]
-		public partial class Account_DeclinePasswordReset_ : IMethod<bool> { }
+		public record Account_DeclinePasswordReset_() : IMethod<bool>;
 		/// <summary>Abort a pending 2FA password reset, <a href="https://corefork.telegram.org/api/srp#password-reset">see here for more info »</a>		<para>See <a href="https://corefork.telegram.org/method/account.declinePasswordReset"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.declinePasswordReset#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Account_DeclinePasswordReset(this Client client)
-			=> client.CallAsync(new Account_DeclinePasswordReset_
-			{
-			});
+			=> client.CallAsync(new Account_DeclinePasswordReset_());
 
-		/// <summary>Get all available chat themes		<para>See <a href="https://corefork.telegram.org/method/account.getChatThemes"/></para></summary>
 		[TLDef(0xD638DE89)]
-		public partial class Account_GetChatThemes_ : IMethod<Account_Themes>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Account_GetChatThemes_(long hash) : IMethod<Account_Themes>;
 		/// <summary>Get all available chat themes		<para>See <a href="https://corefork.telegram.org/method/account.getChatThemes"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.themesNotModified">account.themesNotModified</a></returns>
 		public static Task<Account_Themes> Account_GetChatThemes(this Client client, long hash)
-			=> client.CallAsync(new Account_GetChatThemes_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Account_GetChatThemes_(hash));
 
-		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/></para></summary>
 		[TLDef(0x0D91A548)]
-		public partial class Users_GetUsers_ : IMethod<UserBase[]>
-		{
-			/// <summary>List of user identifiers</summary>
-			public InputUserBase[] id;
-		}
+		public record Users_GetUsers_(InputUserBase[] id) : IMethod<UserBase[]>;
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,401 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, InputUserBase[] id)
-			=> client.CallAsync(new Users_GetUsers_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Users_GetUsers_(id));
 
-		/// <summary>Returns extended user info by ID.		<para>See <a href="https://corefork.telegram.org/method/users.getFullUser"/></para></summary>
 		[TLDef(0xCA30A5B1)]
-		public partial class Users_GetFullUser_ : IMethod<UserFull>
-		{
-			/// <summary>User ID</summary>
-			public InputUserBase id;
-		}
+		public record Users_GetFullUser_(InputUserBase id) : IMethod<UserFull>;
 		/// <summary>Returns extended user info by ID.		<para>See <a href="https://corefork.telegram.org/method/users.getFullUser"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getFullUser#possible-errors">details</a>)</para></summary>
 		/// <param name="id">User ID</param>
 		public static Task<UserFull> Users_GetFullUser(this Client client, InputUserBase id)
-			=> client.CallAsync(new Users_GetFullUser_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Users_GetFullUser_(id));
 
-		/// <summary>Notify the user that the sent <a href="https://corefork.telegram.org/passport">passport</a> data contains some errors The user will not be able to re-submit their Passport data to you until the errors are fixed (the contents of the field for which you returned the error must change).		<para>See <a href="https://corefork.telegram.org/method/users.setSecureValueErrors"/></para></summary>
 		[TLDef(0x90C894B5)]
-		public partial class Users_SetSecureValueErrors_ : IMethod<bool>
-		{
-			/// <summary>The user</summary>
-			public InputUserBase id;
-			/// <summary>Errors</summary>
-			public SecureValueErrorBase[] errors;
-		}
+		public record Users_SetSecureValueErrors_(InputUserBase id, SecureValueErrorBase[] errors) : IMethod<bool>;
 		/// <summary>Notify the user that the sent <a href="https://corefork.telegram.org/passport">passport</a> data contains some errors The user will not be able to re-submit their Passport data to you until the errors are fixed (the contents of the field for which you returned the error must change).		<para>See <a href="https://corefork.telegram.org/method/users.setSecureValueErrors"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.setSecureValueErrors#possible-errors">details</a>)</para></summary>
 		/// <param name="id">The user</param>
 		/// <param name="errors">Errors</param>
 		public static Task<bool> Users_SetSecureValueErrors(this Client client, InputUserBase id, SecureValueErrorBase[] errors)
-			=> client.CallAsync(new Users_SetSecureValueErrors_
-			{
-				id = id,
-				errors = errors,
-			});
+			=> client.CallAsync(new Users_SetSecureValueErrors_(id, errors));
 
-		/// <summary>Get contact by telegram IDs		<para>See <a href="https://corefork.telegram.org/method/contacts.getContactIDs"/></para></summary>
 		[TLDef(0x7ADC669D)]
-		public partial class Contacts_GetContactIDs_ : IMethod<int[]>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Contacts_GetContactIDs_(long hash) : IMethod<int[]>;
 		/// <summary>Get contact by telegram IDs		<para>See <a href="https://corefork.telegram.org/method/contacts.getContactIDs"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<int[]> Contacts_GetContactIDs(this Client client, long hash)
-			=> client.CallAsync(new Contacts_GetContactIDs_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Contacts_GetContactIDs_(hash));
 
-		/// <summary>Returns the list of contact statuses.		<para>See <a href="https://corefork.telegram.org/method/contacts.getStatuses"/></para></summary>
 		[TLDef(0xC4A353EE)]
-		public partial class Contacts_GetStatuses_ : IMethod<ContactStatus[]> { }
+		public record Contacts_GetStatuses_() : IMethod<ContactStatus[]>;
 		/// <summary>Returns the list of contact statuses.		<para>See <a href="https://corefork.telegram.org/method/contacts.getStatuses"/></para></summary>
 		public static Task<ContactStatus[]> Contacts_GetStatuses(this Client client)
-			=> client.CallAsync(new Contacts_GetStatuses_
-			{
-			});
+			=> client.CallAsync(new Contacts_GetStatuses_());
 
-		/// <summary>Returns the current user's contact list.		<para>See <a href="https://corefork.telegram.org/method/contacts.getContacts"/></para></summary>
 		[TLDef(0x5DD69E12)]
-		public partial class Contacts_GetContacts_ : IMethod<Contacts_Contacts>
-		{
-			/// <summary>If there already is a full contact list on the client, a <a href="https://corefork.telegram.org/api/offsets#hash-generation">hash</a> of a the list of contact IDs in ascending order may be passed in this parameter. If the contact set was not changed, <see langword="null"/> will be returned.</summary>
-			public long hash;
-		}
+		public record Contacts_GetContacts_(long hash) : IMethod<Contacts_Contacts>;
 		/// <summary>Returns the current user's contact list.		<para>See <a href="https://corefork.telegram.org/method/contacts.getContacts"/></para></summary>
 		/// <param name="hash">If there already is a full contact list on the client, a <a href="https://corefork.telegram.org/api/offsets#hash-generation">hash</a> of a the list of contact IDs in ascending order may be passed in this parameter. If the contact set was not changed, <see langword="null"/> will be returned.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/contacts.contactsNotModified">contacts.contactsNotModified</a></returns>
 		public static Task<Contacts_Contacts> Contacts_GetContacts(this Client client, long hash)
-			=> client.CallAsync(new Contacts_GetContacts_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Contacts_GetContacts_(hash));
 
-		/// <summary>Imports contacts: saves a full list on the server, adds already registered contacts to the contact list, returns added contacts and their info.		<para>See <a href="https://corefork.telegram.org/method/contacts.importContacts"/></para></summary>
 		[TLDef(0x2C800BE5)]
-		public partial class Contacts_ImportContacts_ : IMethod<Contacts_ImportedContacts>
-		{
-			/// <summary>List of contacts to import</summary>
-			public InputContact[] contacts;
-		}
+		public record Contacts_ImportContacts_(InputContact[] contacts) : IMethod<Contacts_ImportedContacts>;
 		/// <summary>Imports contacts: saves a full list on the server, adds already registered contacts to the contact list, returns added contacts and their info.		<para>See <a href="https://corefork.telegram.org/method/contacts.importContacts"/></para></summary>
 		/// <param name="contacts">List of contacts to import</param>
 		public static Task<Contacts_ImportedContacts> Contacts_ImportContacts(this Client client, InputContact[] contacts)
-			=> client.CallAsync(new Contacts_ImportContacts_
-			{
-				contacts = contacts,
-			});
+			=> client.CallAsync(new Contacts_ImportContacts_(contacts));
 
-		/// <summary>Deletes several contacts from the list.		<para>See <a href="https://corefork.telegram.org/method/contacts.deleteContacts"/></para></summary>
 		[TLDef(0x096A0E00)]
-		public partial class Contacts_DeleteContacts_ : IMethod<UpdatesBase>
-		{
-			/// <summary>User ID list</summary>
-			public InputUserBase[] id;
-		}
+		public record Contacts_DeleteContacts_(InputUserBase[] id) : IMethod<UpdatesBase>;
 		/// <summary>Deletes several contacts from the list.		<para>See <a href="https://corefork.telegram.org/method/contacts.deleteContacts"/></para></summary>
 		/// <param name="id">User ID list</param>
 		public static Task<UpdatesBase> Contacts_DeleteContacts(this Client client, InputUserBase[] id)
-			=> client.CallAsync(new Contacts_DeleteContacts_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Contacts_DeleteContacts_(id));
 
-		/// <summary>Delete contacts by phone number		<para>See <a href="https://corefork.telegram.org/method/contacts.deleteByPhones"/></para></summary>
 		[TLDef(0x1013FD9E)]
-		public partial class Contacts_DeleteByPhones_ : IMethod<bool>
-		{
-			/// <summary>Phone numbers</summary>
-			public string[] phones;
-		}
+		public record Contacts_DeleteByPhones_(string[] phones) : IMethod<bool>;
 		/// <summary>Delete contacts by phone number		<para>See <a href="https://corefork.telegram.org/method/contacts.deleteByPhones"/></para></summary>
 		/// <param name="phones">Phone numbers</param>
 		public static Task<bool> Contacts_DeleteByPhones(this Client client, string[] phones)
-			=> client.CallAsync(new Contacts_DeleteByPhones_
-			{
-				phones = phones,
-			});
+			=> client.CallAsync(new Contacts_DeleteByPhones_(phones));
 
-		/// <summary>Adds the user to the blacklist.		<para>See <a href="https://corefork.telegram.org/method/contacts.block"/></para></summary>
 		[TLDef(0x68CC1411)]
-		public partial class Contacts_Block_ : IMethod<bool>
-		{
-			/// <summary>User ID</summary>
-			public InputPeer id;
-		}
+		public record Contacts_Block_(InputPeer id) : IMethod<bool>;
 		/// <summary>Adds the user to the blacklist.		<para>See <a href="https://corefork.telegram.org/method/contacts.block"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.block#possible-errors">details</a>)</para></summary>
 		/// <param name="id">User ID</param>
 		public static Task<bool> Contacts_Block(this Client client, InputPeer id)
-			=> client.CallAsync(new Contacts_Block_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Contacts_Block_(id));
 
-		/// <summary>Deletes the user from the blacklist.		<para>See <a href="https://corefork.telegram.org/method/contacts.unblock"/></para></summary>
 		[TLDef(0xBEA65D50)]
-		public partial class Contacts_Unblock_ : IMethod<bool>
-		{
-			/// <summary>User ID</summary>
-			public InputPeer id;
-		}
+		public record Contacts_Unblock_(InputPeer id) : IMethod<bool>;
 		/// <summary>Deletes the user from the blacklist.		<para>See <a href="https://corefork.telegram.org/method/contacts.unblock"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.unblock#possible-errors">details</a>)</para></summary>
 		/// <param name="id">User ID</param>
 		public static Task<bool> Contacts_Unblock(this Client client, InputPeer id)
-			=> client.CallAsync(new Contacts_Unblock_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Contacts_Unblock_(id));
 
-		/// <summary>Returns the list of blocked users.		<para>See <a href="https://corefork.telegram.org/method/contacts.getBlocked"/></para></summary>
 		[TLDef(0xF57C350F)]
-		public partial class Contacts_GetBlocked_ : IMethod<Contacts_Blocked>
-		{
-			/// <summary>The number of list elements to be skipped</summary>
-			public int offset;
-			/// <summary>The number of list elements to be returned</summary>
-			public int limit;
-		}
+		public record Contacts_GetBlocked_(int offset, int limit) : IMethod<Contacts_Blocked>;
 		/// <summary>Returns the list of blocked users.		<para>See <a href="https://corefork.telegram.org/method/contacts.getBlocked"/></para></summary>
 		/// <param name="offset">The number of list elements to be skipped</param>
 		/// <param name="limit">The number of list elements to be returned</param>
 		public static Task<Contacts_Blocked> Contacts_GetBlocked(this Client client, int offset, int limit)
-			=> client.CallAsync(new Contacts_GetBlocked_
-			{
-				offset = offset,
-				limit = limit,
-			});
+			=> client.CallAsync(new Contacts_GetBlocked_(offset, limit));
 
-		/// <summary>Returns users found by username substring.		<para>See <a href="https://corefork.telegram.org/method/contacts.search"/></para></summary>
 		[TLDef(0x11F812D8)]
-		public partial class Contacts_Search_ : IMethod<Contacts_Found>
-		{
-			/// <summary>Target substring</summary>
-			public string q;
-			/// <summary>Maximum number of users to be returned</summary>
-			public int limit;
-		}
+		public record Contacts_Search_(string q, int limit) : IMethod<Contacts_Found>;
 		/// <summary>Returns users found by username substring.		<para>See <a href="https://corefork.telegram.org/method/contacts.search"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.search#possible-errors">details</a>)</para></summary>
 		/// <param name="q">Target substring</param>
 		/// <param name="limit">Maximum number of users to be returned</param>
 		public static Task<Contacts_Found> Contacts_Search(this Client client, string q, int limit)
-			=> client.CallAsync(new Contacts_Search_
-			{
-				q = q,
-				limit = limit,
-			});
+			=> client.CallAsync(new Contacts_Search_(q, limit));
 
-		/// <summary>Resolve a @username to get peer info		<para>See <a href="https://corefork.telegram.org/method/contacts.resolveUsername"/></para></summary>
 		[TLDef(0xF93CCBA3)]
-		public partial class Contacts_ResolveUsername_ : IMethod<Contacts_ResolvedPeer>
-		{
-			/// <summary>@username to resolve</summary>
-			public string username;
-		}
+		public record Contacts_ResolveUsername_(string username) : IMethod<Contacts_ResolvedPeer>;
 		/// <summary>Resolve a @username to get peer info		<para>See <a href="https://corefork.telegram.org/method/contacts.resolveUsername"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,401 (<a href="https://corefork.telegram.org/method/contacts.resolveUsername#possible-errors">details</a>)</para></summary>
 		/// <param name="username">@username to resolve</param>
 		public static Task<Contacts_ResolvedPeer> Contacts_ResolveUsername(this Client client, string username)
-			=> client.CallAsync(new Contacts_ResolveUsername_
-			{
-				username = username,
-			});
+			=> client.CallAsync(new Contacts_ResolveUsername_(username));
 
-		/// <summary>Get most used peers		<para>See <a href="https://corefork.telegram.org/method/contacts.getTopPeers"/></para></summary>
 		[TLDef(0x973478B6)]
-		public partial class Contacts_GetTopPeers_ : IMethod<Contacts_TopPeersBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a></summary>
-			public int offset;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Users we've chatted most frequently with</summary>
-				correspondents = 0x1,
-				/// <summary>Most used bots</summary>
-				bots_pm = 0x2,
-				/// <summary>Most used inline bots</summary>
-				bots_inline = 0x4,
-				/// <summary>Most frequently called users</summary>
-				phone_calls = 0x8,
-				/// <summary>Users to which the users often forwards messages to</summary>
-				forward_users = 0x10,
-				/// <summary>Chats to which the users often forwards messages to</summary>
-				forward_chats = 0x20,
-				/// <summary>Often-opened groups and supergroups</summary>
-				groups = 0x400,
-				/// <summary>Most frequently visited channels</summary>
-				channels = 0x8000,
-			}
-		}
+		public record Contacts_GetTopPeers_(int flags, int offset, int limit, long hash) : IMethod<Contacts_TopPeersBase>;
 		/// <summary>Get most used peers		<para>See <a href="https://corefork.telegram.org/method/contacts.getTopPeers"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.getTopPeers#possible-errors">details</a>)</para></summary>
 		/// <param name="correspondents">Users we've chatted most frequently with</param>
 		/// <param name="bots_pm">Most used bots</param>
@@ -14353,87 +13124,38 @@ namespace TL
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/contacts.topPeersNotModified">contacts.topPeersNotModified</a></returns>
 		public static Task<Contacts_TopPeersBase> Contacts_GetTopPeers(this Client client, int offset, int limit, long hash, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false)
-			=> client.CallAsync(new Contacts_GetTopPeers_
-			{
-				flags = (Contacts_GetTopPeers_.Flags)((correspondents ? 0x1 : 0) | (bots_pm ? 0x2 : 0) | (bots_inline ? 0x4 : 0) | (phone_calls ? 0x8 : 0) | (forward_users ? 0x10 : 0) | (forward_chats ? 0x20 : 0) | (groups ? 0x400 : 0) | (channels ? 0x8000 : 0)),
-				offset = offset,
-				limit = limit,
-				hash = hash,
-			});
+			=> client.CallAsync(new Contacts_GetTopPeers_((correspondents ? 0x1 : 0) | (bots_pm ? 0x2 : 0) | (bots_inline ? 0x4 : 0) | (phone_calls ? 0x8 : 0) | (forward_users ? 0x10 : 0) | (forward_chats ? 0x20 : 0) | (groups ? 0x400 : 0) | (channels ? 0x8000 : 0),
+				offset, limit, hash));
 
-		/// <summary>Reset <a href="https://corefork.telegram.org/api/top-rating">rating</a> of top peer		<para>See <a href="https://corefork.telegram.org/method/contacts.resetTopPeerRating"/></para></summary>
 		[TLDef(0x1AE373AC)]
-		public partial class Contacts_ResetTopPeerRating_ : IMethod<bool>
-		{
-			/// <summary>Top peer category</summary>
-			public TopPeerCategory category;
-			/// <summary>Peer whose rating should be reset</summary>
-			public InputPeer peer;
-		}
+		public record Contacts_ResetTopPeerRating_(TopPeerCategory category, InputPeer peer) : IMethod<bool>;
 		/// <summary>Reset <a href="https://corefork.telegram.org/api/top-rating">rating</a> of top peer		<para>See <a href="https://corefork.telegram.org/method/contacts.resetTopPeerRating"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.resetTopPeerRating#possible-errors">details</a>)</para></summary>
 		/// <param name="category">Top peer category</param>
 		/// <param name="peer">Peer whose rating should be reset</param>
 		public static Task<bool> Contacts_ResetTopPeerRating(this Client client, TopPeerCategory category, InputPeer peer)
-			=> client.CallAsync(new Contacts_ResetTopPeerRating_
-			{
-				category = category,
-				peer = peer,
-			});
+			=> client.CallAsync(new Contacts_ResetTopPeerRating_(category, peer));
 
-		/// <summary>Delete saved contacts		<para>See <a href="https://corefork.telegram.org/method/contacts.resetSaved"/></para></summary>
 		[TLDef(0x879537F1)]
-		public partial class Contacts_ResetSaved_ : IMethod<bool> { }
+		public record Contacts_ResetSaved_() : IMethod<bool>;
 		/// <summary>Delete saved contacts		<para>See <a href="https://corefork.telegram.org/method/contacts.resetSaved"/></para></summary>
 		public static Task<bool> Contacts_ResetSaved(this Client client)
-			=> client.CallAsync(new Contacts_ResetSaved_
-			{
-			});
+			=> client.CallAsync(new Contacts_ResetSaved_());
 
-		/// <summary>Get all contacts		<para>See <a href="https://corefork.telegram.org/method/contacts.getSaved"/></para></summary>
 		[TLDef(0x82F1E39F)]
-		public partial class Contacts_GetSaved_ : IMethod<SavedContact[]> { }
+		public record Contacts_GetSaved_() : IMethod<SavedContact[]>;
 		/// <summary>Get all contacts		<para>See <a href="https://corefork.telegram.org/method/contacts.getSaved"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/contacts.getSaved#possible-errors">details</a>)</para></summary>
 		public static Task<SavedContact[]> Contacts_GetSaved(this Client client)
-			=> client.CallAsync(new Contacts_GetSaved_
-			{
-			});
+			=> client.CallAsync(new Contacts_GetSaved_());
 
-		/// <summary>Enable/disable <a href="https://corefork.telegram.org/api/top-rating">top peers</a>		<para>See <a href="https://corefork.telegram.org/method/contacts.toggleTopPeers"/></para></summary>
 		[TLDef(0x8514BDDA)]
-		public partial class Contacts_ToggleTopPeers_ : IMethod<bool>
-		{
-			/// <summary>Enable/disable</summary>
-			public bool enabled;
-		}
+		public record Contacts_ToggleTopPeers_(bool enabled) : IMethod<bool>;
 		/// <summary>Enable/disable <a href="https://corefork.telegram.org/api/top-rating">top peers</a>		<para>See <a href="https://corefork.telegram.org/method/contacts.toggleTopPeers"/></para></summary>
 		/// <param name="enabled">Enable/disable</param>
 		public static Task<bool> Contacts_ToggleTopPeers(this Client client, bool enabled)
-			=> client.CallAsync(new Contacts_ToggleTopPeers_
-			{
-				enabled = enabled,
-			});
+			=> client.CallAsync(new Contacts_ToggleTopPeers_(enabled));
 
-		/// <summary>Add an existing telegram user as contact.		<para>See <a href="https://corefork.telegram.org/method/contacts.addContact"/></para></summary>
 		[TLDef(0xE8F463D0)]
-		public partial class Contacts_AddContact_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Telegram ID of the other user</summary>
-			public InputUserBase id;
-			/// <summary>First name</summary>
-			public string first_name;
-			/// <summary>Last name</summary>
-			public string last_name;
-			/// <summary>User's phone number</summary>
-			public string phone;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Allow the other user to see our phone number?</summary>
-				add_phone_privacy_exception = 0x1,
-			}
-		}
+		public record Contacts_AddContact_(int flags, InputUserBase id, string first_name, string last_name, string phone) : IMethod<UpdatesBase>;
 		/// <summary>Add an existing telegram user as contact.		<para>See <a href="https://corefork.telegram.org/method/contacts.addContact"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.addContact#possible-errors">details</a>)</para></summary>
 		/// <param name="add_phone_privacy_exception">Allow the other user to see our phone number?</param>
 		/// <param name="id">Telegram ID of the other user</param>
@@ -14441,134 +13163,46 @@ namespace TL
 		/// <param name="last_name">Last name</param>
 		/// <param name="phone">User's phone number</param>
 		public static Task<UpdatesBase> Contacts_AddContact(this Client client, InputUserBase id, string first_name, string last_name, string phone, bool add_phone_privacy_exception = false)
-			=> client.CallAsync(new Contacts_AddContact_
-			{
-				flags = (Contacts_AddContact_.Flags)(add_phone_privacy_exception ? 0x1 : 0),
-				id = id,
-				first_name = first_name,
-				last_name = last_name,
-				phone = phone,
-			});
+			=> client.CallAsync(new Contacts_AddContact_(add_phone_privacy_exception ? 0x1 : 0,
+				id, first_name, last_name, phone));
 
-		/// <summary>If the <see cref="PeerSettings"/> of a new user allow us to add him as contact, add that user as contact		<para>See <a href="https://corefork.telegram.org/method/contacts.acceptContact"/></para></summary>
 		[TLDef(0xF831A20F)]
-		public partial class Contacts_AcceptContact_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The user to add as contact</summary>
-			public InputUserBase id;
-		}
+		public record Contacts_AcceptContact_(InputUserBase id) : IMethod<UpdatesBase>;
 		/// <summary>If the <see cref="PeerSettings"/> of a new user allow us to add him as contact, add that user as contact		<para>See <a href="https://corefork.telegram.org/method/contacts.acceptContact"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.acceptContact#possible-errors">details</a>)</para></summary>
 		/// <param name="id">The user to add as contact</param>
 		public static Task<UpdatesBase> Contacts_AcceptContact(this Client client, InputUserBase id)
-			=> client.CallAsync(new Contacts_AcceptContact_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Contacts_AcceptContact_(id));
 
-		/// <summary>Get contacts near you		<para>See <a href="https://corefork.telegram.org/method/contacts.getLocated"/></para></summary>
 		[TLDef(0xD348BC44)]
-		public partial class Contacts_GetLocated_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Geolocation</summary>
-			public InputGeoPoint geo_point;
-			/// <summary>If set, the geolocation of the current user will be public for the specified number of seconds; pass 0x7fffffff to disable expiry, 0 to make the current geolocation private; if the flag isn't set, no changes will be applied.</summary>
-			[IfFlag(0)] public int self_expires;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="self_expires"/> has a value</summary>
-				has_self_expires = 0x1,
-				/// <summary>While the geolocation of the current user is public, clients should update it in the background every half-an-hour or so, while setting this flag. <br/>Do this only if the new location is more than 1 KM away from the previous one, or if the previous location is unknown.</summary>
-				background = 0x2,
-			}
-		}
+		public record Contacts_GetLocated_(int flags, InputGeoPoint geo_point, [field:IfFlag(0)] int self_expires) : IMethod<UpdatesBase>;
 		/// <summary>Get contacts near you		<para>See <a href="https://corefork.telegram.org/method/contacts.getLocated"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/contacts.getLocated#possible-errors">details</a>)</para></summary>
 		/// <param name="background">While the geolocation of the current user is public, clients should update it in the background every half-an-hour or so, while setting this flag. <br/>Do this only if the new location is more than 1 KM away from the previous one, or if the previous location is unknown.</param>
 		/// <param name="geo_point">Geolocation</param>
 		/// <param name="self_expires">If set, the geolocation of the current user will be public for the specified number of seconds; pass 0x7fffffff to disable expiry, 0 to make the current geolocation private; if the flag isn't set, no changes will be applied.</param>
 		public static Task<UpdatesBase> Contacts_GetLocated(this Client client, InputGeoPoint geo_point, bool background = false, int? self_expires = null)
-			=> client.CallAsync(new Contacts_GetLocated_
-			{
-				flags = (Contacts_GetLocated_.Flags)((background ? 0x2 : 0) | (self_expires != null ? 0x1 : 0)),
-				geo_point = geo_point,
-				self_expires = self_expires.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Contacts_GetLocated_((background ? 0x2 : 0) | (self_expires != null ? 0x1 : 0),
+				geo_point, self_expires.GetValueOrDefault()));
 
-		/// <summary>Stop getting notifications about <a href="https://corefork.telegram.org/api/threads">thread replies</a> of a certain user in <c>@replies</c>		<para>See <a href="https://corefork.telegram.org/method/contacts.blockFromReplies"/></para></summary>
 		[TLDef(0x29A8962C)]
-		public partial class Contacts_BlockFromReplies_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>ID of the message in the <a href="https://corefork.telegram.org/api/threads#replies">@replies</a> chat</summary>
-			public int msg_id;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to delete the specified message as well</summary>
-				delete_message = 0x1,
-				/// <summary>Whether to delete all <c>@replies</c> messages from this user as well</summary>
-				delete_history = 0x2,
-				/// <summary>Whether to also report this user for spam</summary>
-				report_spam = 0x4,
-			}
-		}
+		public record Contacts_BlockFromReplies_(int flags, int msg_id) : IMethod<UpdatesBase>;
 		/// <summary>Stop getting notifications about <a href="https://corefork.telegram.org/api/threads">thread replies</a> of a certain user in <c>@replies</c>		<para>See <a href="https://corefork.telegram.org/method/contacts.blockFromReplies"/></para></summary>
 		/// <param name="delete_message">Whether to delete the specified message as well</param>
 		/// <param name="delete_history">Whether to delete all <c>@replies</c> messages from this user as well</param>
 		/// <param name="report_spam">Whether to also report this user for spam</param>
 		/// <param name="msg_id">ID of the message in the <a href="https://corefork.telegram.org/api/threads#replies">@replies</a> chat</param>
 		public static Task<UpdatesBase> Contacts_BlockFromReplies(this Client client, int msg_id, bool delete_message = false, bool delete_history = false, bool report_spam = false)
-			=> client.CallAsync(new Contacts_BlockFromReplies_
-			{
-				flags = (Contacts_BlockFromReplies_.Flags)((delete_message ? 0x1 : 0) | (delete_history ? 0x2 : 0) | (report_spam ? 0x4 : 0)),
-				msg_id = msg_id,
-			});
+			=> client.CallAsync(new Contacts_BlockFromReplies_((delete_message ? 0x1 : 0) | (delete_history ? 0x2 : 0) | (report_spam ? 0x4 : 0),
+				msg_id));
 
-		/// <summary>Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/></para></summary>
 		[TLDef(0x63C66506)]
-		public partial class Messages_GetMessages_ : IMethod<Messages_MessagesBase>
-		{
-			/// <summary>Message ID list</summary>
-			public InputMessage[] id;
-		}
+		public record Messages_GetMessages_(InputMessage[] id) : IMethod<Messages_MessagesBase>;
 		/// <summary>Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para></summary>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client client, InputMessage[] id)
-			=> client.CallAsync(new Messages_GetMessages_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Messages_GetMessages_(id));
 
-		/// <summary>Returns the current user dialog list.		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogs"/></para></summary>
 		[TLDef(0xA0F4CB4F)]
-		public partial class Messages_GetDialogs_ : IMethod<Messages_DialogsBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
-			[IfFlag(1)] public int folder_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public DateTime offset_date;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public int offset_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offset peer for pagination</a></summary>
-			public InputPeer offset_peer;
-			/// <summary>Number of list elements to be returned</summary>
-			public int limit;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Exclude pinned dialogs</summary>
-				exclude_pinned = 0x1,
-				/// <summary>Field <see cref="folder_id"/> has a value</summary>
-				has_folder_id = 0x2,
-			}
-		}
+		public record Messages_GetDialogs_(int flags, [field:IfFlag(1)] int folder_id, DateTime offset_date, int offset_id, InputPeer offset_peer, int limit, long hash) : IMethod<Messages_DialogsBase>;
 		/// <summary>Returns the current user dialog list.		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getDialogs#possible-errors">details</a>)</para></summary>
 		/// <param name="exclude_pinned">Exclude pinned dialogs</param>
 		/// <param name="folder_id"><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></param>
@@ -14578,38 +13212,11 @@ namespace TL
 		/// <param name="limit">Number of list elements to be returned</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<Messages_DialogsBase> Messages_GetDialogs(this Client client, DateTime offset_date, int offset_id, InputPeer offset_peer, int limit, long hash, bool exclude_pinned = false, int? folder_id = null)
-			=> client.CallAsync(new Messages_GetDialogs_
-			{
-				flags = (Messages_GetDialogs_.Flags)((exclude_pinned ? 0x1 : 0) | (folder_id != null ? 0x2 : 0)),
-				folder_id = folder_id.GetValueOrDefault(),
-				offset_date = offset_date,
-				offset_id = offset_id,
-				offset_peer = offset_peer,
-				limit = limit,
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetDialogs_((exclude_pinned ? 0x1 : 0) | (folder_id != null ? 0x2 : 0),
+				folder_id.GetValueOrDefault(), offset_date, offset_id, offset_peer, limit, hash));
 
-		/// <summary>Gets back the conversation history with one interlocutor / within a chat		<para>See <a href="https://corefork.telegram.org/method/messages.getHistory"/></para></summary>
 		[TLDef(0x4423E6C5)]
-		public partial class Messages_GetHistory_ : IMethod<Messages_MessagesBase>
-		{
-			/// <summary>Target peer</summary>
-			public InputPeer peer;
-			/// <summary>Only return messages starting from the specified message ID</summary>
-			public int offset_id;
-			/// <summary>Only return messages sent before the specified date</summary>
-			public DateTime offset_date;
-			/// <summary>Number of list elements to be skipped, negative values are also accepted.</summary>
-			public int add_offset;
-			/// <summary>Number of results to return</summary>
-			public int limit;
-			/// <summary>If a positive value was transferred, the method will return only messages with IDs less than <strong>max_id</strong></summary>
-			public int max_id;
-			/// <summary>If a positive value was transferred, the method will return only messages with IDs more than <strong>min_id</strong></summary>
-			public int min_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Result hash</a></summary>
-			public long hash;
-		}
+		public record Messages_GetHistory_(InputPeer peer, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash) : IMethod<Messages_MessagesBase>;
 		/// <summary>Gets back the conversation history with one interlocutor / within a chat		<para>See <a href="https://corefork.telegram.org/method/messages.getHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,401 (<a href="https://corefork.telegram.org/method/messages.getHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Target peer</param>
 		/// <param name="offset_id">Only return messages starting from the specified message ID</param>
@@ -14620,59 +13227,10 @@ namespace TL
 		/// <param name="min_id">If a positive value was transferred, the method will return only messages with IDs more than <strong>min_id</strong></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets">Result hash</a></param>
 		public static Task<Messages_MessagesBase> Messages_GetHistory(this Client client, InputPeer peer, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash)
-			=> client.CallAsync(new Messages_GetHistory_
-			{
-				peer = peer,
-				offset_id = offset_id,
-				offset_date = offset_date,
-				add_offset = add_offset,
-				limit = limit,
-				max_id = max_id,
-				min_id = min_id,
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetHistory_(peer, offset_id, offset_date, add_offset, limit, max_id, min_id, hash));
 
-		/// <summary>Gets back found messages		<para>See <a href="https://corefork.telegram.org/method/messages.search"/></para></summary>
 		[TLDef(0xA0FDA762)]
-		public partial class Messages_Search_ : IMethod<Messages_MessagesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>User or chat, histories with which are searched, or <see langword="null"/> constructor for global search</summary>
-			public InputPeer peer;
-			/// <summary>Text search request</summary>
-			public string q;
-			/// <summary>Only return messages sent by the specified user ID</summary>
-			[IfFlag(0)] public InputPeer from_id;
-			/// <summary><a href="https://corefork.telegram.org/api/threads">Thread ID</a></summary>
-			[IfFlag(1)] public int top_msg_id;
-			/// <summary>Filter to return only specified message types</summary>
-			public MessagesFilter filter;
-			/// <summary>If a positive value was transferred, only messages with a sending date bigger than the transferred one will be returned</summary>
-			public DateTime min_date;
-			/// <summary>If a positive value was transferred, only messages with a sending date smaller than the transferred one will be returned</summary>
-			public DateTime max_date;
-			/// <summary>Only return messages starting from the specified message ID</summary>
-			public int offset_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Additional offset</a></summary>
-			public int add_offset;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Number of results to return</a></summary>
-			public int limit;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Maximum message ID to return</a></summary>
-			public int max_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Minimum message ID to return</a></summary>
-			public int min_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Hash</a></summary>
-			public long hash;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="from_id"/> has a value</summary>
-				has_from_id = 0x1,
-				/// <summary>Field <see cref="top_msg_id"/> has a value</summary>
-				has_top_msg_id = 0x2,
-			}
-		}
+		public record Messages_Search_(int flags, InputPeer peer, string q, [field:IfFlag(0)] InputPeer from_id, [field:IfFlag(1)] int top_msg_id, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_id, int add_offset, int limit, int max_id, int min_id, long hash) : IMethod<Messages_MessagesBase>;
 		/// <summary>Gets back found messages		<para>See <a href="https://corefork.telegram.org/method/messages.search"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.search#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">User or chat, histories with which are searched, or <see langword="null"/> constructor for global search</param>
 		/// <param name="q">Text search request</param>
@@ -14688,196 +13246,54 @@ namespace TL
 		/// <param name="min_id"><a href="https://corefork.telegram.org/api/offsets">Minimum message ID to return</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets">Hash</a></param>
 		public static Task<Messages_MessagesBase> Messages_Search(this Client client, InputPeer peer, string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_id, int add_offset, int limit, int max_id, int min_id, long hash, InputPeer from_id = null, int? top_msg_id = null)
-			=> client.CallAsync(new Messages_Search_
-			{
-				flags = (Messages_Search_.Flags)((from_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x2 : 0)),
-				peer = peer,
-				q = q,
-				from_id = from_id,
-				top_msg_id = top_msg_id.GetValueOrDefault(),
-				filter = filter,
-				min_date = min_date,
-				max_date = max_date,
-				offset_id = offset_id,
-				add_offset = add_offset,
-				limit = limit,
-				max_id = max_id,
-				min_id = min_id,
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_Search_((from_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x2 : 0),
+				peer, q, from_id, top_msg_id.GetValueOrDefault(), filter, min_date, max_date, offset_id, add_offset, limit, max_id, min_id, hash));
 
-		/// <summary>Marks message history as read.		<para>See <a href="https://corefork.telegram.org/method/messages.readHistory"/></para></summary>
 		[TLDef(0x0E306D3A)]
-		public partial class Messages_ReadHistory_ : IMethod<Messages_AffectedMessages>
-		{
-			/// <summary>Target user or group</summary>
-			public InputPeer peer;
-			/// <summary>If a positive value is passed, only messages with identifiers less or equal than the given one will be read</summary>
-			public int max_id;
-		}
+		public record Messages_ReadHistory_(InputPeer peer, int max_id) : IMethod<Messages_AffectedMessages>;
 		/// <summary>Marks message history as read.		<para>See <a href="https://corefork.telegram.org/method/messages.readHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Target user or group</param>
 		/// <param name="max_id">If a positive value is passed, only messages with identifiers less or equal than the given one will be read</param>
 		public static Task<Messages_AffectedMessages> Messages_ReadHistory(this Client client, InputPeer peer, int max_id)
-			=> client.CallAsync(new Messages_ReadHistory_
-			{
-				peer = peer,
-				max_id = max_id,
-			});
+			=> client.CallAsync(new Messages_ReadHistory_(peer, max_id));
 
-		/// <summary>Deletes communication history.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteHistory"/></para></summary>
 		[TLDef(0xB08F922A)]
-		public partial class Messages_DeleteHistory_ : IMethod<Messages_AffectedHistory>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>User or chat, communication history of which will be deleted</summary>
-			public InputPeer peer;
-			/// <summary>Maximum ID of message to delete</summary>
-			public int max_id;
-			[IfFlag(2)] public DateTime min_date;
-			[IfFlag(3)] public DateTime max_date;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Just clear history for the current user, without actually removing messages for every chat user</summary>
-				just_clear = 0x1,
-				/// <summary>Whether to delete the message history for all chat participants</summary>
-				revoke = 0x2,
-				/// <summary>Field <see cref="min_date"/> has a value</summary>
-				has_min_date = 0x4,
-				/// <summary>Field <see cref="max_date"/> has a value</summary>
-				has_max_date = 0x8,
-			}
-		}
+		public record Messages_DeleteHistory_(int flags, InputPeer peer, int max_id, [field:IfFlag(2)] DateTime min_date, [field:IfFlag(3)] DateTime max_date) : IMethod<Messages_AffectedHistory>;
 		/// <summary>Deletes communication history.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="just_clear">Just clear history for the current user, without actually removing messages for every chat user</param>
 		/// <param name="revoke">Whether to delete the message history for all chat participants</param>
 		/// <param name="peer">User or chat, communication history of which will be deleted</param>
 		/// <param name="max_id">Maximum ID of message to delete</param>
 		public static Task<Messages_AffectedHistory> Messages_DeleteHistory(this Client client, InputPeer peer, int max_id, bool just_clear = false, bool revoke = false, DateTime? min_date = null, DateTime? max_date = null)
-			=> client.CallAsync(new Messages_DeleteHistory_
-			{
-				flags = (Messages_DeleteHistory_.Flags)((just_clear ? 0x1 : 0) | (revoke ? 0x2 : 0) | (min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0)),
-				peer = peer,
-				max_id = max_id,
-				min_date = min_date.GetValueOrDefault(),
-				max_date = max_date.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Messages_DeleteHistory_((just_clear ? 0x1 : 0) | (revoke ? 0x2 : 0) | (min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0),
+				peer, max_id, min_date.GetValueOrDefault(), max_date.GetValueOrDefault()));
 
-		/// <summary>Deletes messages by their identifiers.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteMessages"/></para></summary>
 		[TLDef(0xE58E95D2)]
-		public partial class Messages_DeleteMessages_ : IMethod<Messages_AffectedMessages>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Message ID list</summary>
-			public int[] id;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to delete messages for all participants of the chat</summary>
-				revoke = 0x1,
-			}
-		}
+		public record Messages_DeleteMessages_(int flags, int[] id) : IMethod<Messages_AffectedMessages>;
 		/// <summary>Deletes messages by their identifiers.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/messages.deleteMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="revoke">Whether to delete messages for all participants of the chat</param>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_AffectedMessages> Messages_DeleteMessages(this Client client, int[] id, bool revoke = false)
-			=> client.CallAsync(new Messages_DeleteMessages_
-			{
-				flags = (Messages_DeleteMessages_.Flags)(revoke ? 0x1 : 0),
-				id = id,
-			});
+			=> client.CallAsync(new Messages_DeleteMessages_(revoke ? 0x1 : 0, id));
 
-		/// <summary>Confirms receipt of messages by a client, cancels PUSH-notification sending.		<para>See <a href="https://corefork.telegram.org/method/messages.receivedMessages"/></para></summary>
 		[TLDef(0x05A954C0)]
-		public partial class Messages_ReceivedMessages_ : IMethod<ReceivedNotifyMessage[]>
-		{
-			/// <summary>Maximum message ID available in a client.</summary>
-			public int max_id;
-		}
+		public record Messages_ReceivedMessages_(int max_id) : IMethod<ReceivedNotifyMessage[]>;
 		/// <summary>Confirms receipt of messages by a client, cancels PUSH-notification sending.		<para>See <a href="https://corefork.telegram.org/method/messages.receivedMessages"/></para></summary>
 		/// <param name="max_id">Maximum message ID available in a client.</param>
 		public static Task<ReceivedNotifyMessage[]> Messages_ReceivedMessages(this Client client, int max_id)
-			=> client.CallAsync(new Messages_ReceivedMessages_
-			{
-				max_id = max_id,
-			});
+			=> client.CallAsync(new Messages_ReceivedMessages_(max_id));
 
-		/// <summary>Sends a current user typing event (see <see cref="SendMessageAction"/> for all event types) to a conversation partner or group.		<para>See <a href="https://corefork.telegram.org/method/messages.setTyping"/></para></summary>
 		[TLDef(0x58943EE2)]
-		public partial class Messages_SetTyping_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Target user or group</summary>
-			public InputPeer peer;
-			/// <summary><a href="https://corefork.telegram.org/api/threads">Thread ID</a></summary>
-			[IfFlag(0)] public int top_msg_id;
-			/// <summary>Type of action<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
-			public SendMessageAction action;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="top_msg_id"/> has a value</summary>
-				has_top_msg_id = 0x1,
-			}
-		}
+		public record Messages_SetTyping_(int flags, InputPeer peer, [field:IfFlag(0)] int top_msg_id, SendMessageAction action) : IMethod<bool>;
 		/// <summary>Sends a current user typing event (see <see cref="SendMessageAction"/> for all event types) to a conversation partner or group.		<para>See <a href="https://corefork.telegram.org/method/messages.setTyping"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.setTyping#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Target user or group</param>
 		/// <param name="top_msg_id"><a href="https://corefork.telegram.org/api/threads">Thread ID</a></param>
 		/// <param name="action">Type of action<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</param>
 		public static Task<bool> Messages_SetTyping(this Client client, InputPeer peer, SendMessageAction action, int? top_msg_id = null)
-			=> client.CallAsync(new Messages_SetTyping_
-			{
-				flags = (Messages_SetTyping_.Flags)(top_msg_id != null ? 0x1 : 0),
-				peer = peer,
-				top_msg_id = top_msg_id.GetValueOrDefault(),
-				action = action,
-			});
+			=> client.CallAsync(new Messages_SetTyping_(top_msg_id != null ? 0x1 : 0, peer, top_msg_id.GetValueOrDefault(), action));
 
-		/// <summary>Sends a message to a chat		<para>See <a href="https://corefork.telegram.org/method/messages.sendMessage"/></para></summary>
 		[TLDef(0x520C3870)]
-		public partial class Messages_SendMessage_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The destination where the message will be sent</summary>
-			public InputPeer peer;
-			/// <summary>The message ID to which this message will reply to</summary>
-			[IfFlag(0)] public int reply_to_msg_id;
-			/// <summary>The message</summary>
-			public string message;
-			/// <summary>Unique client message ID required to prevent message resending</summary>
-			public long random_id;
-			/// <summary>Reply markup for sending bot buttons</summary>
-			[IfFlag(2)] public ReplyMarkup reply_markup;
-			/// <summary>Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</summary>
-			[IfFlag(3)] public MessageEntity[] entities;
-			/// <summary>Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></summary>
-			[IfFlag(10)] public DateTime schedule_date;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
-				has_reply_to_msg_id = 0x1,
-				/// <summary>Set this flag to disable generation of the webpage preview</summary>
-				no_webpage = 0x2,
-				/// <summary>Field <see cref="reply_markup"/> has a value</summary>
-				has_reply_markup = 0x4,
-				/// <summary>Field <see cref="entities"/> has a value</summary>
-				has_entities = 0x8,
-				/// <summary>Send this message silently (no notifications for the receivers)</summary>
-				silent = 0x20,
-				/// <summary>Send this message as background message</summary>
-				background = 0x40,
-				/// <summary>Clear the draft field</summary>
-				clear_draft = 0x80,
-				/// <summary>Field <see cref="schedule_date"/> has a value</summary>
-				has_schedule_date = 0x400,
-			}
-		}
+		public record Messages_SendMessage_(int flags, InputPeer peer, [field:IfFlag(0)] int reply_to_msg_id, string message, long random_id, [field:IfFlag(2)] ReplyMarkup reply_markup, [field:IfFlag(3)] MessageEntity[] entities, [field:IfFlag(10)] DateTime schedule_date) : IMethod<UpdatesBase>;
 		/// <summary>Sends a message to a chat		<para>See <a href="https://corefork.telegram.org/method/messages.sendMessage"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,401,403,420 (<a href="https://corefork.telegram.org/method/messages.sendMessage#possible-errors">details</a>)</para></summary>
 		/// <param name="no_webpage">Set this flag to disable generation of the webpage preview</param>
 		/// <param name="silent">Send this message silently (no notifications for the receivers)</param>
@@ -14891,59 +13307,11 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
-			=> client.CallAsync(new Messages_SendMessage_
-			{
-				flags = (Messages_SendMessage_.Flags)((no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0)),
-				peer = peer,
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				message = message,
-				random_id = random_id,
-				reply_markup = reply_markup,
-				entities = entities,
-				schedule_date = schedule_date.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Messages_SendMessage_((no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0),
+				peer, reply_to_msg_id.GetValueOrDefault(), message, random_id, reply_markup, entities, schedule_date.GetValueOrDefault()));
 
-		/// <summary>Send a media		<para>See <a href="https://corefork.telegram.org/method/messages.sendMedia"/></para></summary>
 		[TLDef(0x3491EBA9)]
-		public partial class Messages_SendMedia_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Destination</summary>
-			public InputPeer peer;
-			/// <summary>Message ID to which this message should reply to</summary>
-			[IfFlag(0)] public int reply_to_msg_id;
-			/// <summary>Attached media</summary>
-			public InputMedia media;
-			/// <summary>Caption</summary>
-			public string message;
-			/// <summary>Random ID to avoid resending the same message</summary>
-			public long random_id;
-			/// <summary>Reply markup for bot keyboards</summary>
-			[IfFlag(2)] public ReplyMarkup reply_markup;
-			/// <summary>Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</summary>
-			[IfFlag(3)] public MessageEntity[] entities;
-			/// <summary>Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></summary>
-			[IfFlag(10)] public DateTime schedule_date;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
-				has_reply_to_msg_id = 0x1,
-				/// <summary>Field <see cref="reply_markup"/> has a value</summary>
-				has_reply_markup = 0x4,
-				/// <summary>Field <see cref="entities"/> has a value</summary>
-				has_entities = 0x8,
-				/// <summary>Send message silently (no notification should be triggered)</summary>
-				silent = 0x20,
-				/// <summary>Send message in background</summary>
-				background = 0x40,
-				/// <summary>Clear the draft</summary>
-				clear_draft = 0x80,
-				/// <summary>Field <see cref="schedule_date"/> has a value</summary>
-				has_schedule_date = 0x400,
-			}
-		}
+		public record Messages_SendMedia_(int flags, InputPeer peer, [field:IfFlag(0)] int reply_to_msg_id, InputMedia media, string message, long random_id, [field:IfFlag(2)] ReplyMarkup reply_markup, [field:IfFlag(3)] MessageEntity[] entities, [field:IfFlag(10)] DateTime schedule_date) : IMethod<UpdatesBase>;
 		/// <summary>Send a media		<para>See <a href="https://corefork.telegram.org/method/messages.sendMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,420 (<a href="https://corefork.telegram.org/method/messages.sendMedia#possible-errors">details</a>)</para></summary>
 		/// <param name="silent">Send message silently (no notification should be triggered)</param>
 		/// <param name="background">Send message in background</param>
@@ -14957,52 +13325,11 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
-			=> client.CallAsync(new Messages_SendMedia_
-			{
-				flags = (Messages_SendMedia_.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0)),
-				peer = peer,
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				media = media,
-				message = message,
-				random_id = random_id,
-				reply_markup = reply_markup,
-				entities = entities,
-				schedule_date = schedule_date.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Messages_SendMedia_((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0),
+				peer, reply_to_msg_id.GetValueOrDefault(), media, message, random_id, reply_markup, entities, schedule_date.GetValueOrDefault()));
 
-		/// <summary>Forwards messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.forwardMessages"/></para></summary>
 		[TLDef(0xD9FEE60E)]
-		public partial class Messages_ForwardMessages_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Source of messages</summary>
-			public InputPeer from_peer;
-			/// <summary>IDs of messages</summary>
-			public int[] id;
-			/// <summary>Random ID to prevent resending of messages</summary>
-			public long[] random_id;
-			/// <summary>Destination peer</summary>
-			public InputPeer to_peer;
-			/// <summary>Scheduled message date for scheduled messages</summary>
-			[IfFlag(10)] public DateTime schedule_date;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to send messages silently (no notification will be triggered on the destination clients)</summary>
-				silent = 0x20,
-				/// <summary>Whether to send the message in background</summary>
-				background = 0x40,
-				/// <summary>When forwarding games, whether to include your score in the game</summary>
-				with_my_score = 0x100,
-				/// <summary>Field <see cref="schedule_date"/> has a value</summary>
-				has_schedule_date = 0x400,
-				/// <summary>Whether to forward messages without quoting the original author</summary>
-				drop_author = 0x800,
-				/// <summary>Whether to strip captions from media</summary>
-				drop_media_captions = 0x1000,
-			}
-		}
+		public record Messages_ForwardMessages_(int flags, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, [field:IfFlag(10)] DateTime schedule_date) : IMethod<UpdatesBase>;
 		/// <summary>Forwards messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.forwardMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,420 (<a href="https://corefork.telegram.org/method/messages.forwardMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="silent">Whether to send messages silently (no notification will be triggered on the destination clients)</param>
 		/// <param name="background">Whether to send the message in background</param>
@@ -15015,394 +13342,151 @@ namespace TL
 		/// <param name="to_peer">Destination peer</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, DateTime? schedule_date = null)
-			=> client.CallAsync(new Messages_ForwardMessages_
-			{
-				flags = (Messages_ForwardMessages_.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (schedule_date != null ? 0x400 : 0)),
-				from_peer = from_peer,
-				id = id,
-				random_id = random_id,
-				to_peer = to_peer,
-				schedule_date = schedule_date.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Messages_ForwardMessages_((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (schedule_date != null ? 0x400 : 0),
+				from_peer, id, random_id, to_peer, schedule_date.GetValueOrDefault()));
 
-		/// <summary>Report a new incoming chat for spam, if the <see cref="PeerSettings"/> of the chat allow us to do that		<para>See <a href="https://corefork.telegram.org/method/messages.reportSpam"/></para></summary>
 		[TLDef(0xCF1592DB)]
-		public partial class Messages_ReportSpam_ : IMethod<bool>
-		{
-			/// <summary>Peer to report</summary>
-			public InputPeer peer;
-		}
+		public record Messages_ReportSpam_(InputPeer peer) : IMethod<bool>;
 		/// <summary>Report a new incoming chat for spam, if the <see cref="PeerSettings"/> of the chat allow us to do that		<para>See <a href="https://corefork.telegram.org/method/messages.reportSpam"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.reportSpam#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer to report</param>
 		public static Task<bool> Messages_ReportSpam(this Client client, InputPeer peer)
-			=> client.CallAsync(new Messages_ReportSpam_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Messages_ReportSpam_(peer));
 
-		/// <summary>Get peer settings		<para>See <a href="https://corefork.telegram.org/method/messages.getPeerSettings"/></para></summary>
 		[TLDef(0x3672E09C)]
-		public partial class Messages_GetPeerSettings_ : IMethod<PeerSettings>
-		{
-			/// <summary>The peer</summary>
-			public InputPeer peer;
-		}
+		public record Messages_GetPeerSettings_(InputPeer peer) : IMethod<PeerSettings>;
 		/// <summary>Get peer settings		<para>See <a href="https://corefork.telegram.org/method/messages.getPeerSettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getPeerSettings#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The peer</param>
 		public static Task<PeerSettings> Messages_GetPeerSettings(this Client client, InputPeer peer)
-			=> client.CallAsync(new Messages_GetPeerSettings_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Messages_GetPeerSettings_(peer));
 
-		/// <summary>Report a message in a chat for violation of telegram's Terms of Service		<para>See <a href="https://corefork.telegram.org/method/messages.report"/></para></summary>
 		[TLDef(0x8953AB4E)]
-		public partial class Messages_Report_ : IMethod<bool>
-		{
-			/// <summary>Peer</summary>
-			public InputPeer peer;
-			/// <summary>IDs of messages to report</summary>
-			public int[] id;
-			/// <summary>Why are these messages being reported</summary>
-			public ReportReason reason;
-			/// <summary>Comment for report moderation</summary>
-			public string message;
-		}
+		public record Messages_Report_(InputPeer peer, int[] id, ReportReason reason, string message) : IMethod<bool>;
 		/// <summary>Report a message in a chat for violation of telegram's Terms of Service		<para>See <a href="https://corefork.telegram.org/method/messages.report"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.report#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="id">IDs of messages to report</param>
 		/// <param name="reason">Why are these messages being reported</param>
 		/// <param name="message">Comment for report moderation</param>
 		public static Task<bool> Messages_Report(this Client client, InputPeer peer, int[] id, ReportReason reason, string message)
-			=> client.CallAsync(new Messages_Report_
-			{
-				peer = peer,
-				id = id,
-				reason = reason,
-				message = message,
-			});
+			=> client.CallAsync(new Messages_Report_(peer, id, reason, message));
 
-		/// <summary>Returns chat basic info on their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getChats"/></para></summary>
 		[TLDef(0x49E9528F)]
-		public partial class Messages_GetChats_ : IMethod<Messages_Chats>
-		{
-			/// <summary>List of chat IDs</summary>
-			public long[] id;
-		}
+		public record Messages_GetChats_(long[] id) : IMethod<Messages_Chats>;
 		/// <summary>Returns chat basic info on their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getChats"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getChats#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of chat IDs</param>
 		public static Task<Messages_Chats> Messages_GetChats(this Client client, long[] id)
-			=> client.CallAsync(new Messages_GetChats_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Messages_GetChats_(id));
 
-		/// <summary>Returns full chat info according to its ID.		<para>See <a href="https://corefork.telegram.org/method/messages.getFullChat"/></para></summary>
 		[TLDef(0xAEB00B34)]
-		public partial class Messages_GetFullChat_ : IMethod<Messages_ChatFull>
-		{
-			/// <summary>Chat ID</summary>
-			public long chat_id;
-		}
+		public record Messages_GetFullChat_(long chat_id) : IMethod<Messages_ChatFull>;
 		/// <summary>Returns full chat info according to its ID.		<para>See <a href="https://corefork.telegram.org/method/messages.getFullChat"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getFullChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		public static Task<Messages_ChatFull> Messages_GetFullChat(this Client client, long chat_id)
-			=> client.CallAsync(new Messages_GetFullChat_
-			{
-				chat_id = chat_id,
-			});
+			=> client.CallAsync(new Messages_GetFullChat_(chat_id));
 
-		/// <summary>Chanages chat name and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatTitle"/></para></summary>
 		[TLDef(0x73783FFD)]
-		public partial class Messages_EditChatTitle_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Chat ID</summary>
-			public long chat_id;
-			/// <summary>New chat name, different from the old one</summary>
-			public string title;
-		}
+		public record Messages_EditChatTitle_(long chat_id, string title) : IMethod<UpdatesBase>;
 		/// <summary>Chanages chat name and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatTitle"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatTitle#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="title">New chat name, different from the old one</param>
 		public static Task<UpdatesBase> Messages_EditChatTitle(this Client client, long chat_id, string title)
-			=> client.CallAsync(new Messages_EditChatTitle_
-			{
-				chat_id = chat_id,
-				title = title,
-			});
+			=> client.CallAsync(new Messages_EditChatTitle_(chat_id, title));
 
-		/// <summary>Changes chat photo and sends a service message on it		<para>See <a href="https://corefork.telegram.org/method/messages.editChatPhoto"/></para></summary>
 		[TLDef(0x35DDD674)]
-		public partial class Messages_EditChatPhoto_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Chat ID</summary>
-			public long chat_id;
-			/// <summary>Photo to be set</summary>
-			public InputChatPhotoBase photo;
-		}
+		public record Messages_EditChatPhoto_(long chat_id, InputChatPhotoBase photo) : IMethod<UpdatesBase>;
 		/// <summary>Changes chat photo and sends a service message on it		<para>See <a href="https://corefork.telegram.org/method/messages.editChatPhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatPhoto#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="photo">Photo to be set</param>
 		public static Task<UpdatesBase> Messages_EditChatPhoto(this Client client, long chat_id, InputChatPhotoBase photo)
-			=> client.CallAsync(new Messages_EditChatPhoto_
-			{
-				chat_id = chat_id,
-				photo = photo,
-			});
+			=> client.CallAsync(new Messages_EditChatPhoto_(chat_id, photo));
 
-		/// <summary>Adds a user to a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.addChatUser"/></para></summary>
 		[TLDef(0xF24753E3)]
-		public partial class Messages_AddChatUser_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Chat ID</summary>
-			public long chat_id;
-			/// <summary>User ID to be added</summary>
-			public InputUserBase user_id;
-			/// <summary>Number of last messages to be forwarded</summary>
-			public int fwd_limit;
-		}
+		public record Messages_AddChatUser_(long chat_id, InputUserBase user_id, int fwd_limit) : IMethod<UpdatesBase>;
 		/// <summary>Adds a user to a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.addChatUser"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.addChatUser#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="user_id">User ID to be added</param>
 		/// <param name="fwd_limit">Number of last messages to be forwarded</param>
 		public static Task<UpdatesBase> Messages_AddChatUser(this Client client, long chat_id, InputUserBase user_id, int fwd_limit)
-			=> client.CallAsync(new Messages_AddChatUser_
-			{
-				chat_id = chat_id,
-				user_id = user_id,
-				fwd_limit = fwd_limit,
-			});
+			=> client.CallAsync(new Messages_AddChatUser_(chat_id, user_id, fwd_limit));
 
-		/// <summary>Deletes a user from a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChatUser"/></para></summary>
 		[TLDef(0xA2185CAB)]
-		public partial class Messages_DeleteChatUser_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Chat ID</summary>
-			public long chat_id;
-			/// <summary>User ID to be deleted</summary>
-			public InputUserBase user_id;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Remove the entire chat history of the specified user in this chat.</summary>
-				revoke_history = 0x1,
-			}
-		}
+		public record Messages_DeleteChatUser_(int flags, long chat_id, InputUserBase user_id) : IMethod<UpdatesBase>;
 		/// <summary>Deletes a user from a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChatUser"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChatUser#possible-errors">details</a>)</para></summary>
 		/// <param name="revoke_history">Remove the entire chat history of the specified user in this chat.</param>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="user_id">User ID to be deleted</param>
 		public static Task<UpdatesBase> Messages_DeleteChatUser(this Client client, long chat_id, InputUserBase user_id, bool revoke_history = false)
-			=> client.CallAsync(new Messages_DeleteChatUser_
-			{
-				flags = (Messages_DeleteChatUser_.Flags)(revoke_history ? 0x1 : 0),
-				chat_id = chat_id,
-				user_id = user_id,
-			});
+			=> client.CallAsync(new Messages_DeleteChatUser_(revoke_history ? 0x1 : 0, chat_id, user_id));
 
-		/// <summary>Creates a new chat.		<para>See <a href="https://corefork.telegram.org/method/messages.createChat"/></para></summary>
 		[TLDef(0x09CB126E)]
-		public partial class Messages_CreateChat_ : IMethod<UpdatesBase>
-		{
-			/// <summary>List of user IDs to be invited</summary>
-			public InputUserBase[] users;
-			/// <summary>Chat name</summary>
-			public string title;
-		}
+		public record Messages_CreateChat_(InputUserBase[] users, string title) : IMethod<UpdatesBase>;
 		/// <summary>Creates a new chat.		<para>See <a href="https://corefork.telegram.org/method/messages.createChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.createChat#possible-errors">details</a>)</para></summary>
 		/// <param name="users">List of user IDs to be invited</param>
 		/// <param name="title">Chat name</param>
 		public static Task<UpdatesBase> Messages_CreateChat(this Client client, InputUserBase[] users, string title)
-			=> client.CallAsync(new Messages_CreateChat_
-			{
-				users = users,
-				title = title,
-			});
+			=> client.CallAsync(new Messages_CreateChat_(users, title));
 
-		/// <summary>Returns configuration parameters for Diffie-Hellman key generation. Can also return a random sequence of bytes of required length.		<para>See <a href="https://corefork.telegram.org/method/messages.getDhConfig"/></para></summary>
 		[TLDef(0x26CF8950)]
-		public partial class Messages_GetDhConfig_ : IMethod<Messages_DhConfigBase>
-		{
-			/// <summary>Value of the <strong>version</strong> parameter from <see cref="Messages_DhConfig"/>, avialable at the client</summary>
-			public int version;
-			/// <summary>Length of the required random sequence</summary>
-			public int random_length;
-		}
+		public record Messages_GetDhConfig_(int version, int random_length) : IMethod<Messages_DhConfigBase>;
 		/// <summary>Returns configuration parameters for Diffie-Hellman key generation. Can also return a random sequence of bytes of required length.		<para>See <a href="https://corefork.telegram.org/method/messages.getDhConfig"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getDhConfig#possible-errors">details</a>)</para></summary>
 		/// <param name="version">Value of the <strong>version</strong> parameter from <see cref="Messages_DhConfig"/>, avialable at the client</param>
 		/// <param name="random_length">Length of the required random sequence</param>
 		public static Task<Messages_DhConfigBase> Messages_GetDhConfig(this Client client, int version, int random_length)
-			=> client.CallAsync(new Messages_GetDhConfig_
-			{
-				version = version,
-				random_length = random_length,
-			});
+			=> client.CallAsync(new Messages_GetDhConfig_(version, random_length));
 
-		/// <summary>Sends a request to start a secret chat to the user.		<para>See <a href="https://corefork.telegram.org/method/messages.requestEncryption"/></para></summary>
 		[TLDef(0xF64DAF43)]
-		public partial class Messages_RequestEncryption_ : IMethod<EncryptedChatBase>
-		{
-			/// <summary>User ID</summary>
-			public InputUserBase user_id;
-			/// <summary>Unique client request ID required to prevent resending. This also doubles as the chat ID.</summary>
-			public int random_id;
-			/// <summary><c>A = g ^ a mod p</c>, see <a href="https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange">Wikipedia</a></summary>
-			public byte[] g_a;
-		}
+		public record Messages_RequestEncryption_(InputUserBase user_id, int random_id, byte[] g_a) : IMethod<EncryptedChatBase>;
 		/// <summary>Sends a request to start a secret chat to the user.		<para>See <a href="https://corefork.telegram.org/method/messages.requestEncryption"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.requestEncryption#possible-errors">details</a>)</para></summary>
 		/// <param name="user_id">User ID</param>
 		/// <param name="random_id">Unique client request ID required to prevent resending. This also doubles as the chat ID.</param>
 		/// <param name="g_a"><c>A = g ^ a mod p</c>, see <a href="https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange">Wikipedia</a></param>
 		public static Task<EncryptedChatBase> Messages_RequestEncryption(this Client client, InputUserBase user_id, int random_id, byte[] g_a)
-			=> client.CallAsync(new Messages_RequestEncryption_
-			{
-				user_id = user_id,
-				random_id = random_id,
-				g_a = g_a,
-			});
+			=> client.CallAsync(new Messages_RequestEncryption_(user_id, random_id, g_a));
 
-		/// <summary>Confirms creation of a secret chat		<para>See <a href="https://corefork.telegram.org/method/messages.acceptEncryption"/></para></summary>
 		[TLDef(0x3DBC0415)]
-		public partial class Messages_AcceptEncryption_ : IMethod<EncryptedChatBase>
-		{
-			/// <summary>Secret chat ID</summary>
-			public InputEncryptedChat peer;
-			/// <summary><c>B = g ^ b mod p</c>, see <a href="https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange">Wikipedia</a></summary>
-			public byte[] g_b;
-			/// <summary>64-bit fingerprint of the received key</summary>
-			public long key_fingerprint;
-		}
+		public record Messages_AcceptEncryption_(InputEncryptedChat peer, byte[] g_b, long key_fingerprint) : IMethod<EncryptedChatBase>;
 		/// <summary>Confirms creation of a secret chat		<para>See <a href="https://corefork.telegram.org/method/messages.acceptEncryption"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.acceptEncryption#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Secret chat ID</param>
 		/// <param name="g_b"><c>B = g ^ b mod p</c>, see <a href="https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange">Wikipedia</a></param>
 		/// <param name="key_fingerprint">64-bit fingerprint of the received key</param>
 		public static Task<EncryptedChatBase> Messages_AcceptEncryption(this Client client, InputEncryptedChat peer, byte[] g_b, long key_fingerprint)
-			=> client.CallAsync(new Messages_AcceptEncryption_
-			{
-				peer = peer,
-				g_b = g_b,
-				key_fingerprint = key_fingerprint,
-			});
+			=> client.CallAsync(new Messages_AcceptEncryption_(peer, g_b, key_fingerprint));
 
-		/// <summary>Cancels a request for creation and/or delete info on secret chat.		<para>See <a href="https://corefork.telegram.org/method/messages.discardEncryption"/></para></summary>
 		[TLDef(0xF393AEA0)]
-		public partial class Messages_DiscardEncryption_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Secret chat ID</summary>
-			public int chat_id;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to delete the entire chat history for the other user as well</summary>
-				delete_history = 0x1,
-			}
-		}
+		public record Messages_DiscardEncryption_(int flags, int chat_id) : IMethod<bool>;
 		/// <summary>Cancels a request for creation and/or delete info on secret chat.		<para>See <a href="https://corefork.telegram.org/method/messages.discardEncryption"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.discardEncryption#possible-errors">details</a>)</para></summary>
 		/// <param name="delete_history">Whether to delete the entire chat history for the other user as well</param>
 		/// <param name="chat_id">Secret chat ID</param>
 		public static Task<bool> Messages_DiscardEncryption(this Client client, int chat_id, bool delete_history = false)
-			=> client.CallAsync(new Messages_DiscardEncryption_
-			{
-				flags = (Messages_DiscardEncryption_.Flags)(delete_history ? 0x1 : 0),
-				chat_id = chat_id,
-			});
+			=> client.CallAsync(new Messages_DiscardEncryption_(delete_history ? 0x1 : 0, chat_id));
 
-		/// <summary>Send typing event by the current user to a secret chat.		<para>See <a href="https://corefork.telegram.org/method/messages.setEncryptedTyping"/></para></summary>
 		[TLDef(0x791451ED)]
-		public partial class Messages_SetEncryptedTyping_ : IMethod<bool>
-		{
-			/// <summary>Secret chat ID</summary>
-			public InputEncryptedChat peer;
-			/// <summary>Typing.<br/><strong>Possible values</strong>:<br/><see cref="Bool.True"/>, if the user started typing and more than <strong>5 seconds</strong> have passed since the last request<br/><see cref="Bool.False"/>, if the user stopped typing</summary>
-			public bool typing;
-		}
+		public record Messages_SetEncryptedTyping_(InputEncryptedChat peer, bool typing) : IMethod<bool>;
 		/// <summary>Send typing event by the current user to a secret chat.		<para>See <a href="https://corefork.telegram.org/method/messages.setEncryptedTyping"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setEncryptedTyping#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Secret chat ID</param>
 		/// <param name="typing">Typing.<br/><strong>Possible values</strong>:<br/><see cref="Bool.True"/>, if the user started typing and more than <strong>5 seconds</strong> have passed since the last request<br/><see cref="Bool.False"/>, if the user stopped typing</param>
 		public static Task<bool> Messages_SetEncryptedTyping(this Client client, InputEncryptedChat peer, bool typing)
-			=> client.CallAsync(new Messages_SetEncryptedTyping_
-			{
-				peer = peer,
-				typing = typing,
-			});
+			=> client.CallAsync(new Messages_SetEncryptedTyping_(peer, typing));
 
-		/// <summary>Marks message history within a secret chat as read.		<para>See <a href="https://corefork.telegram.org/method/messages.readEncryptedHistory"/></para></summary>
 		[TLDef(0x7F4B690A)]
-		public partial class Messages_ReadEncryptedHistory_ : IMethod<bool>
-		{
-			/// <summary>Secret chat ID</summary>
-			public InputEncryptedChat peer;
-			/// <summary>Maximum date value for received messages in history</summary>
-			public DateTime max_date;
-		}
+		public record Messages_ReadEncryptedHistory_(InputEncryptedChat peer, DateTime max_date) : IMethod<bool>;
 		/// <summary>Marks message history within a secret chat as read.		<para>See <a href="https://corefork.telegram.org/method/messages.readEncryptedHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readEncryptedHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Secret chat ID</param>
 		/// <param name="max_date">Maximum date value for received messages in history</param>
 		public static Task<bool> Messages_ReadEncryptedHistory(this Client client, InputEncryptedChat peer, DateTime max_date)
-			=> client.CallAsync(new Messages_ReadEncryptedHistory_
-			{
-				peer = peer,
-				max_date = max_date,
-			});
+			=> client.CallAsync(new Messages_ReadEncryptedHistory_(peer, max_date));
 
-		/// <summary>Sends a text message to a secret chat.		<para>See <a href="https://corefork.telegram.org/method/messages.sendEncrypted"/></para></summary>
 		[TLDef(0x44FA7A15)]
-		public partial class Messages_SendEncrypted_ : IMethod<Messages_SentEncryptedMessage>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Secret chat ID</summary>
-			public InputEncryptedChat peer;
-			/// <summary>Unique client message ID, necessary to avoid message resending</summary>
-			public long random_id;
-			/// <summary>TL-serialization of <see cref="DecryptedMessageBase"/> type, encrypted with a key that was created during chat initialization</summary>
-			public byte[] data;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Send encrypted message without a notification</summary>
-				silent = 0x1,
-			}
-		}
+		public record Messages_SendEncrypted_(int flags, InputEncryptedChat peer, long random_id, byte[] data) : IMethod<Messages_SentEncryptedMessage>;
 		/// <summary>Sends a text message to a secret chat.		<para>See <a href="https://corefork.telegram.org/method/messages.sendEncrypted"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.sendEncrypted#possible-errors">details</a>)</para></summary>
 		/// <param name="silent">Send encrypted message without a notification</param>
 		/// <param name="peer">Secret chat ID</param>
 		/// <param name="random_id">Unique client message ID, necessary to avoid message resending</param>
 		/// <param name="data">TL-serialization of <see cref="DecryptedMessageBase"/> type, encrypted with a key that was created during chat initialization</param>
 		public static Task<Messages_SentEncryptedMessage> Messages_SendEncrypted(this Client client, InputEncryptedChat peer, long random_id, byte[] data, bool silent = false)
-			=> client.CallAsync(new Messages_SendEncrypted_
-			{
-				flags = (Messages_SendEncrypted_.Flags)(silent ? 0x1 : 0),
-				peer = peer,
-				random_id = random_id,
-				data = data,
-			});
+			=> client.CallAsync(new Messages_SendEncrypted_(silent ? 0x1 : 0, peer, random_id, data));
 
-		/// <summary>Sends a message with a file attachment to a secret chat		<para>See <a href="https://corefork.telegram.org/method/messages.sendEncryptedFile"/></para></summary>
 		[TLDef(0x5559481D)]
-		public partial class Messages_SendEncryptedFile_ : IMethod<Messages_SentEncryptedMessage>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Secret chat ID</summary>
-			public InputEncryptedChat peer;
-			/// <summary>Unique client message ID necessary to prevent message resending</summary>
-			public long random_id;
-			/// <summary>TL-serialization of <see cref="DecryptedMessageBase"/> type, encrypted with a key generated during chat initialization</summary>
-			public byte[] data;
-			/// <summary>File attachment for the secret chat</summary>
-			public InputEncryptedFileBase file;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to send the file without triggering a notification</summary>
-				silent = 0x1,
-			}
-		}
+		public record Messages_SendEncryptedFile_(int flags, InputEncryptedChat peer, long random_id, byte[] data, InputEncryptedFileBase file) : IMethod<Messages_SentEncryptedMessage>;
 		/// <summary>Sends a message with a file attachment to a secret chat		<para>See <a href="https://corefork.telegram.org/method/messages.sendEncryptedFile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendEncryptedFile#possible-errors">details</a>)</para></summary>
 		/// <param name="silent">Whether to send the file without triggering a notification</param>
 		/// <param name="peer">Secret chat ID</param>
@@ -15410,388 +13494,148 @@ namespace TL
 		/// <param name="data">TL-serialization of <see cref="DecryptedMessageBase"/> type, encrypted with a key generated during chat initialization</param>
 		/// <param name="file">File attachment for the secret chat</param>
 		public static Task<Messages_SentEncryptedMessage> Messages_SendEncryptedFile(this Client client, InputEncryptedChat peer, long random_id, byte[] data, InputEncryptedFileBase file, bool silent = false)
-			=> client.CallAsync(new Messages_SendEncryptedFile_
-			{
-				flags = (Messages_SendEncryptedFile_.Flags)(silent ? 0x1 : 0),
-				peer = peer,
-				random_id = random_id,
-				data = data,
-				file = file,
-			});
+			=> client.CallAsync(new Messages_SendEncryptedFile_(silent ? 0x1 : 0, peer, random_id, data, file));
 
-		/// <summary>Sends a service message to a secret chat.		<para>See <a href="https://corefork.telegram.org/method/messages.sendEncryptedService"/></para></summary>
 		[TLDef(0x32D439A4)]
-		public partial class Messages_SendEncryptedService_ : IMethod<Messages_SentEncryptedMessage>
-		{
-			/// <summary>Secret chat ID</summary>
-			public InputEncryptedChat peer;
-			/// <summary>Unique client message ID required to prevent message resending</summary>
-			public long random_id;
-			/// <summary>TL-serialization of  <see cref="DecryptedMessageBase"/> type, encrypted with a key generated during chat initialization</summary>
-			public byte[] data;
-		}
+		public record Messages_SendEncryptedService_(InputEncryptedChat peer, long random_id, byte[] data) : IMethod<Messages_SentEncryptedMessage>;
 		/// <summary>Sends a service message to a secret chat.		<para>See <a href="https://corefork.telegram.org/method/messages.sendEncryptedService"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.sendEncryptedService#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Secret chat ID</param>
 		/// <param name="random_id">Unique client message ID required to prevent message resending</param>
 		/// <param name="data">TL-serialization of  <see cref="DecryptedMessageBase"/> type, encrypted with a key generated during chat initialization</param>
 		public static Task<Messages_SentEncryptedMessage> Messages_SendEncryptedService(this Client client, InputEncryptedChat peer, long random_id, byte[] data)
-			=> client.CallAsync(new Messages_SendEncryptedService_
-			{
-				peer = peer,
-				random_id = random_id,
-				data = data,
-			});
+			=> client.CallAsync(new Messages_SendEncryptedService_(peer, random_id, data));
 
-		/// <summary>Confirms receipt of messages in a secret chat by client, cancels push notifications.		<para>See <a href="https://corefork.telegram.org/method/messages.receivedQueue"/></para></summary>
 		[TLDef(0x55A5BB66)]
-		public partial class Messages_ReceivedQueue_ : IMethod<long[]>
-		{
-			/// <summary>Maximum qts value available at the client</summary>
-			public int max_qts;
-		}
+		public record Messages_ReceivedQueue_(int max_qts) : IMethod<long[]>;
 		/// <summary>Confirms receipt of messages in a secret chat by client, cancels push notifications.		<para>See <a href="https://corefork.telegram.org/method/messages.receivedQueue"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.receivedQueue#possible-errors">details</a>)</para></summary>
 		/// <param name="max_qts">Maximum qts value available at the client</param>
 		public static Task<long[]> Messages_ReceivedQueue(this Client client, int max_qts)
-			=> client.CallAsync(new Messages_ReceivedQueue_
-			{
-				max_qts = max_qts,
-			});
+			=> client.CallAsync(new Messages_ReceivedQueue_(max_qts));
 
-		/// <summary>Report a secret chat for spam		<para>See <a href="https://corefork.telegram.org/method/messages.reportEncryptedSpam"/></para></summary>
 		[TLDef(0x4B0C8C0F)]
-		public partial class Messages_ReportEncryptedSpam_ : IMethod<bool>
-		{
-			/// <summary>The secret chat to report</summary>
-			public InputEncryptedChat peer;
-		}
+		public record Messages_ReportEncryptedSpam_(InputEncryptedChat peer) : IMethod<bool>;
 		/// <summary>Report a secret chat for spam		<para>See <a href="https://corefork.telegram.org/method/messages.reportEncryptedSpam"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.reportEncryptedSpam#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The secret chat to report</param>
 		public static Task<bool> Messages_ReportEncryptedSpam(this Client client, InputEncryptedChat peer)
-			=> client.CallAsync(new Messages_ReportEncryptedSpam_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Messages_ReportEncryptedSpam_(peer));
 
-		/// <summary>Notifies the sender about the recipient having listened a voice message or watched a video.		<para>See <a href="https://corefork.telegram.org/method/messages.readMessageContents"/></para></summary>
 		[TLDef(0x36A73F77)]
-		public partial class Messages_ReadMessageContents_ : IMethod<Messages_AffectedMessages>
-		{
-			/// <summary>Message ID list</summary>
-			public int[] id;
-		}
+		public record Messages_ReadMessageContents_(int[] id) : IMethod<Messages_AffectedMessages>;
 		/// <summary>Notifies the sender about the recipient having listened a voice message or watched a video.		<para>See <a href="https://corefork.telegram.org/method/messages.readMessageContents"/></para></summary>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_AffectedMessages> Messages_ReadMessageContents(this Client client, int[] id)
-			=> client.CallAsync(new Messages_ReadMessageContents_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Messages_ReadMessageContents_(id));
 
-		/// <summary>Get stickers by emoji		<para>See <a href="https://corefork.telegram.org/method/messages.getStickers"/></para></summary>
 		[TLDef(0xD5A5D3A1)]
-		public partial class Messages_GetStickers_ : IMethod<Messages_Stickers>
-		{
-			/// <summary>The emoji</summary>
-			public string emoticon;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Messages_GetStickers_(string emoticon, long hash) : IMethod<Messages_Stickers>;
 		/// <summary>Get stickers by emoji		<para>See <a href="https://corefork.telegram.org/method/messages.getStickers"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getStickers#possible-errors">details</a>)</para></summary>
 		/// <param name="emoticon">The emoji</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickersNotModified">messages.stickersNotModified</a></returns>
 		public static Task<Messages_Stickers> Messages_GetStickers(this Client client, string emoticon, long hash)
-			=> client.CallAsync(new Messages_GetStickers_
-			{
-				emoticon = emoticon,
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetStickers_(emoticon, hash));
 
-		/// <summary>Get all installed stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getAllStickers"/></para></summary>
 		[TLDef(0xB8A0A1A8)]
-		public partial class Messages_GetAllStickers_ : IMethod<Messages_AllStickers>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Messages_GetAllStickers_(long hash) : IMethod<Messages_AllStickers>;
 		/// <summary>Get all installed stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getAllStickers"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.allStickersNotModified">messages.allStickersNotModified</a></returns>
 		public static Task<Messages_AllStickers> Messages_GetAllStickers(this Client client, long hash)
-			=> client.CallAsync(new Messages_GetAllStickers_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetAllStickers_(hash));
 
-		/// <summary>Get preview of webpage		<para>See <a href="https://corefork.telegram.org/method/messages.getWebPagePreview"/></para></summary>
 		[TLDef(0x8B68B0CC)]
-		public partial class Messages_GetWebPagePreview_ : IMethod<MessageMedia>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Message from which to extract the preview</summary>
-			public string message;
-			/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
-			[IfFlag(3)] public MessageEntity[] entities;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="entities"/> has a value</summary>
-				has_entities = 0x8,
-			}
-		}
+		public record Messages_GetWebPagePreview_(int flags, string message, [field:IfFlag(3)] MessageEntity[] entities) : IMethod<MessageMedia>;
 		/// <summary>Get preview of webpage		<para>See <a href="https://corefork.telegram.org/method/messages.getWebPagePreview"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getWebPagePreview#possible-errors">details</a>)</para></summary>
 		/// <param name="message">Message from which to extract the preview</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messageMediaEmpty">messageMediaEmpty</a></returns>
 		public static Task<MessageMedia> Messages_GetWebPagePreview(this Client client, string message, MessageEntity[] entities = null)
-			=> client.CallAsync(new Messages_GetWebPagePreview_
-			{
-				flags = (Messages_GetWebPagePreview_.Flags)(entities != null ? 0x8 : 0),
-				message = message,
-				entities = entities,
-			});
+			=> client.CallAsync(new Messages_GetWebPagePreview_(entities != null ? 0x8 : 0, message, entities));
 
-		/// <summary>Export an invite link for a chat		<para>See <a href="https://corefork.telegram.org/method/messages.exportChatInvite"/></para></summary>
 		[TLDef(0xA02CE5D5)]
-		public partial class Messages_ExportChatInvite_ : IMethod<ExportedChatInvite>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Chat</summary>
-			public InputPeer peer;
-			/// <summary>Expiration date</summary>
-			[IfFlag(0)] public DateTime expire_date;
-			/// <summary>Maximum number of users that can join using this link</summary>
-			[IfFlag(1)] public int usage_limit;
-			[IfFlag(4)] public string title;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="expire_date"/> has a value</summary>
-				has_expire_date = 0x1,
-				/// <summary>Field <see cref="usage_limit"/> has a value</summary>
-				has_usage_limit = 0x2,
-				/// <summary>Legacy flag, reproducing legacy behavior of this method: if set, revokes all previous links before creating a new one. Kept for bot API BC, should not be used by modern clients.</summary>
-				legacy_revoke_permanent = 0x4,
-				request_needed = 0x8,
-				/// <summary>Field <see cref="title"/> has a value</summary>
-				has_title = 0x10,
-			}
-		}
+		public record Messages_ExportChatInvite_(int flags, InputPeer peer, [field:IfFlag(0)] DateTime expire_date, [field:IfFlag(1)] int usage_limit, [field:IfFlag(4)] string title) : IMethod<ExportedChatInvite>;
 		/// <summary>Export an invite link for a chat		<para>See <a href="https://corefork.telegram.org/method/messages.exportChatInvite"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.exportChatInvite#possible-errors">details</a>)</para></summary>
 		/// <param name="legacy_revoke_permanent">Legacy flag, reproducing legacy behavior of this method: if set, revokes all previous links before creating a new one. Kept for bot API BC, should not be used by modern clients.</param>
 		/// <param name="peer">Chat</param>
 		/// <param name="expire_date">Expiration date</param>
 		/// <param name="usage_limit">Maximum number of users that can join using this link</param>
 		public static Task<ExportedChatInvite> Messages_ExportChatInvite(this Client client, InputPeer peer, bool legacy_revoke_permanent = false, bool request_needed = false, DateTime? expire_date = null, int? usage_limit = null, string title = null)
-			=> client.CallAsync(new Messages_ExportChatInvite_
-			{
-				flags = (Messages_ExportChatInvite_.Flags)((legacy_revoke_permanent ? 0x4 : 0) | (request_needed ? 0x8 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (title != null ? 0x10 : 0)),
-				peer = peer,
-				expire_date = expire_date.GetValueOrDefault(),
-				usage_limit = usage_limit.GetValueOrDefault(),
-				title = title,
-			});
+			=> client.CallAsync(new Messages_ExportChatInvite_((legacy_revoke_permanent ? 0x4 : 0) | (request_needed ? 0x8 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (title != null ? 0x10 : 0),
+				peer, expire_date.GetValueOrDefault(), usage_limit.GetValueOrDefault(), title));
 
-		/// <summary>Check the validity of a chat invite link and get basic info about it		<para>See <a href="https://corefork.telegram.org/method/messages.checkChatInvite"/></para></summary>
 		[TLDef(0x3EADB1BB)]
-		public partial class Messages_CheckChatInvite_ : IMethod<ChatInviteBase>
-		{
-			/// <summary>Invite hash in <c>t.me/joinchat/hash</c></summary>
-			public string hash;
-		}
+		public record Messages_CheckChatInvite_(string hash) : IMethod<ChatInviteBase>;
 		/// <summary>Check the validity of a chat invite link and get basic info about it		<para>See <a href="https://corefork.telegram.org/method/messages.checkChatInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.checkChatInvite#possible-errors">details</a>)</para></summary>
 		/// <param name="hash">Invite hash in <c>t.me/joinchat/hash</c></param>
 		public static Task<ChatInviteBase> Messages_CheckChatInvite(this Client client, string hash)
-			=> client.CallAsync(new Messages_CheckChatInvite_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_CheckChatInvite_(hash));
 
-		/// <summary>Import a chat invite and join a private chat/supergroup/channel		<para>See <a href="https://corefork.telegram.org/method/messages.importChatInvite"/></para></summary>
 		[TLDef(0x6C50051C)]
-		public partial class Messages_ImportChatInvite_ : IMethod<UpdatesBase>
-		{
-			/// <summary><c>hash</c> from <c>t.me/joinchat/hash</c></summary>
-			public string hash;
-		}
+		public record Messages_ImportChatInvite_(string hash) : IMethod<UpdatesBase>;
 		/// <summary>Import a chat invite and join a private chat/supergroup/channel		<para>See <a href="https://corefork.telegram.org/method/messages.importChatInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.importChatInvite#possible-errors">details</a>)</para></summary>
 		/// <param name="hash"><c>hash</c> from <c>t.me/joinchat/hash</c></param>
 		public static Task<UpdatesBase> Messages_ImportChatInvite(this Client client, string hash)
-			=> client.CallAsync(new Messages_ImportChatInvite_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_ImportChatInvite_(hash));
 
-		/// <summary>Get info about a stickerset		<para>See <a href="https://corefork.telegram.org/method/messages.getStickerSet"/></para></summary>
 		[TLDef(0x2619A90E)]
-		public partial class Messages_GetStickerSet_ : IMethod<Messages_StickerSet>
-		{
-			/// <summary>Stickerset</summary>
-			public InputStickerSet stickerset;
-		}
+		public record Messages_GetStickerSet_(InputStickerSet stickerset) : IMethod<Messages_StickerSet>;
 		/// <summary>Get info about a stickerset		<para>See <a href="https://corefork.telegram.org/method/messages.getStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getStickerSet#possible-errors">details</a>)</para></summary>
 		/// <param name="stickerset">Stickerset</param>
 		public static Task<Messages_StickerSet> Messages_GetStickerSet(this Client client, InputStickerSet stickerset)
-			=> client.CallAsync(new Messages_GetStickerSet_
-			{
-				stickerset = stickerset,
-			});
+			=> client.CallAsync(new Messages_GetStickerSet_(stickerset));
 
-		/// <summary>Install a stickerset		<para>See <a href="https://corefork.telegram.org/method/messages.installStickerSet"/></para></summary>
 		[TLDef(0xC78FE460)]
-		public partial class Messages_InstallStickerSet_ : IMethod<Messages_StickerSetInstallResult>
-		{
-			/// <summary>Stickerset to install</summary>
-			public InputStickerSet stickerset;
-			/// <summary>Whether to archive stickerset</summary>
-			public bool archived;
-		}
+		public record Messages_InstallStickerSet_(InputStickerSet stickerset, bool archived) : IMethod<Messages_StickerSetInstallResult>;
 		/// <summary>Install a stickerset		<para>See <a href="https://corefork.telegram.org/method/messages.installStickerSet"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.installStickerSet#possible-errors">details</a>)</para></summary>
 		/// <param name="stickerset">Stickerset to install</param>
 		/// <param name="archived">Whether to archive stickerset</param>
 		public static Task<Messages_StickerSetInstallResult> Messages_InstallStickerSet(this Client client, InputStickerSet stickerset, bool archived)
-			=> client.CallAsync(new Messages_InstallStickerSet_
-			{
-				stickerset = stickerset,
-				archived = archived,
-			});
+			=> client.CallAsync(new Messages_InstallStickerSet_(stickerset, archived));
 
-		/// <summary>Uninstall a stickerset		<para>See <a href="https://corefork.telegram.org/method/messages.uninstallStickerSet"/></para></summary>
 		[TLDef(0xF96E55DE)]
-		public partial class Messages_UninstallStickerSet_ : IMethod<bool>
-		{
-			/// <summary>The stickerset to uninstall</summary>
-			public InputStickerSet stickerset;
-		}
+		public record Messages_UninstallStickerSet_(InputStickerSet stickerset) : IMethod<bool>;
 		/// <summary>Uninstall a stickerset		<para>See <a href="https://corefork.telegram.org/method/messages.uninstallStickerSet"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.uninstallStickerSet#possible-errors">details</a>)</para></summary>
 		/// <param name="stickerset">The stickerset to uninstall</param>
 		public static Task<bool> Messages_UninstallStickerSet(this Client client, InputStickerSet stickerset)
-			=> client.CallAsync(new Messages_UninstallStickerSet_
-			{
-				stickerset = stickerset,
-			});
+			=> client.CallAsync(new Messages_UninstallStickerSet_(stickerset));
 
-		/// <summary>Start a conversation with a bot using a <a href="https://corefork.telegram.org/bots#deep-linking">deep linking parameter</a>		<para>See <a href="https://corefork.telegram.org/method/messages.startBot"/></para></summary>
 		[TLDef(0xE6DF7378)]
-		public partial class Messages_StartBot_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The bot</summary>
-			public InputUserBase bot;
-			/// <summary>The chat where to start the bot, can be the bot's private chat or a group</summary>
-			public InputPeer peer;
-			/// <summary>Random ID to avoid resending the same message</summary>
-			public long random_id;
-			/// <summary><a href="https://corefork.telegram.org/bots#deep-linking">Deep linking parameter</a></summary>
-			public string start_param;
-		}
+		public record Messages_StartBot_(InputUserBase bot, InputPeer peer, long random_id, string start_param) : IMethod<UpdatesBase>;
 		/// <summary>Start a conversation with a bot using a <a href="https://corefork.telegram.org/bots#deep-linking">deep linking parameter</a>		<para>See <a href="https://corefork.telegram.org/method/messages.startBot"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.startBot#possible-errors">details</a>)</para></summary>
 		/// <param name="bot">The bot</param>
 		/// <param name="peer">The chat where to start the bot, can be the bot's private chat or a group</param>
 		/// <param name="random_id">Random ID to avoid resending the same message</param>
 		/// <param name="start_param"><a href="https://corefork.telegram.org/bots#deep-linking">Deep linking parameter</a></param>
 		public static Task<UpdatesBase> Messages_StartBot(this Client client, InputUserBase bot, InputPeer peer, long random_id, string start_param)
-			=> client.CallAsync(new Messages_StartBot_
-			{
-				bot = bot,
-				peer = peer,
-				random_id = random_id,
-				start_param = start_param,
-			});
+			=> client.CallAsync(new Messages_StartBot_(bot, peer, random_id, start_param));
 
-		/// <summary>Get and increase the view counter of a message sent or forwarded from a <a href="https://corefork.telegram.org/api/channel">channel</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getMessagesViews"/></para></summary>
 		[TLDef(0x5784D3E1)]
-		public partial class Messages_GetMessagesViews_ : IMethod<Messages_MessageViews>
-		{
-			/// <summary>Peer where the message was found</summary>
-			public InputPeer peer;
-			/// <summary>ID of message</summary>
-			public int[] id;
-			/// <summary>Whether to mark the message as viewed and increment the view counter</summary>
-			public bool increment;
-		}
+		public record Messages_GetMessagesViews_(InputPeer peer, int[] id, bool increment) : IMethod<Messages_MessageViews>;
 		/// <summary>Get and increase the view counter of a message sent or forwarded from a <a href="https://corefork.telegram.org/api/channel">channel</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getMessagesViews"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getMessagesViews#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer where the message was found</param>
 		/// <param name="id">ID of message</param>
 		/// <param name="increment">Whether to mark the message as viewed and increment the view counter</param>
 		public static Task<Messages_MessageViews> Messages_GetMessagesViews(this Client client, InputPeer peer, int[] id, bool increment)
-			=> client.CallAsync(new Messages_GetMessagesViews_
-			{
-				peer = peer,
-				id = id,
-				increment = increment,
-			});
+			=> client.CallAsync(new Messages_GetMessagesViews_(peer, id, increment));
 
-		/// <summary>Make a user admin in a <a href="https://corefork.telegram.org/api/channel">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAdmin"/></para></summary>
 		[TLDef(0xA85BD1C2)]
-		public partial class Messages_EditChatAdmin_ : IMethod<bool>
-		{
-			/// <summary>The ID of the group</summary>
-			public long chat_id;
-			/// <summary>The user to make admin</summary>
-			public InputUserBase user_id;
-			/// <summary>Whether to make him admin</summary>
-			public bool is_admin;
-		}
+		public record Messages_EditChatAdmin_(long chat_id, InputUserBase user_id, bool is_admin) : IMethod<bool>;
 		/// <summary>Make a user admin in a <a href="https://corefork.telegram.org/api/channel">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAdmin"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatAdmin#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">The ID of the group</param>
 		/// <param name="user_id">The user to make admin</param>
 		/// <param name="is_admin">Whether to make him admin</param>
 		public static Task<bool> Messages_EditChatAdmin(this Client client, long chat_id, InputUserBase user_id, bool is_admin)
-			=> client.CallAsync(new Messages_EditChatAdmin_
-			{
-				chat_id = chat_id,
-				user_id = user_id,
-				is_admin = is_admin,
-			});
+			=> client.CallAsync(new Messages_EditChatAdmin_(chat_id, user_id, is_admin));
 
-		/// <summary>Turn a <a href="https://corefork.telegram.org/api/channel">legacy group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para></summary>
 		[TLDef(0xA2875319)]
-		public partial class Messages_MigrateChat_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Legacy group to migrate</summary>
-			public long chat_id;
-		}
+		public record Messages_MigrateChat_(long chat_id) : IMethod<UpdatesBase>;
 		/// <summary>Turn a <a href="https://corefork.telegram.org/api/channel">legacy group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Legacy group to migrate</param>
 		public static Task<UpdatesBase> Messages_MigrateChat(this Client client, long chat_id)
-			=> client.CallAsync(new Messages_MigrateChat_
-			{
-				chat_id = chat_id,
-			});
+			=> client.CallAsync(new Messages_MigrateChat_(chat_id));
 
-		/// <summary>Search for messages and peers globally		<para>See <a href="https://corefork.telegram.org/method/messages.searchGlobal"/></para></summary>
 		[TLDef(0x4BC6589A)]
-		public partial class Messages_SearchGlobal_ : IMethod<Messages_MessagesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
-			[IfFlag(0)] public int folder_id;
-			/// <summary>Query</summary>
-			public string q;
-			/// <summary>Global search filter</summary>
-			public MessagesFilter filter;
-			/// <summary>If a positive value was specified, the method will return only messages with date bigger than min_date</summary>
-			public DateTime min_date;
-			/// <summary>If a positive value was transferred, the method will return only messages with date smaller than max_date</summary>
-			public DateTime max_date;
-			/// <summary>Initially 0, then set to the <see cref="Messages_MessagesSlice"/></summary>
-			public int offset_rate;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public InputPeer offset_peer;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public int offset_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public int limit;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="folder_id"/> has a value</summary>
-				has_folder_id = 0x1,
-			}
-		}
+		public record Messages_SearchGlobal_(int flags, [field:IfFlag(0)] int folder_id, string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_rate, InputPeer offset_peer, int offset_id, int limit) : IMethod<Messages_MessagesBase>;
 		/// <summary>Search for messages and peers globally		<para>See <a href="https://corefork.telegram.org/method/messages.searchGlobal"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.searchGlobal#possible-errors">details</a>)</para></summary>
 		/// <param name="folder_id"><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></param>
 		/// <param name="q">Query</param>
@@ -15803,126 +13647,43 @@ namespace TL
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		public static Task<Messages_MessagesBase> Messages_SearchGlobal(this Client client, string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_rate, InputPeer offset_peer, int offset_id, int limit, int? folder_id = null)
-			=> client.CallAsync(new Messages_SearchGlobal_
-			{
-				flags = (Messages_SearchGlobal_.Flags)(folder_id != null ? 0x1 : 0),
-				folder_id = folder_id.GetValueOrDefault(),
-				q = q,
-				filter = filter,
-				min_date = min_date,
-				max_date = max_date,
-				offset_rate = offset_rate,
-				offset_peer = offset_peer,
-				offset_id = offset_id,
-				limit = limit,
-			});
+			=> client.CallAsync(new Messages_SearchGlobal_(folder_id != null ? 0x1 : 0, folder_id.GetValueOrDefault(), q, filter, min_date, max_date, offset_rate, offset_peer, offset_id, limit));
 
-		/// <summary>Reorder installed stickersets		<para>See <a href="https://corefork.telegram.org/method/messages.reorderStickerSets"/></para></summary>
 		[TLDef(0x78337739)]
-		public partial class Messages_ReorderStickerSets_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>New stickerset order by stickerset IDs</summary>
-			public long[] order;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Reorder mask stickersets</summary>
-				masks = 0x1,
-			}
-		}
+		public record Messages_ReorderStickerSets_(int flags, long[] order) : IMethod<bool>;
 		/// <summary>Reorder installed stickersets		<para>See <a href="https://corefork.telegram.org/method/messages.reorderStickerSets"/></para></summary>
 		/// <param name="masks">Reorder mask stickersets</param>
 		/// <param name="order">New stickerset order by stickerset IDs</param>
 		public static Task<bool> Messages_ReorderStickerSets(this Client client, long[] order, bool masks = false)
-			=> client.CallAsync(new Messages_ReorderStickerSets_
-			{
-				flags = (Messages_ReorderStickerSets_.Flags)(masks ? 0x1 : 0),
-				order = order,
-			});
+			=> client.CallAsync(new Messages_ReorderStickerSets_(masks ? 0x1 : 0, order));
 
-		/// <summary>Get a document by its SHA256 hash, mainly used for gifs		<para>See <a href="https://corefork.telegram.org/method/messages.getDocumentByHash"/></para></summary>
 		[TLDef(0x338E2464)]
-		public partial class Messages_GetDocumentByHash_ : IMethod<DocumentBase>
-		{
-			/// <summary>SHA256 of file</summary>
-			public byte[] sha256;
-			/// <summary>Size of the file in bytes</summary>
-			public int size;
-			/// <summary>Mime type</summary>
-			public string mime_type;
-		}
+		public record Messages_GetDocumentByHash_(byte[] sha256, int size, string mime_type) : IMethod<DocumentBase>;
 		/// <summary>Get a document by its SHA256 hash, mainly used for gifs		<para>See <a href="https://corefork.telegram.org/method/messages.getDocumentByHash"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getDocumentByHash#possible-errors">details</a>)</para></summary>
 		/// <param name="sha256">SHA256 of file</param>
 		/// <param name="size">Size of the file in bytes</param>
 		/// <param name="mime_type">Mime type</param>
 		public static Task<DocumentBase> Messages_GetDocumentByHash(this Client client, byte[] sha256, int size, string mime_type)
-			=> client.CallAsync(new Messages_GetDocumentByHash_
-			{
-				sha256 = sha256,
-				size = size,
-				mime_type = mime_type,
-			});
+			=> client.CallAsync(new Messages_GetDocumentByHash_(sha256, size, mime_type));
 
-		/// <summary>Get saved GIFs		<para>See <a href="https://corefork.telegram.org/method/messages.getSavedGifs"/></para></summary>
 		[TLDef(0x5CF09635)]
-		public partial class Messages_GetSavedGifs_ : IMethod<Messages_SavedGifs>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Messages_GetSavedGifs_(long hash) : IMethod<Messages_SavedGifs>;
 		/// <summary>Get saved GIFs		<para>See <a href="https://corefork.telegram.org/method/messages.getSavedGifs"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.savedGifsNotModified">messages.savedGifsNotModified</a></returns>
 		public static Task<Messages_SavedGifs> Messages_GetSavedGifs(this Client client, long hash)
-			=> client.CallAsync(new Messages_GetSavedGifs_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetSavedGifs_(hash));
 
-		/// <summary>Add GIF to saved gifs list		<para>See <a href="https://corefork.telegram.org/method/messages.saveGif"/></para></summary>
 		[TLDef(0x327A30CB)]
-		public partial class Messages_SaveGif_ : IMethod<bool>
-		{
-			/// <summary>GIF to save</summary>
-			public InputDocument id;
-			/// <summary>Whether to remove GIF from saved gifs list</summary>
-			public bool unsave;
-		}
+		public record Messages_SaveGif_(InputDocument id, bool unsave) : IMethod<bool>;
 		/// <summary>Add GIF to saved gifs list		<para>See <a href="https://corefork.telegram.org/method/messages.saveGif"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.saveGif#possible-errors">details</a>)</para></summary>
 		/// <param name="id">GIF to save</param>
 		/// <param name="unsave">Whether to remove GIF from saved gifs list</param>
 		public static Task<bool> Messages_SaveGif(this Client client, InputDocument id, bool unsave)
-			=> client.CallAsync(new Messages_SaveGif_
-			{
-				id = id,
-				unsave = unsave,
-			});
+			=> client.CallAsync(new Messages_SaveGif_(id, unsave));
 
-		/// <summary>Query an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineBotResults"/></para></summary>
 		[TLDef(0x514E999D)]
-		public partial class Messages_GetInlineBotResults_ : IMethod<Messages_BotResults>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The bot to query</summary>
-			public InputUserBase bot;
-			/// <summary>The currently opened chat</summary>
-			public InputPeer peer;
-			/// <summary>The geolocation, if requested</summary>
-			[IfFlag(0)] public InputGeoPoint geo_point;
-			/// <summary>The query</summary>
-			public string query;
-			/// <summary>The offset within the results, will be passed directly as-is to the bot.</summary>
-			public string offset;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="geo_point"/> has a value</summary>
-				has_geo_point = 0x1,
-			}
-		}
+		public record Messages_GetInlineBotResults_(int flags, InputUserBase bot, InputPeer peer, [field:IfFlag(0)] InputGeoPoint geo_point, string query, string offset) : IMethod<Messages_BotResults>;
 		/// <summary>Query an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineBotResults"/></para>		<para>Possible <see cref="RpcException"/> codes: -503,400 (<a href="https://corefork.telegram.org/method/messages.getInlineBotResults#possible-errors">details</a>)</para></summary>
 		/// <param name="bot">The bot to query</param>
 		/// <param name="peer">The currently opened chat</param>
@@ -15930,45 +13691,10 @@ namespace TL
 		/// <param name="query">The query</param>
 		/// <param name="offset">The offset within the results, will be passed directly as-is to the bot.</param>
 		public static Task<Messages_BotResults> Messages_GetInlineBotResults(this Client client, InputUserBase bot, InputPeer peer, string query, string offset, InputGeoPoint geo_point = null)
-			=> client.CallAsync(new Messages_GetInlineBotResults_
-			{
-				flags = (Messages_GetInlineBotResults_.Flags)(geo_point != null ? 0x1 : 0),
-				bot = bot,
-				peer = peer,
-				geo_point = geo_point,
-				query = query,
-				offset = offset,
-			});
+			=> client.CallAsync(new Messages_GetInlineBotResults_(geo_point != null ? 0x1 : 0, bot, peer, geo_point, query, offset));
 
-		/// <summary>Answer an inline query, for bots only		<para>See <a href="https://corefork.telegram.org/method/messages.setInlineBotResults"/></para></summary>
 		[TLDef(0xEB5EA206)]
-		public partial class Messages_SetInlineBotResults_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Unique identifier for the answered query</summary>
-			public long query_id;
-			/// <summary>Vector of results for the inline query</summary>
-			public InputBotInlineResultBase[] results;
-			/// <summary>The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300.</summary>
-			public DateTime cache_time;
-			/// <summary>Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don‘t support pagination. Offset length can’t exceed 64 bytes.</summary>
-			[IfFlag(2)] public string next_offset;
-			/// <summary>If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with a certain parameter.</summary>
-			[IfFlag(3)] public InlineBotSwitchPM switch_pm;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Set this flag if the results are composed of media files</summary>
-				gallery = 0x1,
-				/// <summary>Set this flag if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query</summary>
-				private_ = 0x2,
-				/// <summary>Field <see cref="next_offset"/> has a value</summary>
-				has_next_offset = 0x4,
-				/// <summary>Field <see cref="switch_pm"/> has a value</summary>
-				has_switch_pm = 0x8,
-			}
-		}
+		public record Messages_SetInlineBotResults_(int flags, long query_id, InputBotInlineResultBase[] results, DateTime cache_time, [field:IfFlag(2)] string next_offset, [field:IfFlag(3)] InlineBotSwitchPM switch_pm) : IMethod<bool>;
 		/// <summary>Answer an inline query, for bots only		<para>See <a href="https://corefork.telegram.org/method/messages.setInlineBotResults"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.setInlineBotResults#possible-errors">details</a>)</para></summary>
 		/// <param name="gallery">Set this flag if the results are composed of media files</param>
 		/// <param name="private_">Set this flag if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query</param>
@@ -15978,51 +13704,11 @@ namespace TL
 		/// <param name="next_offset">Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don‘t support pagination. Offset length can’t exceed 64 bytes.</param>
 		/// <param name="switch_pm">If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with a certain parameter.</param>
 		public static Task<bool> Messages_SetInlineBotResults(this Client client, long query_id, InputBotInlineResultBase[] results, DateTime cache_time, bool gallery = false, bool private_ = false, string next_offset = null, InlineBotSwitchPM switch_pm = null)
-			=> client.CallAsync(new Messages_SetInlineBotResults_
-			{
-				flags = (Messages_SetInlineBotResults_.Flags)((gallery ? 0x1 : 0) | (private_ ? 0x2 : 0) | (next_offset != null ? 0x4 : 0) | (switch_pm != null ? 0x8 : 0)),
-				query_id = query_id,
-				results = results,
-				cache_time = cache_time,
-				next_offset = next_offset,
-				switch_pm = switch_pm,
-			});
+			=> client.CallAsync(new Messages_SetInlineBotResults_((gallery ? 0x1 : 0) | (private_ ? 0x2 : 0) | (next_offset != null ? 0x4 : 0) | (switch_pm != null ? 0x8 : 0),
+				query_id, results, cache_time, next_offset, switch_pm));
 
-		/// <summary>Send a result obtained using <a href="https://corefork.telegram.org/method/messages.getInlineBotResults">messages.getInlineBotResults</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.sendInlineBotResult"/></para></summary>
 		[TLDef(0x220815B0)]
-		public partial class Messages_SendInlineBotResult_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Destination</summary>
-			public InputPeer peer;
-			/// <summary>ID of the message this message should reply to</summary>
-			[IfFlag(0)] public int reply_to_msg_id;
-			/// <summary>Random ID to avoid resending the same query</summary>
-			public long random_id;
-			/// <summary>Query ID from <a href="https://corefork.telegram.org/method/messages.getInlineBotResults">messages.getInlineBotResults</a></summary>
-			public long query_id;
-			/// <summary>Result ID from <a href="https://corefork.telegram.org/method/messages.getInlineBotResults">messages.getInlineBotResults</a></summary>
-			public string id;
-			/// <summary>Scheduled message date for scheduled messages</summary>
-			[IfFlag(10)] public DateTime schedule_date;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
-				has_reply_to_msg_id = 0x1,
-				/// <summary>Whether to send the message silently (no notification will be triggered on the other client)</summary>
-				silent = 0x20,
-				/// <summary>Whether to send the message in background</summary>
-				background = 0x40,
-				/// <summary>Whether to clear the <a href="https://corefork.telegram.org/api/drafts">draft</a></summary>
-				clear_draft = 0x80,
-				/// <summary>Field <see cref="schedule_date"/> has a value</summary>
-				has_schedule_date = 0x400,
-				/// <summary>Whether to hide the <c>via @botname</c> in the resulting message (only for bot usernames encountered in the <see cref="Config"/>)</summary>
-				hide_via = 0x800,
-			}
-		}
+		public record Messages_SendInlineBotResult_(int flags, InputPeer peer, [field:IfFlag(0)] int reply_to_msg_id, long random_id, long query_id, string id, [field:IfFlag(10)] DateTime schedule_date) : IMethod<UpdatesBase>;
 		/// <summary>Send a result obtained using <a href="https://corefork.telegram.org/method/messages.getInlineBotResults">messages.getInlineBotResults</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.sendInlineBotResult"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,420 (<a href="https://corefork.telegram.org/method/messages.sendInlineBotResult#possible-errors">details</a>)</para></summary>
 		/// <param name="silent">Whether to send the message silently (no notification will be triggered on the other client)</param>
 		/// <param name="background">Whether to send the message in background</param>
@@ -16035,73 +13721,19 @@ namespace TL
 		/// <param name="id">Result ID from <a href="https://corefork.telegram.org/method/messages.getInlineBotResults">messages.getInlineBotResults</a></param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false, int? reply_to_msg_id = null, DateTime? schedule_date = null)
-			=> client.CallAsync(new Messages_SendInlineBotResult_
-			{
-				flags = (Messages_SendInlineBotResult_.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0)),
-				peer = peer,
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				random_id = random_id,
-				query_id = query_id,
-				id = id,
-				schedule_date = schedule_date.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Messages_SendInlineBotResult_((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0),
+				peer, reply_to_msg_id.GetValueOrDefault(), random_id, query_id, id, schedule_date.GetValueOrDefault()));
 
-		/// <summary>Find out if a media message's caption can be edited		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageEditData"/></para></summary>
 		[TLDef(0xFDA68D36)]
-		public partial class Messages_GetMessageEditData_ : IMethod<Messages_MessageEditData>
-		{
-			/// <summary>Peer where the media was sent</summary>
-			public InputPeer peer;
-			/// <summary>ID of message</summary>
-			public int id;
-		}
+		public record Messages_GetMessageEditData_(InputPeer peer, int id) : IMethod<Messages_MessageEditData>;
 		/// <summary>Find out if a media message's caption can be edited		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageEditData"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.getMessageEditData#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer where the media was sent</param>
 		/// <param name="id">ID of message</param>
 		public static Task<Messages_MessageEditData> Messages_GetMessageEditData(this Client client, InputPeer peer, int id)
-			=> client.CallAsync(new Messages_GetMessageEditData_
-			{
-				peer = peer,
-				id = id,
-			});
+			=> client.CallAsync(new Messages_GetMessageEditData_(peer, id));
 
-		/// <summary>Edit message		<para>See <a href="https://corefork.telegram.org/method/messages.editMessage"/></para></summary>
 		[TLDef(0x48F71778)]
-		public partial class Messages_EditMessage_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Where was the message sent</summary>
-			public InputPeer peer;
-			/// <summary>ID of the message to edit</summary>
-			public int id;
-			/// <summary>New message</summary>
-			[IfFlag(11)] public string message;
-			/// <summary>New attached media</summary>
-			[IfFlag(14)] public InputMedia media;
-			/// <summary>Reply markup for inline keyboards</summary>
-			[IfFlag(2)] public ReplyMarkup reply_markup;
-			/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
-			[IfFlag(3)] public MessageEntity[] entities;
-			/// <summary>Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></summary>
-			[IfFlag(15)] public DateTime schedule_date;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Disable webpage preview</summary>
-				no_webpage = 0x2,
-				/// <summary>Field <see cref="reply_markup"/> has a value</summary>
-				has_reply_markup = 0x4,
-				/// <summary>Field <see cref="entities"/> has a value</summary>
-				has_entities = 0x8,
-				/// <summary>Field <see cref="message"/> has a value</summary>
-				has_message = 0x800,
-				/// <summary>Field <see cref="media"/> has a value</summary>
-				has_media = 0x4000,
-				/// <summary>Field <see cref="schedule_date"/> has a value</summary>
-				has_schedule_date = 0x8000,
-			}
-		}
+		public record Messages_EditMessage_(int flags, InputPeer peer, int id, [field:IfFlag(11)] string message, [field:IfFlag(14)] InputMedia media, [field:IfFlag(2)] ReplyMarkup reply_markup, [field:IfFlag(3)] MessageEntity[] entities, [field:IfFlag(15)] DateTime schedule_date) : IMethod<UpdatesBase>;
 		/// <summary>Edit message		<para>See <a href="https://corefork.telegram.org/method/messages.editMessage"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.editMessage#possible-errors">details</a>)</para></summary>
 		/// <param name="no_webpage">Disable webpage preview</param>
 		/// <param name="peer">Where was the message sent</param>
@@ -16112,49 +13744,11 @@ namespace TL
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		public static Task<UpdatesBase> Messages_EditMessage(this Client client, InputPeer peer, int id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
-			=> client.CallAsync(new Messages_EditMessage_
-			{
-				flags = (Messages_EditMessage_.Flags)((no_webpage ? 0x2 : 0) | (message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x8000 : 0)),
-				peer = peer,
-				id = id,
-				message = message,
-				media = media,
-				reply_markup = reply_markup,
-				entities = entities,
-				schedule_date = schedule_date.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Messages_EditMessage_((no_webpage ? 0x2 : 0) | (message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x8000 : 0),
+				peer, id, message, media, reply_markup, entities, schedule_date.GetValueOrDefault()));
 
-		/// <summary>Edit an inline bot message		<para>See <a href="https://corefork.telegram.org/method/messages.editInlineBotMessage"/></para></summary>
 		[TLDef(0x83557DBA)]
-		public partial class Messages_EditInlineBotMessage_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Sent inline message ID</summary>
-			public InputBotInlineMessageIDBase id;
-			/// <summary>Message</summary>
-			[IfFlag(11)] public string message;
-			/// <summary>Media</summary>
-			[IfFlag(14)] public InputMedia media;
-			/// <summary>Reply markup for inline keyboards</summary>
-			[IfFlag(2)] public ReplyMarkup reply_markup;
-			/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
-			[IfFlag(3)] public MessageEntity[] entities;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Disable webpage preview</summary>
-				no_webpage = 0x2,
-				/// <summary>Field <see cref="reply_markup"/> has a value</summary>
-				has_reply_markup = 0x4,
-				/// <summary>Field <see cref="entities"/> has a value</summary>
-				has_entities = 0x8,
-				/// <summary>Field <see cref="message"/> has a value</summary>
-				has_message = 0x800,
-				/// <summary>Field <see cref="media"/> has a value</summary>
-				has_media = 0x4000,
-			}
-		}
+		public record Messages_EditInlineBotMessage_(int flags, InputBotInlineMessageIDBase id, [field:IfFlag(11)] string message, [field:IfFlag(14)] InputMedia media, [field:IfFlag(2)] ReplyMarkup reply_markup, [field:IfFlag(3)] MessageEntity[] entities) : IMethod<bool>;
 		/// <summary>Edit an inline bot message		<para>See <a href="https://corefork.telegram.org/method/messages.editInlineBotMessage"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editInlineBotMessage#possible-errors">details</a>)</para></summary>
 		/// <param name="no_webpage">Disable webpage preview</param>
 		/// <param name="id">Sent inline message ID</param>
@@ -16163,41 +13757,11 @@ namespace TL
 		/// <param name="reply_markup">Reply markup for inline keyboards</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
 		public static Task<bool> Messages_EditInlineBotMessage(this Client client, InputBotInlineMessageIDBase id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null)
-			=> client.CallAsync(new Messages_EditInlineBotMessage_
-			{
-				flags = (Messages_EditInlineBotMessage_.Flags)((no_webpage ? 0x2 : 0) | (message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0)),
-				id = id,
-				message = message,
-				media = media,
-				reply_markup = reply_markup,
-				entities = entities,
-			});
+			=> client.CallAsync(new Messages_EditInlineBotMessage_((no_webpage ? 0x2 : 0) | (message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0),
+				id, message, media, reply_markup, entities));
 
-		/// <summary>Press an inline callback button and get a callback answer from the bot		<para>See <a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer"/></para></summary>
 		[TLDef(0x9342CA07)]
-		public partial class Messages_GetBotCallbackAnswer_ : IMethod<Messages_BotCallbackAnswer>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Where was the inline keyboard sent</summary>
-			public InputPeer peer;
-			/// <summary>ID of the Message with the inline keyboard</summary>
-			public int msg_id;
-			/// <summary>Callback data</summary>
-			[IfFlag(0)] public byte[] data;
-			/// <summary>For buttons <see cref="KeyboardButtonCallback"/>, the SRP payload generated using <a href="https://corefork.telegram.org/api/srp">SRP</a>.</summary>
-			[IfFlag(2)] public InputCheckPasswordSRP password;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="data"/> has a value</summary>
-				has_data = 0x1,
-				/// <summary>Whether this is a "play game" button</summary>
-				game = 0x2,
-				/// <summary>Field <see cref="password"/> has a value</summary>
-				has_password = 0x4,
-			}
-		}
+		public record Messages_GetBotCallbackAnswer_(int flags, InputPeer peer, int msg_id, [field:IfFlag(0)] byte[] data, [field:IfFlag(2)] InputCheckPasswordSRP password) : IMethod<Messages_BotCallbackAnswer>;
 		/// <summary>Press an inline callback button and get a callback answer from the bot		<para>See <a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer"/></para>		<para>Possible <see cref="RpcException"/> codes: -503,400 (<a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer#possible-errors">details</a>)</para></summary>
 		/// <param name="game">Whether this is a "play game" button</param>
 		/// <param name="peer">Where was the inline keyboard sent</param>
@@ -16205,40 +13769,11 @@ namespace TL
 		/// <param name="data">Callback data</param>
 		/// <param name="password">For buttons <see cref="KeyboardButtonCallback"/>, the SRP payload generated using <a href="https://corefork.telegram.org/api/srp">SRP</a>.</param>
 		public static Task<Messages_BotCallbackAnswer> Messages_GetBotCallbackAnswer(this Client client, InputPeer peer, int msg_id, bool game = false, byte[] data = null, InputCheckPasswordSRP password = null)
-			=> client.CallAsync(new Messages_GetBotCallbackAnswer_
-			{
-				flags = (Messages_GetBotCallbackAnswer_.Flags)((game ? 0x2 : 0) | (data != null ? 0x1 : 0) | (password != null ? 0x4 : 0)),
-				peer = peer,
-				msg_id = msg_id,
-				data = data,
-				password = password,
-			});
+			=> client.CallAsync(new Messages_GetBotCallbackAnswer_((game ? 0x2 : 0) | (data != null ? 0x1 : 0) | (password != null ? 0x4 : 0),
+				peer, msg_id, data, password));
 
-		/// <summary>Set the callback answer to a user button press (bots only)		<para>See <a href="https://corefork.telegram.org/method/messages.setBotCallbackAnswer"/></para></summary>
 		[TLDef(0xD58F130A)]
-		public partial class Messages_SetBotCallbackAnswer_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Query ID</summary>
-			public long query_id;
-			/// <summary>Popup to show</summary>
-			[IfFlag(0)] public string message;
-			/// <summary>URL to open</summary>
-			[IfFlag(2)] public string url;
-			/// <summary>Cache validity</summary>
-			public DateTime cache_time;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="message"/> has a value</summary>
-				has_message = 0x1,
-				/// <summary>Whether to show the message as a popup instead of a toast notification</summary>
-				alert = 0x2,
-				/// <summary>Field <see cref="url"/> has a value</summary>
-				has_url = 0x4,
-			}
-		}
+		public record Messages_SetBotCallbackAnswer_(int flags, long query_id, [field:IfFlag(0)] string message, [field:IfFlag(2)] string url, DateTime cache_time) : IMethod<bool>;
 		/// <summary>Set the callback answer to a user button press (bots only)		<para>See <a href="https://corefork.telegram.org/method/messages.setBotCallbackAnswer"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setBotCallbackAnswer#possible-errors">details</a>)</para></summary>
 		/// <param name="alert">Whether to show the message as a popup instead of a toast notification</param>
 		/// <param name="query_id">Query ID</param>
@@ -16246,55 +13781,18 @@ namespace TL
 		/// <param name="url">URL to open</param>
 		/// <param name="cache_time">Cache validity</param>
 		public static Task<bool> Messages_SetBotCallbackAnswer(this Client client, long query_id, DateTime cache_time, bool alert = false, string message = null, string url = null)
-			=> client.CallAsync(new Messages_SetBotCallbackAnswer_
-			{
-				flags = (Messages_SetBotCallbackAnswer_.Flags)((alert ? 0x2 : 0) | (message != null ? 0x1 : 0) | (url != null ? 0x4 : 0)),
-				query_id = query_id,
-				message = message,
-				url = url,
-				cache_time = cache_time,
-			});
+			=> client.CallAsync(new Messages_SetBotCallbackAnswer_((alert ? 0x2 : 0) | (message != null ? 0x1 : 0) | (url != null ? 0x4 : 0),
+				query_id, message, url, cache_time));
 
-		/// <summary>Get dialog info of specified peers		<para>See <a href="https://corefork.telegram.org/method/messages.getPeerDialogs"/></para></summary>
 		[TLDef(0xE470BCFD)]
-		public partial class Messages_GetPeerDialogs_ : IMethod<Messages_PeerDialogs>
-		{
-			/// <summary>Peers</summary>
-			public InputDialogPeerBase[] peers;
-		}
+		public record Messages_GetPeerDialogs_(InputDialogPeerBase[] peers) : IMethod<Messages_PeerDialogs>;
 		/// <summary>Get dialog info of specified peers		<para>See <a href="https://corefork.telegram.org/method/messages.getPeerDialogs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getPeerDialogs#possible-errors">details</a>)</para></summary>
 		/// <param name="peers">Peers</param>
 		public static Task<Messages_PeerDialogs> Messages_GetPeerDialogs(this Client client, InputDialogPeerBase[] peers)
-			=> client.CallAsync(new Messages_GetPeerDialogs_
-			{
-				peers = peers,
-			});
+			=> client.CallAsync(new Messages_GetPeerDialogs_(peers));
 
-		/// <summary>Save a message <a href="https://corefork.telegram.org/api/drafts">draft</a> associated to a chat.		<para>See <a href="https://corefork.telegram.org/method/messages.saveDraft"/></para></summary>
 		[TLDef(0xBC39E14B)]
-		public partial class Messages_SaveDraft_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Message ID the message should reply to</summary>
-			[IfFlag(0)] public int reply_to_msg_id;
-			/// <summary>Destination of the message that should be sent</summary>
-			public InputPeer peer;
-			/// <summary>The draft</summary>
-			public string message;
-			/// <summary>Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</summary>
-			[IfFlag(3)] public MessageEntity[] entities;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
-				has_reply_to_msg_id = 0x1,
-				/// <summary>Disable generation of the webpage preview</summary>
-				no_webpage = 0x2,
-				/// <summary>Field <see cref="entities"/> has a value</summary>
-				has_entities = 0x8,
-			}
-		}
+		public record Messages_SaveDraft_(int flags, [field:IfFlag(0)] int reply_to_msg_id, InputPeer peer, string message, [field:IfFlag(3)] MessageEntity[] entities) : IMethod<bool>;
 		/// <summary>Save a message <a href="https://corefork.telegram.org/api/drafts">draft</a> associated to a chat.		<para>See <a href="https://corefork.telegram.org/method/messages.saveDraft"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.saveDraft#possible-errors">details</a>)</para></summary>
 		/// <param name="no_webpage">Disable generation of the webpage preview</param>
 		/// <param name="reply_to_msg_id">Message ID the message should reply to</param>
@@ -16302,213 +13800,80 @@ namespace TL
 		/// <param name="message">The draft</param>
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		public static Task<bool> Messages_SaveDraft(this Client client, InputPeer peer, string message, bool no_webpage = false, int? reply_to_msg_id = null, MessageEntity[] entities = null)
-			=> client.CallAsync(new Messages_SaveDraft_
-			{
-				flags = (Messages_SaveDraft_.Flags)((no_webpage ? 0x2 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (entities != null ? 0x8 : 0)),
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				peer = peer,
-				message = message,
-				entities = entities,
-			});
+			=> client.CallAsync(new Messages_SaveDraft_((no_webpage ? 0x2 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (entities != null ? 0x8 : 0),
+				reply_to_msg_id.GetValueOrDefault(), peer, message, entities));
 
-		/// <summary>Save get all message <a href="https://corefork.telegram.org/api/drafts">drafts</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getAllDrafts"/></para></summary>
 		[TLDef(0x6A3F8D65)]
-		public partial class Messages_GetAllDrafts_ : IMethod<UpdatesBase> { }
+		public record Messages_GetAllDrafts_() : IMethod<UpdatesBase>;
 		/// <summary>Save get all message <a href="https://corefork.telegram.org/api/drafts">drafts</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getAllDrafts"/></para></summary>
 		public static Task<UpdatesBase> Messages_GetAllDrafts(this Client client)
-			=> client.CallAsync(new Messages_GetAllDrafts_
-			{
-			});
+			=> client.CallAsync(new Messages_GetAllDrafts_());
 
-		/// <summary>Get featured stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getFeaturedStickers"/></para></summary>
 		[TLDef(0x64780B14)]
-		public partial class Messages_GetFeaturedStickers_ : IMethod<Messages_FeaturedStickersBase>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Messages_GetFeaturedStickers_(long hash) : IMethod<Messages_FeaturedStickersBase>;
 		/// <summary>Get featured stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getFeaturedStickers"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<Messages_FeaturedStickersBase> Messages_GetFeaturedStickers(this Client client, long hash)
-			=> client.CallAsync(new Messages_GetFeaturedStickers_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetFeaturedStickers_(hash));
 
-		/// <summary>Mark new featured stickers as read		<para>See <a href="https://corefork.telegram.org/method/messages.readFeaturedStickers"/></para></summary>
 		[TLDef(0x5B118126)]
-		public partial class Messages_ReadFeaturedStickers_ : IMethod<bool>
-		{
-			/// <summary>IDs of stickersets to mark as read</summary>
-			public long[] id;
-		}
+		public record Messages_ReadFeaturedStickers_(long[] id) : IMethod<bool>;
 		/// <summary>Mark new featured stickers as read		<para>See <a href="https://corefork.telegram.org/method/messages.readFeaturedStickers"/></para></summary>
 		/// <param name="id">IDs of stickersets to mark as read</param>
 		public static Task<bool> Messages_ReadFeaturedStickers(this Client client, long[] id)
-			=> client.CallAsync(new Messages_ReadFeaturedStickers_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Messages_ReadFeaturedStickers_(id));
 
-		/// <summary>Get recent stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getRecentStickers"/></para></summary>
 		[TLDef(0x9DA9403B)]
-		public partial class Messages_GetRecentStickers_ : IMethod<Messages_RecentStickers>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Get stickers recently attached to photo or video files</summary>
-				attached = 0x1,
-			}
-		}
+		public record Messages_GetRecentStickers_(int flags, long hash) : IMethod<Messages_RecentStickers>;
 		/// <summary>Get recent stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getRecentStickers"/></para></summary>
 		/// <param name="attached">Get stickers recently attached to photo or video files</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.recentStickersNotModified">messages.recentStickersNotModified</a></returns>
 		public static Task<Messages_RecentStickers> Messages_GetRecentStickers(this Client client, long hash, bool attached = false)
-			=> client.CallAsync(new Messages_GetRecentStickers_
-			{
-				flags = (Messages_GetRecentStickers_.Flags)(attached ? 0x1 : 0),
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetRecentStickers_(attached ? 0x1 : 0, hash));
 
-		/// <summary>Add/remove sticker from recent stickers list		<para>See <a href="https://corefork.telegram.org/method/messages.saveRecentSticker"/></para></summary>
 		[TLDef(0x392718F8)]
-		public partial class Messages_SaveRecentSticker_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Sticker</summary>
-			public InputDocument id;
-			/// <summary>Whether to save or unsave the sticker</summary>
-			public bool unsave;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to add/remove stickers recently attached to photo or video files</summary>
-				attached = 0x1,
-			}
-		}
+		public record Messages_SaveRecentSticker_(int flags, InputDocument id, bool unsave) : IMethod<bool>;
 		/// <summary>Add/remove sticker from recent stickers list		<para>See <a href="https://corefork.telegram.org/method/messages.saveRecentSticker"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.saveRecentSticker#possible-errors">details</a>)</para></summary>
 		/// <param name="attached">Whether to add/remove stickers recently attached to photo or video files</param>
 		/// <param name="id">Sticker</param>
 		/// <param name="unsave">Whether to save or unsave the sticker</param>
 		public static Task<bool> Messages_SaveRecentSticker(this Client client, InputDocument id, bool unsave, bool attached = false)
-			=> client.CallAsync(new Messages_SaveRecentSticker_
-			{
-				flags = (Messages_SaveRecentSticker_.Flags)(attached ? 0x1 : 0),
-				id = id,
-				unsave = unsave,
-			});
+			=> client.CallAsync(new Messages_SaveRecentSticker_(attached ? 0x1 : 0, id, unsave));
 
-		/// <summary>Clear recent stickers		<para>See <a href="https://corefork.telegram.org/method/messages.clearRecentStickers"/></para></summary>
 		[TLDef(0x8999602D)]
-		public partial class Messages_ClearRecentStickers_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Set this flag to clear the list of stickers recently attached to photo or video files</summary>
-				attached = 0x1,
-			}
-		}
+		public record Messages_ClearRecentStickers_(int flags) : IMethod<bool>;
 		/// <summary>Clear recent stickers		<para>See <a href="https://corefork.telegram.org/method/messages.clearRecentStickers"/></para></summary>
 		/// <param name="attached">Set this flag to clear the list of stickers recently attached to photo or video files</param>
 		public static Task<bool> Messages_ClearRecentStickers(this Client client, bool attached = false)
-			=> client.CallAsync(new Messages_ClearRecentStickers_
-			{
-				flags = (Messages_ClearRecentStickers_.Flags)(attached ? 0x1 : 0),
-			});
+			=> client.CallAsync(new Messages_ClearRecentStickers_(attached ? 0x1 : 0));
 
-		/// <summary>Get all archived stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getArchivedStickers"/></para></summary>
 		[TLDef(0x57F17692)]
-		public partial class Messages_GetArchivedStickers_ : IMethod<Messages_ArchivedStickers>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public long offset_id;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Get mask stickers</summary>
-				masks = 0x1,
-			}
-		}
+		public record Messages_GetArchivedStickers_(int flags, long offset_id, int limit) : IMethod<Messages_ArchivedStickers>;
 		/// <summary>Get all archived stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getArchivedStickers"/></para></summary>
 		/// <param name="masks">Get mask stickers</param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_ArchivedStickers> Messages_GetArchivedStickers(this Client client, long offset_id, int limit, bool masks = false)
-			=> client.CallAsync(new Messages_GetArchivedStickers_
-			{
-				flags = (Messages_GetArchivedStickers_.Flags)(masks ? 0x1 : 0),
-				offset_id = offset_id,
-				limit = limit,
-			});
+			=> client.CallAsync(new Messages_GetArchivedStickers_(masks ? 0x1 : 0, offset_id, limit));
 
-		/// <summary>Get installed mask stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getMaskStickers"/></para></summary>
 		[TLDef(0x640F82B8)]
-		public partial class Messages_GetMaskStickers_ : IMethod<Messages_AllStickers>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Messages_GetMaskStickers_(long hash) : IMethod<Messages_AllStickers>;
 		/// <summary>Get installed mask stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getMaskStickers"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.allStickersNotModified">messages.allStickersNotModified</a></returns>
 		public static Task<Messages_AllStickers> Messages_GetMaskStickers(this Client client, long hash)
-			=> client.CallAsync(new Messages_GetMaskStickers_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetMaskStickers_(hash));
 
-		/// <summary>Get stickers attached to a photo or video		<para>See <a href="https://corefork.telegram.org/method/messages.getAttachedStickers"/></para></summary>
 		[TLDef(0xCC5B67CC)]
-		public partial class Messages_GetAttachedStickers_ : IMethod<StickerSetCoveredBase[]>
-		{
-			/// <summary>Stickered media</summary>
-			public InputStickeredMedia media;
-		}
+		public record Messages_GetAttachedStickers_(InputStickeredMedia media) : IMethod<StickerSetCoveredBase[]>;
 		/// <summary>Get stickers attached to a photo or video		<para>See <a href="https://corefork.telegram.org/method/messages.getAttachedStickers"/></para></summary>
 		/// <param name="media">Stickered media</param>
 		public static Task<StickerSetCoveredBase[]> Messages_GetAttachedStickers(this Client client, InputStickeredMedia media)
-			=> client.CallAsync(new Messages_GetAttachedStickers_
-			{
-				media = media,
-			});
+			=> client.CallAsync(new Messages_GetAttachedStickers_(media));
 
-		/// <summary>Use this method to set the score of the specified user in a game sent as a normal message (bots only).		<para>See <a href="https://corefork.telegram.org/method/messages.setGameScore"/></para></summary>
 		[TLDef(0x8EF8ECC0)]
-		public partial class Messages_SetGameScore_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Unique identifier of target chat</summary>
-			public InputPeer peer;
-			/// <summary>Identifier of the sent message</summary>
-			public int id;
-			/// <summary>User identifier</summary>
-			public InputUserBase user_id;
-			/// <summary>New score</summary>
-			public int score;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Set this flag if the game message should be automatically edited to include the current scoreboard</summary>
-				edit_message = 0x1,
-				/// <summary>Set this flag if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters</summary>
-				force = 0x2,
-			}
-		}
+		public record Messages_SetGameScore_(int flags, InputPeer peer, int id, InputUserBase user_id, int score) : IMethod<UpdatesBase>;
 		/// <summary>Use this method to set the score of the specified user in a game sent as a normal message (bots only).		<para>See <a href="https://corefork.telegram.org/method/messages.setGameScore"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setGameScore#possible-errors">details</a>)</para></summary>
 		/// <param name="edit_message">Set this flag if the game message should be automatically edited to include the current scoreboard</param>
 		/// <param name="force">Set this flag if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters</param>
@@ -16517,36 +13882,11 @@ namespace TL
 		/// <param name="user_id">User identifier</param>
 		/// <param name="score">New score</param>
 		public static Task<UpdatesBase> Messages_SetGameScore(this Client client, InputPeer peer, int id, InputUserBase user_id, int score, bool edit_message = false, bool force = false)
-			=> client.CallAsync(new Messages_SetGameScore_
-			{
-				flags = (Messages_SetGameScore_.Flags)((edit_message ? 0x1 : 0) | (force ? 0x2 : 0)),
-				peer = peer,
-				id = id,
-				user_id = user_id,
-				score = score,
-			});
+			=> client.CallAsync(new Messages_SetGameScore_((edit_message ? 0x1 : 0) | (force ? 0x2 : 0),
+				peer, id, user_id, score));
 
-		/// <summary>Use this method to set the score of the specified user in a game sent as an inline message (bots only).		<para>See <a href="https://corefork.telegram.org/method/messages.setInlineGameScore"/></para></summary>
 		[TLDef(0x15AD9F64)]
-		public partial class Messages_SetInlineGameScore_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>ID of the inline message</summary>
-			public InputBotInlineMessageIDBase id;
-			/// <summary>User identifier</summary>
-			public InputUserBase user_id;
-			/// <summary>New score</summary>
-			public int score;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Set this flag if the game message should be automatically edited to include the current scoreboard</summary>
-				edit_message = 0x1,
-				/// <summary>Set this flag if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters</summary>
-				force = 0x2,
-			}
-		}
+		public record Messages_SetInlineGameScore_(int flags, InputBotInlineMessageIDBase id, InputUserBase user_id, int score) : IMethod<bool>;
 		/// <summary>Use this method to set the score of the specified user in a game sent as an inline message (bots only).		<para>See <a href="https://corefork.telegram.org/method/messages.setInlineGameScore"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setInlineGameScore#possible-errors">details</a>)</para></summary>
 		/// <param name="edit_message">Set this flag if the game message should be automatically edited to include the current scoreboard</param>
 		/// <param name="force">Set this flag if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters</param>
@@ -16554,342 +13894,130 @@ namespace TL
 		/// <param name="user_id">User identifier</param>
 		/// <param name="score">New score</param>
 		public static Task<bool> Messages_SetInlineGameScore(this Client client, InputBotInlineMessageIDBase id, InputUserBase user_id, int score, bool edit_message = false, bool force = false)
-			=> client.CallAsync(new Messages_SetInlineGameScore_
-			{
-				flags = (Messages_SetInlineGameScore_.Flags)((edit_message ? 0x1 : 0) | (force ? 0x2 : 0)),
-				id = id,
-				user_id = user_id,
-				score = score,
-			});
+			=> client.CallAsync(new Messages_SetInlineGameScore_((edit_message ? 0x1 : 0) | (force ? 0x2 : 0),
+				id, user_id, score));
 
-		/// <summary>Get highscores of a game		<para>See <a href="https://corefork.telegram.org/method/messages.getGameHighScores"/></para></summary>
 		[TLDef(0xE822649D)]
-		public partial class Messages_GetGameHighScores_ : IMethod<Messages_HighScores>
-		{
-			/// <summary>Where was the game sent</summary>
-			public InputPeer peer;
-			/// <summary>ID of message with game media attachment</summary>
-			public int id;
-			/// <summary>Get high scores made by a certain user</summary>
-			public InputUserBase user_id;
-		}
+		public record Messages_GetGameHighScores_(InputPeer peer, int id, InputUserBase user_id) : IMethod<Messages_HighScores>;
 		/// <summary>Get highscores of a game		<para>See <a href="https://corefork.telegram.org/method/messages.getGameHighScores"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getGameHighScores#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Where was the game sent</param>
 		/// <param name="id">ID of message with game media attachment</param>
 		/// <param name="user_id">Get high scores made by a certain user</param>
 		public static Task<Messages_HighScores> Messages_GetGameHighScores(this Client client, InputPeer peer, int id, InputUserBase user_id)
-			=> client.CallAsync(new Messages_GetGameHighScores_
-			{
-				peer = peer,
-				id = id,
-				user_id = user_id,
-			});
+			=> client.CallAsync(new Messages_GetGameHighScores_(peer, id, user_id));
 
-		/// <summary>Get highscores of a game sent using an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineGameHighScores"/></para></summary>
 		[TLDef(0x0F635E1B)]
-		public partial class Messages_GetInlineGameHighScores_ : IMethod<Messages_HighScores>
-		{
-			/// <summary>ID of inline message</summary>
-			public InputBotInlineMessageIDBase id;
-			/// <summary>Get high scores of a certain user</summary>
-			public InputUserBase user_id;
-		}
+		public record Messages_GetInlineGameHighScores_(InputBotInlineMessageIDBase id, InputUserBase user_id) : IMethod<Messages_HighScores>;
 		/// <summary>Get highscores of a game sent using an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineGameHighScores"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getInlineGameHighScores#possible-errors">details</a>)</para></summary>
 		/// <param name="id">ID of inline message</param>
 		/// <param name="user_id">Get high scores of a certain user</param>
 		public static Task<Messages_HighScores> Messages_GetInlineGameHighScores(this Client client, InputBotInlineMessageIDBase id, InputUserBase user_id)
-			=> client.CallAsync(new Messages_GetInlineGameHighScores_
-			{
-				id = id,
-				user_id = user_id,
-			});
+			=> client.CallAsync(new Messages_GetInlineGameHighScores_(id, user_id));
 
-		/// <summary>Get chats in common with a user		<para>See <a href="https://corefork.telegram.org/method/messages.getCommonChats"/></para></summary>
 		[TLDef(0xE40CA104)]
-		public partial class Messages_GetCommonChats_ : IMethod<Messages_Chats>
-		{
-			/// <summary>User ID</summary>
-			public InputUserBase user_id;
-			/// <summary>Maximum ID of chat to return (see <a href="https://corefork.telegram.org/api/offsets">pagination</a>)</summary>
-			public long max_id;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-		}
+		public record Messages_GetCommonChats_(InputUserBase user_id, long max_id, int limit) : IMethod<Messages_Chats>;
 		/// <summary>Get chats in common with a user		<para>See <a href="https://corefork.telegram.org/method/messages.getCommonChats"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getCommonChats#possible-errors">details</a>)</para></summary>
 		/// <param name="user_id">User ID</param>
 		/// <param name="max_id">Maximum ID of chat to return (see <a href="https://corefork.telegram.org/api/offsets">pagination</a>)</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_Chats> Messages_GetCommonChats(this Client client, InputUserBase user_id, long max_id, int limit)
-			=> client.CallAsync(new Messages_GetCommonChats_
-			{
-				user_id = user_id,
-				max_id = max_id,
-				limit = limit,
-			});
+			=> client.CallAsync(new Messages_GetCommonChats_(user_id, max_id, limit));
 
-		/// <summary>Get all chats, channels and supergroups		<para>See <a href="https://corefork.telegram.org/method/messages.getAllChats"/></para></summary>
 		[TLDef(0x875F74BE)]
-		public partial class Messages_GetAllChats_ : IMethod<Messages_Chats>
-		{
-			/// <summary>Except these chats/channels/supergroups</summary>
-			public long[] except_ids;
-		}
+		public record Messages_GetAllChats_(long[] except_ids) : IMethod<Messages_Chats>;
 		/// <summary>Get all chats, channels and supergroups		<para>See <a href="https://corefork.telegram.org/method/messages.getAllChats"/></para></summary>
 		/// <param name="except_ids">Except these chats/channels/supergroups</param>
 		public static Task<Messages_Chats> Messages_GetAllChats(this Client client, long[] except_ids)
-			=> client.CallAsync(new Messages_GetAllChats_
-			{
-				except_ids = except_ids,
-			});
+			=> client.CallAsync(new Messages_GetAllChats_(except_ids));
 
-		/// <summary>Get <a href="https://instantview.telegram.org">instant view</a> page		<para>See <a href="https://corefork.telegram.org/method/messages.getWebPage"/></para></summary>
 		[TLDef(0x32CA8F91)]
-		public partial class Messages_GetWebPage_ : IMethod<WebPageBase>
-		{
-			/// <summary>URL of IV page to fetch</summary>
-			public string url;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public int hash;
-		}
+		public record Messages_GetWebPage_(string url, int hash) : IMethod<WebPageBase>;
 		/// <summary>Get <a href="https://instantview.telegram.org">instant view</a> page		<para>See <a href="https://corefork.telegram.org/method/messages.getWebPage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getWebPage#possible-errors">details</a>)</para></summary>
 		/// <param name="url">URL of IV page to fetch</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<WebPageBase> Messages_GetWebPage(this Client client, string url, int hash)
-			=> client.CallAsync(new Messages_GetWebPage_
-			{
-				url = url,
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetWebPage_(url, hash));
 
-		/// <summary>Pin/unpin a dialog		<para>See <a href="https://corefork.telegram.org/method/messages.toggleDialogPin"/></para></summary>
 		[TLDef(0xA731E257)]
-		public partial class Messages_ToggleDialogPin_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The dialog to pin</summary>
-			public InputDialogPeerBase peer;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to pin or unpin the dialog</summary>
-				pinned = 0x1,
-			}
-		}
+		public record Messages_ToggleDialogPin_(int flags, InputDialogPeerBase peer) : IMethod<bool>;
 		/// <summary>Pin/unpin a dialog		<para>See <a href="https://corefork.telegram.org/method/messages.toggleDialogPin"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.toggleDialogPin#possible-errors">details</a>)</para></summary>
 		/// <param name="pinned">Whether to pin or unpin the dialog</param>
 		/// <param name="peer">The dialog to pin</param>
 		public static Task<bool> Messages_ToggleDialogPin(this Client client, InputDialogPeerBase peer, bool pinned = false)
-			=> client.CallAsync(new Messages_ToggleDialogPin_
-			{
-				flags = (Messages_ToggleDialogPin_.Flags)(pinned ? 0x1 : 0),
-				peer = peer,
-			});
+			=> client.CallAsync(new Messages_ToggleDialogPin_(pinned ? 0x1 : 0, peer));
 
-		/// <summary>Reorder pinned dialogs		<para>See <a href="https://corefork.telegram.org/method/messages.reorderPinnedDialogs"/></para></summary>
 		[TLDef(0x3B1ADF37)]
-		public partial class Messages_ReorderPinnedDialogs_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
-			public int folder_id;
-			/// <summary>New dialog order</summary>
-			public InputDialogPeerBase[] order;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>If set, dialogs pinned server-side but not present in the <c>order</c> field will be unpinned.</summary>
-				force = 0x1,
-			}
-		}
+		public record Messages_ReorderPinnedDialogs_(int flags, int folder_id, InputDialogPeerBase[] order) : IMethod<bool>;
 		/// <summary>Reorder pinned dialogs		<para>See <a href="https://corefork.telegram.org/method/messages.reorderPinnedDialogs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.reorderPinnedDialogs#possible-errors">details</a>)</para></summary>
 		/// <param name="force">If set, dialogs pinned server-side but not present in the <c>order</c> field will be unpinned.</param>
 		/// <param name="folder_id"><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></param>
 		/// <param name="order">New dialog order</param>
 		public static Task<bool> Messages_ReorderPinnedDialogs(this Client client, int folder_id, InputDialogPeerBase[] order, bool force = false)
-			=> client.CallAsync(new Messages_ReorderPinnedDialogs_
-			{
-				flags = (Messages_ReorderPinnedDialogs_.Flags)(force ? 0x1 : 0),
-				folder_id = folder_id,
-				order = order,
-			});
+			=> client.CallAsync(new Messages_ReorderPinnedDialogs_(force ? 0x1 : 0, folder_id, order));
 
-		/// <summary>Get pinned dialogs		<para>See <a href="https://corefork.telegram.org/method/messages.getPinnedDialogs"/></para></summary>
 		[TLDef(0xD6B94DF2)]
-		public partial class Messages_GetPinnedDialogs_ : IMethod<Messages_PeerDialogs>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
-			public int folder_id;
-		}
+		public record Messages_GetPinnedDialogs_(int folder_id) : IMethod<Messages_PeerDialogs>;
 		/// <summary>Get pinned dialogs		<para>See <a href="https://corefork.telegram.org/method/messages.getPinnedDialogs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getPinnedDialogs#possible-errors">details</a>)</para></summary>
 		/// <param name="folder_id"><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></param>
 		public static Task<Messages_PeerDialogs> Messages_GetPinnedDialogs(this Client client, int folder_id)
-			=> client.CallAsync(new Messages_GetPinnedDialogs_
-			{
-				folder_id = folder_id,
-			});
+			=> client.CallAsync(new Messages_GetPinnedDialogs_(folder_id));
 
-		/// <summary>If you sent an invoice requesting a shipping address and the parameter is_flexible was specified, the bot will receive an <see cref="UpdateBotShippingQuery"/> update. Use this method to reply to shipping queries.		<para>See <a href="https://corefork.telegram.org/method/messages.setBotShippingResults"/></para></summary>
 		[TLDef(0xE5F672FA)]
-		public partial class Messages_SetBotShippingResults_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Unique identifier for the query to be answered</summary>
-			public long query_id;
-			/// <summary>Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.</summary>
-			[IfFlag(0)] public string error;
-			/// <summary>A vector of available shipping options.</summary>
-			[IfFlag(1)] public ShippingOption[] shipping_options;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="error"/> has a value</summary>
-				has_error = 0x1,
-				/// <summary>Field <see cref="shipping_options"/> has a value</summary>
-				has_shipping_options = 0x2,
-			}
-		}
+		public record Messages_SetBotShippingResults_(int flags, long query_id, [field:IfFlag(0)] string error, [field:IfFlag(1)] ShippingOption[] shipping_options) : IMethod<bool>;
 		/// <summary>If you sent an invoice requesting a shipping address and the parameter is_flexible was specified, the bot will receive an <see cref="UpdateBotShippingQuery"/> update. Use this method to reply to shipping queries.		<para>See <a href="https://corefork.telegram.org/method/messages.setBotShippingResults"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setBotShippingResults#possible-errors">details</a>)</para></summary>
 		/// <param name="query_id">Unique identifier for the query to be answered</param>
 		/// <param name="error">Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.</param>
 		/// <param name="shipping_options">A vector of available shipping options.</param>
 		public static Task<bool> Messages_SetBotShippingResults(this Client client, long query_id, string error = null, ShippingOption[] shipping_options = null)
-			=> client.CallAsync(new Messages_SetBotShippingResults_
-			{
-				flags = (Messages_SetBotShippingResults_.Flags)((error != null ? 0x1 : 0) | (shipping_options != null ? 0x2 : 0)),
-				query_id = query_id,
-				error = error,
-				shipping_options = shipping_options,
-			});
+			=> client.CallAsync(new Messages_SetBotShippingResults_((error != null ? 0x1 : 0) | (shipping_options != null ? 0x2 : 0),
+				query_id, error, shipping_options));
 
-		/// <summary>Once the user has confirmed their payment and shipping details, the bot receives an <see cref="UpdateBotPrecheckoutQuery"/> update.<br/>Use this method to respond to such pre-checkout queries.<br/><strong>Note</strong>: Telegram must receive an answer within 10 seconds after the pre-checkout query was sent.		<para>See <a href="https://corefork.telegram.org/method/messages.setBotPrecheckoutResults"/></para></summary>
 		[TLDef(0x09C2DD95)]
-		public partial class Messages_SetBotPrecheckoutResults_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Unique identifier for the query to be answered</summary>
-			public long query_id;
-			/// <summary>Required if the <c>success</c> isn't set. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.</summary>
-			[IfFlag(0)] public string error;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="error"/> has a value</summary>
-				has_error = 0x1,
-				/// <summary>Set this flag if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order, otherwise do not set it, and set the <c>error</c> field, instead</summary>
-				success = 0x2,
-			}
-		}
+		public record Messages_SetBotPrecheckoutResults_(int flags, long query_id, [field:IfFlag(0)] string error) : IMethod<bool>;
 		/// <summary>Once the user has confirmed their payment and shipping details, the bot receives an <see cref="UpdateBotPrecheckoutQuery"/> update.<br/>Use this method to respond to such pre-checkout queries.<br/><strong>Note</strong>: Telegram must receive an answer within 10 seconds after the pre-checkout query was sent.		<para>See <a href="https://corefork.telegram.org/method/messages.setBotPrecheckoutResults"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setBotPrecheckoutResults#possible-errors">details</a>)</para></summary>
 		/// <param name="success">Set this flag if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order, otherwise do not set it, and set the <c>error</c> field, instead</param>
 		/// <param name="query_id">Unique identifier for the query to be answered</param>
 		/// <param name="error">Required if the <c>success</c> isn't set. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.</param>
 		public static Task<bool> Messages_SetBotPrecheckoutResults(this Client client, long query_id, bool success = false, string error = null)
-			=> client.CallAsync(new Messages_SetBotPrecheckoutResults_
-			{
-				flags = (Messages_SetBotPrecheckoutResults_.Flags)((success ? 0x2 : 0) | (error != null ? 0x1 : 0)),
-				query_id = query_id,
-				error = error,
-			});
+			=> client.CallAsync(new Messages_SetBotPrecheckoutResults_((success ? 0x2 : 0) | (error != null ? 0x1 : 0),
+				query_id, error));
 
-		/// <summary>Upload a file and associate it to a chat (without actually sending it to the chat)		<para>See <a href="https://corefork.telegram.org/method/messages.uploadMedia"/></para></summary>
 		[TLDef(0x519BC2B1)]
-		public partial class Messages_UploadMedia_ : IMethod<MessageMedia>
-		{
-			/// <summary>The chat, can be an <see langword="null"/> for bots</summary>
-			public InputPeer peer;
-			/// <summary>File uploaded in chunks as described in <a href="https://corefork.telegram.org/api/files">files »</a></summary>
-			public InputMedia media;
-		}
+		public record Messages_UploadMedia_(InputPeer peer, InputMedia media) : IMethod<MessageMedia>;
 		/// <summary>Upload a file and associate it to a chat (without actually sending it to the chat)		<para>See <a href="https://corefork.telegram.org/method/messages.uploadMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.uploadMedia#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The chat, can be an <see langword="null"/> for bots</param>
 		/// <param name="media">File uploaded in chunks as described in <a href="https://corefork.telegram.org/api/files">files »</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messageMediaEmpty">messageMediaEmpty</a></returns>
 		public static Task<MessageMedia> Messages_UploadMedia(this Client client, InputPeer peer, InputMedia media)
-			=> client.CallAsync(new Messages_UploadMedia_
-			{
-				peer = peer,
-				media = media,
-			});
+			=> client.CallAsync(new Messages_UploadMedia_(peer, media));
 
-		/// <summary>Notify the other user in a private chat that a screenshot of the chat was taken		<para>See <a href="https://corefork.telegram.org/method/messages.sendScreenshotNotification"/></para></summary>
 		[TLDef(0xC97DF020)]
-		public partial class Messages_SendScreenshotNotification_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Other user</summary>
-			public InputPeer peer;
-			/// <summary>ID of message that was screenshotted, can be 0</summary>
-			public int reply_to_msg_id;
-			/// <summary>Random ID to avoid message resending</summary>
-			public long random_id;
-		}
+		public record Messages_SendScreenshotNotification_(InputPeer peer, int reply_to_msg_id, long random_id) : IMethod<UpdatesBase>;
 		/// <summary>Notify the other user in a private chat that a screenshot of the chat was taken		<para>See <a href="https://corefork.telegram.org/method/messages.sendScreenshotNotification"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendScreenshotNotification#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Other user</param>
 		/// <param name="reply_to_msg_id">ID of message that was screenshotted, can be 0</param>
 		/// <param name="random_id">Random ID to avoid message resending</param>
 		public static Task<UpdatesBase> Messages_SendScreenshotNotification(this Client client, InputPeer peer, int reply_to_msg_id, long random_id)
-			=> client.CallAsync(new Messages_SendScreenshotNotification_
-			{
-				peer = peer,
-				reply_to_msg_id = reply_to_msg_id,
-				random_id = random_id,
-			});
+			=> client.CallAsync(new Messages_SendScreenshotNotification_(peer, reply_to_msg_id, random_id));
 
-		/// <summary>Get faved stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getFavedStickers"/></para></summary>
 		[TLDef(0x04F1AAA9)]
-		public partial class Messages_GetFavedStickers_ : IMethod<Messages_FavedStickers>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Messages_GetFavedStickers_(long hash) : IMethod<Messages_FavedStickers>;
 		/// <summary>Get faved stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getFavedStickers"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.favedStickersNotModified">messages.favedStickersNotModified</a></returns>
 		public static Task<Messages_FavedStickers> Messages_GetFavedStickers(this Client client, long hash)
-			=> client.CallAsync(new Messages_GetFavedStickers_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetFavedStickers_(hash));
 
-		/// <summary>Mark a sticker as favorite		<para>See <a href="https://corefork.telegram.org/method/messages.faveSticker"/></para></summary>
 		[TLDef(0xB9FFC55B)]
-		public partial class Messages_FaveSticker_ : IMethod<bool>
-		{
-			/// <summary>Sticker to mark as favorite</summary>
-			public InputDocument id;
-			/// <summary>Unfavorite</summary>
-			public bool unfave;
-		}
+		public record Messages_FaveSticker_(InputDocument id, bool unfave) : IMethod<bool>;
 		/// <summary>Mark a sticker as favorite		<para>See <a href="https://corefork.telegram.org/method/messages.faveSticker"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.faveSticker#possible-errors">details</a>)</para></summary>
 		/// <param name="id">Sticker to mark as favorite</param>
 		/// <param name="unfave">Unfavorite</param>
 		public static Task<bool> Messages_FaveSticker(this Client client, InputDocument id, bool unfave)
-			=> client.CallAsync(new Messages_FaveSticker_
-			{
-				id = id,
-				unfave = unfave,
-			});
+			=> client.CallAsync(new Messages_FaveSticker_(id, unfave));
 
-		/// <summary>Get unread messages where we were mentioned		<para>See <a href="https://corefork.telegram.org/method/messages.getUnreadMentions"/></para></summary>
 		[TLDef(0x46578472)]
-		public partial class Messages_GetUnreadMentions_ : IMethod<Messages_MessagesBase>
-		{
-			/// <summary>Peer where to look for mentions</summary>
-			public InputPeer peer;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public int offset_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public int add_offset;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-			/// <summary>Maximum message ID to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int max_id;
-			/// <summary>Minimum message ID to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int min_id;
-		}
+		public record Messages_GetUnreadMentions_(InputPeer peer, int offset_id, int add_offset, int limit, int max_id, int min_id) : IMethod<Messages_MessagesBase>;
 		/// <summary>Get unread messages where we were mentioned		<para>See <a href="https://corefork.telegram.org/method/messages.getUnreadMentions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getUnreadMentions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer where to look for mentions</param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
@@ -16898,83 +14026,26 @@ namespace TL
 		/// <param name="max_id">Maximum message ID to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="min_id">Minimum message ID to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_MessagesBase> Messages_GetUnreadMentions(this Client client, InputPeer peer, int offset_id, int add_offset, int limit, int max_id, int min_id)
-			=> client.CallAsync(new Messages_GetUnreadMentions_
-			{
-				peer = peer,
-				offset_id = offset_id,
-				add_offset = add_offset,
-				limit = limit,
-				max_id = max_id,
-				min_id = min_id,
-			});
+			=> client.CallAsync(new Messages_GetUnreadMentions_(peer, offset_id, add_offset, limit, max_id, min_id));
 
-		/// <summary>Mark mentions as read		<para>See <a href="https://corefork.telegram.org/method/messages.readMentions"/></para></summary>
 		[TLDef(0x0F0189D3)]
-		public partial class Messages_ReadMentions_ : IMethod<Messages_AffectedHistory>
-		{
-			/// <summary>Dialog</summary>
-			public InputPeer peer;
-		}
+		public record Messages_ReadMentions_(InputPeer peer) : IMethod<Messages_AffectedHistory>;
 		/// <summary>Mark mentions as read		<para>See <a href="https://corefork.telegram.org/method/messages.readMentions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readMentions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Dialog</param>
 		public static Task<Messages_AffectedHistory> Messages_ReadMentions(this Client client, InputPeer peer)
-			=> client.CallAsync(new Messages_ReadMentions_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Messages_ReadMentions_(peer));
 
-		/// <summary>Get live location history of a certain user		<para>See <a href="https://corefork.telegram.org/method/messages.getRecentLocations"/></para></summary>
 		[TLDef(0x702A40E0)]
-		public partial class Messages_GetRecentLocations_ : IMethod<Messages_MessagesBase>
-		{
-			/// <summary>User</summary>
-			public InputPeer peer;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Messages_GetRecentLocations_(InputPeer peer, int limit, long hash) : IMethod<Messages_MessagesBase>;
 		/// <summary>Get live location history of a certain user		<para>See <a href="https://corefork.telegram.org/method/messages.getRecentLocations"/></para></summary>
 		/// <param name="peer">User</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<Messages_MessagesBase> Messages_GetRecentLocations(this Client client, InputPeer peer, int limit, long hash)
-			=> client.CallAsync(new Messages_GetRecentLocations_
-			{
-				peer = peer,
-				limit = limit,
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetRecentLocations_(peer, limit, hash));
 
-		/// <summary>Send an <a href="https://corefork.telegram.org/api/files#albums-grouped-media">album or grouped media</a>		<para>See <a href="https://corefork.telegram.org/method/messages.sendMultiMedia"/></para></summary>
 		[TLDef(0xCC0110CB)]
-		public partial class Messages_SendMultiMedia_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The destination chat</summary>
-			public InputPeer peer;
-			/// <summary>The message to reply to</summary>
-			[IfFlag(0)] public int reply_to_msg_id;
-			/// <summary>The medias to send</summary>
-			public InputSingleMedia[] multi_media;
-			/// <summary>Scheduled message date for scheduled messages</summary>
-			[IfFlag(10)] public DateTime schedule_date;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
-				has_reply_to_msg_id = 0x1,
-				/// <summary>Whether to send the album silently (no notification triggered)</summary>
-				silent = 0x20,
-				/// <summary>Send in background?</summary>
-				background = 0x40,
-				/// <summary>Whether to clear <a href="https://corefork.telegram.org/api/drafts">drafts</a></summary>
-				clear_draft = 0x80,
-				/// <summary>Field <see cref="schedule_date"/> has a value</summary>
-				has_schedule_date = 0x400,
-			}
-		}
+		public record Messages_SendMultiMedia_(int flags, InputPeer peer, [field:IfFlag(0)] int reply_to_msg_id, InputSingleMedia[] multi_media, [field:IfFlag(10)] DateTime schedule_date) : IMethod<UpdatesBase>;
 		/// <summary>Send an <a href="https://corefork.telegram.org/api/files#albums-grouped-media">album or grouped media</a>		<para>See <a href="https://corefork.telegram.org/method/messages.sendMultiMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,420 (<a href="https://corefork.telegram.org/method/messages.sendMultiMedia#possible-errors">details</a>)</para></summary>
 		/// <param name="silent">Whether to send the album silently (no notification triggered)</param>
 		/// <param name="background">Send in background?</param>
@@ -16984,138 +14055,56 @@ namespace TL
 		/// <param name="multi_media">The medias to send</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, DateTime? schedule_date = null)
-			=> client.CallAsync(new Messages_SendMultiMedia_
-			{
-				flags = (Messages_SendMultiMedia_.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0)),
-				peer = peer,
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				multi_media = multi_media,
-				schedule_date = schedule_date.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Messages_SendMultiMedia_((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0),
+				peer, reply_to_msg_id.GetValueOrDefault(), multi_media, schedule_date.GetValueOrDefault()));
 
-		/// <summary>Upload encrypted file and associate it to a secret chat		<para>See <a href="https://corefork.telegram.org/method/messages.uploadEncryptedFile"/></para></summary>
 		[TLDef(0x5057C497)]
-		public partial class Messages_UploadEncryptedFile_ : IMethod<EncryptedFile>
-		{
-			/// <summary>The secret chat to associate the file to</summary>
-			public InputEncryptedChat peer;
-			/// <summary>The file</summary>
-			public InputEncryptedFileBase file;
-		}
+		public record Messages_UploadEncryptedFile_(InputEncryptedChat peer, InputEncryptedFileBase file) : IMethod<EncryptedFile>;
 		/// <summary>Upload encrypted file and associate it to a secret chat		<para>See <a href="https://corefork.telegram.org/method/messages.uploadEncryptedFile"/></para></summary>
 		/// <param name="peer">The secret chat to associate the file to</param>
 		/// <param name="file">The file</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/encryptedFileEmpty">encryptedFileEmpty</a></returns>
 		public static Task<EncryptedFile> Messages_UploadEncryptedFile(this Client client, InputEncryptedChat peer, InputEncryptedFileBase file)
-			=> client.CallAsync(new Messages_UploadEncryptedFile_
-			{
-				peer = peer,
-				file = file,
-			});
+			=> client.CallAsync(new Messages_UploadEncryptedFile_(peer, file));
 
-		/// <summary>Search for stickersets		<para>See <a href="https://corefork.telegram.org/method/messages.searchStickerSets"/></para></summary>
 		[TLDef(0x35705B8A)]
-		public partial class Messages_SearchStickerSets_ : IMethod<Messages_FoundStickerSets>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Query string</summary>
-			public string q;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Exclude featured stickersets from results</summary>
-				exclude_featured = 0x1,
-			}
-		}
+		public record Messages_SearchStickerSets_(int flags, string q, long hash) : IMethod<Messages_FoundStickerSets>;
 		/// <summary>Search for stickersets		<para>See <a href="https://corefork.telegram.org/method/messages.searchStickerSets"/></para></summary>
 		/// <param name="exclude_featured">Exclude featured stickersets from results</param>
 		/// <param name="q">Query string</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.foundStickerSetsNotModified">messages.foundStickerSetsNotModified</a></returns>
 		public static Task<Messages_FoundStickerSets> Messages_SearchStickerSets(this Client client, string q, long hash, bool exclude_featured = false)
-			=> client.CallAsync(new Messages_SearchStickerSets_
-			{
-				flags = (Messages_SearchStickerSets_.Flags)(exclude_featured ? 0x1 : 0),
-				q = q,
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_SearchStickerSets_(exclude_featured ? 0x1 : 0, q, hash));
 
-		/// <summary>Get message ranges for saving the user's chat history		<para>See <a href="https://corefork.telegram.org/method/messages.getSplitRanges"/></para></summary>
 		[TLDef(0x1CFF7E08)]
-		public partial class Messages_GetSplitRanges_ : IMethod<MessageRange[]> { }
+		public record Messages_GetSplitRanges_() : IMethod<MessageRange[]>;
 		/// <summary>Get message ranges for saving the user's chat history		<para>See <a href="https://corefork.telegram.org/method/messages.getSplitRanges"/></para></summary>
 		public static Task<MessageRange[]> Messages_GetSplitRanges(this Client client)
-			=> client.CallAsync(new Messages_GetSplitRanges_
-			{
-			});
+			=> client.CallAsync(new Messages_GetSplitRanges_());
 
-		/// <summary>Manually mark dialog as unread		<para>See <a href="https://corefork.telegram.org/method/messages.markDialogUnread"/></para></summary>
 		[TLDef(0xC286D98F)]
-		public partial class Messages_MarkDialogUnread_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Dialog</summary>
-			public InputDialogPeerBase peer;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Mark as unread/read</summary>
-				unread = 0x1,
-			}
-		}
+		public record Messages_MarkDialogUnread_(int flags, InputDialogPeerBase peer) : IMethod<bool>;
 		/// <summary>Manually mark dialog as unread		<para>See <a href="https://corefork.telegram.org/method/messages.markDialogUnread"/></para></summary>
 		/// <param name="unread">Mark as unread/read</param>
 		/// <param name="peer">Dialog</param>
 		public static Task<bool> Messages_MarkDialogUnread(this Client client, InputDialogPeerBase peer, bool unread = false)
-			=> client.CallAsync(new Messages_MarkDialogUnread_
-			{
-				flags = (Messages_MarkDialogUnread_.Flags)(unread ? 0x1 : 0),
-				peer = peer,
-			});
+			=> client.CallAsync(new Messages_MarkDialogUnread_(unread ? 0x1 : 0, peer));
 
-		/// <summary>Get dialogs manually marked as unread		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogUnreadMarks"/></para></summary>
 		[TLDef(0x22E24E22)]
-		public partial class Messages_GetDialogUnreadMarks_ : IMethod<DialogPeerBase[]> { }
+		public record Messages_GetDialogUnreadMarks_() : IMethod<DialogPeerBase[]>;
 		/// <summary>Get dialogs manually marked as unread		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogUnreadMarks"/></para></summary>
 		public static Task<DialogPeerBase[]> Messages_GetDialogUnreadMarks(this Client client)
-			=> client.CallAsync(new Messages_GetDialogUnreadMarks_
-			{
-			});
+			=> client.CallAsync(new Messages_GetDialogUnreadMarks_());
 
-		/// <summary>Clear all <a href="https://corefork.telegram.org/api/drafts">drafts</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.clearAllDrafts"/></para></summary>
 		[TLDef(0x7E58EE9C)]
-		public partial class Messages_ClearAllDrafts_ : IMethod<bool> { }
+		public record Messages_ClearAllDrafts_() : IMethod<bool>;
 		/// <summary>Clear all <a href="https://corefork.telegram.org/api/drafts">drafts</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.clearAllDrafts"/></para></summary>
 		public static Task<bool> Messages_ClearAllDrafts(this Client client)
-			=> client.CallAsync(new Messages_ClearAllDrafts_
-			{
-			});
+			=> client.CallAsync(new Messages_ClearAllDrafts_());
 
-		/// <summary>Pin a message		<para>See <a href="https://corefork.telegram.org/method/messages.updatePinnedMessage"/></para></summary>
 		[TLDef(0xD2AAF7EC)]
-		public partial class Messages_UpdatePinnedMessage_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The peer where to pin the message</summary>
-			public InputPeer peer;
-			/// <summary>The message to pin or unpin</summary>
-			public int id;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Pin the message silently, without triggering a notification</summary>
-				silent = 0x1,
-				/// <summary>Whether the message should unpinned or pinned</summary>
-				unpin = 0x2,
-				/// <summary>Whether the message should only be pinned on the local side of a one-to-one chat</summary>
-				pm_oneside = 0x4,
-			}
-		}
+		public record Messages_UpdatePinnedMessage_(int flags, InputPeer peer, int id) : IMethod<UpdatesBase>;
 		/// <summary>Pin a message		<para>See <a href="https://corefork.telegram.org/method/messages.updatePinnedMessage"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.updatePinnedMessage#possible-errors">details</a>)</para></summary>
 		/// <param name="silent">Pin the message silently, without triggering a notification</param>
 		/// <param name="unpin">Whether the message should unpinned or pinned</param>
@@ -17123,254 +14112,99 @@ namespace TL
 		/// <param name="peer">The peer where to pin the message</param>
 		/// <param name="id">The message to pin or unpin</param>
 		public static Task<UpdatesBase> Messages_UpdatePinnedMessage(this Client client, InputPeer peer, int id, bool silent = false, bool unpin = false, bool pm_oneside = false)
-			=> client.CallAsync(new Messages_UpdatePinnedMessage_
-			{
-				flags = (Messages_UpdatePinnedMessage_.Flags)((silent ? 0x1 : 0) | (unpin ? 0x2 : 0) | (pm_oneside ? 0x4 : 0)),
-				peer = peer,
-				id = id,
-			});
+			=> client.CallAsync(new Messages_UpdatePinnedMessage_((silent ? 0x1 : 0) | (unpin ? 0x2 : 0) | (pm_oneside ? 0x4 : 0),
+				peer, id));
 
-		/// <summary>Vote in a <see cref="Poll"/>		<para>See <a href="https://corefork.telegram.org/method/messages.sendVote"/></para></summary>
 		[TLDef(0x10EA6184)]
-		public partial class Messages_SendVote_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The chat where the poll was sent</summary>
-			public InputPeer peer;
-			/// <summary>The message ID of the poll</summary>
-			public int msg_id;
-			/// <summary>The options that were chosen</summary>
-			public byte[][] options;
-		}
+		public record Messages_SendVote_(InputPeer peer, int msg_id, byte[][] options) : IMethod<UpdatesBase>;
 		/// <summary>Vote in a <see cref="Poll"/>		<para>See <a href="https://corefork.telegram.org/method/messages.sendVote"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendVote#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The chat where the poll was sent</param>
 		/// <param name="msg_id">The message ID of the poll</param>
 		/// <param name="options">The options that were chosen</param>
 		public static Task<UpdatesBase> Messages_SendVote(this Client client, InputPeer peer, int msg_id, byte[][] options)
-			=> client.CallAsync(new Messages_SendVote_
-			{
-				peer = peer,
-				msg_id = msg_id,
-				options = options,
-			});
+			=> client.CallAsync(new Messages_SendVote_(peer, msg_id, options));
 
-		/// <summary>Get poll results		<para>See <a href="https://corefork.telegram.org/method/messages.getPollResults"/></para></summary>
 		[TLDef(0x73BB643B)]
-		public partial class Messages_GetPollResults_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Peer where the poll was found</summary>
-			public InputPeer peer;
-			/// <summary>Message ID of poll message</summary>
-			public int msg_id;
-		}
+		public record Messages_GetPollResults_(InputPeer peer, int msg_id) : IMethod<UpdatesBase>;
 		/// <summary>Get poll results		<para>See <a href="https://corefork.telegram.org/method/messages.getPollResults"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getPollResults#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer where the poll was found</param>
 		/// <param name="msg_id">Message ID of poll message</param>
 		public static Task<UpdatesBase> Messages_GetPollResults(this Client client, InputPeer peer, int msg_id)
-			=> client.CallAsync(new Messages_GetPollResults_
-			{
-				peer = peer,
-				msg_id = msg_id,
-			});
+			=> client.CallAsync(new Messages_GetPollResults_(peer, msg_id));
 
-		/// <summary>Get count of online users in a chat		<para>See <a href="https://corefork.telegram.org/method/messages.getOnlines"/></para></summary>
 		[TLDef(0x6E2BE050)]
-		public partial class Messages_GetOnlines_ : IMethod<ChatOnlines>
-		{
-			/// <summary>The chat</summary>
-			public InputPeer peer;
-		}
+		public record Messages_GetOnlines_(InputPeer peer) : IMethod<ChatOnlines>;
 		/// <summary>Get count of online users in a chat		<para>See <a href="https://corefork.telegram.org/method/messages.getOnlines"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getOnlines#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The chat</param>
 		public static Task<ChatOnlines> Messages_GetOnlines(this Client client, InputPeer peer)
-			=> client.CallAsync(new Messages_GetOnlines_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Messages_GetOnlines_(peer));
 
-		/// <summary>Edit the description of a <a href="https://corefork.telegram.org/api/channel">group/supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAbout"/></para></summary>
 		[TLDef(0xDEF60797)]
-		public partial class Messages_EditChatAbout_ : IMethod<bool>
-		{
-			/// <summary>The <a href="https://corefork.telegram.org/api/channel">group/supergroup/channel</a>.</summary>
-			public InputPeer peer;
-			/// <summary>The new description</summary>
-			public string about;
-		}
+		public record Messages_EditChatAbout_(InputPeer peer, string about) : IMethod<bool>;
 		/// <summary>Edit the description of a <a href="https://corefork.telegram.org/api/channel">group/supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAbout"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.editChatAbout#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The <a href="https://corefork.telegram.org/api/channel">group/supergroup/channel</a>.</param>
 		/// <param name="about">The new description</param>
 		public static Task<bool> Messages_EditChatAbout(this Client client, InputPeer peer, string about)
-			=> client.CallAsync(new Messages_EditChatAbout_
-			{
-				peer = peer,
-				about = about,
-			});
+			=> client.CallAsync(new Messages_EditChatAbout_(peer, about));
 
-		/// <summary>Edit the default banned rights of a <a href="https://corefork.telegram.org/api/channel">channel/supergroup/group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatDefaultBannedRights"/></para></summary>
 		[TLDef(0xA5866B41)]
-		public partial class Messages_EditChatDefaultBannedRights_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The peer</summary>
-			public InputPeer peer;
-			/// <summary>The new global rights</summary>
-			public ChatBannedRights banned_rights;
-		}
+		public record Messages_EditChatDefaultBannedRights_(InputPeer peer, ChatBannedRights banned_rights) : IMethod<UpdatesBase>;
 		/// <summary>Edit the default banned rights of a <a href="https://corefork.telegram.org/api/channel">channel/supergroup/group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatDefaultBannedRights"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.editChatDefaultBannedRights#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The peer</param>
 		/// <param name="banned_rights">The new global rights</param>
 		public static Task<UpdatesBase> Messages_EditChatDefaultBannedRights(this Client client, InputPeer peer, ChatBannedRights banned_rights)
-			=> client.CallAsync(new Messages_EditChatDefaultBannedRights_
-			{
-				peer = peer,
-				banned_rights = banned_rights,
-			});
+			=> client.CallAsync(new Messages_EditChatDefaultBannedRights_(peer, banned_rights));
 
-		/// <summary>Get localized emoji keywords		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiKeywords"/></para></summary>
 		[TLDef(0x35A0E062)]
-		public partial class Messages_GetEmojiKeywords_ : IMethod<EmojiKeywordsDifference>
-		{
-			/// <summary>Language code</summary>
-			public string lang_code;
-		}
+		public record Messages_GetEmojiKeywords_(string lang_code) : IMethod<EmojiKeywordsDifference>;
 		/// <summary>Get localized emoji keywords		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiKeywords"/></para></summary>
 		/// <param name="lang_code">Language code</param>
 		public static Task<EmojiKeywordsDifference> Messages_GetEmojiKeywords(this Client client, string lang_code)
-			=> client.CallAsync(new Messages_GetEmojiKeywords_
-			{
-				lang_code = lang_code,
-			});
+			=> client.CallAsync(new Messages_GetEmojiKeywords_(lang_code));
 
-		/// <summary>Get changed emoji keywords		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiKeywordsDifference"/></para></summary>
 		[TLDef(0x1508B6AF)]
-		public partial class Messages_GetEmojiKeywordsDifference_ : IMethod<EmojiKeywordsDifference>
-		{
-			/// <summary>Language code</summary>
-			public string lang_code;
-			/// <summary>Previous emoji keyword localization version</summary>
-			public int from_version;
-		}
+		public record Messages_GetEmojiKeywordsDifference_(string lang_code, int from_version) : IMethod<EmojiKeywordsDifference>;
 		/// <summary>Get changed emoji keywords		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiKeywordsDifference"/></para></summary>
 		/// <param name="lang_code">Language code</param>
 		/// <param name="from_version">Previous emoji keyword localization version</param>
 		public static Task<EmojiKeywordsDifference> Messages_GetEmojiKeywordsDifference(this Client client, string lang_code, int from_version)
-			=> client.CallAsync(new Messages_GetEmojiKeywordsDifference_
-			{
-				lang_code = lang_code,
-				from_version = from_version,
-			});
+			=> client.CallAsync(new Messages_GetEmojiKeywordsDifference_(lang_code, from_version));
 
-		/// <summary>Get info about an emoji keyword localization		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiKeywordsLanguages"/></para></summary>
 		[TLDef(0x4E9963B2)]
-		public partial class Messages_GetEmojiKeywordsLanguages_ : IMethod<EmojiLanguage[]>
-		{
-			/// <summary>Language codes</summary>
-			public string[] lang_codes;
-		}
+		public record Messages_GetEmojiKeywordsLanguages_(string[] lang_codes) : IMethod<EmojiLanguage[]>;
 		/// <summary>Get info about an emoji keyword localization		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiKeywordsLanguages"/></para></summary>
 		/// <param name="lang_codes">Language codes</param>
 		public static Task<EmojiLanguage[]> Messages_GetEmojiKeywordsLanguages(this Client client, string[] lang_codes)
-			=> client.CallAsync(new Messages_GetEmojiKeywordsLanguages_
-			{
-				lang_codes = lang_codes,
-			});
+			=> client.CallAsync(new Messages_GetEmojiKeywordsLanguages_(lang_codes));
 
-		/// <summary>Returns an HTTP URL which can be used to automatically log in into translation platform and suggest new emoji replacements. The URL will be valid for 30 seconds after generation		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiURL"/></para></summary>
 		[TLDef(0xD5B10C26)]
-		public partial class Messages_GetEmojiURL_ : IMethod<EmojiURL>
-		{
-			/// <summary>Language code for which the emoji replacements will be suggested</summary>
-			public string lang_code;
-		}
+		public record Messages_GetEmojiURL_(string lang_code) : IMethod<EmojiURL>;
 		/// <summary>Returns an HTTP URL which can be used to automatically log in into translation platform and suggest new emoji replacements. The URL will be valid for 30 seconds after generation		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiURL"/></para></summary>
 		/// <param name="lang_code">Language code for which the emoji replacements will be suggested</param>
 		public static Task<EmojiURL> Messages_GetEmojiURL(this Client client, string lang_code)
-			=> client.CallAsync(new Messages_GetEmojiURL_
-			{
-				lang_code = lang_code,
-			});
+			=> client.CallAsync(new Messages_GetEmojiURL_(lang_code));
 
-		/// <summary>Get the number of results that would be found by a <a href="https://corefork.telegram.org/method/messages.search">messages.search</a> call with the same parameters		<para>See <a href="https://corefork.telegram.org/method/messages.getSearchCounters"/></para></summary>
 		[TLDef(0x732EEF00)]
-		public partial class Messages_GetSearchCounters_ : IMethod<Messages_SearchCounter[]>
-		{
-			/// <summary>Peer where to search</summary>
-			public InputPeer peer;
-			/// <summary>Search filters</summary>
-			public MessagesFilter[] filters;
-		}
+		public record Messages_GetSearchCounters_(InputPeer peer, MessagesFilter[] filters) : IMethod<Messages_SearchCounter[]>;
 		/// <summary>Get the number of results that would be found by a <a href="https://corefork.telegram.org/method/messages.search">messages.search</a> call with the same parameters		<para>See <a href="https://corefork.telegram.org/method/messages.getSearchCounters"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getSearchCounters#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer where to search</param>
 		/// <param name="filters">Search filters</param>
 		public static Task<Messages_SearchCounter[]> Messages_GetSearchCounters(this Client client, InputPeer peer, MessagesFilter[] filters)
-			=> client.CallAsync(new Messages_GetSearchCounters_
-			{
-				peer = peer,
-				filters = filters,
-			});
+			=> client.CallAsync(new Messages_GetSearchCounters_(peer, filters));
 
-		/// <summary>Get more info about a Seamless Telegram Login authorization request, for more info <a href="https://corefork.telegram.org/api/url-authorization">click here »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.requestUrlAuth"/></para></summary>
 		[TLDef(0x198FB446)]
-		public partial class Messages_RequestUrlAuth_ : IMethod<UrlAuthResult>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Peer where the message is located</summary>
-			[IfFlag(1)] public InputPeer peer;
-			/// <summary>The message</summary>
-			[IfFlag(1)] public int msg_id;
-			/// <summary>The ID of the button with the authorization request</summary>
-			[IfFlag(1)] public int button_id;
-			/// <summary>URL used for <a href="https://corefork.telegram.org/api/url-authorization#link-url-authorization">link URL authorization, click here for more info »</a></summary>
-			[IfFlag(2)] public string url;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="peer"/> has a value</summary>
-				has_peer = 0x2,
-				/// <summary>Field <see cref="url"/> has a value</summary>
-				has_url = 0x4,
-			}
-		}
+		public record Messages_RequestUrlAuth_(int flags, [field:IfFlag(1)] InputPeer peer, [field:IfFlag(1)] int msg_id, [field:IfFlag(1)] int button_id, [field:IfFlag(2)] string url) : IMethod<UrlAuthResult>;
 		/// <summary>Get more info about a Seamless Telegram Login authorization request, for more info <a href="https://corefork.telegram.org/api/url-authorization">click here »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.requestUrlAuth"/></para></summary>
 		/// <param name="peer">Peer where the message is located</param>
 		/// <param name="msg_id">The message</param>
 		/// <param name="button_id">The ID of the button with the authorization request</param>
 		/// <param name="url">URL used for <a href="https://corefork.telegram.org/api/url-authorization#link-url-authorization">link URL authorization, click here for more info »</a></param>
 		public static Task<UrlAuthResult> Messages_RequestUrlAuth(this Client client, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null)
-			=> client.CallAsync(new Messages_RequestUrlAuth_
-			{
-				flags = (Messages_RequestUrlAuth_.Flags)((peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0)),
-				peer = peer,
-				msg_id = msg_id.GetValueOrDefault(),
-				button_id = button_id.GetValueOrDefault(),
-				url = url,
-			});
+			=> client.CallAsync(new Messages_RequestUrlAuth_((peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0),
+				peer, msg_id.GetValueOrDefault(), button_id.GetValueOrDefault(), url));
 
-		/// <summary>Use this to accept a Seamless Telegram Login authorization request, for more info <a href="https://corefork.telegram.org/api/url-authorization">click here »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.acceptUrlAuth"/></para></summary>
 		[TLDef(0xB12C7125)]
-		public partial class Messages_AcceptUrlAuth_ : IMethod<UrlAuthResult>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The location of the message</summary>
-			[IfFlag(1)] public InputPeer peer;
-			/// <summary>Message ID of the message with the login button</summary>
-			[IfFlag(1)] public int msg_id;
-			/// <summary>ID of the login button</summary>
-			[IfFlag(1)] public int button_id;
-			/// <summary>URL used for <a href="https://corefork.telegram.org/api/url-authorization#link-url-authorization">link URL authorization, click here for more info »</a></summary>
-			[IfFlag(2)] public string url;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Set this flag to allow the bot to send messages to you (if requested)</summary>
-				write_allowed = 0x1,
-				/// <summary>Field <see cref="peer"/> has a value</summary>
-				has_peer = 0x2,
-				/// <summary>Field <see cref="url"/> has a value</summary>
-				has_url = 0x4,
-			}
-		}
+		public record Messages_AcceptUrlAuth_(int flags, [field:IfFlag(1)] InputPeer peer, [field:IfFlag(1)] int msg_id, [field:IfFlag(1)] int button_id, [field:IfFlag(2)] string url) : IMethod<UrlAuthResult>;
 		/// <summary>Use this to accept a Seamless Telegram Login authorization request, for more info <a href="https://corefork.telegram.org/api/url-authorization">click here »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.acceptUrlAuth"/></para></summary>
 		/// <param name="write_allowed">Set this flag to allow the bot to send messages to you (if requested)</param>
 		/// <param name="peer">The location of the message</param>
@@ -17378,131 +14212,50 @@ namespace TL
 		/// <param name="button_id">ID of the login button</param>
 		/// <param name="url">URL used for <a href="https://corefork.telegram.org/api/url-authorization#link-url-authorization">link URL authorization, click here for more info »</a></param>
 		public static Task<UrlAuthResult> Messages_AcceptUrlAuth(this Client client, bool write_allowed = false, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null)
-			=> client.CallAsync(new Messages_AcceptUrlAuth_
-			{
-				flags = (Messages_AcceptUrlAuth_.Flags)((write_allowed ? 0x1 : 0) | (peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0)),
-				peer = peer,
-				msg_id = msg_id.GetValueOrDefault(),
-				button_id = button_id.GetValueOrDefault(),
-				url = url,
-			});
+			=> client.CallAsync(new Messages_AcceptUrlAuth_((write_allowed ? 0x1 : 0) | (peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0),
+				peer, msg_id.GetValueOrDefault(), button_id.GetValueOrDefault(), url));
 
-		/// <summary>Should be called after the user hides the report spam/add as contact bar of a new chat, effectively prevents the user from executing the actions specified in the <see cref="PeerSettings"/>.		<para>See <a href="https://corefork.telegram.org/method/messages.hidePeerSettingsBar"/></para></summary>
 		[TLDef(0x4FACB138)]
-		public partial class Messages_HidePeerSettingsBar_ : IMethod<bool>
-		{
-			/// <summary>Peer</summary>
-			public InputPeer peer;
-		}
+		public record Messages_HidePeerSettingsBar_(InputPeer peer) : IMethod<bool>;
 		/// <summary>Should be called after the user hides the report spam/add as contact bar of a new chat, effectively prevents the user from executing the actions specified in the <see cref="PeerSettings"/>.		<para>See <a href="https://corefork.telegram.org/method/messages.hidePeerSettingsBar"/></para></summary>
 		/// <param name="peer">Peer</param>
 		public static Task<bool> Messages_HidePeerSettingsBar(this Client client, InputPeer peer)
-			=> client.CallAsync(new Messages_HidePeerSettingsBar_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Messages_HidePeerSettingsBar_(peer));
 
-		/// <summary>Get scheduled messages		<para>See <a href="https://corefork.telegram.org/method/messages.getScheduledHistory"/></para></summary>
 		[TLDef(0xF516760B)]
-		public partial class Messages_GetScheduledHistory_ : IMethod<Messages_MessagesBase>
-		{
-			/// <summary>Peer</summary>
-			public InputPeer peer;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Messages_GetScheduledHistory_(InputPeer peer, long hash) : IMethod<Messages_MessagesBase>;
 		/// <summary>Get scheduled messages		<para>See <a href="https://corefork.telegram.org/method/messages.getScheduledHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getScheduledHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<Messages_MessagesBase> Messages_GetScheduledHistory(this Client client, InputPeer peer, long hash)
-			=> client.CallAsync(new Messages_GetScheduledHistory_
-			{
-				peer = peer,
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetScheduledHistory_(peer, hash));
 
-		/// <summary>Get scheduled messages		<para>See <a href="https://corefork.telegram.org/method/messages.getScheduledMessages"/></para></summary>
 		[TLDef(0xBDBB0464)]
-		public partial class Messages_GetScheduledMessages_ : IMethod<Messages_MessagesBase>
-		{
-			/// <summary>Peer</summary>
-			public InputPeer peer;
-			/// <summary>IDs of scheduled messages</summary>
-			public int[] id;
-		}
+		public record Messages_GetScheduledMessages_(InputPeer peer, int[] id) : IMethod<Messages_MessagesBase>;
 		/// <summary>Get scheduled messages		<para>See <a href="https://corefork.telegram.org/method/messages.getScheduledMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getScheduledMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="id">IDs of scheduled messages</param>
 		public static Task<Messages_MessagesBase> Messages_GetScheduledMessages(this Client client, InputPeer peer, int[] id)
-			=> client.CallAsync(new Messages_GetScheduledMessages_
-			{
-				peer = peer,
-				id = id,
-			});
+			=> client.CallAsync(new Messages_GetScheduledMessages_(peer, id));
 
-		/// <summary>Send scheduled messages right away		<para>See <a href="https://corefork.telegram.org/method/messages.sendScheduledMessages"/></para></summary>
 		[TLDef(0xBD38850A)]
-		public partial class Messages_SendScheduledMessages_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Peer</summary>
-			public InputPeer peer;
-			/// <summary>Scheduled message IDs</summary>
-			public int[] id;
-		}
+		public record Messages_SendScheduledMessages_(InputPeer peer, int[] id) : IMethod<UpdatesBase>;
 		/// <summary>Send scheduled messages right away		<para>See <a href="https://corefork.telegram.org/method/messages.sendScheduledMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendScheduledMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="id">Scheduled message IDs</param>
 		public static Task<UpdatesBase> Messages_SendScheduledMessages(this Client client, InputPeer peer, int[] id)
-			=> client.CallAsync(new Messages_SendScheduledMessages_
-			{
-				peer = peer,
-				id = id,
-			});
+			=> client.CallAsync(new Messages_SendScheduledMessages_(peer, id));
 
-		/// <summary>Delete scheduled messages		<para>See <a href="https://corefork.telegram.org/method/messages.deleteScheduledMessages"/></para></summary>
 		[TLDef(0x59AE2B16)]
-		public partial class Messages_DeleteScheduledMessages_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Peer</summary>
-			public InputPeer peer;
-			/// <summary>Scheduled message IDs</summary>
-			public int[] id;
-		}
+		public record Messages_DeleteScheduledMessages_(InputPeer peer, int[] id) : IMethod<UpdatesBase>;
 		/// <summary>Delete scheduled messages		<para>See <a href="https://corefork.telegram.org/method/messages.deleteScheduledMessages"/></para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="id">Scheduled message IDs</param>
 		public static Task<UpdatesBase> Messages_DeleteScheduledMessages(this Client client, InputPeer peer, int[] id)
-			=> client.CallAsync(new Messages_DeleteScheduledMessages_
-			{
-				peer = peer,
-				id = id,
-			});
+			=> client.CallAsync(new Messages_DeleteScheduledMessages_(peer, id));
 
-		/// <summary>Get poll results for non-anonymous polls		<para>See <a href="https://corefork.telegram.org/method/messages.getPollVotes"/></para></summary>
 		[TLDef(0xB86E380E)]
-		public partial class Messages_GetPollVotes_ : IMethod<Messages_VotesList>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Chat where the poll was sent</summary>
-			public InputPeer peer;
-			/// <summary>Message ID</summary>
-			public int id;
-			/// <summary>Get only results for the specified poll <c>option</c></summary>
-			[IfFlag(0)] public byte[] option;
-			/// <summary>Offset for results, taken from the <c>next_offset</c> field of <see cref="Messages_VotesList"/>, initially an empty string. <br/>Note: if no more results are available, the method call will return an empty <c>next_offset</c>; thus, avoid providing the <c>next_offset</c> returned in <see cref="Messages_VotesList"/> if it is empty, to avoid an infinite loop.</summary>
-			[IfFlag(1)] public string offset;
-			/// <summary>Number of results to return</summary>
-			public int limit;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="option"/> has a value</summary>
-				has_option = 0x1,
-				/// <summary>Field <see cref="offset"/> has a value</summary>
-				has_offset = 0x2,
-			}
-		}
+		public record Messages_GetPollVotes_(int flags, InputPeer peer, int id, [field:IfFlag(0)] byte[] option, [field:IfFlag(1)] string offset, int limit) : IMethod<Messages_VotesList>;
 		/// <summary>Get poll results for non-anonymous polls		<para>See <a href="https://corefork.telegram.org/method/messages.getPollVotes"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.getPollVotes#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Chat where the poll was sent</param>
 		/// <param name="id">Message ID</param>
@@ -17510,154 +14263,58 @@ namespace TL
 		/// <param name="offset">Offset for results, taken from the <c>next_offset</c> field of <see cref="Messages_VotesList"/>, initially an empty string. <br/>Note: if no more results are available, the method call will return an empty <c>next_offset</c>; thus, avoid providing the <c>next_offset</c> returned in <see cref="Messages_VotesList"/> if it is empty, to avoid an infinite loop.</param>
 		/// <param name="limit">Number of results to return</param>
 		public static Task<Messages_VotesList> Messages_GetPollVotes(this Client client, InputPeer peer, int id, int limit, byte[] option = null, string offset = null)
-			=> client.CallAsync(new Messages_GetPollVotes_
-			{
-				flags = (Messages_GetPollVotes_.Flags)((option != null ? 0x1 : 0) | (offset != null ? 0x2 : 0)),
-				peer = peer,
-				id = id,
-				option = option,
-				offset = offset,
-				limit = limit,
-			});
+			=> client.CallAsync(new Messages_GetPollVotes_((option != null ? 0x1 : 0) | (offset != null ? 0x2 : 0),
+				peer, id, option, offset, limit));
 
-		/// <summary>Apply changes to multiple stickersets		<para>See <a href="https://corefork.telegram.org/method/messages.toggleStickerSets"/></para></summary>
 		[TLDef(0xB5052FEA)]
-		public partial class Messages_ToggleStickerSets_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Stickersets to act upon</summary>
-			public InputStickerSet[] stickersets;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Uninstall the specified stickersets</summary>
-				uninstall = 0x1,
-				/// <summary>Archive the specified stickersets</summary>
-				archive = 0x2,
-				/// <summary>Unarchive the specified stickersets</summary>
-				unarchive = 0x4,
-			}
-		}
+		public record Messages_ToggleStickerSets_(int flags, InputStickerSet[] stickersets) : IMethod<bool>;
 		/// <summary>Apply changes to multiple stickersets		<para>See <a href="https://corefork.telegram.org/method/messages.toggleStickerSets"/></para></summary>
 		/// <param name="uninstall">Uninstall the specified stickersets</param>
 		/// <param name="archive">Archive the specified stickersets</param>
 		/// <param name="unarchive">Unarchive the specified stickersets</param>
 		/// <param name="stickersets">Stickersets to act upon</param>
 		public static Task<bool> Messages_ToggleStickerSets(this Client client, InputStickerSet[] stickersets, bool uninstall = false, bool archive = false, bool unarchive = false)
-			=> client.CallAsync(new Messages_ToggleStickerSets_
-			{
-				flags = (Messages_ToggleStickerSets_.Flags)((uninstall ? 0x1 : 0) | (archive ? 0x2 : 0) | (unarchive ? 0x4 : 0)),
-				stickersets = stickersets,
-			});
+			=> client.CallAsync(new Messages_ToggleStickerSets_((uninstall ? 0x1 : 0) | (archive ? 0x2 : 0) | (unarchive ? 0x4 : 0),
+				stickersets));
 
-		/// <summary>Get <a href="https://corefork.telegram.org/api/folders">folders</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogFilters"/></para></summary>
 		[TLDef(0xF19ED96D)]
-		public partial class Messages_GetDialogFilters_ : IMethod<DialogFilter[]> { }
+		public record Messages_GetDialogFilters_() : IMethod<DialogFilter[]>;
 		/// <summary>Get <a href="https://corefork.telegram.org/api/folders">folders</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogFilters"/></para></summary>
 		public static Task<DialogFilter[]> Messages_GetDialogFilters(this Client client)
-			=> client.CallAsync(new Messages_GetDialogFilters_
-			{
-			});
+			=> client.CallAsync(new Messages_GetDialogFilters_());
 
-		/// <summary>Get <a href="https://corefork.telegram.org/api/folders">suggested folders</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getSuggestedDialogFilters"/></para></summary>
 		[TLDef(0xA29CD42C)]
-		public partial class Messages_GetSuggestedDialogFilters_ : IMethod<DialogFilterSuggested[]> { }
+		public record Messages_GetSuggestedDialogFilters_() : IMethod<DialogFilterSuggested[]>;
 		/// <summary>Get <a href="https://corefork.telegram.org/api/folders">suggested folders</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getSuggestedDialogFilters"/></para></summary>
 		public static Task<DialogFilterSuggested[]> Messages_GetSuggestedDialogFilters(this Client client)
-			=> client.CallAsync(new Messages_GetSuggestedDialogFilters_
-			{
-			});
+			=> client.CallAsync(new Messages_GetSuggestedDialogFilters_());
 
-		/// <summary>Update <a href="https://corefork.telegram.org/api/folders">folder</a>		<para>See <a href="https://corefork.telegram.org/method/messages.updateDialogFilter"/></para></summary>
 		[TLDef(0x1AD4A04A)]
-		public partial class Messages_UpdateDialogFilter_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> ID</summary>
-			public int id;
-			/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> info</summary>
-			[IfFlag(0)] public DialogFilter filter;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="filter"/> has a value</summary>
-				has_filter = 0x1,
-			}
-		}
+		public record Messages_UpdateDialogFilter_(int flags, int id, [field:IfFlag(0)] DialogFilter filter) : IMethod<bool>;
 		/// <summary>Update <a href="https://corefork.telegram.org/api/folders">folder</a>		<para>See <a href="https://corefork.telegram.org/method/messages.updateDialogFilter"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.updateDialogFilter#possible-errors">details</a>)</para></summary>
 		/// <param name="id"><a href="https://corefork.telegram.org/api/folders">Folder</a> ID</param>
 		/// <param name="filter"><a href="https://corefork.telegram.org/api/folders">Folder</a> info</param>
 		public static Task<bool> Messages_UpdateDialogFilter(this Client client, int id, DialogFilter filter = null)
-			=> client.CallAsync(new Messages_UpdateDialogFilter_
-			{
-				flags = (Messages_UpdateDialogFilter_.Flags)(filter != null ? 0x1 : 0),
-				id = id,
-				filter = filter,
-			});
+			=> client.CallAsync(new Messages_UpdateDialogFilter_(filter != null ? 0x1 : 0, id, filter));
 
-		/// <summary>Reorder <a href="https://corefork.telegram.org/api/folders">folders</a>		<para>See <a href="https://corefork.telegram.org/method/messages.updateDialogFiltersOrder"/></para></summary>
 		[TLDef(0xC563C1E4)]
-		public partial class Messages_UpdateDialogFiltersOrder_ : IMethod<bool>
-		{
-			/// <summary>New <a href="https://corefork.telegram.org/api/folders">folder</a> order</summary>
-			public int[] order;
-		}
+		public record Messages_UpdateDialogFiltersOrder_(int[] order) : IMethod<bool>;
 		/// <summary>Reorder <a href="https://corefork.telegram.org/api/folders">folders</a>		<para>See <a href="https://corefork.telegram.org/method/messages.updateDialogFiltersOrder"/></para></summary>
 		/// <param name="order">New <a href="https://corefork.telegram.org/api/folders">folder</a> order</param>
 		public static Task<bool> Messages_UpdateDialogFiltersOrder(this Client client, int[] order)
-			=> client.CallAsync(new Messages_UpdateDialogFiltersOrder_
-			{
-				order = order,
-			});
+			=> client.CallAsync(new Messages_UpdateDialogFiltersOrder_(order));
 
-		/// <summary>Method for fetching previously featured stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getOldFeaturedStickers"/></para></summary>
 		[TLDef(0x7ED094A1)]
-		public partial class Messages_GetOldFeaturedStickers_ : IMethod<Messages_FeaturedStickersBase>
-		{
-			/// <summary>Offset</summary>
-			public int offset;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Messages_GetOldFeaturedStickers_(int offset, int limit, long hash) : IMethod<Messages_FeaturedStickersBase>;
 		/// <summary>Method for fetching previously featured stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getOldFeaturedStickers"/></para></summary>
 		/// <param name="offset">Offset</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<Messages_FeaturedStickersBase> Messages_GetOldFeaturedStickers(this Client client, int offset, int limit, long hash)
-			=> client.CallAsync(new Messages_GetOldFeaturedStickers_
-			{
-				offset = offset,
-				limit = limit,
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetOldFeaturedStickers_(offset, limit, hash));
 
-		/// <summary>Get messages in a reply thread		<para>See <a href="https://corefork.telegram.org/method/messages.getReplies"/></para></summary>
 		[TLDef(0x22DDD30C)]
-		public partial class Messages_GetReplies_ : IMethod<Messages_MessagesBase>
-		{
-			/// <summary>Peer</summary>
-			public InputPeer peer;
-			/// <summary>Message ID</summary>
-			public int msg_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public int offset_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public DateTime offset_date;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public int add_offset;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-			/// <summary>If a positive value was transferred, the method will return only messages with ID smaller than max_id</summary>
-			public int max_id;
-			/// <summary>If a positive value was transferred, the method will return only messages with ID bigger than min_id</summary>
-			public int min_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public long hash;
-		}
+		public record Messages_GetReplies_(InputPeer peer, int msg_id, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash) : IMethod<Messages_MessagesBase>;
 		/// <summary>Get messages in a reply thread		<para>See <a href="https://corefork.telegram.org/method/messages.getReplies"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getReplies#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="msg_id">Message ID</param>
@@ -17669,163 +14326,64 @@ namespace TL
 		/// <param name="min_id">If a positive value was transferred, the method will return only messages with ID bigger than min_id</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<Messages_MessagesBase> Messages_GetReplies(this Client client, InputPeer peer, int msg_id, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash)
-			=> client.CallAsync(new Messages_GetReplies_
-			{
-				peer = peer,
-				msg_id = msg_id,
-				offset_id = offset_id,
-				offset_date = offset_date,
-				add_offset = add_offset,
-				limit = limit,
-				max_id = max_id,
-				min_id = min_id,
-				hash = hash,
-			});
+			=> client.CallAsync(new Messages_GetReplies_(peer, msg_id, offset_id, offset_date, add_offset, limit, max_id, min_id, hash));
 
-		/// <summary>Get <a href="https://corefork.telegram.org/api/threads">discussion message</a> from the <a href="https://corefork.telegram.org/api/discussion">associated discussion group</a> of a channel to show it on top of the comment section, without actually joining the group		<para>See <a href="https://corefork.telegram.org/method/messages.getDiscussionMessage"/></para></summary>
 		[TLDef(0x446972FD)]
-		public partial class Messages_GetDiscussionMessage_ : IMethod<Messages_DiscussionMessage>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/channel">Channel ID</a></summary>
-			public InputPeer peer;
-			/// <summary>Message ID</summary>
-			public int msg_id;
-		}
+		public record Messages_GetDiscussionMessage_(InputPeer peer, int msg_id) : IMethod<Messages_DiscussionMessage>;
 		/// <summary>Get <a href="https://corefork.telegram.org/api/threads">discussion message</a> from the <a href="https://corefork.telegram.org/api/discussion">associated discussion group</a> of a channel to show it on top of the comment section, without actually joining the group		<para>See <a href="https://corefork.telegram.org/method/messages.getDiscussionMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getDiscussionMessage#possible-errors">details</a>)</para></summary>
 		/// <param name="peer"><a href="https://corefork.telegram.org/api/channel">Channel ID</a></param>
 		/// <param name="msg_id">Message ID</param>
 		public static Task<Messages_DiscussionMessage> Messages_GetDiscussionMessage(this Client client, InputPeer peer, int msg_id)
-			=> client.CallAsync(new Messages_GetDiscussionMessage_
-			{
-				peer = peer,
-				msg_id = msg_id,
-			});
+			=> client.CallAsync(new Messages_GetDiscussionMessage_(peer, msg_id));
 
-		/// <summary>Mark a <a href="https://corefork.telegram.org/api/threads">thread</a> as read		<para>See <a href="https://corefork.telegram.org/method/messages.readDiscussion"/></para></summary>
 		[TLDef(0xF731A9F4)]
-		public partial class Messages_ReadDiscussion_ : IMethod<bool>
-		{
-			/// <summary>Group ID</summary>
-			public InputPeer peer;
-			/// <summary>ID of message that started the thread</summary>
-			public int msg_id;
-			/// <summary>ID up to which thread messages were read</summary>
-			public int read_max_id;
-		}
+		public record Messages_ReadDiscussion_(InputPeer peer, int msg_id, int read_max_id) : IMethod<bool>;
 		/// <summary>Mark a <a href="https://corefork.telegram.org/api/threads">thread</a> as read		<para>See <a href="https://corefork.telegram.org/method/messages.readDiscussion"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readDiscussion#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Group ID</param>
 		/// <param name="msg_id">ID of message that started the thread</param>
 		/// <param name="read_max_id">ID up to which thread messages were read</param>
 		public static Task<bool> Messages_ReadDiscussion(this Client client, InputPeer peer, int msg_id, int read_max_id)
-			=> client.CallAsync(new Messages_ReadDiscussion_
-			{
-				peer = peer,
-				msg_id = msg_id,
-				read_max_id = read_max_id,
-			});
+			=> client.CallAsync(new Messages_ReadDiscussion_(peer, msg_id, read_max_id));
 
-		/// <summary><a href="https://corefork.telegram.org/api/pin">Unpin</a> all pinned messages		<para>See <a href="https://corefork.telegram.org/method/messages.unpinAllMessages"/></para></summary>
 		[TLDef(0xF025BC8B)]
-		public partial class Messages_UnpinAllMessages_ : IMethod<Messages_AffectedHistory>
-		{
-			/// <summary>Chat where to unpin</summary>
-			public InputPeer peer;
-		}
+		public record Messages_UnpinAllMessages_(InputPeer peer) : IMethod<Messages_AffectedHistory>;
 		/// <summary><a href="https://corefork.telegram.org/api/pin">Unpin</a> all pinned messages		<para>See <a href="https://corefork.telegram.org/method/messages.unpinAllMessages"/> [bots: ✓]</para></summary>
 		/// <param name="peer">Chat where to unpin</param>
 		public static Task<Messages_AffectedHistory> Messages_UnpinAllMessages(this Client client, InputPeer peer)
-			=> client.CallAsync(new Messages_UnpinAllMessages_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Messages_UnpinAllMessages_(peer));
 
-		/// <summary>Delete a <a href="https://corefork.telegram.org/api/channel">chat</a>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChat"/></para></summary>
 		[TLDef(0x5BD0EE50)]
-		public partial class Messages_DeleteChat_ : IMethod<bool>
-		{
-			/// <summary>Chat ID</summary>
-			public long chat_id;
-		}
+		public record Messages_DeleteChat_(long chat_id) : IMethod<bool>;
 		/// <summary>Delete a <a href="https://corefork.telegram.org/api/channel">chat</a>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		public static Task<bool> Messages_DeleteChat(this Client client, long chat_id)
-			=> client.CallAsync(new Messages_DeleteChat_
-			{
-				chat_id = chat_id,
-			});
+			=> client.CallAsync(new Messages_DeleteChat_(chat_id));
 
-		/// <summary>Delete the entire phone call history.		<para>See <a href="https://corefork.telegram.org/method/messages.deletePhoneCallHistory"/></para></summary>
 		[TLDef(0xF9CBE409)]
-		public partial class Messages_DeletePhoneCallHistory_ : IMethod<Messages_AffectedFoundMessages>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to remove phone call history for participants as well</summary>
-				revoke = 0x1,
-			}
-		}
+		public record Messages_DeletePhoneCallHistory_(int flags) : IMethod<Messages_AffectedFoundMessages>;
 		/// <summary>Delete the entire phone call history.		<para>See <a href="https://corefork.telegram.org/method/messages.deletePhoneCallHistory"/></para></summary>
 		/// <param name="revoke">Whether to remove phone call history for participants as well</param>
 		public static Task<Messages_AffectedFoundMessages> Messages_DeletePhoneCallHistory(this Client client, bool revoke = false)
-			=> client.CallAsync(new Messages_DeletePhoneCallHistory_
-			{
-				flags = (Messages_DeletePhoneCallHistory_.Flags)(revoke ? 0x1 : 0),
-			});
+			=> client.CallAsync(new Messages_DeletePhoneCallHistory_(revoke ? 0x1 : 0));
 
-		/// <summary>Obtains information about a chat export file, generated by a foreign chat app, <a href="https://corefork.telegram.org/api/import">click here for more info about imported chats »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.checkHistoryImport"/></para></summary>
 		[TLDef(0x43FE19F3)]
-		public partial class Messages_CheckHistoryImport_ : IMethod<Messages_HistoryImportParsed>
-		{
-			/// <summary>Beginning of the message file; up to 100 lines.</summary>
-			public string import_head;
-		}
+		public record Messages_CheckHistoryImport_(string import_head) : IMethod<Messages_HistoryImportParsed>;
 		/// <summary>Obtains information about a chat export file, generated by a foreign chat app, <a href="https://corefork.telegram.org/api/import">click here for more info about imported chats »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.checkHistoryImport"/></para></summary>
 		/// <param name="import_head">Beginning of the message file; up to 100 lines.</param>
 		public static Task<Messages_HistoryImportParsed> Messages_CheckHistoryImport(this Client client, string import_head)
-			=> client.CallAsync(new Messages_CheckHistoryImport_
-			{
-				import_head = import_head,
-			});
+			=> client.CallAsync(new Messages_CheckHistoryImport_(import_head));
 
-		/// <summary>Import chat history from a foreign chat app into a specific Telegram chat, <a href="https://corefork.telegram.org/api/import">click here for more info about imported chats »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.initHistoryImport"/></para></summary>
 		[TLDef(0x34090C3B)]
-		public partial class Messages_InitHistoryImport_ : IMethod<Messages_HistoryImport>
-		{
-			/// <summary>The Telegram chat where the <a href="https://corefork.telegram.org/api/import">history should be imported</a>.</summary>
-			public InputPeer peer;
-			/// <summary>File with messages to import.</summary>
-			public InputFileBase file;
-			/// <summary>Number of media files associated with the chat that will be uploaded using <a href="https://corefork.telegram.org/method/messages.uploadImportedMedia">messages.uploadImportedMedia</a>.</summary>
-			public int media_count;
-		}
+		public record Messages_InitHistoryImport_(InputPeer peer, InputFileBase file, int media_count) : IMethod<Messages_HistoryImport>;
 		/// <summary>Import chat history from a foreign chat app into a specific Telegram chat, <a href="https://corefork.telegram.org/api/import">click here for more info about imported chats »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.initHistoryImport"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/messages.initHistoryImport#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The Telegram chat where the <a href="https://corefork.telegram.org/api/import">history should be imported</a>.</param>
 		/// <param name="file">File with messages to import.</param>
 		/// <param name="media_count">Number of media files associated with the chat that will be uploaded using <a href="https://corefork.telegram.org/method/messages.uploadImportedMedia">messages.uploadImportedMedia</a>.</param>
 		public static Task<Messages_HistoryImport> Messages_InitHistoryImport(this Client client, InputPeer peer, InputFileBase file, int media_count)
-			=> client.CallAsync(new Messages_InitHistoryImport_
-			{
-				peer = peer,
-				file = file,
-				media_count = media_count,
-			});
+			=> client.CallAsync(new Messages_InitHistoryImport_(peer, file, media_count));
 
-		/// <summary>Upload a media file associated with an <a href="https://corefork.telegram.org/api/import">imported chat, click here for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.uploadImportedMedia"/></para></summary>
 		[TLDef(0x2A862092)]
-		public partial class Messages_UploadImportedMedia_ : IMethod<MessageMedia>
-		{
-			/// <summary>The Telegram chat where the media will be imported</summary>
-			public InputPeer peer;
-			/// <summary>Identifier of a <a href="https://corefork.telegram.org/api/import">history import session</a>, returned by <a href="https://corefork.telegram.org/method/messages.initHistoryImport">messages.initHistoryImport</a></summary>
-			public long import_id;
-			/// <summary>File name</summary>
-			public string file_name;
-			/// <summary>Media metadata</summary>
-			public InputMedia media;
-		}
+		public record Messages_UploadImportedMedia_(InputPeer peer, long import_id, string file_name, InputMedia media) : IMethod<MessageMedia>;
 		/// <summary>Upload a media file associated with an <a href="https://corefork.telegram.org/api/import">imported chat, click here for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.uploadImportedMedia"/></para></summary>
 		/// <param name="peer">The Telegram chat where the media will be imported</param>
 		/// <param name="import_id">Identifier of a <a href="https://corefork.telegram.org/api/import">history import session</a>, returned by <a href="https://corefork.telegram.org/method/messages.initHistoryImport">messages.initHistoryImport</a></param>
@@ -17833,58 +14391,18 @@ namespace TL
 		/// <param name="media">Media metadata</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messageMediaEmpty">messageMediaEmpty</a></returns>
 		public static Task<MessageMedia> Messages_UploadImportedMedia(this Client client, InputPeer peer, long import_id, string file_name, InputMedia media)
-			=> client.CallAsync(new Messages_UploadImportedMedia_
-			{
-				peer = peer,
-				import_id = import_id,
-				file_name = file_name,
-				media = media,
-			});
+			=> client.CallAsync(new Messages_UploadImportedMedia_(peer, import_id, file_name, media));
 
-		/// <summary>Complete the <a href="https://corefork.telegram.org/api/import">history import process</a>, importing all messages into the chat.<br/>To be called only after initializing the import with <a href="https://corefork.telegram.org/method/messages.initHistoryImport">messages.initHistoryImport</a> and uploading all files using <a href="https://corefork.telegram.org/method/messages.uploadImportedMedia">messages.uploadImportedMedia</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.startHistoryImport"/></para></summary>
 		[TLDef(0xB43DF344)]
-		public partial class Messages_StartHistoryImport_ : IMethod<bool>
-		{
-			/// <summary>The Telegram chat where the messages should be <a href="https://corefork.telegram.org/api/import">imported, click here for more info »</a></summary>
-			public InputPeer peer;
-			/// <summary>Identifier of a history import session, returned by <a href="https://corefork.telegram.org/method/messages.initHistoryImport">messages.initHistoryImport</a>.</summary>
-			public long import_id;
-		}
+		public record Messages_StartHistoryImport_(InputPeer peer, long import_id) : IMethod<bool>;
 		/// <summary>Complete the <a href="https://corefork.telegram.org/api/import">history import process</a>, importing all messages into the chat.<br/>To be called only after initializing the import with <a href="https://corefork.telegram.org/method/messages.initHistoryImport">messages.initHistoryImport</a> and uploading all files using <a href="https://corefork.telegram.org/method/messages.uploadImportedMedia">messages.uploadImportedMedia</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.startHistoryImport"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.startHistoryImport#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The Telegram chat where the messages should be <a href="https://corefork.telegram.org/api/import">imported, click here for more info »</a></param>
 		/// <param name="import_id">Identifier of a history import session, returned by <a href="https://corefork.telegram.org/method/messages.initHistoryImport">messages.initHistoryImport</a>.</param>
 		public static Task<bool> Messages_StartHistoryImport(this Client client, InputPeer peer, long import_id)
-			=> client.CallAsync(new Messages_StartHistoryImport_
-			{
-				peer = peer,
-				import_id = import_id,
-			});
+			=> client.CallAsync(new Messages_StartHistoryImport_(peer, import_id));
 
-		/// <summary>Get info about the chat invites of a specific chat		<para>See <a href="https://corefork.telegram.org/method/messages.getExportedChatInvites"/></para></summary>
 		[TLDef(0xA2B5A3F6)]
-		public partial class Messages_GetExportedChatInvites_ : IMethod<Messages_ExportedChatInvites>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Chat</summary>
-			public InputPeer peer;
-			/// <summary>Whether to only fetch chat invites from this admin</summary>
-			public InputUserBase admin_id;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			[IfFlag(2)] public DateTime offset_date;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			[IfFlag(2)] public string offset_link;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="offset_date"/> has a value</summary>
-				has_offset_date = 0x4,
-				/// <summary>Whether to fetch revoked chat invites</summary>
-				revoked = 0x8,
-			}
-		}
+		public record Messages_GetExportedChatInvites_(int flags, InputPeer peer, InputUserBase admin_id, [field:IfFlag(2)] DateTime offset_date, [field:IfFlag(2)] string offset_link, int limit) : IMethod<Messages_ExportedChatInvites>;
 		/// <summary>Get info about the chat invites of a specific chat		<para>See <a href="https://corefork.telegram.org/method/messages.getExportedChatInvites"/></para></summary>
 		/// <param name="revoked">Whether to fetch revoked chat invites</param>
 		/// <param name="peer">Chat</param>
@@ -17893,66 +14411,19 @@ namespace TL
 		/// <param name="offset_link"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_ExportedChatInvites> Messages_GetExportedChatInvites(this Client client, InputPeer peer, InputUserBase admin_id, int limit, bool revoked = false, DateTime? offset_date = null, string offset_link = null)
-			=> client.CallAsync(new Messages_GetExportedChatInvites_
-			{
-				flags = (Messages_GetExportedChatInvites_.Flags)((revoked ? 0x8 : 0) | (offset_date != null ? 0x4 : 0) | (offset_link != null ? 0x4 : 0)),
-				peer = peer,
-				admin_id = admin_id,
-				offset_date = offset_date.GetValueOrDefault(),
-				offset_link = offset_link,
-				limit = limit,
-			});
+			=> client.CallAsync(new Messages_GetExportedChatInvites_((revoked ? 0x8 : 0) | (offset_date != null ? 0x4 : 0) | (offset_link != null ? 0x4 : 0),
+				peer, admin_id, offset_date.GetValueOrDefault(), offset_link, limit));
 
-		/// <summary>Get info about a chat invite		<para>See <a href="https://corefork.telegram.org/method/messages.getExportedChatInvite"/></para></summary>
 		[TLDef(0x73746F5C)]
-		public partial class Messages_GetExportedChatInvite_ : IMethod<Messages_ExportedChatInviteBase>
-		{
-			/// <summary>Chat</summary>
-			public InputPeer peer;
-			/// <summary>Invite link</summary>
-			public string link;
-		}
+		public record Messages_GetExportedChatInvite_(InputPeer peer, string link) : IMethod<Messages_ExportedChatInviteBase>;
 		/// <summary>Get info about a chat invite		<para>See <a href="https://corefork.telegram.org/method/messages.getExportedChatInvite"/></para></summary>
 		/// <param name="peer">Chat</param>
 		/// <param name="link">Invite link</param>
 		public static Task<Messages_ExportedChatInviteBase> Messages_GetExportedChatInvite(this Client client, InputPeer peer, string link)
-			=> client.CallAsync(new Messages_GetExportedChatInvite_
-			{
-				peer = peer,
-				link = link,
-			});
+			=> client.CallAsync(new Messages_GetExportedChatInvite_(peer, link));
 
-		/// <summary>Edit an exported chat invite		<para>See <a href="https://corefork.telegram.org/method/messages.editExportedChatInvite"/></para></summary>
 		[TLDef(0xBDCA2F75)]
-		public partial class Messages_EditExportedChatInvite_ : IMethod<Messages_ExportedChatInviteBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Chat</summary>
-			public InputPeer peer;
-			/// <summary>Invite link</summary>
-			public string link;
-			/// <summary>New expiration date</summary>
-			[IfFlag(0)] public DateTime expire_date;
-			/// <summary>Maximum number of users that can join using this link</summary>
-			[IfFlag(1)] public int usage_limit;
-			[IfFlag(3)] public bool request_needed;
-			[IfFlag(4)] public string title;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="expire_date"/> has a value</summary>
-				has_expire_date = 0x1,
-				/// <summary>Field <see cref="usage_limit"/> has a value</summary>
-				has_usage_limit = 0x2,
-				/// <summary>Whether to revoke the chat invite</summary>
-				revoked = 0x4,
-				/// <summary>Field <see cref="request_needed"/> has a value</summary>
-				has_request_needed = 0x8,
-				/// <summary>Field <see cref="title"/> has a value</summary>
-				has_title = 0x10,
-			}
-		}
+		public record Messages_EditExportedChatInvite_(int flags, InputPeer peer, string link, [field:IfFlag(0)] DateTime expire_date, [field:IfFlag(1)] int usage_limit, [field:IfFlag(3)] bool request_needed, [field:IfFlag(4)] string title) : IMethod<Messages_ExportedChatInviteBase>;
 		/// <summary>Edit an exported chat invite		<para>See <a href="https://corefork.telegram.org/method/messages.editExportedChatInvite"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editExportedChatInvite#possible-errors">details</a>)</para></summary>
 		/// <param name="revoked">Whether to revoke the chat invite</param>
 		/// <param name="peer">Chat</param>
@@ -17960,96 +14431,34 @@ namespace TL
 		/// <param name="expire_date">New expiration date</param>
 		/// <param name="usage_limit">Maximum number of users that can join using this link</param>
 		public static Task<Messages_ExportedChatInviteBase> Messages_EditExportedChatInvite(this Client client, InputPeer peer, string link, bool revoked = false, DateTime? expire_date = null, int? usage_limit = null, bool? request_needed = default, string title = null)
-			=> client.CallAsync(new Messages_EditExportedChatInvite_
-			{
-				flags = (Messages_EditExportedChatInvite_.Flags)((revoked ? 0x4 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (request_needed != default ? 0x8 : 0) | (title != null ? 0x10 : 0)),
-				peer = peer,
-				link = link,
-				expire_date = expire_date.GetValueOrDefault(),
-				usage_limit = usage_limit.GetValueOrDefault(),
-				request_needed = request_needed.GetValueOrDefault(),
-				title = title,
-			});
+			=> client.CallAsync(new Messages_EditExportedChatInvite_((revoked ? 0x4 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (request_needed != default ? 0x8 : 0) | (title != null ? 0x10 : 0),
+				peer, link, expire_date.GetValueOrDefault(), usage_limit.GetValueOrDefault(), request_needed.GetValueOrDefault(), title));
 
-		/// <summary>Delete all revoked chat invites		<para>See <a href="https://corefork.telegram.org/method/messages.deleteRevokedExportedChatInvites"/></para></summary>
 		[TLDef(0x56987BD5)]
-		public partial class Messages_DeleteRevokedExportedChatInvites_ : IMethod<bool>
-		{
-			/// <summary>Chat</summary>
-			public InputPeer peer;
-			/// <summary>ID of the admin that originally generated the revoked chat invites</summary>
-			public InputUserBase admin_id;
-		}
+		public record Messages_DeleteRevokedExportedChatInvites_(InputPeer peer, InputUserBase admin_id) : IMethod<bool>;
 		/// <summary>Delete all revoked chat invites		<para>See <a href="https://corefork.telegram.org/method/messages.deleteRevokedExportedChatInvites"/></para></summary>
 		/// <param name="peer">Chat</param>
 		/// <param name="admin_id">ID of the admin that originally generated the revoked chat invites</param>
 		public static Task<bool> Messages_DeleteRevokedExportedChatInvites(this Client client, InputPeer peer, InputUserBase admin_id)
-			=> client.CallAsync(new Messages_DeleteRevokedExportedChatInvites_
-			{
-				peer = peer,
-				admin_id = admin_id,
-			});
+			=> client.CallAsync(new Messages_DeleteRevokedExportedChatInvites_(peer, admin_id));
 
-		/// <summary>Delete a chat invite		<para>See <a href="https://corefork.telegram.org/method/messages.deleteExportedChatInvite"/></para></summary>
 		[TLDef(0xD464A42B)]
-		public partial class Messages_DeleteExportedChatInvite_ : IMethod<bool>
-		{
-			/// <summary>Peer</summary>
-			public InputPeer peer;
-			/// <summary>Invite link</summary>
-			public string link;
-		}
+		public record Messages_DeleteExportedChatInvite_(InputPeer peer, string link) : IMethod<bool>;
 		/// <summary>Delete a chat invite		<para>See <a href="https://corefork.telegram.org/method/messages.deleteExportedChatInvite"/></para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="link">Invite link</param>
 		public static Task<bool> Messages_DeleteExportedChatInvite(this Client client, InputPeer peer, string link)
-			=> client.CallAsync(new Messages_DeleteExportedChatInvite_
-			{
-				peer = peer,
-				link = link,
-			});
+			=> client.CallAsync(new Messages_DeleteExportedChatInvite_(peer, link));
 
-		/// <summary>Get info about chat invites generated by admins.		<para>See <a href="https://corefork.telegram.org/method/messages.getAdminsWithInvites"/></para></summary>
 		[TLDef(0x3920E6EF)]
-		public partial class Messages_GetAdminsWithInvites_ : IMethod<Messages_ChatAdminsWithInvites>
-		{
-			/// <summary>Chat</summary>
-			public InputPeer peer;
-		}
+		public record Messages_GetAdminsWithInvites_(InputPeer peer) : IMethod<Messages_ChatAdminsWithInvites>;
 		/// <summary>Get info about chat invites generated by admins.		<para>See <a href="https://corefork.telegram.org/method/messages.getAdminsWithInvites"/></para></summary>
 		/// <param name="peer">Chat</param>
 		public static Task<Messages_ChatAdminsWithInvites> Messages_GetAdminsWithInvites(this Client client, InputPeer peer)
-			=> client.CallAsync(new Messages_GetAdminsWithInvites_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Messages_GetAdminsWithInvites_(peer));
 
-		/// <summary>Get info about the users that joined the chat using a specific chat invite		<para>See <a href="https://corefork.telegram.org/method/messages.getChatInviteImporters"/></para></summary>
 		[TLDef(0xDF04DD4E)]
-		public partial class Messages_GetChatInviteImporters_ : IMethod<Messages_ChatInviteImporters>
-		{
-			public Flags flags;
-			/// <summary>Chat</summary>
-			public InputPeer peer;
-			/// <summary>Invite link</summary>
-			[IfFlag(1)] public string link;
-			[IfFlag(2)] public string q;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public DateTime offset_date;
-			/// <summary>User ID for <a href="https://corefork.telegram.org/api/offsets">pagination</a></summary>
-			public InputUserBase offset_user;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-
-			[Flags] public enum Flags
-			{
-				requested = 0x1,
-				/// <summary>Field <see cref="link"/> has a value</summary>
-				has_link = 0x2,
-				/// <summary>Field <see cref="q"/> has a value</summary>
-				has_q = 0x4,
-			}
-		}
+		public record Messages_GetChatInviteImporters_(int flags, InputPeer peer, [field:IfFlag(1)] string link, [field:IfFlag(2)] string q, DateTime offset_date, InputUserBase offset_user, int limit) : IMethod<Messages_ChatInviteImporters>;
 		/// <summary>Get info about the users that joined the chat using a specific chat invite		<para>See <a href="https://corefork.telegram.org/method/messages.getChatInviteImporters"/></para></summary>
 		/// <param name="peer">Chat</param>
 		/// <param name="link">Invite link</param>
@@ -18057,215 +14466,77 @@ namespace TL
 		/// <param name="offset_user">User ID for <a href="https://corefork.telegram.org/api/offsets">pagination</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(this Client client, InputPeer peer, DateTime offset_date, InputUserBase offset_user, int limit, bool requested = false, string link = null, string q = null)
-			=> client.CallAsync(new Messages_GetChatInviteImporters_
-			{
-				flags = (Messages_GetChatInviteImporters_.Flags)((requested ? 0x1 : 0) | (link != null ? 0x2 : 0) | (q != null ? 0x4 : 0)),
-				peer = peer,
-				link = link,
-				q = q,
-				offset_date = offset_date,
-				offset_user = offset_user,
-				limit = limit,
-			});
+			=> client.CallAsync(new Messages_GetChatInviteImporters_((requested ? 0x1 : 0) | (link != null ? 0x2 : 0) | (q != null ? 0x4 : 0),
+				peer, link, q, offset_date, offset_user, limit));
 
-		/// <summary>Set maximum Time-To-Live of all messages in the specified chat		<para>See <a href="https://corefork.telegram.org/method/messages.setHistoryTTL"/></para></summary>
 		[TLDef(0xB80E5FE4)]
-		public partial class Messages_SetHistoryTTL_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The dialog</summary>
-			public InputPeer peer;
-			/// <summary>Automatically delete all messages sent in the chat after this many seconds</summary>
-			public int period;
-		}
+		public record Messages_SetHistoryTTL_(InputPeer peer, int period) : IMethod<UpdatesBase>;
 		/// <summary>Set maximum Time-To-Live of all messages in the specified chat		<para>See <a href="https://corefork.telegram.org/method/messages.setHistoryTTL"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setHistoryTTL#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The dialog</param>
 		/// <param name="period">Automatically delete all messages sent in the chat after this many seconds</param>
 		public static Task<UpdatesBase> Messages_SetHistoryTTL(this Client client, InputPeer peer, int period)
-			=> client.CallAsync(new Messages_SetHistoryTTL_
-			{
-				peer = peer,
-				period = period,
-			});
+			=> client.CallAsync(new Messages_SetHistoryTTL_(peer, period));
 
-		/// <summary>Check whether chat history exported from another chat app can be <a href="https://corefork.telegram.org/api/import">imported into a specific Telegram chat, click here for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.checkHistoryImportPeer"/></para></summary>
 		[TLDef(0x5DC60F03)]
-		public partial class Messages_CheckHistoryImportPeer_ : IMethod<Messages_CheckedHistoryImportPeer>
-		{
-			/// <summary>The chat where we want to <a href="https://corefork.telegram.org/api/import">import history »</a>.</summary>
-			public InputPeer peer;
-		}
+		public record Messages_CheckHistoryImportPeer_(InputPeer peer) : IMethod<Messages_CheckedHistoryImportPeer>;
 		/// <summary>Check whether chat history exported from another chat app can be <a href="https://corefork.telegram.org/api/import">imported into a specific Telegram chat, click here for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.checkHistoryImportPeer"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.checkHistoryImportPeer#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The chat where we want to <a href="https://corefork.telegram.org/api/import">import history »</a>.</param>
 		public static Task<Messages_CheckedHistoryImportPeer> Messages_CheckHistoryImportPeer(this Client client, InputPeer peer)
-			=> client.CallAsync(new Messages_CheckHistoryImportPeer_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Messages_CheckHistoryImportPeer_(peer));
 
-		/// <summary>Change the chat theme of a certain chat		<para>See <a href="https://corefork.telegram.org/method/messages.setChatTheme"/></para></summary>
 		[TLDef(0xE63BE13F)]
-		public partial class Messages_SetChatTheme_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Private chat where to change theme</summary>
-			public InputPeer peer;
-			/// <summary>Emoji, identifying a specific chat theme; a list of chat themes can be fetched using <a href="https://corefork.telegram.org/method/account.getChatThemes">account.getChatThemes</a></summary>
-			public string emoticon;
-		}
+		public record Messages_SetChatTheme_(InputPeer peer, string emoticon) : IMethod<UpdatesBase>;
 		/// <summary>Change the chat theme of a certain chat		<para>See <a href="https://corefork.telegram.org/method/messages.setChatTheme"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setChatTheme#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Private chat where to change theme</param>
 		/// <param name="emoticon">Emoji, identifying a specific chat theme; a list of chat themes can be fetched using <a href="https://corefork.telegram.org/method/account.getChatThemes">account.getChatThemes</a></param>
 		public static Task<UpdatesBase> Messages_SetChatTheme(this Client client, InputPeer peer, string emoticon)
-			=> client.CallAsync(new Messages_SetChatTheme_
-			{
-				peer = peer,
-				emoticon = emoticon,
-			});
+			=> client.CallAsync(new Messages_SetChatTheme_(peer, emoticon));
 
-		/// <summary>Get which users read a specific message: only available for groups and supergroups with less than <c>chat_read_mark_size_threshold</c> members, read receipts will be stored for <c>chat_read_mark_expire_period</c> seconds after the message was sent, see <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageReadParticipants"/></para></summary>
 		[TLDef(0x2C6F97B7)]
-		public partial class Messages_GetMessageReadParticipants_ : IMethod<long[]>
-		{
-			/// <summary>Dialog</summary>
-			public InputPeer peer;
-			/// <summary>Message ID</summary>
-			public int msg_id;
-		}
+		public record Messages_GetMessageReadParticipants_(InputPeer peer, int msg_id) : IMethod<long[]>;
 		/// <summary>Get which users read a specific message: only available for groups and supergroups with less than <c>chat_read_mark_size_threshold</c> members, read receipts will be stored for <c>chat_read_mark_expire_period</c> seconds after the message was sent, see <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageReadParticipants"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getMessageReadParticipants#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Dialog</param>
 		/// <param name="msg_id">Message ID</param>
 		public static Task<long[]> Messages_GetMessageReadParticipants(this Client client, InputPeer peer, int msg_id)
-			=> client.CallAsync(new Messages_GetMessageReadParticipants_
-			{
-				peer = peer,
-				msg_id = msg_id,
-			});
+			=> client.CallAsync(new Messages_GetMessageReadParticipants_(peer, msg_id));
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsCalendar"/></para></summary>
 		[TLDef(0x49F0BDE9)]
-		public partial class Messages_GetSearchResultsCalendar_ : IMethod<Messages_SearchResultsCalendar>
-		{
-			public InputPeer peer;
-			public MessagesFilter filter;
-			public int offset_id;
-			public DateTime offset_date;
-		}
+		public record Messages_GetSearchResultsCalendar_(InputPeer peer, MessagesFilter filter, int offset_id, DateTime offset_date) : IMethod<Messages_SearchResultsCalendar>;
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsCalendar"/></para></summary>
 		public static Task<Messages_SearchResultsCalendar> Messages_GetSearchResultsCalendar(this Client client, InputPeer peer, MessagesFilter filter, int offset_id, DateTime offset_date)
-			=> client.CallAsync(new Messages_GetSearchResultsCalendar_
-			{
-				peer = peer,
-				filter = filter,
-				offset_id = offset_id,
-				offset_date = offset_date,
-			});
+			=> client.CallAsync(new Messages_GetSearchResultsCalendar_(peer, filter, offset_id, offset_date));
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsPositions"/></para></summary>
 		[TLDef(0x6E9583A3)]
-		public partial class Messages_GetSearchResultsPositions_ : IMethod<Messages_SearchResultsPositions>
-		{
-			public InputPeer peer;
-			public MessagesFilter filter;
-			public int offset_id;
-			public int limit;
-		}
+		public record Messages_GetSearchResultsPositions_(InputPeer peer, MessagesFilter filter, int offset_id, int limit) : IMethod<Messages_SearchResultsPositions>;
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsPositions"/></para></summary>
 		public static Task<Messages_SearchResultsPositions> Messages_GetSearchResultsPositions(this Client client, InputPeer peer, MessagesFilter filter, int offset_id, int limit)
-			=> client.CallAsync(new Messages_GetSearchResultsPositions_
-			{
-				peer = peer,
-				filter = filter,
-				offset_id = offset_id,
-				limit = limit,
-			});
+			=> client.CallAsync(new Messages_GetSearchResultsPositions_(peer, filter, offset_id, limit));
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.hideChatJoinRequest"/></para></summary>
 		[TLDef(0x7FE7E815)]
-		public partial class Messages_HideChatJoinRequest_ : IMethod<UpdatesBase>
-		{
-			public Flags flags;
-			public InputPeer peer;
-			public InputUserBase user_id;
-
-			[Flags] public enum Flags
-			{
-				approved = 0x1,
-			}
-		}
+		public record Messages_HideChatJoinRequest_(int flags, InputPeer peer, InputUserBase user_id) : IMethod<UpdatesBase>;
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.hideChatJoinRequest"/></para></summary>
 		public static Task<UpdatesBase> Messages_HideChatJoinRequest(this Client client, InputPeer peer, InputUserBase user_id, bool approved = false)
-			=> client.CallAsync(new Messages_HideChatJoinRequest_
-			{
-				flags = (Messages_HideChatJoinRequest_.Flags)(approved ? 0x1 : 0),
-				peer = peer,
-				user_id = user_id,
-			});
+			=> client.CallAsync(new Messages_HideChatJoinRequest_(approved ? 0x1 : 0, peer, user_id));
 
-		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/></para></summary>
 		[TLDef(0xEDD4882A)]
-		public partial class Updates_GetState_ : IMethod<Updates_State> { }
+		public record Updates_GetState_() : IMethod<Updates_State>;
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
-			=> client.CallAsync(new Updates_GetState_
-			{
-			});
+			=> client.CallAsync(new Updates_GetState_());
 
-		/// <summary>Get new <a href="https://corefork.telegram.org/api/updates">updates</a>.		<para>See <a href="https://corefork.telegram.org/method/updates.getDifference"/></para></summary>
 		[TLDef(0x25939651)]
-		public partial class Updates_GetDifference_ : IMethod<Updates_DifferenceBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>PTS, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</summary>
-			public int pts;
-			/// <summary>For fast updating: if provided and <c>pts + pts_total_limit &lt; remote pts</c>, <see cref="Updates_DifferenceTooLong"/> will be returned.<br/>Simply tells the server to not return the difference if it is bigger than <c>pts_total_limit</c><br/>If the remote pts is too big (&gt; ~4000000), this field will default to 1000000</summary>
-			[IfFlag(0)] public int pts_total_limit;
-			/// <summary>date, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</summary>
-			public DateTime date;
-			/// <summary>QTS, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</summary>
-			public int qts;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="pts_total_limit"/> has a value</summary>
-				has_pts_total_limit = 0x1,
-			}
-		}
+		public record Updates_GetDifference_(int flags, int pts, [field:IfFlag(0)] int pts_total_limit, DateTime date, int qts) : IMethod<Updates_DifferenceBase>;
 		/// <summary>Get new <a href="https://corefork.telegram.org/api/updates">updates</a>.		<para>See <a href="https://corefork.telegram.org/method/updates.getDifference"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,401,403 (<a href="https://corefork.telegram.org/method/updates.getDifference#possible-errors">details</a>)</para></summary>
 		/// <param name="pts">PTS, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</param>
 		/// <param name="pts_total_limit">For fast updating: if provided and <c>pts + pts_total_limit &lt; remote pts</c>, <see cref="Updates_DifferenceTooLong"/> will be returned.<br/>Simply tells the server to not return the difference if it is bigger than <c>pts_total_limit</c><br/>If the remote pts is too big (&gt; ~4000000), this field will default to 1000000</param>
 		/// <param name="date">date, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</param>
 		/// <param name="qts">QTS, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</param>
 		public static Task<Updates_DifferenceBase> Updates_GetDifference(this Client client, int pts, DateTime date, int qts, int? pts_total_limit = null)
-			=> client.CallAsync(new Updates_GetDifference_
-			{
-				flags = (Updates_GetDifference_.Flags)(pts_total_limit != null ? 0x1 : 0),
-				pts = pts,
-				pts_total_limit = pts_total_limit.GetValueOrDefault(),
-				date = date,
-				qts = qts,
-			});
+			=> client.CallAsync(new Updates_GetDifference_(pts_total_limit != null ? 0x1 : 0,
+				pts, pts_total_limit.GetValueOrDefault(), date, qts));
 
-		/// <summary>Returns the difference between the current state of updates of a certain channel and transmitted.		<para>See <a href="https://corefork.telegram.org/method/updates.getChannelDifference"/></para></summary>
 		[TLDef(0x03173D78)]
-		public partial class Updates_GetChannelDifference_ : IMethod<Updates_ChannelDifferenceBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The channel</summary>
-			public InputChannelBase channel;
-			/// <summary>Messsage filter</summary>
-			public ChannelMessagesFilter filter;
-			/// <summary>Persistent timestamp (see <a href="https://corefork.telegram.org/api/updates">updates</a>)</summary>
-			public int pts;
-			/// <summary>How many updates to fetch, max <c>100000</c><br/>Ordinary (non-bot) users are supposed to pass <c>10-100</c></summary>
-			public int limit;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Set to true to skip some possibly unneeded updates and reduce server-side load</summary>
-				force = 0x1,
-			}
-		}
+		public record Updates_GetChannelDifference_(int flags, InputChannelBase channel, ChannelMessagesFilter filter, int pts, int limit) : IMethod<Updates_ChannelDifferenceBase>;
 		/// <summary>Returns the difference between the current state of updates of a certain channel and transmitted.		<para>See <a href="https://corefork.telegram.org/method/updates.getChannelDifference"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/updates.getChannelDifference#possible-errors">details</a>)</para></summary>
 		/// <param name="force">Set to true to skip some possibly unneeded updates and reduce server-side load</param>
 		/// <param name="channel">The channel</param>
@@ -18273,152 +14544,53 @@ namespace TL
 		/// <param name="pts">Persistent timestamp (see <a href="https://corefork.telegram.org/api/updates">updates</a>)</param>
 		/// <param name="limit">How many updates to fetch, max <c>100000</c><br/>Ordinary (non-bot) users are supposed to pass <c>10-100</c></param>
 		public static Task<Updates_ChannelDifferenceBase> Updates_GetChannelDifference(this Client client, InputChannelBase channel, ChannelMessagesFilter filter, int pts, int limit, bool force = false)
-			=> client.CallAsync(new Updates_GetChannelDifference_
-			{
-				flags = (Updates_GetChannelDifference_.Flags)(force ? 0x1 : 0),
-				channel = channel,
-				filter = filter,
-				pts = pts,
-				limit = limit,
-			});
+			=> client.CallAsync(new Updates_GetChannelDifference_(force ? 0x1 : 0, channel, filter, pts, limit));
 
-		/// <summary>Installs a previously uploaded photo as a profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.updateProfilePhoto"/></para></summary>
 		[TLDef(0x72D4742C)]
-		public partial class Photos_UpdateProfilePhoto_ : IMethod<Photos_Photo>
-		{
-			/// <summary>Input photo</summary>
-			public InputPhoto id;
-		}
+		public record Photos_UpdateProfilePhoto_(InputPhoto id) : IMethod<Photos_Photo>;
 		/// <summary>Installs a previously uploaded photo as a profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.updateProfilePhoto"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.updateProfilePhoto#possible-errors">details</a>)</para></summary>
 		/// <param name="id">Input photo</param>
 		public static Task<Photos_Photo> Photos_UpdateProfilePhoto(this Client client, InputPhoto id)
-			=> client.CallAsync(new Photos_UpdateProfilePhoto_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Photos_UpdateProfilePhoto_(id));
 
-		/// <summary>Updates current user profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.uploadProfilePhoto"/></para></summary>
 		[TLDef(0x89F30F69)]
-		public partial class Photos_UploadProfilePhoto_ : IMethod<Photos_Photo>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>File saved in parts by means of <a href="https://corefork.telegram.org/method/upload.saveFilePart">upload.saveFilePart</a> method</summary>
-			[IfFlag(0)] public InputFileBase file;
-			/// <summary><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> video</summary>
-			[IfFlag(1)] public InputFileBase video;
-			/// <summary>Floating point UNIX timestamp in seconds, indicating the frame of the video that should be used as static preview.</summary>
-			[IfFlag(2)] public double video_start_ts;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="file"/> has a value</summary>
-				has_file = 0x1,
-				/// <summary>Field <see cref="video"/> has a value</summary>
-				has_video = 0x2,
-				/// <summary>Field <see cref="video_start_ts"/> has a value</summary>
-				has_video_start_ts = 0x4,
-			}
-		}
+		public record Photos_UploadProfilePhoto_(int flags, [field:IfFlag(0)] InputFileBase file, [field:IfFlag(1)] InputFileBase video, [field:IfFlag(2)] double video_start_ts) : IMethod<Photos_Photo>;
 		/// <summary>Updates current user profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.uploadProfilePhoto"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.uploadProfilePhoto#possible-errors">details</a>)</para></summary>
 		/// <param name="file">File saved in parts by means of <a href="https://corefork.telegram.org/method/upload.saveFilePart">upload.saveFilePart</a> method</param>
 		/// <param name="video"><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> video</param>
 		/// <param name="video_start_ts">Floating point UNIX timestamp in seconds, indicating the frame of the video that should be used as static preview.</param>
 		public static Task<Photos_Photo> Photos_UploadProfilePhoto(this Client client, InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null)
-			=> client.CallAsync(new Photos_UploadProfilePhoto_
-			{
-				flags = (Photos_UploadProfilePhoto_.Flags)((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0)),
-				file = file,
-				video = video,
-				video_start_ts = video_start_ts.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Photos_UploadProfilePhoto_((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0),
+				file, video, video_start_ts.GetValueOrDefault()));
 
-		/// <summary>Deletes profile photos.		<para>See <a href="https://corefork.telegram.org/method/photos.deletePhotos"/></para></summary>
 		[TLDef(0x87CF7F2F)]
-		public partial class Photos_DeletePhotos_ : IMethod<long[]>
-		{
-			/// <summary>Input photos to delete</summary>
-			public InputPhoto[] id;
-		}
+		public record Photos_DeletePhotos_(InputPhoto[] id) : IMethod<long[]>;
 		/// <summary>Deletes profile photos.		<para>See <a href="https://corefork.telegram.org/method/photos.deletePhotos"/></para></summary>
 		/// <param name="id">Input photos to delete</param>
 		public static Task<long[]> Photos_DeletePhotos(this Client client, InputPhoto[] id)
-			=> client.CallAsync(new Photos_DeletePhotos_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Photos_DeletePhotos_(id));
 
-		/// <summary>Returns the list of user photos.		<para>See <a href="https://corefork.telegram.org/method/photos.getUserPhotos"/></para></summary>
 		[TLDef(0x91CD32A8)]
-		public partial class Photos_GetUserPhotos_ : IMethod<Photos_Photos>
-		{
-			/// <summary>User ID</summary>
-			public InputUserBase user_id;
-			/// <summary>Number of list elements to be skipped</summary>
-			public int offset;
-			/// <summary>If a positive value was transferred, the method will return only photos with IDs less than the set one</summary>
-			public long max_id;
-			/// <summary>Number of list elements to be returned</summary>
-			public int limit;
-		}
+		public record Photos_GetUserPhotos_(InputUserBase user_id, int offset, long max_id, int limit) : IMethod<Photos_Photos>;
 		/// <summary>Returns the list of user photos.		<para>See <a href="https://corefork.telegram.org/method/photos.getUserPhotos"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.getUserPhotos#possible-errors">details</a>)</para></summary>
 		/// <param name="user_id">User ID</param>
 		/// <param name="offset">Number of list elements to be skipped</param>
 		/// <param name="max_id">If a positive value was transferred, the method will return only photos with IDs less than the set one</param>
 		/// <param name="limit">Number of list elements to be returned</param>
 		public static Task<Photos_Photos> Photos_GetUserPhotos(this Client client, InputUserBase user_id, int offset, long max_id, int limit)
-			=> client.CallAsync(new Photos_GetUserPhotos_
-			{
-				user_id = user_id,
-				offset = offset,
-				max_id = max_id,
-				limit = limit,
-			});
+			=> client.CallAsync(new Photos_GetUserPhotos_(user_id, offset, max_id, limit));
 
-		/// <summary>Saves a part of file for futher sending to one of the methods.		<para>See <a href="https://corefork.telegram.org/method/upload.saveFilePart"/></para></summary>
 		[TLDef(0xB304A621)]
-		public partial class Upload_SaveFilePart_ : IMethod<bool>
-		{
-			/// <summary>Random file identifier created by the client</summary>
-			public long file_id;
-			/// <summary>Numerical order of a part</summary>
-			public int file_part;
-			/// <summary>Binary data, contend of a part</summary>
-			public byte[] bytes;
-		}
+		public record Upload_SaveFilePart_(long file_id, int file_part, byte[] bytes) : IMethod<bool>;
 		/// <summary>Saves a part of file for futher sending to one of the methods.		<para>See <a href="https://corefork.telegram.org/method/upload.saveFilePart"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.saveFilePart#possible-errors">details</a>)</para></summary>
 		/// <param name="file_id">Random file identifier created by the client</param>
 		/// <param name="file_part">Numerical order of a part</param>
 		/// <param name="bytes">Binary data, contend of a part</param>
 		public static Task<bool> Upload_SaveFilePart(this Client client, long file_id, int file_part, byte[] bytes)
-			=> client.CallAsync(new Upload_SaveFilePart_
-			{
-				file_id = file_id,
-				file_part = file_part,
-				bytes = bytes,
-			});
+			=> client.CallAsync(new Upload_SaveFilePart_(file_id, file_part, bytes));
 
-		/// <summary>Returns content of a whole file or its part.		<para>See <a href="https://corefork.telegram.org/method/upload.getFile"/></para></summary>
 		[TLDef(0xB15A9AFC)]
-		public partial class Upload_GetFile_ : IMethod<Upload_FileBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>File location</summary>
-			public InputFileLocationBase location;
-			/// <summary>Number of bytes to be skipped</summary>
-			public int offset;
-			/// <summary>Number of bytes to be returned</summary>
-			public int limit;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Disable some checks on limit and offset values, useful for example to stream videos by keyframes</summary>
-				precise = 0x1,
-				/// <summary>Whether the current client supports <a href="https://corefork.telegram.org/cdn">CDN downloads</a></summary>
-				cdn_supported = 0x2,
-			}
-		}
+		public record Upload_GetFile_(int flags, InputFileLocationBase location, int offset, int limit) : IMethod<Upload_FileBase>;
 		/// <summary>Returns content of a whole file or its part.		<para>See <a href="https://corefork.telegram.org/method/upload.getFile"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,401,406 (<a href="https://corefork.telegram.org/method/upload.getFile#possible-errors">details</a>)</para></summary>
 		/// <param name="precise">Disable some checks on limit and offset values, useful for example to stream videos by keyframes</param>
 		/// <param name="cdn_supported">Whether the current client supports <a href="https://corefork.telegram.org/cdn">CDN downloads</a></param>
@@ -18426,560 +14598,260 @@ namespace TL
 		/// <param name="offset">Number of bytes to be skipped</param>
 		/// <param name="limit">Number of bytes to be returned</param>
 		public static Task<Upload_FileBase> Upload_GetFile(this Client client, InputFileLocationBase location, int offset, int limit, bool precise = false, bool cdn_supported = false)
-			=> client.CallAsync(new Upload_GetFile_
-			{
-				flags = (Upload_GetFile_.Flags)((precise ? 0x1 : 0) | (cdn_supported ? 0x2 : 0)),
-				location = location,
-				offset = offset,
-				limit = limit,
-			});
+			=> client.CallAsync(new Upload_GetFile_((precise ? 0x1 : 0) | (cdn_supported ? 0x2 : 0),
+				location, offset, limit));
 
-		/// <summary>Saves a part of a large file (over 10Mb in size) to be later passed to one of the methods.		<para>See <a href="https://corefork.telegram.org/method/upload.saveBigFilePart"/></para></summary>
 		[TLDef(0xDE7B673D)]
-		public partial class Upload_SaveBigFilePart_ : IMethod<bool>
-		{
-			/// <summary>Random file id, created by the client</summary>
-			public long file_id;
-			/// <summary>Part sequence number</summary>
-			public int file_part;
-			/// <summary>Total number of parts</summary>
-			public int file_total_parts;
-			/// <summary>Binary data, part contents</summary>
-			public byte[] bytes;
-		}
+		public record Upload_SaveBigFilePart_(long file_id, int file_part, int file_total_parts, byte[] bytes) : IMethod<bool>;
 		/// <summary>Saves a part of a large file (over 10Mb in size) to be later passed to one of the methods.		<para>See <a href="https://corefork.telegram.org/method/upload.saveBigFilePart"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.saveBigFilePart#possible-errors">details</a>)</para></summary>
 		/// <param name="file_id">Random file id, created by the client</param>
 		/// <param name="file_part">Part sequence number</param>
 		/// <param name="file_total_parts">Total number of parts</param>
 		/// <param name="bytes">Binary data, part contents</param>
 		public static Task<bool> Upload_SaveBigFilePart(this Client client, long file_id, int file_part, int file_total_parts, byte[] bytes)
-			=> client.CallAsync(new Upload_SaveBigFilePart_
-			{
-				file_id = file_id,
-				file_part = file_part,
-				file_total_parts = file_total_parts,
-				bytes = bytes,
-			});
+			=> client.CallAsync(new Upload_SaveBigFilePart_(file_id, file_part, file_total_parts, bytes));
 
-		/// <summary>Returns content of an HTTP file or a part, by proxying the request through telegram.		<para>See <a href="https://corefork.telegram.org/method/upload.getWebFile"/></para></summary>
 		[TLDef(0x24E6818D)]
-		public partial class Upload_GetWebFile_ : IMethod<Upload_WebFile>
-		{
-			/// <summary>The file to download</summary>
-			public InputWebFileLocationBase location;
-			/// <summary>Number of bytes to be skipped</summary>
-			public int offset;
-			/// <summary>Number of bytes to be returned</summary>
-			public int limit;
-		}
+		public record Upload_GetWebFile_(InputWebFileLocationBase location, int offset, int limit) : IMethod<Upload_WebFile>;
 		/// <summary>Returns content of an HTTP file or a part, by proxying the request through telegram.		<para>See <a href="https://corefork.telegram.org/method/upload.getWebFile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.getWebFile#possible-errors">details</a>)</para></summary>
 		/// <param name="location">The file to download</param>
 		/// <param name="offset">Number of bytes to be skipped</param>
 		/// <param name="limit">Number of bytes to be returned</param>
 		public static Task<Upload_WebFile> Upload_GetWebFile(this Client client, InputWebFileLocationBase location, int offset, int limit)
-			=> client.CallAsync(new Upload_GetWebFile_
-			{
-				location = location,
-				offset = offset,
-				limit = limit,
-			});
+			=> client.CallAsync(new Upload_GetWebFile_(location, offset, limit));
 
-		/// <summary>Download a <a href="https://corefork.telegram.org/cdn">CDN</a> file.		<para>See <a href="https://corefork.telegram.org/method/upload.getCdnFile"/></para></summary>
 		[TLDef(0x2000BCC3)]
-		public partial class Upload_GetCdnFile_ : IMethod<Upload_CdnFileBase>
-		{
-			/// <summary>File token</summary>
-			public byte[] file_token;
-			/// <summary>Offset of chunk to download</summary>
-			public int offset;
-			/// <summary>Length of chunk to download</summary>
-			public int limit;
-		}
+		public record Upload_GetCdnFile_(byte[] file_token, int offset, int limit) : IMethod<Upload_CdnFileBase>;
 		/// <summary>Download a <a href="https://corefork.telegram.org/cdn">CDN</a> file.		<para>See <a href="https://corefork.telegram.org/method/upload.getCdnFile"/></para></summary>
 		/// <param name="file_token">File token</param>
 		/// <param name="offset">Offset of chunk to download</param>
 		/// <param name="limit">Length of chunk to download</param>
 		public static Task<Upload_CdnFileBase> Upload_GetCdnFile(this Client client, byte[] file_token, int offset, int limit)
-			=> client.CallAsync(new Upload_GetCdnFile_
-			{
-				file_token = file_token,
-				offset = offset,
-				limit = limit,
-			});
+			=> client.CallAsync(new Upload_GetCdnFile_(file_token, offset, limit));
 
-		/// <summary>Request a reupload of a certain file to a <a href="https://corefork.telegram.org/cdn">CDN DC</a>.		<para>See <a href="https://corefork.telegram.org/method/upload.reuploadCdnFile"/></para></summary>
 		[TLDef(0x9B2754A8)]
-		public partial class Upload_ReuploadCdnFile_ : IMethod<FileHash[]>
-		{
-			/// <summary>File token</summary>
-			public byte[] file_token;
-			/// <summary>Request token</summary>
-			public byte[] request_token;
-		}
+		public record Upload_ReuploadCdnFile_(byte[] file_token, byte[] request_token) : IMethod<FileHash[]>;
 		/// <summary>Request a reupload of a certain file to a <a href="https://corefork.telegram.org/cdn">CDN DC</a>.		<para>See <a href="https://corefork.telegram.org/method/upload.reuploadCdnFile"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.reuploadCdnFile#possible-errors">details</a>)</para></summary>
 		/// <param name="file_token">File token</param>
 		/// <param name="request_token">Request token</param>
 		public static Task<FileHash[]> Upload_ReuploadCdnFile(this Client client, byte[] file_token, byte[] request_token)
-			=> client.CallAsync(new Upload_ReuploadCdnFile_
-			{
-				file_token = file_token,
-				request_token = request_token,
-			});
+			=> client.CallAsync(new Upload_ReuploadCdnFile_(file_token, request_token));
 
-		/// <summary>Get SHA256 hashes for verifying downloaded <a href="https://corefork.telegram.org/cdn">CDN</a> files		<para>See <a href="https://corefork.telegram.org/method/upload.getCdnFileHashes"/></para></summary>
 		[TLDef(0x4DA54231)]
-		public partial class Upload_GetCdnFileHashes_ : IMethod<FileHash[]>
-		{
-			/// <summary>File</summary>
-			public byte[] file_token;
-			/// <summary>Offset from which to start getting hashes</summary>
-			public int offset;
-		}
+		public record Upload_GetCdnFileHashes_(byte[] file_token, int offset) : IMethod<FileHash[]>;
 		/// <summary>Get SHA256 hashes for verifying downloaded <a href="https://corefork.telegram.org/cdn">CDN</a> files		<para>See <a href="https://corefork.telegram.org/method/upload.getCdnFileHashes"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.getCdnFileHashes#possible-errors">details</a>)</para></summary>
 		/// <param name="file_token">File</param>
 		/// <param name="offset">Offset from which to start getting hashes</param>
 		public static Task<FileHash[]> Upload_GetCdnFileHashes(this Client client, byte[] file_token, int offset)
-			=> client.CallAsync(new Upload_GetCdnFileHashes_
-			{
-				file_token = file_token,
-				offset = offset,
-			});
+			=> client.CallAsync(new Upload_GetCdnFileHashes_(file_token, offset));
 
-		/// <summary>Get SHA256 hashes for verifying downloaded files		<para>See <a href="https://corefork.telegram.org/method/upload.getFileHashes"/></para></summary>
 		[TLDef(0xC7025931)]
-		public partial class Upload_GetFileHashes_ : IMethod<FileHash[]>
-		{
-			/// <summary>File</summary>
-			public InputFileLocationBase location;
-			/// <summary>Offset from which to get file hashes</summary>
-			public int offset;
-		}
+		public record Upload_GetFileHashes_(InputFileLocationBase location, int offset) : IMethod<FileHash[]>;
 		/// <summary>Get SHA256 hashes for verifying downloaded files		<para>See <a href="https://corefork.telegram.org/method/upload.getFileHashes"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.getFileHashes#possible-errors">details</a>)</para></summary>
 		/// <param name="location">File</param>
 		/// <param name="offset">Offset from which to get file hashes</param>
 		public static Task<FileHash[]> Upload_GetFileHashes(this Client client, InputFileLocationBase location, int offset)
-			=> client.CallAsync(new Upload_GetFileHashes_
-			{
-				location = location,
-				offset = offset,
-			});
+			=> client.CallAsync(new Upload_GetFileHashes_(location, offset));
 
-		/// <summary>Returns current configuration, including data center configuration.		<para>See <a href="https://corefork.telegram.org/method/help.getConfig"/></para></summary>
 		[TLDef(0xC4F9186B)]
-		public partial class Help_GetConfig_ : IMethod<Config> { }
+		public record Help_GetConfig_() : IMethod<Config>;
 		/// <summary>Returns current configuration, including data center configuration.		<para>See <a href="https://corefork.telegram.org/method/help.getConfig"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/help.getConfig#possible-errors">details</a>)</para></summary>
 		public static Task<Config> Help_GetConfig(this Client client)
-			=> client.CallAsync(new Help_GetConfig_
-			{
-			});
+			=> client.CallAsync(new Help_GetConfig_());
 
-		/// <summary>Returns info on data centre nearest to the user.		<para>See <a href="https://corefork.telegram.org/method/help.getNearestDc"/></para></summary>
 		[TLDef(0x1FB33026)]
-		public partial class Help_GetNearestDc_ : IMethod<NearestDc> { }
+		public record Help_GetNearestDc_() : IMethod<NearestDc>;
 		/// <summary>Returns info on data centre nearest to the user.		<para>See <a href="https://corefork.telegram.org/method/help.getNearestDc"/></para></summary>
 		public static Task<NearestDc> Help_GetNearestDc(this Client client)
-			=> client.CallAsync(new Help_GetNearestDc_
-			{
-			});
+			=> client.CallAsync(new Help_GetNearestDc_());
 
-		/// <summary>Returns information on update availability for the current application.		<para>See <a href="https://corefork.telegram.org/method/help.getAppUpdate"/></para></summary>
 		[TLDef(0x522D5A7D)]
-		public partial class Help_GetAppUpdate_ : IMethod<Help_AppUpdate>
-		{
-			/// <summary>Source</summary>
-			public string source;
-		}
+		public record Help_GetAppUpdate_(string source) : IMethod<Help_AppUpdate>;
 		/// <summary>Returns information on update availability for the current application.		<para>See <a href="https://corefork.telegram.org/method/help.getAppUpdate"/></para></summary>
 		/// <param name="source">Source</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.noAppUpdate">help.noAppUpdate</a></returns>
 		public static Task<Help_AppUpdate> Help_GetAppUpdate(this Client client, string source)
-			=> client.CallAsync(new Help_GetAppUpdate_
-			{
-				source = source,
-			});
+			=> client.CallAsync(new Help_GetAppUpdate_(source));
 
-		/// <summary>Returns localized text of a text message with an invitation.		<para>See <a href="https://corefork.telegram.org/method/help.getInviteText"/></para></summary>
 		[TLDef(0x4D392343)]
-		public partial class Help_GetInviteText_ : IMethod<Help_InviteText> { }
+		public record Help_GetInviteText_() : IMethod<Help_InviteText>;
 		/// <summary>Returns localized text of a text message with an invitation.		<para>See <a href="https://corefork.telegram.org/method/help.getInviteText"/></para></summary>
 		public static Task<Help_InviteText> Help_GetInviteText(this Client client)
-			=> client.CallAsync(new Help_GetInviteText_
-			{
-			});
+			=> client.CallAsync(new Help_GetInviteText_());
 
-		/// <summary>Returns the support user for the 'ask a question' feature.		<para>See <a href="https://corefork.telegram.org/method/help.getSupport"/></para></summary>
 		[TLDef(0x9CDF08CD)]
-		public partial class Help_GetSupport_ : IMethod<Help_Support> { }
+		public record Help_GetSupport_() : IMethod<Help_Support>;
 		/// <summary>Returns the support user for the 'ask a question' feature.		<para>See <a href="https://corefork.telegram.org/method/help.getSupport"/></para></summary>
 		public static Task<Help_Support> Help_GetSupport(this Client client)
-			=> client.CallAsync(new Help_GetSupport_
-			{
-			});
+			=> client.CallAsync(new Help_GetSupport_());
 
-		/// <summary>Get changelog of current app.<br/>Typically, an <see cref="Updates"/> constructor will be returned, containing one or more <see cref="UpdateServiceNotification"/> updates with app-specific changelogs.		<para>See <a href="https://corefork.telegram.org/method/help.getAppChangelog"/></para></summary>
 		[TLDef(0x9010EF6F)]
-		public partial class Help_GetAppChangelog_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Previous app version</summary>
-			public string prev_app_version;
-		}
+		public record Help_GetAppChangelog_(string prev_app_version) : IMethod<UpdatesBase>;
 		/// <summary>Get changelog of current app.<br/>Typically, an <see cref="Updates"/> constructor will be returned, containing one or more <see cref="UpdateServiceNotification"/> updates with app-specific changelogs.		<para>See <a href="https://corefork.telegram.org/method/help.getAppChangelog"/></para></summary>
 		/// <param name="prev_app_version">Previous app version</param>
 		public static Task<UpdatesBase> Help_GetAppChangelog(this Client client, string prev_app_version)
-			=> client.CallAsync(new Help_GetAppChangelog_
-			{
-				prev_app_version = prev_app_version,
-			});
+			=> client.CallAsync(new Help_GetAppChangelog_(prev_app_version));
 
-		/// <summary>Informs the server about the number of pending bot updates if they haven't been processed for a long time; for bots only		<para>See <a href="https://corefork.telegram.org/method/help.setBotUpdatesStatus"/></para></summary>
 		[TLDef(0xEC22CFCD)]
-		public partial class Help_SetBotUpdatesStatus_ : IMethod<bool>
-		{
-			/// <summary>Number of pending updates</summary>
-			public int pending_updates_count;
-			/// <summary>Error message, if present</summary>
-			public string message;
-		}
+		public record Help_SetBotUpdatesStatus_(int pending_updates_count, string message) : IMethod<bool>;
 		/// <summary>Informs the server about the number of pending bot updates if they haven't been processed for a long time; for bots only		<para>See <a href="https://corefork.telegram.org/method/help.setBotUpdatesStatus"/> [bots: ✓]</para></summary>
 		/// <param name="pending_updates_count">Number of pending updates</param>
 		/// <param name="message">Error message, if present</param>
 		public static Task<bool> Help_SetBotUpdatesStatus(this Client client, int pending_updates_count, string message)
-			=> client.CallAsync(new Help_SetBotUpdatesStatus_
-			{
-				pending_updates_count = pending_updates_count,
-				message = message,
-			});
+			=> client.CallAsync(new Help_SetBotUpdatesStatus_(pending_updates_count, message));
 
-		/// <summary>Get configuration for <a href="https://corefork.telegram.org/cdn">CDN</a> file downloads.		<para>See <a href="https://corefork.telegram.org/method/help.getCdnConfig"/></para></summary>
 		[TLDef(0x52029342)]
-		public partial class Help_GetCdnConfig_ : IMethod<CdnConfig> { }
+		public record Help_GetCdnConfig_() : IMethod<CdnConfig>;
 		/// <summary>Get configuration for <a href="https://corefork.telegram.org/cdn">CDN</a> file downloads.		<para>See <a href="https://corefork.telegram.org/method/help.getCdnConfig"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 401 (<a href="https://corefork.telegram.org/method/help.getCdnConfig#possible-errors">details</a>)</para></summary>
 		public static Task<CdnConfig> Help_GetCdnConfig(this Client client)
-			=> client.CallAsync(new Help_GetCdnConfig_
-			{
-			});
+			=> client.CallAsync(new Help_GetCdnConfig_());
 
-		/// <summary>Get recently used <c>t.me</c> links		<para>See <a href="https://corefork.telegram.org/method/help.getRecentMeUrls"/></para></summary>
 		[TLDef(0x3DC0F114)]
-		public partial class Help_GetRecentMeUrls_ : IMethod<Help_RecentMeUrls>
-		{
-			/// <summary>Referer</summary>
-			public string referer;
-		}
+		public record Help_GetRecentMeUrls_(string referer) : IMethod<Help_RecentMeUrls>;
 		/// <summary>Get recently used <c>t.me</c> links		<para>See <a href="https://corefork.telegram.org/method/help.getRecentMeUrls"/></para></summary>
 		/// <param name="referer">Referer</param>
 		public static Task<Help_RecentMeUrls> Help_GetRecentMeUrls(this Client client, string referer)
-			=> client.CallAsync(new Help_GetRecentMeUrls_
-			{
-				referer = referer,
-			});
+			=> client.CallAsync(new Help_GetRecentMeUrls_(referer));
 
-		/// <summary>Look for updates of telegram's terms of service		<para>See <a href="https://corefork.telegram.org/method/help.getTermsOfServiceUpdate"/></para></summary>
 		[TLDef(0x2CA51FD1)]
-		public partial class Help_GetTermsOfServiceUpdate_ : IMethod<Help_TermsOfServiceUpdateBase> { }
+		public record Help_GetTermsOfServiceUpdate_() : IMethod<Help_TermsOfServiceUpdateBase>;
 		/// <summary>Look for updates of telegram's terms of service		<para>See <a href="https://corefork.telegram.org/method/help.getTermsOfServiceUpdate"/></para></summary>
 		public static Task<Help_TermsOfServiceUpdateBase> Help_GetTermsOfServiceUpdate(this Client client)
-			=> client.CallAsync(new Help_GetTermsOfServiceUpdate_
-			{
-			});
+			=> client.CallAsync(new Help_GetTermsOfServiceUpdate_());
 
-		/// <summary>Accept the new terms of service		<para>See <a href="https://corefork.telegram.org/method/help.acceptTermsOfService"/></para></summary>
 		[TLDef(0xEE72F79A)]
-		public partial class Help_AcceptTermsOfService_ : IMethod<bool>
-		{
-			/// <summary>ID of terms of service</summary>
-			public DataJSON id;
-		}
+		public record Help_AcceptTermsOfService_(DataJSON id) : IMethod<bool>;
 		/// <summary>Accept the new terms of service		<para>See <a href="https://corefork.telegram.org/method/help.acceptTermsOfService"/></para></summary>
 		/// <param name="id">ID of terms of service</param>
 		public static Task<bool> Help_AcceptTermsOfService(this Client client, DataJSON id)
-			=> client.CallAsync(new Help_AcceptTermsOfService_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Help_AcceptTermsOfService_(id));
 
-		/// <summary>Get info about a <c>t.me</c> link		<para>See <a href="https://corefork.telegram.org/method/help.getDeepLinkInfo"/></para></summary>
 		[TLDef(0x3FEDC75F)]
-		public partial class Help_GetDeepLinkInfo_ : IMethod<Help_DeepLinkInfo>
-		{
-			/// <summary>Path in <c>t.me/path</c></summary>
-			public string path;
-		}
+		public record Help_GetDeepLinkInfo_(string path) : IMethod<Help_DeepLinkInfo>;
 		/// <summary>Get info about a <c>t.me</c> link		<para>See <a href="https://corefork.telegram.org/method/help.getDeepLinkInfo"/></para></summary>
 		/// <param name="path">Path in <c>t.me/path</c></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.deepLinkInfoEmpty">help.deepLinkInfoEmpty</a></returns>
 		public static Task<Help_DeepLinkInfo> Help_GetDeepLinkInfo(this Client client, string path)
-			=> client.CallAsync(new Help_GetDeepLinkInfo_
-			{
-				path = path,
-			});
+			=> client.CallAsync(new Help_GetDeepLinkInfo_(path));
 
-		/// <summary>Get app-specific configuration, see <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration</a> for more info on the result.		<para>See <a href="https://corefork.telegram.org/method/help.getAppConfig"/></para></summary>
 		[TLDef(0x98914110)]
-		public partial class Help_GetAppConfig_ : IMethod<JSONValue> { }
+		public record Help_GetAppConfig_() : IMethod<JSONValue>;
 		/// <summary>Get app-specific configuration, see <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration</a> for more info on the result.		<para>See <a href="https://corefork.telegram.org/method/help.getAppConfig"/></para></summary>
 		public static Task<JSONValue> Help_GetAppConfig(this Client client)
-			=> client.CallAsync(new Help_GetAppConfig_
-			{
-			});
+			=> client.CallAsync(new Help_GetAppConfig_());
 
-		/// <summary>Saves logs of application on the server.		<para>See <a href="https://corefork.telegram.org/method/help.saveAppLog"/></para></summary>
 		[TLDef(0x6F02F748)]
-		public partial class Help_SaveAppLog_ : IMethod<bool>
-		{
-			/// <summary>List of input events</summary>
-			public InputAppEvent[] events;
-		}
+		public record Help_SaveAppLog_(InputAppEvent[] events) : IMethod<bool>;
 		/// <summary>Saves logs of application on the server.		<para>See <a href="https://corefork.telegram.org/method/help.saveAppLog"/></para></summary>
 		/// <param name="events">List of input events</param>
 		public static Task<bool> Help_SaveAppLog(this Client client, InputAppEvent[] events)
-			=> client.CallAsync(new Help_SaveAppLog_
-			{
-				events = events,
-			});
+			=> client.CallAsync(new Help_SaveAppLog_(events));
 
-		/// <summary>Get <a href="https://corefork.telegram.org/passport">passport</a> configuration		<para>See <a href="https://corefork.telegram.org/method/help.getPassportConfig"/></para></summary>
 		[TLDef(0xC661AD08)]
-		public partial class Help_GetPassportConfig_ : IMethod<Help_PassportConfig>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public int hash;
-		}
+		public record Help_GetPassportConfig_(int hash) : IMethod<Help_PassportConfig>;
 		/// <summary>Get <a href="https://corefork.telegram.org/passport">passport</a> configuration		<para>See <a href="https://corefork.telegram.org/method/help.getPassportConfig"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.passportConfigNotModified">help.passportConfigNotModified</a></returns>
 		public static Task<Help_PassportConfig> Help_GetPassportConfig(this Client client, int hash)
-			=> client.CallAsync(new Help_GetPassportConfig_
-			{
-				hash = hash,
-			});
+			=> client.CallAsync(new Help_GetPassportConfig_(hash));
 
-		/// <summary>Get localized name of the telegram support user		<para>See <a href="https://corefork.telegram.org/method/help.getSupportName"/></para></summary>
 		[TLDef(0xD360E72C)]
-		public partial class Help_GetSupportName_ : IMethod<Help_SupportName> { }
+		public record Help_GetSupportName_() : IMethod<Help_SupportName>;
 		/// <summary>Get localized name of the telegram support user		<para>See <a href="https://corefork.telegram.org/method/help.getSupportName"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/help.getSupportName#possible-errors">details</a>)</para></summary>
 		public static Task<Help_SupportName> Help_GetSupportName(this Client client)
-			=> client.CallAsync(new Help_GetSupportName_
-			{
-			});
+			=> client.CallAsync(new Help_GetSupportName_());
 
-		/// <summary>Internal use		<para>See <a href="https://corefork.telegram.org/method/help.getUserInfo"/></para></summary>
 		[TLDef(0x038A08D3)]
-		public partial class Help_GetUserInfo_ : IMethod<Help_UserInfo>
-		{
-			/// <summary>User ID</summary>
-			public InputUserBase user_id;
-		}
+		public record Help_GetUserInfo_(InputUserBase user_id) : IMethod<Help_UserInfo>;
 		/// <summary>Internal use		<para>See <a href="https://corefork.telegram.org/method/help.getUserInfo"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/help.getUserInfo#possible-errors">details</a>)</para></summary>
 		/// <param name="user_id">User ID</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.userInfoEmpty">help.userInfoEmpty</a></returns>
 		public static Task<Help_UserInfo> Help_GetUserInfo(this Client client, InputUserBase user_id)
-			=> client.CallAsync(new Help_GetUserInfo_
-			{
-				user_id = user_id,
-			});
+			=> client.CallAsync(new Help_GetUserInfo_(user_id));
 
-		/// <summary>Internal use		<para>See <a href="https://corefork.telegram.org/method/help.editUserInfo"/></para></summary>
 		[TLDef(0x66B91B70)]
-		public partial class Help_EditUserInfo_ : IMethod<Help_UserInfo>
-		{
-			/// <summary>User</summary>
-			public InputUserBase user_id;
-			/// <summary>Message</summary>
-			public string message;
-			/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
-			public MessageEntity[] entities;
-		}
+		public record Help_EditUserInfo_(InputUserBase user_id, string message, MessageEntity[] entities) : IMethod<Help_UserInfo>;
 		/// <summary>Internal use		<para>See <a href="https://corefork.telegram.org/method/help.editUserInfo"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/help.editUserInfo#possible-errors">details</a>)</para></summary>
 		/// <param name="user_id">User</param>
 		/// <param name="message">Message</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.userInfoEmpty">help.userInfoEmpty</a></returns>
 		public static Task<Help_UserInfo> Help_EditUserInfo(this Client client, InputUserBase user_id, string message, MessageEntity[] entities)
-			=> client.CallAsync(new Help_EditUserInfo_
-			{
-				user_id = user_id,
-				message = message,
-				entities = entities,
-			});
+			=> client.CallAsync(new Help_EditUserInfo_(user_id, message, entities));
 
-		/// <summary>Get MTProxy/Public Service Announcement information		<para>See <a href="https://corefork.telegram.org/method/help.getPromoData"/></para></summary>
 		[TLDef(0xC0977421)]
-		public partial class Help_GetPromoData_ : IMethod<Help_PromoDataBase> { }
+		public record Help_GetPromoData_() : IMethod<Help_PromoDataBase>;
 		/// <summary>Get MTProxy/Public Service Announcement information		<para>See <a href="https://corefork.telegram.org/method/help.getPromoData"/></para></summary>
 		public static Task<Help_PromoDataBase> Help_GetPromoData(this Client client)
-			=> client.CallAsync(new Help_GetPromoData_
-			{
-			});
+			=> client.CallAsync(new Help_GetPromoData_());
 
-		/// <summary>Hide MTProxy/Public Service Announcement information		<para>See <a href="https://corefork.telegram.org/method/help.hidePromoData"/></para></summary>
 		[TLDef(0x1E251C95)]
-		public partial class Help_HidePromoData_ : IMethod<bool>
-		{
-			/// <summary>Peer to hide</summary>
-			public InputPeer peer;
-		}
+		public record Help_HidePromoData_(InputPeer peer) : IMethod<bool>;
 		/// <summary>Hide MTProxy/Public Service Announcement information		<para>See <a href="https://corefork.telegram.org/method/help.hidePromoData"/></para></summary>
 		/// <param name="peer">Peer to hide</param>
 		public static Task<bool> Help_HidePromoData(this Client client, InputPeer peer)
-			=> client.CallAsync(new Help_HidePromoData_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Help_HidePromoData_(peer));
 
-		/// <summary>Dismiss a <a href="https://corefork.telegram.org/api/config#suggestions">suggestion, see here for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/help.dismissSuggestion"/></para></summary>
 		[TLDef(0xF50DBAA1)]
-		public partial class Help_DismissSuggestion_ : IMethod<bool>
-		{
-			/// <summary>In the case of pending suggestions in <see cref="ChannelFull"/>, the channel ID.</summary>
-			public InputPeer peer;
-			/// <summary><a href="https://corefork.telegram.org/api/config#suggestions">Suggestion, see here for more info »</a>.</summary>
-			public string suggestion;
-		}
+		public record Help_DismissSuggestion_(InputPeer peer, string suggestion) : IMethod<bool>;
 		/// <summary>Dismiss a <a href="https://corefork.telegram.org/api/config#suggestions">suggestion, see here for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/help.dismissSuggestion"/></para></summary>
 		/// <param name="peer">In the case of pending suggestions in <see cref="ChannelFull"/>, the channel ID.</param>
 		/// <param name="suggestion"><a href="https://corefork.telegram.org/api/config#suggestions">Suggestion, see here for more info »</a>.</param>
 		public static Task<bool> Help_DismissSuggestion(this Client client, InputPeer peer, string suggestion)
-			=> client.CallAsync(new Help_DismissSuggestion_
-			{
-				peer = peer,
-				suggestion = suggestion,
-			});
+			=> client.CallAsync(new Help_DismissSuggestion_(peer, suggestion));
 
-		/// <summary>Get name, ISO code, localized name and phone codes/patterns of all available countries		<para>See <a href="https://corefork.telegram.org/method/help.getCountriesList"/></para></summary>
 		[TLDef(0x735787A8)]
-		public partial class Help_GetCountriesList_ : IMethod<Help_CountriesList>
-		{
-			/// <summary>Language code of the current user</summary>
-			public string lang_code;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
-			public int hash;
-		}
+		public record Help_GetCountriesList_(string lang_code, int hash) : IMethod<Help_CountriesList>;
 		/// <summary>Get name, ISO code, localized name and phone codes/patterns of all available countries		<para>See <a href="https://corefork.telegram.org/method/help.getCountriesList"/></para></summary>
 		/// <param name="lang_code">Language code of the current user</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.countriesListNotModified">help.countriesListNotModified</a></returns>
 		public static Task<Help_CountriesList> Help_GetCountriesList(this Client client, string lang_code, int hash)
-			=> client.CallAsync(new Help_GetCountriesList_
-			{
-				lang_code = lang_code,
-				hash = hash,
-			});
+			=> client.CallAsync(new Help_GetCountriesList_(lang_code, hash));
 
-		/// <summary>Mark <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> history as read		<para>See <a href="https://corefork.telegram.org/method/channels.readHistory"/></para></summary>
 		[TLDef(0xCC104937)]
-		public partial class Channels_ReadHistory_ : IMethod<bool>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a></summary>
-			public InputChannelBase channel;
-			/// <summary>ID of message up to which messages should be marked as read</summary>
-			public int max_id;
-		}
+		public record Channels_ReadHistory_(InputChannelBase channel, int max_id) : IMethod<bool>;
 		/// <summary>Mark <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> history as read		<para>See <a href="https://corefork.telegram.org/method/channels.readHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.readHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a></param>
 		/// <param name="max_id">ID of message up to which messages should be marked as read</param>
 		public static Task<bool> Channels_ReadHistory(this Client client, InputChannelBase channel, int max_id)
-			=> client.CallAsync(new Channels_ReadHistory_
-			{
-				channel = channel,
-				max_id = max_id,
-			});
+			=> client.CallAsync(new Channels_ReadHistory_(channel, max_id));
 
-		/// <summary>Delete messages in a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteMessages"/></para></summary>
 		[TLDef(0x84C1FD4E)]
-		public partial class Channels_DeleteMessages_ : IMethod<Messages_AffectedMessages>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a></summary>
-			public InputChannelBase channel;
-			/// <summary>IDs of messages to delete</summary>
-			public int[] id;
-		}
+		public record Channels_DeleteMessages_(InputChannelBase channel, int[] id) : IMethod<Messages_AffectedMessages>;
 		/// <summary>Delete messages in a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.deleteMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a></param>
 		/// <param name="id">IDs of messages to delete</param>
 		public static Task<Messages_AffectedMessages> Channels_DeleteMessages(this Client client, InputChannelBase channel, int[] id)
-			=> client.CallAsync(new Channels_DeleteMessages_
-			{
-				channel = channel,
-				id = id,
-			});
+			=> client.CallAsync(new Channels_DeleteMessages_(channel, id));
 
-		/// <summary>Delete all messages sent by a certain user in a <a href="https://corefork.telegram.org/api/channel">supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteUserHistory"/></para></summary>
 		[TLDef(0xD10DD71B)]
-		public partial class Channels_DeleteUserHistory_ : IMethod<Messages_AffectedHistory>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/channel">Supergroup</a></summary>
-			public InputChannelBase channel;
-			/// <summary>User whose messages should be deleted</summary>
-			public InputUserBase user_id;
-		}
+		public record Channels_DeleteUserHistory_(InputChannelBase channel, InputUserBase user_id) : IMethod<Messages_AffectedHistory>;
 		/// <summary>Delete all messages sent by a certain user in a <a href="https://corefork.telegram.org/api/channel">supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteUserHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.deleteUserHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Supergroup</a></param>
 		/// <param name="user_id">User whose messages should be deleted</param>
 		public static Task<Messages_AffectedHistory> Channels_DeleteUserHistory(this Client client, InputChannelBase channel, InputUserBase user_id)
-			=> client.CallAsync(new Channels_DeleteUserHistory_
-			{
-				channel = channel,
-				user_id = user_id,
-			});
+			=> client.CallAsync(new Channels_DeleteUserHistory_(channel, user_id));
 
-		/// <summary>Reports some messages from a user in a supergroup as spam; requires administrator rights in the supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.reportSpam"/></para></summary>
 		[TLDef(0xFE087810)]
-		public partial class Channels_ReportSpam_ : IMethod<bool>
-		{
-			/// <summary>Supergroup</summary>
-			public InputChannelBase channel;
-			/// <summary>ID of the user that sent the spam messages</summary>
-			public InputUserBase user_id;
-			/// <summary>IDs of spam messages</summary>
-			public int[] id;
-		}
+		public record Channels_ReportSpam_(InputChannelBase channel, InputUserBase user_id, int[] id) : IMethod<bool>;
 		/// <summary>Reports some messages from a user in a supergroup as spam; requires administrator rights in the supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.reportSpam"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.reportSpam#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Supergroup</param>
 		/// <param name="user_id">ID of the user that sent the spam messages</param>
 		/// <param name="id">IDs of spam messages</param>
 		public static Task<bool> Channels_ReportSpam(this Client client, InputChannelBase channel, InputUserBase user_id, int[] id)
-			=> client.CallAsync(new Channels_ReportSpam_
-			{
-				channel = channel,
-				user_id = user_id,
-				id = id,
-			});
+			=> client.CallAsync(new Channels_ReportSpam_(channel, user_id, id));
 
-		/// <summary>Get <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> messages		<para>See <a href="https://corefork.telegram.org/method/channels.getMessages"/></para></summary>
 		[TLDef(0xAD8C9A23)]
-		public partial class Channels_GetMessages_ : IMethod<Messages_MessagesBase>
-		{
-			/// <summary>Channel/supergroup</summary>
-			public InputChannelBase channel;
-			/// <summary>IDs of messages to get</summary>
-			public InputMessage[] id;
-		}
+		public record Channels_GetMessages_(InputChannelBase channel, InputMessage[] id) : IMethod<Messages_MessagesBase>;
 		/// <summary>Get <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> messages		<para>See <a href="https://corefork.telegram.org/method/channels.getMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup</param>
 		/// <param name="id">IDs of messages to get</param>
 		public static Task<Messages_MessagesBase> Channels_GetMessages(this Client client, InputChannelBase channel, InputMessage[] id)
-			=> client.CallAsync(new Channels_GetMessages_
-			{
-				channel = channel,
-				id = id,
-			});
+			=> client.CallAsync(new Channels_GetMessages_(channel, id));
 
-		/// <summary>Get the participants of a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getParticipants"/></para></summary>
 		[TLDef(0x77CED9D0)]
-		public partial class Channels_GetParticipants_ : IMethod<Channels_ChannelParticipants>
-		{
-			/// <summary>Channel</summary>
-			public InputChannelBase channel;
-			/// <summary>Which participant types to fetch</summary>
-			public ChannelParticipantsFilter filter;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offset</a></summary>
-			public int offset;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Limit</a></summary>
-			public int limit;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Hash</a></summary>
-			public long hash;
-		}
+		public record Channels_GetParticipants_(InputChannelBase channel, ChannelParticipantsFilter filter, int offset, int limit, long hash) : IMethod<Channels_ChannelParticipants>;
 		/// <summary>Get the participants of a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getParticipants"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getParticipants#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel</param>
 		/// <param name="filter">Which participant types to fetch</param>
@@ -18988,91 +14860,32 @@ namespace TL
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets">Hash</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/channels.channelParticipantsNotModified">channels.channelParticipantsNotModified</a></returns>
 		public static Task<Channels_ChannelParticipants> Channels_GetParticipants(this Client client, InputChannelBase channel, ChannelParticipantsFilter filter, int offset, int limit, long hash)
-			=> client.CallAsync(new Channels_GetParticipants_
-			{
-				channel = channel,
-				filter = filter,
-				offset = offset,
-				limit = limit,
-				hash = hash,
-			});
+			=> client.CallAsync(new Channels_GetParticipants_(channel, filter, offset, limit, hash));
 
-		/// <summary>Get info about a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> participant		<para>See <a href="https://corefork.telegram.org/method/channels.getParticipant"/></para></summary>
 		[TLDef(0xA0AB6CC6)]
-		public partial class Channels_GetParticipant_ : IMethod<Channels_ChannelParticipant>
-		{
-			/// <summary>Channel/supergroup</summary>
-			public InputChannelBase channel;
-			/// <summary>Participant to get info about</summary>
-			public InputPeer participant;
-		}
+		public record Channels_GetParticipant_(InputChannelBase channel, InputPeer participant) : IMethod<Channels_ChannelParticipant>;
 		/// <summary>Get info about a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> participant		<para>See <a href="https://corefork.telegram.org/method/channels.getParticipant"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getParticipant#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup</param>
 		/// <param name="participant">Participant to get info about</param>
 		public static Task<Channels_ChannelParticipant> Channels_GetParticipant(this Client client, InputChannelBase channel, InputPeer participant)
-			=> client.CallAsync(new Channels_GetParticipant_
-			{
-				channel = channel,
-				participant = participant,
-			});
+			=> client.CallAsync(new Channels_GetParticipant_(channel, participant));
 
-		/// <summary>Get info about <a href="https://corefork.telegram.org/api/channel">channels/supergroups</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getChannels"/></para></summary>
 		[TLDef(0x0A7F6BBB)]
-		public partial class Channels_GetChannels_ : IMethod<Messages_Chats>
-		{
-			/// <summary>IDs of channels/supergroups to get info about</summary>
-			public InputChannelBase[] id;
-		}
+		public record Channels_GetChannels_(InputChannelBase[] id) : IMethod<Messages_Chats>;
 		/// <summary>Get info about <a href="https://corefork.telegram.org/api/channel">channels/supergroups</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getChannels"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getChannels#possible-errors">details</a>)</para></summary>
 		/// <param name="id">IDs of channels/supergroups to get info about</param>
 		public static Task<Messages_Chats> Channels_GetChannels(this Client client, InputChannelBase[] id)
-			=> client.CallAsync(new Channels_GetChannels_
-			{
-				id = id,
-			});
+			=> client.CallAsync(new Channels_GetChannels_(id));
 
-		/// <summary>Get full info about a channel		<para>See <a href="https://corefork.telegram.org/method/channels.getFullChannel"/></para></summary>
 		[TLDef(0x08736A09)]
-		public partial class Channels_GetFullChannel_ : IMethod<Messages_ChatFull>
-		{
-			/// <summary>The channel to get info about</summary>
-			public InputChannelBase channel;
-		}
+		public record Channels_GetFullChannel_(InputChannelBase channel) : IMethod<Messages_ChatFull>;
 		/// <summary>Get full info about a channel		<para>See <a href="https://corefork.telegram.org/method/channels.getFullChannel"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.getFullChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">The channel to get info about</param>
 		public static Task<Messages_ChatFull> Channels_GetFullChannel(this Client client, InputChannelBase channel)
-			=> client.CallAsync(new Channels_GetFullChannel_
-			{
-				channel = channel,
-			});
+			=> client.CallAsync(new Channels_GetFullChannel_(channel));
 
-		/// <summary>Create a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.createChannel"/></para></summary>
 		[TLDef(0x3D5FB10F)]
-		public partial class Channels_CreateChannel_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Channel title</summary>
-			public string title;
-			/// <summary>Channel description</summary>
-			public string about;
-			/// <summary>Geogroup location</summary>
-			[IfFlag(2)] public InputGeoPoint geo_point;
-			/// <summary>Geogroup address</summary>
-			[IfFlag(2)] public string address;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to create a <a href="https://corefork.telegram.org/api/channel">channel</a></summary>
-				broadcast = 0x1,
-				/// <summary>Whether to create a <a href="https://corefork.telegram.org/api/channel">supergroup</a></summary>
-				megagroup = 0x2,
-				/// <summary>Field <see cref="geo_point"/> has a value</summary>
-				has_geo_point = 0x4,
-				/// <summary>Whether the supergroup is being created to import messages from a foreign chat service using <a href="https://corefork.telegram.org/method/messages.initHistoryImport">messages.initHistoryImport</a></summary>
-				for_import = 0x8,
-			}
-		}
+		public record Channels_CreateChannel_(int flags, string title, string about, [field:IfFlag(2)] InputGeoPoint geo_point, [field:IfFlag(2)] string address) : IMethod<UpdatesBase>;
 		/// <summary>Create a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.createChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.createChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="broadcast">Whether to create a <a href="https://corefork.telegram.org/api/channel">channel</a></param>
 		/// <param name="megagroup">Whether to create a <a href="https://corefork.telegram.org/api/channel">supergroup</a></param>
@@ -19082,309 +14895,118 @@ namespace TL
 		/// <param name="geo_point">Geogroup location</param>
 		/// <param name="address">Geogroup address</param>
 		public static Task<UpdatesBase> Channels_CreateChannel(this Client client, string title, string about, bool broadcast = false, bool megagroup = false, bool for_import = false, InputGeoPoint geo_point = null, string address = null)
-			=> client.CallAsync(new Channels_CreateChannel_
-			{
-				flags = (Channels_CreateChannel_.Flags)((broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0) | (geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0)),
-				title = title,
-				about = about,
-				geo_point = geo_point,
-				address = address,
-			});
+			=> client.CallAsync(new Channels_CreateChannel_((broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0) | (geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0),
+				title, about, geo_point, address));
 
-		/// <summary>Modify the admin rights of a user in a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.editAdmin"/></para></summary>
 		[TLDef(0xD33C8902)]
-		public partial class Channels_EditAdmin_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.</summary>
-			public InputChannelBase channel;
-			/// <summary>The ID of the user whose admin rights should be modified</summary>
-			public InputUserBase user_id;
-			/// <summary>The admin rights</summary>
-			public ChatAdminRights admin_rights;
-			/// <summary>Indicates the role (rank) of the admin in the group: just an arbitrary string</summary>
-			public string rank;
-		}
+		public record Channels_EditAdmin_(InputChannelBase channel, InputUserBase user_id, ChatAdminRights admin_rights, string rank) : IMethod<UpdatesBase>;
 		/// <summary>Modify the admin rights of a user in a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.editAdmin"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/channels.editAdmin#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">The <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.</param>
 		/// <param name="user_id">The ID of the user whose admin rights should be modified</param>
 		/// <param name="admin_rights">The admin rights</param>
 		/// <param name="rank">Indicates the role (rank) of the admin in the group: just an arbitrary string</param>
 		public static Task<UpdatesBase> Channels_EditAdmin(this Client client, InputChannelBase channel, InputUserBase user_id, ChatAdminRights admin_rights, string rank)
-			=> client.CallAsync(new Channels_EditAdmin_
-			{
-				channel = channel,
-				user_id = user_id,
-				admin_rights = admin_rights,
-				rank = rank,
-			});
+			=> client.CallAsync(new Channels_EditAdmin_(channel, user_id, admin_rights, rank));
 
-		/// <summary>Edit the name of a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.editTitle"/></para></summary>
 		[TLDef(0x566DECD0)]
-		public partial class Channels_EditTitle_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Channel/supergroup</summary>
-			public InputChannelBase channel;
-			/// <summary>New name</summary>
-			public string title;
-		}
+		public record Channels_EditTitle_(InputChannelBase channel, string title) : IMethod<UpdatesBase>;
 		/// <summary>Edit the name of a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.editTitle"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.editTitle#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup</param>
 		/// <param name="title">New name</param>
 		public static Task<UpdatesBase> Channels_EditTitle(this Client client, InputChannelBase channel, string title)
-			=> client.CallAsync(new Channels_EditTitle_
-			{
-				channel = channel,
-				title = title,
-			});
+			=> client.CallAsync(new Channels_EditTitle_(channel, title));
 
-		/// <summary>Change the photo of a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.editPhoto"/></para></summary>
 		[TLDef(0xF12E57C9)]
-		public partial class Channels_EditPhoto_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Channel/supergroup whose photo should be edited</summary>
-			public InputChannelBase channel;
-			/// <summary>New photo</summary>
-			public InputChatPhotoBase photo;
-		}
+		public record Channels_EditPhoto_(InputChannelBase channel, InputChatPhotoBase photo) : IMethod<UpdatesBase>;
 		/// <summary>Change the photo of a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.editPhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.editPhoto#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup whose photo should be edited</param>
 		/// <param name="photo">New photo</param>
 		public static Task<UpdatesBase> Channels_EditPhoto(this Client client, InputChannelBase channel, InputChatPhotoBase photo)
-			=> client.CallAsync(new Channels_EditPhoto_
-			{
-				channel = channel,
-				photo = photo,
-			});
+			=> client.CallAsync(new Channels_EditPhoto_(channel, photo));
 
-		/// <summary>Check if a username is free and can be assigned to a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.checkUsername"/></para></summary>
 		[TLDef(0x10E6BD2C)]
-		public partial class Channels_CheckUsername_ : IMethod<bool>
-		{
-			/// <summary>The <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> that will assigned the specified username</summary>
-			public InputChannelBase channel;
-			/// <summary>The username to check</summary>
-			public string username;
-		}
+		public record Channels_CheckUsername_(InputChannelBase channel, string username) : IMethod<bool>;
 		/// <summary>Check if a username is free and can be assigned to a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.checkUsername"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.checkUsername#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">The <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> that will assigned the specified username</param>
 		/// <param name="username">The username to check</param>
 		public static Task<bool> Channels_CheckUsername(this Client client, InputChannelBase channel, string username)
-			=> client.CallAsync(new Channels_CheckUsername_
-			{
-				channel = channel,
-				username = username,
-			});
+			=> client.CallAsync(new Channels_CheckUsername_(channel, username));
 
-		/// <summary>Change the username of a supergroup/channel		<para>See <a href="https://corefork.telegram.org/method/channels.updateUsername"/></para></summary>
 		[TLDef(0x3514B3DE)]
-		public partial class Channels_UpdateUsername_ : IMethod<bool>
-		{
-			/// <summary>Channel</summary>
-			public InputChannelBase channel;
-			/// <summary>New username</summary>
-			public string username;
-		}
+		public record Channels_UpdateUsername_(InputChannelBase channel, string username) : IMethod<bool>;
 		/// <summary>Change the username of a supergroup/channel		<para>See <a href="https://corefork.telegram.org/method/channels.updateUsername"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.updateUsername#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel</param>
 		/// <param name="username">New username</param>
 		public static Task<bool> Channels_UpdateUsername(this Client client, InputChannelBase channel, string username)
-			=> client.CallAsync(new Channels_UpdateUsername_
-			{
-				channel = channel,
-				username = username,
-			});
+			=> client.CallAsync(new Channels_UpdateUsername_(channel, username));
 
-		/// <summary>Join a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.joinChannel"/></para></summary>
 		[TLDef(0x24B524C5)]
-		public partial class Channels_JoinChannel_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Channel/supergroup to join</summary>
-			public InputChannelBase channel;
-		}
+		public record Channels_JoinChannel_(InputChannelBase channel) : IMethod<UpdatesBase>;
 		/// <summary>Join a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.joinChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.joinChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup to join</param>
 		public static Task<UpdatesBase> Channels_JoinChannel(this Client client, InputChannelBase channel)
-			=> client.CallAsync(new Channels_JoinChannel_
-			{
-				channel = channel,
-			});
+			=> client.CallAsync(new Channels_JoinChannel_(channel));
 
-		/// <summary>Leave a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.leaveChannel"/></para></summary>
 		[TLDef(0xF836AA95)]
-		public partial class Channels_LeaveChannel_ : IMethod<UpdatesBase>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a> to leave</summary>
-			public InputChannelBase channel;
-		}
+		public record Channels_LeaveChannel_(InputChannelBase channel) : IMethod<UpdatesBase>;
 		/// <summary>Leave a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.leaveChannel"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.leaveChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a> to leave</param>
 		public static Task<UpdatesBase> Channels_LeaveChannel(this Client client, InputChannelBase channel)
-			=> client.CallAsync(new Channels_LeaveChannel_
-			{
-				channel = channel,
-			});
+			=> client.CallAsync(new Channels_LeaveChannel_(channel));
 
-		/// <summary>Invite users to a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.inviteToChannel"/></para></summary>
 		[TLDef(0x199F3A6C)]
-		public partial class Channels_InviteToChannel_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Channel/supergroup</summary>
-			public InputChannelBase channel;
-			/// <summary>Users to invite</summary>
-			public InputUserBase[] users;
-		}
+		public record Channels_InviteToChannel_(InputChannelBase channel, InputUserBase[] users) : IMethod<UpdatesBase>;
 		/// <summary>Invite users to a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.inviteToChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.inviteToChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup</param>
 		/// <param name="users">Users to invite</param>
 		public static Task<UpdatesBase> Channels_InviteToChannel(this Client client, InputChannelBase channel, InputUserBase[] users)
-			=> client.CallAsync(new Channels_InviteToChannel_
-			{
-				channel = channel,
-				users = users,
-			});
+			=> client.CallAsync(new Channels_InviteToChannel_(channel, users));
 
-		/// <summary>Delete a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteChannel"/></para></summary>
 		[TLDef(0xC0111FE3)]
-		public partial class Channels_DeleteChannel_ : IMethod<UpdatesBase>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a> to delete</summary>
-			public InputChannelBase channel;
-		}
+		public record Channels_DeleteChannel_(InputChannelBase channel) : IMethod<UpdatesBase>;
 		/// <summary>Delete a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.deleteChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a> to delete</param>
 		public static Task<UpdatesBase> Channels_DeleteChannel(this Client client, InputChannelBase channel)
-			=> client.CallAsync(new Channels_DeleteChannel_
-			{
-				channel = channel,
-			});
+			=> client.CallAsync(new Channels_DeleteChannel_(channel));
 
-		/// <summary>Get link and embed info of a message in a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.exportMessageLink"/></para></summary>
 		[TLDef(0xE63FADEB)]
-		public partial class Channels_ExportMessageLink_ : IMethod<ExportedMessageLink>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Channel</summary>
-			public InputChannelBase channel;
-			/// <summary>Message ID</summary>
-			public int id;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to include other grouped media (for albums)</summary>
-				grouped = 0x1,
-				/// <summary>Whether to also include a thread ID, if available, inside of the link</summary>
-				thread = 0x2,
-			}
-		}
+		public record Channels_ExportMessageLink_(int flags, InputChannelBase channel, int id) : IMethod<ExportedMessageLink>;
 		/// <summary>Get link and embed info of a message in a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.exportMessageLink"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.exportMessageLink#possible-errors">details</a>)</para></summary>
 		/// <param name="grouped">Whether to include other grouped media (for albums)</param>
 		/// <param name="thread">Whether to also include a thread ID, if available, inside of the link</param>
 		/// <param name="channel">Channel</param>
 		/// <param name="id">Message ID</param>
 		public static Task<ExportedMessageLink> Channels_ExportMessageLink(this Client client, InputChannelBase channel, int id, bool grouped = false, bool thread = false)
-			=> client.CallAsync(new Channels_ExportMessageLink_
-			{
-				flags = (Channels_ExportMessageLink_.Flags)((grouped ? 0x1 : 0) | (thread ? 0x2 : 0)),
-				channel = channel,
-				id = id,
-			});
+			=> client.CallAsync(new Channels_ExportMessageLink_((grouped ? 0x1 : 0) | (thread ? 0x2 : 0),
+				channel, id));
 
-		/// <summary>Enable/disable message signatures in channels		<para>See <a href="https://corefork.telegram.org/method/channels.toggleSignatures"/></para></summary>
 		[TLDef(0x1F69B606)]
-		public partial class Channels_ToggleSignatures_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Channel</summary>
-			public InputChannelBase channel;
-			/// <summary>Value</summary>
-			public bool enabled;
-		}
+		public record Channels_ToggleSignatures_(InputChannelBase channel, bool enabled) : IMethod<UpdatesBase>;
 		/// <summary>Enable/disable message signatures in channels		<para>See <a href="https://corefork.telegram.org/method/channels.toggleSignatures"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleSignatures#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel</param>
 		/// <param name="enabled">Value</param>
 		public static Task<UpdatesBase> Channels_ToggleSignatures(this Client client, InputChannelBase channel, bool enabled)
-			=> client.CallAsync(new Channels_ToggleSignatures_
-			{
-				channel = channel,
-				enabled = enabled,
-			});
+			=> client.CallAsync(new Channels_ToggleSignatures_(channel, enabled));
 
-		/// <summary>Get <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a> we're admin in. Usually called when the user exceeds the <see cref="Config"/> for owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, and the user is given the choice to remove one of his channels/supergroups/geogroups.		<para>See <a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels"/></para></summary>
 		[TLDef(0xF8B036AF)]
-		public partial class Channels_GetAdminedPublicChannels_ : IMethod<Messages_Chats>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Get geogroups</summary>
-				by_location = 0x1,
-				/// <summary>If set and the user has reached the limit of owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, instead of returning the channel list one of the specified <a href="#possible-errors">errors</a> will be returned.<br/>Useful to check if a new public channel can indeed be created, even before asking the user to enter a channel username to use in <a href="https://corefork.telegram.org/method/channels.checkUsername">channels.checkUsername</a>/<a href="https://corefork.telegram.org/method/channels.updateUsername">channels.updateUsername</a>.</summary>
-				check_limit = 0x2,
-			}
-		}
+		public record Channels_GetAdminedPublicChannels_(int flags) : IMethod<Messages_Chats>;
 		/// <summary>Get <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a> we're admin in. Usually called when the user exceeds the <see cref="Config"/> for owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, and the user is given the choice to remove one of his channels/supergroups/geogroups.		<para>See <a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels#possible-errors">details</a>)</para></summary>
 		/// <param name="by_location">Get geogroups</param>
 		/// <param name="check_limit">If set and the user has reached the limit of owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, instead of returning the channel list one of the specified <a href="#possible-errors">errors</a> will be returned.<br/>Useful to check if a new public channel can indeed be created, even before asking the user to enter a channel username to use in <a href="https://corefork.telegram.org/method/channels.checkUsername">channels.checkUsername</a>/<a href="https://corefork.telegram.org/method/channels.updateUsername">channels.updateUsername</a>.</param>
 		public static Task<Messages_Chats> Channels_GetAdminedPublicChannels(this Client client, bool by_location = false, bool check_limit = false)
-			=> client.CallAsync(new Channels_GetAdminedPublicChannels_
-			{
-				flags = (Channels_GetAdminedPublicChannels_.Flags)((by_location ? 0x1 : 0) | (check_limit ? 0x2 : 0)),
-			});
+			=> client.CallAsync(new Channels_GetAdminedPublicChannels_((by_location ? 0x1 : 0) | (check_limit ? 0x2 : 0)));
 
-		/// <summary>Ban/unban/kick a user in a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.editBanned"/></para></summary>
 		[TLDef(0x96E6CD81)]
-		public partial class Channels_EditBanned_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.</summary>
-			public InputChannelBase channel;
-			/// <summary>Participant to ban</summary>
-			public InputPeer participant;
-			/// <summary>The banned rights</summary>
-			public ChatBannedRights banned_rights;
-		}
+		public record Channels_EditBanned_(InputChannelBase channel, InputPeer participant, ChatBannedRights banned_rights) : IMethod<UpdatesBase>;
 		/// <summary>Ban/unban/kick a user in a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.editBanned"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.editBanned#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">The <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.</param>
 		/// <param name="participant">Participant to ban</param>
 		/// <param name="banned_rights">The banned rights</param>
 		public static Task<UpdatesBase> Channels_EditBanned(this Client client, InputChannelBase channel, InputPeer participant, ChatBannedRights banned_rights)
-			=> client.CallAsync(new Channels_EditBanned_
-			{
-				channel = channel,
-				participant = participant,
-				banned_rights = banned_rights,
-			});
+			=> client.CallAsync(new Channels_EditBanned_(channel, participant, banned_rights));
 
-		/// <summary>Get the admin log of a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getAdminLog"/></para></summary>
 		[TLDef(0x33DDF480)]
-		public partial class Channels_GetAdminLog_ : IMethod<Channels_AdminLogResults>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Channel</summary>
-			public InputChannelBase channel;
-			/// <summary>Search query, can be empty</summary>
-			public string q;
-			/// <summary>Event filter</summary>
-			[IfFlag(0)] public ChannelAdminLogEventsFilter events_filter;
-			/// <summary>Only show events from these admins</summary>
-			[IfFlag(1)] public InputUserBase[] admins;
-			/// <summary>Maximum ID of message to return (see <a href="https://corefork.telegram.org/api/offsets">pagination</a>)</summary>
-			public long max_id;
-			/// <summary>Minimum ID of message to return (see <a href="https://corefork.telegram.org/api/offsets">pagination</a>)</summary>
-			public long min_id;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="events_filter"/> has a value</summary>
-				has_events_filter = 0x1,
-				/// <summary>Field <see cref="admins"/> has a value</summary>
-				has_admins = 0x2,
-			}
-		}
+		public record Channels_GetAdminLog_(int flags, InputChannelBase channel, string q, [field:IfFlag(0)] ChannelAdminLogEventsFilter events_filter, [field:IfFlag(1)] InputUserBase[] admins, long max_id, long min_id, int limit) : IMethod<Channels_AdminLogResults>;
 		/// <summary>Get the admin log of a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getAdminLog"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.getAdminLog#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel</param>
 		/// <param name="q">Search query, can be empty</param>
@@ -19394,472 +15016,186 @@ namespace TL
 		/// <param name="min_id">Minimum ID of message to return (see <a href="https://corefork.telegram.org/api/offsets">pagination</a>)</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Channels_AdminLogResults> Channels_GetAdminLog(this Client client, InputChannelBase channel, string q, long max_id, long min_id, int limit, ChannelAdminLogEventsFilter events_filter = null, InputUserBase[] admins = null)
-			=> client.CallAsync(new Channels_GetAdminLog_
-			{
-				flags = (Channels_GetAdminLog_.Flags)((events_filter != null ? 0x1 : 0) | (admins != null ? 0x2 : 0)),
-				channel = channel,
-				q = q,
-				events_filter = events_filter,
-				admins = admins,
-				max_id = max_id,
-				min_id = min_id,
-				limit = limit,
-			});
+			=> client.CallAsync(new Channels_GetAdminLog_((events_filter != null ? 0x1 : 0) | (admins != null ? 0x2 : 0),
+				channel, q, events_filter, admins, max_id, min_id, limit));
 
-		/// <summary>Associate a stickerset to the supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.setStickers"/></para></summary>
 		[TLDef(0xEA8CA4F9)]
-		public partial class Channels_SetStickers_ : IMethod<bool>
-		{
-			/// <summary>Supergroup</summary>
-			public InputChannelBase channel;
-			/// <summary>The stickerset to associate</summary>
-			public InputStickerSet stickerset;
-		}
+		public record Channels_SetStickers_(InputChannelBase channel, InputStickerSet stickerset) : IMethod<bool>;
 		/// <summary>Associate a stickerset to the supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.setStickers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/channels.setStickers#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Supergroup</param>
 		/// <param name="stickerset">The stickerset to associate</param>
 		public static Task<bool> Channels_SetStickers(this Client client, InputChannelBase channel, InputStickerSet stickerset)
-			=> client.CallAsync(new Channels_SetStickers_
-			{
-				channel = channel,
-				stickerset = stickerset,
-			});
+			=> client.CallAsync(new Channels_SetStickers_(channel, stickerset));
 
-		/// <summary>Mark <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> message contents as read		<para>See <a href="https://corefork.telegram.org/method/channels.readMessageContents"/></para></summary>
 		[TLDef(0xEAB5DC38)]
-		public partial class Channels_ReadMessageContents_ : IMethod<bool>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a></summary>
-			public InputChannelBase channel;
-			/// <summary>IDs of messages whose contents should be marked as read</summary>
-			public int[] id;
-		}
+		public record Channels_ReadMessageContents_(InputChannelBase channel, int[] id) : IMethod<bool>;
 		/// <summary>Mark <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> message contents as read		<para>See <a href="https://corefork.telegram.org/method/channels.readMessageContents"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.readMessageContents#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a></param>
 		/// <param name="id">IDs of messages whose contents should be marked as read</param>
 		public static Task<bool> Channels_ReadMessageContents(this Client client, InputChannelBase channel, int[] id)
-			=> client.CallAsync(new Channels_ReadMessageContents_
-			{
-				channel = channel,
-				id = id,
-			});
+			=> client.CallAsync(new Channels_ReadMessageContents_(channel, id));
 
-		/// <summary>Delete the history of a <a href="https://corefork.telegram.org/api/channel">supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteHistory"/></para></summary>
 		[TLDef(0xAF369D42)]
-		public partial class Channels_DeleteHistory_ : IMethod<bool>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/channel">Supergroup</a> whose history must be deleted</summary>
-			public InputChannelBase channel;
-			/// <summary>ID of message <strong>up to which</strong> the history must be deleted</summary>
-			public int max_id;
-		}
+		public record Channels_DeleteHistory_(InputChannelBase channel, int max_id) : IMethod<bool>;
 		/// <summary>Delete the history of a <a href="https://corefork.telegram.org/api/channel">supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.deleteHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Supergroup</a> whose history must be deleted</param>
 		/// <param name="max_id">ID of message <strong>up to which</strong> the history must be deleted</param>
 		public static Task<bool> Channels_DeleteHistory(this Client client, InputChannelBase channel, int max_id)
-			=> client.CallAsync(new Channels_DeleteHistory_
-			{
-				channel = channel,
-				max_id = max_id,
-			});
+			=> client.CallAsync(new Channels_DeleteHistory_(channel, max_id));
 
-		/// <summary>Hide/unhide message history for new channel/supergroup users		<para>See <a href="https://corefork.telegram.org/method/channels.togglePreHistoryHidden"/></para></summary>
 		[TLDef(0xEABBB94C)]
-		public partial class Channels_TogglePreHistoryHidden_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Channel/supergroup</summary>
-			public InputChannelBase channel;
-			/// <summary>Hide/unhide</summary>
-			public bool enabled;
-		}
+		public record Channels_TogglePreHistoryHidden_(InputChannelBase channel, bool enabled) : IMethod<UpdatesBase>;
 		/// <summary>Hide/unhide message history for new channel/supergroup users		<para>See <a href="https://corefork.telegram.org/method/channels.togglePreHistoryHidden"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.togglePreHistoryHidden#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup</param>
 		/// <param name="enabled">Hide/unhide</param>
 		public static Task<UpdatesBase> Channels_TogglePreHistoryHidden(this Client client, InputChannelBase channel, bool enabled)
-			=> client.CallAsync(new Channels_TogglePreHistoryHidden_
-			{
-				channel = channel,
-				enabled = enabled,
-			});
+			=> client.CallAsync(new Channels_TogglePreHistoryHidden_(channel, enabled));
 
-		/// <summary>Get a list of <a href="https://corefork.telegram.org/api/channel">channels/supergroups</a> we left		<para>See <a href="https://corefork.telegram.org/method/channels.getLeftChannels"/></para></summary>
 		[TLDef(0x8341ECC0)]
-		public partial class Channels_GetLeftChannels_ : IMethod<Messages_Chats>
-		{
-			/// <summary>Offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a></summary>
-			public int offset;
-		}
+		public record Channels_GetLeftChannels_(int offset) : IMethod<Messages_Chats>;
 		/// <summary>Get a list of <a href="https://corefork.telegram.org/api/channel">channels/supergroups</a> we left		<para>See <a href="https://corefork.telegram.org/method/channels.getLeftChannels"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/channels.getLeftChannels#possible-errors">details</a>)</para></summary>
 		/// <param name="offset">Offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a></param>
 		public static Task<Messages_Chats> Channels_GetLeftChannels(this Client client, int offset)
-			=> client.CallAsync(new Channels_GetLeftChannels_
-			{
-				offset = offset,
-			});
+			=> client.CallAsync(new Channels_GetLeftChannels_(offset));
 
-		/// <summary>Get all groups that can be used as <a href="https://corefork.telegram.org/api/discussion">discussion groups</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.getGroupsForDiscussion"/></para></summary>
 		[TLDef(0xF5DAD378)]
-		public partial class Channels_GetGroupsForDiscussion_ : IMethod<Messages_Chats> { }
+		public record Channels_GetGroupsForDiscussion_() : IMethod<Messages_Chats>;
 		/// <summary>Get all groups that can be used as <a href="https://corefork.telegram.org/api/discussion">discussion groups</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.getGroupsForDiscussion"/></para></summary>
 		public static Task<Messages_Chats> Channels_GetGroupsForDiscussion(this Client client)
-			=> client.CallAsync(new Channels_GetGroupsForDiscussion_
-			{
-			});
+			=> client.CallAsync(new Channels_GetGroupsForDiscussion_());
 
-		/// <summary>Associate a group to a channel as <a href="https://corefork.telegram.org/api/discussion">discussion group</a> for that channel		<para>See <a href="https://corefork.telegram.org/method/channels.setDiscussionGroup"/></para></summary>
 		[TLDef(0x40582BB2)]
-		public partial class Channels_SetDiscussionGroup_ : IMethod<bool>
-		{
-			/// <summary>Channel</summary>
-			public InputChannelBase broadcast;
-			/// <summary><a href="https://corefork.telegram.org/api/discussion">Discussion group</a> to associate to the channel</summary>
-			public InputChannelBase group;
-		}
+		public record Channels_SetDiscussionGroup_(InputChannelBase broadcast, InputChannelBase group) : IMethod<bool>;
 		/// <summary>Associate a group to a channel as <a href="https://corefork.telegram.org/api/discussion">discussion group</a> for that channel		<para>See <a href="https://corefork.telegram.org/method/channels.setDiscussionGroup"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.setDiscussionGroup#possible-errors">details</a>)</para></summary>
 		/// <param name="broadcast">Channel</param>
 		/// <param name="group"><a href="https://corefork.telegram.org/api/discussion">Discussion group</a> to associate to the channel</param>
 		public static Task<bool> Channels_SetDiscussionGroup(this Client client, InputChannelBase broadcast, InputChannelBase group)
-			=> client.CallAsync(new Channels_SetDiscussionGroup_
-			{
-				broadcast = broadcast,
-				group = group,
-			});
+			=> client.CallAsync(new Channels_SetDiscussionGroup_(broadcast, group));
 
-		/// <summary>Transfer channel ownership		<para>See <a href="https://corefork.telegram.org/method/channels.editCreator"/></para></summary>
 		[TLDef(0x8F38CD1F)]
-		public partial class Channels_EditCreator_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Channel</summary>
-			public InputChannelBase channel;
-			/// <summary>New channel owner</summary>
-			public InputUserBase user_id;
-			/// <summary><a href="https://corefork.telegram.org/api/srp">2FA password</a> of account</summary>
-			public InputCheckPasswordSRP password;
-		}
+		public record Channels_EditCreator_(InputChannelBase channel, InputUserBase user_id, InputCheckPasswordSRP password) : IMethod<UpdatesBase>;
 		/// <summary>Transfer channel ownership		<para>See <a href="https://corefork.telegram.org/method/channels.editCreator"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.editCreator#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel</param>
 		/// <param name="user_id">New channel owner</param>
 		/// <param name="password"><a href="https://corefork.telegram.org/api/srp">2FA password</a> of account</param>
 		public static Task<UpdatesBase> Channels_EditCreator(this Client client, InputChannelBase channel, InputUserBase user_id, InputCheckPasswordSRP password)
-			=> client.CallAsync(new Channels_EditCreator_
-			{
-				channel = channel,
-				user_id = user_id,
-				password = password,
-			});
+			=> client.CallAsync(new Channels_EditCreator_(channel, user_id, password));
 
-		/// <summary>Edit location of geogroup		<para>See <a href="https://corefork.telegram.org/method/channels.editLocation"/></para></summary>
 		[TLDef(0x58E63F6D)]
-		public partial class Channels_EditLocation_ : IMethod<bool>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/channel">Geogroup</a></summary>
-			public InputChannelBase channel;
-			/// <summary>New geolocation</summary>
-			public InputGeoPoint geo_point;
-			/// <summary>Address string</summary>
-			public string address;
-		}
+		public record Channels_EditLocation_(InputChannelBase channel, InputGeoPoint geo_point, string address) : IMethod<bool>;
 		/// <summary>Edit location of geogroup		<para>See <a href="https://corefork.telegram.org/method/channels.editLocation"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.editLocation#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Geogroup</a></param>
 		/// <param name="geo_point">New geolocation</param>
 		/// <param name="address">Address string</param>
 		public static Task<bool> Channels_EditLocation(this Client client, InputChannelBase channel, InputGeoPoint geo_point, string address)
-			=> client.CallAsync(new Channels_EditLocation_
-			{
-				channel = channel,
-				geo_point = geo_point,
-				address = address,
-			});
+			=> client.CallAsync(new Channels_EditLocation_(channel, geo_point, address));
 
-		/// <summary>Toggle supergroup slow mode: if enabled, users will only be able to send one message every <c>seconds</c> seconds		<para>See <a href="https://corefork.telegram.org/method/channels.toggleSlowMode"/></para></summary>
 		[TLDef(0xEDD49EF0)]
-		public partial class Channels_ToggleSlowMode_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The <a href="https://corefork.telegram.org/api/channel">supergroup</a></summary>
-			public InputChannelBase channel;
-			/// <summary>Users will only be able to send one message every <c>seconds</c> seconds, <c>0</c> to disable the limitation</summary>
-			public int seconds;
-		}
+		public record Channels_ToggleSlowMode_(InputChannelBase channel, int seconds) : IMethod<UpdatesBase>;
 		/// <summary>Toggle supergroup slow mode: if enabled, users will only be able to send one message every <c>seconds</c> seconds		<para>See <a href="https://corefork.telegram.org/method/channels.toggleSlowMode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleSlowMode#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">The <a href="https://corefork.telegram.org/api/channel">supergroup</a></param>
 		/// <param name="seconds">Users will only be able to send one message every <c>seconds</c> seconds, <c>0</c> to disable the limitation</param>
 		public static Task<UpdatesBase> Channels_ToggleSlowMode(this Client client, InputChannelBase channel, int seconds)
-			=> client.CallAsync(new Channels_ToggleSlowMode_
-			{
-				channel = channel,
-				seconds = seconds,
-			});
+			=> client.CallAsync(new Channels_ToggleSlowMode_(channel, seconds));
 
-		/// <summary>Get inactive channels and supergroups		<para>See <a href="https://corefork.telegram.org/method/channels.getInactiveChannels"/></para></summary>
 		[TLDef(0x11E831EE)]
-		public partial class Channels_GetInactiveChannels_ : IMethod<Messages_InactiveChats> { }
+		public record Channels_GetInactiveChannels_() : IMethod<Messages_InactiveChats>;
 		/// <summary>Get inactive channels and supergroups		<para>See <a href="https://corefork.telegram.org/method/channels.getInactiveChannels"/></para></summary>
 		public static Task<Messages_InactiveChats> Channels_GetInactiveChannels(this Client client)
-			=> client.CallAsync(new Channels_GetInactiveChannels_
-			{
-			});
+			=> client.CallAsync(new Channels_GetInactiveChannels_());
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.convertToGigagroup"/></para></summary>
 		[TLDef(0x0B290C69)]
-		public partial class Channels_ConvertToGigagroup_ : IMethod<UpdatesBase>
-		{
-			public InputChannelBase channel;
-		}
+		public record Channels_ConvertToGigagroup_(InputChannelBase channel) : IMethod<UpdatesBase>;
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.convertToGigagroup"/></para></summary>
 		public static Task<UpdatesBase> Channels_ConvertToGigagroup(this Client client, InputChannelBase channel)
-			=> client.CallAsync(new Channels_ConvertToGigagroup_
-			{
-				channel = channel,
-			});
+			=> client.CallAsync(new Channels_ConvertToGigagroup_(channel));
 
-		/// <summary>Mark a specific sponsored message as read		<para>See <a href="https://corefork.telegram.org/method/channels.viewSponsoredMessage"/></para></summary>
 		[TLDef(0xBEAEDB94)]
-		public partial class Channels_ViewSponsoredMessage_ : IMethod<bool>
-		{
-			/// <summary>Peer</summary>
-			public InputChannelBase channel;
-			/// <summary>Message ID</summary>
-			public byte[] random_id;
-		}
+		public record Channels_ViewSponsoredMessage_(InputChannelBase channel, byte[] random_id) : IMethod<bool>;
 		/// <summary>Mark a specific sponsored message as read		<para>See <a href="https://corefork.telegram.org/method/channels.viewSponsoredMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.viewSponsoredMessage#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Peer</param>
 		/// <param name="random_id">Message ID</param>
 		public static Task<bool> Channels_ViewSponsoredMessage(this Client client, InputChannelBase channel, byte[] random_id)
-			=> client.CallAsync(new Channels_ViewSponsoredMessage_
-			{
-				channel = channel,
-				random_id = random_id,
-			});
+			=> client.CallAsync(new Channels_ViewSponsoredMessage_(channel, random_id));
 
-		/// <summary>Get a list of sponsored messages		<para>See <a href="https://corefork.telegram.org/method/channels.getSponsoredMessages"/></para></summary>
 		[TLDef(0xEC210FBF)]
-		public partial class Channels_GetSponsoredMessages_ : IMethod<Messages_SponsoredMessages>
-		{
-			/// <summary>Peer</summary>
-			public InputChannelBase channel;
-		}
+		public record Channels_GetSponsoredMessages_(InputChannelBase channel) : IMethod<Messages_SponsoredMessages>;
 		/// <summary>Get a list of sponsored messages		<para>See <a href="https://corefork.telegram.org/method/channels.getSponsoredMessages"/></para></summary>
 		/// <param name="channel">Peer</param>
 		public static Task<Messages_SponsoredMessages> Channels_GetSponsoredMessages(this Client client, InputChannelBase channel)
-			=> client.CallAsync(new Channels_GetSponsoredMessages_
-			{
-				channel = channel,
-			});
+			=> client.CallAsync(new Channels_GetSponsoredMessages_(channel));
 
-		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/></para></summary>
 		[TLDef(0xAA2769ED)]
-		public partial class Bots_SendCustomRequest_ : IMethod<DataJSON>
-		{
-			/// <summary>The method name</summary>
-			public string custom_method;
-			/// <summary>JSON-serialized method parameters</summary>
-			public DataJSON params_;
-		}
+		public record Bots_SendCustomRequest_(string custom_method, DataJSON params_) : IMethod<DataJSON>;
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
 		/// <param name="custom_method">The method name</param>
 		/// <param name="params_">JSON-serialized method parameters</param>
 		public static Task<DataJSON> Bots_SendCustomRequest(this Client client, string custom_method, DataJSON params_)
-			=> client.CallAsync(new Bots_SendCustomRequest_
-			{
-				custom_method = custom_method,
-				params_ = params_,
-			});
+			=> client.CallAsync(new Bots_SendCustomRequest_(custom_method, params_));
 
-		/// <summary>Answers a custom query; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.answerWebhookJSONQuery"/></para></summary>
 		[TLDef(0xE6213F4D)]
-		public partial class Bots_AnswerWebhookJSONQuery_ : IMethod<bool>
-		{
-			/// <summary>Identifier of a custom query</summary>
-			public long query_id;
-			/// <summary>JSON-serialized answer to the query</summary>
-			public DataJSON data;
-		}
+		public record Bots_AnswerWebhookJSONQuery_(long query_id, DataJSON data) : IMethod<bool>;
 		/// <summary>Answers a custom query; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.answerWebhookJSONQuery"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.answerWebhookJSONQuery#possible-errors">details</a>)</para></summary>
 		/// <param name="query_id">Identifier of a custom query</param>
 		/// <param name="data">JSON-serialized answer to the query</param>
 		public static Task<bool> Bots_AnswerWebhookJSONQuery(this Client client, long query_id, DataJSON data)
-			=> client.CallAsync(new Bots_AnswerWebhookJSONQuery_
-			{
-				query_id = query_id,
-				data = data,
-			});
+			=> client.CallAsync(new Bots_AnswerWebhookJSONQuery_(query_id, data));
 
-		/// <summary>Set bot command list		<para>See <a href="https://corefork.telegram.org/method/bots.setBotCommands"/></para></summary>
 		[TLDef(0x0517165A)]
-		public partial class Bots_SetBotCommands_ : IMethod<bool>
-		{
-			/// <summary>Command scope</summary>
-			public BotCommandScope scope;
-			/// <summary>Language code</summary>
-			public string lang_code;
-			/// <summary>Bot commands</summary>
-			public BotCommand[] commands;
-		}
+		public record Bots_SetBotCommands_(BotCommandScope scope, string lang_code, BotCommand[] commands) : IMethod<bool>;
 		/// <summary>Set bot command list		<para>See <a href="https://corefork.telegram.org/method/bots.setBotCommands"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.setBotCommands#possible-errors">details</a>)</para></summary>
 		/// <param name="scope">Command scope</param>
 		/// <param name="lang_code">Language code</param>
 		/// <param name="commands">Bot commands</param>
 		public static Task<bool> Bots_SetBotCommands(this Client client, BotCommandScope scope, string lang_code, BotCommand[] commands)
-			=> client.CallAsync(new Bots_SetBotCommands_
-			{
-				scope = scope,
-				lang_code = lang_code,
-				commands = commands,
-			});
+			=> client.CallAsync(new Bots_SetBotCommands_(scope, lang_code, commands));
 
-		/// <summary>Clear bot commands for the specified bot scope and language code		<para>See <a href="https://corefork.telegram.org/method/bots.resetBotCommands"/></para></summary>
 		[TLDef(0x3D8DE0F9)]
-		public partial class Bots_ResetBotCommands_ : IMethod<bool>
-		{
-			/// <summary>Command scope</summary>
-			public BotCommandScope scope;
-			/// <summary>Language code</summary>
-			public string lang_code;
-		}
+		public record Bots_ResetBotCommands_(BotCommandScope scope, string lang_code) : IMethod<bool>;
 		/// <summary>Clear bot commands for the specified bot scope and language code		<para>See <a href="https://corefork.telegram.org/method/bots.resetBotCommands"/> [bots: ✓]</para></summary>
 		/// <param name="scope">Command scope</param>
 		/// <param name="lang_code">Language code</param>
 		public static Task<bool> Bots_ResetBotCommands(this Client client, BotCommandScope scope, string lang_code)
-			=> client.CallAsync(new Bots_ResetBotCommands_
-			{
-				scope = scope,
-				lang_code = lang_code,
-			});
+			=> client.CallAsync(new Bots_ResetBotCommands_(scope, lang_code));
 
-		/// <summary>Obtain a list of bot commands for the specified bot scope and language code		<para>See <a href="https://corefork.telegram.org/method/bots.getBotCommands"/></para></summary>
 		[TLDef(0xE34C0DD6)]
-		public partial class Bots_GetBotCommands_ : IMethod<BotCommand[]>
-		{
-			/// <summary>Command scope</summary>
-			public BotCommandScope scope;
-			/// <summary>Language code</summary>
-			public string lang_code;
-		}
+		public record Bots_GetBotCommands_(BotCommandScope scope, string lang_code) : IMethod<BotCommand[]>;
 		/// <summary>Obtain a list of bot commands for the specified bot scope and language code		<para>See <a href="https://corefork.telegram.org/method/bots.getBotCommands"/> [bots: ✓]</para></summary>
 		/// <param name="scope">Command scope</param>
 		/// <param name="lang_code">Language code</param>
 		public static Task<BotCommand[]> Bots_GetBotCommands(this Client client, BotCommandScope scope, string lang_code)
-			=> client.CallAsync(new Bots_GetBotCommands_
-			{
-				scope = scope,
-				lang_code = lang_code,
-			});
+			=> client.CallAsync(new Bots_GetBotCommands_(scope, lang_code));
 
-		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para></summary>
 		[TLDef(0x8A333C8D)]
-		public partial class Payments_GetPaymentForm_ : IMethod<Payments_PaymentForm>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The peer where the payment form was sent</summary>
-			public InputPeer peer;
-			/// <summary>Message ID of payment form</summary>
-			public int msg_id;
-			/// <summary>A JSON object with the following keys, containing color theme information (integers, RGB24) to pass to the payment provider, to apply in eventual verification pages: <br/><c>bg_color</c> - Background color <br/><c>text_color</c> - Text color <br/><c>hint_color</c> - Hint text color <br/><c>link_color</c> - Link color <br/><c>button_color</c> - Button color <br/><c>button_text_color</c> - Button text color</summary>
-			[IfFlag(0)] public DataJSON theme_params;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="theme_params"/> has a value</summary>
-				has_theme_params = 0x1,
-			}
-		}
+		public record Payments_GetPaymentForm_(int flags, InputPeer peer, int msg_id, [field:IfFlag(0)] DataJSON theme_params) : IMethod<Payments_PaymentForm>;
 		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The peer where the payment form was sent</param>
 		/// <param name="msg_id">Message ID of payment form</param>
 		/// <param name="theme_params">A JSON object with the following keys, containing color theme information (integers, RGB24) to pass to the payment provider, to apply in eventual verification pages: <br/><c>bg_color</c> - Background color <br/><c>text_color</c> - Text color <br/><c>hint_color</c> - Hint text color <br/><c>link_color</c> - Link color <br/><c>button_color</c> - Button color <br/><c>button_text_color</c> - Button text color</param>
 		public static Task<Payments_PaymentForm> Payments_GetPaymentForm(this Client client, InputPeer peer, int msg_id, DataJSON theme_params = null)
-			=> client.CallAsync(new Payments_GetPaymentForm_
-			{
-				flags = (Payments_GetPaymentForm_.Flags)(theme_params != null ? 0x1 : 0),
-				peer = peer,
-				msg_id = msg_id,
-				theme_params = theme_params,
-			});
+			=> client.CallAsync(new Payments_GetPaymentForm_(theme_params != null ? 0x1 : 0,
+				peer, msg_id, theme_params));
 
-		/// <summary>Get payment receipt		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentReceipt"/></para></summary>
 		[TLDef(0x2478D1CC)]
-		public partial class Payments_GetPaymentReceipt_ : IMethod<Payments_PaymentReceipt>
-		{
-			/// <summary>The peer where the payment receipt was sent</summary>
-			public InputPeer peer;
-			/// <summary>Message ID of receipt</summary>
-			public int msg_id;
-		}
+		public record Payments_GetPaymentReceipt_(InputPeer peer, int msg_id) : IMethod<Payments_PaymentReceipt>;
 		/// <summary>Get payment receipt		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentReceipt"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentReceipt#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The peer where the payment receipt was sent</param>
 		/// <param name="msg_id">Message ID of receipt</param>
 		public static Task<Payments_PaymentReceipt> Payments_GetPaymentReceipt(this Client client, InputPeer peer, int msg_id)
-			=> client.CallAsync(new Payments_GetPaymentReceipt_
-			{
-				peer = peer,
-				msg_id = msg_id,
-			});
+			=> client.CallAsync(new Payments_GetPaymentReceipt_(peer, msg_id));
 
-		/// <summary>Submit requested order information for validation		<para>See <a href="https://corefork.telegram.org/method/payments.validateRequestedInfo"/></para></summary>
 		[TLDef(0xDB103170)]
-		public partial class Payments_ValidateRequestedInfo_ : IMethod<Payments_ValidatedRequestedInfo>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Peer where the payment form was sent</summary>
-			public InputPeer peer;
-			/// <summary>Message ID of payment form</summary>
-			public int msg_id;
-			/// <summary>Requested order information</summary>
-			public PaymentRequestedInfo info;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Save order information to re-use it for future orders</summary>
-				save = 0x1,
-			}
-		}
+		public record Payments_ValidateRequestedInfo_(int flags, InputPeer peer, int msg_id, PaymentRequestedInfo info) : IMethod<Payments_ValidatedRequestedInfo>;
 		/// <summary>Submit requested order information for validation		<para>See <a href="https://corefork.telegram.org/method/payments.validateRequestedInfo"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.validateRequestedInfo#possible-errors">details</a>)</para></summary>
 		/// <param name="save">Save order information to re-use it for future orders</param>
 		/// <param name="peer">Peer where the payment form was sent</param>
 		/// <param name="msg_id">Message ID of payment form</param>
 		/// <param name="info">Requested order information</param>
 		public static Task<Payments_ValidatedRequestedInfo> Payments_ValidateRequestedInfo(this Client client, InputPeer peer, int msg_id, PaymentRequestedInfo info, bool save = false)
-			=> client.CallAsync(new Payments_ValidateRequestedInfo_
-			{
-				flags = (Payments_ValidateRequestedInfo_.Flags)(save ? 0x1 : 0),
-				peer = peer,
-				msg_id = msg_id,
-				info = info,
-			});
+			=> client.CallAsync(new Payments_ValidateRequestedInfo_(save ? 0x1 : 0, peer, msg_id, info));
 
-		/// <summary>Send compiled payment form		<para>See <a href="https://corefork.telegram.org/method/payments.sendPaymentForm"/></para></summary>
 		[TLDef(0x30C3BC9D)]
-		public partial class Payments_SendPaymentForm_ : IMethod<Payments_PaymentResultBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Form ID</summary>
-			public long form_id;
-			/// <summary>The peer where the payment form was sent</summary>
-			public InputPeer peer;
-			/// <summary>Message ID of form</summary>
-			public int msg_id;
-			/// <summary>ID of saved and validated <see cref="Payments_ValidatedRequestedInfo"/></summary>
-			[IfFlag(0)] public string requested_info_id;
-			/// <summary>Chosen shipping option ID</summary>
-			[IfFlag(1)] public string shipping_option_id;
-			/// <summary>Payment credentials</summary>
-			public InputPaymentCredentialsBase credentials;
-			/// <summary>Tip, in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
-			[IfFlag(2)] public long tip_amount;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="requested_info_id"/> has a value</summary>
-				has_requested_info_id = 0x1,
-				/// <summary>Field <see cref="shipping_option_id"/> has a value</summary>
-				has_shipping_option_id = 0x2,
-				/// <summary>Field <see cref="tip_amount"/> has a value</summary>
-				has_tip_amount = 0x4,
-			}
-		}
+		public record Payments_SendPaymentForm_(int flags, long form_id, InputPeer peer, int msg_id, [field:IfFlag(0)] string requested_info_id, [field:IfFlag(1)] string shipping_option_id, InputPaymentCredentialsBase credentials, [field:IfFlag(2)] long tip_amount) : IMethod<Payments_PaymentResultBase>;
 		/// <summary>Send compiled payment form		<para>See <a href="https://corefork.telegram.org/method/payments.sendPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.sendPaymentForm#possible-errors">details</a>)</para></summary>
 		/// <param name="form_id">Form ID</param>
 		/// <param name="peer">The peer where the payment form was sent</param>
@@ -19869,97 +15205,32 @@ namespace TL
 		/// <param name="credentials">Payment credentials</param>
 		/// <param name="tip_amount">Tip, in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</param>
 		public static Task<Payments_PaymentResultBase> Payments_SendPaymentForm(this Client client, long form_id, InputPeer peer, int msg_id, InputPaymentCredentialsBase credentials, string requested_info_id = null, string shipping_option_id = null, long? tip_amount = null)
-			=> client.CallAsync(new Payments_SendPaymentForm_
-			{
-				flags = (Payments_SendPaymentForm_.Flags)((requested_info_id != null ? 0x1 : 0) | (shipping_option_id != null ? 0x2 : 0) | (tip_amount != null ? 0x4 : 0)),
-				form_id = form_id,
-				peer = peer,
-				msg_id = msg_id,
-				requested_info_id = requested_info_id,
-				shipping_option_id = shipping_option_id,
-				credentials = credentials,
-				tip_amount = tip_amount.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Payments_SendPaymentForm_((requested_info_id != null ? 0x1 : 0) | (shipping_option_id != null ? 0x2 : 0) | (tip_amount != null ? 0x4 : 0),
+				form_id, peer, msg_id, requested_info_id, shipping_option_id, credentials, tip_amount.GetValueOrDefault()));
 
-		/// <summary>Get saved payment information		<para>See <a href="https://corefork.telegram.org/method/payments.getSavedInfo"/></para></summary>
 		[TLDef(0x227D824B)]
-		public partial class Payments_GetSavedInfo_ : IMethod<Payments_SavedInfo> { }
+		public record Payments_GetSavedInfo_() : IMethod<Payments_SavedInfo>;
 		/// <summary>Get saved payment information		<para>See <a href="https://corefork.telegram.org/method/payments.getSavedInfo"/></para></summary>
 		public static Task<Payments_SavedInfo> Payments_GetSavedInfo(this Client client)
-			=> client.CallAsync(new Payments_GetSavedInfo_
-			{
-			});
+			=> client.CallAsync(new Payments_GetSavedInfo_());
 
-		/// <summary>Clear saved payment information		<para>See <a href="https://corefork.telegram.org/method/payments.clearSavedInfo"/></para></summary>
 		[TLDef(0xD83D70C1)]
-		public partial class Payments_ClearSavedInfo_ : IMethod<bool>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Remove saved payment credentials</summary>
-				credentials = 0x1,
-				/// <summary>Clear the last order settings saved by the user</summary>
-				info = 0x2,
-			}
-		}
+		public record Payments_ClearSavedInfo_(int flags) : IMethod<bool>;
 		/// <summary>Clear saved payment information		<para>See <a href="https://corefork.telegram.org/method/payments.clearSavedInfo"/></para></summary>
 		/// <param name="credentials">Remove saved payment credentials</param>
 		/// <param name="info">Clear the last order settings saved by the user</param>
 		public static Task<bool> Payments_ClearSavedInfo(this Client client, bool credentials = false, bool info = false)
-			=> client.CallAsync(new Payments_ClearSavedInfo_
-			{
-				flags = (Payments_ClearSavedInfo_.Flags)((credentials ? 0x1 : 0) | (info ? 0x2 : 0)),
-			});
+			=> client.CallAsync(new Payments_ClearSavedInfo_((credentials ? 0x1 : 0) | (info ? 0x2 : 0)));
 
-		/// <summary>Get info about a credit card		<para>See <a href="https://corefork.telegram.org/method/payments.getBankCardData"/></para></summary>
 		[TLDef(0x2E79D779)]
-		public partial class Payments_GetBankCardData_ : IMethod<Payments_BankCardData>
-		{
-			/// <summary>Credit card number</summary>
-			public string number;
-		}
+		public record Payments_GetBankCardData_(string number) : IMethod<Payments_BankCardData>;
 		/// <summary>Get info about a credit card		<para>See <a href="https://corefork.telegram.org/method/payments.getBankCardData"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getBankCardData#possible-errors">details</a>)</para></summary>
 		/// <param name="number">Credit card number</param>
 		public static Task<Payments_BankCardData> Payments_GetBankCardData(this Client client, string number)
-			=> client.CallAsync(new Payments_GetBankCardData_
-			{
-				number = number,
-			});
+			=> client.CallAsync(new Payments_GetBankCardData_(number));
 
-		/// <summary>Create a stickerset, bots only.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/></para></summary>
 		[TLDef(0x9021AB67)]
-		public partial class Stickers_CreateStickerSet_ : IMethod<Messages_StickerSet>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Stickerset owner</summary>
-			public InputUserBase user_id;
-			/// <summary>Stickerset name, <c>1-64</c> chars</summary>
-			public string title;
-			/// <summary>Sticker set name. Can contain only English letters, digits and underscores. Must end with <em>"</em>by<em><bot username="">"</bot></em> (<em><bot_username></bot_username></em> is case insensitive); 1-64 characters</summary>
-			public string short_name;
-			/// <summary>Thumbnail</summary>
-			[IfFlag(2)] public InputDocument thumb;
-			/// <summary>Stickers</summary>
-			public InputStickerSetItem[] stickers;
-			/// <summary>Used when <a href="https://corefork.telegram.org/import-stickers">importing stickers using the sticker import SDKs</a>, specifies the name of the software that created the stickers</summary>
-			[IfFlag(3)] public string software;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether this is a mask stickerset</summary>
-				masks = 0x1,
-				/// <summary>Whether this is an animated stickerset</summary>
-				animated = 0x2,
-				/// <summary>Field <see cref="thumb"/> has a value</summary>
-				has_thumb = 0x4,
-				/// <summary>Field <see cref="software"/> has a value</summary>
-				has_software = 0x8,
-			}
-		}
+		public record Stickers_CreateStickerSet_(int flags, InputUserBase user_id, string title, string short_name, [field:IfFlag(2)] InputDocument thumb, InputStickerSetItem[] stickers, [field:IfFlag(3)] string software) : IMethod<Messages_StickerSet>;
 		/// <summary>Create a stickerset, bots only.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
 		/// <param name="masks">Whether this is a mask stickerset</param>
 		/// <param name="animated">Whether this is an animated stickerset</param>
@@ -19970,149 +15241,62 @@ namespace TL
 		/// <param name="stickers">Stickers</param>
 		/// <param name="software">Used when <a href="https://corefork.telegram.org/import-stickers">importing stickers using the sticker import SDKs</a>, specifies the name of the software that created the stickers</param>
 		public static Task<Messages_StickerSet> Stickers_CreateStickerSet(this Client client, InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, bool masks = false, bool animated = false, InputDocument thumb = null, string software = null)
-			=> client.CallAsync(new Stickers_CreateStickerSet_
-			{
-				flags = (Stickers_CreateStickerSet_.Flags)((masks ? 0x1 : 0) | (animated ? 0x2 : 0) | (thumb != null ? 0x4 : 0) | (software != null ? 0x8 : 0)),
-				user_id = user_id,
-				title = title,
-				short_name = short_name,
-				thumb = thumb,
-				stickers = stickers,
-				software = software,
-			});
+			=> client.CallAsync(new Stickers_CreateStickerSet_((masks ? 0x1 : 0) | (animated ? 0x2 : 0) | (thumb != null ? 0x4 : 0) | (software != null ? 0x8 : 0),
+				user_id, title, short_name, thumb, stickers, software));
 
-		/// <summary>Remove a sticker from the set where it belongs, bots only. The sticker set must have been created by the bot.		<para>See <a href="https://corefork.telegram.org/method/stickers.removeStickerFromSet"/></para></summary>
 		[TLDef(0xF7760F51)]
-		public partial class Stickers_RemoveStickerFromSet_ : IMethod<Messages_StickerSet>
-		{
-			/// <summary>The sticker to remove</summary>
-			public InputDocument sticker;
-		}
+		public record Stickers_RemoveStickerFromSet_(InputDocument sticker) : IMethod<Messages_StickerSet>;
 		/// <summary>Remove a sticker from the set where it belongs, bots only. The sticker set must have been created by the bot.		<para>See <a href="https://corefork.telegram.org/method/stickers.removeStickerFromSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.removeStickerFromSet#possible-errors">details</a>)</para></summary>
 		/// <param name="sticker">The sticker to remove</param>
 		public static Task<Messages_StickerSet> Stickers_RemoveStickerFromSet(this Client client, InputDocument sticker)
-			=> client.CallAsync(new Stickers_RemoveStickerFromSet_
-			{
-				sticker = sticker,
-			});
+			=> client.CallAsync(new Stickers_RemoveStickerFromSet_(sticker));
 
-		/// <summary>Changes the absolute position of a sticker in the set to which it belongs; for bots only. The sticker set must have been created by the bot		<para>See <a href="https://corefork.telegram.org/method/stickers.changeStickerPosition"/></para></summary>
 		[TLDef(0xFFB6D4CA)]
-		public partial class Stickers_ChangeStickerPosition_ : IMethod<Messages_StickerSet>
-		{
-			/// <summary>The sticker</summary>
-			public InputDocument sticker;
-			/// <summary>The new position of the sticker, zero-based</summary>
-			public int position;
-		}
+		public record Stickers_ChangeStickerPosition_(InputDocument sticker, int position) : IMethod<Messages_StickerSet>;
 		/// <summary>Changes the absolute position of a sticker in the set to which it belongs; for bots only. The sticker set must have been created by the bot		<para>See <a href="https://corefork.telegram.org/method/stickers.changeStickerPosition"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.changeStickerPosition#possible-errors">details</a>)</para></summary>
 		/// <param name="sticker">The sticker</param>
 		/// <param name="position">The new position of the sticker, zero-based</param>
 		public static Task<Messages_StickerSet> Stickers_ChangeStickerPosition(this Client client, InputDocument sticker, int position)
-			=> client.CallAsync(new Stickers_ChangeStickerPosition_
-			{
-				sticker = sticker,
-				position = position,
-			});
+			=> client.CallAsync(new Stickers_ChangeStickerPosition_(sticker, position));
 
-		/// <summary>Add a sticker to a stickerset, bots only. The sticker set must have been created by the bot.		<para>See <a href="https://corefork.telegram.org/method/stickers.addStickerToSet"/></para></summary>
 		[TLDef(0x8653FEBE)]
-		public partial class Stickers_AddStickerToSet_ : IMethod<Messages_StickerSet>
-		{
-			/// <summary>The stickerset</summary>
-			public InputStickerSet stickerset;
-			/// <summary>The sticker</summary>
-			public InputStickerSetItem sticker;
-		}
+		public record Stickers_AddStickerToSet_(InputStickerSet stickerset, InputStickerSetItem sticker) : IMethod<Messages_StickerSet>;
 		/// <summary>Add a sticker to a stickerset, bots only. The sticker set must have been created by the bot.		<para>See <a href="https://corefork.telegram.org/method/stickers.addStickerToSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.addStickerToSet#possible-errors">details</a>)</para></summary>
 		/// <param name="stickerset">The stickerset</param>
 		/// <param name="sticker">The sticker</param>
 		public static Task<Messages_StickerSet> Stickers_AddStickerToSet(this Client client, InputStickerSet stickerset, InputStickerSetItem sticker)
-			=> client.CallAsync(new Stickers_AddStickerToSet_
-			{
-				stickerset = stickerset,
-				sticker = sticker,
-			});
+			=> client.CallAsync(new Stickers_AddStickerToSet_(stickerset, sticker));
 
-		/// <summary>Set stickerset thumbnail		<para>See <a href="https://corefork.telegram.org/method/stickers.setStickerSetThumb"/></para></summary>
 		[TLDef(0x9A364E30)]
-		public partial class Stickers_SetStickerSetThumb_ : IMethod<Messages_StickerSet>
-		{
-			/// <summary>Stickerset</summary>
-			public InputStickerSet stickerset;
-			/// <summary>Thumbnail</summary>
-			public InputDocument thumb;
-		}
+		public record Stickers_SetStickerSetThumb_(InputStickerSet stickerset, InputDocument thumb) : IMethod<Messages_StickerSet>;
 		/// <summary>Set stickerset thumbnail		<para>See <a href="https://corefork.telegram.org/method/stickers.setStickerSetThumb"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.setStickerSetThumb#possible-errors">details</a>)</para></summary>
 		/// <param name="stickerset">Stickerset</param>
 		/// <param name="thumb">Thumbnail</param>
 		public static Task<Messages_StickerSet> Stickers_SetStickerSetThumb(this Client client, InputStickerSet stickerset, InputDocument thumb)
-			=> client.CallAsync(new Stickers_SetStickerSetThumb_
-			{
-				stickerset = stickerset,
-				thumb = thumb,
-			});
+			=> client.CallAsync(new Stickers_SetStickerSetThumb_(stickerset, thumb));
 
-		/// <summary>Check whether the given short name is available		<para>See <a href="https://corefork.telegram.org/method/stickers.checkShortName"/></para></summary>
 		[TLDef(0x284B3639)]
-		public partial class Stickers_CheckShortName_ : IMethod<bool>
-		{
-			/// <summary>Short name</summary>
-			public string short_name;
-		}
+		public record Stickers_CheckShortName_(string short_name) : IMethod<bool>;
 		/// <summary>Check whether the given short name is available		<para>See <a href="https://corefork.telegram.org/method/stickers.checkShortName"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.checkShortName#possible-errors">details</a>)</para></summary>
 		/// <param name="short_name">Short name</param>
 		public static Task<bool> Stickers_CheckShortName(this Client client, string short_name)
-			=> client.CallAsync(new Stickers_CheckShortName_
-			{
-				short_name = short_name,
-			});
+			=> client.CallAsync(new Stickers_CheckShortName_(short_name));
 
-		/// <summary>Suggests a short name for a given stickerpack name		<para>See <a href="https://corefork.telegram.org/method/stickers.suggestShortName"/></para></summary>
 		[TLDef(0x4DAFC503)]
-		public partial class Stickers_SuggestShortName_ : IMethod<Stickers_SuggestedShortName>
-		{
-			/// <summary>Sticker pack name</summary>
-			public string title;
-		}
+		public record Stickers_SuggestShortName_(string title) : IMethod<Stickers_SuggestedShortName>;
 		/// <summary>Suggests a short name for a given stickerpack name		<para>See <a href="https://corefork.telegram.org/method/stickers.suggestShortName"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.suggestShortName#possible-errors">details</a>)</para></summary>
 		/// <param name="title">Sticker pack name</param>
 		public static Task<Stickers_SuggestedShortName> Stickers_SuggestShortName(this Client client, string title)
-			=> client.CallAsync(new Stickers_SuggestShortName_
-			{
-				title = title,
-			});
+			=> client.CallAsync(new Stickers_SuggestShortName_(title));
 
-		/// <summary>Get phone call configuration to be passed to libtgvoip's shared config		<para>See <a href="https://corefork.telegram.org/method/phone.getCallConfig"/></para></summary>
 		[TLDef(0x55451FA9)]
-		public partial class Phone_GetCallConfig_ : IMethod<DataJSON> { }
+		public record Phone_GetCallConfig_() : IMethod<DataJSON>;
 		/// <summary>Get phone call configuration to be passed to libtgvoip's shared config		<para>See <a href="https://corefork.telegram.org/method/phone.getCallConfig"/></para></summary>
 		public static Task<DataJSON> Phone_GetCallConfig(this Client client)
-			=> client.CallAsync(new Phone_GetCallConfig_
-			{
-			});
+			=> client.CallAsync(new Phone_GetCallConfig_());
 
-		/// <summary>Start a telegram phone call		<para>See <a href="https://corefork.telegram.org/method/phone.requestCall"/></para></summary>
 		[TLDef(0x42FF96ED)]
-		public partial class Phone_RequestCall_ : IMethod<Phone_PhoneCall>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Destination of the phone call</summary>
-			public InputUserBase user_id;
-			/// <summary>Random ID to avoid resending the same object</summary>
-			public int random_id;
-			/// <summary><a href="https://corefork.telegram.org/api/end-to-end/voice-calls">Parameter for E2E encryption key exchange »</a></summary>
-			public byte[] g_a_hash;
-			/// <summary>Phone call settings</summary>
-			public PhoneCallProtocol protocol;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to start a video call</summary>
-				video = 0x1,
-			}
-		}
+		public record Phone_RequestCall_(int flags, InputUserBase user_id, int random_id, byte[] g_a_hash, PhoneCallProtocol protocol) : IMethod<Phone_PhoneCall>;
 		/// <summary>Start a telegram phone call		<para>See <a href="https://corefork.telegram.org/method/phone.requestCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.requestCall#possible-errors">details</a>)</para></summary>
 		/// <param name="video">Whether to start a video call</param>
 		/// <param name="user_id">Destination of the phone call</param>
@@ -20120,101 +15304,36 @@ namespace TL
 		/// <param name="g_a_hash"><a href="https://corefork.telegram.org/api/end-to-end/voice-calls">Parameter for E2E encryption key exchange »</a></param>
 		/// <param name="protocol">Phone call settings</param>
 		public static Task<Phone_PhoneCall> Phone_RequestCall(this Client client, InputUserBase user_id, int random_id, byte[] g_a_hash, PhoneCallProtocol protocol, bool video = false)
-			=> client.CallAsync(new Phone_RequestCall_
-			{
-				flags = (Phone_RequestCall_.Flags)(video ? 0x1 : 0),
-				user_id = user_id,
-				random_id = random_id,
-				g_a_hash = g_a_hash,
-				protocol = protocol,
-			});
+			=> client.CallAsync(new Phone_RequestCall_(video ? 0x1 : 0, user_id, random_id, g_a_hash, protocol));
 
-		/// <summary>Accept incoming call		<para>See <a href="https://corefork.telegram.org/method/phone.acceptCall"/></para></summary>
 		[TLDef(0x3BD2B4A0)]
-		public partial class Phone_AcceptCall_ : IMethod<Phone_PhoneCall>
-		{
-			/// <summary>The call to accept</summary>
-			public InputPhoneCall peer;
-			/// <summary><a href="https://corefork.telegram.org/api/end-to-end/voice-calls">Parameter for E2E encryption key exchange »</a></summary>
-			public byte[] g_b;
-			/// <summary>Phone call settings</summary>
-			public PhoneCallProtocol protocol;
-		}
+		public record Phone_AcceptCall_(InputPhoneCall peer, byte[] g_b, PhoneCallProtocol protocol) : IMethod<Phone_PhoneCall>;
 		/// <summary>Accept incoming call		<para>See <a href="https://corefork.telegram.org/method/phone.acceptCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.acceptCall#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The call to accept</param>
 		/// <param name="g_b"><a href="https://corefork.telegram.org/api/end-to-end/voice-calls">Parameter for E2E encryption key exchange »</a></param>
 		/// <param name="protocol">Phone call settings</param>
 		public static Task<Phone_PhoneCall> Phone_AcceptCall(this Client client, InputPhoneCall peer, byte[] g_b, PhoneCallProtocol protocol)
-			=> client.CallAsync(new Phone_AcceptCall_
-			{
-				peer = peer,
-				g_b = g_b,
-				protocol = protocol,
-			});
+			=> client.CallAsync(new Phone_AcceptCall_(peer, g_b, protocol));
 
-		/// <summary><a href="https://corefork.telegram.org/api/end-to-end/voice-calls">Complete phone call E2E encryption key exchange »</a>		<para>See <a href="https://corefork.telegram.org/method/phone.confirmCall"/></para></summary>
 		[TLDef(0x2EFE1722)]
-		public partial class Phone_ConfirmCall_ : IMethod<Phone_PhoneCall>
-		{
-			/// <summary>The phone call</summary>
-			public InputPhoneCall peer;
-			/// <summary><a href="https://corefork.telegram.org/api/end-to-end/voice-calls">Parameter for E2E encryption key exchange »</a></summary>
-			public byte[] g_a;
-			/// <summary>Key fingerprint</summary>
-			public long key_fingerprint;
-			/// <summary>Phone call settings</summary>
-			public PhoneCallProtocol protocol;
-		}
+		public record Phone_ConfirmCall_(InputPhoneCall peer, byte[] g_a, long key_fingerprint, PhoneCallProtocol protocol) : IMethod<Phone_PhoneCall>;
 		/// <summary><a href="https://corefork.telegram.org/api/end-to-end/voice-calls">Complete phone call E2E encryption key exchange »</a>		<para>See <a href="https://corefork.telegram.org/method/phone.confirmCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.confirmCall#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The phone call</param>
 		/// <param name="g_a"><a href="https://corefork.telegram.org/api/end-to-end/voice-calls">Parameter for E2E encryption key exchange »</a></param>
 		/// <param name="key_fingerprint">Key fingerprint</param>
 		/// <param name="protocol">Phone call settings</param>
 		public static Task<Phone_PhoneCall> Phone_ConfirmCall(this Client client, InputPhoneCall peer, byte[] g_a, long key_fingerprint, PhoneCallProtocol protocol)
-			=> client.CallAsync(new Phone_ConfirmCall_
-			{
-				peer = peer,
-				g_a = g_a,
-				key_fingerprint = key_fingerprint,
-				protocol = protocol,
-			});
+			=> client.CallAsync(new Phone_ConfirmCall_(peer, g_a, key_fingerprint, protocol));
 
-		/// <summary>Optional: notify the server that the user is currently busy in a call: this will automatically refuse all incoming phone calls until the current phone call is ended.		<para>See <a href="https://corefork.telegram.org/method/phone.receivedCall"/></para></summary>
 		[TLDef(0x17D54F61)]
-		public partial class Phone_ReceivedCall_ : IMethod<bool>
-		{
-			/// <summary>The phone call we're currently in</summary>
-			public InputPhoneCall peer;
-		}
+		public record Phone_ReceivedCall_(InputPhoneCall peer) : IMethod<bool>;
 		/// <summary>Optional: notify the server that the user is currently busy in a call: this will automatically refuse all incoming phone calls until the current phone call is ended.		<para>See <a href="https://corefork.telegram.org/method/phone.receivedCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.receivedCall#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The phone call we're currently in</param>
 		public static Task<bool> Phone_ReceivedCall(this Client client, InputPhoneCall peer)
-			=> client.CallAsync(new Phone_ReceivedCall_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Phone_ReceivedCall_(peer));
 
-		/// <summary>Refuse or end running call		<para>See <a href="https://corefork.telegram.org/method/phone.discardCall"/></para></summary>
 		[TLDef(0xB2CBC1C0)]
-		public partial class Phone_DiscardCall_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The phone call</summary>
-			public InputPhoneCall peer;
-			/// <summary>Call duration</summary>
-			public int duration;
-			/// <summary>Why was the call discarded</summary>
-			public PhoneCallDiscardReason reason;
-			/// <summary>Preferred libtgvoip relay ID</summary>
-			public long connection_id;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether this is a video call</summary>
-				video = 0x1,
-			}
-		}
+		public record Phone_DiscardCall_(int flags, InputPhoneCall peer, int duration, PhoneCallDiscardReason reason, long connection_id) : IMethod<UpdatesBase>;
 		/// <summary>Refuse or end running call		<para>See <a href="https://corefork.telegram.org/method/phone.discardCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.discardCall#possible-errors">details</a>)</para></summary>
 		/// <param name="video">Whether this is a video call</param>
 		/// <param name="peer">The phone call</param>
@@ -20222,149 +15341,47 @@ namespace TL
 		/// <param name="reason">Why was the call discarded</param>
 		/// <param name="connection_id">Preferred libtgvoip relay ID</param>
 		public static Task<UpdatesBase> Phone_DiscardCall(this Client client, InputPhoneCall peer, int duration, PhoneCallDiscardReason reason, long connection_id, bool video = false)
-			=> client.CallAsync(new Phone_DiscardCall_
-			{
-				flags = (Phone_DiscardCall_.Flags)(video ? 0x1 : 0),
-				peer = peer,
-				duration = duration,
-				reason = reason,
-				connection_id = connection_id,
-			});
+			=> client.CallAsync(new Phone_DiscardCall_(video ? 0x1 : 0, peer, duration, reason, connection_id));
 
-		/// <summary>Rate a call		<para>See <a href="https://corefork.telegram.org/method/phone.setCallRating"/></para></summary>
 		[TLDef(0x59EAD627)]
-		public partial class Phone_SetCallRating_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The call to rate</summary>
-			public InputPhoneCall peer;
-			/// <summary>Rating in <c>1-5</c> stars</summary>
-			public int rating;
-			/// <summary>An additional comment</summary>
-			public string comment;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether the user decided on their own initiative to rate the call</summary>
-				user_initiative = 0x1,
-			}
-		}
+		public record Phone_SetCallRating_(int flags, InputPhoneCall peer, int rating, string comment) : IMethod<UpdatesBase>;
 		/// <summary>Rate a call		<para>See <a href="https://corefork.telegram.org/method/phone.setCallRating"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.setCallRating#possible-errors">details</a>)</para></summary>
 		/// <param name="user_initiative">Whether the user decided on their own initiative to rate the call</param>
 		/// <param name="peer">The call to rate</param>
 		/// <param name="rating">Rating in <c>1-5</c> stars</param>
 		/// <param name="comment">An additional comment</param>
 		public static Task<UpdatesBase> Phone_SetCallRating(this Client client, InputPhoneCall peer, int rating, string comment, bool user_initiative = false)
-			=> client.CallAsync(new Phone_SetCallRating_
-			{
-				flags = (Phone_SetCallRating_.Flags)(user_initiative ? 0x1 : 0),
-				peer = peer,
-				rating = rating,
-				comment = comment,
-			});
+			=> client.CallAsync(new Phone_SetCallRating_(user_initiative ? 0x1 : 0, peer, rating, comment));
 
-		/// <summary>Send phone call debug data to server		<para>See <a href="https://corefork.telegram.org/method/phone.saveCallDebug"/></para></summary>
 		[TLDef(0x277ADD7E)]
-		public partial class Phone_SaveCallDebug_ : IMethod<bool>
-		{
-			/// <summary>Phone call</summary>
-			public InputPhoneCall peer;
-			/// <summary>Debug statistics obtained from libtgvoip</summary>
-			public DataJSON debug;
-		}
+		public record Phone_SaveCallDebug_(InputPhoneCall peer, DataJSON debug) : IMethod<bool>;
 		/// <summary>Send phone call debug data to server		<para>See <a href="https://corefork.telegram.org/method/phone.saveCallDebug"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.saveCallDebug#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Phone call</param>
 		/// <param name="debug">Debug statistics obtained from libtgvoip</param>
 		public static Task<bool> Phone_SaveCallDebug(this Client client, InputPhoneCall peer, DataJSON debug)
-			=> client.CallAsync(new Phone_SaveCallDebug_
-			{
-				peer = peer,
-				debug = debug,
-			});
+			=> client.CallAsync(new Phone_SaveCallDebug_(peer, debug));
 
-		/// <summary>Send VoIP signaling data		<para>See <a href="https://corefork.telegram.org/method/phone.sendSignalingData"/></para></summary>
 		[TLDef(0xFF7A9383)]
-		public partial class Phone_SendSignalingData_ : IMethod<bool>
-		{
-			/// <summary>Phone call</summary>
-			public InputPhoneCall peer;
-			/// <summary>Signaling payload</summary>
-			public byte[] data;
-		}
+		public record Phone_SendSignalingData_(InputPhoneCall peer, byte[] data) : IMethod<bool>;
 		/// <summary>Send VoIP signaling data		<para>See <a href="https://corefork.telegram.org/method/phone.sendSignalingData"/></para></summary>
 		/// <param name="peer">Phone call</param>
 		/// <param name="data">Signaling payload</param>
 		public static Task<bool> Phone_SendSignalingData(this Client client, InputPhoneCall peer, byte[] data)
-			=> client.CallAsync(new Phone_SendSignalingData_
-			{
-				peer = peer,
-				data = data,
-			});
+			=> client.CallAsync(new Phone_SendSignalingData_(peer, data));
 
-		/// <summary>Create a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.createGroupCall"/></para></summary>
 		[TLDef(0x48CDC6D8)]
-		public partial class Phone_CreateGroupCall_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Associate the group call or livestream to the provided <a href="https://corefork.telegram.org/api/channel">group/supergroup/channel</a></summary>
-			public InputPeer peer;
-			/// <summary>Unique client message ID required to prevent creation of duplicate group calls</summary>
-			public int random_id;
-			/// <summary>Call title</summary>
-			[IfFlag(0)] public string title;
-			/// <summary>For scheduled group call or livestreams, the absolute date when the group call will start</summary>
-			[IfFlag(1)] public DateTime schedule_date;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="title"/> has a value</summary>
-				has_title = 0x1,
-				/// <summary>Field <see cref="schedule_date"/> has a value</summary>
-				has_schedule_date = 0x2,
-			}
-		}
+		public record Phone_CreateGroupCall_(int flags, InputPeer peer, int random_id, [field:IfFlag(0)] string title, [field:IfFlag(1)] DateTime schedule_date) : IMethod<UpdatesBase>;
 		/// <summary>Create a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.createGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.createGroupCall#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Associate the group call or livestream to the provided <a href="https://corefork.telegram.org/api/channel">group/supergroup/channel</a></param>
 		/// <param name="random_id">Unique client message ID required to prevent creation of duplicate group calls</param>
 		/// <param name="title">Call title</param>
 		/// <param name="schedule_date">For scheduled group call or livestreams, the absolute date when the group call will start</param>
 		public static Task<UpdatesBase> Phone_CreateGroupCall(this Client client, InputPeer peer, int random_id, string title = null, DateTime? schedule_date = null)
-			=> client.CallAsync(new Phone_CreateGroupCall_
-			{
-				flags = (Phone_CreateGroupCall_.Flags)((title != null ? 0x1 : 0) | (schedule_date != null ? 0x2 : 0)),
-				peer = peer,
-				random_id = random_id,
-				title = title,
-				schedule_date = schedule_date.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Phone_CreateGroupCall_((title != null ? 0x1 : 0) | (schedule_date != null ? 0x2 : 0),
+				peer, random_id, title, schedule_date.GetValueOrDefault()));
 
-		/// <summary>Join a group call		<para>See <a href="https://corefork.telegram.org/method/phone.joinGroupCall"/></para></summary>
 		[TLDef(0xB132FF7B)]
-		public partial class Phone_JoinGroupCall_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The group call</summary>
-			public InputGroupCall call;
-			/// <summary>Join the group call, presenting yourself as the specified user/channel</summary>
-			public InputPeer join_as;
-			/// <summary>The invitation hash from the invite link: <c>https://t.me/username?voicechat=hash</c></summary>
-			[IfFlag(1)] public string invite_hash;
-			/// <summary>WebRTC parameters</summary>
-			public DataJSON params_;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>If set, the user will be muted by default upon joining.</summary>
-				muted = 0x1,
-				/// <summary>Field <see cref="invite_hash"/> has a value</summary>
-				has_invite_hash = 0x2,
-				/// <summary>If set, the user's video will be disabled by default upon joining.</summary>
-				video_stopped = 0x4,
-			}
-		}
+		public record Phone_JoinGroupCall_(int flags, InputGroupCall call, InputPeer join_as, [field:IfFlag(1)] string invite_hash, DataJSON params_) : IMethod<UpdatesBase>;
 		/// <summary>Join a group call		<para>See <a href="https://corefork.telegram.org/method/phone.joinGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.joinGroupCall#possible-errors">details</a>)</para></summary>
 		/// <param name="muted">If set, the user will be muted by default upon joining.</param>
 		/// <param name="video_stopped">If set, the user's video will be disabled by default upon joining.</param>
@@ -20373,133 +15390,52 @@ namespace TL
 		/// <param name="invite_hash">The invitation hash from the invite link: <c>https://t.me/username?voicechat=hash</c></param>
 		/// <param name="params_">WebRTC parameters</param>
 		public static Task<UpdatesBase> Phone_JoinGroupCall(this Client client, InputGroupCall call, InputPeer join_as, DataJSON params_, bool muted = false, bool video_stopped = false, string invite_hash = null)
-			=> client.CallAsync(new Phone_JoinGroupCall_
-			{
-				flags = (Phone_JoinGroupCall_.Flags)((muted ? 0x1 : 0) | (video_stopped ? 0x4 : 0) | (invite_hash != null ? 0x2 : 0)),
-				call = call,
-				join_as = join_as,
-				invite_hash = invite_hash,
-				params_ = params_,
-			});
+			=> client.CallAsync(new Phone_JoinGroupCall_((muted ? 0x1 : 0) | (video_stopped ? 0x4 : 0) | (invite_hash != null ? 0x2 : 0),
+				call, join_as, invite_hash, params_));
 
-		/// <summary>Leave a group call		<para>See <a href="https://corefork.telegram.org/method/phone.leaveGroupCall"/></para></summary>
 		[TLDef(0x500377F9)]
-		public partial class Phone_LeaveGroupCall_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The group call</summary>
-			public InputGroupCall call;
-			/// <summary>Your source ID</summary>
-			public int source;
-		}
+		public record Phone_LeaveGroupCall_(InputGroupCall call, int source) : IMethod<UpdatesBase>;
 		/// <summary>Leave a group call		<para>See <a href="https://corefork.telegram.org/method/phone.leaveGroupCall"/></para></summary>
 		/// <param name="call">The group call</param>
 		/// <param name="source">Your source ID</param>
 		public static Task<UpdatesBase> Phone_LeaveGroupCall(this Client client, InputGroupCall call, int source)
-			=> client.CallAsync(new Phone_LeaveGroupCall_
-			{
-				call = call,
-				source = source,
-			});
+			=> client.CallAsync(new Phone_LeaveGroupCall_(call, source));
 
-		/// <summary>Invite a set of users to a group call.		<para>See <a href="https://corefork.telegram.org/method/phone.inviteToGroupCall"/></para></summary>
 		[TLDef(0x7B393160)]
-		public partial class Phone_InviteToGroupCall_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The group call</summary>
-			public InputGroupCall call;
-			/// <summary>The users to invite.</summary>
-			public InputUserBase[] users;
-		}
+		public record Phone_InviteToGroupCall_(InputGroupCall call, InputUserBase[] users) : IMethod<UpdatesBase>;
 		/// <summary>Invite a set of users to a group call.		<para>See <a href="https://corefork.telegram.org/method/phone.inviteToGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/phone.inviteToGroupCall#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The group call</param>
 		/// <param name="users">The users to invite.</param>
 		public static Task<UpdatesBase> Phone_InviteToGroupCall(this Client client, InputGroupCall call, InputUserBase[] users)
-			=> client.CallAsync(new Phone_InviteToGroupCall_
-			{
-				call = call,
-				users = users,
-			});
+			=> client.CallAsync(new Phone_InviteToGroupCall_(call, users));
 
-		/// <summary>Terminate a group call		<para>See <a href="https://corefork.telegram.org/method/phone.discardGroupCall"/></para></summary>
 		[TLDef(0x7A777135)]
-		public partial class Phone_DiscardGroupCall_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The group call to terminate</summary>
-			public InputGroupCall call;
-		}
+		public record Phone_DiscardGroupCall_(InputGroupCall call) : IMethod<UpdatesBase>;
 		/// <summary>Terminate a group call		<para>See <a href="https://corefork.telegram.org/method/phone.discardGroupCall"/></para></summary>
 		/// <param name="call">The group call to terminate</param>
 		public static Task<UpdatesBase> Phone_DiscardGroupCall(this Client client, InputGroupCall call)
-			=> client.CallAsync(new Phone_DiscardGroupCall_
-			{
-				call = call,
-			});
+			=> client.CallAsync(new Phone_DiscardGroupCall_(call));
 
-		/// <summary>Change group call settings		<para>See <a href="https://corefork.telegram.org/method/phone.toggleGroupCallSettings"/></para></summary>
 		[TLDef(0x74BBB43D)]
-		public partial class Phone_ToggleGroupCallSettings_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Group call</summary>
-			public InputGroupCall call;
-			/// <summary>Whether all users will bthat join this group calle muted by default upon joining the group call</summary>
-			[IfFlag(0)] public bool join_muted;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="join_muted"/> has a value</summary>
-				has_join_muted = 0x1,
-				/// <summary>Invalidate existing invite links</summary>
-				reset_invite_hash = 0x2,
-			}
-		}
+		public record Phone_ToggleGroupCallSettings_(int flags, InputGroupCall call, [field:IfFlag(0)] bool join_muted) : IMethod<UpdatesBase>;
 		/// <summary>Change group call settings		<para>See <a href="https://corefork.telegram.org/method/phone.toggleGroupCallSettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.toggleGroupCallSettings#possible-errors">details</a>)</para></summary>
 		/// <param name="reset_invite_hash">Invalidate existing invite links</param>
 		/// <param name="call">Group call</param>
 		/// <param name="join_muted">Whether all users will bthat join this group calle muted by default upon joining the group call</param>
 		public static Task<UpdatesBase> Phone_ToggleGroupCallSettings(this Client client, InputGroupCall call, bool reset_invite_hash = false, bool? join_muted = default)
-			=> client.CallAsync(new Phone_ToggleGroupCallSettings_
-			{
-				flags = (Phone_ToggleGroupCallSettings_.Flags)((reset_invite_hash ? 0x2 : 0) | (join_muted != default ? 0x1 : 0)),
-				call = call,
-				join_muted = join_muted.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Phone_ToggleGroupCallSettings_((reset_invite_hash ? 0x2 : 0) | (join_muted != default ? 0x1 : 0),
+				call, join_muted.GetValueOrDefault()));
 
-		/// <summary>Get info about a group call		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCall"/></para></summary>
 		[TLDef(0x041845DB)]
-		public partial class Phone_GetGroupCall_ : IMethod<Phone_GroupCall>
-		{
-			/// <summary>The group call</summary>
-			public InputGroupCall call;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-		}
+		public record Phone_GetGroupCall_(InputGroupCall call, int limit) : IMethod<Phone_GroupCall>;
 		/// <summary>Get info about a group call		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCall"/></para></summary>
 		/// <param name="call">The group call</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Phone_GroupCall> Phone_GetGroupCall(this Client client, InputGroupCall call, int limit)
-			=> client.CallAsync(new Phone_GetGroupCall_
-			{
-				call = call,
-				limit = limit,
-			});
+			=> client.CallAsync(new Phone_GetGroupCall_(call, limit));
 
-		/// <summary>Get group call participants		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupParticipants"/></para></summary>
 		[TLDef(0xC558D8AB)]
-		public partial class Phone_GetGroupParticipants_ : IMethod<Phone_GroupParticipants>
-		{
-			/// <summary>Group call</summary>
-			public InputGroupCall call;
-			/// <summary>If specified, will fetch group participant info about the specified peers</summary>
-			public InputPeer[] ids;
-			/// <summary>If specified, will fetch group participant info about the specified WebRTC source IDs</summary>
-			public int[] sources;
-			/// <summary>Offset for results, taken from the <c>next_offset</c> field of <see cref="Phone_GroupParticipants"/>, initially an empty string. <br/>Note: if no more results are available, the method call will return an empty <c>next_offset</c>; thus, avoid providing the <c>next_offset</c> returned in <see cref="Phone_GroupParticipants"/> if it is empty, to avoid an infinite loop.</summary>
-			public string offset;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-		}
+		public record Phone_GetGroupParticipants_(InputGroupCall call, InputPeer[] ids, int[] sources, string offset, int limit) : IMethod<Phone_GroupParticipants>;
 		/// <summary>Get group call participants		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupParticipants"/></para></summary>
 		/// <param name="call">Group call</param>
 		/// <param name="ids">If specified, will fetch group participant info about the specified peers</param>
@@ -20507,57 +15443,18 @@ namespace TL
 		/// <param name="offset">Offset for results, taken from the <c>next_offset</c> field of <see cref="Phone_GroupParticipants"/>, initially an empty string. <br/>Note: if no more results are available, the method call will return an empty <c>next_offset</c>; thus, avoid providing the <c>next_offset</c> returned in <see cref="Phone_GroupParticipants"/> if it is empty, to avoid an infinite loop.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Phone_GroupParticipants> Phone_GetGroupParticipants(this Client client, InputGroupCall call, InputPeer[] ids, int[] sources, string offset, int limit)
-			=> client.CallAsync(new Phone_GetGroupParticipants_
-			{
-				call = call,
-				ids = ids,
-				sources = sources,
-				offset = offset,
-				limit = limit,
-			});
+			=> client.CallAsync(new Phone_GetGroupParticipants_(call, ids, sources, offset, limit));
 
-		/// <summary>Check whether the group call Server Forwarding Unit is currently receiving the streams with the specified WebRTC source IDs		<para>See <a href="https://corefork.telegram.org/method/phone.checkGroupCall"/></para></summary>
 		[TLDef(0xB59CF977)]
-		public partial class Phone_CheckGroupCall_ : IMethod<int[]>
-		{
-			/// <summary>Group call</summary>
-			public InputGroupCall call;
-			/// <summary>Source IDs</summary>
-			public int[] sources;
-		}
+		public record Phone_CheckGroupCall_(InputGroupCall call, int[] sources) : IMethod<int[]>;
 		/// <summary>Check whether the group call Server Forwarding Unit is currently receiving the streams with the specified WebRTC source IDs		<para>See <a href="https://corefork.telegram.org/method/phone.checkGroupCall"/></para></summary>
 		/// <param name="call">Group call</param>
 		/// <param name="sources">Source IDs</param>
 		public static Task<int[]> Phone_CheckGroupCall(this Client client, InputGroupCall call, int[] sources)
-			=> client.CallAsync(new Phone_CheckGroupCall_
-			{
-				call = call,
-				sources = sources,
-			});
+			=> client.CallAsync(new Phone_CheckGroupCall_(call, sources));
 
-		/// <summary>Start or stop recording a group call: the recorded audio and video streams will be automatically sent to <c>Saved messages</c> (the chat with ourselves).		<para>See <a href="https://corefork.telegram.org/method/phone.toggleGroupCallRecord"/></para></summary>
 		[TLDef(0xF128C708)]
-		public partial class Phone_ToggleGroupCallRecord_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The group call or livestream</summary>
-			public InputGroupCall call;
-			/// <summary>Recording title</summary>
-			[IfFlag(1)] public string title;
-			/// <summary>If video stream recording is enabled, whether to record in portrait or landscape mode</summary>
-			[IfFlag(2)] public bool video_portrait;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to start or stop recording</summary>
-				start = 0x1,
-				/// <summary>Field <see cref="title"/> has a value</summary>
-				has_title = 0x2,
-				/// <summary>Whether to also record video streams</summary>
-				video = 0x4,
-			}
-		}
+		public record Phone_ToggleGroupCallRecord_(int flags, InputGroupCall call, [field:IfFlag(1)] string title, [field:IfFlag(2)] bool video_portrait) : IMethod<UpdatesBase>;
 		/// <summary>Start or stop recording a group call: the recorded audio and video streams will be automatically sent to <c>Saved messages</c> (the chat with ourselves).		<para>See <a href="https://corefork.telegram.org/method/phone.toggleGroupCallRecord"/></para></summary>
 		/// <param name="start">Whether to start or stop recording</param>
 		/// <param name="video">Whether to also record video streams</param>
@@ -20565,53 +15462,11 @@ namespace TL
 		/// <param name="title">Recording title</param>
 		/// <param name="video_portrait">If video stream recording is enabled, whether to record in portrait or landscape mode</param>
 		public static Task<UpdatesBase> Phone_ToggleGroupCallRecord(this Client client, InputGroupCall call, bool start = false, bool video = false, string title = null, bool? video_portrait = default)
-			=> client.CallAsync(new Phone_ToggleGroupCallRecord_
-			{
-				flags = (Phone_ToggleGroupCallRecord_.Flags)((start ? 0x1 : 0) | (video ? 0x4 : 0) | (title != null ? 0x2 : 0) | (video_portrait != default ? 0x4 : 0)),
-				call = call,
-				title = title,
-				video_portrait = video_portrait.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Phone_ToggleGroupCallRecord_((start ? 0x1 : 0) | (video ? 0x4 : 0) | (title != null ? 0x2 : 0) | (video_portrait != default ? 0x4 : 0),
+				call, title, video_portrait.GetValueOrDefault()));
 
-		/// <summary>Edit information about a given group call participant		<para>See <a href="https://corefork.telegram.org/method/phone.editGroupCallParticipant"/></para></summary>
 		[TLDef(0xA5273ABF)]
-		public partial class Phone_EditGroupCallParticipant_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The group call</summary>
-			public InputGroupCall call;
-			/// <summary>The group call participant (can also be the user itself)</summary>
-			public InputPeer participant;
-			/// <summary>Whether to mute or unmute the specified participant</summary>
-			[IfFlag(0)] public bool muted;
-			/// <summary>New volume</summary>
-			[IfFlag(1)] public int volume;
-			/// <summary>Raise or lower hand</summary>
-			[IfFlag(2)] public bool raise_hand;
-			/// <summary>Start or stop the video stream</summary>
-			[IfFlag(3)] public bool video_stopped;
-			/// <summary>Pause or resume the video stream</summary>
-			[IfFlag(4)] public bool video_paused;
-			/// <summary>Pause or resume the screen sharing stream</summary>
-			[IfFlag(5)] public bool presentation_paused;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="muted"/> has a value</summary>
-				has_muted = 0x1,
-				/// <summary>Field <see cref="volume"/> has a value</summary>
-				has_volume = 0x2,
-				/// <summary>Field <see cref="raise_hand"/> has a value</summary>
-				has_raise_hand = 0x4,
-				/// <summary>Field <see cref="video_stopped"/> has a value</summary>
-				has_video_stopped = 0x8,
-				/// <summary>Field <see cref="video_paused"/> has a value</summary>
-				has_video_paused = 0x10,
-				/// <summary>Field <see cref="presentation_paused"/> has a value</summary>
-				has_presentation_paused = 0x20,
-			}
-		}
+		public record Phone_EditGroupCallParticipant_(int flags, InputGroupCall call, InputPeer participant, [field:IfFlag(0)] bool muted, [field:IfFlag(1)] int volume, [field:IfFlag(2)] bool raise_hand, [field:IfFlag(3)] bool video_stopped, [field:IfFlag(4)] bool video_paused, [field:IfFlag(5)] bool presentation_paused) : IMethod<UpdatesBase>;
 		/// <summary>Edit information about a given group call participant		<para>See <a href="https://corefork.telegram.org/method/phone.editGroupCallParticipant"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.editGroupCallParticipant#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The group call</param>
 		/// <param name="participant">The group call participant (can also be the user itself)</param>
@@ -20622,389 +15477,151 @@ namespace TL
 		/// <param name="video_paused">Pause or resume the video stream</param>
 		/// <param name="presentation_paused">Pause or resume the screen sharing stream</param>
 		public static Task<UpdatesBase> Phone_EditGroupCallParticipant(this Client client, InputGroupCall call, InputPeer participant, bool? muted = default, int? volume = null, bool? raise_hand = default, bool? video_stopped = default, bool? video_paused = default, bool? presentation_paused = default)
-			=> client.CallAsync(new Phone_EditGroupCallParticipant_
-			{
-				flags = (Phone_EditGroupCallParticipant_.Flags)((muted != default ? 0x1 : 0) | (volume != null ? 0x2 : 0) | (raise_hand != default ? 0x4 : 0) | (video_stopped != default ? 0x8 : 0) | (video_paused != default ? 0x10 : 0) | (presentation_paused != default ? 0x20 : 0)),
-				call = call,
-				participant = participant,
-				muted = muted.GetValueOrDefault(),
-				volume = volume.GetValueOrDefault(),
-				raise_hand = raise_hand.GetValueOrDefault(),
-				video_stopped = video_stopped.GetValueOrDefault(),
-				video_paused = video_paused.GetValueOrDefault(),
-				presentation_paused = presentation_paused.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Phone_EditGroupCallParticipant_((muted != default ? 0x1 : 0) | (volume != null ? 0x2 : 0) | (raise_hand != default ? 0x4 : 0) | (video_stopped != default ? 0x8 : 0) | (video_paused != default ? 0x10 : 0) | (presentation_paused != default ? 0x20 : 0),
+				call, participant, muted.GetValueOrDefault(), volume.GetValueOrDefault(), raise_hand.GetValueOrDefault(), video_stopped.GetValueOrDefault(), video_paused.GetValueOrDefault(), presentation_paused.GetValueOrDefault()));
 
-		/// <summary>Edit the title of a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.editGroupCallTitle"/></para></summary>
 		[TLDef(0x1CA6AC0A)]
-		public partial class Phone_EditGroupCallTitle_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Group call</summary>
-			public InputGroupCall call;
-			/// <summary>New title</summary>
-			public string title;
-		}
+		public record Phone_EditGroupCallTitle_(InputGroupCall call, string title) : IMethod<UpdatesBase>;
 		/// <summary>Edit the title of a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.editGroupCallTitle"/></para></summary>
 		/// <param name="call">Group call</param>
 		/// <param name="title">New title</param>
 		public static Task<UpdatesBase> Phone_EditGroupCallTitle(this Client client, InputGroupCall call, string title)
-			=> client.CallAsync(new Phone_EditGroupCallTitle_
-			{
-				call = call,
-				title = title,
-			});
+			=> client.CallAsync(new Phone_EditGroupCallTitle_(call, title));
 
-		/// <summary>Get a list of peers that can be used to join a group call, presenting yourself as a specific user/channel.		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallJoinAs"/></para></summary>
 		[TLDef(0xEF7C213A)]
-		public partial class Phone_GetGroupCallJoinAs_ : IMethod<Phone_JoinAsPeers>
-		{
-			/// <summary>The dialog whose group call or livestream we're trying to join</summary>
-			public InputPeer peer;
-		}
+		public record Phone_GetGroupCallJoinAs_(InputPeer peer) : IMethod<Phone_JoinAsPeers>;
 		/// <summary>Get a list of peers that can be used to join a group call, presenting yourself as a specific user/channel.		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallJoinAs"/></para></summary>
 		/// <param name="peer">The dialog whose group call or livestream we're trying to join</param>
 		public static Task<Phone_JoinAsPeers> Phone_GetGroupCallJoinAs(this Client client, InputPeer peer)
-			=> client.CallAsync(new Phone_GetGroupCallJoinAs_
-			{
-				peer = peer,
-			});
+			=> client.CallAsync(new Phone_GetGroupCallJoinAs_(peer));
 
-		/// <summary>Get an invite link for a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite"/></para></summary>
 		[TLDef(0xE6AA647F)]
-		public partial class Phone_ExportGroupCallInvite_ : IMethod<Phone_ExportedGroupCallInvite>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The group call</summary>
-			public InputGroupCall call;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>For livestreams, if set, users that join using this link will be able to speak without explicitly requesting permission by (for example by raising their hand).</summary>
-				can_self_unmute = 0x1,
-			}
-		}
+		public record Phone_ExportGroupCallInvite_(int flags, InputGroupCall call) : IMethod<Phone_ExportedGroupCallInvite>;
 		/// <summary>Get an invite link for a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite"/></para></summary>
 		/// <param name="can_self_unmute">For livestreams, if set, users that join using this link will be able to speak without explicitly requesting permission by (for example by raising their hand).</param>
 		/// <param name="call">The group call</param>
 		public static Task<Phone_ExportedGroupCallInvite> Phone_ExportGroupCallInvite(this Client client, InputGroupCall call, bool can_self_unmute = false)
-			=> client.CallAsync(new Phone_ExportGroupCallInvite_
-			{
-				flags = (Phone_ExportGroupCallInvite_.Flags)(can_self_unmute ? 0x1 : 0),
-				call = call,
-			});
+			=> client.CallAsync(new Phone_ExportGroupCallInvite_(can_self_unmute ? 0x1 : 0, call));
 
-		/// <summary>Subscribe or unsubscribe to a scheduled group call		<para>See <a href="https://corefork.telegram.org/method/phone.toggleGroupCallStartSubscription"/></para></summary>
 		[TLDef(0x219C34E6)]
-		public partial class Phone_ToggleGroupCallStartSubscription_ : IMethod<UpdatesBase>
-		{
-			/// <summary>Scheduled group call</summary>
-			public InputGroupCall call;
-			/// <summary>Enable or disable subscription</summary>
-			public bool subscribed;
-		}
+		public record Phone_ToggleGroupCallStartSubscription_(InputGroupCall call, bool subscribed) : IMethod<UpdatesBase>;
 		/// <summary>Subscribe or unsubscribe to a scheduled group call		<para>See <a href="https://corefork.telegram.org/method/phone.toggleGroupCallStartSubscription"/></para></summary>
 		/// <param name="call">Scheduled group call</param>
 		/// <param name="subscribed">Enable or disable subscription</param>
 		public static Task<UpdatesBase> Phone_ToggleGroupCallStartSubscription(this Client client, InputGroupCall call, bool subscribed)
-			=> client.CallAsync(new Phone_ToggleGroupCallStartSubscription_
-			{
-				call = call,
-				subscribed = subscribed,
-			});
+			=> client.CallAsync(new Phone_ToggleGroupCallStartSubscription_(call, subscribed));
 
-		/// <summary>Start a scheduled group call.		<para>See <a href="https://corefork.telegram.org/method/phone.startScheduledGroupCall"/></para></summary>
 		[TLDef(0x5680E342)]
-		public partial class Phone_StartScheduledGroupCall_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The scheduled group call</summary>
-			public InputGroupCall call;
-		}
+		public record Phone_StartScheduledGroupCall_(InputGroupCall call) : IMethod<UpdatesBase>;
 		/// <summary>Start a scheduled group call.		<para>See <a href="https://corefork.telegram.org/method/phone.startScheduledGroupCall"/></para></summary>
 		/// <param name="call">The scheduled group call</param>
 		public static Task<UpdatesBase> Phone_StartScheduledGroupCall(this Client client, InputGroupCall call)
-			=> client.CallAsync(new Phone_StartScheduledGroupCall_
-			{
-				call = call,
-			});
+			=> client.CallAsync(new Phone_StartScheduledGroupCall_(call));
 
-		/// <summary>Set the default peer that will be used to join a group call in a specific dialog.		<para>See <a href="https://corefork.telegram.org/method/phone.saveDefaultGroupCallJoinAs"/></para></summary>
 		[TLDef(0x575E1F8C)]
-		public partial class Phone_SaveDefaultGroupCallJoinAs_ : IMethod<bool>
-		{
-			/// <summary>The dialog</summary>
-			public InputPeer peer;
-			/// <summary>The default peer that will be used to join group calls in this dialog, presenting yourself as a specific user/channel.</summary>
-			public InputPeer join_as;
-		}
+		public record Phone_SaveDefaultGroupCallJoinAs_(InputPeer peer, InputPeer join_as) : IMethod<bool>;
 		/// <summary>Set the default peer that will be used to join a group call in a specific dialog.		<para>See <a href="https://corefork.telegram.org/method/phone.saveDefaultGroupCallJoinAs"/></para></summary>
 		/// <param name="peer">The dialog</param>
 		/// <param name="join_as">The default peer that will be used to join group calls in this dialog, presenting yourself as a specific user/channel.</param>
 		public static Task<bool> Phone_SaveDefaultGroupCallJoinAs(this Client client, InputPeer peer, InputPeer join_as)
-			=> client.CallAsync(new Phone_SaveDefaultGroupCallJoinAs_
-			{
-				peer = peer,
-				join_as = join_as,
-			});
+			=> client.CallAsync(new Phone_SaveDefaultGroupCallJoinAs_(peer, join_as));
 
-		/// <summary>Start screen sharing in a call		<para>See <a href="https://corefork.telegram.org/method/phone.joinGroupCallPresentation"/></para></summary>
 		[TLDef(0xCBEA6BC4)]
-		public partial class Phone_JoinGroupCallPresentation_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The group call</summary>
-			public InputGroupCall call;
-			/// <summary>WebRTC parameters</summary>
-			public DataJSON params_;
-		}
+		public record Phone_JoinGroupCallPresentation_(InputGroupCall call, DataJSON params_) : IMethod<UpdatesBase>;
 		/// <summary>Start screen sharing in a call		<para>See <a href="https://corefork.telegram.org/method/phone.joinGroupCallPresentation"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/phone.joinGroupCallPresentation#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The group call</param>
 		/// <param name="params_">WebRTC parameters</param>
 		public static Task<UpdatesBase> Phone_JoinGroupCallPresentation(this Client client, InputGroupCall call, DataJSON params_)
-			=> client.CallAsync(new Phone_JoinGroupCallPresentation_
-			{
-				call = call,
-				params_ = params_,
-			});
+			=> client.CallAsync(new Phone_JoinGroupCallPresentation_(call, params_));
 
-		/// <summary>Stop screen sharing in a group call		<para>See <a href="https://corefork.telegram.org/method/phone.leaveGroupCallPresentation"/></para></summary>
 		[TLDef(0x1C50D144)]
-		public partial class Phone_LeaveGroupCallPresentation_ : IMethod<UpdatesBase>
-		{
-			/// <summary>The group call</summary>
-			public InputGroupCall call;
-		}
+		public record Phone_LeaveGroupCallPresentation_(InputGroupCall call) : IMethod<UpdatesBase>;
 		/// <summary>Stop screen sharing in a group call		<para>See <a href="https://corefork.telegram.org/method/phone.leaveGroupCallPresentation"/></para></summary>
 		/// <param name="call">The group call</param>
 		public static Task<UpdatesBase> Phone_LeaveGroupCallPresentation(this Client client, InputGroupCall call)
-			=> client.CallAsync(new Phone_LeaveGroupCallPresentation_
-			{
-				call = call,
-			});
+			=> client.CallAsync(new Phone_LeaveGroupCallPresentation_(call));
 
-		/// <summary>Get localization pack strings		<para>See <a href="https://corefork.telegram.org/method/langpack.getLangPack"/></para></summary>
 		[TLDef(0xF2F2330A)]
-		public partial class Langpack_GetLangPack_ : IMethod<LangPackDifference>
-		{
-			/// <summary>Language pack name</summary>
-			public string lang_pack;
-			/// <summary>Language code</summary>
-			public string lang_code;
-		}
+		public record Langpack_GetLangPack_(string lang_pack, string lang_code) : IMethod<LangPackDifference>;
 		/// <summary>Get localization pack strings		<para>See <a href="https://corefork.telegram.org/method/langpack.getLangPack"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/langpack.getLangPack#possible-errors">details</a>)</para></summary>
 		/// <param name="lang_pack">Language pack name</param>
 		/// <param name="lang_code">Language code</param>
 		public static Task<LangPackDifference> Langpack_GetLangPack(this Client client, string lang_pack, string lang_code)
-			=> client.CallAsync(new Langpack_GetLangPack_
-			{
-				lang_pack = lang_pack,
-				lang_code = lang_code,
-			});
+			=> client.CallAsync(new Langpack_GetLangPack_(lang_pack, lang_code));
 
-		/// <summary>Get strings from a language pack		<para>See <a href="https://corefork.telegram.org/method/langpack.getStrings"/></para></summary>
 		[TLDef(0xEFEA3803)]
-		public partial class Langpack_GetStrings_ : IMethod<LangPackStringBase[]>
-		{
-			/// <summary>Language pack name</summary>
-			public string lang_pack;
-			/// <summary>Language code</summary>
-			public string lang_code;
-			/// <summary>Strings to get</summary>
-			public string[] keys;
-		}
+		public record Langpack_GetStrings_(string lang_pack, string lang_code, string[] keys) : IMethod<LangPackStringBase[]>;
 		/// <summary>Get strings from a language pack		<para>See <a href="https://corefork.telegram.org/method/langpack.getStrings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/langpack.getStrings#possible-errors">details</a>)</para></summary>
 		/// <param name="lang_pack">Language pack name</param>
 		/// <param name="lang_code">Language code</param>
 		/// <param name="keys">Strings to get</param>
 		public static Task<LangPackStringBase[]> Langpack_GetStrings(this Client client, string lang_pack, string lang_code, string[] keys)
-			=> client.CallAsync(new Langpack_GetStrings_
-			{
-				lang_pack = lang_pack,
-				lang_code = lang_code,
-				keys = keys,
-			});
+			=> client.CallAsync(new Langpack_GetStrings_(lang_pack, lang_code, keys));
 
-		/// <summary>Get new strings in languagepack		<para>See <a href="https://corefork.telegram.org/method/langpack.getDifference"/></para></summary>
 		[TLDef(0xCD984AA5)]
-		public partial class Langpack_GetDifference_ : IMethod<LangPackDifference>
-		{
-			/// <summary>Language pack</summary>
-			public string lang_pack;
-			/// <summary>Language code</summary>
-			public string lang_code;
-			/// <summary>Previous localization pack version</summary>
-			public int from_version;
-		}
+		public record Langpack_GetDifference_(string lang_pack, string lang_code, int from_version) : IMethod<LangPackDifference>;
 		/// <summary>Get new strings in languagepack		<para>See <a href="https://corefork.telegram.org/method/langpack.getDifference"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/langpack.getDifference#possible-errors">details</a>)</para></summary>
 		/// <param name="lang_pack">Language pack</param>
 		/// <param name="lang_code">Language code</param>
 		/// <param name="from_version">Previous localization pack version</param>
 		public static Task<LangPackDifference> Langpack_GetDifference(this Client client, string lang_pack, string lang_code, int from_version)
-			=> client.CallAsync(new Langpack_GetDifference_
-			{
-				lang_pack = lang_pack,
-				lang_code = lang_code,
-				from_version = from_version,
-			});
+			=> client.CallAsync(new Langpack_GetDifference_(lang_pack, lang_code, from_version));
 
-		/// <summary>Get information about all languages in a localization pack		<para>See <a href="https://corefork.telegram.org/method/langpack.getLanguages"/></para></summary>
 		[TLDef(0x42C6978F)]
-		public partial class Langpack_GetLanguages_ : IMethod<LangPackLanguage[]>
-		{
-			/// <summary>Language pack</summary>
-			public string lang_pack;
-		}
+		public record Langpack_GetLanguages_(string lang_pack) : IMethod<LangPackLanguage[]>;
 		/// <summary>Get information about all languages in a localization pack		<para>See <a href="https://corefork.telegram.org/method/langpack.getLanguages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/langpack.getLanguages#possible-errors">details</a>)</para></summary>
 		/// <param name="lang_pack">Language pack</param>
 		public static Task<LangPackLanguage[]> Langpack_GetLanguages(this Client client, string lang_pack)
-			=> client.CallAsync(new Langpack_GetLanguages_
-			{
-				lang_pack = lang_pack,
-			});
+			=> client.CallAsync(new Langpack_GetLanguages_(lang_pack));
 
-		/// <summary>Get information about a language in a localization pack		<para>See <a href="https://corefork.telegram.org/method/langpack.getLanguage"/></para></summary>
 		[TLDef(0x6A596502)]
-		public partial class Langpack_GetLanguage_ : IMethod<LangPackLanguage>
-		{
-			/// <summary>Language pack name</summary>
-			public string lang_pack;
-			/// <summary>Language code</summary>
-			public string lang_code;
-		}
+		public record Langpack_GetLanguage_(string lang_pack, string lang_code) : IMethod<LangPackLanguage>;
 		/// <summary>Get information about a language in a localization pack		<para>See <a href="https://corefork.telegram.org/method/langpack.getLanguage"/></para></summary>
 		/// <param name="lang_pack">Language pack name</param>
 		/// <param name="lang_code">Language code</param>
 		public static Task<LangPackLanguage> Langpack_GetLanguage(this Client client, string lang_pack, string lang_code)
-			=> client.CallAsync(new Langpack_GetLanguage_
-			{
-				lang_pack = lang_pack,
-				lang_code = lang_code,
-			});
+			=> client.CallAsync(new Langpack_GetLanguage_(lang_pack, lang_code));
 
-		/// <summary>Edit peers in <a href="https://corefork.telegram.org/api/folders#peer-folders">peer folder</a>		<para>See <a href="https://corefork.telegram.org/method/folders.editPeerFolders"/></para></summary>
 		[TLDef(0x6847D0AB)]
-		public partial class Folders_EditPeerFolders_ : IMethod<UpdatesBase>
-		{
-			/// <summary>New peer list</summary>
-			public InputFolderPeer[] folder_peers;
-		}
+		public record Folders_EditPeerFolders_(InputFolderPeer[] folder_peers) : IMethod<UpdatesBase>;
 		/// <summary>Edit peers in <a href="https://corefork.telegram.org/api/folders#peer-folders">peer folder</a>		<para>See <a href="https://corefork.telegram.org/method/folders.editPeerFolders"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/folders.editPeerFolders#possible-errors">details</a>)</para></summary>
 		/// <param name="folder_peers">New peer list</param>
 		public static Task<UpdatesBase> Folders_EditPeerFolders(this Client client, InputFolderPeer[] folder_peers)
-			=> client.CallAsync(new Folders_EditPeerFolders_
-			{
-				folder_peers = folder_peers,
-			});
+			=> client.CallAsync(new Folders_EditPeerFolders_(folder_peers));
 
-		/// <summary>Delete a <a href="https://corefork.telegram.org/api/folders#peer-folders">peer folder</a>		<para>See <a href="https://corefork.telegram.org/method/folders.deleteFolder"/></para></summary>
 		[TLDef(0x1C295881)]
-		public partial class Folders_DeleteFolder_ : IMethod<UpdatesBase>
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
-			public int folder_id;
-		}
+		public record Folders_DeleteFolder_(int folder_id) : IMethod<UpdatesBase>;
 		/// <summary>Delete a <a href="https://corefork.telegram.org/api/folders#peer-folders">peer folder</a>		<para>See <a href="https://corefork.telegram.org/method/folders.deleteFolder"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/folders.deleteFolder#possible-errors">details</a>)</para></summary>
 		/// <param name="folder_id"><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></param>
 		public static Task<UpdatesBase> Folders_DeleteFolder(this Client client, int folder_id)
-			=> client.CallAsync(new Folders_DeleteFolder_
-			{
-				folder_id = folder_id,
-			});
+			=> client.CallAsync(new Folders_DeleteFolder_(folder_id));
 
-		/// <summary>Get <a href="https://corefork.telegram.org/api/stats">channel statistics</a>		<para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastStats"/></para></summary>
 		[TLDef(0xAB42441A)]
-		public partial class Stats_GetBroadcastStats_ : IMethod<Stats_BroadcastStats>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>The channel</summary>
-			public InputChannelBase channel;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to enable dark theme for graph colors</summary>
-				dark = 0x1,
-			}
-		}
+		public record Stats_GetBroadcastStats_(int flags, InputChannelBase channel) : IMethod<Stats_BroadcastStats>;
 		/// <summary>Get <a href="https://corefork.telegram.org/api/stats">channel statistics</a>		<para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastStats"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastStats#possible-errors">details</a>)</para></summary>
 		/// <param name="dark">Whether to enable dark theme for graph colors</param>
 		/// <param name="channel">The channel</param>
 		public static Task<Stats_BroadcastStats> Stats_GetBroadcastStats(this Client client, InputChannelBase channel, bool dark = false)
-			=> client.CallAsync(new Stats_GetBroadcastStats_
-			{
-				flags = (Stats_GetBroadcastStats_.Flags)(dark ? 0x1 : 0),
-				channel = channel,
-			});
+			=> client.CallAsync(new Stats_GetBroadcastStats_(dark ? 0x1 : 0, channel));
 
-		/// <summary>Load <a href="https://corefork.telegram.org/api/stats">channel statistics graph</a> asynchronously		<para>See <a href="https://corefork.telegram.org/method/stats.loadAsyncGraph"/></para></summary>
 		[TLDef(0x621D5FA0)]
-		public partial class Stats_LoadAsyncGraph_ : IMethod<StatsGraphBase>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Graph token from <see cref="StatsGraphAsync"/> constructor</summary>
-			public string token;
-			/// <summary>Zoom value, if required</summary>
-			[IfFlag(0)] public long x;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Field <see cref="x"/> has a value</summary>
-				has_x = 0x1,
-			}
-		}
+		public record Stats_LoadAsyncGraph_(int flags, string token, [field:IfFlag(0)] long x) : IMethod<StatsGraphBase>;
 		/// <summary>Load <a href="https://corefork.telegram.org/api/stats">channel statistics graph</a> asynchronously		<para>See <a href="https://corefork.telegram.org/method/stats.loadAsyncGraph"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.loadAsyncGraph#possible-errors">details</a>)</para></summary>
 		/// <param name="token">Graph token from <see cref="StatsGraphAsync"/> constructor</param>
 		/// <param name="x">Zoom value, if required</param>
 		public static Task<StatsGraphBase> Stats_LoadAsyncGraph(this Client client, string token, long? x = null)
-			=> client.CallAsync(new Stats_LoadAsyncGraph_
-			{
-				flags = (Stats_LoadAsyncGraph_.Flags)(x != null ? 0x1 : 0),
-				token = token,
-				x = x.GetValueOrDefault(),
-			});
+			=> client.CallAsync(new Stats_LoadAsyncGraph_(x != null ? 0x1 : 0, token, x.GetValueOrDefault()));
 
-		/// <summary>Get <a href="https://corefork.telegram.org/api/stats">supergroup statistics</a>		<para>See <a href="https://corefork.telegram.org/method/stats.getMegagroupStats"/></para></summary>
 		[TLDef(0xDCDF8607)]
-		public partial class Stats_GetMegagroupStats_ : IMethod<Stats_MegagroupStats>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary><a href="https://corefork.telegram.org/api/channel">Supergroup ID</a></summary>
-			public InputChannelBase channel;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to enable dark theme for graph colors</summary>
-				dark = 0x1,
-			}
-		}
+		public record Stats_GetMegagroupStats_(int flags, InputChannelBase channel) : IMethod<Stats_MegagroupStats>;
 		/// <summary>Get <a href="https://corefork.telegram.org/api/stats">supergroup statistics</a>		<para>See <a href="https://corefork.telegram.org/method/stats.getMegagroupStats"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getMegagroupStats#possible-errors">details</a>)</para></summary>
 		/// <param name="dark">Whether to enable dark theme for graph colors</param>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Supergroup ID</a></param>
 		public static Task<Stats_MegagroupStats> Stats_GetMegagroupStats(this Client client, InputChannelBase channel, bool dark = false)
-			=> client.CallAsync(new Stats_GetMegagroupStats_
-			{
-				flags = (Stats_GetMegagroupStats_.Flags)(dark ? 0x1 : 0),
-				channel = channel,
-			});
+			=> client.CallAsync(new Stats_GetMegagroupStats_(dark ? 0x1 : 0, channel));
 
-		/// <summary>Obtains a list of messages, indicating to which other public channels was a channel message forwarded.<br/>Will return a list of <see cref="Message"/> with <c>peer_id</c> equal to the public channel to which this message was forwarded.		<para>See <a href="https://corefork.telegram.org/method/stats.getMessagePublicForwards"/></para></summary>
 		[TLDef(0x5630281B)]
-		public partial class Stats_GetMessagePublicForwards_ : IMethod<Messages_MessagesBase>
-		{
-			/// <summary>Source channel</summary>
-			public InputChannelBase channel;
-			/// <summary>Source message ID</summary>
-			public int msg_id;
-			/// <summary>Initially 0, then set to the <c>next_rate</c> parameter of <see cref="Messages_MessagesSlice"/></summary>
-			public int offset_rate;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public InputPeer offset_peer;
-			/// <summary><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></summary>
-			public int offset_id;
-			/// <summary>Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></summary>
-			public int limit;
-		}
+		public record Stats_GetMessagePublicForwards_(InputChannelBase channel, int msg_id, int offset_rate, InputPeer offset_peer, int offset_id, int limit) : IMethod<Messages_MessagesBase>;
 		/// <summary>Obtains a list of messages, indicating to which other public channels was a channel message forwarded.<br/>Will return a list of <see cref="Message"/> with <c>peer_id</c> equal to the public channel to which this message was forwarded.		<para>See <a href="https://corefork.telegram.org/method/stats.getMessagePublicForwards"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getMessagePublicForwards#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Source channel</param>
 		/// <param name="msg_id">Source message ID</param>
@@ -21013,43 +15630,15 @@ namespace TL
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_MessagesBase> Stats_GetMessagePublicForwards(this Client client, InputChannelBase channel, int msg_id, int offset_rate, InputPeer offset_peer, int offset_id, int limit)
-			=> client.CallAsync(new Stats_GetMessagePublicForwards_
-			{
-				channel = channel,
-				msg_id = msg_id,
-				offset_rate = offset_rate,
-				offset_peer = offset_peer,
-				offset_id = offset_id,
-				limit = limit,
-			});
+			=> client.CallAsync(new Stats_GetMessagePublicForwards_(channel, msg_id, offset_rate, offset_peer, offset_id, limit));
 
-		/// <summary>Get <a href="https://corefork.telegram.org/api/stats">message statistics</a>		<para>See <a href="https://corefork.telegram.org/method/stats.getMessageStats"/></para></summary>
 		[TLDef(0xB6E0A3F5)]
-		public partial class Stats_GetMessageStats_ : IMethod<Stats_MessageStats>
-		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-			public Flags flags;
-			/// <summary>Channel ID</summary>
-			public InputChannelBase channel;
-			/// <summary>Message ID</summary>
-			public int msg_id;
-
-			[Flags] public enum Flags
-			{
-				/// <summary>Whether to enable dark theme for graph colors</summary>
-				dark = 0x1,
-			}
-		}
+		public record Stats_GetMessageStats_(int flags, InputChannelBase channel, int msg_id) : IMethod<Stats_MessageStats>;
 		/// <summary>Get <a href="https://corefork.telegram.org/api/stats">message statistics</a>		<para>See <a href="https://corefork.telegram.org/method/stats.getMessageStats"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getMessageStats#possible-errors">details</a>)</para></summary>
 		/// <param name="dark">Whether to enable dark theme for graph colors</param>
 		/// <param name="channel">Channel ID</param>
 		/// <param name="msg_id">Message ID</param>
 		public static Task<Stats_MessageStats> Stats_GetMessageStats(this Client client, InputChannelBase channel, int msg_id, bool dark = false)
-			=> client.CallAsync(new Stats_GetMessageStats_
-			{
-				flags = (Stats_GetMessageStats_.Flags)(dark ? 0x1 : 0),
-				channel = channel,
-				msg_id = msg_id,
-			});
+			=> client.CallAsync(new Stats_GetMessageStats_(dark ? 0x1 : 0, channel, msg_id));
 	}
 }

@@ -294,129 +294,58 @@ namespace TL
 	}
 
 	// ---functions---
+	#pragma warning disable IDE1006
 
 	public static class MTProto
 	{
-		[TLDef(0x60469778)] //req_pq#60469778 nonce:int128 = ResPQ
-		public partial class ReqPq_ : IMethod<ResPQ>
-		{
-			public Int128 nonce;
-		}
+		[TLDef(0x60469778)]
+		public record ReqPq_(Int128 nonce) : IMethod<ResPQ>;
 		public static Task<ResPQ> ReqPq(this Client client, Int128 nonce)
-			=> client.CallBareAsync(new ReqPq_
-			{
-				nonce = nonce,
-			});
+			=> client.CallBareAsync(new ReqPq_(nonce));
 
-		[TLDef(0xBE7E8EF1)] //req_pq_multi#be7e8ef1 nonce:int128 = ResPQ
-		public partial class ReqPqMulti_ : IMethod<ResPQ>
-		{
-			public Int128 nonce;
-		}
+		[TLDef(0xBE7E8EF1)]
+		public record ReqPqMulti_(Int128 nonce) : IMethod<ResPQ>;
 		public static Task<ResPQ> ReqPqMulti(this Client client, Int128 nonce)
-			=> client.CallBareAsync(new ReqPqMulti_
-			{
-				nonce = nonce,
-			});
+			=> client.CallBareAsync(new ReqPqMulti_(nonce));
 
-		[TLDef(0xD712E4BE)] //req_DH_params#d712e4be nonce:int128 server_nonce:int128 p:bytes q:bytes public_key_fingerprint:long encrypted_data:bytes = Server_DH_Params
-		public partial class ReqDHParams_ : IMethod<ServerDHParams>
-		{
-			public Int128 nonce;
-			public Int128 server_nonce;
-			public byte[] p;
-			public byte[] q;
-			public long public_key_fingerprint;
-			public byte[] encrypted_data;
-		}
+		[TLDef(0xD712E4BE)]
+		public record ReqDHParams_(Int128 nonce, Int128 server_nonce, byte[] p, byte[] q, long public_key_fingerprint, byte[] encrypted_data) : IMethod<ServerDHParams>;
 		public static Task<ServerDHParams> ReqDHParams(this Client client, Int128 nonce, Int128 server_nonce, byte[] p, byte[] q, long public_key_fingerprint, byte[] encrypted_data)
-			=> client.CallBareAsync(new ReqDHParams_
-			{
-				nonce = nonce,
-				server_nonce = server_nonce,
-				p = p,
-				q = q,
-				public_key_fingerprint = public_key_fingerprint,
-				encrypted_data = encrypted_data,
-			});
+			=> client.CallBareAsync(new ReqDHParams_(nonce, server_nonce, p, q, public_key_fingerprint, encrypted_data));
 
-		[TLDef(0xF5045F1F)] //set_client_DH_params#f5045f1f nonce:int128 server_nonce:int128 encrypted_data:bytes = Set_client_DH_params_answer
-		public partial class SetClientDHParams_ : IMethod<SetClientDHParamsAnswer>
-		{
-			public Int128 nonce;
-			public Int128 server_nonce;
-			public byte[] encrypted_data;
-		}
+		[TLDef(0xF5045F1F)]
+		public record SetClientDHParams_(Int128 nonce, Int128 server_nonce, byte[] encrypted_data) : IMethod<SetClientDHParamsAnswer>;
 		public static Task<SetClientDHParamsAnswer> SetClientDHParams(this Client client, Int128 nonce, Int128 server_nonce, byte[] encrypted_data)
-			=> client.CallBareAsync(new SetClientDHParams_
-			{
-				nonce = nonce,
-				server_nonce = server_nonce,
-				encrypted_data = encrypted_data,
-			});
+			=> client.CallBareAsync(new SetClientDHParams_(nonce, server_nonce, encrypted_data));
 
-		[TLDef(0xD1435160)] //destroy_auth_key#d1435160 = DestroyAuthKeyRes
-		public partial class DestroyAuthKey_ : IMethod<DestroyAuthKeyRes> { }
+		[TLDef(0xD1435160)]
+		public record DestroyAuthKey_() : IMethod<DestroyAuthKeyRes>;
 		public static Task<DestroyAuthKeyRes> DestroyAuthKey(this Client client)
-			=> client.CallBareAsync(new DestroyAuthKey_
-			{
-			});
+			=> client.CallBareAsync(new DestroyAuthKey_());
 
-		[TLDef(0x58E4A740)] //rpc_drop_answer#58e4a740 req_msg_id:long = RpcDropAnswer
-		public partial class RpcDropAnswer_ : IMethod<RpcDropAnswer>
-		{
-			public long req_msg_id;
-		}
+		[TLDef(0x58E4A740)]
+		public record RpcDropAnswer_(long req_msg_id) : IMethod<RpcDropAnswer>;
 		public static Task<RpcDropAnswer> RpcDropAnswer(this Client client, long req_msg_id)
-			=> client.CallBareAsync(new RpcDropAnswer_
-			{
-				req_msg_id = req_msg_id,
-			});
+			=> client.CallBareAsync(new RpcDropAnswer_(req_msg_id));
 
-		[TLDef(0xB921BD04)] //get_future_salts#b921bd04 num:int = FutureSalts
-		public partial class GetFutureSalts_ : IMethod<FutureSalts>
-		{
-			public int num;
-		}
+		[TLDef(0xB921BD04)]
+		public record GetFutureSalts_(int num) : IMethod<FutureSalts>;
 		public static Task<FutureSalts> GetFutureSalts(this Client client, int num)
-			=> client.CallAsync(new GetFutureSalts_
-			{
-				num = num,
-			});
+			=> client.CallAsync(new GetFutureSalts_(num));
 
-		[TLDef(0x7ABE77EC)] //ping#7abe77ec ping_id:long = Pong
-		public partial class Ping_ : IMethod<Pong>
-		{
-			public long ping_id;
-		}
+		[TLDef(0x7ABE77EC)]
+		public record Ping_(long ping_id) : IMethod<Pong>;
 		public static Task<Pong> Ping(this Client client, long ping_id)
-			=> client.CallAsync(new Ping_
-			{
-				ping_id = ping_id,
-			});
+			=> client.CallAsync(new Ping_(ping_id));
 
-		[TLDef(0xF3427B8C)] //ping_delay_disconnect#f3427b8c ping_id:long disconnect_delay:int = Pong
-		public partial class PingDelayDisconnect_ : IMethod<Pong>
-		{
-			public long ping_id;
-			public int disconnect_delay;
-		}
+		[TLDef(0xF3427B8C)]
+		public record PingDelayDisconnect_(long ping_id, int disconnect_delay) : IMethod<Pong>;
 		public static Task<Pong> PingDelayDisconnect(this Client client, long ping_id, int disconnect_delay)
-			=> client.CallAsync(new PingDelayDisconnect_
-			{
-				ping_id = ping_id,
-				disconnect_delay = disconnect_delay,
-			});
+			=> client.CallAsync(new PingDelayDisconnect_(ping_id, disconnect_delay));
 
-		[TLDef(0xE7512126)] //destroy_session#e7512126 session_id:long = DestroySessionRes
-		public partial class DestroySession_ : IMethod<DestroySessionRes>
-		{
-			public long session_id;
-		}
+		[TLDef(0xE7512126)]
+		public record DestroySession_(long session_id) : IMethod<DestroySessionRes>;
 		public static Task<DestroySessionRes> DestroySession(this Client client, long session_id)
-			=> client.CallBareAsync(new DestroySession_
-			{
-				session_id = session_id,
-			});
+			=> client.CallBareAsync(new DestroySession_(session_id));
 	}
 }

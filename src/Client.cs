@@ -261,17 +261,11 @@ namespace WTelegram
 
 				var keepAliveTask = KeepAlive(_cts.Token);
 				TLConfig = await this.InvokeWithLayer(Layer.Version,
-					new Schema.InitConnection_<Config>
-					{
-						api_id = _apiId,
-						device_model = Config("device_model"),
-						system_version = Config("system_version"),
-						app_version = Config("app_version"),
-						system_lang_code = Config("system_lang_code"),
-						lang_pack = Config("lang_pack"),
-						lang_code = Config("lang_code"),
-						query = new Schema.Help_GetConfig_()
-					});
+					new Schema.InitConnection_<Config>(0, _apiId,
+						Config("device_model"), Config("system_version"), Config("app_version"),
+						Config("system_lang_code"), Config("lang_pack"), Config("lang_code"),
+						null, null, new Schema.Help_GetConfig_()
+					));
 				_session.DcOptions = TLConfig.dc_options;
 				_saltChangeCounter = 0;
 				if (_dcSession.DataCenter == null)
@@ -1130,11 +1124,11 @@ namespace WTelegram
 			UpdatesBase updates;
 			long random_id = Helpers.RandomLong();
 			if (media == null)
-				updates = await this.Messages_SendMessage(peer, text, random_id, no_webpage: disable_preview,
-					reply_to_msg_id: reply_to_msg_id, entities: entities, schedule_date: schedule_date);
+				updates = await this.Messages_SendMessage(peer, text, random_id, no_webpage: disable_preview, entities: entities,
+					reply_to_msg_id: reply_to_msg_id == 0 ? null : reply_to_msg_id, schedule_date: schedule_date == default ? null : schedule_date);
 			else
-				updates = await this.Messages_SendMedia(peer, media, text, random_id,
-					reply_to_msg_id: reply_to_msg_id, entities: entities, schedule_date: schedule_date);
+				updates = await this.Messages_SendMedia(peer, media, text, random_id, entities: entities,
+					reply_to_msg_id: reply_to_msg_id == 0 ? null : reply_to_msg_id, schedule_date: schedule_date == default ? null : schedule_date);
 			OnUpdate(updates);
 			int msgId = -1;
 			foreach (var update in updates.UpdateList)

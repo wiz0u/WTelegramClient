@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Formats.Asn1;
 using System.Net;
 using System.Numerics;
@@ -98,5 +99,7 @@ namespace System.Runtime.CompilerServices
 			return dest;
 		}
 	}
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	internal class IsExternalInit { }
 }
 #endif
