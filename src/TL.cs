@@ -46,7 +46,7 @@ namespace TL
 				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1 << ifFlag.Bit)) == 0) continue;
 				object value = field.GetValue(obj);
 				writer.WriteTLValue(value, field.FieldType);
-				if (field.Name == "flags" || field.Name == "<flags>k__BackingField") flags = (int)value;
+				if (field.Name == "flags") flags = (int)value;
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace TL
 				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1 << ifFlag.Bit)) == 0) continue;
 				object value = reader.ReadTLValue(field.FieldType);
 				field.SetValue(obj, value);
-				if (field.Name == "flags" || field.Name == "<flags>k__BackingField") flags = (int)value;
+				if (field.Name == "flags") flags = (int)value;
 				else if (field.Name == "access_hash") reader.Client?.UpdateAccessHash(obj, type, value);
 			}
 			return type == typeof(GzipPacked) ? UnzipPacket((GzipPacked)obj, reader.Client) : (IObject)obj;

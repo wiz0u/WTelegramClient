@@ -261,11 +261,17 @@ namespace WTelegram
 
 				var keepAliveTask = KeepAlive(_cts.Token);
 				TLConfig = await this.InvokeWithLayer(Layer.Version,
-					new Schema.InitConnection_<Config>(0, _apiId,
-						Config("device_model"), Config("system_version"), Config("app_version"),
-						Config("system_lang_code"), Config("lang_pack"), Config("lang_code"),
-						null, null, new Schema.Help_GetConfig_()
-					));
+					new Schema.InitConnection_<Config>
+					{
+						api_id = _apiId,
+						device_model = Config("device_model"),
+						system_version = Config("system_version"),
+						app_version = Config("app_version"),
+						system_lang_code = Config("system_lang_code"),
+						lang_pack = Config("lang_pack"),
+						lang_code = Config("lang_code"),
+						query = new Schema.Help_GetConfig_()
+					});
 				_session.DcOptions = TLConfig.dc_options;
 				_saltChangeCounter = 0;
 				if (_dcSession.DataCenter == null)
