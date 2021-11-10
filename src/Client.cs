@@ -261,7 +261,7 @@ namespace WTelegram
 
 				var keepAliveTask = KeepAlive(_cts.Token);
 				TLConfig = await this.InvokeWithLayer(Layer.Version,
-					new Schema.InitConnection_<Config>
+					new TL.Methods.InitConnection<Config>
 					{
 						api_id = _apiId,
 						device_model = Config("device_model"),
@@ -270,7 +270,7 @@ namespace WTelegram
 						system_lang_code = Config("system_lang_code"),
 						lang_pack = Config("lang_pack"),
 						lang_code = Config("lang_code"),
-						query = new Schema.Help_GetConfig_()
+						query = new TL.Methods.Help_GetConfig()
 					});
 				_session.DcOptions = TLConfig.dc_options;
 				_saltChangeCounter = 0;
@@ -839,7 +839,7 @@ namespace WTelegram
 							}
 					}
 					break;
-				case MTProto.Ping_ ping:
+				case TL.Methods.Ping ping:
 					_ = SendAsync(new Pong { msg_id = _lastRecvMsgId, ping_id = ping.ping_id }, false);
 					break;
 				case Pong pong:

@@ -4,11 +4,8 @@ using System.Collections.Generic;
 
 namespace TL
 {
-	using BinaryWriter = System.IO.BinaryWriter;
-	using Client = WTelegram.Client;
-
 	/// <summary>Object describes the contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessage"/></para></summary>
-	public abstract partial class DecryptedMessageBase : IObject
+	public abstract class DecryptedMessageBase : IObject
 	{
 		/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 		public abstract long RandomId { get; }
@@ -16,13 +13,13 @@ namespace TL
 
 	/// <summary>Object describes media contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageMedia"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaEmpty">decryptedMessageMediaEmpty</a></remarks>
-	public abstract partial class DecryptedMessageMedia : IObject { }
+	public abstract class DecryptedMessageMedia : IObject { }
 
 	/// <summary>Object describes the action to which a service message is linked.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageAction"/></para></summary>
-	public abstract partial class DecryptedMessageAction : IObject { }
+	public abstract class DecryptedMessageAction : IObject { }
 
 	/// <summary>Indicates the location of a photo, will be deprecated soon		<para>See <a href="https://corefork.telegram.org/type/FileLocation"/></para></summary>
-	public abstract partial class FileLocationBase : IObject
+	public abstract class FileLocationBase : IObject
 	{
 		/// <summary>Server volume</summary>
 		public abstract long VolumeId { get; }
@@ -36,7 +33,7 @@ namespace TL
 	{
 		/// <summary>Contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessage"/></para></summary>
 		[TLDef(0x1F814F1F)]
-		public partial class DecryptedMessage : DecryptedMessageBase
+		public class DecryptedMessage : DecryptedMessageBase
 		{
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public long random_id;
@@ -51,7 +48,7 @@ namespace TL
 		}
 		/// <summary>Contents of an encrypted service message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageService"/></para></summary>
 		[TLDef(0xAA48327D)]
-		public partial class DecryptedMessageService : DecryptedMessageBase
+		public class DecryptedMessageService : DecryptedMessageBase
 		{
 			/// <summary>Random message ID, assigned by the message author.<br/>Must be equal to the ID passed to the sending method.</summary>
 			public long random_id;
@@ -65,7 +62,7 @@ namespace TL
 
 		/// <summary>Photo attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaPhoto"/></para></summary>
 		[TLDef(0x32798A8C)]
-		public partial class DecryptedMessageMediaPhoto : DecryptedMessageMedia
+		public class DecryptedMessageMediaPhoto : DecryptedMessageMedia
 		{
 			/// <summary>Content of thumbnail file (JPEGfile, quality 55, set in a square 90x90)</summary>
 			public byte[] thumb;
@@ -86,7 +83,7 @@ namespace TL
 		}
 		/// <summary>Video attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVideo"/></para></summary>
 		[TLDef(0x4CEE6EF3)]
-		public partial class DecryptedMessageMediaVideo : DecryptedMessageMedia
+		public class DecryptedMessageMediaVideo : DecryptedMessageMedia
 		{
 			/// <summary>Content of thumbnail file (JPEG file, quality 55, set in a square 90x90)</summary>
 			public byte[] thumb;
@@ -109,7 +106,7 @@ namespace TL
 		}
 		/// <summary>GeoPont attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaGeoPoint"/></para></summary>
 		[TLDef(0x35480A59)]
-		public partial class DecryptedMessageMediaGeoPoint : DecryptedMessageMedia
+		public class DecryptedMessageMediaGeoPoint : DecryptedMessageMedia
 		{
 			/// <summary>Latitude of point</summary>
 			public double lat;
@@ -118,7 +115,7 @@ namespace TL
 		}
 		/// <summary>Contact attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaContact"/></para></summary>
 		[TLDef(0x588A0A97)]
-		public partial class DecryptedMessageMediaContact : DecryptedMessageMedia
+		public class DecryptedMessageMediaContact : DecryptedMessageMedia
 		{
 			/// <summary>Phone number</summary>
 			public string phone_number;
@@ -131,7 +128,7 @@ namespace TL
 		}
 		/// <summary>Document attached to a message in a secret chat.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaDocument"/></para></summary>
 		[TLDef(0xB095434B)]
-		public partial class DecryptedMessageMediaDocument : DecryptedMessageMedia
+		public class DecryptedMessageMediaDocument : DecryptedMessageMedia
 		{
 			/// <summary>Thumbnail-file contents (JPEG-file, quality 55, set in a 90x90 square)</summary>
 			public byte[] thumb;
@@ -151,7 +148,7 @@ namespace TL
 		}
 		/// <summary>Audio file attached to a secret chat message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaAudio"/></para></summary>
 		[TLDef(0x6080758F)]
-		public partial class DecryptedMessageMediaAudio : DecryptedMessageMedia
+		public class DecryptedMessageMediaAudio : DecryptedMessageMedia
 		{
 			/// <summary>Audio duration in seconds</summary>
 			public int duration;
@@ -165,55 +162,55 @@ namespace TL
 
 		/// <summary>Setting of a message lifetime after reading.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionSetMessageTTL"/></para></summary>
 		[TLDef(0xA1733AEC)]
-		public partial class DecryptedMessageActionSetMessageTTL : DecryptedMessageAction
+		public class DecryptedMessageActionSetMessageTTL : DecryptedMessageAction
 		{
 			/// <summary>Lifetime in seconds</summary>
 			public int ttl_seconds;
 		}
 		/// <summary>Messages marked as read.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionReadMessages"/></para></summary>
 		[TLDef(0x0C4F40BE)]
-		public partial class DecryptedMessageActionReadMessages : DecryptedMessageAction
+		public class DecryptedMessageActionReadMessages : DecryptedMessageAction
 		{
 			/// <summary>List of message IDs</summary>
 			public long[] random_ids;
 		}
 		/// <summary>Deleted messages.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionDeleteMessages"/></para></summary>
 		[TLDef(0x65614304)]
-		public partial class DecryptedMessageActionDeleteMessages : DecryptedMessageAction
+		public class DecryptedMessageActionDeleteMessages : DecryptedMessageAction
 		{
 			/// <summary>List of deleted message IDs</summary>
 			public long[] random_ids;
 		}
 		/// <summary>A screenshot was taken.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionScreenshotMessages"/></para></summary>
 		[TLDef(0x8AC1F475)]
-		public partial class DecryptedMessageActionScreenshotMessages : DecryptedMessageAction
+		public class DecryptedMessageActionScreenshotMessages : DecryptedMessageAction
 		{
 			/// <summary>List of affected message ids (that appeared on the screenshot)</summary>
 			public long[] random_ids;
 		}
 		/// <summary>The entire message history has been deleted.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionFlushHistory"/></para></summary>
 		[TLDef(0x6719E45C)]
-		public partial class DecryptedMessageActionFlushHistory : DecryptedMessageAction { }
+		public class DecryptedMessageActionFlushHistory : DecryptedMessageAction { }
 	}
 
 	namespace Layer17
 	{
 		/// <summary>User is uploading a video.		<para>See <a href="https://corefork.telegram.org/constructor/sendMessageUploadVideoAction"/></para></summary>
 		[TLDef(0x92042FF7)]
-		public partial class SendMessageUploadVideoAction : SendMessageAction { }
+		public class SendMessageUploadVideoAction : SendMessageAction { }
 		/// <summary>User is uploading a voice message.		<para>See <a href="https://corefork.telegram.org/constructor/sendMessageUploadAudioAction"/></para></summary>
 		[TLDef(0xE6AC8A6F)]
-		public partial class SendMessageUploadAudioAction : SendMessageAction { }
+		public class SendMessageUploadAudioAction : SendMessageAction { }
 		/// <summary>User is uploading a photo.		<para>See <a href="https://corefork.telegram.org/constructor/sendMessageUploadPhotoAction"/></para></summary>
 		[TLDef(0x990A3C1A)]
-		public partial class SendMessageUploadPhotoAction : SendMessageAction { }
+		public class SendMessageUploadPhotoAction : SendMessageAction { }
 		/// <summary>User is uploading a file.		<para>See <a href="https://corefork.telegram.org/constructor/sendMessageUploadDocumentAction"/></para></summary>
 		[TLDef(0x8FAEE98E)]
-		public partial class SendMessageUploadDocumentAction : SendMessageAction { }
+		public class SendMessageUploadDocumentAction : SendMessageAction { }
 
 		/// <summary>Contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessage"/></para></summary>
 		[TLDef(0x204D3878)]
-		public partial class DecryptedMessage : DecryptedMessageBase
+		public class DecryptedMessage : DecryptedMessageBase
 		{
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public long random_id;
@@ -229,7 +226,7 @@ namespace TL
 		}
 		/// <summary>Contents of an encrypted service message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageService"/></para></summary>
 		[TLDef(0x73164160)]
-		public partial class DecryptedMessageService : DecryptedMessageBase
+		public class DecryptedMessageService : DecryptedMessageBase
 		{
 			/// <summary>Random message ID, assigned by the message author.<br/>Must be equal to the ID passed to the sending method.</summary>
 			public long random_id;
@@ -242,7 +239,7 @@ namespace TL
 
 		/// <summary>Video attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVideo"/></para></summary>
 		[TLDef(0x524A415D)]
-		public partial class DecryptedMessageMediaVideo : DecryptedMessageMedia
+		public class DecryptedMessageMediaVideo : DecryptedMessageMedia
 		{
 			/// <summary>Content of thumbnail file (JPEG file, quality 55, set in a square 90x90)</summary>
 			public byte[] thumb;
@@ -267,7 +264,7 @@ namespace TL
 		}
 		/// <summary>Audio file attached to a secret chat message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaAudio"/></para></summary>
 		[TLDef(0x57E0A9CB)]
-		public partial class DecryptedMessageMediaAudio : DecryptedMessageMedia
+		public class DecryptedMessageMediaAudio : DecryptedMessageMedia
 		{
 			/// <summary>Audio duration in seconds</summary>
 			public int duration;
@@ -283,7 +280,7 @@ namespace TL
 
 		/// <summary>Request for the other party in a Secret Chat to automatically resend a contiguous range of previously sent messages, as explained in <a href="https://corefork.telegram.org/api/end-to-end/seq_no">Sequence number is Secret Chats</a>.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionResend"/></para></summary>
 		[TLDef(0x511110B0)]
-		public partial class DecryptedMessageActionResend : DecryptedMessageAction
+		public class DecryptedMessageActionResend : DecryptedMessageAction
 		{
 			/// <summary><c>out_seq_no</c> of the first message to be resent, with correct parity</summary>
 			public int start_seq_no;
@@ -292,14 +289,14 @@ namespace TL
 		}
 		/// <summary>A notification stating the API layer that is used by the client. You should use your current layer and take notice of the layer used on the other side of a conversation when sending messages.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionNotifyLayer"/></para></summary>
 		[TLDef(0xF3048883)]
-		public partial class DecryptedMessageActionNotifyLayer : DecryptedMessageAction
+		public class DecryptedMessageActionNotifyLayer : DecryptedMessageAction
 		{
 			/// <summary>Layer number, must be <strong>17</strong> or higher (this contructor was introduced in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>).</summary>
 			public int layer;
 		}
 		/// <summary>User is preparing a message: typing, recording, uploading, etc.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionTyping"/></para></summary>
 		[TLDef(0xCCB27641)]
-		public partial class DecryptedMessageActionTyping : DecryptedMessageAction
+		public class DecryptedMessageActionTyping : DecryptedMessageAction
 		{
 			/// <summary>Type of action</summary>
 			public SendMessageAction action;
@@ -307,7 +304,7 @@ namespace TL
 
 		/// <summary>Sets the layer number for the contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageLayer"/></para></summary>
 		[TLDef(0x1BE31789)]
-		public partial class DecryptedMessageLayer : IObject
+		public class DecryptedMessageLayer : IObject
 		{
 			/// <summary>Set of random bytes to prevent content recognition in short encrypted messages.<br/>Clients are required to check that there are at least 15 random bytes included in each message. Messages with less than 15 random bytes must be ignored.<br/>Parameter moved here from <see cref="DecryptedMessage"/> in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
 			public byte[] random_bytes;
@@ -326,7 +323,7 @@ namespace TL
 	{
 		/// <summary>Defines a sticker		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeSticker"/></para></summary>
 		[TLDef(0x3A556302)]
-		public partial class DocumentAttributeSticker : DocumentAttribute
+		public class DocumentAttributeSticker : DocumentAttribute
 		{
 			/// <summary>Alternative emoji representation of sticker</summary>
 			public string alt;
@@ -335,7 +332,7 @@ namespace TL
 		}
 		/// <summary>Represents an audio file		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeAudio"/></para></summary>
 		[TLDef(0xDED218E0)]
-		public partial class DocumentAttributeAudio : DocumentAttribute
+		public class DocumentAttributeAudio : DocumentAttribute
 		{
 			/// <summary>Duration in seconds</summary>
 			public int duration;
@@ -347,7 +344,7 @@ namespace TL
 
 		/// <summary>Contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessage"/></para></summary>
 		[TLDef(0x36B091DE)]
-		public partial class DecryptedMessage : DecryptedMessageBase
+		public class DecryptedMessage : DecryptedMessageBase
 		{
 			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a> (added in layer 45)</summary>
 			public Flags flags;
@@ -384,7 +381,7 @@ namespace TL
 
 		/// <summary>Photo attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaPhoto"/></para></summary>
 		[TLDef(0xF1FA8D78)]
-		public partial class DecryptedMessageMediaPhoto : DecryptedMessageMedia
+		public class DecryptedMessageMediaPhoto : DecryptedMessageMedia
 		{
 			/// <summary>Content of thumbnail file (JPEGfile, quality 55, set in a square 90x90)</summary>
 			public byte[] thumb;
@@ -407,7 +404,7 @@ namespace TL
 		}
 		/// <summary>Video attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVideo"/></para></summary>
 		[TLDef(0x970C8C0E)]
-		public partial class DecryptedMessageMediaVideo : DecryptedMessageMedia
+		public class DecryptedMessageMediaVideo : DecryptedMessageMedia
 		{
 			/// <summary>Content of thumbnail file (JPEG file, quality 55, set in a square 90x90)</summary>
 			public byte[] thumb;
@@ -434,7 +431,7 @@ namespace TL
 		}
 		/// <summary>Document attached to a message in a secret chat.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaDocument"/></para></summary>
 		[TLDef(0x7AFE8AE2)]
-		public partial class DecryptedMessageMediaDocument : DecryptedMessageMedia
+		public class DecryptedMessageMediaDocument : DecryptedMessageMedia
 		{
 			/// <summary>Thumbnail-file contents (JPEG-file, quality 55, set in a 90x90 square)</summary>
 			public byte[] thumb;
@@ -457,7 +454,7 @@ namespace TL
 		}
 		/// <summary>Venue		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVenue"/></para></summary>
 		[TLDef(0x8A0DF56F)]
-		public partial class DecryptedMessageMediaVenue : DecryptedMessageMedia
+		public class DecryptedMessageMediaVenue : DecryptedMessageMedia
 		{
 			/// <summary>Latitude of venue</summary>
 			public double lat;
@@ -474,7 +471,7 @@ namespace TL
 		}
 		/// <summary>Webpage preview		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaWebPage"/></para></summary>
 		[TLDef(0xE50511D8)]
-		public partial class DecryptedMessageMediaWebPage : DecryptedMessageMedia
+		public class DecryptedMessageMediaWebPage : DecryptedMessageMedia
 		{
 			/// <summary>URL of webpage</summary>
 			public string url;
@@ -485,7 +482,7 @@ namespace TL
 	{
 		/// <summary>Contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessage"/></para></summary>
 		[TLDef(0x91CC4674)]
-		public partial class DecryptedMessage : DecryptedMessageBase
+		public class DecryptedMessage : DecryptedMessageBase
 		{
 			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a> (added in layer 45)</summary>
 			public Flags flags;
@@ -529,7 +526,7 @@ namespace TL
 	{
 		/// <summary>Request rekeying, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a>		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionRequestKey"/></para></summary>
 		[TLDef(0xF3C9611B)]
-		public partial class DecryptedMessageActionRequestKey : DecryptedMessageAction
+		public class DecryptedMessageActionRequestKey : DecryptedMessageAction
 		{
 			/// <summary>Exchange ID</summary>
 			public long exchange_id;
@@ -538,7 +535,7 @@ namespace TL
 		}
 		/// <summary>Accept new key		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionAcceptKey"/></para></summary>
 		[TLDef(0x6FE1735B)]
-		public partial class DecryptedMessageActionAcceptKey : DecryptedMessageAction
+		public class DecryptedMessageActionAcceptKey : DecryptedMessageAction
 		{
 			/// <summary>Exchange ID</summary>
 			public long exchange_id;
@@ -549,14 +546,14 @@ namespace TL
 		}
 		/// <summary>Abort rekeying		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionAbortKey"/></para></summary>
 		[TLDef(0xDD05EC6B)]
-		public partial class DecryptedMessageActionAbortKey : DecryptedMessageAction
+		public class DecryptedMessageActionAbortKey : DecryptedMessageAction
 		{
 			/// <summary>Exchange ID</summary>
 			public long exchange_id;
 		}
 		/// <summary>Commit new key, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a>		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionCommitKey"/></para></summary>
 		[TLDef(0xEC2E0B9B)]
-		public partial class DecryptedMessageActionCommitKey : DecryptedMessageAction
+		public class DecryptedMessageActionCommitKey : DecryptedMessageAction
 		{
 			/// <summary>Exchange ID, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a></summary>
 			public long exchange_id;
@@ -565,7 +562,7 @@ namespace TL
 		}
 		/// <summary>NOOP action		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionNoop"/></para></summary>
 		[TLDef(0xA82FDD63)]
-		public partial class DecryptedMessageActionNoop : DecryptedMessageAction { }
+		public class DecryptedMessageActionNoop : DecryptedMessageAction { }
 	}
 
 	namespace Layer23
@@ -607,10 +604,10 @@ namespace TL
 
 		/// <summary>Defines a sticker		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeSticker"/></para></summary>
 		[TLDef(0xFB0A5727)]
-		public partial class DocumentAttributeSticker : DocumentAttribute { }
+		public class DocumentAttributeSticker : DocumentAttribute { }
 		/// <summary>Defines a video		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeVideo"/></para></summary>
 		[TLDef(0x5910CCCB)]
-		public partial class DocumentAttributeVideo : DocumentAttribute
+		public class DocumentAttributeVideo : DocumentAttribute
 		{
 			/// <summary>Duration in seconds</summary>
 			public int duration;
@@ -621,7 +618,7 @@ namespace TL
 		}
 		/// <summary>Represents an audio file		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeAudio"/></para></summary>
 		[TLDef(0x051448E5)]
-		public partial class DocumentAttributeAudio : DocumentAttribute
+		public class DocumentAttributeAudio : DocumentAttribute
 		{
 			/// <summary>Duration in seconds</summary>
 			public int duration;
@@ -629,7 +626,7 @@ namespace TL
 
 		/// <summary>Non-e2e documented forwarded from non-secret chat		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaExternalDocument"/></para></summary>
 		[TLDef(0xFA95B0DD)]
-		public partial class DecryptedMessageMediaExternalDocument : DecryptedMessageMedia
+		public class DecryptedMessageMediaExternalDocument : DecryptedMessageMedia
 		{
 			/// <summary>Document ID</summary>
 			public long id;
@@ -651,7 +648,7 @@ namespace TL
 
 		/// <summary>File is currently unavailable.		<para>See <a href="https://corefork.telegram.org/constructor/fileLocationUnavailable"/></para></summary>
 		[TLDef(0x7C596B46)]
-		public partial class FileLocationUnavailable : FileLocationBase
+		public class FileLocationUnavailable : FileLocationBase
 		{
 			/// <summary>Server volume</summary>
 			public long volume_id;
@@ -669,7 +666,7 @@ namespace TL
 		}
 		/// <summary>File location.		<para>See <a href="https://corefork.telegram.org/constructor/fileLocation"/></para></summary>
 		[TLDef(0x53D69076)]
-		public partial class FileLocation : FileLocationBase
+		public class FileLocation : FileLocationBase
 		{
 			/// <summary>Number of the data center holding the file</summary>
 			public int dc_id;
@@ -693,7 +690,7 @@ namespace TL
 	{
 		/// <summary>User is uploading a round video		<para>See <a href="https://corefork.telegram.org/constructor/sendMessageUploadRoundAction"/></para></summary>
 		[TLDef(0xBB718624)]
-		public partial class SendMessageUploadRoundAction : SendMessageAction { }
+		public class SendMessageUploadRoundAction : SendMessageAction { }
 	}
 
 	namespace Layer46

@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 134;					// fetched 31/10/2021 02:19:13
+		public const int Version = 134;					// fetched 10/11/2021 16:21:52
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -34,7 +34,7 @@ namespace TL
 			[0x3BCBF734] = typeof(DhGenOk),
 			[0x46DC1FB9] = typeof(DhGenRetry),
 			[0xA69DAE02] = typeof(DhGenFail),
-			[0x7ABE77EC] = typeof(MTProto.Ping_),
+			[0x7ABE77EC] = typeof(Methods.Ping),
 			[0x62D6B459] = typeof(MsgsAck),
 			[0xA7EFF811] = typeof(BadMsgNotification),
 			[0xEDAB447B] = typeof(BadServerSalt),
