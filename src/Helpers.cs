@@ -8,7 +8,7 @@ namespace WTelegram
 {
 	public static class Helpers
 	{
-		/// <summary>Callback for logging a line (string) with the associated <see href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel">severity level</see> (int)</summary>
+		/// <summary>Callback for logging a line (string) with its associated <see href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel">severity level</see> (int)</summary>
 		public static Action<int, string> Log { get; set; } = DefaultLogger;
 
 		/// <summary>For serializing indented Json with fields included</summary>

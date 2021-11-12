@@ -1,7 +1,7 @@
 ﻿[![NuGet version](https://img.shields.io/nuget/v/WTelegramClient)](https://www.nuget.org/packages/WTelegramClient/)
-[![Dev nuget](https://img.shields.io/badge/dynamic/json?color=ffc040&label=Dev%20nuget&query=%24.versions%5B0%5D&url=https%3A%2F%2Fpkgs.dev.azure.com%2Fwiz0u%2F81bd92b7-0bb9-4701-b426-09090b27e037%2F_packaging%2F46ce0497-7803-4bd4-8c6c-030583e7c371%2Fnuget%2Fv3%2Fflat2%2Fwtelegramclient%2Findex.json)](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
 [![API Layer](https://img.shields.io/badge/API_Layer-134-blueviolet)](https://corefork.telegram.org/methods)
+[![dev nuget](https://img.shields.io/badge/dynamic/json?color=ffc040&label=dev%20nuget&query=%24.versions%5B0%5D&url=https%3A%2F%2Fpkgs.dev.azure.com%2Fwiz0u%2F81bd92b7-0bb9-4701-b426-09090b27e037%2F_packaging%2F46ce0497-7803-4bd4-8c6c-030583e7c371%2Fnuget%2Fv3%2Fflat2%2Fwtelegramclient%2Findex.json)](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://wizou.fr/donate.html)
 
@@ -85,14 +85,14 @@ Console.WriteLine("This user has joined the following:");
 foreach (var (id, chat) in chats.chats)
     switch (chat)
     {
-        case Chat smallgroup when (smallgroup.flags & Chat.Flags.deactivated) == 0:
+        case Chat smallgroup when smallgroup.IsActive:
             Console.WriteLine($"{id}:  Small group: {smallgroup.title} with {smallgroup.participants_count} members");
             break;
-        case Channel channel when (channel.flags & Channel.Flags.broadcast) != 0:
-            Console.WriteLine($"{id}: Channel {channel.username}: {channel.title}");
-            break;
-        case Channel group:
+        case Channel group when group.IsGroup:
             Console.WriteLine($"{id}: Group {group.username}: {group.title}");
+            break;
+        case Channel channel:
+            Console.WriteLine($"{id}: Channel {channel.username}: {channel.title}");
             break;
     }
 Console.Write("Type a chat ID to send a message: ");
@@ -111,7 +111,7 @@ In the API, Telegram uses some terms/classnames that can be confusing as they di
 - `Peer` : Either a `Chat`, `Channel` or a private chat with a `User`
 - Dialog : The current status of a chat with a `Peer` *(draft, last message, unread count, pinned...)*
 - DC (DataCenter) : There are a few datacenters depending on where in the world the user (or an uploaded media file) is from.
-- Access Hash : For more security, Telegram requires you to provide the specific `access_hash` for chats, files and other resources before interacting with them (not required for a simple `Chat`). This is like showing a pass that proves you are entitled to access it. You obtain this hash when you first gain access to a resource and occasionnally later when some events about this resource are happening or if you query the API. You should remember this hash if you want to access that resource later.
+- Access Hash : For more security, Telegram requires you to provide the specific `access_hash` for users, chats, and other resources before interacting with them (not required for a simple `Chat`). This acts like a proof you are entitled to access it. You obtain this hash when you first gain access to a resource, or by querying the API or if there is an update about this resource. You should save this hash if you want to access that resource later.
 
 # Other things to know
 
