@@ -1224,6 +1224,7 @@ namespace WTelegram
 			int fileOffset = 0, maxOffsetSeen = 0;
 			long transmitted = 0;
 			var tasks = new Dictionary<int, Task>();
+			progress?.Invoke(0, fileSize);
 			bool abort = false;
 			while (!abort)
 			{

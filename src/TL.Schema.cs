@@ -10070,11 +10070,9 @@ namespace TL
 		public JSONValue data;
 	}
 
-	/// <summary>JSON key: value pair		<para>Derived classes: <see cref="JsonObjectValue"/></para>		<para>See <a href="https://corefork.telegram.org/type/JSONObjectValue"/></para></summary>
-	public abstract class JSONObjectValue : IObject { }
 	/// <summary>JSON key: value pair		<para>See <a href="https://corefork.telegram.org/constructor/jsonObjectValue"/></para></summary>
 	[TLDef(0xC0DE1BD9)]
-	public partial class JsonObjectValue : JSONObjectValue
+	public partial class JsonObjectValue : IObject
 	{
 		/// <summary>Key</summary>
 		public string key;
@@ -10083,7 +10081,7 @@ namespace TL
 	}
 
 	/// <summary>JSON value		<para>Derived classes: <see cref="JsonNull"/>, <see cref="JsonBool"/>, <see cref="JsonNumber"/>, <see cref="JsonString"/>, <see cref="JsonArray"/>, <see cref="JsonObject"/></para>		<para>See <a href="https://corefork.telegram.org/type/JSONValue"/></para></summary>
-	public abstract class JSONValue : IObject { }
+	public abstract partial class JSONValue : IObject { }
 	/// <summary>null JSON value		<para>See <a href="https://corefork.telegram.org/constructor/jsonNull"/></para></summary>
 	[TLDef(0x3F6D7B68)]
 	public partial class JsonNull : JSONValue { }
@@ -10120,7 +10118,7 @@ namespace TL
 	public partial class JsonObject : JSONValue
 	{
 		/// <summary>Values</summary>
-		public JSONObjectValue[] value;
+		public JsonObjectValue[] value;
 	}
 
 	/// <summary>Table cell		<para>See <a href="https://corefork.telegram.org/constructor/pageTableCell"/></para></summary>
@@ -10475,7 +10473,7 @@ namespace TL
 			send_inline = 0x40,
 			/// <summary>If set, does not allow a user to embed links in the messages of a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a></summary>
 			embed_links = 0x80,
-			/// <summary>If set, does not allow a user to send stickers in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a></summary>
+			/// <summary>If set, does not allow a user to send polls in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a></summary>
 			send_polls = 0x100,
 			/// <summary>If set, does not allow any user to change the description of a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a></summary>
 			change_info = 0x400,
@@ -15075,7 +15073,7 @@ namespace TL
 				path = path,
 			});
 		/// <summary>Get app-specific configuration, see <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration</a> for more info on the result.		<para>See <a href="https://corefork.telegram.org/method/help.getAppConfig"/></para></summary>
-		public static Task<JSONValue> Help_GetAppConfig(this Client client)
+		public static Task<JsonObject> Help_GetAppConfig(this Client client)
 			=> client.CallAsync(new Help_GetAppConfig
 			{
 			});
@@ -18718,7 +18716,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x98914110)]
-	public class Help_GetAppConfig : IMethod<JSONValue> { }
+	public class Help_GetAppConfig : IMethod<JsonObject> { }
 
 	[TLDef(0x6F02F748)]
 	public class Help_SaveAppLog : IMethod<bool>

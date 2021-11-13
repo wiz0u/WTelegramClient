@@ -367,10 +367,27 @@ namespace TL
 	}
 
 	partial class JsonObjectValue	{ public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }
-	partial class JsonNull			{ public override string ToString() => "null"; }
-	partial class JsonBool			{ public override string ToString() => value ? "true" : "false"; }
-	partial class JsonNumber		{ public override string ToString() => value.ToString(CultureInfo.InvariantCulture); }
-	partial class JsonString		{ public override string ToString() => HttpUtility.JavaScriptStringEncode(value, true); }
+	partial class JSONValue			{ public abstract object ToNative(); }
+	partial class JsonNull
+	{
+		public override string ToString() => "null";
+		public override object ToNative() => null;
+	}
+	partial class JsonBool
+	{
+		public override string ToString() => value ? "true" : "false";
+		public override object ToNative() => value;
+	}
+	partial class JsonNumber
+	{
+		public override string ToString() => value.ToString(CultureInfo.InvariantCulture);
+		public override object ToNative() => value;
+	}
+	partial class JsonString
+	{
+		public override string ToString() => HttpUtility.JavaScriptStringEncode(value, true);
+		public override object ToNative() => value;
+	}
 	partial class JsonArray
 	{
 		public override string ToString()
@@ -379,6 +396,22 @@ namespace TL
 			for (int i = 0; i < value.Length; i++)
 				sb.Append(i == 0 ? "" : ",").Append(value[i]);
 			return sb.Append(']').ToString();
+		}
+		public object[] ToNativeArray() => value.Select(v => v.ToNative()).ToArray();
+		public override object ToNative()
+		{
+			if (value.Length == 0) return Array.Empty<object>();
+			var first = value[0].ToNative();
+			var elementType = first.GetType();
+			var array = Array.CreateInstance(elementType, value.Length);
+			array.SetValue(first, 0);
+			for (int i = 1; i < value.Length; i++)
+			{
+				var elem = value[i].ToNative();
+				if (elem.GetType() != elementType) return ToNativeArray();
+				array.SetValue(elem, i);
+			}
+			return array;
 		}
 	}
 	partial class JsonObject
@@ -389,6 +422,22 @@ namespace TL
 			for (int i = 0; i < value.Length; i++)
 				sb.Append(i == 0 ? "" : ",").Append(value[i]);
 			return sb.Append('}').ToString();
+		}
+		public Dictionary<string, object> ToDictionary() => value.ToDictionary(v => v.key, v => v.value.ToNative());
+		public override object ToNative()
+		{
+			if (value.Length == 0) return new Dictionary<string, object>();
+			var first = value[0].value.ToNative();
+			var elementType = first.GetType();
+			var dic = Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(typeof(string), elementType)) as System.Collections.IDictionary;
+			dic.Add(value[0].key, first);
+			for (int i = 1; i < value.Length; i++)
+			{
+				var elem = value[i].value.ToNative();
+				if (elem.GetType() != elementType) return ToDictionary();
+				dic.Add(value[i].key, elem);
+			}
+			return dic;
 		}
 	}
 
