@@ -42,6 +42,18 @@ await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
 See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) for details.
 <br/>*Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#Collect-Access-Hash-and-save-them-for-later-use))*
 
+### Send a random dice (or other "game of chance" animated emoji)
+```csharp
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+var user = await client.LoginUserIfNeeded();
+var appConfig = await client.Help_GetAppConfig();
+if (appConfig["emojies_send_dice"] is string[] emojies_send_dice) // get list of animated "dice" emojies
+{
+    var which = new Random().Next(emojies_send_dice.Length); // choose one of the available emojies
+    await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDice { emoticon = emojies_send_dice[which] });
+}
+```
+
 ### List all chats (groups/channels) the user is in and send a message to one
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);

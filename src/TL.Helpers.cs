@@ -366,28 +366,12 @@ namespace TL
 		public InputSecureFileLocation ToFileLocation() => new() { id = id, access_hash = access_hash };
 	}
 
-	partial class JsonObjectValue	{ public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }
-	partial class JSONValue			{ public abstract object ToNative(); }
-	partial class JsonNull
-	{
-		public override string ToString() => "null";
-		public override object ToNative() => null;
-	}
-	partial class JsonBool
-	{
-		public override string ToString() => value ? "true" : "false";
-		public override object ToNative() => value;
-	}
-	partial class JsonNumber
-	{
-		public override string ToString() => value.ToString(CultureInfo.InvariantCulture);
-		public override object ToNative() => value;
-	}
-	partial class JsonString
-	{
-		public override string ToString() => HttpUtility.JavaScriptStringEncode(value, true);
-		public override object ToNative() => value;
-	}
+	partial class JsonObjectValue { public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }
+	partial class JSONValue  { public abstract object ToNative(); }
+	partial class JsonNull   { public override object ToNative() => null;  public override string ToString() => "null"; }
+	partial class JsonBool   { public override object ToNative() => value; public override string ToString() => value ? "true" : "false"; }
+	partial class JsonNumber { public override object ToNative() => value; public override string ToString() => value.ToString(CultureInfo.InvariantCulture); }
+	partial class JsonString { public override object ToNative() => value; public override string ToString() => HttpUtility.JavaScriptStringEncode(value, true); }
 	partial class JsonArray
 	{
 		public override string ToString()
@@ -402,13 +386,13 @@ namespace TL
 		{
 			if (value.Length == 0) return Array.Empty<object>();
 			var first = value[0].ToNative();
-			var elementType = first.GetType();
-			var array = Array.CreateInstance(elementType, value.Length);
+			var T = first.GetType();
+			var array = Array.CreateInstance(T, value.Length); // create an array T[] of the native type
 			array.SetValue(first, 0);
 			for (int i = 1; i < value.Length; i++)
 			{
 				var elem = value[i].ToNative();
-				if (elem.GetType() != elementType) return ToNativeArray();
+				if (elem.GetType() != T) return ToNativeArray(); // incompatible => return an object[] instead
 				array.SetValue(elem, i);
 			}
 			return array;
@@ -416,6 +400,7 @@ namespace TL
 	}
 	partial class JsonObject
 	{
+		/// <summary>Returns a JSON serialization string for this object</summary>
 		public override string ToString()
 		{
 			var sb = new StringBuilder().Append('{');
@@ -423,18 +408,21 @@ namespace TL
 				sb.Append(i == 0 ? "" : ",").Append(value[i]);
 			return sb.Append('}').ToString();
 		}
+		/// <summary>Returns the given entry in native form (<see langword="bool"/>, <see langword="double"/>, <see langword="string"/>, <see cref="Dictionary{TKey, TValue}">Dictionary</see> or <see cref="Array"/>), or <see langword="null"/> if the key is not found</summary>
+		public object this[string key] => value.FirstOrDefault(v => v.key == key)?.value.ToNative();
+		/// <summary>Converts the entries to a Dictionary with keys and values in native form (<see langword="bool"/>, <see langword="double"/>, <see langword="string"/>, <see cref="Dictionary{TKey, TValue}">Dictionary</see> or <see cref="Array"/>)</summary>
 		public Dictionary<string, object> ToDictionary() => value.ToDictionary(v => v.key, v => v.value.ToNative());
 		public override object ToNative()
 		{
 			if (value.Length == 0) return new Dictionary<string, object>();
 			var first = value[0].value.ToNative();
-			var elementType = first.GetType();
-			var dic = Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(typeof(string), elementType)) as System.Collections.IDictionary;
+			var T = first.GetType(); // create a Dictionary<string, T> of the native type T:
+			var dic = Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(typeof(string), T)) as System.Collections.IDictionary;
 			dic.Add(value[0].key, first);
 			for (int i = 1; i < value.Length; i++)
 			{
 				var elem = value[i].value.ToNative();
-				if (elem.GetType() != elementType) return ToDictionary();
+				if (elem.GetType() != T) return ToDictionary();  // incompatible => return a Dictionary<string, object> instead
 				dic.Add(value[i].key, elem);
 			}
 			return dic;
