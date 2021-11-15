@@ -39,8 +39,8 @@ var text = $"Hello __dear *{Markdown.Escape(user.first_name)}*__\nEnjoy this `us
 var entities = client.MarkdownToEntities(ref text);
 await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
 ```
-See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) for details.
-<br/>*Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#Collect-Access-Hash-and-save-them-for-later-use))*
+See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) for details.  
+*Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#Collect-Access-Hash-and-save-them-for-later-use))*
 
 ### Send a random dice (or other "game of chance" animated emoji)
 ```csharp
@@ -66,8 +66,7 @@ Console.Write("Choose a chat ID to send a message to: ");
 long chatId = long.Parse(Console.ReadLine());
 await client.SendMessageAsync(chats.chats[chatId], "Hello, World");
 ```
-*Note: the list returned by Messages_GetAllChats contains the `access_hash` for those chats.*
-<br/>
+*Note: the list returned by Messages_GetAllChats contains the `access_hash` for those chats.*  
 See a longer version of this example in [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
 
 ### Schedule a message to be sent to a chat
@@ -111,8 +110,7 @@ while (dialogs.Dialogs.Length != 0)
 }
 ```
 
-*Note: the lists returned by Messages_GetDialogs contains the `access_hash` for those chats and users.*
-<br/>
+*Note: the lists returned by Messages_GetDialogs contains the `access_hash` for those chats and users.*  
 See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
 ### Get all members from a chat

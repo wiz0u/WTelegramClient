@@ -9,7 +9,7 @@
 
 # How to use
 
-⚠️ This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this before proceeding.
+>⚠️ This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this before proceeding.
 
 After installing WTelegramClient through Nuget, your first Console program will be as simple as:
 ```csharp
@@ -69,10 +69,9 @@ Its `int` argument is the log severity, compatible with the classic [LogLevel en
 
 # Example of API call
 
-ℹ️ The Telegram API makes extensive usage of base and derived classes, so be ready to use the various syntaxes C# offer to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
+>ℹ️ The Telegram API makes extensive usage of base and derived classes, so be ready to use the various syntaxes C# offer to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
 
-To find which derived classes are available for a given base class, the fastest is to check our [TL.Schema.cs](https://github.com/wiz0u/WTelegramClient/blob/master/src/TL.Schema.cs) source file as they are listed in groups.
-Intellisense tooltips on API structures/methods will also display a web link to the adequate Telegram documentation page.
+All the Telegram API classes/methods are fully documented through Intellisense: Place your mouse over a class/method name, or start typing the call arguments to see a tooltip display their description, the list of derived classes and a web link to the official API page.
 
 The Telegram [API object classes](https://corefork.telegram.org/schema) are defined in the `TL` namespace, and the [API functions](https://corefork.telegram.org/methods) are available as async methods of `Client`.
 
@@ -102,6 +101,8 @@ Console.WriteLine($"Sending a message in chat {chatId}: {target.Title}");
 await client.SendMessageAsync(target, "Hello, World");
 ```
 
+You can find more useful code snippets in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md) and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).
+
 # Terminology in Telegram Client API
 
 In the API, Telegram uses some terms/classnames that can be confusing as they differ from the terms shown to end-users:
@@ -119,8 +120,6 @@ The Client class also offers an `Update` event that is triggered when Telegram s
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
-You can find more code examples in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md) and in the Examples subdirectory.
-
 The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
 
 Optional API parameters have a default value of `null` when unset. Passing `null` for a required string/array is the same as *empty* (0-length). Required API parameters/fields can sometimes be set to 0 or `null` when unused (check API documentation or experiment).
@@ -131,45 +130,18 @@ Beyond the TL async methods, the Client class offers a few other methods to simp
 
 This library works best with **.NET 5.0+** and is also available for **.NET Standard 2.0** (.NET Framework 4.6.1+ & .NET Core 2.0+)
 
-# Troubleshooting guide
-
-Here is a list of common issues and how to fix them so that your program work correctly:
-1) Are you using the Nuget package or the library source code?
-<br/>It is not recommended to copy/compile the source code of the library for a normal usage.
-<br/>When built in DEBUG mode, the source code connects to Telegram test servers. So you can either:
-    - **Recommended:** Use the [official Nuget package](https://www.nuget.org/packages/WTelegramClient) or the [private nuget feed of development builds](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
-    - Build your code in RELEASE mode
-    - Modify your config callback to reply to "server_address" with the IP address of Telegram production servers (as found on your API development tools)
-
-2) After `ConnectAsync()`, are you calling `LoginUserIfNeeded()`?
-<br/>If you don't authenticate as a user (or bot), you have access to a very limited subset of Telegram APIs
-
-3) Did you use `await` with every Client methods?
-<br/>This library is completely Task-based and you should learn, understand and use the [asynchronous model of C# programming](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/) before proceeding further.
-
-4) Are you keeping a live reference to the Client instance and dispose it only at the end of your program?
-<br/>If you create the instance in a submethod and don't store it somewhere permanent, it might be destroyed by the garbage collector at some point. So as long as the client must be running, make sure the reference is stored in a (static) field or somewhere appropriate.
-<br/>Also, as the Client class inherits `IDisposable`, remember to call `client.Dispose()` when your program ends (or exit a `using` scope).
-
-5) Is your program ending immediately instead of waiting for Updates?
-<br/>Your program must be running/waiting continuously in order for the background Task to receive and process the Updates. So make sure your main program doesn't end immediately. For a console program, this is typical done by waiting for a key or some close event.
-
-6) Is every Telegram API call rejected? (typically with an exception message like `AUTH_RESTART`)
-<br/>The user authentification might have failed at some point (or the user revoked the authorization). It is therefore necessary to go through the authentification again. This can be done by deleting the WTelegram.session file, or at runtime by calling `client.Reset()`
-
 # Library uses and limitations
 This library can be used for any Telegram scenarios including:
 - Sequential or parallel automated steps based on API requests/responses
 - Real-time monitoring of incoming Updates/Messages
 - Download/upload of files/media
-- etc...
 
-It has been tested in a Console app, WinForms app, ASP.NET webservice.
-
+It has been tested in a Console app, WinForms app, ASP.NET webservice.  
 Secret chats (end-to-end encryption, PFS) and connection to CDN DCs have not been tested yet.
 
 Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos) or you might get banned from Telegram servers.
 
-Developers feedbacks are welcome in the Telegram channel [@WTelegramClient](https://t.me/WTelegramClient)
+Developers feedbacks are welcome in the Telegram support group [@WTelegramClient](https://t.me/WTelegramClient)  
+You can also check our [Frequently Asked Questions](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) for more help and troubleshooting guide.
 
 If you like this library, please [consider a donation](http://wizou.fr/donate.html). ❤ This will help the project keep going.
