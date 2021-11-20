@@ -178,9 +178,9 @@ namespace TL
 				writer.Write(0);						// patched below
 				writer.WriteTLObject(msg.body);
 				if ((msg.seqno & 1) != 0)
-					WTelegram.Helpers.Log(1, $"  Sending → {msg.body.GetType().Name.TrimEnd('_'),-40} #{(short)msg.msg_id.GetHashCode():X4}");
+					WTelegram.Helpers.Log(1, $"            → {msg.body.GetType().Name.TrimEnd('_'),-38} #{(short)msg.msg_id.GetHashCode():X4}");
 				else
-					WTelegram.Helpers.Log(1, $"  Sending → {msg.body.GetType().Name.TrimEnd('_'),-40}");
+					WTelegram.Helpers.Log(1, $"            → {msg.body.GetType().Name.TrimEnd('_'),-38}");
 				writer.BaseStream.Position = patchPos;
 				writer.Write((int)(writer.BaseStream.Length - patchPos - 4)); // patch bytes field
 				writer.Seek(0, SeekOrigin.End);

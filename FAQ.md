@@ -1,6 +1,6 @@
 ﻿## FAQ
 
-#### 1. How to remove the Console logs ?
+#### 1. How to remove the Console logs?
 
 Writing the library logs to the Console is the default behavior of the `WTelegram.Helpers.Log` delegate.  
 You can change the delegate with the `+=` operator to **also** write them somewhere else, or with the `=` operator to prevent them from being printed to screen and instead write them somewhere (file, logger, ...).
@@ -14,7 +14,7 @@ The WTelegram.session file contains the authentication keys negociated for the c
 
 You could switch the current user via an `Auth_Logout` followed by a `LoginUserIfNeeded` but that would require the user to sign in with a verification_code each time.
 
-Instead, if you want to deal with multiple users, the recommended solution is to have a different session file for each user. This can be done by having your Config callback reply with a different filename (or folder) for "**session_pathname**" for each user.
+Instead, if you want to deal with multiple users from the same machine, the recommended solution is to have a different session file for each user. This can be done by having your Config callback reply with a different filename (or folder) for "**session_pathname**" for each user.
 This way, you can keep separate session files (each with their authentication keys) for each user.
 
 If you need to manage these user accounts in parallel, you can create multiple instances of WTelegram.Client, and give them a Config callback that will select a different session file.
@@ -97,14 +97,13 @@ Here are some key points:
 
 *(the above section is derived from [gotd SUPPORT.md](https://github.com/gotd/td/blob/main/.github/SUPPORT.md))*
 
-
-#### 8. I can't import phone numbers. I get error PHONE_NUMBER_BANNED or FLOOD_WAIT_84200
+#### 8. I can't import phone numbers. I get error PHONE_NUMBER_BANNED or FLOOD_WAIT_8xxxx
 
 You can get these kind of problems if you abuse Telegram [Terms of Service](https://telegram.org/tos) or make excessive requests.
 
 You can try to wait more between the requests, wait for a day or two to see if the requests become possible again.
 
-If you think your phone number was banned for a bad reason, you may try to contact [recover@telegram.org](mailto:recover@telegram.org), explaining what you were doing.
+If you think your phone number was banned for a wrong reason, you may try to contact [recover@telegram.org](mailto:recover@telegram.org), explaining what you were doing.
 
 In any case, WTelegramClient is not responsible for the bad usage of the library and we are not affiliated to Telegram teams, so there is nothing we can do.
 

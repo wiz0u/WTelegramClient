@@ -61,7 +61,7 @@ There are other configuration items that are queried to your method but returnin
 Those shown above are the only ones that have no default values and <u>should be provided</u> by your method.
 Returning `null` for verification_code or password will show a prompt for console apps, or an error otherwise.
 
-Another simpler approach is to pass `Environment.GetEnvironmentVariable` as the config callback and define the configuration items as environment variables.
+Another simple approach is to pass `Environment.GetEnvironmentVariable` as the config callback and define the configuration items as environment variables.
 Undefined variables get the default `null` behavior.
 
 Finally, if you want to redirect the library logs to your logger instead of the Console, you can install a delegate in the `WTelegram.Helpers.Log` static property.
@@ -101,7 +101,7 @@ Console.WriteLine($"Sending a message in chat {chatId}: {target.Title}");
 await client.SendMessageAsync(target, "Hello, World");
 ```
 
-You can find more useful code snippets in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md) and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).
+➡️ You can find more useful code snippets in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md) and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).
 
 # Terminology in Telegram Client API
 
@@ -142,6 +142,6 @@ Secret chats (end-to-end encryption, PFS) and connection to CDN DCs have not bee
 Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos) or you might get banned from Telegram servers.
 
 Developers feedbacks are welcome in the Telegram support group [@WTelegramClient](https://t.me/WTelegramClient)  
-You can also check our [Frequently Asked Questions](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) for more help and troubleshooting guide.
+You can also check our [📖 Frequently Asked Questions](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) for more help and troubleshooting guide.
 
-If you like this library, please [consider a donation](http://wizou.fr/donate.html). ❤ This will help the project keep going.
+If you like this library, please [consider a donation](http://wizou.fr/donate.html).❤ This will help the project keep going.
