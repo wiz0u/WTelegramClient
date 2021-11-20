@@ -260,7 +260,7 @@ namespace TL
 			var type = GetType().Name[11..^6];
 			for (int i = 1; i < type.Length; i++)
 				if (char.IsUpper(type[i]))
-					return type.ToLowerInvariant().Insert(i, "ing ");
+					return type.ToLowerInvariant().Insert(i, "ing ").Remove(i - 1, type[i - 1] == 'e' ? 1 : 0);
 			return type.ToLowerInvariant();
 		}
 	}

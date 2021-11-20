@@ -52,18 +52,18 @@ Then you can use `client.GetAccessHashFor<Channel>(channel_id)` to retrieve it, 
 A way to force the collection of the user's Channel access_hash is to call `Messages_GetAllChats` once.
 For a more thourough example showing how to use this system and to save/remember all access_hash between session, see the [Program_CollectAccessHash.cs example](Examples/Program_CollectAccessHash.cs).
 
-#### 5. I need to test a feature that has been developed but not yet release in WTelegramClient nuget
+#### 5. I need to test a feature that has been developed but not yet released in WTelegramClient nuget
 
 The developmental versions of the library are available through Azure DevOps as part of the Continuous Integration builds after each Github commit.
 
 You can access these versions for testing in your program by going to our [private nuget feed](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&view=overview&package=WTelegramClient&protocolType=NuGet), then click on "Connect to feed" and follow the steps.
 After that, you should be able to see/install the pre-release versions in your Nuget package manager and install them in your application. *(make sure you enable the **pre-release** checkbox)*
 
-#### 6. WTelegramClient asks me to signup (firstname, lastname) even for an existing account and can't find any chats
+#### 6. Telegram asks me to signup (firstname, lastname) even for an existing account and can't find any chats
 This happens when you connect to Telegram Test servers instead of Production servers.
 On these separate test servers, created accounts and chats are periodically deleted, so you shouldn't use them under normal circumstances.
 
-This wrong-server problem typically happens when you use the Github source project in your application in DEBUG builds.  
+This wrong-server problem typically happens when you use WTelegramClient Github source project in your application in DEBUG builds.  
 It is **not recommended** to use WTelegramClient in source code form.
 Instead, you should use the Nuget manager to **import the WTelegramClient Nuget package** into your application.
 
@@ -72,15 +72,42 @@ If you use the Github source project in an old .NET Framework 4.x or .NET Core x
 
 To fix this, you should also switch to using the [WTelegramClient Nuget package](https://www.nuget.org/packages/WTelegramClient) as it will install the required dependencies for it to work.
 
-#### 7. I can't import phone numbers. I get error PHONE_NUMBER_BANNED or FLOOD_WAIT_84200
+#### 7. How to not get banned from Telegram?
+
+**Do not share publicly your app's ID and hash!** They cannot be regenerated and are bound to your Telegram account.
+
+From the [official documentation](https://core.telegram.org/api/obtaining_api_id):
+
+> Note that all API client libraries are strictly monitored to prevent abuse.  
+> If you use the Telegram API for flooding, spamming, faking subscriber and view counters of channels, you **will be banned forever**.  
+> Due to excessive abuse of the Telegram API, **all accounts that sign up or log in using unofficial Telegram clients are automatically
+> put under observation** to avoid violations of the [Terms of Service](https://core.telegram.org/api/terms).
+
+Here are some key points:
+
+1. This client is unofficial, Telegram treats such clients suspiciously, especially fresh ones.
+2. Use regular bots instead of userbots whenever possible.
+3. If you still want to automate things with a user, use it passively (i.e. receive more than sending).
+4. When using it with a user:
+   * Do not use QR code login, this will result in permaban.
+   * Do it with extreme care.
+   * Do not use VoIP numbers.
+   * Do not abuse, spam or use it for other suspicious activities.
+   * Implement a rate limiting system.
+
+*(the above section is derived from [gotd SUPPORT.md](https://github.com/gotd/td/blob/main/.github/SUPPORT.md))*
+
+
+#### 8. I can't import phone numbers. I get error PHONE_NUMBER_BANNED or FLOOD_WAIT_84200
 
 You can get these kind of problems if you abuse Telegram [Terms of Service](https://telegram.org/tos) or make excessive requests.
 
 You can try to wait more between the requests, wait for a day or two to see if the requests become possible again.
 
-If you think your phone number was banned for a bad reason, you may try to contact [recover@telegram.org](mailto:recover@telegram.org)
+If you think your phone number was banned for a bad reason, you may try to contact [recover@telegram.org](mailto:recover@telegram.org), explaining what you were doing.
 
 In any case, WTelegramClient is not responsible for the bad usage of the library and we are not affiliated to Telegram teams, so there is nothing we can do.
+
 
 ## Troubleshooting guide
 
