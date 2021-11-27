@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 134;					// fetched 10/11/2021 16:21:52
+		public const int Version = 135;					// fetched 27/11/2021 01:15:53
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -128,7 +128,7 @@ namespace TL
 			[0x8261AC61] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
 			[0x46A6FFB4] = typeof(ChatFull),
-			[0x59CFF963] = typeof(ChannelFull),
+			[0x56662E2E] = typeof(ChannelFull),
 			[0xC02D4007] = typeof(ChatParticipant),
 			[0xE46BCEE4] = typeof(ChatParticipantCreator),
 			[0xA0933F5B] = typeof(ChatParticipantAdmin),
@@ -195,7 +195,7 @@ namespace TL
 			[0x1117DD5F] = null,//GeoPointEmpty
 			[0xB2A2F663] = typeof(GeoPoint),
 			[0x5E002502] = typeof(Auth_SentCode),
-			[0xCD050916] = typeof(Auth_Authorization),
+			[0x33FB7BB8] = typeof(Auth_Authorization),
 			[0x44747E9A] = typeof(Auth_AuthorizationSignUpRequired),
 			[0xB434E2B8] = typeof(Auth_ExportedAuthorization),
 			[0xB8BC5B0C] = typeof(InputNotifyPeer),
@@ -204,10 +204,10 @@ namespace TL
 			[0xB1DB7C7E] = typeof(InputNotifyBroadcasts),
 			[0x9C3D198E] = typeof(InputPeerNotifySettings),
 			[0xAF509D20] = typeof(PeerNotifySettings),
-			[0x733F2961] = typeof(PeerSettings),
+			[0xA518110D] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0xD697FF05] = typeof(UserFull),
+			[0xCF366521] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -444,7 +444,7 @@ namespace TL
 			[0xE89C45B2] = typeof(WebPage),
 			[0x7311CA11] = typeof(WebPageNotModified),
 			[0xAD01D61D] = typeof(Authorization),
-			[0x1250ABDE] = typeof(Account_Authorizations),
+			[0x4BFF8EA0] = typeof(Account_Authorizations),
 			[0x185B184F] = typeof(Account_Password),
 			[0x9A5C33E5] = typeof(Account_PasswordSettings),
 			[0xC23727C9] = typeof(Account_PasswordInputSettings),
@@ -462,6 +462,7 @@ namespace TL
 			[0x0CDE3739] = typeof(InputStickerSetAnimatedEmojiAnimations),
 			[0xD7DF217A] = typeof(StickerSet),
 			[0xB60A24A6] = typeof(Messages_StickerSet),
+			[0xD3F924EB] = null,//Messages_StickerSetNotModified
 			[0xC27AC8C7] = typeof(BotCommand),
 			[0x1B74B335] = typeof(BotInfo),
 			[0xA2FA4880] = typeof(KeyboardButton),
@@ -475,6 +476,8 @@ namespace TL
 			[0x10B78D29] = typeof(KeyboardButtonUrlAuth),
 			[0xD02E7FD4] = typeof(InputKeyboardButtonUrlAuth),
 			[0xBBC7515D] = typeof(KeyboardButtonRequestPoll),
+			[0xE988037B] = typeof(InputKeyboardButtonUserProfile),
+			[0x308660C1] = typeof(KeyboardButtonUserProfile),
 			[0x77608B83] = typeof(KeyboardButtonRow),
 			[0xA03E5B85] = typeof(ReplyKeyboardHide),
 			[0x86B40B08] = typeof(ReplyKeyboardForceReply),
@@ -555,6 +558,7 @@ namespace TL
 			[0xC000BBA2] = typeof(Auth_SentCodeTypeSms),
 			[0x5353E5A7] = typeof(Auth_SentCodeTypeCall),
 			[0xAB03C6D9] = typeof(Auth_SentCodeTypeFlashCall),
+			[0x82006484] = typeof(Auth_SentCodeTypeMissedCall),
 			[0x36585EA4] = typeof(Messages_BotCallbackAnswer),
 			[0x26B5DDE6] = typeof(Messages_MessageEditData),
 			[0x890C3D89] = typeof(InputBotInlineMessageID),
@@ -709,6 +713,8 @@ namespace TL
 			[0x3E7F6847] = typeof(ChannelAdminLogEventActionParticipantVolume),
 			[0x6E941A38] = typeof(ChannelAdminLogEventActionChangeHistoryTTL),
 			[0xAFB6144A] = typeof(ChannelAdminLogEventActionParticipantJoinByRequest),
+			[0xCB2AC766] = typeof(ChannelAdminLogEventActionToggleNoForwards),
+			[0x278F2868] = typeof(ChannelAdminLogEventActionSendMessage),
 			[0x1FAD68CD] = typeof(ChannelAdminLogEvent),
 			[0xED8AF74D] = typeof(Channels_AdminLogResults),
 			[0xEA107AE4] = typeof(ChannelAdminLogEventsFilter),
@@ -809,7 +815,7 @@ namespace TL
 			[0x967A462E] = typeof(InputWallPaperNoFile),
 			[0x1C199183] = null,//Account_WallPapersNotModified
 			[0xCDC3858C] = typeof(Account_WallPapers),
-			[0xDEBEBE83] = typeof(CodeSettings),
+			[0x8A6469C2] = typeof(CodeSettings),
 			[0x1DC1BCA4] = typeof(WallPaperSettings),
 			[0xE04232F3] = typeof(AutoDownloadSettings),
 			[0x63CACF26] = typeof(Account_AutoDownloadSettings),
@@ -916,6 +922,10 @@ namespace TL
 			[0x147EE23C] = typeof(Messages_SearchResultsCalendar),
 			[0x7F648B67] = typeof(SearchResultPosition),
 			[0x53B22BAF] = typeof(Messages_SearchResultsPositions),
+			[0x8356CDA9] = typeof(Channels_SendAsPeers),
+			[0x3B6D152E] = typeof(Users_UserFull),
+			[0x6880B94D] = typeof(Messages_PeerSettings),
+			[0xC3A2835F] = typeof(Auth_LoggedOut),
 			// from TL.Secret:
 			[0xBB718624] = typeof(Layer66.SendMessageUploadRoundAction),
 			[0xE50511D8] = typeof(Layer45.DecryptedMessageMediaWebPage),
@@ -995,6 +1005,7 @@ namespace TL
 			[typeof(Messages_Stickers)]              = 0xF1749A22, //messages.stickersNotModified
 			[typeof(Messages_AllStickers)]           = 0xE86602C3, //messages.allStickersNotModified
 			[typeof(InputStickerSet)]                = 0xFFB62B95, //inputStickerSetEmpty
+			[typeof(Messages_StickerSet)]            = 0xD3F924EB, //messages.stickerSetNotModified
 			[typeof(InputChannelBase)]               = 0xEE8C1E86, //inputChannelEmpty
 			[typeof(ChannelMessagesFilter)]          = 0x94D42EE7, //channelMessagesFilterEmpty
 			[typeof(Channels_ChannelParticipants)]   = 0xF0173FE9, //channels.channelParticipantsNotModified
