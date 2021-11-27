@@ -15,6 +15,8 @@ namespace TL
 	}
 
 	partial class InputPeer { public static InputPeerSelf Self => new(); }
+	partial class InputPeerUser { public static implicit operator InputUser(InputPeerUser user) => new() { user_id = user.user_id, access_hash = user.access_hash }; }
+	partial class InputPeerChannel { public static implicit operator InputChannel(InputPeerChannel channel) => new() { channel_id = channel.channel_id, access_hash = channel.access_hash }; }
 	partial class InputUser { public static InputUserSelf Self => new(); }
 
 	partial class InputFileBase
@@ -270,6 +272,8 @@ namespace TL
 	partial class SendMessageGeoLocationAction		{ public override string ToString() => "selecting a location"; }
 	partial class SendMessageGamePlayAction			{ public override string ToString() => "playing a game"; }
 	partial class SendMessageHistoryImportAction	{ public override string ToString() => "importing history"; }
+	partial class SendMessageEmojiInteraction		{ public override string ToString() => "clicking on emoji"; }
+	partial class SendMessageEmojiInteractionSeen	{ public override string ToString() => "watching emoji reaction"; }
 
 	partial class StickerSet
 	{
@@ -311,7 +315,11 @@ namespace TL
 		public override bool Final => flags.HasFlag(Flags.final);
 		public override int Timeout => timeout;
 	}
-	
+
+	partial class ChannelParticipantBase	{ public virtual bool IsAdmin => false; }
+	partial class ChannelParticipantCreator { public override bool IsAdmin => true; }
+	partial class ChannelParticipantAdmin	{ public override bool IsAdmin => true; }
+
 	partial class UpdatesBase
 	{
 		public abstract Update[] UpdateList { get; }
