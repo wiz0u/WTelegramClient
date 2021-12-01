@@ -7,9 +7,12 @@ using System.Linq;
 using TL;
 ```
 
-Those examples use environment variables for configuration so make sure to go to your **Project Properties > Debug > Environment variables** and add at least these variables with adequate value: **api_id, api_hash, phone_number**
+Those examples use environment variables for configuration so make sure to
+go to your **Project Properties > Debug > Environment variables**
+and add at least these variables with adequate value: **api_id, api_hash, phone_number**
 
-Remember that these are just simple example codes that you should adjust to your needs. In real production code, you're supposed to properly test the success of each operation.
+Remember that these are just simple example codes that you should adjust to your needs.
+In real production code, you might want to properly test the success of each operation or handle exceptions.
 
 ### Send a message to someone by @username
 ```csharp
@@ -158,11 +161,12 @@ for (int offset = 0; ;)
 ### Monitor all Telegram events happening for the user
 
 This is done through the `client.Update` callback event.
+
 See [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
 ### Monitor new messages being posted in chats
 
-You have to catch Update events containing an `UpdateNewMessage`.
+You have to handle `client.Update` events containing an `UpdateNewMessage`.
 
 See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
@@ -170,13 +174,17 @@ You can filter specific chats the message are posted in, by looking at the `Mess
 
 ### Download media files you forward to yourself (Saved Messages)
 
+This is done using the helper method `client.DownloadFileAsync(file, outputStream)`
+that simplify the download of a photo/document/file once you get a reference to its location.
+
 See [Examples/Program_DownloadSavedMedia.cs](Examples/Program_DownloadSavedMedia.cs).
 
 ### Collect Access Hash and save them for later use
 
-You can automate the collection of `access_hash` for the various resources obtained in response to API calls or Update events, so that you don't have to remember them by yourself or ask the API about them each time.
+You can automate the collection of `access_hash` for the various resources obtained in response to API calls or Update events,
+so that you don't have to remember them by yourself or ask the API about them each time.
 
-This is done by activating the experimental `client.CollectAccessHash` system.
+This is done by activating the experimental `client.CollectAccessHash` system.  
 See [Examples/Program_CollectAccessHash.cs](Examples/Program_CollectAccessHash.cs) for how to enable it, and save/restore them for later use.
 
 ### Use a proxy to connect to Telegram

@@ -35,7 +35,7 @@ namespace WTelegram
 		public int FloodRetryThreshold { get; set; } = 60;
 		/// <summary>Is this Client instance the main or a secondary DC session</summary>
 		public bool IsMainDC => (_dcSession?.DataCenter?.id ?? 0) == _session.MainDC;
-		/// <summary>Is this Client currently disconnected?</summary>
+		/// <summary>Has this Client established connection been disconnected?</summary>
 		public bool Disconnected => _tcpClient != null && !(_tcpClient.Client?.Connected ?? false);
 		/// <summary>Used to indicate progression of file download/upload</summary>
 		/// <param name="totalSize">total size of file in bytes, or 0 if unknown</param>
@@ -1003,8 +1003,7 @@ namespace WTelegram
 				catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
 				{
 					var accountPassword = await this.Account_GetPassword();
-					Helpers.Log(3, $"This account has enabled 2FA. A password is needed. {accountPassword.hint}");
-					var checkPasswordSRP = Check2FA(accountPassword, Config("password"));
+					var checkPasswordSRP = Check2FA(accountPassword, () => Config("password"));
 					authorization = await this.Auth_CheckPassword(checkPasswordSRP);
 					break;
 				}

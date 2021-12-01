@@ -5,7 +5,7 @@
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://wizou.fr/donate.html)
 
-## _Telegram Client API library written 100% in C# and .NET Standard_
+## _a Telegram Client API library written 100% in C# and .NET Standard_
 
 # How to use
 
@@ -82,7 +82,7 @@ using TL;
 var chats = await client.Messages_GetAllChats(null);
 Console.WriteLine("This user has joined the following:");
 foreach (var (id, chat) in chats.chats)
-    switch (chat)
+    switch (chat) // example of downcasting to their real classes:
     {
         case Chat smallgroup when smallgroup.IsActive:
             Console.WriteLine($"{id}:  Small group: {smallgroup.title} with {smallgroup.participants_count} members");
@@ -135,11 +135,12 @@ This library can be used for any Telegram scenarios including:
 - Sequential or parallel automated steps based on API requests/responses
 - Real-time monitoring of incoming Updates/Messages
 - Download/upload of files/media
+- or even a full-featured interactive client
 
 It has been tested in a Console app, WinForms app, ASP.NET webservice.  
 Secret chats (end-to-end encryption, PFS) and connection to CDN DCs have not been tested yet.
 
-Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos) or you might get banned from Telegram servers.
+Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos) as well as the [API Terms of Service](https://core.telegram.org/api/terms) or you might get banned from Telegram servers.
 
 Developers feedbacks are welcome in the Telegram support group [@WTelegramClient](https://t.me/WTelegramClient)  
 You can also check our [📖 Frequently Asked Questions](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) for more help and troubleshooting guide.

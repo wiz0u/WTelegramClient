@@ -59,9 +59,9 @@ The developmental versions of the library are available through Azure DevOps as 
 You can access these versions for testing in your program by going to our [private nuget feed](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&view=overview&package=WTelegramClient&protocolType=NuGet), then click on "Connect to feed" and follow the steps.
 After that, you should be able to see/install the pre-release versions in your Nuget package manager and install them in your application. *(make sure you enable the **pre-release** checkbox)*
 
-#### 6. Telegram asks me to signup (firstname, lastname) even for an existing account and can't find any chats
+#### 6. Telegram can't find any chats and asks me to signup (firstname, lastname) even for an existing account
 This happens when you connect to Telegram Test servers instead of Production servers.
-On these separate test servers, created accounts and chats are periodically deleted, so you shouldn't use them under normal circumstances.
+On these separate test servers, all created accounts and chats are periodically deleted, so you shouldn't use them under normal circumstances.
 
 This wrong-server problem typically happens when you use WTelegramClient Github source project in your application in DEBUG builds.  
 It is **not recommended** to use WTelegramClient in source code form.
@@ -97,9 +97,11 @@ Here are some key points:
 
 *(the above section is derived from [gotd SUPPORT.md](https://github.com/gotd/td/blob/main/.github/SUPPORT.md))*
 
+If your client displays Telegram channels to the user, you have to support and display [official sponsored messages](https://core.telegram.org/api/sponsored-messages).
+
 #### 8. I can't import phone numbers. I get error PHONE_NUMBER_BANNED or FLOOD_WAIT_8xxxx
 
-You can get these kind of problems if you abuse Telegram [Terms of Service](https://telegram.org/tos) or make excessive requests.
+You can get these kind of problems if you abuse Telegram [Terms of Service](https://telegram.org/tos) or https://core.telegram.org/api/terms or make excessive requests.
 
 You can try to wait more between the requests, wait for a day or two to see if the requests become possible again.
 

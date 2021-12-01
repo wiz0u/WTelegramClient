@@ -362,18 +362,22 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			return output;
 		}
 
-		internal static InputCheckPasswordSRP Check2FA(Account_Password accountPassword, string password)
+		internal static InputCheckPasswordSRP Check2FA(Account_Password accountPassword, Func<string> getPassword)
 		{
 			if (accountPassword.current_algo is not PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow algo)
 				throw new ApplicationException("2FA authentication uses an unsupported algo: " + accountPassword.current_algo?.GetType().Name);
 
-			var passwordBytes = Encoding.UTF8.GetBytes(password);
 			var g = new BigInteger(algo.g);
 			var p = BigEndianInteger(algo.p);
 			var g_b = BigEndianInteger(accountPassword.srp_B);
 			var g_b_256 = g_b.To256Bytes();
 			var g_256 = g.To256Bytes();
-			ValidityChecks(p, algo.g);
+			var validTask = Task.Run(() => ValidityChecks(p, algo.g));
+
+			System.Threading.Thread.Sleep(100);
+			Helpers.Log(3, $"This account has enabled 2FA. A password is needed. {accountPassword.hint}");
+			var passwordBytes = Encoding.UTF8.GetBytes(getPassword());
+			validTask.Wait();
 
 			using var sha256 = SHA256.Create();
 			sha256.TransformBlock(algo.salt1, 0, algo.salt1.Length, null, 0);
@@ -416,6 +420,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			var t = (g_b - k_v) % p; //(positive modulo, if the result is negative increment by p)
 			if (t.Sign < 0) t += p;
 			var s_a = BigInteger.ModPow(t, a + u * x, p);
+			sha256.Initialize();
 			var k_a = sha256.ComputeHash(s_a.To256Bytes());
 
 			hash = sha256.ComputeHash(algo.p);
