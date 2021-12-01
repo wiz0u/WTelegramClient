@@ -377,7 +377,6 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			System.Threading.Thread.Sleep(100);
 			Helpers.Log(3, $"This account has enabled 2FA. A password is needed. {accountPassword.hint}");
 			var passwordBytes = Encoding.UTF8.GetBytes(getPassword());
-			validTask.Wait();
 
 			using var sha256 = SHA256.Create();
 			sha256.TransformBlock(algo.salt1, 0, algo.salt1.Length, null, 0);
@@ -437,6 +436,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			sha256.TransformFinalBlock(k_a, 0, 32);
 			var m1 = sha256.Hash;
 
+			validTask.Wait();
 			return new InputCheckPasswordSRP { A = g_a_256, M1 = m1, srp_id = accountPassword.srp_id };
 		}
 
