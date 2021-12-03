@@ -33,6 +33,7 @@ namespace WTelegram
 			internal Client Client;
 			internal int DcID => DataCenter?.id ?? 0;
 			internal IPEndPoint EndPoint => DataCenter == null ? null : new(IPAddress.Parse(DataCenter.ip_address), DataCenter.port);
+			internal void Renew() { Helpers.Log(3, $"Renewing session on DC {DcID}..."); Id = Helpers.RandomLong(); Seqno = 0; LastSentMsgId = 0; }
 		}
 
 		public DateTime SessionStart => _sessionStart;

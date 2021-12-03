@@ -837,19 +837,6 @@ namespace WTelegram
 					if (msgCopy?.orig_message?.body != null)
 						await HandleMessageAsync(msgCopy.orig_message.body);
 					break;
-				case BadServerSalt badServerSalt:
-					_dcSession.Salt = badServerSalt.new_server_salt;
-					if (badServerSalt.bad_msg_id == _dcSession.LastSentMsgId)
-					{
-						var newMsgId = await SendAsync(_lastSentMsg, true);
-						lock (_pendingRequests)
-							if (_pendingRequests.TryGetValue(badServerSalt.bad_msg_id, out var t))
-							{
-								_pendingRequests.Remove(badServerSalt.bad_msg_id);
-								_pendingRequests[newMsgId] = t;
-							}
-					}
-					break;
 				case TL.Methods.Ping ping:
 					_ = SendAsync(new Pong { msg_id = _lastRecvMsgId, ping_id = ping.ping_id }, false);
 					break;
@@ -864,17 +851,48 @@ namespace WTelegram
 				case MsgsAck msgsAck:
 					break; // we don't do anything with these, for now
 				case BadMsgNotification badMsgNotification:
+					await _sendSemaphore.WaitAsync();
+					bool retryLast = badMsgNotification.bad_msg_id == _dcSession.LastSentMsgId;
+					var lastSentMsg = _lastSentMsg;
+					_sendSemaphore.Release();
+					Helpers.Log(4, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
+					switch (badMsgNotification.error_code)
 					{
-						Helpers.Log(4, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
-						var tcs = PullPendingRequest(badMsgNotification.bad_msg_id).tcs;
-						if (tcs != null)
-						{
-							if (_bareRequest == badMsgNotification.bad_msg_id) _bareRequest = 0;
-							tcs.SetException(new ApplicationException($"BadMsgNotification {badMsgNotification.error_code}"));
-						}
-						else
-							OnUpdate(obj);
+						case 32: // msg_seqno too low (the server has already received a message with a lower msg_id but with either a higher or an equal and odd seqno)
+						case 33: // msg_seqno too high (similarly, there is a message with a higher msg_id but with either a lower or an equal and odd seqno)
+							if (_dcSession.Seqno <= 1)
+								retryLast = false;
+							else
+							{
+								Reset(false, false);
+								_dcSession.Renew();
+								await ConnectAsync();
+							}
+							break;
+						case 48: // incorrect server salt (in this case, the bad_server_salt response is received with the correct salt, and the message is to be re-sent with it)
+							_dcSession.Salt = ((BadServerSalt)badMsgNotification).new_server_salt;
+							break;
+						default:
+							retryLast = false;
+							break;
 					}
+					if (retryLast)
+					{
+						var newMsgId = await SendAsync(lastSentMsg, true);
+						lock (_pendingRequests)
+							if (_pendingRequests.TryGetValue(badMsgNotification.bad_msg_id, out var t))
+							{
+								_pendingRequests.Remove(badMsgNotification.bad_msg_id);
+								_pendingRequests[newMsgId] = t;
+							}
+					}
+					else if (PullPendingRequest(badMsgNotification.bad_msg_id).tcs is TaskCompletionSource<object> tcs)
+					{
+						if (_bareRequest == badMsgNotification.bad_msg_id) _bareRequest = 0;
+						tcs.SetException(new ApplicationException($"BadMsgNotification {badMsgNotification.error_code}"));
+					}
+					else
+						OnUpdate(obj);
 					break;
 				default:
 					if (_bareRequest != 0)

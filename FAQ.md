@@ -32,9 +32,9 @@ This might require adding a reference *(and `using`)* to the Microsoft.VisualBas
 
 #### 4. I get the error `CHAT_ID_INVALID` or `CHANNEL_INVALID`
 
-First, you should distinguish between Chat, Channel and Group/Supergroup: See Terminology in [ReadMe](README.md#Terminology-in-Telegram-Client-API)  
-Most chat groups are in fact not a simple `Chat` but rather a (super)group (= a `Channel` without the `broadcast` flag)  
-Some TL methods only applies to simple Chat, and some only applies to Channels.
+First, you should distinguish between Chat, Channel and Group/Supergroup: See Terminology in [ReadMe](README.md#Terminology-in-Telegram-Client-API).  
+Common chat groups are usually not a simple `Chat` but rather a supergroup: a `Channel` without the `broadcast` flag  
+Some TL methods only applies to simple `Chat`, and some only applies to `Channel`.
 
 A simple `Chat` can be queried using their `chat_id` only.  
 But a `Channel` must be queried using an `InputChannel` or `InputPeerChannel` object that specifies the `channel_id` as well as an `access_hash` that proves you are allowed to access it.

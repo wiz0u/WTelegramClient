@@ -12,7 +12,7 @@ namespace WTelegram
 		public static Action<int, string> Log { get; set; } = DefaultLogger;
 
 		/// <summary>For serializing indented Json with fields included</summary>
-		public static readonly JsonSerializerOptions JsonOptions = new() { IncludeFields = true, WriteIndented = true };
+		public static readonly JsonSerializerOptions JsonOptions = new() { IncludeFields = true, WriteIndented = true, IgnoreReadOnlyProperties = true };
 
 		public static V GetOrCreate<K, V>(this Dictionary<K, V> dictionary, K key) where V : new()
 			=> dictionary.TryGetValue(key, out V value) ? value : dictionary[key] = new V();
