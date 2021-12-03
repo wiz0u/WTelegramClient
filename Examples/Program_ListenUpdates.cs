@@ -6,7 +6,7 @@ using TL;
 
 namespace WTelegramClientTest
 {
-	class Program_ListenUpdates
+	static class Program_ListenUpdates
 	{
 		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main(string[] _)
@@ -45,8 +45,8 @@ namespace WTelegramClientTest
 		private static void Client_Update(IObject arg)
 		{
 			if (arg is not UpdatesBase updates) return;
-			foreach(var (id, user) in updates.Users) _users[id] = user;
-			foreach(var (id, chat) in updates.Chats) _chats[id] = chat;
+			foreach (var (id, user) in updates.Users) _users[id] = user;
+			foreach (var (id, chat) in updates.Chats) _chats[id] = chat;
 			foreach (var update in updates.UpdateList)
 				switch (update)
 				{

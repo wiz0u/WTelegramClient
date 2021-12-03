@@ -8,7 +8,7 @@ using TL;
 
 namespace WTelegramClientTest
 {
-	class Program_CollectAccessHash
+	static class Program_CollectAccessHash
 	{
 		private const string StateFilename = "SavedState.json";
 		private const long DurovID = 1006503122; // known ID for Durov's Channel

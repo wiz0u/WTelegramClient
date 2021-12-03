@@ -5,7 +5,7 @@ using TL;
 
 namespace WTelegramClientTest
 {
-	class Program_GetAllChats
+	static class Program_GetAllChats
 	{
 		// This code is similar to what you should have obtained if you followed the README introduction
 		// I've just added a few comments to explain further what's going on

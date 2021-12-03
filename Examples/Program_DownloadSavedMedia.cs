@@ -7,7 +7,7 @@ using TL;
 
 namespace WTelegramClientTest
 {
-	class Program_DownloadSavedMedia
+	static class Program_DownloadSavedMedia
 	{
 		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main(string[] args)
