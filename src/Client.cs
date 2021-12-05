@@ -98,11 +98,12 @@ namespace WTelegram
 			_dcSession = dcSession;
 		}
 
-		internal string Config(string config)
-			=> _config(config) ?? DefaultConfig(config) ?? throw new ApplicationException("You must provide a config value for " + config);
+		internal Task<string> ConfigAsync(string what) => Task.Run(() => Config(what));
+		internal string Config(string what)
+			=> _config(what) ?? DefaultConfig(what) ?? throw new ApplicationException("You must provide a config value for " + what);
 
 		/// <summary>Default config values, used if your Config callback returns <see langword="null"/></summary>
-		public static string DefaultConfig(string config) => config switch
+		public static string DefaultConfig(string what) => what switch
 		{
 			"session_pathname" => Path.Combine(
 				Path.GetDirectoryName(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar))),
@@ -119,7 +120,7 @@ namespace WTelegram
 			"lang_pack" => "",
 			"lang_code" => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
 			"user_id" => "-1",
-			"verification_code" or "password" => AskConfig(config),
+			"verification_code" or "password" => AskConfig(what),
 			_ => null // api_id api_hash phone_number... it's up to you to reply to these correctly
 		};
 
@@ -1013,13 +1014,13 @@ namespace WTelegram
 			for (int retry = 1; authorization == null; retry++)
 				try
 				{
-					var verification_code = Config("verification_code");
+					var verification_code = await ConfigAsync("verification_code");
 					authorization = await this.Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
 				}
 				catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
 				{
 					var accountPassword = await this.Account_GetPassword();
-					var checkPasswordSRP = Check2FA(accountPassword, () => Config("password"));
+					var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
 					authorization = await this.Auth_CheckPassword(checkPasswordSRP);
 				}
 				catch (RpcException e) when (e.Code == 400 && e.Message == "PHONE_CODE_INVALID" && retry != 3)

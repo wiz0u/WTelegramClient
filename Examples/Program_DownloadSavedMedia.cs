@@ -21,7 +21,7 @@ namespace WTelegramClientTest
 
 			async void Client_Update(IObject arg)
 			{
-				if (arg is not Updates { updates: var updates }) return;
+				if (arg is not Updates { updates: var updates } upd) return;
 				foreach (var update in updates)
 				{
 					if (update is not UpdateNewMessage { message: Message message })
