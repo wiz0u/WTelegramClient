@@ -6,14 +6,20 @@ using System.Net;
 using System.Numerics;
 using System.Security.Cryptography;
 
+#if NETCOREAPP2_1_OR_GREATER
 namespace WTelegram
 {
 	static class Compat
 	{
-#if NETCOREAPP2_1_OR_GREATER
-		internal static IPEndPoint IPEndPoint_Parse(string addr) => IPEndPoint.Parse(addr);
 		internal static BigInteger BigEndianInteger(byte[] value) => new(value, true, true);
+		internal static IPEndPoint IPEndPoint_Parse(string addr) => IPEndPoint.Parse(addr);
+	}
+}
 #else
+namespace WTelegram
+{
+	static class Compat
+	{
 		internal static BigInteger BigEndianInteger(byte[] value)
 		{
 			var data = new byte[value.Length + 1];
@@ -68,20 +74,21 @@ namespace WTelegram
 			rsa.ImportParameters(new RSAParameters { Modulus = m.ToArray(), Exponent = e.ToArray() });
 		}
 	}
+}
 
-	static class Convert
+static class Convert
+{
+	internal static string ToHexString(byte[] data) => BitConverter.ToString(data).Replace("-", "");
+	internal static byte[] FromHexString(string hex)
 	{
-		internal static byte[] FromHexString(string hex)
-		{
-			int NumberChars = hex.Length;
-			byte[] bytes = new byte[NumberChars / 2];
-			for (int i = 0; i < NumberChars; i += 2)
-				bytes[i / 2] = System.Convert.ToByte(hex.Substring(i, 2), 16);
-			return bytes;
-		}
-#endif
+		int NumberChars = hex.Length;
+		byte[] bytes = new byte[NumberChars / 2];
+		for (int i = 0; i < NumberChars; i += 2)
+			bytes[i / 2] = System.Convert.ToByte(hex.Substring(i, 2), 16);
+		return bytes;
 	}
 }
+#endif
 
 #if NETSTANDARD2_0
 namespace System.Runtime.CompilerServices

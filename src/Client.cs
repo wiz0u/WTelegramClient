@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -343,6 +344,8 @@ namespace WTelegram
 				if (dcSession.Client != null || dcSession.DataCenter.flags == flags)
 					return dcSession; // if we have already a session with this DC and we are connected or it is a perfect match, use it
 			// try to find the most appropriate DcOption for this DC
+			if ((dcSession?.AuthKeyID ?? 0) == 0) // we will need to negociate an AuthKey => can't use media_only DC
+				flags &= ~DcOption.Flags.media_only;
 			var dcOptions = _session.DcOptions.Where(dc => dc.id == dcId).OrderBy(dc => dc.flags ^ flags);
 			var dcOption = dcOptions.FirstOrDefault() ?? throw new ApplicationException($"Could not find adequate dc_option for DC {dcId}");
 			dcSession ??= new Session.DCSession { Id = Helpers.RandomLong() }; // create new session only if not already existing
@@ -960,11 +963,7 @@ namespace WTelegram
 				_session.UserId = _dcSession.UserId = 0;
 			}
 			var authorization = await this.Auth_ImportBotAuthorization(0, _apiId, _apiHash, botToken);
-			if (authorization is not Auth_Authorization { user: User user })
-				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
-			_session.UserId = _dcSession.UserId = user.id;
-			_session.Save();
-			return user;
+			return LoginAlreadyDone(authorization);
 		}
 
 		/// <summary>Login as a user (if not already logged-in).
@@ -1010,24 +1009,21 @@ namespace WTelegram
 				sentCode = await this.Auth_SendCode(phone_number, _apiId, _apiHash, settings ??= new());
 			}
 			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
-			Auth_AuthorizationBase authorization;
-			for (int retry = 1; ; retry++)
+			Auth_AuthorizationBase authorization = null;
+			for (int retry = 1; authorization == null; retry++)
 				try
 				{
 					var verification_code = Config("verification_code");
 					authorization = await this.Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
-					break;
 				}
 				catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
 				{
 					var accountPassword = await this.Account_GetPassword();
 					var checkPasswordSRP = Check2FA(accountPassword, () => Config("password"));
 					authorization = await this.Auth_CheckPassword(checkPasswordSRP);
-					break;
 				}
 				catch (RpcException e) when (e.Code == 400 && e.Message == "PHONE_CODE_INVALID" && retry != 3)
 				{
-					continue;
 				}
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
 			{
@@ -1040,6 +1036,18 @@ namespace WTelegram
 				if (wait > TimeSpan.Zero) await Task.Delay(wait); // we get a FLOOD_WAIT_3 if we SignUp too fast
 				authorization = await this.Auth_SignUp(phone_number, sentCode.phone_code_hash, first_name, last_name);
 			}
+			return LoginAlreadyDone(authorization);
+		}
+
+		/// <summary><b>[Not recommended]</b> You can use this if you have already obtained a login authorization manually</summary>
+		/// <param name="authorization">if this was not a successful Auth_Authorization, an exception is thrown</param>
+		/// <returns>the User that was authorized</returns>
+		/// <remarks>This approach is not recommended because you likely didn't properly handle all aspects of the login process
+		/// <br/>(transient failures, unnecessary login, 2FA, sign-up required, slowness to respond, verification code resending, encryption key safety, etc..)
+		/// <br/>Methods <c>LoginUserIfNeeded</c> and <c>LoginBotIfNeeded</c> handle these automatically for you</remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public User LoginAlreadyDone(Auth_AuthorizationBase authorization)
+		{
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
 			_session.UserId = _dcSession.UserId = user.id;

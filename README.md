@@ -58,7 +58,7 @@ static string Config(string what)
 using var client = new WTelegram.Client(Config);
 ```
 There are other configuration items that are queried to your method but returning `null` let WTelegramClient choose a default adequate value.
-Those shown above are the only ones that have no default values and <u>should be provided</u> by your method.
+Those shown above are the only ones that have no default values and should be provided by your method.
 Returning `null` for verification_code or password will show a prompt for console apps, or an error otherwise.
 
 Another simple approach is to pass `Environment.GetEnvironmentVariable` as the config callback and define the configuration items as environment variables.

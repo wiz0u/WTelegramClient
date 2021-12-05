@@ -336,6 +336,7 @@ namespace TL
 		public static bool operator !=(Int128 left, Int128 right) { for (int i = 0; i < 16; i++) if (left.raw[i] != right.raw[i]) return true; return false; }
 		public override bool Equals(object obj) => obj is Int128 other && this == other;
 		public override int GetHashCode() => HashCode.Combine(raw[0], raw[1]);
+		public override string ToString() => Convert.ToHexString(raw);
 		public static implicit operator byte[](Int128 int128) => int128.raw;
 	}
 
@@ -349,6 +350,7 @@ namespace TL
 		public static bool operator !=(Int256 left, Int256 right) { for (int i = 0; i < 32; i++) if (left.raw[i] != right.raw[i]) return true; return false; }
 		public override bool Equals(object obj) => obj is Int256 other && this == other;
 		public override int GetHashCode() => HashCode.Combine(raw[0], raw[1]);
+		public override string ToString() => Convert.ToHexString(raw);
 		public static implicit operator byte[](Int256 int256) => int256.raw;
 	}
 
