@@ -30,27 +30,25 @@ The difficulty might be in your Config callback when the user must enter the ver
 An easy solution is to call `Interaction.InputBox("Enter verification code")` instead.  
 This might require adding a reference *(and `using`)* to the Microsoft.VisualBasic assembly.
 
-#### 4. I get the error `CHAT_ID_INVALID` or `CHANNEL_INVALID`
+#### 4. Where to get the access_hash? Why the error `CHANNEL_INVALID` or `USER_ID_INVALID`?
 
-First, you should distinguish between Chat, Channel and Group/Supergroup: See Terminology in [ReadMe](README.md#Terminology-in-Telegram-Client-API).  
-Common chat groups are usually not a simple `Chat` but rather a supergroup: a `Channel` without the `broadcast` flag  
-Some TL methods only applies to simple `Chat`, and some only applies to `Channel`.
+An `access_hash` is required by Telegram when dealing with a channel, user, photo, document, etc...  
+This serves as a proof that you are entitled to access it (otherwise, anybody with the ID could access it)
 
-A simple `Chat` can be queried using their `chat_id` only.  
-But a `Channel` must be queried using an `InputChannel` or `InputPeerChannel` object that specifies the `channel_id` as well as an `access_hash` that proves you are allowed to access it.
+> A small private `Chat` don't need an access_hash and can be queried using their `chat_id` only.
+However most common chat groups are not `Chat` but a `Channel` supergroup (without the `broadcast` flag). See Terminology in [ReadMe](README.md#Terminology-in-Telegram-Client-API).  
+Some TL methods only applies to private `Chat`, some only applies to `Channel` and some to both.
 
-To construct these `InputChannel` or `InputPeerChannel` objects, the simplest way is to start your session with a call to `Messages_GetAllChats`.
-The resulting list contains both Chat and Channel instances, that can be converted implicitly to the adequate `InputPeer`.
-A Channel instance can also be converted implicitly to `InputChannel`.
-So usually you can just pass the Chat or Channel instance directly to the API method expecting an InputPeer/InputChannel argument.
+The `access_hash` must usually be provided within the `Input...` structure you pass in argument to an API method (`InputPeer`, `InputChannel`, `InputUser`, etc...).  
+You obtain the `access_hash` through **description structures** like `Channel`, `User`, `Photo`, `Document` that you receive through updates or when you query them through API methods like `Messages_GetAllChats`, `Messages_GetDialogs`, `Contacts_ResolveUsername`, etc...
 
-You can also construct an `InputChannel` or `InputPeerChannel` object manually, but then you must specify the `access_hash`.
-This hash is fixed for a given user account and a given channel, so if you often access the same, you may save it or hardcode it, along with the channel_id.  
-To obtain it in the first place, you can extract it manually from the `access_hash` field in Channel object instances,
-or you can use WTelegramClient experimental system `client.CollectAccessHash = true` that will automatically extract all `access_hash` fields from the API responses it encountered so far.
-Then you can use `client.GetAccessHashFor<Channel>(channel_id)` to retrieve it, but this will work only if that access_hash was collected during the session.
-A way to force the collection of the user's Channel access_hash is to call `Messages_GetAllChats` once.
-For a more thourough example showing how to use this system and to save/remember all access_hash between session, see the [Program_CollectAccessHash.cs example](Examples/Program_CollectAccessHash.cs).
+Once you obtained the description structure, there are 3 methods for building your `Input...` structure:
+* **Recommended:** If you take a look at the **description structure** class or `ChatBase/UserBase`, 
+you will see that they have conversion implicit operators or methods that can create the `Input...` structure for you automatically.  
+So you can just pass that structure you already have, in place of the `Input...` argument, it will work!
+* Alternatively, you can manually create the `Input...` structure yourself by extracting the `access_hash` from the **description structure**
+* If you have enabled the [CollectAccessHash system](EXAMPLES.md#collect-access-hash-and-save-them-for-later-use) at the start of your session, it will have collected the `access_hash`.
+You can then retrieve it with `client.GetAccessHashFor<User/Channel/Photo/Document>(id)`
 
 #### 5. I need to test a feature that has been developed but not yet released in WTelegramClient nuget
 
