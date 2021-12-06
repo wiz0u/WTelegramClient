@@ -6328,7 +6328,7 @@ namespace TL
 	public abstract partial class ChannelParticipantBase : IObject { }
 	/// <summary>Channel/supergroup participant		<para>See <a href="https://corefork.telegram.org/constructor/channelParticipant"/></para></summary>
 	[TLDef(0xC00C07C0)]
-	public class ChannelParticipant : ChannelParticipantBase
+	public partial class ChannelParticipant : ChannelParticipantBase
 	{
 		/// <summary>Pariticipant user ID</summary>
 		public long user_id;
@@ -6337,7 +6337,7 @@ namespace TL
 	}
 	/// <summary>Myself		<para>See <a href="https://corefork.telegram.org/constructor/channelParticipantSelf"/></para></summary>
 	[TLDef(0x35A8BFA7)]
-	public class ChannelParticipantSelf : ChannelParticipantBase
+	public partial class ChannelParticipantSelf : ChannelParticipantBase
 	{
 		public Flags flags;
 		/// <summary>User ID</summary>
@@ -6402,7 +6402,7 @@ namespace TL
 	}
 	/// <summary>Banned/kicked user		<para>See <a href="https://corefork.telegram.org/constructor/channelParticipantBanned"/></para></summary>
 	[TLDef(0x6DF8014E)]
-	public class ChannelParticipantBanned : ChannelParticipantBase
+	public partial class ChannelParticipantBanned : ChannelParticipantBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -6423,7 +6423,7 @@ namespace TL
 	}
 	/// <summary>A participant that left the channel/supergroup		<para>See <a href="https://corefork.telegram.org/constructor/channelParticipantLeft"/></para></summary>
 	[TLDef(0x1B03F006)]
-	public class ChannelParticipantLeft : ChannelParticipantBase
+	public partial class ChannelParticipantLeft : ChannelParticipantBase
 	{
 		/// <summary>The peer that left</summary>
 		public Peer peer;

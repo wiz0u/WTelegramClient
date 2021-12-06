@@ -316,9 +316,25 @@ namespace TL
 		public override int Timeout => timeout;
 	}
 
-	partial class ChannelParticipantBase	{ public virtual bool IsAdmin => false; }
-	partial class ChannelParticipantCreator { public override bool IsAdmin => true; }
-	partial class ChannelParticipantAdmin	{ public override bool IsAdmin => true; }
+	partial class ChannelParticipantBase
+	{
+		public virtual bool IsAdmin => false;
+		public abstract long UserID { get; }
+	}
+	partial class ChannelParticipantCreator
+	{
+		public override bool IsAdmin => true;
+		public override long UserID => user_id;
+	}
+	partial class ChannelParticipantAdmin
+	{
+		public override bool IsAdmin => true;
+		public override long UserID => user_id;
+	}
+	partial class ChannelParticipant		{ public override long UserID => user_id; }
+	partial class ChannelParticipantSelf	{ public override long UserID => user_id; }
+	partial class ChannelParticipantBanned	{ public override long UserID => peer is PeerUser pu ? pu.user_id : 0; }
+	partial class ChannelParticipantLeft	{ public override long UserID => peer is PeerUser pu ? pu.user_id : 0; }
 
 	partial class UpdatesBase
 	{

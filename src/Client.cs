@@ -1056,7 +1056,7 @@ namespace WTelegram
 			return user;
 		}
 
-		#region TL-Helpers
+#region TL-Helpers
 		/// <summary>Helper function to upload a file to Telegram</summary>
 		/// <param name="pathname">Path to the file to upload</param>
 		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>
@@ -1336,7 +1336,67 @@ namespace WTelegram
 			outputStream.Seek(streamStartPos + maxOffsetSeen, SeekOrigin.Begin);
 			return fileType;
 		}
-#endregion
+
+		/// <summary>Helper method that tries to fetch all participants from a Channel (beyond Telegram server-side limitations)</summary>
+		/// <param name="channel">The channel to query</param>
+		/// <param name="includeKickBan">Also detch the kicked/banned members?</param>
+		/// <returns>Field count indicates the total count of members. Field participants contains those that were successfully fetched</returns>
+		/// <remarks>This method can take a few minutes to complete on big channels. It likely won't be able to obtain the full total count of members</remarks>
+		public async Task<Channels_ChannelParticipants> Channels_GetAllParticipants(InputChannelBase channel, bool includeKickBan = false)
+		{
+			var result = new Channels_ChannelParticipants { chats = new(), users = new() };
+
+			var sem = new SemaphoreSlim(10); // prevents flooding Telegram with requests
+			var user_ids = new HashSet<long>();
+			var participants = new List<ChannelParticipantBase>();
+
+			var tasks = new List<Task>
+			{
+				GetWithFilter(new ChannelParticipantsAdmins()),
+				GetWithFilter(new ChannelParticipantsBots()),
+				GetWithFilter(new ChannelParticipantsSearch { q = "" }, (f, c) => new ChannelParticipantsSearch { q = f.q + c }),
+			};
+			var mcf = this.Channels_GetFullChannel(channel);
+			tasks.Add(mcf);
+			if (includeKickBan)
+			{
+				tasks.Add(GetWithFilter(new ChannelParticipantsKicked { q = "" }, (f, c) => new ChannelParticipantsKicked { q = f.q + c }));
+				tasks.Add(GetWithFilter(new ChannelParticipantsBanned { q = "" }, (f, c) => new ChannelParticipantsBanned { q = f.q + c }));
+			}
+			await Task.WhenAll(tasks);
+
+			result.count = ((ChannelFull)mcf.Result.full_chat).participants_count;
+			result.participants = participants.ToArray();
+			return result;
+
+			async Task GetWithFilter<T>(T filter, Func<T, char, T> recurse = null) where T : ChannelParticipantsFilter
+			{
+				Channels_ChannelParticipants ccp;
+				for (int offset = 0; ;)
+				{
+					await sem.WaitAsync();
+					try
+					{
+						ccp = await this.Channels_GetParticipants(channel, filter, offset, 2000, 0);
+					}
+					finally
+					{
+						sem.Release();
+					}
+					foreach (var kvp in ccp.chats) result.chats[kvp.Key] = kvp.Value;
+					foreach (var kvp in ccp.users) result.users[kvp.Key] = kvp.Value;
+					lock (participants)
+						foreach (var participant in ccp.participants)
+							if (user_ids.Add(participant.UserID))
+								participants.Add(participant);
+					offset += ccp.participants.Length;
+					if (offset >= ccp.count) break;
+				}
+				if (recurse != null && (ccp.count == 200 || ccp.count == 1000))
+					await Task.WhenAll(Enumerable.Range('a', 26).Select(c => GetWithFilter(recurse(filter, (char)c), recurse)));
+			}
+		}
+		#endregion
 
 		/// <summary>Enable the collection of id/access_hash pairs (experimental)</summary>
 		public bool CollectAccessHash { get; set; }
