@@ -1,0 +1,4 @@
+contact_links:
+  - name: Ask a question
+    url: https://stackoverflow.com/questions/ask?tags=wtelegramclient+telegram-api
+    about: Answer to your question can be helpful to the community so it's better to ask them on StackOverflow
