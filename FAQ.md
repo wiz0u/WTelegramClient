@@ -7,7 +7,7 @@ Writing the library logs to the Console is the default behavior of the `WTelegra
 You can change the delegate with the `+=` operator to **also** write them somewhere else, or with the `=` operator to prevent them from being printed to screen and instead write them somewhere (file, logger, ...).
 In any case, it is not recommended to totally ignore those logs because you wouldn't be able to analyze a problem after it happens.  
 
-Read the [example about logging settings](EXAMPLES.md#change-logging-settings) for how to write logs to a file.
+Read the [example about logging settings](EXAMPLES.md#logging) for how to write logs to a file.
 
 <a name="multiple-users"></a>
 #### 2. How to handle multiple user accounts
@@ -43,7 +43,7 @@ An `access_hash` is required by Telegram when dealing with a channel, user, phot
 This serves as a proof that you are entitled to access it (otherwise, anybody with the ID could access it)
 
 > A small private `Chat` don't need an access_hash and can be queried using their `chat_id` only.
-However most common chat groups are not `Chat` but a `Channel` supergroup (without the `broadcast` flag). See Terminology in [ReadMe](README.md#Terminology-in-Telegram-Client-API).  
+However most common chat groups are not `Chat` but a `Channel` supergroup (without the `broadcast` flag). See Terminology in [ReadMe](README.md#terminology).  
 Some TL methods only applies to private `Chat`, some only applies to `Channel` and some to both.
 
 The `access_hash` must usually be provided within the `Input...` structure you pass in argument to an API method (`InputPeer`, `InputChannel`, `InputUser`, etc...).  
@@ -54,7 +54,7 @@ Once you obtained the description structure, there are 3 methods for building yo
 you will see that they have conversion implicit operators or methods that can create the `Input...` structure for you automatically.  
 So you can just pass that structure you already have, in place of the `Input...` argument, it will work!
 * Alternatively, you can manually create the `Input...` structure yourself by extracting the `access_hash` from the **description structure**
-* If you have enabled the [CollectAccessHash system](EXAMPLES.md#collect-access-hash-and-save-them-for-later-use) at the start of your session, it will have collected the `access_hash`.
+* If you have enabled the [CollectAccessHash system](EXAMPLES.md#collect-access-hash) at the start of your session, it will have collected the `access_hash`.
 You can then retrieve it with `client.GetAccessHashFor<User/Channel/Photo/Document>(id)`
 
 <a name="dev-versions"></a>
@@ -65,7 +65,7 @@ The developmental versions of the library are available through Azure DevOps as 
 You can access these versions for testing in your program by going to our [private nuget feed](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&view=overview&package=WTelegramClient&protocolType=NuGet), then click on "Connect to feed" and follow the steps.
 After that, you should be able to see/install the pre-release versions in your Nuget package manager and install them in your application. *(make sure you enable the **pre-release** checkbox)*
 
-<a name="test-servers"></a>
+<a name="wrong-server"></a>
 #### 6. Telegram can't find any chats and asks me to signup (firstname, lastname) even for an existing account
 This happens when you connect to Telegram Test servers instead of Production servers.
 On these separate test servers, all created accounts and chats are periodically deleted, so you shouldn't use them under normal circumstances.
@@ -138,12 +138,8 @@ If you don't authenticate as a user (or bot), you have access to a very limited 
 3) Did you use `await` with every Client methods?  
 This library is completely Task-based and you should learn, understand and use the [asynchronous model of C# programming](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/) before proceeding further.
 
-4) Are you keeping a live reference to the Client instance and dispose it only at the end of your program?  
-If you create the instance in a submethod and don't store it somewhere permanent, it might be destroyed by the garbage collector at some point. So as long as the client must be running, make sure the reference is stored in a (static) field or somewhere appropriate.  
-Also, as the Client class inherits `IDisposable`, remember to call `client.Dispose()` when your program ends (or exit a `using` scope).
-
-5) Is your program ending immediately instead of waiting for Updates?  
+4) Is your program ending immediately instead of waiting for Updates?  
 Your program must be running/waiting continuously in order for the background Task to receive and process the Updates. So make sure your main program doesn't end immediately. For a console program, this is typical done by waiting for a key or some close event.
 
-6) Is every Telegram API call rejected? (typically with an exception message like `AUTH_RESTART`)  
+5) Is every Telegram API call rejected? (typically with an exception message like `AUTH_RESTART`)  
 The user authentification might have failed at some point (or the user revoked the authorization). It is therefore necessary to go through the authentification again. This can be done by deleting the WTelegram.session file, or at runtime by calling `client.Reset()`

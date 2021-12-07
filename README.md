@@ -103,6 +103,7 @@ await client.SendMessageAsync(target, "Hello, World");
 
 ➡️ You can find more useful code snippets in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md) and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).
 
+<a name="terminology"></a>
 # Terminology in Telegram Client API
 
 In the API, Telegram uses some terms/classnames that can be confusing as they differ from the terms shown to end-users:

@@ -14,6 +14,17 @@ and add at least these variables with adequate value: **api_id, api_hash, phone_
 Remember that these are just simple example codes that you should adjust to your needs.
 In real production code, you might want to properly test the success of each operation or handle exceptions.
 
+<a name="join-channel"></a>
+### Join a channel/group by @channelname
+```csharp
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+await client.LoginUserIfNeeded();
+var resolved = await client.Contacts_ResolveUsername("channelname"); // without the @
+if (resolved.UserOrChat is Channel channel)
+    await client.Channels_JoinChannel(channel);
+```
+
+<a name="msg-by-name"></a>
 ### Send a message to someone by @username
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -21,9 +32,10 @@ await client.LoginUserIfNeeded();
 var resolved = await client.Contacts_ResolveUsername("username"); // without the @
 await client.SendMessageAsync(resolved, "Hello!");
 ```
-*Note: This also works if the @username points to a chat, but you must join the chat before posting there.
-You can check `resolved` properties to ensure it's a user or a chat. If the username is invalid/unused, the API call raises an exception.*
+*Note: This also works if the @username points to a channel/group, but you must already have joined that channel before posting there.
+If the username is invalid/unused, the API call raises an exception.*
 
+<a name="msg-by-phone"></a>
 ### Send a message to someone by phone number
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -34,6 +46,7 @@ if (contacts.imported.Length > 0)
 ```
 *Note: To prevent spam, Telegram may restrict your ability to add new phone numbers.*
 
+<a name="markdown"></a>
 ### Send a Markdown message to ourself (Saved Messages)
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -43,8 +56,9 @@ var entities = client.MarkdownToEntities(ref text);
 await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
 ```
 See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) for details.  
-*Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#Collect-Access-Hash-and-save-them-for-later-use))*
+*Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#collect-access-hash))*
 
+<a name="dice"></a>
 ### Send a random dice (or other "game of chance" animated emoji)
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -57,6 +71,7 @@ if (appConfig["emojies_send_dice"] is string[] emojies_send_dice) // get list of
 }
 ```
 
+<a name="list-chats"></a>
 ### List all chats (groups/channels) the user is in and send a message to one
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -72,6 +87,7 @@ await client.SendMessageAsync(chats.chats[chatId], "Hello, World");
 *Note: the list returned by Messages_GetAllChats contains the `access_hash` for those chats.*  
 See a longer version of this example in [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
 
+<a name="schedule-msg"></a>
 ### Schedule a message to be sent to a chat
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -81,6 +97,8 @@ InputPeer peer = chats.chats[1234567890]; // the chat we want
 DateTime when = DateTime.UtcNow.AddMinutes(3);
 await client.SendMessageAsync(peer, "This will be posted in 3 minutes", schedule_date: when);
 ```
+
+<a name="upload"></a>
 ### Upload a media file and post it with caption to a chat
 ```csharp
 const int TargetChatId = 1234567890; // the chat we want
@@ -93,6 +111,8 @@ InputPeer peer = chats.chats[TargetChatId];
 var inputFile = await client.UploadFileAsync(Filepath);
 await client.SendMediaAsync(peer, "Here is the photo", inputFile);
 ```
+
+<a name="list-dialog"></a>
 ### List all dialogs (chats/groups/channels/user chat) the user is in
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -116,8 +136,9 @@ while (dialogs.Dialogs.Length != 0)
 *Note: the lists returned by Messages_GetDialogs contains the `access_hash` for those chats and users.*  
 See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
+<a name="list-members"></a>
 ### Get all members from a chat
-For a simple Chat: (see Terminology in [ReadMe](README.md#Terminology-in-Telegram-Client-API))
+For a simple Chat: (see Terminology in [ReadMe](README.md#terminology))
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
@@ -142,6 +163,17 @@ for (int offset = 0; ;)
 }
 ```
 
+For big Channel/Group, Telegram servers might limit the number of members you can obtain with the normal above method.  
+In this case, you can use this helper method, but it can take several minutes to complete:
+```csharp
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+await client.LoginUserIfNeeded();
+var chats = await client.Messages_GetAllChats(null);
+var channel = (Channel)chats.chats[1234567890]; // the channel we want
+var participants = await client.Channels_GetAllParticipants(channel);
+```
+
+<a name="history"></a>
 ### Get all messages (history) from a chat
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -158,12 +190,15 @@ for (int offset = 0; ;)
     if (offset >= messages.Count) break;
 }
 ```
+
+<a name="updates"></a>
 ### Monitor all Telegram events happening for the user
 
 This is done through the `client.Update` callback event.
 
 See [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
+<a name="monitor-msg"></a>
 ### Monitor new messages being posted in chats
 
 You have to handle `client.Update` events containing an `UpdateNewMessage`.
@@ -172,6 +207,7 @@ See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](Examples/
 
 You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.
 
+<a name="download"></a>
 ### Download media files you forward to yourself (Saved Messages)
 
 This is done using the helper method `client.DownloadFileAsync(file, outputStream)`
@@ -179,6 +215,7 @@ that simplify the download of a photo/document/file once you get a reference to 
 
 See [Examples/Program_DownloadSavedMedia.cs](Examples/Program_DownloadSavedMedia.cs).
 
+<a name="collect-access-hash"></a>
 ### Collect Access Hash and save them for later use
 
 You can automate the collection of `access_hash` for the various resources obtained in response to API calls or Update events,
@@ -187,6 +224,7 @@ so that you don't have to remember them by yourself or ask the API about them ea
 This is done by activating the experimental `client.CollectAccessHash` system.  
 See [Examples/Program_CollectAccessHash.cs](Examples/Program_CollectAccessHash.cs) for how to enable it, and save/restore them for later use.
 
+<a name="proxy"></a>
 ### Use a proxy to connect to Telegram
 This can be done using the `client.TcpHandler` delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/):
 ```csharp
@@ -200,6 +238,7 @@ var user = await client.LoginUserIfNeeded();
 Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name}");
 ```
 
+<a name="logging"></a>
 ### Change logging settings
 Log to VS Output debugging pane in addition to default Console screen logging:
 ```csharp
