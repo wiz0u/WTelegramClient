@@ -34,6 +34,8 @@ namespace WTelegram
 		public int MaxAutoReconnects { get; set; } = 5;
 		/// <summary>Number of seconds under which an error 420 FLOOD_WAIT_X will not be raised and your request will instead be auto-retried after the delay</summary>
 		public int FloodRetryThreshold { get; set; } = 60;
+		/// <summary>Number of seconds between each keep-alive ping. Increase this if you have a slow connection</summary>
+		public int PingInterval { get; set; } = 60;
 		/// <summary>Is this Client instance the main or a secondary DC session</summary>
 		public bool IsMainDC => (_dcSession?.DataCenter?.id ?? 0) == _session.MainDC;
 		/// <summary>Has this Client established connection been disconnected?</summary>
@@ -376,12 +378,12 @@ namespace WTelegram
 			int ping_id = _random.Next();
 			while (!ct.IsCancellationRequested)
 			{
-				await Task.Delay(60000, ct);
+				await Task.Delay(PingInterval * 1000, ct);
 				if (_saltChangeCounter > 0) --_saltChangeCounter;
 #if DEBUG
-				await this.PingDelayDisconnect(ping_id++, 300);
+				await this.PingDelayDisconnect(ping_id++, PingInterval * 5);
 #else
-				await this.PingDelayDisconnect(ping_id++, 75);
+				await this.PingDelayDisconnect(ping_id++, PingInterval * 5 / 4);
 #endif
 			}
 		}
