@@ -1339,7 +1339,7 @@ namespace WTelegram
 
 		/// <summary>Helper method that tries to fetch all participants from a Channel (beyond Telegram server-side limitations)</summary>
 		/// <param name="channel">The channel to query</param>
-		/// <param name="includeKickBan">Also detch the kicked/banned members?</param>
+		/// <param name="includeKickBan">Also fetch the kicked/banned members?</param>
 		/// <returns>Field count indicates the total count of members. Field participants contains those that were successfully fetched</returns>
 		/// <remarks>This method can take a few minutes to complete on big channels. It likely won't be able to obtain the full total count of members</remarks>
 		public async Task<Channels_ChannelParticipants> Channels_GetAllParticipants(InputChannelBase channel, bool includeKickBan = false)
@@ -1377,7 +1377,7 @@ namespace WTelegram
 					await sem.WaitAsync();
 					try
 					{
-						ccp = await this.Channels_GetParticipants(channel, filter, offset, 2000, 0);
+						ccp = await this.Channels_GetParticipants(channel, filter, offset, 1024, 0);
 					}
 					finally
 					{
@@ -1390,7 +1390,7 @@ namespace WTelegram
 							if (user_ids.Add(participant.UserID))
 								participants.Add(participant);
 					offset += ccp.participants.Length;
-					if (offset >= ccp.count) break;
+					if (offset >= ccp.count || ccp.participants.Length == 0) break;
 				}
 				if (recurse != null && (ccp.count == 200 || ccp.count == 1000))
 					await Task.WhenAll(Enumerable.Range('a', 26).Select(c => GetWithFilter(recurse(filter, (char)c), recurse)));
