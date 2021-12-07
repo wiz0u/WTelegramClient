@@ -237,6 +237,14 @@ client.TcpHandler = async (address, port) =>
 var user = await client.LoginUserIfNeeded();
 Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name}");
 ```
+or with [xNetStandard](https://www.nuget.org/packages/xNetStandard/):
+```csharp
+client.TcpHandler = async (address, port) =>
+{
+    var proxy = xNet.Socks5ProxyClient.Parse("host:port:username:password");
+    return proxy.CreateConnection(address, port);
+};
+```
 
 <a name="logging"></a>
 ### Change logging settings
