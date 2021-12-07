@@ -699,18 +699,26 @@ namespace WTelegram
 			object result;
 			if (tcs != null)
 			{
-				if (!type.IsArray)
-					result = reader.ReadTLValue(type);
-				else if (reader.ReadUInt32() == Layer.RpcErrorCtor)
-					result = reader.ReadTLObject(Layer.RpcErrorCtor);
-				else
+				try
 				{
-					reader.BaseStream.Position -= 4;
-					result = reader.ReadTLValue(type);
+					if (!type.IsArray)
+						result = reader.ReadTLValue(type);
+					else if (reader.ReadUInt32() == Layer.RpcErrorCtor)
+						result = reader.ReadTLObject(Layer.RpcErrorCtor);
+					else
+					{
+						reader.BaseStream.Position -= 4;
+						result = reader.ReadTLValue(type);
+					}
+					if (type.IsEnum) result = Enum.ToObject(type, result);
+					Log(1, "");
+					tcs.SetResult(result);
 				}
-				if (type.IsEnum) result = Enum.ToObject(type, result);
-				Log(1, "");
-				tcs.SetResult(result);
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					throw;
+				}
 			}
 			else
 			{

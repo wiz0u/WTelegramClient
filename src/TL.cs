@@ -130,6 +130,7 @@ namespace TL
 					{
 						0x997275b5 => true,
 						0xbc799737 => false,
+						Layer.RpcErrorCtor => reader.ReadTLObject(Layer.RpcErrorCtor),
 						var value => throw new ApplicationException($"Invalid boolean value #{value:x}")
 					};
 				case TypeCode.Object:
