@@ -12193,7 +12193,7 @@ namespace TL
 	[TLDef(0xE926D63E)]
 	public class Account_ResetPasswordOk : Account_ResetPasswordResult { }
 
-	/// <summary>A sponsored message		<para>See <a href="https://corefork.telegram.org/constructor/sponsoredMessage"/></para></summary>
+	/// <summary>A <a href="https://core.telegram.org/api/sponsored-messages">sponsored message</a>.		<para>See <a href="https://corefork.telegram.org/constructor/sponsoredMessage"/></para></summary>
 	[TLDef(0xD151E19A)]
 	public class SponsoredMessage : IObject
 	{
@@ -15318,7 +15318,6 @@ namespace TL
 			});
 		/// <summary>Reports some messages from a user in a supergroup as spam; requires administrator rights in the supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.reportSpam"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.reportSpam#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Supergroup</param>
-		/// <param name="participant">user that sent the spam messages</param>
 		/// <param name="id">IDs of spam messages</param>
 		public static Task<bool> Channels_ReportSpam(this Client client, InputChannelBase channel, InputPeer participant, int[] id)
 			=> client.CallAsync(new Channels_ReportSpam

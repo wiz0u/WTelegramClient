@@ -113,7 +113,7 @@ In the API, Telegram uses some terms/classnames that can be confusing as they di
 - `Peer` : Either a `Chat`, `Channel` or a private chat with a `User`
 - Dialog : The current status of a chat with a `Peer` *(draft, last message, unread count, pinned...)*
 - DC (DataCenter) : There are a few datacenters depending on where in the world the user (or an uploaded media file) is from.
-- Access Hash : Telegram requires you to provide a specific `access_hash` for users, channels, and other resources before interacting with them. See [FAQ #4](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) to learn more about it.
+- Access Hash : Telegram requires you to provide a specific `access_hash` for users, channels, and other resources before interacting with them. See [FAQ #4](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash) to learn more about it.
 
 # Other things to know
 

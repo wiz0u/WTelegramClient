@@ -1134,7 +1134,7 @@ namespace WTelegram
 			}
 		}
 
-		/// <summary>Helper function to send a text or media message more easily</summary>
+		/// <summary>Helper function to send a media message more easily</summary>
 		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>
 		/// <param name="caption">Caption for the media <i>(in plain text)</i> or <see langword="null"/></param>
 		/// <param name="mediaFile">Media file already uploaded to TG <i>(see <see cref="UploadFileAsync">UploadFileAsync</see>)</i></param>
