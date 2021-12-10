@@ -808,30 +808,30 @@ namespace TL
 
 	/// <summary>User online status		<para>Derived classes: <see cref="UserStatusOnline"/>, <see cref="UserStatusOffline"/>, <see cref="UserStatusRecently"/>, <see cref="UserStatusLastWeek"/>, <see cref="UserStatusLastMonth"/></para>		<para>See <a href="https://corefork.telegram.org/type/UserStatus"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/userStatusEmpty">userStatusEmpty</a></remarks>
-	public abstract class UserStatus : IObject { }
+	public abstract partial class UserStatus : IObject { }
 	/// <summary>Online status of the user.		<para>See <a href="https://corefork.telegram.org/constructor/userStatusOnline"/></para></summary>
 	[TLDef(0xEDB93949)]
-	public class UserStatusOnline : UserStatus
+	public partial class UserStatusOnline : UserStatus
 	{
 		/// <summary>Time to expiration of the current online status</summary>
 		public DateTime expires;
 	}
 	/// <summary>The user's offline status.		<para>See <a href="https://corefork.telegram.org/constructor/userStatusOffline"/></para></summary>
 	[TLDef(0x008C703F)]
-	public class UserStatusOffline : UserStatus
+	public partial class UserStatusOffline : UserStatus
 	{
 		/// <summary>Time the user was last seen online</summary>
 		public int was_online;
 	}
 	/// <summary>Online status: last seen recently		<para>See <a href="https://corefork.telegram.org/constructor/userStatusRecently"/></para></summary>
 	[TLDef(0xE26F42F1)]
-	public class UserStatusRecently : UserStatus { }
+	public partial class UserStatusRecently : UserStatus { }
 	/// <summary>Online status: last seen last week		<para>See <a href="https://corefork.telegram.org/constructor/userStatusLastWeek"/></para></summary>
 	[TLDef(0x07BF09FC)]
-	public class UserStatusLastWeek : UserStatus { }
+	public partial class UserStatusLastWeek : UserStatus { }
 	/// <summary>Online status: last seen last month		<para>See <a href="https://corefork.telegram.org/constructor/userStatusLastMonth"/></para></summary>
 	[TLDef(0x77EBC742)]
-	public class UserStatusLastMonth : UserStatus { }
+	public partial class UserStatusLastMonth : UserStatus { }
 
 	/// <summary>Object defines a group.		<para>Derived classes: <see cref="ChatEmpty"/>, <see cref="Chat"/>, <see cref="ChatForbidden"/>, <see cref="Channel"/>, <see cref="ChannelForbidden"/></para>		<para>See <a href="https://corefork.telegram.org/type/Chat"/></para></summary>
 	public abstract partial class ChatBase : IObject
@@ -6174,7 +6174,7 @@ namespace TL
 	}
 	/// <summary>Represents a channel		<para>See <a href="https://corefork.telegram.org/constructor/inputChannel"/></para></summary>
 	[TLDef(0xF35AEC28)]
-	public class InputChannel : InputChannelBase
+	public partial class InputChannel : InputChannelBase
 	{
 		/// <summary>Channel ID</summary>
 		public long channel_id;

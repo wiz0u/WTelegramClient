@@ -359,7 +359,7 @@ namespace TL
 	{
 		public readonly int Code;
 		public RpcException(int code, string message) : base(message) => Code = code;
-		public override string ToString() => $"RpcException: {Code} {Message}";
+		public override string ToString() { var str = base.ToString(); return str.Insert(str.IndexOf(':') + 1, " " + Code); }
 	}
 
 	public class ReactorError : IObject

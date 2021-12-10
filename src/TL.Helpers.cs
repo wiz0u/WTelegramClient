@@ -83,7 +83,22 @@ namespace TL
 		public override string ToString() => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
 		public override InputPeer ToInputPeer() => new InputPeerUser { user_id = id, access_hash = access_hash };
 		protected override InputUserBase ToInputUser() => new InputUser { user_id = id, access_hash = access_hash };
+		/// <summary>An estimation of the number of days ago the user was last seen (Online=0, Recently=1, LastWeek=5, LastMonth=20, LongTimeAgo=150)</summary>
+		public TimeSpan LastSeenAgo => status?.LastSeenAgo ?? TimeSpan.FromDays(150);
 	}
+
+
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/userStatusEmpty">userStatusEmpty</a> = last seen a long time ago, more than a month (this is also always shown to blocked users)</remarks>
+	partial class UserStatus			{ /// <summary>An estimation of the number of days ago the user was last seen (online=0, recently=1, lastWeek=5, lastMonth=20)<br/><see cref="UserStatus"/> = <c>null</c> means a long time ago, more than a month (this is also always shown to blocked users)</summary>
+										  public abstract TimeSpan LastSeenAgo { get; } }
+	partial class UserStatusOnline		{ public override TimeSpan LastSeenAgo => TimeSpan.Zero; }
+	partial class UserStatusOffline		{ public override TimeSpan LastSeenAgo => DateTime.UtcNow - new DateTime((was_online + 62135596800L) * 10000000, DateTimeKind.Utc); }
+	/// <remarks>covers anything between 1 second and 2-3 days</remarks>
+	partial class UserStatusRecently	{ public override TimeSpan LastSeenAgo => TimeSpan.FromDays(1); }
+	/// <remarks>between 2-3 and seven days</remarks>
+	partial class UserStatusLastWeek	{ public override TimeSpan LastSeenAgo => TimeSpan.FromDays(5); }
+	/// <remarks>between 6-7 days and a month</remarks>
+	partial class UserStatusLastMonth	{ public override TimeSpan LastSeenAgo => TimeSpan.FromDays(20); }
 
 	partial class ChatBase : IPeerInfo
 	{
@@ -279,6 +294,8 @@ namespace TL
 	{
 		public static implicit operator InputStickerSetID(StickerSet stickerSet) => new() { id = stickerSet.id, access_hash = stickerSet.access_hash };
 	}
+
+	partial class InputChannel { public static implicit operator InputPeerChannel(InputChannel channel) => new() { channel_id = channel.channel_id, access_hash = channel.access_hash }; }
 
 	partial class Contacts_ResolvedPeer
 	{
