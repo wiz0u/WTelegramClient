@@ -20,7 +20,7 @@ using static WTelegram.Encryption;
 
 namespace WTelegram
 {
-	public sealed class Client : IDisposable
+	public class Client : IDisposable
 	{
 		/// <summary>This event will be called when an unsollicited update/message is sent by Telegram servers</summary>
 		/// <remarks>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_ListenUpdate.cs">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
@@ -143,6 +143,7 @@ namespace WTelegram
 		{
 			Helpers.Log(2, $"{_dcSession.DcID}>Disposing the client");
 			Reset(false, IsMainDC);
+			GC.SuppressFinalize(this);
 		}
 
 		/// <summary>Disconnect from Telegram <i>(shouldn't be needed in normal usage)</i></summary>
@@ -994,7 +995,7 @@ namespace WTelegram
 					var users = await this.Users_GetUsers(new[] { InputUser.Self }); // this calls also reenable incoming Updates
 					var self = users[0] as User;
 					// check user_id or phone_number match currently logged-in user
-					if ((int.TryParse(_config("user_id"), out int id) && (id == -1 || self.id == id)) ||
+					if ((long.TryParse(_config("user_id"), out long id) && (id == -1 || self.id == id)) ||
 						self.phone == string.Concat((phone_number = Config("phone_number")).Where(char.IsDigit)))
 					{
 						_session.UserId = _dcSession.UserId = self.id;
@@ -1021,6 +1022,7 @@ namespace WTelegram
 			}
 			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
 			Auth_AuthorizationBase authorization = null;
+			//TODO: implement auth.resendCode logic
 			for (int retry = 1; authorization == null; retry++)
 				try
 				{
