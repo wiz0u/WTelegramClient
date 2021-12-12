@@ -2655,7 +2655,7 @@ namespace TL
 	}
 	/// <summary>Full list of chats with messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.dialogs"/></para></summary>
 	[TLDef(0x15BA6C40)]
-	public class Messages_Dialogs : Messages_DialogsBase, IPeerResolver
+	public partial class Messages_Dialogs : Messages_DialogsBase, IPeerResolver
 	{
 		/// <summary>List of chats</summary>
 		public DialogBase[] dialogs;
@@ -2675,14 +2675,14 @@ namespace TL
 	}
 	/// <summary>Incomplete list of dialogs with messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.dialogsSlice"/></para></summary>
 	[TLDef(0x71E094F3)]
-	public class Messages_DialogsSlice : Messages_Dialogs, IPeerResolver
+	public partial class Messages_DialogsSlice : Messages_Dialogs, IPeerResolver
 	{
 		/// <summary>Total number of dialogs</summary>
 		public int count;
 	}
 	/// <summary>Dialogs haven't changed		<para>See <a href="https://corefork.telegram.org/constructor/messages.dialogsNotModified"/></para></summary>
 	[TLDef(0xF0E3E596)]
-	public class Messages_DialogsNotModified : Messages_DialogsBase, IPeerResolver
+	public partial class Messages_DialogsNotModified : Messages_DialogsBase, IPeerResolver
 	{
 		/// <summary>Number of dialogs found server-side by the query</summary>
 		public int count;

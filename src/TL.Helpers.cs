@@ -232,7 +232,11 @@ namespace TL
 	}
 
 	partial class Contacts_Blocked { public IPeerInfo UserOrChat(PeerBlocked peer) => peer.peer_id.UserOrChat(users, chats); }
-	partial class Messages_DialogsBase { public IPeerInfo UserOrChat(DialogBase dialog) => UserOrChat(dialog.Peer); }
+	partial class Messages_DialogsBase			{ public IPeerInfo UserOrChat(DialogBase dialog) => UserOrChat(dialog.Peer);
+												  public abstract int TotalCount { get; } }
+	partial class Messages_Dialogs				{ public override int TotalCount => dialogs.Length; }
+	partial class Messages_DialogsSlice			{ public override int TotalCount => count; }
+	partial class Messages_DialogsNotModified	{ public override int TotalCount => count; }
 
 	partial class Messages_MessagesBase			{ public abstract int Count { get; } }
 	partial class Messages_Messages				{ public override int Count => messages.Length; }
