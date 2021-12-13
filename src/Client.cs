@@ -1020,13 +1020,26 @@ namespace WTelegram
 			{
 				sentCode = await this.Auth_SendCode(phone_number, _apiId, _apiHash, settings ??= new());
 			}
+		resent:
+			var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);
+			OnUpdate(sentCode);
 			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
 			Auth_AuthorizationBase authorization = null;
-			//TODO: implement auth.resendCode logic
 			for (int retry = 1; authorization == null; retry++)
 				try
 				{
 					var verification_code = await ConfigAsync("verification_code");
+					if (verification_code == "" && sentCode.next_type != 0)
+					{
+						var mustWait = timeout - DateTime.UtcNow;
+						if (mustWait.Ticks > 0)
+						{
+							Helpers.Log(3, $"You must wait {(int)(mustWait.TotalSeconds + 0.5)} more seconds before requesting the code to be sent via {sentCode.next_type}");
+							continue;
+						}
+						sentCode = await this.Auth_ResendCode(phone_number, sentCode.phone_code_hash);
+						goto resent;
+					}
 					authorization = await this.Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
 				}
 				catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
