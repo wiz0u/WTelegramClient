@@ -139,6 +139,12 @@ namespace WTelegram
 		/// <param name="pem">A string starting with <c>-----BEGIN RSA PUBLIC KEY-----</c></param>
 		public static void LoadPublicKey(string pem) => Encryption.LoadPublicKey(pem);
 
+		/// <summary>Builds a structure that is used to validate a 2FA password</summary>
+		/// <param name="accountPassword">Password validation configuration. You can obtain this though an Update event as part of the login process</param>
+		/// <param name="password">The password to validate</param>
+		public static Task<InputCheckPasswordSRP> InputCheckPassword(Account_Password accountPassword, string password)
+			=> Check2FA(accountPassword, () => Task.FromResult(password));
+
 		public void Dispose()
 		{
 			Helpers.Log(2, $"{_dcSession.DcID}>Disposing the client");
@@ -1045,6 +1051,7 @@ namespace WTelegram
 				catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
 				{
 					var accountPassword = await this.Account_GetPassword();
+					OnUpdate(accountPassword);
 					var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
 					authorization = await this.Auth_CheckPassword(checkPasswordSRP);
 				}
