@@ -1168,7 +1168,7 @@ namespace WTelegram
 		public Task<Message> SendMediaAsync(InputPeer peer, string caption, InputFileBase mediaFile, string mimeType = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
 		{
 			var filename = mediaFile is InputFile iFile ? iFile.name : (mediaFile as InputFileBig)?.name;
-			mimeType ??= Path.GetExtension(filename).ToLowerInvariant() switch
+			mimeType ??= Path.GetExtension(filename)?.ToLowerInvariant() switch
 			{
 				".jpg" or ".jpeg" or ".png" or ".bmp" => "photo",
 				".gif" => "image/gif",
