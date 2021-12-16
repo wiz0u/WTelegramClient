@@ -34,7 +34,7 @@ An easy solution is to call `Interaction.InputBox("Enter verification code")` in
 This might require adding a reference *(and `using`)* to the Microsoft.VisualBasic assembly.
 
 A more complex solution requires the use of a `ManualResetEventSlim` that you will wait for in Config callback,
-and when the user has provided the verification_code through your GUI, you "set" the event to release your Config callback so it can return the code.
+and when the user has provided the verification_code through your GUI, you "set" the event to release your Config callback so it can return the code. ([see example](https://stackoverflow.com/a/70379582/3365403))
 
 <a name="access-hash"></a>
 #### 4. Where to get the access_hash? Why the error `CHANNEL_INVALID` or `USER_ID_INVALID`?

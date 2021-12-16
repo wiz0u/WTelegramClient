@@ -191,6 +191,39 @@ for (int offset = 0; ;)
 }
 ```
 
+<a name="contacts"></a>
+### Retrieve the current user's contacts list
+There are two different methods. Here is the simpler one:
+```csharp
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+await client.LoginUserIfNeeded();
+var contacts = await client.Contacts_GetContacts(0);
+foreach (User contact in contacts.users.Values)
+    Console.WriteLine($"{contact} {contact.phone}");
+```
+<a name="takeout"></a>
+The second method uses the more complex GDPR export, **takeout session** system.
+Here is an example on how to implement it:
+```csharp
+using TL.Methods; // methods structures, for InvokeWithTakeout
+
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+await client.LoginUserIfNeeded();
+var takeout = await client.Account_InitTakeoutSession(contacts: true);
+var finishTakeout = new Account_FinishTakeoutSession();
+try
+{
+    var savedContacts = await client.InvokeWithTakeout(takeout.id, new Contacts_GetSaved());
+    foreach (SavedPhoneContact contact in savedContacts)
+        Console.WriteLine($"{contact.first_name} {contact.last_name} {contact.phone}, added on {contact.date}");
+    finishTakeout.flags = Account_FinishTakeoutSession.Flags.success;
+}
+finally
+{
+    await client.InvokeWithTakeout(takeout.id, finishTakeout);
+}
+```
+
 <a name="updates"></a>
 ### Monitor all Telegram events happening for the user
 

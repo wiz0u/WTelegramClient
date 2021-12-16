@@ -10,7 +10,7 @@
 # How to use
 
 >⚠️ This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this advanced topic before proceeding.  
->If you are a beginner in C#, making a project based on this library might not be a great idea.
+>If you are a beginner in C#, starting a project based on this library might not be a great idea.
 
 After installing WTelegramClient through Nuget, your first Console program will be as simple as:
 ```csharp
