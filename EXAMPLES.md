@@ -205,7 +205,7 @@ foreach (User contact in contacts.users.Values)
 The second method uses the more complex GDPR export, **takeout session** system.
 Here is an example on how to implement it:
 ```csharp
-using TL.Methods; // methods structures, for InvokeWithTakeout
+using TL.Methods; // methods as structures, for Invoke* calls
 
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();

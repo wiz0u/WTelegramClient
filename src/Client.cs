@@ -755,7 +755,7 @@ namespace WTelegram
 			return request;
 		}
 
-		internal async Task<X> CallBareAsync<X>(IMethod<X> request)
+		internal async Task<X> InvokeBare<X>(IMethod<X> request)
 		{
 			if (_bareRequest != 0) throw new ApplicationException("A bare request is already undergoing");
 			var msgId = await SendAsync(request, false);
@@ -766,14 +766,14 @@ namespace WTelegram
 			return (X)await tcs.Task;
 		}
 
-		/// <summary>Call the given TL method <i>(You shouldn't need to call this, usually)</i></summary>
+		/// <summary>Call the given TL method <i>(You shouldn't need to use this method directly)</i></summary>
 		/// <typeparam name="X">Expected type of the returned object</typeparam>
-		/// <param name="request">TL method object</param>
+		/// <param name="query">TL method structure</param>
 		/// <returns>Wait for the reply and return the resulting object, or throws an RpcException if an error was replied</returns>
-		public async Task<X> CallAsync<X>(IMethod<X> request)
+		public async Task<X> Invoke<X>(IMethod<X> query)
 		{
 		retry:
-			var msgId = await SendAsync(request, true);
+			var msgId = await SendAsync(query, true);
 			var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 			lock (_pendingRequests)
 				_pendingRequests[msgId] = (typeof(X), tcs);
@@ -819,7 +819,7 @@ namespace WTelegram
 				case ReactorError:
 					goto retry;
 				default:
-					throw new ApplicationException($"{request.GetType().Name} call got a result of type {result.GetType().Name} instead of {typeof(X).Name}");
+					throw new ApplicationException($"{query.GetType().Name} call got a result of type {result.GetType().Name} instead of {typeof(X).Name}");
 			}
 		}
 
