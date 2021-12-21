@@ -718,7 +718,10 @@ namespace WTelegram
 						result = reader.ReadTLValue(type);
 					}
 					if (type.IsEnum) result = Enum.ToObject(type, result);
-					Log(1, "");
+					if (result is RpcError rpcError)
+						Helpers.Log(4, $"             → RpcError {rpcError.error_code,3} {rpcError.error_message,-24} #{(short)msgId.GetHashCode():X4}");
+					else
+						Helpers.Log(1, $"             → {result?.GetType().Name,-37} #{(short)msgId.GetHashCode():X4}");
 					tcs.SetResult(result);
 				}
 				catch (Exception ex)
@@ -731,19 +734,11 @@ namespace WTelegram
 			{
 				result = reader.ReadTLObject();
 				if (MsgIdToStamp(msgId) >= _session.SessionStart)
-					Log(4, "for unknown msgId ");
+					Helpers.Log(4, $"             → {result?.GetType().Name,-37} for unknown msgId #{(short)msgId.GetHashCode():X4}");
 				else
-					Log(1, "for past msgId ");
+					Helpers.Log(1, $"             → {result?.GetType().Name,-37} for past msgId #{(short)msgId.GetHashCode():X4}");
 			}
 			return new RpcResult { req_msg_id = msgId, result = result };
-
-			void Log(int level, string msgIdprefix)
-			{
-				if (result is RpcError rpcError)
-					Helpers.Log(4, $"             → RpcError {rpcError.error_code,3} {rpcError.error_message,-24} {msgIdprefix}#{(short)msgId.GetHashCode():X4}");
-				else
-					Helpers.Log(level, $"             → {result?.GetType().Name,-37} {msgIdprefix}#{(short)msgId.GetHashCode():X4}");
-			}
 		}
 
 		private (Type type, TaskCompletionSource<object> tcs) PullPendingRequest(long msgId)
@@ -876,7 +871,8 @@ namespace WTelegram
 					bool retryLast = badMsgNotification.bad_msg_id == _dcSession.LastSentMsgId;
 					var lastSentMsg = _lastSentMsg;
 					_sendSemaphore.Release();
-					Helpers.Log(4, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
+					var logLevel = badMsgNotification.error_code == 48 ? 2 : 4;
+					Helpers.Log(logLevel, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
 					switch (badMsgNotification.error_code)
 					{
 						case 32: // msg_seqno too low (the server has already received a message with a lower msg_id but with either a higher or an equal and odd seqno)

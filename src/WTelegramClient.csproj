@@ -21,7 +21,6 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/wiz0u/WTelegramClient.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <InformationalVersion>source</InformationalVersion>
     <PackageTags>Telegram;Client;Api;UserBot;MTProto;TLSharp;OpenTl</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NoWarn>IDE0079;0419;1573;1591</NoWarn>
