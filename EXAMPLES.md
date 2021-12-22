@@ -173,6 +173,45 @@ var channel = (Channel)chats.chats[1234567890]; // the channel we want
 var participants = await client.Channels_GetAllParticipants(channel);
 ```
 
+<a name="add-members"></a>
+### Add/Invite/Remove someone in a chat
+```csharp
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+await client.LoginUserIfNeeded();
+var chats = await client.Messages_GetAllChats(null);
+const long chatId = 1234567890; // the target chat
+var chat = chats.chats[chatId];
+```
+After the above code, once you have obtained an InputUser (or User), you can:
+```csharp
+// • Directly add the user to a simple Chat:
+await client.Messages_AddChatUser(1234567890, inputUser, int.MaxValue);
+// • Directly add the user to a Channel/group:
+await client.Channels_InviteToChannel((Channel)chat, new[] { inputUser });
+// You may get exception USER_PRIVACY_RESTRICTED if the user has denied the right to be added to a chat
+//          or exception USER_NOT_MUTUAL_CONTACT if the user left the chat previously and you want to add him again
+
+// • Obtain the main invite link for a simple Chat:
+var mcf = await client.Messages_GetFullChat(1234567890);
+// • Obtain the main invite link for a Channel/group:
+var mcf = await client.Channels_GetFullChannel((Channel)chat);
+// extract the invite link and send it to the user:
+var invite = (ChatInviteExported)mcf.full_chat.ExportedInvite;
+await client.SendMessageAsync(inputUser, "Join our group with this link: " + invite.link);
+
+// • Create a new invite link for the chat/channel, and send it to the user
+var invite = (ChatInviteExported)await client.Messages_ExportChatInvite(chat, title: "MyLink");
+await client.SendMessageAsync(inputUser, "Join our group with this link: " + invite.link);
+// • Revoke then delete that invite link (when you no longer need it)
+await client.Messages_EditExportedChatInvite(chat, invite.link, revoked: true);
+await client.Messages_DeleteExportedChatInvite(chat, invite.link);
+
+// • Remove the user from a simple Chat:
+await client.Messages_DeleteChatUser(1234567890, inputUser);
+// • Remove the user from a Channel/group:
+await client.Channels_EditBanned((Channel)chat, inputUser, new ChatBannedRights { flags = ChatBannedRights.Flags.view_messages });
+```
+
 <a name="history"></a>
 ### Get all messages (history) from a chat
 ```csharp

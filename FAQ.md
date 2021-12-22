@@ -19,7 +19,9 @@ You could switch the current user via an `Auth_Logout` followed by a `LoginUserI
 Instead, if you want to deal with multiple users from the same machine, the recommended solution is to have a different session file for each user. This can be done by having your Config callback reply with a different filename (or folder) for "**session_pathname**" for each user.
 This way, you can keep separate session files (each with their authentication keys) for each user.
 
-If you need to manage these user accounts in parallel, you can create multiple instances of WTelegram.Client, and give them a Config callback that will select a different session file.
+If you need to manage these user accounts in parallel, you can create multiple instances of WTelegram.Client,
+and give them a Config callback that will select a different session file ;
+for example: `new WTelegram.Client(what => Config(what, "session42"))`
 
 Also please note that the session files are encrypted with your api_hash, so if you change it, the existing session files can't be read anymore.
 Your api_id/api_hash represents your application, and shouldn't change with each user account the application will manage.
