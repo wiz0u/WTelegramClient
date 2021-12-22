@@ -1040,10 +1040,28 @@ namespace TL
 		public abstract long ID { get; }
 		/// <summary>About string for this chat</summary>
 		public abstract string About { get; }
+		/// <summary>Chat photo</summary>
+		public abstract PhotoBase ChatPhoto { get; }
 		/// <summary>Notification settings</summary>
 		public abstract PeerNotifySettings NotifySettings { get; }
+		/// <summary>Chat invite</summary>
+		public abstract ExportedChatInvite ExportedInvite { get; }
+		/// <summary>Info about bots that are in this chat</summary>
+		public abstract BotInfo[] BotInfo { get; }
+		/// <summary>Message ID of the last <a href="https://corefork.telegram.org/api/pin">pinned message</a></summary>
+		public abstract int PinnedMsg { get; }
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		public abstract int Folder { get; }
+		/// <summary>Group call information</summary>
+		public abstract InputGroupCall Call { get; }
+		/// <summary>Time-To-Live of messages sent by the current user to this chat</summary>
+		public abstract int TtlPeriod { get; }
+		/// <summary>When using <a href="https://corefork.telegram.org/method/phone.getGroupCallJoinAs">phone.getGroupCallJoinAs</a> to get a list of peers that can be used to join a group call, this field indicates the peer that should be selected by default.</summary>
+		public abstract Peer GroupcallDefaultJoinAs { get; }
+		/// <summary>Emoji representing a specific chat theme</summary>
+		public abstract string ThemeEmoticon { get; }
+		public abstract int RequestsPending { get; }
+		public abstract long[] RecentRequesters { get; }
 	}
 	/// <summary>Detailed chat info		<para>See <a href="https://corefork.telegram.org/constructor/chatFull"/></para></summary>
 	[TLDef(0x46A6FFB4)]
@@ -1112,10 +1130,28 @@ namespace TL
 		public override long ID => id;
 		/// <summary>About string for this chat</summary>
 		public override string About => about;
+		/// <summary>Chat photo</summary>
+		public override PhotoBase ChatPhoto => chat_photo;
 		/// <summary>Notification settings</summary>
 		public override PeerNotifySettings NotifySettings => notify_settings;
+		/// <summary>Chat invite</summary>
+		public override ExportedChatInvite ExportedInvite => exported_invite;
+		/// <summary>Info about bots that are in this chat</summary>
+		public override BotInfo[] BotInfo => bot_info;
+		/// <summary>Message ID of the last <a href="https://corefork.telegram.org/api/pin">pinned message</a></summary>
+		public override int PinnedMsg => pinned_msg_id;
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		public override int Folder => folder_id;
+		/// <summary>Group call information</summary>
+		public override InputGroupCall Call => call;
+		/// <summary>Time-To-Live of messages sent by the current user to this chat</summary>
+		public override int TtlPeriod => ttl_period;
+		/// <summary>When using <a href="https://corefork.telegram.org/method/phone.getGroupCallJoinAs">phone.getGroupCallJoinAs</a> to get a list of peers that can be used to join a group call, this field indicates the peer that should be selected by default.</summary>
+		public override Peer GroupcallDefaultJoinAs => groupcall_default_join_as;
+		/// <summary>Emoji representing a specific chat theme</summary>
+		public override string ThemeEmoticon => theme_emoticon;
+		public override int RequestsPending => requests_pending;
+		public override long[] RecentRequesters => recent_requesters;
 	}
 	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/constructor/channelFull"/></para></summary>
 	[TLDef(0x56662E2E)]
@@ -1257,10 +1293,28 @@ namespace TL
 		public override long ID => id;
 		/// <summary>Info about the channel</summary>
 		public override string About => about;
+		/// <summary>Channel picture</summary>
+		public override PhotoBase ChatPhoto => chat_photo;
 		/// <summary>Notification settings</summary>
 		public override PeerNotifySettings NotifySettings => notify_settings;
+		/// <summary>Invite link</summary>
+		public override ExportedChatInvite ExportedInvite => exported_invite;
+		/// <summary>Info about bots in the channel/supergrup</summary>
+		public override BotInfo[] BotInfo => bot_info;
+		/// <summary>Message ID of the last <a href="https://corefork.telegram.org/api/pin">pinned message</a></summary>
+		public override int PinnedMsg => pinned_msg_id;
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		public override int Folder => folder_id;
+		/// <summary>Livestream or group call information</summary>
+		public override InputGroupCall Call => call;
+		/// <summary>Time-To-Live of messages in this channel or supergroup</summary>
+		public override int TtlPeriod => ttl_period;
+		/// <summary>When using <a href="https://corefork.telegram.org/method/phone.getGroupCallJoinAs">phone.getGroupCallJoinAs</a> to get a list of peers that can be used to join a group call, this field indicates the peer that should be selected by default.</summary>
+		public override Peer GroupcallDefaultJoinAs => groupcall_default_join_as;
+		/// <summary>Emoji representing a specific chat theme</summary>
+		public override string ThemeEmoticon => theme_emoticon;
+		public override int RequestsPending => requests_pending;
+		public override long[] RecentRequesters => recent_requesters;
 	}
 
 	/// <summary>Details of a group member.		<para>Derived classes: <see cref="ChatParticipant"/>, <see cref="ChatParticipantCreator"/>, <see cref="ChatParticipantAdmin"/></para>		<para>See <a href="https://corefork.telegram.org/type/ChatParticipant"/></para></summary>
@@ -6989,6 +7043,10 @@ namespace TL
 		public abstract string ID { get; }
 		/// <summary>Result type (see <a href="https://corefork.telegram.org/bots/api#inlinequeryresult">bot API docs</a>)</summary>
 		public abstract string Type { get; }
+		/// <summary>Result title</summary>
+		public abstract string Title { get; }
+		/// <summary>Result description</summary>
+		public abstract string Description { get; }
 		/// <summary>Message to send</summary>
 		public abstract BotInlineMessage SendMessage { get; }
 	}
@@ -7033,6 +7091,10 @@ namespace TL
 		public override string ID => id;
 		/// <summary>Result type (see <a href="https://corefork.telegram.org/bots/api#inlinequeryresult">bot API docs</a>)</summary>
 		public override string Type => type;
+		/// <summary>Result title</summary>
+		public override string Title => title;
+		/// <summary>Result description</summary>
+		public override string Description => description;
 		/// <summary>Message to send</summary>
 		public override BotInlineMessage SendMessage => send_message;
 	}
@@ -7073,6 +7135,10 @@ namespace TL
 		public override string ID => id;
 		/// <summary>Result type (see <a href="https://corefork.telegram.org/bots/api#inlinequeryresult">bot API docs</a>)</summary>
 		public override string Type => type;
+		/// <summary>Result title</summary>
+		public override string Title => title;
+		/// <summary>Description</summary>
+		public override string Description => description;
 		/// <summary>Depending on the <c>type</c> and on the <see cref="BotInlineMessage"/>, contains the caption of the media or the content of the message to be sent <strong>instead</strong> of the media</summary>
 		public override BotInlineMessage SendMessage => send_message;
 	}

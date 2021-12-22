@@ -15,9 +15,10 @@ namespace TL
 	}
 
 	partial class InputPeer { public static InputPeerSelf Self => new(); }
-	partial class InputPeerUser { public static implicit operator InputUser(InputPeerUser user) => new() { user_id = user.user_id, access_hash = user.access_hash }; }
-	partial class InputPeerChannel { public static implicit operator InputChannel(InputPeerChannel channel) => new() { channel_id = channel.channel_id, access_hash = channel.access_hash }; }
 	partial class InputUser { public static InputUserSelf Self => new(); }
+	partial class InputPeerChannel	{ public static implicit operator InputChannel(InputPeerChannel channel) => new() { channel_id = channel.channel_id, access_hash = channel.access_hash }; }
+	partial class InputPeerUser		{ public static implicit operator InputUser(InputPeerUser user) => new() { user_id = user.user_id, access_hash = user.access_hash }; }
+	partial class InputUser			{ public static implicit operator InputPeerUser(InputUser user) => new() { user_id = user.user_id, access_hash = user.access_hash }; }
 
 	partial class InputFileBase
 	{
@@ -64,9 +65,9 @@ namespace TL
 		public abstract long ID { get; }
 		public abstract bool IsActive { get; }
 		public abstract InputPeer ToInputPeer();
-		protected abstract InputUserBase ToInputUser();
+		protected abstract InputUser ToInputUser();
 		public static implicit operator InputPeer(UserBase user) => user.ToInputPeer();
-		public static implicit operator InputUserBase(UserBase user) => user.ToInputUser();
+		public static implicit operator InputUser(UserBase user) => user.ToInputUser();
 	}
 	partial class UserEmpty
 	{
@@ -74,7 +75,7 @@ namespace TL
 		public override bool IsActive => false;
 		public override string ToString() => null;
 		public override InputPeer ToInputPeer() => null;
-		protected override InputUserBase ToInputUser() => null;
+		protected override InputUser ToInputUser() => null;
 	}
 	partial class User
 	{
@@ -82,7 +83,7 @@ namespace TL
 		public override bool IsActive => (flags & Flags.deleted) == 0;
 		public override string ToString() => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
 		public override InputPeer ToInputPeer() => new InputPeerUser { user_id = id, access_hash = access_hash };
-		protected override InputUserBase ToInputUser() => new InputUser { user_id = id, access_hash = access_hash };
+		protected override InputUser ToInputUser() => new() { user_id = id, access_hash = access_hash };
 		/// <summary>An estimation of the number of days ago the user was last seen (Online=0, Recently=1, LastWeek=5, LastMonth=20, LongTimeAgo=150)</summary>
 		public TimeSpan LastSeenAgo => status?.LastSeenAgo ?? TimeSpan.FromDays(150);
 	}
