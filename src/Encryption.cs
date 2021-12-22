@@ -364,14 +364,20 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 
 		internal static async Task<InputCheckPasswordSRP> Check2FA(Account_Password accountPassword, Func<Task<string>> getPassword)
 		{
+			bool newPassword = false;
 			if (accountPassword.current_algo is not PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow algo)
-				throw new ApplicationException("2FA authentication uses an unsupported algo: " + accountPassword.current_algo?.GetType().Name);
+				if (accountPassword.current_algo == null && (algo = accountPassword.new_algo as PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow) != null)
+				{
+					int salt1len = algo.salt1.Length;
+					Array.Resize(ref algo.salt1, salt1len + 32);
+					RNG.GetBytes(algo.salt1, salt1len, 32);
+					newPassword = true;
+				}
+				else
+					throw new ApplicationException("2FA authentication uses an unsupported algo: " + accountPassword.current_algo?.GetType().Name);
 
 			var g = new BigInteger(algo.g);
 			var p = BigEndianInteger(algo.p);
-			var g_b = BigEndianInteger(accountPassword.srp_B);
-			var g_b_256 = g_b.To256Bytes();
-			var g_256 = g.To256Bytes();
 			var validTask = Task.Run(() => ValidityChecks(p, algo.g));
 
 			System.Threading.Thread.Sleep(100);
@@ -400,12 +406,22 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			sha256.TransformFinalBlock(algo.salt2, 0, algo.salt2.Length);
 			var x = BigEndianInteger(sha256.Hash);
 
+			var v = BigInteger.ModPow(g, x, p);
+			if (newPassword)
+			{
+				await validTask;
+				return new InputCheckPasswordSRP { A = v.To256Bytes() };
+			}
+
+			var g_b = BigEndianInteger(accountPassword.srp_B);
+			var g_b_256 = g_b.To256Bytes();
+			var g_256 = g.To256Bytes();
+
 			sha256.Initialize();
 			sha256.TransformBlock(algo.p, 0, 256, null, 0);
 			sha256.TransformFinalBlock(g_256, 0, 256);
 			var k = BigEndianInteger(sha256.Hash);
 
-			var v = BigInteger.ModPow(g, x, p);
 			var k_v = (k * v) % p;
 			var a = BigEndianInteger(new Int256(RNG).raw);
 			var g_a = BigInteger.ModPow(g, a, p);
