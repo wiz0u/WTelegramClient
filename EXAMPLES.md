@@ -58,17 +58,49 @@ await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
 See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) for details.  
 *Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#collect-access-hash))*
 
-<a name="dice"></a>
-### Send a random dice (or other "game of chance" animated emoji)
+<a name="fun"></a>
+### Fun with stickers, dice and animated emojies
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 var user = await client.LoginUserIfNeeded();
+var random = new Random();
+
+// • List all stickerSets the user has added to his account
+var allStickers = await client.Messages_GetAllStickers(0);
+foreach (var stickerSet in allStickers.sets)
+    Console.WriteLine($"Pack {stickerSet.short_name} contains {stickerSet.count} stickers");
+//if you need details on each: var sticketSetDetails = await client.Messages_GetStickerSet(stickerSet, 0);
+
+// • Send a random sticker from the user's favorites stickers
+var favedStickers = await client.Messages_GetFavedStickers(0);
+var stickerDoc = favedStickers.stickers[random.Next(favedStickers.stickers.Length)];
+await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDocument { id = stickerDoc });
+
+// • Send a specific sticker given the stickerset shortname and emoticon
+var friendlyPanda = await client.Messages_GetStickerSet(new InputStickerSetShortName { short_name = "Friendly_Panda" }, 0);
+var laughId = friendlyPanda.packs.First(p => p.emoticon == "😂").documents[0];
+var laughDoc = friendlyPanda.documents.First(d => d.ID == laughId);
+await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDocument { id = laughDoc });
+
+// • Send an animated emoji with full-screen animation, see https://core.telegram.org/api/animated-emojis#emoji-reactions
+// Please note that on Telegram Desktop, you won't view the effect from the sender user's point of view
+// You can view the effect if you're on Telegram Android, or if you're the receiving user (instead of Self)
+var msg = await client.SendMessageAsync(InputPeer.Self, "🎉");
+await Task.Delay(5000); // wait for classic animation to finish
+await client.SendMessageAsync(InputPeer.Self, "and now, full-screen animation on the above emoji");
+// trigger the full-screen animation, 
+var typing = await client.Messages_SetTyping(InputPeer.Self, new SendMessageEmojiInteraction {
+    emoticon = "🎉", msg_id = msg.id,
+    interaction = new DataJSON { data = @"{""v"":1,""a"":[{""t"":0.0,""i"":1}]}" }
+});
+await Task.Delay(5000);
+
+// • Send a random dice/game-of-chance effect from the list of available "dices", see https://core.telegram.org/api/dice
 var appConfig = await client.Help_GetAppConfig();
-if (appConfig["emojies_send_dice"] is string[] emojies_send_dice) // get list of animated "dice" emojies
-{
-    var which = new Random().Next(emojies_send_dice.Length); // choose one of the available emojies
-    await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDice { emoticon = emojies_send_dice[which] });
-}
+var emojies_send_dice = appConfig["emojies_send_dice"] as string[];
+var dice_emoji = emojies_send_dice[random.Next(emojies_send_dice.Length)];
+var diceMsg = await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDice { emoticon = dice_emoji });
+Console.WriteLine("Dice result:" + ((MessageMediaDice)diceMsg.media).value);
 ```
 
 <a name="list-chats"></a>
