@@ -110,7 +110,8 @@ await client.SendMessageAsync(target, "Hello, World");
 
 In the API, Telegram uses some terms/classnames that can be confusing as they differ from the terms shown to end-users:
 - `Channel` : A (large or public) chat group *(sometimes called supergroup)* or a broadcast channel (the `broadcast` flag differenciate those)
-- `Chat` : A private simple chat group with less than 200 members (it may be migrated to a supergroup `Channel` with a new ID when it gets bigger or public, in which case the old `Chat` will still exist but be `deactivated`)
+- `Chat` : A private simple chat group with less than 200 members (it may be migrated to a supergroup `Channel` with a new ID when it gets bigger or public, in which case the old `Chat` will still exist but be `deactivated`)  
+**⚠ Most chat groups you see are really of type `Channel` not `Chat`!**
 - chats : In plural or general meaning, it means either `Chat` or `Channel`
 - `Peer` : Either a `Chat`, `Channel` or a private chat with a `User`
 - Dialog : The current status of a chat with a `Peer` *(draft, last message, unread count, pinned...)*

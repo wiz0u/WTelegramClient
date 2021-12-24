@@ -55,7 +55,7 @@ namespace TL
 	{
 		/// <summary>User identifier</summary>
 		public long user_id;
-		/// <summary><strong>access_hash</strong> value from the <see cref="User"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="User"/> constructor</summary>
 		public long access_hash;
 	}
 	/// <summary>Defines a channel for further interaction.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerChannel"/></para></summary>
@@ -64,7 +64,7 @@ namespace TL
 	{
 		/// <summary>Channel identifier</summary>
 		public long channel_id;
-		/// <summary><strong>access_hash</strong> value from the <see cref="Channel"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="Channel"/> constructor</summary>
 		public long access_hash;
 	}
 	/// <summary>Defines a <a href="https://corefork.telegram.org/api/min">min</a> user that was seen in a certain message of a certain chat.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerUserFromMessage"/></para></summary>
@@ -102,7 +102,7 @@ namespace TL
 	{
 		/// <summary>User identifier</summary>
 		public long user_id;
-		/// <summary><strong>access_hash</strong> value from the <see cref="User"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="User"/> constructor</summary>
 		public long access_hash;
 	}
 	/// <summary>Defines a <a href="https://corefork.telegram.org/api/min">min</a> user that was seen in a certain message of a certain chat.		<para>See <a href="https://corefork.telegram.org/constructor/inputUserFromMessage"/></para></summary>
@@ -506,7 +506,7 @@ namespace TL
 	{
 		/// <summary>Photo identifier</summary>
 		public long id;
-		/// <summary><strong>access_hash</strong> value from the <see cref="Photo"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="Photo"/> constructor</summary>
 		public long access_hash;
 		/// <summary><a href="https://corefork.telegram.org/api/file_reference">File reference</a></summary>
 		public byte[] file_reference;
@@ -533,7 +533,7 @@ namespace TL
 	{
 		/// <summary>File ID, <strong>id</strong> parameter value from <see cref="EncryptedFile"/></summary>
 		public long id;
-		/// <summary>Checksum, <strong>access_hash</strong> parameter value from <see cref="EncryptedFile"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Checksum, <strong>access_hash</strong> parameter value from <see cref="EncryptedFile"/></summary>
 		public long access_hash;
 	}
 	/// <summary>Document location (video, voice, audio, basically every type except photo)		<para>See <a href="https://corefork.telegram.org/constructor/inputDocumentFileLocation"/></para></summary>
@@ -542,7 +542,7 @@ namespace TL
 	{
 		/// <summary>Document ID</summary>
 		public long id;
-		/// <summary><strong>access_hash</strong> parameter from the <see cref="Document"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> parameter from the <see cref="Document"/> constructor</summary>
 		public long access_hash;
 		/// <summary><a href="https://corefork.telegram.org/api/file_reference">File reference</a></summary>
 		public byte[] file_reference;
@@ -555,7 +555,7 @@ namespace TL
 	{
 		/// <summary>File ID, <strong>id</strong> parameter value from <see cref="SecureFile"/></summary>
 		public long id;
-		/// <summary>Checksum, <strong>access_hash</strong> parameter value from <see cref="SecureFile"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Checksum, <strong>access_hash</strong> parameter value from <see cref="SecureFile"/></summary>
 		public long access_hash;
 	}
 	/// <summary>Empty constructor for takeout		<para>See <a href="https://corefork.telegram.org/constructor/inputTakeoutFileLocation"/></para></summary>
@@ -567,7 +567,7 @@ namespace TL
 	{
 		/// <summary>Photo ID, obtained from the <see cref="Photo"/> object</summary>
 		public long id;
-		/// <summary>Photo's access hash, obtained from the <see cref="Photo"/> object</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Photo's access hash, obtained from the <see cref="Photo"/> object</summary>
 		public long access_hash;
 		/// <summary><a href="https://corefork.telegram.org/api/file_reference">File reference</a></summary>
 		public byte[] file_reference;
@@ -580,7 +580,7 @@ namespace TL
 	{
 		/// <summary>Photo ID</summary>
 		public long id;
-		/// <summary>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 		/// <summary>File reference</summary>
 		public byte[] file_reference;
@@ -4758,7 +4758,7 @@ namespace TL
 	{
 		/// <summary>Chat ID</summary>
 		public int chat_id;
-		/// <summary>Checking sum from constructor <see cref="EncryptedChat"/>, <see cref="EncryptedChatWaiting"/> or <see cref="EncryptedChatRequested"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Checking sum from constructor <see cref="EncryptedChat"/>, <see cref="EncryptedChatWaiting"/> or <see cref="EncryptedChatRequested"/></summary>
 		public long access_hash;
 	}
 
@@ -4808,7 +4808,7 @@ namespace TL
 	{
 		/// <summary>File ID, value of <strong>id</strong> parameter from <see cref="EncryptedFile"/></summary>
 		public long id;
-		/// <summary>Checking sum, value of <strong>access_hash</strong> parameter from <see cref="EncryptedFile"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Checking sum, value of <strong>access_hash</strong> parameter from <see cref="EncryptedFile"/></summary>
 		public long access_hash;
 
 		/// <summary>File ID, value of <strong>id</strong> parameter from <see cref="EncryptedFile"/></summary>
@@ -4933,7 +4933,7 @@ namespace TL
 	{
 		/// <summary>Document ID</summary>
 		public long id;
-		/// <summary><strong>access_hash</strong> parameter from the <see cref="Document"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> parameter from the <see cref="Document"/> constructor</summary>
 		public long access_hash;
 		/// <summary><a href="https://corefork.telegram.org/api/file_reference">File reference</a></summary>
 		public byte[] file_reference;
@@ -5797,7 +5797,7 @@ namespace TL
 	{
 		/// <summary>ID</summary>
 		public long id;
-		/// <summary>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
 	/// <summary>Stickerset by short name, from <c>tg://addstickers?set=short_name</c>		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetShortName"/></para></summary>
@@ -6232,7 +6232,7 @@ namespace TL
 	{
 		/// <summary>Channel ID</summary>
 		public long channel_id;
-		/// <summary>Access hash taken from the <see cref="Channel"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash taken from the <see cref="Channel"/> constructor</summary>
 		public long access_hash;
 
 		/// <summary>Channel ID</summary>
@@ -7333,7 +7333,7 @@ namespace TL
 		public int dc_id;
 		/// <summary>ID of message, contains both the (32-bit, legacy) owner ID and the message ID, used only for Bot API backwards compatibility with 32-bit user ID.</summary>
 		public long id;
-		/// <summary>Access hash of message</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash of message</summary>
 		public long access_hash;
 
 		/// <summary>DC ID to use when working with this inline message</summary>
@@ -7351,7 +7351,7 @@ namespace TL
 		public long owner_id;
 		/// <summary>ID of message</summary>
 		public int id;
-		/// <summary>Access hash of message</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash of message</summary>
 		public long access_hash;
 
 		/// <summary>DC ID to use when working with this inline message</summary>
@@ -7653,7 +7653,7 @@ namespace TL
 	{
 		/// <summary>game ID from <see cref="Game"/> constructor</summary>
 		public long id;
-		/// <summary>access hash from <see cref="Game"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>access hash from <see cref="Game"/> constructor</summary>
 		public long access_hash;
 	}
 	/// <summary>Game by short name		<para>See <a href="https://corefork.telegram.org/constructor/inputGameShortName"/></para></summary>
@@ -8343,7 +8343,7 @@ namespace TL
 	{
 		/// <summary>HTTP URL of file</summary>
 		public string url;
-		/// <summary>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 
 		/// <summary>Access hash</summary>
@@ -8355,7 +8355,7 @@ namespace TL
 	{
 		/// <summary>Geolocation</summary>
 		public InputGeoPoint geo_point;
-		/// <summary>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 		/// <summary>Map width in pixels before applying scale; 16-1024</summary>
 		public int w;
@@ -8620,7 +8620,7 @@ namespace TL
 	{
 		/// <summary>Call ID</summary>
 		public long id;
-		/// <summary>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
 
@@ -9673,7 +9673,7 @@ namespace TL
 	{
 		/// <summary>Secure file ID</summary>
 		public long id;
-		/// <summary>Secure file access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Secure file access hash</summary>
 		public long access_hash;
 
 		/// <summary>Secure file ID</summary>
@@ -10613,7 +10613,7 @@ namespace TL
 	{
 		/// <summary>Wallpaper ID</summary>
 		public long id;
-		/// <summary>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
 	/// <summary>Wallpaper by slug (a unique ID)		<para>See <a href="https://corefork.telegram.org/constructor/inputWallPaperSlug"/></para></summary>
@@ -10941,7 +10941,7 @@ namespace TL
 	{
 		/// <summary>ID</summary>
 		public long id;
-		/// <summary>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
 	/// <summary>Theme by theme ID		<para>See <a href="https://corefork.telegram.org/constructor/inputThemeSlug"/></para></summary>
@@ -11869,7 +11869,7 @@ namespace TL
 	{
 		/// <summary>Group call ID</summary>
 		public long id;
-		/// <summary>Group call access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Group call access hash</summary>
 		public long access_hash;
 	}
 
@@ -13694,14 +13694,14 @@ namespace TL
 			{
 				id = id,
 			});
-		/// <summary>Returns full chat info according to its ID.		<para>See <a href="https://corefork.telegram.org/method/messages.getFullChat"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getFullChat#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns full chat info according to its ID.		<para>See <a href="https://corefork.telegram.org/method/messages.getFullChat"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getFullChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		public static Task<Messages_ChatFull> Messages_GetFullChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_GetFullChat
 			{
 				chat_id = chat_id,
 			});
-		/// <summary>Chanages chat name and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatTitle"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatTitle#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Chanages chat name and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatTitle"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatTitle#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="title">New chat name, different from the old one</param>
 		public static Task<UpdatesBase> Messages_EditChatTitle(this Client client, long chat_id, string title)
@@ -13710,7 +13710,7 @@ namespace TL
 				chat_id = chat_id,
 				title = title,
 			});
-		/// <summary>Changes chat photo and sends a service message on it		<para>See <a href="https://corefork.telegram.org/method/messages.editChatPhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatPhoto#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Changes chat photo and sends a service message on it		<para>See <a href="https://corefork.telegram.org/method/messages.editChatPhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatPhoto#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="photo">Photo to be set</param>
 		public static Task<UpdatesBase> Messages_EditChatPhoto(this Client client, long chat_id, InputChatPhotoBase photo)
@@ -13719,7 +13719,7 @@ namespace TL
 				chat_id = chat_id,
 				photo = photo,
 			});
-		/// <summary>Adds a user to a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.addChatUser"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.addChatUser#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Adds a user to a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.addChatUser"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.addChatUser#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="user_id">User ID to be added</param>
 		/// <param name="fwd_limit">Number of last messages to be forwarded</param>
@@ -13730,7 +13730,7 @@ namespace TL
 				user_id = user_id,
 				fwd_limit = fwd_limit,
 			});
-		/// <summary>Deletes a user from a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChatUser"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChatUser#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Deletes a user from a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChatUser"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChatUser#possible-errors">details</a>)</para></summary>
 		/// <param name="revoke_history">Remove the entire chat history of the specified user in this chat.</param>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="user_id">User ID to be deleted</param>
@@ -13974,7 +13974,7 @@ namespace TL
 				id = id,
 				increment = increment,
 			});
-		/// <summary>Make a user admin in a <a href="https://corefork.telegram.org/api/channel">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAdmin"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatAdmin#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Make a user admin in a <a href="https://corefork.telegram.org/api/channel">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAdmin"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatAdmin#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">The ID of the group</param>
 		/// <param name="user_id">The user to make admin</param>
 		/// <param name="is_admin">Whether to make him admin</param>
@@ -13985,7 +13985,7 @@ namespace TL
 				user_id = user_id,
 				is_admin = is_admin,
 			});
-		/// <summary>Turn a <a href="https://corefork.telegram.org/api/channel">legacy group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Turn a <a href="https://corefork.telegram.org/api/channel">legacy group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Legacy group to migrate</param>
 		public static Task<UpdatesBase> Messages_MigrateChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_MigrateChat
@@ -14830,7 +14830,7 @@ namespace TL
 			{
 				peer = peer,
 			});
-		/// <summary>Delete a <a href="https://corefork.telegram.org/api/channel">chat</a>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChat#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Delete a <a href="https://corefork.telegram.org/api/channel">chat</a>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		public static Task<bool> Messages_DeleteChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_DeleteChat

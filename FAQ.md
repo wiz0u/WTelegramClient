@@ -49,7 +49,8 @@ However most common chat groups are not `Chat` but a `Channel` supergroup (witho
 Some TL methods only applies to private `Chat`, some only applies to `Channel` and some to both.
 
 The `access_hash` must usually be provided within the `Input...` structure you pass in argument to an API method (`InputPeer`, `InputChannel`, `InputUser`, etc...).  
-You obtain the `access_hash` through **description structures** like `Channel`, `User`, `Photo`, `Document` that you receive through updates or when you query them through API methods like `Messages_GetAllChats`, `Messages_GetDialogs`, `Contacts_ResolveUsername`, etc...
+You obtain the `access_hash` through **description structures** like `Channel`, `User`, `Photo`, `Document` that you receive through updates or when you query them through API methods like `Messages_GetAllChats`, `Messages_GetDialogs`, `Contacts_ResolveUsername`, etc...  
+*(if you have a `Peer` object, you can convert it to a `User`/`Channel`/`Chat` via the `UserOrChat` helper from the root class that contained the peer)*
 
 Once you obtained the description structure, there are 3 methods for building your `Input...` structure:
 * **Recommended:** If you take a look at the **description structure** class or `ChatBase/UserBase`, 
