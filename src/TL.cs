@@ -145,8 +145,8 @@ namespace TL
 						return new Int128(reader);
 					else if (type == typeof(Int256))
 						return new Int256(reader);
-					else if (type == typeof(Dictionary<long, UserBase>))
-						return reader.ReadTLDictionary<UserBase>(u => u.ID);
+					else if (type == typeof(Dictionary<long, User>))
+						return reader.ReadTLDictionary<User>(u => u.ID);
 					else if (type == typeof(Dictionary<long, ChatBase>))
 						return reader.ReadTLDictionary<ChatBase>(c => c.ID);
 					else
@@ -212,7 +212,7 @@ namespace TL
 				throw new ApplicationException($"Cannot deserialize {type.Name} with ctor #{ctorNb:x}");
 		}
 
-		internal static Dictionary<long, T> ReadTLDictionary<T>(this BinaryReader reader, Func<T, long> getID)
+		internal static Dictionary<long, T> ReadTLDictionary<T>(this BinaryReader reader, Func<T, long> getID) where T : class
 		{
 			uint ctorNb = reader.ReadUInt32();
 			var elementType = typeof(T);
@@ -223,7 +223,7 @@ namespace TL
 			for (int i = 0; i < count; i++)
 			{
 				var value = (T)reader.ReadTLValue(elementType);
-				dict.Add(getID(value), value);
+				dict.Add(getID(value), value is UserEmpty ? null : value);
 			}
 			return dict;
 		}

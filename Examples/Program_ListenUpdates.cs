@@ -35,7 +35,7 @@ namespace WTelegramClientTest
 		}
 
 
-		private static readonly Dictionary<long, UserBase> _users = new();
+		private static readonly Dictionary<long, User> _users = new();
 		private static readonly Dictionary<long, ChatBase> _chats = new();
 		private static string User(long id) => _users.TryGetValue(id, out var user) ? user.ToString() : $"User {id}";
 		private static string Chat(long id) => _chats.TryGetValue(id, out var chat) ? chat.ToString() : $"Chat {id}";

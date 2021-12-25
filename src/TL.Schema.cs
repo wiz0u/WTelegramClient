@@ -2659,7 +2659,7 @@ namespace TL
 		/// <summary>Number of contacts that were saved successfully</summary>
 		public int saved_count;
 		/// <summary>User list</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 	}
 
 	/// <summary>Info on succesfully imported contacts.		<para>See <a href="https://corefork.telegram.org/constructor/contacts.importedContacts"/></para></summary>
@@ -2673,7 +2673,7 @@ namespace TL
 		/// <summary>List of contact ids that could not be imported due to system limitation and will need to be imported at a later date.<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-13">Layer 13</a></summary>
 		public long[] retry_contacts;
 		/// <summary>List of users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 	}
 
 	/// <summary>Full list of blocked users.		<para>See <a href="https://corefork.telegram.org/constructor/contacts.blocked"/></para></summary>
@@ -2685,8 +2685,8 @@ namespace TL
 		/// <summary>Blocked chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>List of users</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Incomplete list of blocked users.		<para>See <a href="https://corefork.telegram.org/constructor/contacts.blockedSlice"/></para></summary>
@@ -2704,7 +2704,7 @@ namespace TL
 		public abstract DialogBase[] Dialogs { get; }
 		/// <summary>List of last messages from each chat</summary>
 		public abstract MessageBase[] Messages { get; }
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
 	/// <summary>Full list of chats with messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.dialogs"/></para></summary>
@@ -2718,13 +2718,13 @@ namespace TL
 		/// <summary>List of groups mentioned in the chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>List of users mentioned in messages and groups</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		/// <summary>List of chats</summary>
 		public override DialogBase[] Dialogs => dialogs;
 		/// <summary>List of last messages from each chat</summary>
 		public override MessageBase[] Messages => messages;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Incomplete list of dialogs with messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.dialogsSlice"/></para></summary>
@@ -2743,7 +2743,7 @@ namespace TL
 
 		public override DialogBase[] Dialogs => default;
 		public override MessageBase[] Messages => default;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 
@@ -2752,7 +2752,7 @@ namespace TL
 	{
 		/// <summary>List of messages</summary>
 		public abstract MessageBase[] Messages { get; }
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
 	/// <summary>Full list of messages with auxilary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.messages"/></para></summary>
@@ -2764,11 +2764,11 @@ namespace TL
 		/// <summary>List of chats mentioned in dialogs</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>List of users mentioned in messages and chats</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		/// <summary>List of messages</summary>
 		public override MessageBase[] Messages => messages;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Incomplete list of messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.messagesSlice"/></para></summary>
@@ -2811,7 +2811,7 @@ namespace TL
 		/// <summary>Chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags
 		{
@@ -2823,7 +2823,7 @@ namespace TL
 
 		/// <summary>Found messages</summary>
 		public override MessageBase[] Messages => messages;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>No new messages matching the query were found		<para>See <a href="https://corefork.telegram.org/constructor/messages.messagesNotModified"/></para></summary>
@@ -2834,7 +2834,7 @@ namespace TL
 		public int count;
 
 		public override MessageBase[] Messages => default;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 
@@ -2862,8 +2862,8 @@ namespace TL
 		/// <summary>List containing basic info on chat</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>List of users mentioned above</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -4079,7 +4079,7 @@ namespace TL
 		public abstract EncryptedMessageBase[] NewEncryptedMessages { get; }
 		/// <summary>List of updates</summary>
 		public abstract Update[] OtherUpdates { get; }
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
 	/// <summary>No events.		<para>See <a href="https://corefork.telegram.org/constructor/updates.differenceEmpty"/></para></summary>
@@ -4094,7 +4094,7 @@ namespace TL
 		public override MessageBase[] NewMessages => Array.Empty<MessageBase>();
 		public override EncryptedMessageBase[] NewEncryptedMessages => Array.Empty<EncryptedMessageBase>();
 		public override Update[] OtherUpdates => Array.Empty<Update>();
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 	/// <summary>Full list of occurred events.		<para>See <a href="https://corefork.telegram.org/constructor/updates.difference"/></para></summary>
@@ -4110,7 +4110,7 @@ namespace TL
 		/// <summary>List of chats mentioned in events</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>List of users mentioned in events</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 		/// <summary>Current state</summary>
 		public Updates_State state;
 
@@ -4120,7 +4120,7 @@ namespace TL
 		public override EncryptedMessageBase[] NewEncryptedMessages => new_encrypted_messages;
 		/// <summary>List of updates</summary>
 		public override Update[] OtherUpdates => other_updates;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Incomplete list of occurred events.		<para>See <a href="https://corefork.telegram.org/constructor/updates.differenceSlice"/></para></summary>
@@ -4136,7 +4136,7 @@ namespace TL
 		/// <summary>List of chats mentioned in events</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>List of users mentioned in events</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 		/// <summary>Intermediary state</summary>
 		public Updates_State intermediate_state;
 
@@ -4146,7 +4146,7 @@ namespace TL
 		public override EncryptedMessageBase[] NewEncryptedMessages => new_encrypted_messages;
 		/// <summary>List of updates</summary>
 		public override Update[] OtherUpdates => other_updates;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>The difference is <a href="https://corefork.telegram.org/api/updates#recovering-gaps">too long</a>, and the specified state must be used to refetch updates.		<para>See <a href="https://corefork.telegram.org/constructor/updates.differenceTooLong"/></para></summary>
@@ -4159,7 +4159,7 @@ namespace TL
 		public override MessageBase[] NewMessages => default;
 		public override EncryptedMessageBase[] NewEncryptedMessages => default;
 		public override Update[] OtherUpdates => default;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 
@@ -4304,7 +4304,7 @@ namespace TL
 		/// <summary>List of updates</summary>
 		public Update[] updates;
 		/// <summary>List of users mentioned in updates</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 		/// <summary>List of chats mentioned in updates</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Current date</summary>
@@ -4316,7 +4316,7 @@ namespace TL
 
 		/// <summary>Current date</summary>
 		public override DateTime Date => date;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Full constructor of updates		<para>See <a href="https://corefork.telegram.org/constructor/updates"/></para></summary>
@@ -4326,7 +4326,7 @@ namespace TL
 		/// <summary>List of updates</summary>
 		public Update[] updates;
 		/// <summary>List of users mentioned in updates</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 		/// <summary>List of chats mentioned in updates</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Current date</summary>
@@ -4336,7 +4336,7 @@ namespace TL
 
 		/// <summary>Current date</summary>
 		public override DateTime Date => date;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Shortened constructor containing info on one outgoing message to a contact (the destination chat has to be extracted from the method call that returned this object).		<para>See <a href="https://corefork.telegram.org/constructor/updateShortSentMessage"/></para></summary>
@@ -4383,7 +4383,7 @@ namespace TL
 		/// <summary>List of photos</summary>
 		public PhotoBase[] photos;
 		/// <summary>List of mentioned users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 	}
 	/// <summary>Incomplete list of photos with auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/photos.photosSlice"/></para></summary>
 	[TLDef(0x15051F54)]
@@ -4400,7 +4400,7 @@ namespace TL
 		/// <summary>Photo</summary>
 		public PhotoBase photo;
 		/// <summary>Users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 	}
 
 	/// <summary>Contains info on file.		<para>Derived classes: <see cref="Upload_File"/>, <see cref="Upload_FileCdnRedirect"/></para>		<para>See <a href="https://corefork.telegram.org/type/upload.File"/></para></summary>
@@ -5117,8 +5117,8 @@ namespace TL
 		/// <summary>Found chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>List of users</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -5259,8 +5259,8 @@ namespace TL
 		/// <summary>Chats to which the rules apply</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users to which the rules apply</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -6262,8 +6262,8 @@ namespace TL
 		/// <summary>Chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the result</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the result</summary>
 		public IPeerInfo UserOrChat => peer.UserOrChat(users, chats);
 	}
 
@@ -6280,7 +6280,7 @@ namespace TL
 	/// <summary>Contains the difference (new messages) between our local channel state and the remote state		<para>Derived classes: <see cref="Updates_ChannelDifferenceEmpty"/>, <see cref="Updates_ChannelDifferenceTooLong"/>, <see cref="Updates_ChannelDifference"/></para>		<para>See <a href="https://corefork.telegram.org/type/updates.ChannelDifference"/></para></summary>
 	public abstract partial class Updates_ChannelDifferenceBase : IObject, IPeerResolver
 	{
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
 	/// <summary>There are no new updates		<para>See <a href="https://corefork.telegram.org/constructor/updates.channelDifferenceEmpty"/></para></summary>
@@ -6301,7 +6301,7 @@ namespace TL
 			/// <summary>Field <see cref="timeout"/> has a value</summary>
 			has_timeout = 0x2,
 		}
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 	/// <summary>The provided <c>pts + limit &lt; remote pts</c>. Simply, there are too many updates to be fetched (more than <c>limit</c>), the client has to resolve the update gap in one of the following ways:		<para>See <a href="https://corefork.telegram.org/constructor/updates.channelDifferenceTooLong"/></para></summary>
@@ -6319,7 +6319,7 @@ namespace TL
 		/// <summary>Chats from messages</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users from messages</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags
 		{
@@ -6328,7 +6328,7 @@ namespace TL
 			/// <summary>Field <see cref="timeout"/> has a value</summary>
 			has_timeout = 0x2,
 		}
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>The new updates		<para>See <a href="https://corefork.telegram.org/constructor/updates.channelDifference"/></para></summary>
@@ -6348,7 +6348,7 @@ namespace TL
 		/// <summary>Chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags
 		{
@@ -6357,7 +6357,7 @@ namespace TL
 			/// <summary>Field <see cref="timeout"/> has a value</summary>
 			has_timeout = 0x2,
 		}
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -6554,8 +6554,8 @@ namespace TL
 		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users mentioned in participant info</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -6568,8 +6568,8 @@ namespace TL
 		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -7160,7 +7160,7 @@ namespace TL
 		/// <summary>Caching validity of the results</summary>
 		public DateTime cache_time;
 		/// <summary>Users mentioned in the results</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags
 		{
@@ -7381,10 +7381,10 @@ namespace TL
 		/// <summary>Chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 		/// <summary>Current <a href="https://corefork.telegram.org/api/updates">update state of dialog</a></summary>
 		public Updates_State state;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -7443,8 +7443,8 @@ namespace TL
 		/// <summary>Chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Top peers disabled		<para>See <a href="https://corefork.telegram.org/constructor/contacts.topPeersDisabled"/></para></summary>
@@ -7685,7 +7685,7 @@ namespace TL
 		/// <summary>Highscores</summary>
 		public HighScore[] scores;
 		/// <summary>Users, associated to the highscores</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 	}
 
 	/// <summary>Rich text		<para>Derived classes: <see cref="TextPlain"/>, <see cref="TextBold"/>, <see cref="TextItalic"/>, <see cref="TextUnderline"/>, <see cref="TextStrike"/>, <see cref="TextFixed"/>, <see cref="TextUrl"/>, <see cref="TextEmail"/>, <see cref="TextConcat"/>, <see cref="TextSubscript"/>, <see cref="TextSuperscript"/>, <see cref="TextMarked"/>, <see cref="TextPhone"/>, <see cref="TextImage"/>, <see cref="TextAnchor"/></para>		<para>See <a href="https://corefork.telegram.org/type/RichText"/></para></summary>
@@ -8411,7 +8411,7 @@ namespace TL
 		/// <summary>Contains information about saved card credentials</summary>
 		[IfFlag(1)] public PaymentSavedCredentials saved_credentials;
 		/// <summary>Users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags
 		{
@@ -8498,7 +8498,7 @@ namespace TL
 		/// <summary>Payment credential name</summary>
 		public string credentials_title;
 		/// <summary>Users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags
 		{
@@ -8903,7 +8903,7 @@ namespace TL
 		/// <summary>The VoIP phone call</summary>
 		public PhoneCallBase phone_call;
 		/// <summary>VoIP phone call participants</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 	}
 
 	/// <summary>Represents the download status of a CDN file		<para>Derived classes: <see cref="Upload_CdnFileReuploadNeeded"/>, <see cref="Upload_CdnFile"/></para>		<para>See <a href="https://corefork.telegram.org/type/upload.CdnFile"/></para></summary>
@@ -9347,8 +9347,8 @@ namespace TL
 		/// <summary>Chats mentioned in events</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users mentioned in events</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -9467,8 +9467,8 @@ namespace TL
 		/// <summary>Chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -9525,7 +9525,7 @@ namespace TL
 		/// <summary>Web authorization list</summary>
 		public WebAuthorization[] authorizations;
 		/// <summary>Users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 	}
 
 	/// <summary>A message		<para>Derived classes: <see cref="InputMessageID"/>, <see cref="InputMessageReplyTo"/>, <see cref="InputMessagePinned"/>, <see cref="InputMessageCallbackQuery"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputMessage"/></para></summary>
@@ -10015,7 +10015,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/passport">Telegram Passport</a> errors</summary>
 		public SecureValueErrorBase[] errors;
 		/// <summary>Info about the bot to which the form will be submitted</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 		/// <summary>URL of the service's privacy policy</summary>
 		[IfFlag(0)] public string privacy_policy_url;
 
@@ -11057,8 +11057,8 @@ namespace TL
 		/// <summary>Chat list</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users mentioned in the chat list</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -11227,7 +11227,7 @@ namespace TL
 		/// <summary>Vote info for each user</summary>
 		public MessageUserVoteBase[] votes;
 		/// <summary>Info about users that voted in the poll</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 		/// <summary>Offset to use with the next <a href="https://corefork.telegram.org/method/messages.getPollVotes">messages.getPollVotes</a> request, empty string if no more results are available.</summary>
 		[IfFlag(0)] public string next_offset;
 
@@ -11444,7 +11444,7 @@ namespace TL
 		/// <summary>Chat info</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>User info</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 		/// <summary>PSA type</summary>
 		[IfFlag(1)] public string psa_type;
 		/// <summary>PSA message</summary>
@@ -11459,7 +11459,7 @@ namespace TL
 			/// <summary>Field <see cref="psa_message"/> has a value</summary>
 			has_psa_message = 0x4,
 		}
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the result</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the result</summary>
 		public IPeerInfo UserOrChat => peer.UserOrChat(users, chats);
 	}
 
@@ -11560,7 +11560,7 @@ namespace TL
 		/// <summary>Info about most active group inviters</summary>
 		public StatsGroupTopInviter[] top_inviters;
 		/// <summary>Info about users mentioned in statistics</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 	}
 
 	/// <summary>Global privacy settings		<para>See <a href="https://corefork.telegram.org/constructor/globalPrivacySettings"/></para></summary>
@@ -11669,8 +11669,8 @@ namespace TL
 		/// <summary>Chats mentioned in constructor</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users mentioned in constructor</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -11693,7 +11693,7 @@ namespace TL
 		/// <summary>Chats mentioned in constructor</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users mentioned in constructor</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags
 		{
@@ -11704,7 +11704,7 @@ namespace TL
 			/// <summary>Field <see cref="read_outbox_max_id"/> has a value</summary>
 			has_read_outbox_max_id = 0x4,
 		}
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -11948,8 +11948,8 @@ namespace TL
 		/// <summary>Chats mentioned in the participants vector</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users mentioned in the participants vector</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -11966,10 +11966,10 @@ namespace TL
 		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Mentioned users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 		/// <summary>Version info</summary>
 		public int version;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -12061,7 +12061,7 @@ namespace TL
 		/// <summary>Exported invites</summary>
 		public ExportedChatInvite[] invites;
 		/// <summary>Info about the admin</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 	}
 
 	/// <summary>Contains info about a chat invite, and eventually a pointer to the newest chat invite.		<para>Derived classes: <see cref="Messages_ExportedChatInvite"/>, <see cref="Messages_ExportedChatInviteReplaced"/></para>		<para>See <a href="https://corefork.telegram.org/type/messages.ExportedChatInvite"/></para></summary>
@@ -12070,7 +12070,7 @@ namespace TL
 		/// <summary>Info about the chat invite</summary>
 		public abstract ExportedChatInvite Invite { get; }
 		/// <summary>Mentioned users</summary>
-		public abstract Dictionary<long, UserBase> Users { get; }
+		public abstract Dictionary<long, User> Users { get; }
 	}
 	/// <summary>Info about a chat invite		<para>See <a href="https://corefork.telegram.org/constructor/messages.exportedChatInvite"/></para></summary>
 	[TLDef(0x1871BE50)]
@@ -12079,12 +12079,12 @@ namespace TL
 		/// <summary>Info about the chat invite</summary>
 		public ExportedChatInvite invite;
 		/// <summary>Mentioned users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		/// <summary>Info about the chat invite</summary>
 		public override ExportedChatInvite Invite => invite;
 		/// <summary>Mentioned users</summary>
-		public override Dictionary<long, UserBase> Users => users;
+		public override Dictionary<long, User> Users => users;
 	}
 	/// <summary>The specified chat invite was replaced with another one		<para>See <a href="https://corefork.telegram.org/constructor/messages.exportedChatInviteReplaced"/></para></summary>
 	[TLDef(0x222600EF)]
@@ -12095,12 +12095,12 @@ namespace TL
 		/// <summary>The invite that replaces the previous invite</summary>
 		public ExportedChatInvite new_invite;
 		/// <summary>Mentioned users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		/// <summary>The replaced chat invite</summary>
 		public override ExportedChatInvite Invite => invite;
 		/// <summary>Mentioned users</summary>
-		public override Dictionary<long, UserBase> Users => users;
+		public override Dictionary<long, User> Users => users;
 	}
 
 	/// <summary>Info about the users that joined the chat using a specific chat invite		<para>See <a href="https://corefork.telegram.org/constructor/messages.chatInviteImporters"/></para></summary>
@@ -12112,7 +12112,7 @@ namespace TL
 		/// <summary>The users that joined</summary>
 		public ChatInviteImporter[] importers;
 		/// <summary>The users that joined</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 	}
 
 	/// <summary>Info about chat invites generated by admins.		<para>See <a href="https://corefork.telegram.org/constructor/chatAdminWithInvites"/></para></summary>
@@ -12134,7 +12134,7 @@ namespace TL
 		/// <summary>Info about chat invites generated by admins.</summary>
 		public ChatAdminWithInvites[] admins;
 		/// <summary>Mentioned users</summary>
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 	}
 
 	/// <summary>Contains a confirmation text to be shown to the user, upon <a href="https://corefork.telegram.org/api/import">importing chat history, click here for more info »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messages.checkedHistoryImportPeer"/></para></summary>
@@ -12154,8 +12154,8 @@ namespace TL
 		/// <summary>Chats mentioned in the peers vector</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users mentioned in the peers vector</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -12297,8 +12297,8 @@ namespace TL
 		/// <summary>Chats mentioned in the sponsored messages</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users mentioned in the sponsored messages</summary>
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -12324,7 +12324,7 @@ namespace TL
 		public SearchResultsCalendarPeriod[] periods;
 		public MessageBase[] messages;
 		public Dictionary<long, ChatBase> chats;
-		public Dictionary<long, UserBase> users;
+		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags
 		{
@@ -12332,7 +12332,7 @@ namespace TL
 			/// <summary>Field <see cref="offset_id_offset"/> has a value</summary>
 			has_offset_id_offset = 0x2,
 		}
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -12361,8 +12361,8 @@ namespace TL
 	{
 		public Peer[] peers;
 		public Dictionary<long, ChatBase> chats;
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -12372,8 +12372,8 @@ namespace TL
 	{
 		public UserFull full_user;
 		public Dictionary<long, ChatBase> chats;
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
@@ -12383,8 +12383,8 @@ namespace TL
 	{
 		public PeerSettings settings;
 		public Dictionary<long, ChatBase> chats;
-		public Dictionary<long, UserBase> users;
-		/// <summary>returns a <see cref="UserBase"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 

@@ -53,7 +53,7 @@ You obtain the `access_hash` through **description structures** like `Channel`, 
 *(if you have a `Peer` object, you can convert it to a `User`/`Channel`/`Chat` via the `UserOrChat` helper from the root class that contained the peer)*
 
 Once you obtained the description structure, there are 3 methods for building your `Input...` structure:
-* **Recommended:** If you take a look at the **description structure** class or `ChatBase/UserBase`, 
+* **Recommended:** If you take a look at the **description structure** class or base class `ChatBase/UserBase`, 
 you will see that they have conversion implicit operators or methods that can create the `Input...` structure for you automatically.  
 So you can just pass that structure you already have, in place of the `Input...` argument, it will work!
 * Alternatively, you can manually create the `Input...` structure yourself by extracting the `access_hash` from the **description structure**

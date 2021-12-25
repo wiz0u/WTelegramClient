@@ -20,7 +20,7 @@ In real production code, you might want to properly test the success of each ope
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var resolved = await client.Contacts_ResolveUsername("channelname"); // without the @
-if (resolved.UserOrChat is Channel channel)
+if (resolved.Chat is Channel channel)
     await client.Channels_JoinChannel(channel);
 ```
 
@@ -51,7 +51,8 @@ if (contacts.imported.Length > 0)
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 var user = await client.LoginUserIfNeeded();
-var text = $"Hello __dear *{Markdown.Escape(user.first_name)}*__\nEnjoy this `userbot` written with [WTelegramClient](https://github.com/wiz0u/WTelegramClient)";
+var text = $"Hello __dear *{Markdown.Escape(user.first_name)}*__\n" +
+            "Enjoy this `userbot` written with [WTelegramClient](https://github.com/wiz0u/WTelegramClient)";
 var entities = client.MarkdownToEntities(ref text);
 await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
 ```
@@ -59,7 +60,7 @@ See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2
 *Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#collect-access-hash))*
 
 <a name="fun"></a>
-### Fun with stickers, dice and animated emojies
+### Fun with stickers, GIFs, dice, and animated emojies
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 var user = await client.LoginUserIfNeeded();
@@ -82,6 +83,21 @@ var laughId = friendlyPanda.packs.First(p => p.emoticon == "😂").documents[0];
 var laughDoc = friendlyPanda.documents.First(d => d.ID == laughId);
 await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDocument { id = laughDoc });
 
+// • Send a GIF from an internet URL
+await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDocumentExternal
+        { url = "https://upload.wikimedia.org/wikipedia/commons/2/2c/Rotating_earth_%28large%29.gif" });
+
+// • Send a GIF stored on the computer (you can save inputFile for later reuse)
+var inputFile = await client.UploadFileAsync(@"C:\Pictures\Rotating_earth_(large).gif");
+await client.SendMediaAsync(InputPeer.Self, null, inputFile);
+
+// • Send a random dice/game-of-chance effect from the list of available "dices", see https://core.telegram.org/api/dice
+var appConfig = await client.Help_GetAppConfig();
+var emojies_send_dice = appConfig["emojies_send_dice"] as string[];
+var dice_emoji = emojies_send_dice[random.Next(emojies_send_dice.Length)];
+var diceMsg = await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDice { emoticon = dice_emoji });
+Console.WriteLine("Dice result:" + ((MessageMediaDice)diceMsg.media).value);
+
 // • Send an animated emoji with full-screen animation, see https://core.telegram.org/api/animated-emojis#emoji-reactions
 // Please note that on Telegram Desktop, you won't view the effect from the sender user's point of view
 // You can view the effect if you're on Telegram Android, or if you're the receiving user (instead of Self)
@@ -94,13 +110,6 @@ var typing = await client.Messages_SetTyping(InputPeer.Self, new SendMessageEmoj
     interaction = new DataJSON { data = @"{""v"":1,""a"":[{""t"":0.0,""i"":1}]}" }
 });
 await Task.Delay(5000);
-
-// • Send a random dice/game-of-chance effect from the list of available "dices", see https://core.telegram.org/api/dice
-var appConfig = await client.Help_GetAppConfig();
-var emojies_send_dice = appConfig["emojies_send_dice"] as string[];
-var dice_emoji = emojies_send_dice[random.Next(emojies_send_dice.Length)];
-var diceMsg = await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDice { emoticon = dice_emoji });
-Console.WriteLine("Dice result:" + ((MessageMediaDice)diceMsg.media).value);
 ```
 
 <a name="list-chats"></a>
@@ -155,7 +164,7 @@ while (dialogs.Dialogs.Length != 0)
     foreach (var dialog in dialogs.Dialogs)
         switch (dialogs.UserOrChat(dialog))
         {
-            case UserBase user when user.IsActive: Console.WriteLine("User " + user); break;
+            case User     user when user.IsActive: Console.WriteLine("User " + user); break;
             case ChatBase chat when chat.IsActive: Console.WriteLine(chat); break;
         }
     var lastDialog = dialogs.Dialogs[^1];

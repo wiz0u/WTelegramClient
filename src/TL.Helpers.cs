@@ -39,25 +39,25 @@ namespace TL
 	partial class Peer
 	{
 		public abstract long ID { get; }
-		abstract internal IPeerInfo UserOrChat(Dictionary<long, UserBase> users, Dictionary<long, ChatBase> chats);
+		abstract internal IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats);
 	}
 	partial class PeerUser
 	{
 		public override string ToString() => "user " + user_id;
 		public override long ID => user_id;
-		internal override IPeerInfo UserOrChat(Dictionary<long, UserBase> users, Dictionary<long, ChatBase> chats) => users[user_id];
+		internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => users[user_id];
 	}
 	partial class PeerChat
 	{
 		public override string ToString() => "chat " + chat_id;
 		public override long ID => chat_id;
-		internal override IPeerInfo UserOrChat(Dictionary<long, UserBase> users, Dictionary<long, ChatBase> chats) => chats[chat_id];
+		internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => chats[chat_id];
 	}
 	partial class PeerChannel
 	{
 		public override string ToString() => "channel " + channel_id;
 		public override long ID => channel_id;
-		internal override IPeerInfo UserOrChat(Dictionary<long, UserBase> users, Dictionary<long, ChatBase> chats) => chats[channel_id];
+		internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => chats[channel_id];
 	}
 
 	partial class UserBase : IPeerInfo
@@ -66,8 +66,8 @@ namespace TL
 		public abstract bool IsActive { get; }
 		public abstract InputPeer ToInputPeer();
 		protected abstract InputUser ToInputUser();
-		public static implicit operator InputPeer(UserBase user) => user.ToInputPeer();
-		public static implicit operator InputUser(UserBase user) => user.ToInputUser();
+		public static implicit operator InputPeer(UserBase user) => user?.ToInputPeer();
+		public static implicit operator InputUser(UserBase user) => user?.ToInputUser();
 	}
 	partial class UserEmpty
 	{
@@ -305,7 +305,7 @@ namespace TL
 	partial class Contacts_ResolvedPeer
 	{
 		public static implicit operator InputPeer(Contacts_ResolvedPeer resolved) => resolved.UserOrChat.ToInputPeer();
-		public UserBase User => peer is PeerUser pu ? users[pu.user_id] : null;
+		public User User => peer is PeerUser pu ? users[pu.user_id] : null;
 		public ChatBase Chat => peer is PeerChat or PeerChannel ? chats[peer.ID] : null;
 	}
 
@@ -361,21 +361,21 @@ namespace TL
 	partial class UpdatesBase
 	{
 		public abstract Update[] UpdateList { get; }
-		public virtual Dictionary<long, UserBase> Users => NoUsers;
+		public virtual Dictionary<long, User> Users => NoUsers;
 		public virtual Dictionary<long, ChatBase> Chats => NoChats;
-		private static readonly Dictionary<long, UserBase> NoUsers = new();
+		private static readonly Dictionary<long, User> NoUsers = new();
 		private static readonly Dictionary<long, ChatBase> NoChats = new();
 	}
 	partial class UpdatesCombined
 	{
 		public override Update[] UpdateList => updates;
-		public override Dictionary<long, UserBase> Users => users;
+		public override Dictionary<long, User> Users => users;
 		public override Dictionary<long, ChatBase> Chats => chats;
 	}
 	partial class Updates
 	{
 		public override Update[] UpdateList => updates;
-		public override Dictionary<long, UserBase> Users => users;
+		public override Dictionary<long, User> Users => users;
 		public override Dictionary<long, ChatBase> Chats => chats;
 	}
 	partial class UpdatesTooLong			{ public override Update[] UpdateList => Array.Empty<Update>(); }
