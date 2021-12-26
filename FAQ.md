@@ -45,7 +45,7 @@ An `access_hash` is required by Telegram when dealing with a channel, user, phot
 This serves as a proof that you are entitled to access it (otherwise, anybody with the ID could access it)
 
 > A small private `Chat` don't need an access_hash and can be queried using their `chat_id` only.
-However most common chat groups are not `Chat` but a `Channel` supergroup (without the `broadcast` flag). See Terminology in [ReadMe](README.md#terminology).  
+However most common chat groups are not `Chat` but a `Channel` supergroup (without the `broadcast` flag). See [Terminology in ReadMe](README.md#terminology).  
 Some TL methods only applies to private `Chat`, some only applies to `Channel` and some to both.
 
 The `access_hash` must usually be provided within the `Input...` structure you pass in argument to an API method (`InputPeer`, `InputChannel`, `InputUser`, etc...).  
@@ -72,6 +72,8 @@ After that, you should be able to see/install the pre-release versions in your N
 #### 6. Telegram can't find any chats and asks me to signup (firstname, lastname) even for an existing account
 This happens when you connect to Telegram Test servers instead of Production servers.
 On these separate test servers, all created accounts and chats are periodically deleted, so you shouldn't use them under normal circumstances.
+
+You can verify this is your case by looking at [WTelegram logs](EXAMPLES.MD#logging) on the line `Connected to (Test) DC x...`
 
 This wrong-server problem typically happens when you use WTelegramClient Github source project in your application in DEBUG builds.  
 It is **not recommended** to use WTelegramClient in source code form.
@@ -123,6 +125,38 @@ If you think your phone number was banned from Telegram for a wrong reason, you 
 
 In any case, WTelegramClient is not responsible for the bad usage of the library and we are not affiliated to Telegram teams, so there is nothing we can do.
 
+<a name="chat-id"></a>
+#### 9. Why the error `CHAT_ID_INVALID`?
+
+Most chat groups you see are likely of type `Channel`, not `Chat`.  
+This difference is important to understand. Please [read about the Terminology in ReadMe](README.md#terminology).  
+
+You typically get the error `CHAT_ID_INVALID` when you try to call API methods designed specifically for a `Chat`, with the ID of a `Channel`.  
+All API methods taking a `long api_id` as a direct method parameter are for Chats and cannot be used with Channels.
+
+There is probably another method achieving the same result but specifically designed for Channels, and it will have a similar name, but beginning with `Channels_` ...
+
+However, note that those Channel-compatible methods will require an `InputChannel` or `InputPeerChannel` object as argument instead of a simple channel ID.
+That object must be created with both fields `channel_id` and `access_hash` correctly filled. You can read more about this in [FAQ #4](#access-hash).
+
+<a name="chats-chats"></a>
+#### 10. `chats.chats[id]` throws KeyNotFoundException. My chats list is empty or does not contain the chat id.
+
+There can be several reasons why `chats.chats[id]` raise an error:
+- The user account you're currently logged-in as has not joined this particular chat.  
+API method [Messages_GetAllChats](https://corefork.telegram.org/method/messages.getAllChats) will only return those chat groups/channels the user is in, not all Telegram chat groups.
+- You're trying to use a Telegram.Bot (or TDLib) numerical ID, like -1001234567890  
+Telegram Client API don't use these kind of IDs for chats. Remove the -100 prefix and try again with the rest (1234567890).
+- You're trying to use a user ID instead of a chat ID.  
+Private messages with a user are not called "chats". See [Terminology in ReadMe](README.md#terminology).  
+To obtain the list of users (as well as chats and channels) the logged-in user is currenly engaged in a discussion with, you should [use the API method Messages_GetDialogs](EXAMPLES.md#list-dialogs)
+- the `chats.chats` dictionary is empty.  
+This is the case if you are logged-in as a brand new user account (that hasn't join any chat groups/channels)
+or if you are connected to a Test DC (a Telegram datacenter server for tests) instead of Production DC
+([read FAQ #6](#wrong-server) for more)
+
+To help determine if `chats.chats` is empty or does not contain a certain chat, you should [dump the chat list to the screen](EXAMPLES.md#list-chats)
+or simply use a debugger: Place a breakpoint after the Messages_GetAllChats call, run the program up to there, and use a Watch pane to display the content of the chats.chats dictionary.
 
 <a name="troubleshoot"></a>
 ## Troubleshooting guide

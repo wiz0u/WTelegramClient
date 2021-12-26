@@ -125,8 +125,11 @@ Console.Write("Choose a chat ID to send a message to: ");
 long chatId = long.Parse(Console.ReadLine());
 await client.SendMessageAsync(chats.chats[chatId], "Hello, World");
 ```
-*Note: the list returned by Messages_GetAllChats contains the `access_hash` for those chats.*  
-See a longer version of this example in [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
+Notes:
+- The list returned by Messages_GetAllChats contains the `access_hash` for those chats. Read [FAQ #4](FAQ.MD#access-hash) about this.
+- If a small private chat group has been migrated to a supergroup, you may find both the old `Chat` and a `Channel` with different IDs in the `chats.chats` result,
+but the old `Chat` will be marked with flag [deactivated] and should not be used anymore. See [Terminology in ReadMe](README.md#terminology).
+- You can find a longer version of this method call in [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
 
 <a name="schedule-msg"></a>
 ### Schedule a message to be sent to a chat
@@ -142,18 +145,18 @@ await client.SendMessageAsync(peer, "This will be posted in 3 minutes", schedule
 <a name="upload"></a>
 ### Upload a media file and post it with caption to a chat
 ```csharp
-const int TargetChatId = 1234567890; // the chat we want
+const int ChatId = 1234567890; // the chat we want
 const string Filepath = @"C:\...\photo.jpg";
 
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats(null);
-InputPeer peer = chats.chats[TargetChatId];
+InputPeer peer = chats.chats[ChatId];
 var inputFile = await client.UploadFileAsync(Filepath);
 await client.SendMediaAsync(peer, "Here is the photo", inputFile);
 ```
 
-<a name="list-dialog"></a>
+<a name="list-dialogs"></a>
 ### List all dialogs (chats/groups/channels/user chat) the user is in
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -220,20 +223,20 @@ var participants = await client.Channels_GetAllParticipants(channel);
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats(null);
-const long chatId = 1234567890; // the target chat
-var chat = chats.chats[chatId];
+const long ChatId = 1234567890; // the target chat
+var chat = chats.chats[ChatId];
 ```
 After the above code, once you [have obtained](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash) an `InputUser` or `User`, you can:
 ```csharp
 // • Directly add the user to a simple Chat:
-await client.Messages_AddChatUser(1234567890, user, int.MaxValue);
+await client.Messages_AddChatUser(ChatId, user, int.MaxValue);
 // • Directly add the user to a Channel/group:
 await client.Channels_InviteToChannel((Channel)chat, new[] { user });
 // You may get exception USER_PRIVACY_RESTRICTED if the user has denied the right to be added to a chat
 //          or exception USER_NOT_MUTUAL_CONTACT if the user left the chat previously and you want to add him again
 
 // • Obtain the main invite link for a simple Chat:
-var mcf = await client.Messages_GetFullChat(1234567890);
+var mcf = await client.Messages_GetFullChat(ChatId);
 // • Obtain the main invite link for a Channel/group:
 var mcf = await client.Channels_GetFullChannel((Channel)chat);
 // extract the invite link and send it to the user:
@@ -248,7 +251,7 @@ await client.Messages_EditExportedChatInvite(chat, invite.link, revoked: true);
 await client.Messages_DeleteExportedChatInvite(chat, invite.link);
 
 // • Remove the user from a simple Chat:
-await client.Messages_DeleteChatUser(1234567890, user);
+await client.Messages_DeleteChatUser(ChatId, user);
 // • Remove the user from a Channel/group:
 await client.Channels_EditBanned((Channel)chat, user, new ChatBannedRights { flags = ChatBannedRights.Flags.view_messages });
 ```
@@ -361,16 +364,24 @@ client.TcpHandler = async (address, port) =>
 
 <a name="logging"></a>
 ### Change logging settings
-Log to VS Output debugging pane in addition to default Console screen logging:
+By default, WTelegramClient logs are displayed on the Console screen.  
+If you are not in a Console app or don't want the logs on screen, you can redirect them as you prefer:
+
+* Log to VS Output debugging pane in addition to default Console screen logging:
 ```csharp
 WTelegram.Helpers.Log += (lvl, str) => System.Diagnostics.Debug.WriteLine(str);
 ```
-Log to file in replacement of default Console screen logging:
+* Log to file in replacement of default Console screen logging:
 ```csharp
 WTelegram.Helpers.Log = (lvl, str) => File.AppendAllText("WTelegram.log", str + Environment.NewLine);
 ```
-More efficient example with a static variable and detailed logging to file:
+* More efficient example with a static variable and detailed logging to file:
 ```csharp
 static StreamWriter WTelegramLogs = new StreamWriter("WTelegram.log", true, Encoding.UTF8) { AutoFlush = true };
 ...
 WTelegram.Helpers.Log = (lvl, str) => WTelegramLogs.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{"TDIWE!"[lvl]}] {str}");
+```
+* In an ASP.NET service, you will typically send logs to a `ILogger`:
+```csharp
+WTelegram.Helpers.Log = (lvl, str) => _logger.Log((LogLevel)lvl, str);
+```

@@ -111,7 +111,7 @@ await client.SendMessageAsync(target, "Hello, World");
 In the API, Telegram uses some terms/classnames that can be confusing as they differ from the terms shown to end-users:
 - `Channel` : A (large or public) chat group *(sometimes called supergroup)* or a broadcast channel (the `broadcast` flag differenciate those)
 - `Chat` : A private simple chat group with less than 200 members (it may be migrated to a supergroup `Channel` with a new ID when it gets bigger or public, in which case the old `Chat` will still exist but be `deactivated`)  
-**⚠ Most chat groups you see are really of type `Channel` not `Chat`!**
+**⚠️ Most chat groups you see are really of type `Channel`, not `Chat`!**
 - chats : In plural or general meaning, it means either `Chat` or `Channel`
 - `Peer` : Either a `Chat`, `Channel` or a private chat with a `User`
 - Dialog : The current status of a chat with a `Peer` *(draft, last message, unread count, pinned...)*
@@ -137,16 +137,16 @@ This library works best with **.NET 5.0+** and is also available for **.NET Stan
 # Library uses and limitations
 This library can be used for any Telegram scenarios including:
 - Sequential or parallel automated steps based on API requests/responses
-- Real-time monitoring of incoming Updates/Messages
+- Real-time [monitoring](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#updates) of incoming Updates/Messages
 - Download/upload of files/media
 - or even a full-featured interactive client
 
-It has been tested in a Console app, WinForms app, ASP.NET webservice.  
+It has been tested in a Console app, [in a WinForms app](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#gui), [in ASP.NET webservice](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#logging).  
 Secret chats (end-to-end encryption, PFS) and connection to CDN DCs have not been tested yet.
 
 Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos) as well as the [API Terms of Service](https://core.telegram.org/api/terms) or you might get banned from Telegram servers.
 
-Developers feedbacks are welcome in the Telegram support group [@WTelegramClient](https://t.me/WTelegramClient)  
+Developers feedback is welcome in the Telegram support group [@WTelegramClient](https://t.me/WTelegramClient)  
 You can also check our [📖 Frequently Asked Questions](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) for more help and troubleshooting guide.
 
 If you like this library, please [consider a donation](http://wizou.fr/donate.html).❤ This will help the project keep going.
