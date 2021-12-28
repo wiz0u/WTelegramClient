@@ -117,7 +117,7 @@ namespace WTelegram
 #endif
 			"device_model" => Environment.Is64BitOperatingSystem ? "PC 64bit" : "PC 32bit",
 			"system_version" => System.Runtime.InteropServices.RuntimeInformation.OSDescription,
-			"app_version" => Assembly.GetEntryAssembly().GetName().Version.ToString(),
+			"app_version" => (Assembly.GetEntryAssembly() ?? AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.EntryPoint != null))?.GetName().Version.ToString() ?? "0.0",
 			"system_lang_code" => CultureInfo.InstalledUICulture.TwoLetterISOLanguageName,
 			"lang_pack" => "",
 			"lang_code" => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
@@ -1247,6 +1247,8 @@ namespace WTelegram
 		/// <returns>The file type of the photo</returns>
 		public async Task<Storage_FileType> DownloadFileAsync(Photo photo, Stream outputStream, PhotoSizeBase photoSize = null, ProgressCallback progress = null)
 		{
+			if (photoSize is PhotoStrippedSize psp)
+				return InflateStrippedThumb(outputStream, psp.bytes) ? Storage_FileType.jpeg : 0;
 			photoSize ??= photo.LargestPhotoSize;
 			var fileLocation = photo.ToFileLocation(photoSize);
 			return await DownloadFileAsync(fileLocation, outputStream, photo.dc_id, photoSize.FileSize, progress);
@@ -1260,6 +1262,8 @@ namespace WTelegram
 		/// <returns>MIME type of the document/thumbnail</returns>
 		public async Task<string> DownloadFileAsync(Document document, Stream outputStream, PhotoSizeBase thumbSize = null, ProgressCallback progress = null)
 		{
+			if (thumbSize	is PhotoStrippedSize psp)
+				return InflateStrippedThumb(outputStream, psp.bytes) ? "image/jpeg" : null;
 			var fileLocation = document.ToFileLocation(thumbSize);
 			var fileType = await DownloadFileAsync(fileLocation, outputStream, document.dc_id, thumbSize?.FileSize ?? document.size, progress);
 			return thumbSize == null ? document.mime_type : "image/" + fileType;
@@ -1394,23 +1398,26 @@ namespace WTelegram
 					return 0;
 			}
 			if (miniThumb && !big)
-			{
-				if (stripped_thumb == null || stripped_thumb.Length <= 3 || stripped_thumb[0] != 1)
-					return 0;
-				var header = Helpers.StrippedThumbJPG;
-				outputStream.Write(header, 0, 164);
-				outputStream.WriteByte(stripped_thumb[1]);
-				outputStream.WriteByte(0);
-				outputStream.WriteByte(stripped_thumb[2]);
-				outputStream.Write(header, 167, header.Length - 167);
-				outputStream.Write(stripped_thumb, 3, stripped_thumb.Length - 3);
-				outputStream.WriteByte(0xff);
-				outputStream.WriteByte(0xd9);
-				return Storage_FileType.jpeg;
-			}
+				return InflateStrippedThumb(outputStream, stripped_thumb) ? Storage_FileType.jpeg : 0;
 			var fileLocation = new InputPeerPhotoFileLocation { peer = peer.ToInputPeer(), photo_id = photo_id };
 			if (big) fileLocation.flags |= InputPeerPhotoFileLocation.Flags.big;
 			return await DownloadFileAsync(fileLocation, outputStream, dc_id);
+		}
+
+		private static bool InflateStrippedThumb(Stream outputStream, byte[] stripped_thumb)
+		{
+			if (stripped_thumb == null || stripped_thumb.Length <= 3 || stripped_thumb[0] != 1)
+				return false;
+			var header = Helpers.StrippedThumbJPG;
+			outputStream.Write(header, 0, 164);
+			outputStream.WriteByte(stripped_thumb[1]);
+			outputStream.WriteByte(0);
+			outputStream.WriteByte(stripped_thumb[2]);
+			outputStream.Write(header, 167, header.Length - 167);
+			outputStream.Write(stripped_thumb, 3, stripped_thumb.Length - 3);
+			outputStream.WriteByte(0xff);
+			outputStream.WriteByte(0xd9);
+			return true;
 		}
 
 		/// <summary>Helper method that tries to fetch all participants from a Channel (beyond Telegram server-side limitations)</summary>
