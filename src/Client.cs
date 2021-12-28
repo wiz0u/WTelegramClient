@@ -1268,14 +1268,14 @@ namespace WTelegram
 		/// <summary>Download a file from Telegram into the outputStream</summary>
 		/// <param name="fileLocation">Telegram file identifier, typically obtained with a .ToFileLocation() call</param>
 		/// <param name="outputStream">Stream to write file content to. This method does not close/dispose the stream</param>
-		/// <param name="fileDC">(optional) DC on which the file is stored</param>
+		/// <param name="dc_id">(optional) DC on which the file is stored</param>
 		/// <param name="fileSize">(optional) Expected file size</param>
 		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>
 		/// <returns>The file type</returns>
-		public async Task<Storage_FileType> DownloadFileAsync(InputFileLocationBase fileLocation, Stream outputStream, int fileDC = 0, int fileSize = 0, ProgressCallback progress = null)
+		public async Task<Storage_FileType> DownloadFileAsync(InputFileLocationBase fileLocation, Stream outputStream, int dc_id = 0, int fileSize = 0, ProgressCallback progress = null)
 		{
 			Storage_FileType fileType = Storage_FileType.unknown;
-			var client = fileDC == 0 ? this : await GetClientForDC(fileDC, true);
+			var client = dc_id == 0 ? this : await GetClientForDC(dc_id, true);
 			using var writeSem = new SemaphoreSlim(1);
 			long streamStartPos = outputStream.Position;
 			int fileOffset = 0, maxOffsetSeen = 0;
@@ -1288,7 +1288,7 @@ namespace WTelegram
 				await _parallelTransfers.WaitAsync();
 				var task = LoadPart(fileOffset);
 				lock (tasks) tasks[fileOffset] = task;
-				if (fileDC == 0) { await task; fileDC = client._dcSession.DcID; }
+				if (dc_id == 0) { await task; dc_id = client._dcSession.DcID; }
 				fileOffset += FilePartSize;
 				if (fileSize != 0 && fileOffset >= fileSize)
 				{
@@ -1363,6 +1363,39 @@ namespace WTelegram
 			await outputStream.FlushAsync();
 			outputStream.Seek(streamStartPos + maxOffsetSeen, SeekOrigin.Begin);
 			return fileType;
+		}
+
+		/// <summary>Download the profile photo for a given peer into the outputStream</summary>
+		/// <param name="peer">User, Chat or Channel</param>
+		/// <param name="outputStream">Stream to write the file content to. This method does not close/dispose the stream</param>
+		/// <param name="big">Whether to download the high-quality version of the picture</param>
+		/// <returns>The file type of the photo, or 0 if no photo available</returns>
+		public async Task<Storage_FileType> DownloadProfilePhotoAsync(IPeerInfo peer, Stream outputStream, bool big = false)
+		{
+			int dc_id;
+			var fileLocation = new InputPeerPhotoFileLocation { peer = peer.ToInputPeer() };
+			if (big) fileLocation.flags = InputPeerPhotoFileLocation.Flags.big;
+			switch (peer)
+			{
+				case User user:
+					if (user.photo == null) return 0;
+					dc_id = user.photo.dc_id;
+					fileLocation.photo_id = user.photo.photo_id;
+					break;
+				case Chat chat:
+					if (chat.photo == null) return 0;
+					dc_id = chat.photo.dc_id;
+					fileLocation.photo_id = chat.photo.photo_id;
+					break;
+				case Channel channel:
+					if (channel.photo == null) return 0;
+					dc_id = channel.photo.dc_id;
+					fileLocation.photo_id = channel.photo.photo_id;
+					break;
+				default:
+					return 0;
+			}
+			return await DownloadFileAsync(fileLocation, outputStream, dc_id);
 		}
 
 		/// <summary>Helper method that tries to fetch all participants from a Channel (beyond Telegram server-side limitations)</summary>

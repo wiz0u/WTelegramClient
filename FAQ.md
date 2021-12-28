@@ -69,15 +69,15 @@ You can access these versions for testing in your program by going to our [priva
 After that, you should be able to see/install the pre-release versions in your Nuget package manager and install them in your application. *(make sure you enable the **pre-release** checkbox)*
 
 <a name="wrong-server"></a>
-#### 6. Telegram can't find any chats and asks me to signup (firstname, lastname) even for an existing account
+#### 6. Telegram asks me to signup (firstname, lastname) even for an existing account
 This happens when you connect to Telegram Test servers instead of Production servers.
 On these separate test servers, all created accounts and chats are periodically deleted, so you shouldn't use them under normal circumstances.
 
-You can verify this is your case by looking at [WTelegram logs](EXAMPLES.MD#logging) on the line `Connected to (Test) DC x...`
+You can verify this is your issue by looking at [WTelegram logs](EXAMPLES.MD#logging) on the line `Connected to (Test) DC x...`
 
 This wrong-server problem typically happens when you use WTelegramClient Github source project in your application in DEBUG builds.  
 It is **not recommended** to use WTelegramClient in source code form.
-Instead, you should use the Nuget manager to **import the WTelegramClient Nuget package** into your application.
+Instead, you should use the Nuget manager to **install package WTelegramClient** into your application.
 
 If you use the Github source project in an old .NET Framework 4.x or .NET Core x.x application, you may also experience the following error
 > System.TypeInitializationException (FileNotFoundException for "System.Text.Json Version=5.0.0.0 ...")
@@ -140,7 +140,7 @@ However, note that those Channel-compatible methods will require an `InputChanne
 That object must be created with both fields `channel_id` and `access_hash` correctly filled. You can read more about this in [FAQ #4](#access-hash).
 
 <a name="chats-chats"></a>
-#### 10. `chats.chats[id]` throws KeyNotFoundException. My chats list is empty or does not contain the chat id.
+#### 10. `chats.chats[id]` fails. My chats list is empty or does not contain the chat id.
 
 There can be several reasons why `chats.chats[id]` raise an error:
 - The user account you're currently logged-in as has not joined this particular chat.  
