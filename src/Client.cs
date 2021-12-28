@@ -1369,32 +1369,47 @@ namespace WTelegram
 		/// <param name="peer">User, Chat or Channel</param>
 		/// <param name="outputStream">Stream to write the file content to. This method does not close/dispose the stream</param>
 		/// <param name="big">Whether to download the high-quality version of the picture</param>
+		/// <param name="miniThumb">Whether to extract the embedded very low-res thumbnail (synchronous, no actual download needed)</param>
 		/// <returns>The file type of the photo, or 0 if no photo available</returns>
-		public async Task<Storage_FileType> DownloadProfilePhotoAsync(IPeerInfo peer, Stream outputStream, bool big = false)
+		public async Task<Storage_FileType> DownloadProfilePhotoAsync(IPeerInfo peer, Stream outputStream, bool big = false, bool miniThumb = false)
 		{
 			int dc_id;
-			var fileLocation = new InputPeerPhotoFileLocation { peer = peer.ToInputPeer() };
-			if (big) fileLocation.flags = InputPeerPhotoFileLocation.Flags.big;
+			long photo_id;
+			byte[] stripped_thumb;
 			switch (peer)
 			{
 				case User user:
 					if (user.photo == null) return 0;
 					dc_id = user.photo.dc_id;
-					fileLocation.photo_id = user.photo.photo_id;
+					photo_id = user.photo.photo_id;
+					stripped_thumb = user.photo.stripped_thumb;
 					break;
-				case Chat chat:
-					if (chat.photo == null) return 0;
-					dc_id = chat.photo.dc_id;
-					fileLocation.photo_id = chat.photo.photo_id;
-					break;
-				case Channel channel:
-					if (channel.photo == null) return 0;
-					dc_id = channel.photo.dc_id;
-					fileLocation.photo_id = channel.photo.photo_id;
+				case ChatBase { Photo: var photo }:
+					if (photo == null) return 0;
+					dc_id = photo.dc_id;
+					photo_id = photo.photo_id;
+					stripped_thumb = photo.stripped_thumb;
 					break;
 				default:
 					return 0;
 			}
+			if (miniThumb && !big)
+			{
+				if (stripped_thumb == null || stripped_thumb.Length <= 3 || stripped_thumb[0] != 1)
+					return 0;
+				var header = Helpers.StrippedThumbJPG;
+				outputStream.Write(header, 0, 164);
+				outputStream.WriteByte(stripped_thumb[1]);
+				outputStream.WriteByte(0);
+				outputStream.WriteByte(stripped_thumb[2]);
+				outputStream.Write(header, 167, header.Length - 167);
+				outputStream.Write(stripped_thumb, 3, stripped_thumb.Length - 3);
+				outputStream.WriteByte(0xff);
+				outputStream.WriteByte(0xd9);
+				return Storage_FileType.jpeg;
+			}
+			var fileLocation = new InputPeerPhotoFileLocation { peer = peer.ToInputPeer(), photo_id = photo_id };
+			if (big) fileLocation.flags |= InputPeerPhotoFileLocation.Flags.big;
 			return await DownloadFileAsync(fileLocation, outputStream, dc_id);
 		}
 

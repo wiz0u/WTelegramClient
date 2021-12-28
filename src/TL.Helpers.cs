@@ -104,6 +104,7 @@ namespace TL
 	partial class ChatBase : IPeerInfo
 	{
 		public abstract bool IsActive { get; }
+		public abstract ChatPhoto Photo { get; }
 		/// <summary>returns true if you're banned of any of these rights</summary>
 		public abstract bool IsBanned(ChatBannedRights.Flags flags = 0);
 		public abstract InputPeer ToInputPeer();
@@ -112,6 +113,7 @@ namespace TL
 	partial class ChatEmpty
 	{
 		public override bool IsActive => false;
+		public override ChatPhoto Photo => null;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		public override InputPeer ToInputPeer() => null;
 		public override string ToString() => $"ChatEmpty {id}";
@@ -119,6 +121,7 @@ namespace TL
 	partial class Chat
 	{
 		public override bool IsActive => (flags & (Flags.kicked | Flags.left | Flags.deactivated)) == 0;
+		public override ChatPhoto Photo => photo;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		public override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
 		public override string ToString() => $"Chat \"{title}\"" + (flags.HasFlag(Flags.deactivated) ? " [deactivated]" : null);
@@ -126,6 +129,7 @@ namespace TL
 	partial class ChatForbidden
 	{
 		public override bool IsActive => false;
+		public override ChatPhoto Photo => null;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		public override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
 		public override string ToString() => $"ChatForbidden {id} \"{title}\"";
@@ -133,6 +137,7 @@ namespace TL
 	partial class Channel
 	{
 		public override bool IsActive => (flags & Flags.left) == 0;
+		public override ChatPhoto Photo => photo;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((banned_rights?.flags ?? 0) & flags) != 0 || ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		public override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
 		public static implicit operator InputChannel(Channel channel) => new() { channel_id = channel.id, access_hash = channel.access_hash };
@@ -144,6 +149,7 @@ namespace TL
 	partial class ChannelForbidden
 	{
 		public override bool IsActive => false;
+		public override ChatPhoto Photo => null;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		public override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
 		public override string ToString() => $"ChannelForbidden {id} \"{title}\"";
