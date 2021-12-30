@@ -498,7 +498,15 @@ namespace TL
 				{
 					case '\\': sb.Remove(offset++, 1); break;
 					case '*': ProcessEntity<MessageEntityBold>(); break;
-					case '~': ProcessEntity<MessageEntityStrike>(); break;
+					case '~':
+						if (offset + 1 < sb.Length && sb[offset + 1] == '~')
+						{
+							sb.Remove(offset, 1);
+							ProcessEntity<MessageEntitySpoiler>();
+						}
+						else
+							ProcessEntity<MessageEntityStrike>();
+						break;
 					case '_':
 						if (offset + 1 < sb.Length && sb[offset + 1] == '_')
 						{
