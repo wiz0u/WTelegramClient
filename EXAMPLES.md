@@ -364,22 +364,19 @@ client.TcpHandler = async (address, port) =>
 By default, WTelegramClient logs are displayed on the Console screen.  
 If you are not in a Console app or don't want the logs on screen, you can redirect them as you prefer:
 
-* Log to VS Output debugging pane in addition to default Console screen logging:
 ```csharp
+// • Log to VS Output debugging pane in addition to default Console screen logging:
 WTelegram.Helpers.Log += (lvl, str) => System.Diagnostics.Debug.WriteLine(str);
-```
-* Log to file in replacement of default Console screen logging:
-```csharp
+
+// • Log to file in replacement of default Console screen logging:
 WTelegram.Helpers.Log = (lvl, str) => File.AppendAllText("WTelegram.log", str + Environment.NewLine);
-```
-* More efficient example with a static variable and detailed logging to file:
-```csharp
+
+// • More efficient example with a static variable and detailed logging to file:
 static StreamWriter WTelegramLogs = new StreamWriter("WTelegram.log", true, Encoding.UTF8) { AutoFlush = true };
 ...
 WTelegram.Helpers.Log = (lvl, str) => WTelegramLogs.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{"TDIWE!"[lvl]}] {str}");
-```
-* In an ASP.NET service, you will typically send logs to a `ILogger`:
-```csharp
+
+// • In an ASP.NET service, you will typically send logs to a `ILogger`:
 WTelegram.Helpers.Log = (lvl, str) => _logger.Log((LogLevel)lvl, str);
 ```
 

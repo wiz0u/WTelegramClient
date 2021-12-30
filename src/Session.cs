@@ -91,8 +91,8 @@ namespace WTelegram
 			lock (this)
 			{
 				File.WriteAllBytes(tempPathname, output);
-				File.Delete(_pathname);
-				File.Move(tempPathname, _pathname);
+				File.Copy(tempPathname, _pathname, true);
+				File.Delete(tempPathname);
 			}
 		}
 	}
