@@ -1084,7 +1084,38 @@ namespace WTelegram
 			return user;
 		}
 
-#region TL-Helpers
+		/// <summary>Enable the collection of id/access_hash pairs (experimental)</summary>
+		public bool CollectAccessHash { get; set; }
+		readonly Dictionary<Type, Dictionary<long, long>> _accessHashes = new();
+		public IEnumerable<KeyValuePair<long, long>> AllAccessHashesFor<T>() where T : IObject
+			=> _accessHashes.GetValueOrDefault(typeof(T));
+		/// <summary>Retrieve the access_hash associated with this id (for a TL class) if it was collected</summary>
+		/// <remarks>This requires <see cref="CollectAccessHash"/> to be set to <see langword="true"/> first.
+		/// <br/>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_CollectAccessHash.cs">Examples/Program_CollectAccessHash.cs</see> for how to use this</remarks>
+		/// <typeparam name="T">a TL object class. For example User, Channel or Photo</typeparam>
+		public long GetAccessHashFor<T>(long id) where T : IObject
+		{
+			lock (_accessHashes)
+				return _accessHashes.GetOrCreate(typeof(T)).TryGetValue(id, out var access_hash) ? access_hash : 0;
+		}
+		public void SetAccessHashFor<T>(long id, long access_hash) where T : IObject
+		{
+			lock (_accessHashes)
+				_accessHashes.GetOrCreate(typeof(T))[id] = access_hash;
+		}
+		internal void UpdateAccessHash(object obj, Type type, object access_hash)
+		{
+			if (!CollectAccessHash) return;
+			if (access_hash is not long accessHash) return;
+			if (type.GetField("id") is not FieldInfo idField) return;
+			if (idField.GetValue(obj) is not long id)
+				if (idField.GetValue(obj) is not int idInt) return;
+				else id = idInt;
+			lock (_accessHashes)
+				_accessHashes.GetOrCreate(type)[id] = accessHash;
+		}
+
+		#region TL-Helpers
 		/// <summary>Helper function to upload a file to Telegram</summary>
 		/// <param name="pathname">Path to the file to upload</param>
 		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>
@@ -1479,37 +1510,13 @@ namespace WTelegram
 					await Task.WhenAll(Enumerable.Range('a', 26).Select(c => GetWithFilter(recurse(filter, (char)c), recurse)));
 			}
 		}
-		#endregion
 
-		/// <summary>Enable the collection of id/access_hash pairs (experimental)</summary>
-		public bool CollectAccessHash { get; set; }
-		readonly Dictionary<Type, Dictionary<long, long>> _accessHashes = new();
-		public IEnumerable<KeyValuePair<long, long>> AllAccessHashesFor<T>() where T : IObject
-			=> _accessHashes.GetValueOrDefault(typeof(T));
-		/// <summary>Retrieve the access_hash associated with this id (for a TL class) if it was collected</summary>
-		/// <remarks>This requires <see cref="CollectAccessHash"/> to be set to <see langword="true"/> first.
-		/// <br/>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_CollectAccessHash.cs">Examples/Program_CollectAccessHash.cs</see> for how to use this</remarks>
-		/// <typeparam name="T">a TL object class. For example User, Channel or Photo</typeparam>
-		public long GetAccessHashFor<T>(long id) where T : IObject
+		public Task<Messages_ChatFull> GetFullChat(InputPeer peer) => peer switch
 		{
-			lock (_accessHashes)
-				return _accessHashes.GetOrCreate(typeof(T)).TryGetValue(id, out var access_hash) ? access_hash : 0;
-		}
-		public void SetAccessHashFor<T>(long id, long access_hash) where T : IObject
-		{
-			lock (_accessHashes)
-				_accessHashes.GetOrCreate(typeof(T))[id] = access_hash;
-		}
-		internal void UpdateAccessHash(object obj, Type type, object access_hash)
-		{
-			if (!CollectAccessHash) return;
-			if (access_hash is not long accessHash) return;
-			if (type.GetField("id") is not FieldInfo idField) return;
-			if (idField.GetValue(obj) is not long id)
-				if (idField.GetValue(obj) is not int idInt) return;
-				else id = idInt;
-			lock (_accessHashes)
-				_accessHashes.GetOrCreate(type)[id] = accessHash;
-		}
+			InputPeerChat chat => this.Messages_GetFullChat(chat.chat_id),
+			InputPeerChannel channel => this.Channels_GetFullChannel(channel),
+			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+		};
+		#endregion
 	}
 }
