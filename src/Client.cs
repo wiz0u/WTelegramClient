@@ -508,12 +508,14 @@ namespace WTelegram
 				if (decrypted_data.Length < 36) // header below+ctorNb
 					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
 				using var reader = new TL.BinaryReader(new MemoryStream(decrypted_data), this);
-				var serverSalt = reader.ReadInt64();            // int64 salt
-				var sessionId = reader.ReadInt64();             // int64 session_id
-				var msgId = _lastRecvMsgId = reader.ReadInt64();// int64 message_id
-				var seqno = reader.ReadInt32();                 // int32 msg_seqno
-				var length = reader.ReadInt32();                // int32 message_data_length
-				var msgStamp = MsgIdToStamp(msgId);
+				var serverSalt = reader.ReadInt64();    // int64 salt
+				var sessionId = reader.ReadInt64();     // int64 session_id
+				var msgId = reader.ReadInt64();         // int64 message_id
+				var seqno = reader.ReadInt32();         // int32 msg_seqno
+				var length = reader.ReadInt32();        // int32 message_data_length
+				if (_lastRecvMsgId == 0) // resync ServerTicksOffset on first message
+					_dcSession.ServerTicksOffset = (msgId >> 32) * 10000000 - DateTime.UtcNow.Ticks + 621355968000000000L;
+				var msgStamp = MsgIdToStamp(_lastRecvMsgId = msgId);
 
 				if (serverSalt != _dcSession.Salt) // salt change happens every 30 min
 				{
@@ -526,8 +528,6 @@ namespace WTelegram
 				if (sessionId != _dcSession.Id) throw new ApplicationException($"Unexpected session ID {sessionId} != {_dcSession.Id}");
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				if ((seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msgId);
-				if ((msgStamp - DateTime.UtcNow).Ticks / TimeSpan.TicksPerSecond is > 30 or < -300)
-					return null;
 #if MTPROTO1
 				if (decrypted_data.Length - 32 - length is < 0 or > 15) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
 				if (!data.AsSpan(8, 16).SequenceEqual(_sha1Recv.ComputeHash(decrypted_data, 0, 32 + length).AsSpan(4)))
@@ -541,6 +541,11 @@ namespace WTelegram
 				_sha256Recv.Initialize();
 #endif
 				var ctorNb = reader.ReadUInt32();
+				if (ctorNb != Layer.BadMsgCtor && (msgStamp - DateTime.UtcNow).Ticks / TimeSpan.TicksPerSecond is > 30 or < -300)
+				{	// msg_id values that belong over 30 seconds in the future or over 300 seconds in the past are to be ignored.
+					Helpers.Log(1, $"{_dcSession.DcID}>Ignoring  0x{ctorNb:X8} because of wrong timestamp    {msgStamp:u} (svc)");
+					return null;
+				}
 				if (ctorNb == Layer.MsgContainerCtor)
 				{
 					Helpers.Log(1, $"{_dcSession.DcID}>Receiving {"MsgContainer",-40} {msgStamp:u} (svc)");
@@ -875,6 +880,13 @@ namespace WTelegram
 					Helpers.Log(logLevel, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
 					switch (badMsgNotification.error_code)
 					{
+						case 16:
+						case 17:
+							_dcSession.LastSentMsgId = 0;
+							var localTime = DateTime.UtcNow;
+							_dcSession.ServerTicksOffset = (_lastRecvMsgId >> 32) * 10000000 - localTime.Ticks + 621355968000000000L;
+							Helpers.Log(1, $"Time offset: {_dcSession.ServerTicksOffset} | Server: {MsgIdToStamp(_lastRecvMsgId).AddTicks(_dcSession.ServerTicksOffset).TimeOfDay} UTC | Local: {localTime.TimeOfDay} UTC");
+							break;
 						case 32: // msg_seqno too low (the server has already received a message with a lower msg_id but with either a higher or an equal and odd seqno)
 						case 33: // msg_seqno too high (similarly, there is a message with a higher msg_id but with either a lower or an equal and odd seqno)
 							if (_dcSession.Seqno <= 1)

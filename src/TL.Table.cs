@@ -12,6 +12,7 @@ namespace TL
 		internal const uint RpcResultCtor = 0xF35C6D01;
 		internal const uint RpcErrorCtor = 0x2144CA19;
 		internal const uint MsgContainerCtor = 0x73F1F8DC;
+		internal const uint BadMsgCtor = 0xA7EFF811;
 
 		internal readonly static Dictionary<uint, Type> Table = new()
 		{
