@@ -14,6 +14,9 @@ stages:
     jobs:
     - job: publish
       steps:
+      - checkout: self
+        persistCredentials: true
+        
       - task: UseDotNet@2
         displayName: 'Use .NET Core sdk'
         inputs:
@@ -36,6 +39,12 @@ stages:
           packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
           nuGetFeedType: 'external'
           publishFeedCredentials: 'nuget.org'
+
+      - script: |
+          git tag $(Build.BuildNumber)
+          git push --tags
+        workingDirectory: $(Build.SourcesDirectory)
+        displayName: Git Tag
 
   - stage: notify
     jobs:

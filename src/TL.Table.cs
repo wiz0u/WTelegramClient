@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 135;					// fetched 27/11/2021 01:12:30
+		public const int Version = 136;					// fetched 30/12/2021 11:11:54
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -127,8 +127,8 @@ namespace TL
 			[0x6592A1A7] = typeof(ChatForbidden),
 			[0x8261AC61] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
-			[0x46A6FFB4] = typeof(ChatFull),
-			[0x56662E2E] = typeof(ChannelFull),
+			[0xD18EE226] = typeof(ChatFull),
+			[0xE13C3D20] = typeof(ChannelFull),
 			[0xC02D4007] = typeof(ChatParticipant),
 			[0xE46BCEE4] = typeof(ChatParticipantCreator),
 			[0xA0933F5B] = typeof(ChatParticipantAdmin),
@@ -137,7 +137,7 @@ namespace TL
 			[0x37C1011C] = null,//ChatPhotoEmpty
 			[0x1C6E1C11] = typeof(ChatPhoto),
 			[0x90A6CA84] = typeof(MessageEmpty),
-			[0x85D6CBE2] = typeof(Message),
+			[0x38116EE0] = typeof(Message),
 			[0x2B085862] = typeof(MessageService),
 			[0x3DED6320] = null,//MessageMediaEmpty
 			[0x695150D7] = typeof(MessageMediaPhoto),
@@ -339,6 +339,7 @@ namespace TL
 			[0x4D712F2E] = typeof(UpdateBotCommands),
 			[0x7063C3DB] = typeof(UpdatePendingJoinRequests),
 			[0x11DFA986] = typeof(UpdateBotChatInviteRequester),
+			[0x154798C3] = typeof(UpdateMessageReactions),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -502,6 +503,7 @@ namespace TL
 			[0xBF0693D4] = typeof(MessageEntityStrike),
 			[0x020DF5D0] = typeof(MessageEntityBlockquote),
 			[0x761E6AF4] = typeof(MessageEntityBankCard),
+			[0x32CA960F] = typeof(MessageEntitySpoiler),
 			[0xEE8C1E86] = null,//InputChannelEmpty
 			[0xF35AEC28] = typeof(InputChannel),
 			[0x5B934F9D] = typeof(InputChannelFromMessage),
@@ -715,6 +717,7 @@ namespace TL
 			[0xAFB6144A] = typeof(ChannelAdminLogEventActionParticipantJoinByRequest),
 			[0xCB2AC766] = typeof(ChannelAdminLogEventActionToggleNoForwards),
 			[0x278F2868] = typeof(ChannelAdminLogEventActionSendMessage),
+			[0x9CF7F76A] = typeof(ChannelAdminLogEventActionChangeAvailableReactions),
 			[0x1FAD68CD] = typeof(ChannelAdminLogEvent),
 			[0xED8AF74D] = typeof(Channels_AdminLogResults),
 			[0xEA107AE4] = typeof(ChannelAdminLogEventsFilter),
@@ -916,7 +919,7 @@ namespace TL
 			[0xE3779861] = typeof(Account_ResetPasswordFailedWait),
 			[0xE9EFFC7D] = typeof(Account_ResetPasswordRequestedWait),
 			[0xE926D63E] = typeof(Account_ResetPasswordOk),
-			[0xD151E19A] = typeof(SponsoredMessage),
+			[0x3A836DF8] = typeof(SponsoredMessage),
 			[0x65A4C7D5] = typeof(Messages_SponsoredMessages),
 			[0xC9B0539F] = typeof(SearchResultsCalendarPeriod),
 			[0x147EE23C] = typeof(Messages_SearchResultsCalendar),
@@ -926,6 +929,13 @@ namespace TL
 			[0x3B6D152E] = typeof(Users_UserFull),
 			[0x6880B94D] = typeof(Messages_PeerSettings),
 			[0xC3A2835F] = typeof(Auth_LoggedOut),
+			[0x6FB250D1] = typeof(ReactionCount),
+			[0x087B6E36] = typeof(MessageReactions),
+			[0x932844FA] = typeof(MessageUserReaction),
+			[0xA366923C] = typeof(Messages_MessageReactionsList),
+			[0x021D7C4B] = typeof(AvailableReaction),
+			[0x9F071957] = null,//Messages_AvailableReactionsNotModified
+			[0x768E3AAD] = typeof(Messages_AvailableReactions),
 			// from TL.Secret:
 			[0xBB718624] = typeof(Layer66.SendMessageUploadRoundAction),
 			[0xE50511D8] = typeof(Layer45.DecryptedMessageMediaWebPage),
@@ -1026,6 +1036,7 @@ namespace TL
 			[typeof(ChannelLocation)]                = 0xBFB5AD8B, //channelLocationEmpty
 			[typeof(Account_Themes)]                 = 0xF41EB622, //account.themesNotModified
 			[typeof(Help_CountriesList)]             = 0x93CC1F32, //help.countriesListNotModified
+			[typeof(Messages_AvailableReactions)]    = 0x9F071957, //messages.availableReactionsNotModified
 			// from TL.Secret:
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 			// The End

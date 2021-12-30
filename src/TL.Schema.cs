@@ -1062,9 +1062,10 @@ namespace TL
 		public abstract string ThemeEmoticon { get; }
 		public abstract int RequestsPending { get; }
 		public abstract long[] RecentRequesters { get; }
+		public abstract string[] AvailableReactions { get; }
 	}
 	/// <summary>Detailed chat info		<para>See <a href="https://corefork.telegram.org/constructor/chatFull"/></para></summary>
-	[TLDef(0x46A6FFB4)]
+	[TLDef(0xD18EE226)]
 	public class ChatFull : ChatFullBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -1097,6 +1098,7 @@ namespace TL
 		[IfFlag(16)] public string theme_emoticon;
 		[IfFlag(17)] public int requests_pending;
 		[IfFlag(17)] public long[] recent_requesters;
+		[IfFlag(18)] public string[] available_reactions;
 
 		[Flags] public enum Flags
 		{
@@ -1124,6 +1126,8 @@ namespace TL
 			has_theme_emoticon = 0x10000,
 			/// <summary>Field <see cref="requests_pending"/> has a value</summary>
 			has_requests_pending = 0x20000,
+			/// <summary>Field <see cref="available_reactions"/> has a value</summary>
+			has_available_reactions = 0x40000,
 		}
 
 		/// <summary>ID of the chat</summary>
@@ -1152,9 +1156,10 @@ namespace TL
 		public override string ThemeEmoticon => theme_emoticon;
 		public override int RequestsPending => requests_pending;
 		public override long[] RecentRequesters => recent_requesters;
+		public override string[] AvailableReactions => available_reactions;
 	}
 	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/constructor/channelFull"/></para></summary>
-	[TLDef(0x56662E2E)]
+	[TLDef(0xE13C3D20)]
 	public class ChannelFull : ChatFullBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -1224,6 +1229,7 @@ namespace TL
 		[IfFlag(28)] public int requests_pending;
 		[IfFlag(28)] public long[] recent_requesters;
 		[IfFlag(29)] public Peer default_send_as;
+		[IfFlag(30)] public string[] available_reactions;
 
 		[Flags] public enum Flags
 		{
@@ -1287,6 +1293,8 @@ namespace TL
 			has_requests_pending = 0x10000000,
 			/// <summary>Field <see cref="default_send_as"/> has a value</summary>
 			has_default_send_as = 0x20000000,
+			/// <summary>Field <see cref="available_reactions"/> has a value</summary>
+			has_available_reactions = 0x40000000,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -1315,6 +1323,7 @@ namespace TL
 		public override string ThemeEmoticon => theme_emoticon;
 		public override int RequestsPending => requests_pending;
 		public override long[] RecentRequesters => recent_requesters;
+		public override string[] AvailableReactions => available_reactions;
 	}
 
 	/// <summary>Details of a group member.		<para>Derived classes: <see cref="ChatParticipant"/>, <see cref="ChatParticipantCreator"/>, <see cref="ChatParticipantAdmin"/></para>		<para>See <a href="https://corefork.telegram.org/type/ChatParticipant"/></para></summary>
@@ -1460,7 +1469,7 @@ namespace TL
 		public override int TtlPeriod => default;
 	}
 	/// <summary>A message		<para>See <a href="https://corefork.telegram.org/constructor/message"/></para></summary>
-	[TLDef(0x85D6CBE2)]
+	[TLDef(0x38116EE0)]
 	public class Message : MessageBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -1499,6 +1508,7 @@ namespace TL
 		[IfFlag(16)] public string post_author;
 		/// <summary>Multiple media messages sent using <a href="https://corefork.telegram.org/method/messages.sendMultiMedia">messages.sendMultiMedia</a> with the same grouped ID indicate an <a href="https://corefork.telegram.org/api/files#albums-grouped-media">album or media group</a></summary>
 		[IfFlag(17)] public long grouped_id;
+		[IfFlag(20)] public MessageReactions reactions;
 		/// <summary>Contains the reason why access to this message must be restricted.</summary>
 		[IfFlag(22)] public RestrictionReason[] restriction_reason;
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
@@ -1542,6 +1552,8 @@ namespace TL
 			from_scheduled = 0x40000,
 			/// <summary>This is a legacy message: it has to be refetched with the new layer</summary>
 			legacy = 0x80000,
+			/// <summary>Field <see cref="reactions"/> has a value</summary>
+			has_reactions = 0x100000,
 			/// <summary>Whether the message should be shown as not modified to the user, even if an edit date is present</summary>
 			edit_hide = 0x200000,
 			/// <summary>Field <see cref="restriction_reason"/> has a value</summary>
@@ -4053,6 +4065,14 @@ namespace TL
 		public ExportedChatInvite invite;
 		public int qts;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateMessageReactions"/></para></summary>
+	[TLDef(0x154798C3)]
+	public class UpdateMessageReactions : Update
+	{
+		public Peer peer;
+		public int msg_id;
+		public MessageReactions reactions;
+	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]
@@ -6218,6 +6238,9 @@ namespace TL
 	/// <summary>Indicates a credit card number		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityBankCard"/></para></summary>
 	[TLDef(0x761E6AF4)]
 	public class MessageEntityBankCard : MessageEntity { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageEntitySpoiler"/></para></summary>
+	[TLDef(0x32CA960F)]
+	public class MessageEntitySpoiler : MessageEntity { }
 
 	/// <summary>Represents a channel		<para>Derived classes: <see cref="InputChannel"/>, <see cref="InputChannelFromMessage"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputChannel"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/inputChannelEmpty">inputChannelEmpty</a></remarks>
@@ -9323,6 +9346,13 @@ namespace TL
 	{
 		public MessageBase message;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionChangeAvailableReactions"/></para></summary>
+	[TLDef(0x9CF7F76A)]
+	public class ChannelAdminLogEventActionChangeAvailableReactions : ChannelAdminLogEventAction
+	{
+		public string[] prev_value;
+		public string[] new_value;
+	}
 
 	/// <summary>Admin log event		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEvent"/></para></summary>
 	[TLDef(0x1FAD68CD)]
@@ -12260,7 +12290,7 @@ namespace TL
 	public class Account_ResetPasswordOk : Account_ResetPasswordResult { }
 
 	/// <summary>A <a href="https://core.telegram.org/api/sponsored-messages">sponsored message</a>.		<para>See <a href="https://corefork.telegram.org/constructor/sponsoredMessage"/></para></summary>
-	[TLDef(0xD151E19A)]
+	[TLDef(0x3A836DF8)]
 	public class SponsoredMessage : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -12268,7 +12298,9 @@ namespace TL
 		/// <summary>Message ID</summary>
 		public byte[] random_id;
 		/// <summary>ID of the sender of the message</summary>
-		public Peer from_id;
+		[IfFlag(3)] public Peer from_id;
+		[IfFlag(4)] public ChatInviteBase chat_invite;
+		[IfFlag(4)] public string chat_invite_hash;
 		[IfFlag(2)] public int channel_post;
 		/// <summary>Parameter for the bot start message if the sponsored chat is a chat with a bot.</summary>
 		[IfFlag(0)] public string start_param;
@@ -12285,6 +12317,10 @@ namespace TL
 			has_entities = 0x2,
 			/// <summary>Field <see cref="channel_post"/> has a value</summary>
 			has_channel_post = 0x4,
+			/// <summary>Field <see cref="from_id"/> has a value</summary>
+			has_from_id = 0x8,
+			/// <summary>Field <see cref="chat_invite"/> has a value</summary>
+			has_chat_invite = 0x10,
 		}
 	}
 
@@ -12400,6 +12436,90 @@ namespace TL
 			/// <summary>Field <see cref="future_auth_token"/> has a value</summary>
 			has_future_auth_token = 0x1,
 		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/reactionCount"/></para></summary>
+	[TLDef(0x6FB250D1)]
+	public class ReactionCount : IObject
+	{
+		public Flags flags;
+		public string reaction;
+		public int count;
+
+		[Flags] public enum Flags
+		{
+			chosen = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageReactions"/></para></summary>
+	[TLDef(0x087B6E36)]
+	public class MessageReactions : IObject
+	{
+		public Flags flags;
+		public ReactionCount[] results;
+		[IfFlag(1)] public MessageUserReaction[] recent_reactons;
+
+		[Flags] public enum Flags
+		{
+			min = 0x1,
+			/// <summary>Field <see cref="recent_reactons"/> has a value</summary>
+			has_recent_reactons = 0x2,
+			can_see_list = 0x4,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageUserReaction"/></para></summary>
+	[TLDef(0x932844FA)]
+	public class MessageUserReaction : IObject
+	{
+		public long user_id;
+		public string reaction;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.messageReactionsList"/></para></summary>
+	[TLDef(0xA366923C)]
+	public class Messages_MessageReactionsList : IObject
+	{
+		public Flags flags;
+		public int count;
+		public MessageUserReaction[] reactions;
+		public Dictionary<long, User> users;
+		[IfFlag(0)] public string next_offset;
+
+		[Flags] public enum Flags
+		{
+			/// <summary>Field <see cref="next_offset"/> has a value</summary>
+			has_next_offset = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/availableReaction"/></para></summary>
+	[TLDef(0x021D7C4B)]
+	public class AvailableReaction : IObject
+	{
+		public Flags flags;
+		public string reaction;
+		public string title;
+		public DocumentBase static_icon;
+		public DocumentBase appear_animation;
+		public DocumentBase select_animation;
+		public DocumentBase activate_animation;
+		public DocumentBase effect_animation;
+
+		[Flags] public enum Flags
+		{
+			inactive = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.availableReactions"/></para></summary>
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.availableReactionsNotModified">messages.availableReactionsNotModified</a></remarks>
+	[TLDef(0x768E3AAD)]
+	public class Messages_AvailableReactions : IObject
+	{
+		public int hash;
+		public AvailableReaction[] reactions;
 	}
 
 	// ---functions---
@@ -13599,10 +13719,10 @@ namespace TL
 		/// <param name="reply_markup">Reply markup for sending bot buttons</param>
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
-		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_SendMessage
 			{
-				flags = (Messages_SendMessage.Flags)((no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_SendMessage.Flags)((no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
 				peer = peer,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				message = message,
@@ -13624,10 +13744,10 @@ namespace TL
 		/// <param name="reply_markup">Reply markup for bot keyboards</param>
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
-		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_SendMedia
 			{
-				flags = (Messages_SendMedia.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_SendMedia.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
 				peer = peer,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				media = media,
@@ -13649,10 +13769,10 @@ namespace TL
 		/// <param name="random_id">Random ID to prevent resending of messages</param>
 		/// <param name="to_peer">Destination peer</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
-		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, DateTime? schedule_date = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_ForwardMessages
 			{
-				flags = (Messages_ForwardMessages.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_ForwardMessages.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
 				from_peer = from_peer,
 				id = id,
 				random_id = random_id,
@@ -14490,10 +14610,10 @@ namespace TL
 		/// <param name="reply_to_msg_id">The message to reply to</param>
 		/// <param name="multi_media">The medias to send</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
-		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, int? reply_to_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, int? reply_to_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
-				flags = (Messages_SendMultiMedia.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_SendMultiMedia.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
 				peer = peer,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				multi_media = multi_media,
@@ -15051,6 +15171,63 @@ namespace TL
 			{
 				peer = peer,
 				send_as = send_as,
+			});
+		/// <summary>Send reaction to message		<para>See <a href="https://corefork.telegram.org/method/messages.sendReaction"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendReaction#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer</param>
+		/// <param name="msg_id">Message ID to react to</param>
+		/// <param name="reaction">Reaction (a UTF8 emoji)</param>
+		public static Task<UpdatesBase> Messages_SendReaction(this Client client, InputPeer peer, int msg_id, string reaction = null)
+			=> client.Invoke(new Messages_SendReaction
+			{
+				flags = (Messages_SendReaction.Flags)(reaction != null ? 0x1 : 0),
+				peer = peer,
+				msg_id = msg_id,
+				reaction = reaction,
+			});
+		/// <summary>Get message reactions		<para>See <a href="https://corefork.telegram.org/method/messages.getMessagesReactions"/> [bots: ✓]</para></summary>
+		/// <param name="peer">Peer</param>
+		/// <param name="id">Message IDs</param>
+		public static Task<UpdatesBase> Messages_GetMessagesReactions(this Client client, InputPeer peer, int[] id)
+			=> client.Invoke(new Messages_GetMessagesReactions
+			{
+				peer = peer,
+				id = id,
+			});
+		/// <summary>Get full message reaction list		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageReactionsList"/> [bots: ✓]</para></summary>
+		/// <param name="peer">Peer</param>
+		/// <param name="id">Message ID</param>
+		/// <param name="reaction">Get only reactions of this type (UTF8 emoji)</param>
+		/// <param name="offset">Offset (typically taken from the <c>next_offset</c> field of the returned <see cref="MessageReactionsList"/>)</param>
+		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
+		public static Task<Messages_MessageReactionsList> Messages_GetMessageReactionsList(this Client client, InputPeer peer, int id, int limit, string reaction = null, string offset = null)
+			=> client.Invoke(new Messages_GetMessageReactionsList
+			{
+				flags = (Messages_GetMessageReactionsList.Flags)((reaction != null ? 0x1 : 0) | (offset != null ? 0x2 : 0)),
+				peer = peer,
+				id = id,
+				reaction = reaction,
+				offset = offset,
+				limit = limit,
+			});
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setChatAvailableReactions"/></para></summary>
+		public static Task<UpdatesBase> Messages_SetChatAvailableReactions(this Client client, InputPeer peer, string[] available_reactions)
+			=> client.Invoke(new Messages_SetChatAvailableReactions
+			{
+				peer = peer,
+				available_reactions = available_reactions,
+			});
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getAvailableReactions"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.availableReactionsNotModified">messages.availableReactionsNotModified</a></returns>
+		public static Task<Messages_AvailableReactions> Messages_GetAvailableReactions(this Client client, int hash)
+			=> client.Invoke(new Messages_GetAvailableReactions
+			{
+				hash = hash,
+			});
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setDefaultReaction"/></para></summary>
+		public static Task<bool> Messages_SetDefaultReaction(this Client client, string reaction)
+			=> client.Invoke(new Messages_SetDefaultReaction
+			{
+				reaction = reaction,
 			});
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
@@ -17414,6 +17591,7 @@ namespace TL.Methods
 			has_schedule_date = 0x400,
 			/// <summary>Field <see cref="send_as"/> has a value</summary>
 			has_send_as = 0x2000,
+			noforwards = 0x4000,
 		}
 	}
 
@@ -17446,6 +17624,7 @@ namespace TL.Methods
 			has_schedule_date = 0x400,
 			/// <summary>Field <see cref="send_as"/> has a value</summary>
 			has_send_as = 0x2000,
+			noforwards = 0x4000,
 		}
 	}
 
@@ -17471,6 +17650,7 @@ namespace TL.Methods
 			drop_media_captions = 0x1000,
 			/// <summary>Field <see cref="send_as"/> has a value</summary>
 			has_send_as = 0x2000,
+			noforwards = 0x4000,
 		}
 	}
 
@@ -18286,6 +18466,7 @@ namespace TL.Methods
 			has_schedule_date = 0x400,
 			/// <summary>Field <see cref="send_as"/> has a value</summary>
 			has_send_as = 0x2000,
+			noforwards = 0x4000,
 		}
 	}
 
@@ -18808,6 +18989,66 @@ namespace TL.Methods
 	{
 		public InputPeer peer;
 		public InputPeer send_as;
+	}
+
+	[TLDef(0x25690CE4)]
+	public class Messages_SendReaction : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int msg_id;
+		[IfFlag(0)] public string reaction;
+
+		[Flags] public enum Flags
+		{
+			/// <summary>Field <see cref="reaction"/> has a value</summary>
+			has_reaction = 0x1,
+		}
+	}
+
+	[TLDef(0x8BBA90E6)]
+	public class Messages_GetMessagesReactions : IMethod<UpdatesBase>
+	{
+		public InputPeer peer;
+		public int[] id;
+	}
+
+	[TLDef(0xE0EE6B77)]
+	public class Messages_GetMessageReactionsList : IMethod<Messages_MessageReactionsList>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int id;
+		[IfFlag(0)] public string reaction;
+		[IfFlag(1)] public string offset;
+		public int limit;
+
+		[Flags] public enum Flags
+		{
+			/// <summary>Field <see cref="reaction"/> has a value</summary>
+			has_reaction = 0x1,
+			/// <summary>Field <see cref="offset"/> has a value</summary>
+			has_offset = 0x2,
+		}
+	}
+
+	[TLDef(0x14050EA6)]
+	public class Messages_SetChatAvailableReactions : IMethod<UpdatesBase>
+	{
+		public InputPeer peer;
+		public string[] available_reactions;
+	}
+
+	[TLDef(0x18DEA0AC)]
+	public class Messages_GetAvailableReactions : IMethod<Messages_AvailableReactions>
+	{
+		public int hash;
+	}
+
+	[TLDef(0xD960C4D4)]
+	public class Messages_SetDefaultReaction : IMethod<bool>
+	{
+		public string reaction;
 	}
 
 	[TLDef(0xEDD4882A)]
