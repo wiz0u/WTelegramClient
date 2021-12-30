@@ -235,11 +235,8 @@ await client.Channels_InviteToChannel((Channel)chat, new[] { user });
 // You may get exception USER_PRIVACY_RESTRICTED if the user has denied the right to be added to a chat
 //          or exception USER_NOT_MUTUAL_CONTACT if the user left the chat previously and you want to add him again
 
-// • Obtain the main invite link for a simple Chat:
-var mcf = await client.Messages_GetFullChat(ChatId);
-// • Obtain the main invite link for a Channel/group:
-var mcf = await client.Channels_GetFullChannel((Channel)chat);
-// extract the invite link and send it to the user:
+// • Obtain the main invite link for the chat, and send it to the user:
+var mcf = await client.GetFullChat(chat);
 var invite = (ChatInviteExported)mcf.full_chat.ExportedInvite;
 await client.SendMessageAsync(user, "Join our group with this link: " + invite.link);
 
@@ -384,4 +381,38 @@ WTelegram.Helpers.Log = (lvl, str) => WTelegramLogs.WriteLine($"{DateTime.Now:yy
 * In an ASP.NET service, you will typically send logs to a `ILogger`:
 ```csharp
 WTelegram.Helpers.Log = (lvl, str) => _logger.Log((LogLevel)lvl, str);
+```
+
+<a name="2FA"></a>
+### Change 2FA password
+```csharp
+const string old_password = "password";     // current password if any
+const string new_password = "new_password"; // or null to disable 2FA
+var accountPassword = await client.Account_GetPassword();
+var password = accountPassword.current_algo == null ? null : await WTelegram.Client.InputCheckPassword(accountPassword, old_password);
+accountPassword.current_algo = null; // makes InputCheckPassword generate a new password
+var new_password_hash = new_password == null ? null : await WTelegram.Client.InputCheckPassword(accountPassword, new_password);
+await client.Account_UpdatePasswordSettings(password, new Account_PasswordInputSettings
+{
+    flags = Account_PasswordInputSettings.Flags.has_new_algo,
+    new_password_hash = new_password_hash?.A,
+    new_algo = accountPassword.new_algo,
+    hint = "new hint",
+}
+```
+
+<a name="reaction"></a>
+<a name="pinned"></a>
+### Send a message reaction on pinned messages
+This code fetches the available reactions in a given chat, and sends the first reaction emoji (usually 👍) on the last 2 pinned messages:
+```csharp
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+await client.LoginUserIfNeeded();
+var chats = await client.Messages_GetAllChats(null);
+var chat = chats.chats[1234567890]; // the chat we want
+var full = await client.GetFullChat(chat);
+var reaction = full.full_chat.AvailableReactions[0]; // choose the first available reaction emoji
+var messages = await client.Messages_Search(chat, null, new InputMessagesFilterPinned(), default, default, 0, 0, 2, 0, 0, 0);
+foreach (var msg in messages.Messages)
+    await client.Messages_SendReaction(chat, msg.ID, reaction);
 ```
