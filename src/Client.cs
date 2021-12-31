@@ -1523,12 +1523,78 @@ namespace WTelegram
 			}
 		}
 
+		public Task<UpdatesBase> AddChatUser(InputPeer peer, InputUserBase user, int fwd_limit = int.MaxValue) => peer switch
+		{
+			InputPeerChat chat => this.Messages_AddChatUser(chat.chat_id, user, fwd_limit),
+			InputPeerChannel channel => this.Channels_InviteToChannel(channel, new[] { user }),
+			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+		};
+
+		public Task<UpdatesBase> DeleteChatUser(InputPeer peer, InputUser user, bool revoke_history = true) => peer switch
+		{
+			InputPeerChat chat => this.Messages_DeleteChatUser(chat.chat_id, user, revoke_history),
+			InputPeerChannel channel => this.Channels_EditBanned(channel, user, new ChatBannedRights { flags = ChatBannedRights.Flags.view_messages }),
+			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+		};
+
+		public Task<UpdatesBase> LeaveChat(InputPeer peer, bool revoke_history = true) => peer switch
+		{
+			InputPeerChat chat => this.Messages_DeleteChatUser(chat.chat_id, InputUser.Self, revoke_history),
+			InputPeerChannel channel => this.Channels_LeaveChannel(channel),
+			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+		};
+
+		public async Task<UpdatesBase> EditChatAdmin(InputPeer peer, InputUserBase user, bool is_admin)
+		{
+			switch (peer)
+			{
+				case InputPeerChat chat:
+					await this.Messages_EditChatAdmin(chat.chat_id, user, is_admin);
+					return new Updates { date = DateTime.UtcNow, users = new(), updates = Array.Empty<Update>(),
+						chats = (await this.Messages_GetChats(new[] { chat.chat_id })).chats };
+				case InputPeerChannel channel:
+					return await this.Channels_EditAdmin(channel, user, 
+						new ChatAdminRights { flags = is_admin ? (ChatAdminRights.Flags)0x8BF : 0 }, null);
+				default:
+					throw new ArgumentException("This method works on Chat & Channel only");
+			}
+		}
+
+		public Task<UpdatesBase> EditChatPhoto(InputPeer peer, InputChatPhotoBase photo) => peer switch
+		{
+			InputPeerChat chat => this.Messages_EditChatPhoto(chat.chat_id, photo),
+			InputPeerChannel channel => this.Channels_EditPhoto(channel, photo),
+			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+		};
+
+		public Task<UpdatesBase> EditChatTitle(InputPeer peer, string title) => peer switch
+		{
+			InputPeerChat chat => this.Messages_EditChatTitle(chat.chat_id, title),
+			InputPeerChannel channel => this.Channels_EditTitle(channel, title),
+			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+		};
+
 		public Task<Messages_ChatFull> GetFullChat(InputPeer peer) => peer switch
 		{
 			InputPeerChat chat => this.Messages_GetFullChat(chat.chat_id),
 			InputPeerChannel channel => this.Channels_GetFullChannel(channel),
 			_ => throw new ArgumentException("This method works on Chat & Channel only"),
 		};
+
+		public async Task<UpdatesBase> DeleteChat(InputPeer peer)
+		{
+			switch (peer)
+			{
+				case InputPeerChat chat:
+					await this.Messages_DeleteChat(chat.chat_id);
+					return new Updates { date = DateTime.UtcNow, users = new(), updates = Array.Empty<Update>(),
+						chats = (await this.Messages_GetChats(new[] { chat.chat_id })).chats };
+				case InputPeerChannel channel:
+					return await this.Channels_DeleteChannel(channel);
+				default:
+					throw new ArgumentException("This method works on Chat & Channel only");
+			}
+		}
 		#endregion
 	}
 }

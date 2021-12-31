@@ -370,7 +370,7 @@ namespace TL
 	// Below TL types are commented "parsed manually" from https://github.com/telegramdesktop/tdesktop/blob/dev/Telegram/Resources/tl/mtproto.tl
 
 	[TLDef(0xF35C6D01)] //rpc_result#f35c6d01 req_msg_id:long result:Object = RpcResult
-	public partial class RpcResult : IObject
+	public class RpcResult : IObject
 	{
 		public long req_msg_id;
 		public object result;
@@ -378,7 +378,7 @@ namespace TL
 
 	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006")]
 	[TLDef(0x5BB8E511)] //message#5bb8e511 msg_id:long seqno:int bytes:int body:Object = Message
-	public partial class _Message
+	public class _Message
 	{
 		public long msg_id;
 		public int seqno;
@@ -387,10 +387,10 @@ namespace TL
 	}
 
 	[TLDef(0x73F1F8DC)] //msg_container#73f1f8dc messages:vector<%Message> = MessageContainer
-	public partial class MsgContainer : IObject { public _Message[] messages; }
+	public class MsgContainer : IObject { public _Message[] messages; }
 	[TLDef(0xE06046B2)] //msg_copy#e06046b2 orig_message:Message = MessageCopy
-	public partial class MsgCopy : IObject { public _Message orig_message; }
+	public class MsgCopy : IObject { public _Message orig_message; }
 
 	[TLDef(0x3072CFA1)] //gzip_packed#3072cfa1 packed_data:bytes = Object
-	public partial class GzipPacked : IObject { public byte[] packed_data; }
+	public class GzipPacked : IObject { public byte[] packed_data; }
 }

@@ -228,10 +228,8 @@ var chat = chats.chats[ChatId];
 ```
 After the above code, once you [have obtained](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash) an `InputUser` or `User`, you can:
 ```csharp
-// • Directly add the user to a simple Chat:
-await client.Messages_AddChatUser(ChatId, user, int.MaxValue);
-// • Directly add the user to a Channel/group:
-await client.Channels_InviteToChannel((Channel)chat, new[] { user });
+// • Directly add the user to a Chat/Channel/group:
+await client.AddChatUser(chat, user);
 // You may get exception USER_PRIVACY_RESTRICTED if the user has denied the right to be added to a chat
 //          or exception USER_NOT_MUTUAL_CONTACT if the user left the chat previously and you want to add him again
 
@@ -247,10 +245,8 @@ await client.SendMessageAsync(user, "Join our group with this link: " + invite.l
 await client.Messages_EditExportedChatInvite(chat, invite.link, revoked: true);
 await client.Messages_DeleteExportedChatInvite(chat, invite.link);
 
-// • Remove the user from a simple Chat:
-await client.Messages_DeleteChatUser(ChatId, user);
-// • Remove the user from a Channel/group:
-await client.Channels_EditBanned((Channel)chat, user, new ChatBannedRights { flags = ChatBannedRights.Flags.view_messages });
+// • Remove the user from a Chat/Channel/Group:
+await client.DeleteChatUser(ChatId, user);
 ```
 
 <a name="history"></a>

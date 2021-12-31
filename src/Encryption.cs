@@ -224,7 +224,7 @@ namespace WTelegram
 		}
 
 		[TLDef(0x7A19CB76)] //RSA_public_key#7a19cb76 n:bytes e:bytes = RSAPublicKey
-		public partial class RSAPublicKey : IObject { public byte[] n, e; }
+		public class RSAPublicKey : IObject { public byte[] n, e; }
 
 		public static void LoadPublicKey(string pem)
 		{
