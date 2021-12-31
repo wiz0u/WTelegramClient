@@ -498,15 +498,7 @@ namespace TL
 				{
 					case '\\': sb.Remove(offset++, 1); break;
 					case '*': ProcessEntity<MessageEntityBold>(); break;
-					case '~':
-						if (offset + 1 < sb.Length && sb[offset + 1] == '~')
-						{
-							sb.Remove(offset, 1);
-							ProcessEntity<MessageEntitySpoiler>();
-						}
-						else
-							ProcessEntity<MessageEntityStrike>();
-						break;
+					case '~': ProcessEntity<MessageEntityStrike>(); break;
 					case '_':
 						if (offset + 1 < sb.Length && sb[offset + 1] == '_')
 						{
@@ -515,6 +507,15 @@ namespace TL
 						}
 						else
 							ProcessEntity<MessageEntityItalic>();
+						break;
+					case '|':
+						if (offset + 1 < sb.Length && sb[offset + 1] == '|')
+						{
+							sb.Remove(offset, 1);
+							ProcessEntity<MessageEntitySpoiler>();
+						}
+						else
+							offset++;
 						break;
 					case '`':
 						if (offset + 2 < sb.Length && sb[offset + 1] == '`' && sb[offset + 2] == '`')
