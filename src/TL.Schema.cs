@@ -4065,12 +4065,15 @@ namespace TL
 		public ExportedChatInvite invite;
 		public int qts;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateMessageReactions"/></para></summary>
+	/// <summary>New message reactions are available		<para>See <a href="https://corefork.telegram.org/constructor/updateMessageReactions"/></para></summary>
 	[TLDef(0x154798C3)]
 	public class UpdateMessageReactions : Update
 	{
+		/// <summary>Peer</summary>
 		public Peer peer;
+		/// <summary>Message ID</summary>
 		public int msg_id;
+		/// <summary>Reactions</summary>
 		public MessageReactions reactions;
 	}
 
@@ -12438,30 +12441,37 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/reactionCount"/></para></summary>
+	/// <summary>Reactions		<para>See <a href="https://corefork.telegram.org/constructor/reactionCount"/></para></summary>
 	[TLDef(0x6FB250D1)]
 	public class ReactionCount : IObject
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Reaction (a UTF8 emoji)</summary>
 		public string reaction;
+		/// <summary>NUmber of users that reacted with this emoji</summary>
 		public int count;
 
 		[Flags] public enum Flags
 		{
+			/// <summary>Whether the current user sent this reaction</summary>
 			chosen = 0x1,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageReactions"/></para></summary>
+	/// <summary>Message reactions		<para>See <a href="https://corefork.telegram.org/constructor/messageReactions"/></para></summary>
 	[TLDef(0x087B6E36)]
 	public class MessageReactions : IObject
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Reactions</summary>
 		public ReactionCount[] results;
 		[IfFlag(1)] public MessageUserReaction[] recent_reactons;
 
 		[Flags] public enum Flags
 		{
+			/// <summary>Similar to <a href="https://corefork.telegram.org/api/min">min</a> objects, used for message reaction constructors that are the same for all users so they don't have the reactions sent by the current user (you can use <a href="https://corefork.telegram.org/method/messages.getMessagesReactions">messages.getMessagesReactions</a> to get the full reaction info).</summary>
 			min = 0x1,
 			/// <summary>Field <see cref="recent_reactons"/> has a value</summary>
 			has_recent_reactons = 0x2,
@@ -12469,11 +12479,13 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageUserReaction"/></para></summary>
+	/// <summary>Message reaction		<para>See <a href="https://corefork.telegram.org/constructor/messageUserReaction"/></para></summary>
 	[TLDef(0x932844FA)]
 	public class MessageUserReaction : IObject
 	{
+		/// <summary>ID of user that reacted this way</summary>
 		public long user_id;
+		/// <summary>Reaction (UTF8 emoji)</summary>
 		public string reaction;
 	}
 
