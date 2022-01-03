@@ -24,6 +24,7 @@
     <PackageTags>Telegram;Client;Api;UserBot;MTProto;TLSharp;OpenTl</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NoWarn>IDE0079;0419;1573;1591</NoWarn>
+    <DefineConstants>TRACE;OBFUSCATION</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

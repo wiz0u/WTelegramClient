@@ -362,6 +362,79 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			return output;
 		}
 
+#if OBFUSCATION
+		internal class AesCtr : IDisposable
+		{
+			readonly ICryptoTransform encryptor;
+			readonly byte[] ivec;
+			byte[] ecount;
+			int num;
+
+			public AesCtr(Aes aes, byte[] key, byte[] iv)
+			{
+				encryptor = aes.CreateEncryptor(key, null);
+				ivec = iv;
+			}
+
+			public void Dispose() => encryptor.Dispose();
+
+			public void EncryptDecrypt(byte[] buffer, int length)
+			{
+				for (int i = 0; i < length; i++)
+				{
+					if (num == 0)
+					{
+						ecount = encryptor.TransformFinalBlock(ivec, 0, 16);
+						for (int n = 15; n >= 0; n--) // increment big-endian counter
+							if (++ivec[n] != 0) break;
+					}
+					buffer[i] ^= ecount[num];
+					num = (num + 1) % 16;
+				}
+			}
+		}
+
+		// see https://core.telegram.org/mtproto/mtproto-transports#transport-obfuscation
+		internal static (AesCtr, AesCtr, byte[]) InitObfuscation(byte[] secret, byte protocolId, int dcId)
+		{
+			byte[] preamble = new byte[64];
+			do
+				RNG.GetBytes(preamble, 0, 58);
+			while (preamble[0] == 0xef ||
+				BinaryPrimitives.ReadUInt32LittleEndian(preamble) is 0x44414548 or 0x54534f50 or 0x20544547 or 0x4954504f or 0x02010316 or 0xdddddddd or 0xeeeeeeee ||
+				BinaryPrimitives.ReadInt32LittleEndian(preamble.AsSpan(4)) == 0);
+			preamble[62] = preamble[56];  preamble[63] = preamble[57];
+			preamble[56] = preamble[57] = preamble[58] = preamble[59] = protocolId;
+			preamble[60] = (byte)dcId; preamble[61] = (byte)(dcId >> 8);
+
+			byte[] recvKey = preamble[8..40], recvIV = preamble[40..56];
+			Array.Reverse(preamble, 8, 48);
+			byte[] sendKey = preamble[8..40], sendIV = preamble[40..56];
+			if (secret != null)
+			{
+				using var sha256 = SHA256.Create();
+				sha256.TransformBlock(sendKey, 0, 32, null, 0);
+				sha256.TransformFinalBlock(secret, 0, 16);
+				sendKey = sha256.Hash;
+				sha256.Initialize();
+				sha256.TransformBlock(recvKey, 0, 32, null, 0);
+				sha256.TransformFinalBlock(secret, 0, 16);
+				recvKey = sha256.Hash;
+			}
+			using var aes = Aes.Create();
+			aes.Mode = CipherMode.ECB;
+			aes.Padding = PaddingMode.None;
+			if (aes.BlockSize != 128) throw new ApplicationException("AES Blocksize is not 16 bytes");
+			var sendCtr = new AesCtr(aes, sendKey, sendIV);
+			var recvCtr = new AesCtr(aes, recvKey, recvIV);
+			var encrypted = (byte[])preamble.Clone();
+			sendCtr.EncryptDecrypt(encrypted, 64);
+			for (int i = 56; i < 64; i++)
+				preamble[i] = encrypted[i];
+			return (sendCtr, recvCtr, preamble);
+		}
+#endif
+
 		internal static async Task<InputCheckPasswordSRP> Check2FA(Account_Password accountPassword, Func<Task<string>> getPassword)
 		{
 			bool newPassword = false;

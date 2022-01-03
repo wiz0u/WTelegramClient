@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using TL;
 using static WTelegram.Encryption;
 
@@ -25,7 +26,7 @@ namespace WTelegram
 		/// <summary>This event will be called when an unsollicited update/message is sent by Telegram servers</summary>
 		/// <remarks>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_ListenUpdate.cs">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
 		public event Action<IObject> Update;
-		public delegate Task<TcpClient> TcpFactory(string address, int port);
+		public delegate Task<TcpClient> TcpFactory(string host, int port);
 		/// <summary>Used to create a TcpClient connected to the given address/port, or throw an exception on failure</summary>
 		public TcpFactory TcpHandler = DefaultTcpHandler;
 		/// <summary>Telegram configuration, obtained at connection time</summary>
@@ -40,6 +41,9 @@ namespace WTelegram
 		public bool IsMainDC => (_dcSession?.DataCenter?.id ?? 0) == _session.MainDC;
 		/// <summary>Has this Client established connection been disconnected?</summary>
 		public bool Disconnected => _tcpClient != null && !(_tcpClient.Client?.Connected ?? false);
+		/// <summary>Url for using a MTProxy. http://t.me/proxy?server=... </summary>
+		public string MTProxyUrl { get; set; }
+
 		/// <summary>Used to indicate progression of file download/upload</summary>
 		/// <param name="totalSize">total size of file in bytes, or 0 if unknown</param>
 		public delegate void ProgressCallback(long transmitted, long totalSize);
@@ -49,7 +53,6 @@ namespace WTelegram
 		private readonly string _apiHash;
 		private readonly Session _session;
 		private Session.DCSession _dcSession;
-		private static readonly byte[] IntermediateHeader = new byte[4] { 0xee, 0xee, 0xee, 0xee };
 		private TcpClient _tcpClient;
 		private NetworkStream _networkStream;
 		private IObject _lastSentMsg;
@@ -75,6 +78,10 @@ namespace WTelegram
 		private readonly SHA256 _sha256 = SHA256.Create();
 		private readonly SHA256 _sha256Recv = SHA256.Create();
 #endif
+#if OBFUSCATION
+		private AesCtr _sendCtr, _recvCtr;
+#endif
+		private bool _paddedMode;
 
 		/// <summary>Welcome to WTelegramClient! 🙂</summary>
 		/// <param name="configProvider">Config callback, is queried for: <b>api_id</b>, <b>api_hash</b>, <b>session_pathname</b></param>
@@ -93,6 +100,7 @@ namespace WTelegram
 
 		private Client(Client cloneOf, Session.DCSession dcSession)
 		{
+			MTProxyUrl = cloneOf.MTProxyUrl;
 			_config = cloneOf._config;
 			_apiId = cloneOf._apiId;
 			_apiHash = cloneOf._apiHash;
@@ -169,6 +177,11 @@ namespace WTelegram
 			_sendSemaphore = new(0);
 			_reactorTask = null;
 			_tcpClient?.Dispose();
+#if OBFUSCATION
+			_sendCtr?.Dispose();
+			_recvCtr?.Dispose();
+#endif
+			_paddedMode = false;
 			_connecting = null;
 			if (resetSessions)
 			{
@@ -210,62 +223,99 @@ namespace WTelegram
 
 		private async Task DoConnectAsync()
 		{
-			var endpoint = _dcSession?.EndPoint ?? Compat.IPEndPoint_Parse(Config("server_address"));
-			Helpers.Log(2, $"Connecting to {endpoint}...");
-			TcpClient tcpClient = null;
-			try
+			IPEndPoint endpoint = null;
+			byte[] preamble, secret = null;
+			int dcId = _dcSession?.DcID ?? 0;
+			if (dcId == 0) dcId = 2;
+			if (MTProxyUrl != null)
 			{
+#if OBFUSCATION
+				if (!IsMainDC) dcId = -dcId;
+				var parms = HttpUtility.ParseQueryString(MTProxyUrl[MTProxyUrl.IndexOf('?')..]);
+				var server = parms["server"];
+				int port = int.Parse(parms["port"]);
+				var str = parms["secret"]; // can be hex or base64
+				secret = str.All("0123456789ABCDEFabcdef".Contains) ? Convert.FromHexString(str) :
+					System.Convert.FromBase64String(str.Replace('_', '/').Replace('-', '+') + new string('=', (2147483644 - str.Length) % 4));
+				if ((secret.Length == 17 && secret[0] == 0xDD) || (secret.Length >= 21 && secret[0] == 0xEE))
+				{
+					_paddedMode = true;
+					secret = secret[1..17];
+				}
+				else if (secret.Length != 16) throw new ArgumentException("Invalid/unsupported secret", nameof(secret));
+				Helpers.Log(2, $"Connecting to DC {dcId} via MTProxy {server}:{port}...");
+				_tcpClient = await TcpHandler(server, port);
+#else
+				throw new Exception("Library was not compiled with OBFUSCATION symbol");
+#endif
+			}
+			else
+			{
+				endpoint = _dcSession?.EndPoint ?? Compat.IPEndPoint_Parse(Config("server_address"));
+				Helpers.Log(2, $"Connecting to {endpoint}...");
+				TcpClient tcpClient = null;
 				try
 				{
-					tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
-				}
-				catch (SocketException ex) // cannot connect to target endpoint, try to find an alternate
-				{
-					Helpers.Log(4, $"SocketException {ex.SocketErrorCode} ({ex.ErrorCode}): {ex.Message}");
-					if (_dcSession?.DataCenter == null) throw;
-					var triedEndpoints = new HashSet<IPEndPoint> { endpoint };
-					if (_session.DcOptions != null)
+					try
 					{
-						var altOptions = _session.DcOptions.Where(dco => dco.id == _dcSession.DataCenter.id && dco.flags != _dcSession.DataCenter.flags
-							&& (dco.flags & (DcOption.Flags.cdn | DcOption.Flags.tcpo_only | DcOption.Flags.media_only)) == 0)
-							.OrderBy(dco => dco.flags);
-						// try alternate addresses for this DC
-						foreach (var dcOption in altOptions)
-						{
-							endpoint = new(IPAddress.Parse(dcOption.ip_address), dcOption.port);
-							if (!triedEndpoints.Add(endpoint)) continue;
-							Helpers.Log(2, $"Connecting to {endpoint}...");
-							try
-							{
-								tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
-								_dcSession.DataCenter = dcOption;
-								break;
-							}
-							catch (SocketException) { }
-						}
-					}
-					if (tcpClient == null)
-					{
-						endpoint = Compat.IPEndPoint_Parse(Config("server_address")); // re-ask callback for an address
-						if (!triedEndpoints.Add(endpoint)) throw;
-						_dcSession.Client = null;
-						// is it address for a known DCSession?
-						_dcSession = _session.DCSessions.Values.FirstOrDefault(dcs => dcs.EndPoint.Equals(endpoint));
-						_dcSession ??= new() { Id = Helpers.RandomLong() };
-						_dcSession.Client = this;
-						Helpers.Log(2, $"Connecting to {endpoint}...");
 						tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
 					}
+					catch (SocketException ex) // cannot connect to target endpoint, try to find an alternate
+					{
+						Helpers.Log(4, $"SocketException {ex.SocketErrorCode} ({ex.ErrorCode}): {ex.Message}");
+						if (_dcSession?.DataCenter == null) throw;
+						var triedEndpoints = new HashSet<IPEndPoint> { endpoint };
+						if (_session.DcOptions != null)
+						{
+							var altOptions = _session.DcOptions.Where(dco => dco.id == _dcSession.DataCenter.id && dco.flags != _dcSession.DataCenter.flags
+								&& (dco.flags & (DcOption.Flags.cdn | DcOption.Flags.tcpo_only | DcOption.Flags.media_only)) == 0)
+								.OrderBy(dco => dco.flags);
+							// try alternate addresses for this DC
+							foreach (var dcOption in altOptions)
+							{
+								endpoint = new(IPAddress.Parse(dcOption.ip_address), dcOption.port);
+								if (!triedEndpoints.Add(endpoint)) continue;
+								Helpers.Log(2, $"Connecting to {endpoint}...");
+								try
+								{
+									tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
+									_dcSession.DataCenter = dcOption;
+									break;
+								}
+								catch (SocketException) { }
+							}
+						}
+						if (tcpClient == null)
+						{
+							endpoint = Compat.IPEndPoint_Parse(Config("server_address")); // re-ask callback for an address
+							if (!triedEndpoints.Add(endpoint)) throw;
+							_dcSession.Client = null;
+							// is it address for a known DCSession?
+							_dcSession = _session.DCSessions.Values.FirstOrDefault(dcs => dcs.EndPoint.Equals(endpoint));
+							_dcSession ??= new() { Id = Helpers.RandomLong() };
+							_dcSession.Client = this;
+							Helpers.Log(2, $"Connecting to {endpoint}...");
+							tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
+						}
+					}
 				}
+				catch (Exception)
+				{
+					tcpClient?.Dispose();
+					throw;
+				}
+				_tcpClient = tcpClient;
 			}
-			catch (Exception)
-			{
-				tcpClient?.Dispose();
-				throw;
-			}
-			_tcpClient = tcpClient;
-			_networkStream = tcpClient.GetStream();
-			await _networkStream.WriteAsync(IntermediateHeader, 0, 4);
+			_networkStream = _tcpClient.GetStream();
+
+			byte protocolId = (byte)(_paddedMode ? 0xDD : 0xEE);
+#if OBFUSCATION
+			(_sendCtr, _recvCtr, preamble) = InitObfuscation(secret, protocolId, dcId);
+#else
+			preamble = new byte[] { protocolId, protocolId, protocolId, protocolId };
+#endif
+			await _networkStream.WriteAsync(preamble, 0, preamble.Length);
+
 			_cts = new();
 			_saltChangeCounter = 0;
 			_reactorTask = Reactor(_networkStream, _cts);
@@ -294,8 +344,8 @@ namespace WTelegram
 				if (_dcSession.DataCenter == null)
 				{
 					_dcSession.DataCenter = _session.DcOptions.Where(dc => dc.id == TLConfig.this_dc)
-						.OrderByDescending(dc => dc.ip_address == endpoint.Address.ToString())
-						.ThenByDescending(dc => dc.port == endpoint.Port).First();
+						.OrderByDescending(dc => dc.ip_address == endpoint?.Address.ToString())
+						.ThenByDescending(dc => dc.port == endpoint?.Port).First();
 					_session.DCSessions[TLConfig.this_dc] = _dcSession;
 				}
 				if (_session.MainDC == 0) _session.MainDC = TLConfig.this_dc;
@@ -406,6 +456,9 @@ namespace WTelegram
 				{
 					if (await FullReadAsync(stream, data, 4, cts.Token) != 4)
 						throw new ApplicationException(ConnectionShutDown);
+#if OBFUSCATION
+					_recvCtr.EncryptDecrypt(data, 4);
+#endif
 					int payloadLen = BinaryPrimitives.ReadInt32LittleEndian(data);
 					if (payloadLen > data.Length)
 						data = new byte[payloadLen];
@@ -413,7 +466,9 @@ namespace WTelegram
 						data = new byte[Math.Max(payloadLen, MinBufferSize)];
 					if (await FullReadAsync(stream, data, payloadLen, cts.Token) != payloadLen)
 						throw new ApplicationException("Could not read frame data : Connection shut down");
-
+#if OBFUSCATION
+					_recvCtr.EncryptDecrypt(data, payloadLen);
+#endif
 					obj = ReadFrame(data, payloadLen);
 				}
 				catch (Exception ex) // an exception in RecvAsync is always fatal
@@ -492,7 +547,9 @@ namespace WTelegram
 				long msgId = _lastRecvMsgId = reader.ReadInt64();
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				int length = reader.ReadInt32();
-				if (length != dataLen - 20) throw new ApplicationException($"Unexpected unencrypted length {length} != {dataLen - 20}");
+				dataLen -= 20;
+				if (length > dataLen || length < dataLen - (_paddedMode ? 15 : 0))
+					throw new ApplicationException($"Unexpected unencrypted length {length} != {dataLen}");
 
 				var obj = reader.ReadTLObject();
 				Helpers.Log(1, $"{_dcSession.DcID}>Receiving {obj.GetType().Name,-40} {MsgIdToStamp(msgId):u} clear{((msgId & 2) == 0 ? "" : " NAR")}");
@@ -503,7 +560,7 @@ namespace WTelegram
 #if MTPROTO1
 				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, dataLen - 24), false, _dcSession.AuthKey, data, 8, _sha1Recv);
 #else
-				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, dataLen - 24), false, _dcSession.AuthKey, data, 8, _sha256Recv);
+				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, (dataLen - 24) & ~0xF), false, _dcSession.AuthKey, data, 8, _sha256Recv);
 #endif
 				if (decrypted_data.Length < 36) // header below+ctorNb
 					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
@@ -537,7 +594,7 @@ namespace WTelegram
 				_sha256Recv.TransformBlock(_dcSession.AuthKey, 96, 32, null, 0);
 				_sha256Recv.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
 				if (!data.AsSpan(8, 16).SequenceEqual(_sha256Recv.Hash.AsSpan(8, 16)))
-					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
+					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA256");
 				_sha256Recv.Initialize();
 #endif
 				var ctorNb = reader.ReadUInt32();
@@ -652,12 +709,19 @@ namespace WTelegram
 					writer.Write(msgKeyLarge, msgKeyOffset, 16);	// int128 msg_key
 					writer.Write(encrypted_data);					// bytes encrypted_data
 				}
+				if (_paddedMode) // Padded intermediate mode => append random padding
+				{
+					var padding = new byte[_random.Next(16)];
+					RNG.GetBytes(padding);
+					writer.Write(padding);
+				}
 				var buffer = memStream.GetBuffer();
 				int frameLength = (int)memStream.Length;
 				BinaryPrimitives.WriteInt32LittleEndian(buffer, frameLength - 4); // patch payload_len with correct value
-				//TODO: support Transport obfuscation?
-
-				await _networkStream.WriteAsync(memStream.GetBuffer(), 0, frameLength);
+#if OBFUSCATION
+				_sendCtr.EncryptDecrypt(buffer, frameLength);
+#endif
+				await _networkStream.WriteAsync(buffer, 0, frameLength);
 				_lastSentMsg = msg;
 			}
 			finally
