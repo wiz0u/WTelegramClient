@@ -335,7 +335,7 @@ See [Examples/Program_CollectAccessHash.cs](Examples/Program_CollectAccessHash.c
 
 <a name="proxy"></a>
 ### Use a proxy to connect to Telegram
-This can be done using the `client.TcpHandler` delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/):
+SOCKS/HTTP proxies can be used through the `client.TcpHandler` delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/):
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 client.TcpHandler = async (address, port) =>
@@ -344,7 +344,6 @@ client.TcpHandler = async (address, port) =>
     return proxy.CreateConnection(address, port);
 };
 var user = await client.LoginUserIfNeeded();
-Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name}");
 ```
 or with [xNetStandard](https://www.nuget.org/packages/xNetStandard/):
 ```csharp
@@ -354,6 +353,15 @@ client.TcpHandler = async (address, port) =>
     return proxy.CreateConnection(address, port);
 };
 ```
+<a name="mtproxy"></a>
+MTProxy (MTProto proxy) can be used to prevent ISP blocks, through the `client.MTProxyUrl` property:
+```csharp
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+client.MTProxyUrl = "http://t.me/proxy?server=...&port=...&secret=...";
+var user = await client.LoginUserIfNeeded();
+```
+*Note: WTelegramClient always uses transport obfuscation when connecting to Telegram servers, even without MTProxy*
+
 
 <a name="logging"></a>
 ### Change logging settings
