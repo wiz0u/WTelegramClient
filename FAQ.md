@@ -163,8 +163,9 @@ or simply use a debugger: Place a breakpoint after the Messages_GetAllChats call
 
 Here is a list of common issues and how to fix them so that your program work correctly:
 1) Are you using the Nuget package or the library source code?  
-It is not recommended to copy/compile the source code of the library for a normal usage.  
-When built in DEBUG mode, the source code connects to Telegram test servers. So you can either:
+It is not recommended to copy/compile the source code of the library for a normal usage.
+When built in DEBUG mode, the source code connects to Telegram test servers (see also [FAQ #6](#wrong-server)).  
+So you can either:
     - **Recommended:** Use the [official Nuget package](https://www.nuget.org/packages/WTelegramClient) or the [private nuget feed of development builds](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
     - Build your code in RELEASE mode
     - Modify your config callback to reply to "server_address" with the IP address of Telegram production servers (as found on your API development tools)

@@ -27,7 +27,8 @@ Then it will attempt to sign-in as a user for which you must enter the **phone_n
 
 If the verification succeeds but the phone number is unknown to Telegram, the user might be prompted to sign-up (accepting the Terms of Service) and enter their **first_name** and **last_name**.
 
-And that's it, you now have access to the [full range of Telegram services](https://corefork.telegram.org/methods), mainly through calls to `await client.Some_TL_Method(...)`
+And that's it, you now have access to the **[full range of Telegram Client APIs](https://corefork.telegram.org/methods)**. 
+All those API methods are available *(with an underscore in the method name, instead of a dot)*, like this: `await client.Method_Name(...)`
 
 # Saved session
 If you run this program again, you will notice that only **api_id** and **api_hash** are requested, the other prompts are gone and you are automatically logged-on and ready to go.
