@@ -8298,7 +8298,7 @@ namespace TL
 	}
 	/// <summary>Remote document		<para>See <a href="https://corefork.telegram.org/constructor/webDocument"/></para></summary>
 	[TLDef(0x1C570ED1)]
-	public class WebDocument : WebDocumentBase
+	public partial class WebDocument : WebDocumentBase
 	{
 		/// <summary>Document URL</summary>
 		public string url;

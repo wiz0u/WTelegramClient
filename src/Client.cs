@@ -116,8 +116,8 @@ namespace WTelegram
 		public static string DefaultConfig(string what) => what switch
 		{
 			"session_pathname" => Path.Combine(
-				Path.GetDirectoryName(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar))),
-				"WTelegram.session"),
+				Path.GetDirectoryName(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar)))
+				?? AppDomain.CurrentDomain.BaseDirectory, "WTelegram.session"),
 #if DEBUG
 			"server_address" => "149.154.167.40:443",
 #else

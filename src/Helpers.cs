@@ -14,9 +14,6 @@ namespace WTelegram
 		/// <summary>For serializing indented Json with fields included</summary>
 		public static readonly JsonSerializerOptions JsonOptions = new() { IncludeFields = true, WriteIndented = true, IgnoreReadOnlyProperties = true };
 
-		public static V GetOrCreate<K, V>(this Dictionary<K, V> dictionary, K key) where V : new()
-			=> dictionary.TryGetValue(key, out V value) ? value : dictionary[key] = new V();
-
 		private static readonly ConsoleColor[] LogLevelToColor = new[] { ConsoleColor.DarkGray, ConsoleColor.DarkCyan, ConsoleColor.Cyan,
 			ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.DarkBlue };
 		private static void DefaultLogger(int level, string message)
@@ -25,6 +22,9 @@ namespace WTelegram
 			Console.WriteLine(message);
 			Console.ResetColor();
 		}
+
+		public static V GetOrCreate<K, V>(this Dictionary<K, V> dictionary, K key) where V : new()
+			=> dictionary.TryGetValue(key, out V value) ? value : dictionary[key] = new V();
 
 		/// <summary>Get a cryptographic random 64-bit value</summary>
 		public static long RandomLong()
@@ -42,11 +42,11 @@ namespace WTelegram
 
 		internal static byte[] ToBigEndian(ulong value) // variable-size buffer
 		{
-			int i;
-			var temp = value;
-			for (i = 1; (temp >>= 8) != 0; i++) ;
+			int i = 1;
+			for (ulong temp = value; (temp >>= 8) != 0; ) i++;
 			var result = new byte[i];
-			while (--i >= 0) { result[i] = (byte)value; value >>= 8; }
+			for (; --i >= 0; value >>= 8)
+				result[i] = (byte)value;
 			return result;
 		}
 

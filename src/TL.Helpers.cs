@@ -257,6 +257,52 @@ namespace TL
 	partial class Updates_DifferenceSlice		{ public override Updates_State State => intermediate_state; }
 	partial class Updates_DifferenceTooLong		{ public override Updates_State State => null; }
 
+	partial class UpdatesBase
+	{
+		public abstract Update[] UpdateList { get; }
+		public virtual Dictionary<long, User> Users => NoUsers;
+		public virtual Dictionary<long, ChatBase> Chats => NoChats;
+		private static readonly Dictionary<long, User> NoUsers = new();
+		private static readonly Dictionary<long, ChatBase> NoChats = new();
+	}
+	partial class UpdatesCombined
+	{
+		public override Update[] UpdateList => updates;
+		public override Dictionary<long, User> Users => users;
+		public override Dictionary<long, ChatBase> Chats => chats;
+	}
+	partial class Updates
+	{
+		public override Update[] UpdateList => updates;
+		public override Dictionary<long, User> Users => users;
+		public override Dictionary<long, ChatBase> Chats => chats;
+	}
+	partial class UpdatesTooLong			{ public override Update[] UpdateList => Array.Empty<Update>(); }
+	partial class UpdateShort				{ public override Update[] UpdateList => new[] { update }; }
+	partial class UpdateShortSentMessage	{ public override Update[] UpdateList => Array.Empty<Update>(); }
+	partial class UpdateShortMessage		{ public override Update[] UpdateList => new[] { new UpdateNewMessage
+	{
+		message = new Message
+		{
+			flags = (Message.Flags)flags | Message.Flags.has_from_id, id = id, date = date,
+			message = message, entities = entities, reply_to = reply_to,
+			from_id = new PeerUser { user_id = user_id },
+			peer_id = new PeerUser { user_id = user_id },
+			fwd_from = fwd_from, via_bot_id = via_bot_id, ttl_period = ttl_period
+		}, pts = pts, pts_count = pts_count
+	} }; }
+	partial class UpdateShortChatMessage { public override Update[] UpdateList => new[] { new UpdateNewMessage
+	{
+		message = new Message
+		{
+			flags = (Message.Flags)flags | Message.Flags.has_from_id, id = id, date = date,
+			message = message, entities = entities, reply_to = reply_to,
+			from_id = new PeerUser { user_id = from_id },
+			peer_id = new PeerChat { chat_id = chat_id },
+			fwd_from = fwd_from, via_bot_id = via_bot_id, ttl_period = ttl_period
+		}, pts = pts, pts_count = pts_count
+	} }; }
+
 	partial class EncryptedFile
 	{
 		public static implicit operator InputEncryptedFile(EncryptedFile file) => file == null ? null : new InputEncryptedFile { id = file.id, access_hash = file.access_hash };
@@ -365,53 +411,9 @@ namespace TL
 	partial class ChannelParticipantBanned	{ public override long UserID => peer is PeerUser pu ? pu.user_id : 0; }
 	partial class ChannelParticipantLeft	{ public override long UserID => peer is PeerUser pu ? pu.user_id : 0; }
 
-	partial class UpdatesBase
-	{
-		public abstract Update[] UpdateList { get; }
-		public virtual Dictionary<long, User> Users => NoUsers;
-		public virtual Dictionary<long, ChatBase> Chats => NoChats;
-		private static readonly Dictionary<long, User> NoUsers = new();
-		private static readonly Dictionary<long, ChatBase> NoChats = new();
-	}
-	partial class UpdatesCombined
-	{
-		public override Update[] UpdateList => updates;
-		public override Dictionary<long, User> Users => users;
-		public override Dictionary<long, ChatBase> Chats => chats;
-	}
-	partial class Updates
-	{
-		public override Update[] UpdateList => updates;
-		public override Dictionary<long, User> Users => users;
-		public override Dictionary<long, ChatBase> Chats => chats;
-	}
-	partial class UpdatesTooLong			{ public override Update[] UpdateList => Array.Empty<Update>(); }
-	partial class UpdateShort				{ public override Update[] UpdateList => new[] { update }; }
-	partial class UpdateShortSentMessage	{ public override Update[] UpdateList => Array.Empty<Update>(); }
-	partial class UpdateShortMessage		{ public override Update[] UpdateList => new[] { new UpdateNewMessage
-	{
-		message = new Message
-		{
-			flags = (Message.Flags)flags | Message.Flags.has_from_id, id = id, date = date,
-			message = message, entities = entities, reply_to = reply_to,
-			from_id = new PeerUser { user_id = user_id },
-			peer_id = new PeerUser { user_id = user_id },
-			fwd_from = fwd_from, via_bot_id = via_bot_id, ttl_period = ttl_period
-		}, pts = pts, pts_count = pts_count
-	} }; }
-	partial class UpdateShortChatMessage { public override Update[] UpdateList => new[] { new UpdateNewMessage
-	{
-		message = new Message
-		{
-			flags = (Message.Flags)flags | Message.Flags.has_from_id, id = id, date = date,
-			message = message, entities = entities, reply_to = reply_to,
-			from_id = new PeerUser { user_id = from_id },
-			peer_id = new PeerChat { chat_id = chat_id },
-			fwd_from = fwd_from, via_bot_id = via_bot_id, ttl_period = ttl_period
-		}, pts = pts, pts_count = pts_count
-	} }; }
-
 	partial class Messages_PeerDialogs { public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer.UserOrChat(users, chats); }
+
+	partial class WebDocument { public static implicit operator InputWebFileLocation(WebDocument doc) => new() { url = doc.url, access_hash = doc.access_hash }; }
 
 	partial class SecureFile
 	{
