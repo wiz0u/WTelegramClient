@@ -23,9 +23,9 @@ static async Task Main(string[] _)
 ```
 When run, this will prompt you interactively for your App **api_id** and **api_hash** (that you obtain through Telegram's [API development tools](https://my.telegram.org/apps) page) and try to connect to Telegram servers.
 
-Then it will attempt to sign-in as a user for which you must enter the **phone_number** and the **verification_code** that will be sent to this user (for example through SMS or another Telegram client app the user is connected to).
+Then it will attempt to sign-in *(login)* as a user for which you must enter the **phone_number** and the **verification_code** that will be sent to this user (for example through SMS or another Telegram client app the user is connected to).
 
-If the verification succeeds but the phone number is unknown to Telegram, the user might be prompted to sign-up (accepting the Terms of Service) and enter their **first_name** and **last_name**.
+If the verification succeeds but the phone number is unknown to Telegram, the user might be prompted to sign-up *(register their account by accepting the Terms of Service)* and provide their **first_name** and **last_name**.
 
 And that's it, you now have access to the **[full range of Telegram Client APIs](https://corefork.telegram.org/methods)**. 
 All those API methods are available *(with an underscore in the method name, instead of a dot)*, like this: `await client.Method_Name(...)`

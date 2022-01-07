@@ -224,8 +224,7 @@ var participants = await client.Channels_GetAllParticipants(channel);
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats(null);
-const long ChatId = 1234567890; // the target chat
-var chat = chats.chats[ChatId];
+var chat = chats.chats[1234567890]; // the target chat
 ```
 After the above code, once you [have obtained](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash) an `InputUser` or `User`, you can:
 ```csharp
@@ -247,7 +246,7 @@ await client.Messages_EditExportedChatInvite(chat, invite.link, revoked: true);
 await client.Messages_DeleteExportedChatInvite(chat, invite.link);
 
 // • Remove the user from a Chat/Channel/Group:
-await client.DeleteChatUser(ChatId, user);
+await client.DeleteChatUser(chat, user);
 ```
 
 <a name="history"></a>
