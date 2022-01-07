@@ -41,6 +41,7 @@ namespace WTelegram
 		private readonly SHA256 _sha256 = SHA256.Create();
 		private string _pathname;
 		private byte[] _apiHash;	// used as AES key for encryption of session file
+		private static readonly Aes aes = Aes.Create();
 
 		internal static Session LoadOrCreate(string pathname, byte[] apiHash)
 		{
@@ -67,7 +68,6 @@ namespace WTelegram
 		{
 			var input = File.ReadAllBytes(pathname);
 			using var sha256 = SHA256.Create();
-			using var aes = Aes.Create();
 			using var decryptor = aes.CreateDecryptor(apiHash, input[0..16]);
 			var utf8Json = decryptor.TransformFinalBlock(input, 16, input.Length - 16);
 			if (!sha256.ComputeHash(utf8Json, 32, utf8Json.Length - 32).SequenceEqual(utf8Json[0..32]))
@@ -81,7 +81,6 @@ namespace WTelegram
 			var finalBlock = new byte[16];
 			var output = new byte[(16 + 32 + utf8Json.Length + 16) & ~15];
 			Encryption.RNG.GetBytes(output, 0, 16);
-			using var aes = Aes.Create();
 			using var encryptor = aes.CreateEncryptor(_apiHash, output[0..16]);
 			encryptor.TransformBlock(_sha256.ComputeHash(utf8Json), 0, 32, output, 16);
 			encryptor.TransformBlock(utf8Json, 0, utf8Json.Length & ~15, output, 48);

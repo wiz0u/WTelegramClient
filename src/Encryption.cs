@@ -16,6 +16,14 @@ namespace WTelegram
 	{
 		internal static readonly RNGCryptoServiceProvider RNG = new();
 		private static readonly Dictionary<long, RSAPublicKey> PublicKeys = new();
+		private static readonly Aes AesECB = Aes.Create();
+
+		static Encryption()
+		{
+			AesECB.Mode = CipherMode.ECB;
+			AesECB.Padding = PaddingMode.Zeros;
+			if (AesECB.BlockSize != 128) throw new ApplicationException("AES Blocksize is not 16 bytes");
+		}
 
 		internal static async Task CreateAuthorizationKey(Client client, Session.DCSession session)
 		{
@@ -332,31 +340,25 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 
 		private static byte[] AES_IGE_EncryptDecrypt(Span<byte> input, byte[] aes_key, byte[] aes_iv, bool encrypt)
 		{
-			using var aes = Aes.Create();
-			aes.Mode = CipherMode.ECB;
-			aes.Padding = PaddingMode.Zeros;
-			if (aes.BlockSize != 128) throw new ApplicationException("AES Blocksize is not 16 bytes");
 			if (input.Length % 16 != 0) throw new ApplicationException("intput size not divisible by 16");
 
 			// code adapted from PHP implementation found at https://mgp25.com/AESIGE/
 			var output = new byte[input.Length];
 			var xPrev = aes_iv.AsSpan(encrypt ? 16 : 0, 16);
 			var yPrev = aes_iv.AsSpan(encrypt ? 0 : 16, 16);
-			var aesCrypto = encrypt ? aes.CreateEncryptor(aes_key, null) : aes.CreateDecryptor(aes_key, null);
+			var aesCrypto = encrypt ? AesECB.CreateEncryptor(aes_key, null) : AesECB.CreateDecryptor(aes_key, null);
 			using (aesCrypto)
 			{
 				byte[] yXOR = new byte[16];
 				for (int i = 0; i < input.Length; i += 16)
 				{
-					var x = input.Slice(i, 16);
-					var y = output.AsSpan(i, 16);
 					for (int j = 0; j < 16; j++)
-						yXOR[j] = (byte)(x[j] ^ yPrev[j]);
-					var yFinal = aesCrypto.TransformFinalBlock(yXOR, 0, 16);
+						yXOR[j] = (byte)(input[i + j] ^ yPrev[j]);
+					aesCrypto.TransformBlock(yXOR, 0, 16, output, i);
 					for (int j = 0; j < 16; j++)
-						y[j] = (byte)(yFinal[j] ^ xPrev[j]);
-					xPrev = x;
-					yPrev = y;
+						output[i + j] ^= xPrev[j];
+					xPrev = input.Slice(i, 16);
+					yPrev = output.AsSpan(i, 16);
 				}
 			}
 			return output;
@@ -367,12 +369,12 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 		{
 			readonly ICryptoTransform encryptor;
 			readonly byte[] ivec;
-			byte[] ecount;
+			readonly byte[] ecount = new byte[16];
 			int num;
 
-			public AesCtr(Aes aes, byte[] key, byte[] iv)
+			public AesCtr(byte[] key, byte[] iv)
 			{
-				encryptor = aes.CreateEncryptor(key, null);
+				encryptor = AesECB.CreateEncryptor(key, null);
 				ivec = iv;
 			}
 
@@ -384,7 +386,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 				{
 					if (num == 0)
 					{
-						ecount = encryptor.TransformFinalBlock(ivec, 0, 16);
+						encryptor.TransformBlock(ivec, 0, 16, ecount, 0);
 						for (int n = 15; n >= 0; n--) // increment big-endian counter
 							if (++ivec[n] != 0) break;
 					}
@@ -421,12 +423,8 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 				sha256.TransformFinalBlock(secret, 0, 16);
 				recvKey = sha256.Hash;
 			}
-			using var aes = Aes.Create();
-			aes.Mode = CipherMode.ECB;
-			aes.Padding = PaddingMode.None;
-			if (aes.BlockSize != 128) throw new ApplicationException("AES Blocksize is not 16 bytes");
-			var sendCtr = new AesCtr(aes, sendKey, sendIV);
-			var recvCtr = new AesCtr(aes, recvKey, recvIV);
+			var sendCtr = new AesCtr(sendKey, sendIV);
+			var recvCtr = new AesCtr(recvKey, recvIV);
 			var encrypted = (byte[])preamble.Clone();
 			sendCtr.EncryptDecrypt(encrypted, 64);
 			for (int i = 56; i < 64; i++)
