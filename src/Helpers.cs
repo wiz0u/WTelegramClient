@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WTelegram
 {
@@ -38,6 +40,19 @@ namespace WTelegram
 			Encryption.RNG.GetBytes(span);
 			return BitConverter.ToInt64(span, 0);
 #endif
+		}
+
+		public static async Task<int> FullReadAsync(this Stream stream, byte[] buffer, int length, CancellationToken ct)
+		{
+			for (int offset = 0; offset < length;)
+			{
+#pragma warning disable CA1835
+				var read = await stream.ReadAsync(buffer, offset, length - offset, ct);
+#pragma warning restore CA1835
+				if (read == 0) return offset;
+				offset += read;
+			}
+			return length;
 		}
 
 		internal static byte[] ToBigEndian(ulong value) // variable-size buffer

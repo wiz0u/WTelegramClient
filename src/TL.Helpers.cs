@@ -358,8 +358,10 @@ namespace TL
 	partial class Contacts_ResolvedPeer
 	{
 		public static implicit operator InputPeer(Contacts_ResolvedPeer resolved) => resolved.UserOrChat.ToInputPeer();
+		/// <returns>A <see cref="TL.User"/>, or <see langword="null"/> if the username was for a channel</returns>
 		public User User => peer is PeerUser pu ? users[pu.user_id] : null;
-		public ChatBase Chat => peer is PeerChat or PeerChannel ? chats[peer.ID] : null;
+		/// <returns>A <see cref="Channel"/> or <see cref="ChannelForbidden"/>, or <see langword="null"/> if the username was for a user</returns>
+		public ChatBase Chat => peer is PeerChannel or PeerChat ? chats[peer.ID] : null;
 	}
 
 	partial class Updates_ChannelDifferenceBase

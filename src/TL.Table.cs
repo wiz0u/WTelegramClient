@@ -1,6 +1,7 @@
-﻿// This file is generated automatically using the Generator class
+﻿// This file is generated automatically
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace TL
 {
@@ -14,7 +15,8 @@ namespace TL
 		internal const uint MsgContainerCtor = 0x73F1F8DC;
 		internal const uint BadMsgCtor = 0xA7EFF811;
 
-		internal readonly static Dictionary<uint, Type> Table = new()
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public readonly static Dictionary<uint, Type> Table = new()
 		{
 			[0xF35C6D01] = typeof(RpcResult),
 			[0x5BB8E511] = typeof(_Message),

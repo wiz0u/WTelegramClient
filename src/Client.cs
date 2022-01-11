@@ -54,7 +54,7 @@ namespace WTelegram
 		private readonly Session _session;
 		private Session.DCSession _dcSession;
 		private TcpClient _tcpClient;
-		private NetworkStream _networkStream;
+		private Stream _networkStream;
 		private IObject _lastSentMsg;
 		private long _lastRecvMsgId;
 		private readonly List<long> _msgsToAck = new();
@@ -223,6 +223,7 @@ namespace WTelegram
 
 		private async Task DoConnectAsync()
 		{
+			_cts = new();
 			IPEndPoint endpoint = null;
 			byte[] preamble, secret = null;
 			int dcId = _dcSession?.DcID ?? 0;
@@ -235,9 +236,10 @@ namespace WTelegram
 				var server = parms["server"];
 				int port = int.Parse(parms["port"]);
 				var str = parms["secret"]; // can be hex or base64
-				secret = str.All("0123456789ABCDEFabcdef".Contains) ? Convert.FromHexString(str) :
+				var secretBytes = secret = str.All("0123456789ABCDEFabcdef".Contains) ? Convert.FromHexString(str) :
 					System.Convert.FromBase64String(str.Replace('_', '/').Replace('-', '+') + new string('=', (2147483644 - str.Length) % 4));
-				if ((secret.Length == 17 && secret[0] == 0xDD) || (secret.Length >= 21 && secret[0] == 0xEE))
+				var tlsMode = secret.Length >= 21 && secret[0] == 0xEE;
+				if (tlsMode || (secret.Length == 17 && secret[0] == 0xDD))
 				{
 					_paddedMode = true;
 					secret = secret[1..17];
@@ -245,6 +247,9 @@ namespace WTelegram
 				else if (secret.Length != 16) throw new ArgumentException("Invalid/unsupported secret", nameof(secret));
 				Helpers.Log(2, $"Connecting to DC {dcId} via MTProxy {server}:{port}...");
 				_tcpClient = await TcpHandler(server, port);
+				_networkStream = _tcpClient.GetStream();
+				if (tlsMode)
+					_networkStream = await TlsStream.HandshakeAsync(_networkStream, secret, secretBytes[17..], _cts.Token);
 #else
 				throw new Exception("Library was not compiled with OBFUSCATION symbol");
 #endif
@@ -305,8 +310,8 @@ namespace WTelegram
 					throw;
 				}
 				_tcpClient = tcpClient;
+				_networkStream = _tcpClient.GetStream();
 			}
-			_networkStream = _tcpClient.GetStream();
 
 			byte protocolId = (byte)(_paddedMode ? 0xDD : 0xEE);
 #if OBFUSCATION
@@ -314,9 +319,8 @@ namespace WTelegram
 #else
 			preamble = new byte[] { protocolId, protocolId, protocolId, protocolId };
 #endif
-			await _networkStream.WriteAsync(preamble, 0, preamble.Length);
+			await _networkStream.WriteAsync(preamble, 0, preamble.Length, _cts.Token);
 
-			_cts = new();
 			_saltChangeCounter = 0;
 			_reactorTask = Reactor(_networkStream, _cts);
 			_sendSemaphore.Release();
@@ -445,7 +449,7 @@ namespace WTelegram
 			}
 		}
 
-		private async Task Reactor(NetworkStream stream, CancellationTokenSource cts)
+		private async Task Reactor(Stream stream, CancellationTokenSource cts)
 		{
 			const int MinBufferSize = 1024;
 			var data = new byte[MinBufferSize];
@@ -454,17 +458,19 @@ namespace WTelegram
 				IObject obj = null;
 				try
 				{
-					if (await FullReadAsync(stream, data, 4, cts.Token) != 4)
+					if (await stream.FullReadAsync(data, 4, cts.Token) != 4)
 						throw new ApplicationException(ConnectionShutDown);
 #if OBFUSCATION
 					_recvCtr.EncryptDecrypt(data, 4);
 #endif
 					int payloadLen = BinaryPrimitives.ReadInt32LittleEndian(data);
-					if (payloadLen > data.Length)
+					if (payloadLen <= 0)
+						throw new ApplicationException("Could not read frame data : Invalid payload length");
+					else if (payloadLen > data.Length)
 						data = new byte[payloadLen];
 					else if (Math.Max(payloadLen, MinBufferSize) < data.Length / 4)
 						data = new byte[Math.Max(payloadLen, MinBufferSize)];
-					if (await FullReadAsync(stream, data, payloadLen, cts.Token) != payloadLen)
+					if (await stream.FullReadAsync(data, payloadLen, cts.Token) != payloadLen)
 						throw new ApplicationException("Could not read frame data : Connection shut down");
 #if OBFUSCATION
 					_recvCtr.EncryptDecrypt(data, payloadLen);
@@ -629,17 +635,6 @@ namespace WTelegram
 			};
 		}
 
-		private static async Task<int> FullReadAsync(Stream stream, byte[] buffer, int length, CancellationToken ct = default)
-		{
-			for (int offset = 0; offset < length;)
-			{
-				var read = await stream.ReadAsync(buffer, offset, length - offset, ct);
-				if (read == 0) return offset;
-				offset += read;
-			}
-			return length;
-		}
-
 		private async Task<long> SendAsync(IObject msg, bool isContent)
 		{
 			if (_dcSession.AuthKeyID != 0 && isContent && CheckMsgsToAck() is MsgsAck msgsAck)
@@ -743,7 +738,7 @@ namespace WTelegram
 					seqno = reader.ReadInt32(),
 					bytes = reader.ReadInt32(),
 				};
-				if ((msg.seqno & 1) != 0) lock(_msgsToAck) _msgsToAck.Add(msg.msg_id);
+				if ((msg.seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msg.msg_id);
 				var pos = reader.BaseStream.Position;
 				try
 				{
@@ -801,11 +796,30 @@ namespace WTelegram
 			}
 			else
 			{
-				result = reader.ReadTLObject();
-				if (MsgIdToStamp(msgId) >= _session.SessionStart)
-					Helpers.Log(4, $"             → {result?.GetType().Name,-37} for unknown msgId #{(short)msgId.GetHashCode():X4}");
+				string typeName;
+				var ctorNb = reader.ReadUInt32();
+				if (ctorNb == Layer.VectorCtor)
+				{
+					reader.BaseStream.Position -= 4;
+					var array = reader.ReadTLVector(typeof(IObject[]));
+					if (array.Length > 0)
+					{
+						for (type = array.GetValue(0).GetType(); type.BaseType != typeof(object);) type = type.BaseType;
+						typeName = type.Name + "[]";
+					}
+					else
+						typeName = "object[]";
+					result = array;
+				}
 				else
-					Helpers.Log(1, $"             → {result?.GetType().Name,-37} for past msgId #{(short)msgId.GetHashCode():X4}");
+				{
+					result = reader.ReadTLObject(ctorNb);
+					typeName = result?.GetType().Name;
+				}
+				if (MsgIdToStamp(msgId) >= _session.SessionStart)
+					Helpers.Log(4, $"             → {typeName,-37} for unknown msgId #{(short)msgId.GetHashCode():X4}");
+				else
+					Helpers.Log(1, $"             → {typeName,-37} for past msgId #{(short)msgId.GetHashCode():X4}");
 			}
 			return new RpcResult { req_msg_id = msgId, result = result };
 		}
@@ -1219,7 +1233,7 @@ namespace WTelegram
 				for (long bytesLeft = length; !abort && bytesLeft != 0; file_part++)
 				{
 					var bytes = new byte[Math.Min(FilePartSize, bytesLeft)];
-					read = await FullReadAsync(stream, bytes, bytes.Length);
+					read = await stream.FullReadAsync(bytes, bytes.Length, default);
 					await _parallelTransfers.WaitAsync();
 					bytesLeft -= read;
 					var task = SavePart(file_part, bytes);
@@ -1369,7 +1383,7 @@ namespace WTelegram
 		/// <returns>MIME type of the document/thumbnail</returns>
 		public async Task<string> DownloadFileAsync(Document document, Stream outputStream, PhotoSizeBase thumbSize = null, ProgressCallback progress = null)
 		{
-			if (thumbSize	is PhotoStrippedSize psp)
+			if (thumbSize is PhotoStrippedSize psp)
 				return InflateStrippedThumb(outputStream, psp.bytes) ? "image/jpeg" : null;
 			var fileLocation = document.ToFileLocation(thumbSize);
 			var fileType = await DownloadFileAsync(fileLocation, outputStream, document.dc_id, thumbSize?.FileSize ?? document.size, progress);
@@ -1617,7 +1631,7 @@ namespace WTelegram
 					return new Updates { date = DateTime.UtcNow, users = new(), updates = Array.Empty<Update>(),
 						chats = (await this.Messages_GetChats(new[] { chat.chat_id })).chats };
 				case InputPeerChannel channel:
-					return await this.Channels_EditAdmin(channel, user, 
+					return await this.Channels_EditAdmin(channel, user,
 						new ChatAdminRights { flags = is_admin ? (ChatAdminRights.Flags)0x8BF : 0 }, null);
 				default:
 					throw new ArgumentException("This method works on Chat & Channel only");

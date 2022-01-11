@@ -14,16 +14,6 @@ and add at least these variables with adequate value: **api_id, api_hash, phone_
 Remember that these are just simple example codes that you should adjust to your needs.
 In real production code, you might want to properly test the success of each operation or handle exceptions.
 
-<a name="join-channel"></a>
-### Join a channel/group by @channelname
-```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
-var resolved = await client.Contacts_ResolveUsername("channelname"); // without the @
-if (resolved.Chat is Channel channel)
-    await client.Channels_JoinChannel(channel);
-```
-
 <a name="msg-by-name"></a>
 ### Send a message to someone by @username
 ```csharp
@@ -216,6 +206,16 @@ await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats(null);
 var channel = (Channel)chats.chats[1234567890]; // the channel we want
 var participants = await client.Channels_GetAllParticipants(channel);
+```
+
+<a name="join-channel"></a>
+### Join a channel/group by @channelname
+```csharp
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+await client.LoginUserIfNeeded();
+var resolved = await client.Contacts_ResolveUsername("channelname"); // without the @
+if (resolved.Chat is Channel channel)
+    await client.Channels_JoinChannel(channel);
 ```
 
 <a name="add-members"></a>
