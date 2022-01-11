@@ -31,6 +31,7 @@ namespace WTelegram
 		public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
 		public override void SetLength(long value) => throw new NotSupportedException();
 		public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+		protected override void Dispose(bool disposing) => _innerStream.Dispose();
 
 		public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken ct)
 		{

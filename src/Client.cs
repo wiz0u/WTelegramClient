@@ -176,6 +176,7 @@ namespace WTelegram
 			_cts?.Cancel();
 			_sendSemaphore = new(0);
 			_reactorTask = null;
+			_networkStream?.Close();
 			_tcpClient?.Dispose();
 #if OBFUSCATION
 			_sendCtr?.Dispose();
