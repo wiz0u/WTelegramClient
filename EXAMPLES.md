@@ -37,16 +37,25 @@ if (contacts.imported.Length > 0)
 *Note: To prevent spam, Telegram may restrict your ability to add new phone numbers.*
 
 <a name="markdown"></a>
-### Send a Markdown message to ourself (Saved Messages)
+<a name="html"></a>
+### Send a Markdown or HTML-formatted message to ourself (Saved Messages)
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 var user = await client.LoginUserIfNeeded();
+
+// Markdown-style text:
 var text = $"Hello __dear *{Markdown.Escape(user.first_name)}*__\n" +
             "Enjoy this `userbot` written with [WTelegramClient](https://github.com/wiz0u/WTelegramClient)";
 var entities = client.MarkdownToEntities(ref text);
 await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
+
+// HTML-formatted text:
+var text2 = $"Hello <u>dear <b>{HtmlText.Escape(user.first_name)}</b></u>\n" +
+            "Enjoy this <code>userbot</code> written with <a href=\"https://github.com/wiz0u/WTelegramClient\">WTelegramClient</a>";
+var entities2 = client.HtmlToEntities(ref text2);
+await client.SendMessageAsync(InputPeer.Self, text2, entities: entities2);
 ```
-See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) for details.  
+See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) and [HTML formatting style](https://core.telegram.org/bots/api/#html-style) for details.  
 *Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#collect-access-hash))*
 
 <a name="fun"></a>

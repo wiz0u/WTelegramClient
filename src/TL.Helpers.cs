@@ -488,7 +488,7 @@ namespace TL
 
 	public static class Markdown
 	{
-		/// <summary>Converts a Markdown text into the (Entities + plain text) format used by Telegram messages</summary>
+		/// <summary>Converts a <a href="https://core.telegram.org/bots/api/#markdownv2-style">Markdown text</a> into the (Entities + plain text) format used by Telegram messages</summary>
 		/// <param name="client">Client, used for getting access_hash for <c>tg://user?id=</c> URLs</param>
 		/// <param name="text">[in] The Markdown text<br/>[out] The same (plain) text, stripped of all Markdown notation</param>
 		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="WTelegram.Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="WTelegram.Client.SendMediaAsync">SendMediaAsync</see></returns>
@@ -600,5 +600,100 @@ namespace TL
 			}
 			return sb?.ToString() ?? text;
 		}
+	}
+
+	public static class HtmlText
+	{
+		/// <summary>Converts an <a href="https://core.telegram.org/bots/api/#html-style">HTML-formatted text</a> into the (Entities + plain text) format used by Telegram messages</summary>
+		/// <param name="client">Client, used for getting access_hash for <c>tg://user?id=</c> URLs</param>
+		/// <param name="text">[in] The HTML-formatted text<br/>[out] The same (plain) text, stripped of all HTML tags</param>
+		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="WTelegram.Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="WTelegram.Client.SendMediaAsync">SendMediaAsync</see></returns>
+		public static MessageEntity[] HtmlToEntities(this WTelegram.Client client, ref string text)
+		{
+			var entities = new List<MessageEntity>();
+			var sb = new StringBuilder(text);
+			int end;
+			for (int offset = 0; offset < sb.Length;)
+			{
+				char c = sb[offset];
+				if (c == '&')
+				{
+					for (end = offset + 1; end < sb.Length; end++)
+						if (sb[end] == ';') break;
+					if (end >= sb.Length) break;
+					var html = HttpUtility.HtmlDecode(sb.ToString(offset, end - offset + 1));
+					if (html.Length == 1)
+					{
+						sb[offset] = html[0];
+						sb.Remove(++offset, end - offset + 1);
+					}
+					else
+						offset = end + 1;
+				}
+				else if (c == '<')
+				{
+					for (end = ++offset; end < sb.Length; end++)
+						if (sb[end] == '>') break;
+					if (end >= sb.Length) break;
+					bool closing = sb[offset] == '/';
+					var tag = closing ? sb.ToString(offset + 1, end - offset - 1) : sb.ToString(offset, end - offset);
+					sb.Remove(--offset, end + 1 - offset);
+					switch (tag)
+					{
+						case "b": case "strong": ProcessEntity<MessageEntityBold>(); break;
+						case "i": case "em": ProcessEntity<MessageEntityItalic>(); break;
+						case "u": case "ins": ProcessEntity<MessageEntityUnderline>(); break;
+						case "s": case "strike": case "del": ProcessEntity<MessageEntityStrike>(); break;
+						case "span class=\"tg-spoiler\"":
+						case "span" when closing:
+						case "tg-spoiler": ProcessEntity<MessageEntitySpoiler>(); break;
+						case "code": ProcessEntity<MessageEntityCode>(); break;
+						case "pre": ProcessEntity<MessageEntityPre>(); break;
+						default:
+							if (closing)
+							{
+								if (tag == "a")
+								{
+									var prevEntity = entities.LastOrDefault(e => e.length == -1);
+									if (prevEntity is InputMessageEntityMentionName or MessageEntityTextUrl)
+										prevEntity.length = offset - prevEntity.offset;
+								}
+							}
+							else if (tag.StartsWith("a href=\"") && tag.EndsWith("\""))
+							{
+								tag = tag[8..^1];
+								if (tag.StartsWith("tg://user?id=") && long.TryParse(tag[13..], out var user_id) && client.GetAccessHashFor<User>(user_id) is long hash)
+									entities.Add(new InputMessageEntityMentionName { offset = offset, length = -1, user_id = new InputUser { user_id = user_id, access_hash = hash } });
+								else
+									entities.Add(new MessageEntityTextUrl { offset = offset, length = -1, url = tag });
+							}
+							else if (tag.StartsWith("code class=\"language-") && tag.EndsWith("\""))
+							{
+								if (entities.LastOrDefault(e => e.length == -1) is MessageEntityPre prevEntity)
+									prevEntity.language = tag[21..^1];
+							}
+							break;
+					}
+
+					void ProcessEntity<T>() where T : MessageEntity, new()
+					{
+						if (!closing)
+							entities.Add(new T { offset = offset, length = -1 });
+						else if (entities.LastOrDefault(e => e.length == -1) is T prevEntity)
+							prevEntity.length = offset - prevEntity.offset;
+					}
+				}
+				else
+					offset++;
+			}
+			text = sb.ToString();
+			return entities.Count == 0 ? null : entities.ToArray();
+		}
+
+		/// <summary>Replace special HTML characters with their &amp;xx; equivalent</summary>
+		/// <param name="text">The text to make HTML-safe</param>
+		/// <returns>The HTML-safe text, ready to be used in <see cref="HtmlToEntities">HtmlToEntities</see> without problems</returns>
+		public static string Escape(string text)
+			=> text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 	}
 }
