@@ -223,7 +223,7 @@ namespace TL
 			for (int i = 0; i < count; i++)
 			{
 				var value = (T)reader.ReadTLValue(elementType);
-				dict.Add(getID(value), value is UserEmpty ? null : value);
+				dict[getID(value)] = value is UserEmpty ? null : value;
 			}
 			return dict;
 		}
