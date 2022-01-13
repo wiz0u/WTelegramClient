@@ -143,6 +143,7 @@ namespace WTelegram
 			buffer[142 + dlen] = buffer[143 + dlen] = greases[4];
 			buffer[219 + dlen] = buffer[220 + dlen] = greases[4];
 			Encryption.RNG.GetBytes(buffer, 228 + dlen, 32); // public key
+			buffer[228 + dlen + 31] &= 0x7F; // must be positive
 			TlsClientHello4.CopyTo(buffer, 260 + dlen);
 			buffer[271 + dlen] = buffer[272 + dlen] = greases[6];
 			buffer[288 + dlen] = buffer[289 + dlen] = greases[3];

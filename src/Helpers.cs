@@ -14,7 +14,8 @@ namespace WTelegram
 		public static Action<int, string> Log { get; set; } = DefaultLogger;
 
 		/// <summary>For serializing indented Json with fields included</summary>
-		public static readonly JsonSerializerOptions JsonOptions = new() { IncludeFields = true, WriteIndented = true, IgnoreReadOnlyProperties = true };
+		public static readonly JsonSerializerOptions JsonOptions = new() { IncludeFields = true, WriteIndented = true,
+			IgnoreReadOnlyProperties = true, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull };
 
 		private static readonly ConsoleColor[] LogLevelToColor = new[] { ConsoleColor.DarkGray, ConsoleColor.DarkCyan, ConsoleColor.Cyan,
 			ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.DarkBlue };
