@@ -28,7 +28,9 @@ namespace WTelegram
 		public event Action<IObject> Update;
 		public delegate Task<TcpClient> TcpFactory(string host, int port);
 		/// <summary>Used to create a TcpClient connected to the given address/port, or throw an exception on failure</summary>
-		public TcpFactory TcpHandler = DefaultTcpHandler;
+		public TcpFactory TcpHandler { get; set; } = DefaultTcpHandler;
+		/// <summary>Url for using a MTProxy. https://t.me/proxy?server=... </summary>
+		public string MTProxyUrl { get; set; }
 		/// <summary>Telegram configuration, obtained at connection time</summary>
 		public Config TLConfig { get; private set; }
 		/// <summary>Number of automatic reconnections on connection/reactor failure</summary>
@@ -41,8 +43,6 @@ namespace WTelegram
 		public bool IsMainDC => (_dcSession?.DataCenter?.id ?? 0) == _session.MainDC;
 		/// <summary>Has this Client established connection been disconnected?</summary>
 		public bool Disconnected => _tcpClient != null && !(_tcpClient.Client?.Connected ?? false);
-		/// <summary>Url for using a MTProxy. http://t.me/proxy?server=... </summary>
-		public string MTProxyUrl { get; set; }
 
 		/// <summary>Used to indicate progression of file download/upload</summary>
 		/// <param name="totalSize">total size of file in bytes, or 0 if unknown</param>
@@ -100,11 +100,13 @@ namespace WTelegram
 
 		private Client(Client cloneOf, Session.DCSession dcSession)
 		{
-			MTProxyUrl = cloneOf.MTProxyUrl;
 			_config = cloneOf._config;
 			_apiId = cloneOf._apiId;
 			_apiHash = cloneOf._apiHash;
 			_session = cloneOf._session;
+			TcpHandler = cloneOf.TcpHandler;
+			MTProxyUrl = cloneOf.MTProxyUrl;
+			PingInterval = cloneOf.PingInterval;
 			_dcSession = dcSession;
 		}
 
