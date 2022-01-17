@@ -160,6 +160,7 @@ namespace WTelegram
 		{
 			Helpers.Log(2, $"{_dcSession.DcID}>Disposing the client");
 			Reset(false, IsMainDC);
+			_networkStream = null;
 			GC.SuppressFinalize(this);
 		}
 
@@ -499,6 +500,7 @@ namespace WTelegram
 						if (_reactorReconnects != 0)
 						{
 							await Task.Delay(5000);
+							if (_networkStream == null) return; // Dispose has been called in-between
 							await ConnectAsync(); // start a new reactor after 5 secs
 							lock (_pendingRequests) // retry all pending requests
 							{
