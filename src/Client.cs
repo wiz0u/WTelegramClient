@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -777,12 +778,19 @@ namespace WTelegram
 				{
 					if (!type.IsArray)
 						result = reader.ReadTLValue(type);
-					else if (reader.ReadUInt32() == Layer.RpcErrorCtor)
-						result = reader.ReadTLObject(Layer.RpcErrorCtor);
 					else
 					{
-						reader.BaseStream.Position -= 4;
-						result = reader.ReadTLValue(type);
+						var peek = reader.ReadUInt32();
+						if (peek == Layer.RpcErrorCtor)
+							result = reader.ReadTLObject(Layer.RpcErrorCtor);
+						else if (peek == Layer.GZipedCtor)
+							using (var gzipReader = new TL.BinaryReader(new GZipStream(new MemoryStream(reader.ReadTLBytes()), CompressionMode.Decompress), reader.Client))
+								result = gzipReader.ReadTLValue(type);
+						else
+						{
+							reader.BaseStream.Position -= 4;
+							result = reader.ReadTLValue(type);
+						}
 					}
 					if (type.IsEnum) result = Enum.ToObject(type, result);
 					if (result is RpcError rpcError)

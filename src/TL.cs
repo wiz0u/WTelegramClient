@@ -53,6 +53,9 @@ namespace TL
 		internal static IObject ReadTLObject(this BinaryReader reader, uint ctorNb = 0)
 		{
 			if (ctorNb == 0) ctorNb = reader.ReadUInt32();
+			if (ctorNb == Layer.GZipedCtor)
+				using (var gzipReader = new BinaryReader(new GZipStream(new MemoryStream(reader.ReadTLBytes()), CompressionMode.Decompress), reader.Client))
+					return ReadTLObject(gzipReader);
 			if (!Layer.Table.TryGetValue(ctorNb, out var type))
 				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 			if (type == null) return null; // nullable ctor (class meaning is associated with null)
@@ -70,7 +73,7 @@ namespace TL
 				if (field.Name == "flags") flags = (int)value;
 				else if (field.Name == "access_hash") reader.Client?.UpdateAccessHash(obj, type, value);
 			}
-			return type == typeof(GzipPacked) ? UnzipPacket((GzipPacked)obj, reader.Client) : (IObject)obj;
+			return (IObject)obj;
 		}
 
 		internal static void WriteTLValue(this BinaryWriter writer, object value, Type valueType)
@@ -290,13 +293,6 @@ namespace TL
 			else if (type != typeof(byte[]))
 				writer.Write(Layer.VectorCtor); // not raw bytes but a vector => needs a VectorCtor
 			writer.Write(0);    // null arrays/strings are serialized as empty
-		}
-
-		internal static IObject UnzipPacket(GzipPacked obj, WTelegram.Client client)
-		{
-			using var reader = new BinaryReader(new GZipStream(new MemoryStream(obj.packed_data), CompressionMode.Decompress), client);
-			var result = reader.ReadTLObject();
-			return result;
 		}
 
 #if DEBUG

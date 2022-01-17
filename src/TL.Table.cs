@@ -14,6 +14,7 @@ namespace TL
 		internal const uint RpcErrorCtor = 0x2144CA19;
 		internal const uint MsgContainerCtor = 0x73F1F8DC;
 		internal const uint BadMsgCtor = 0xA7EFF811;
+		internal const uint GZipedCtor = 0x3072CFA1;
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public readonly static Dictionary<uint, Type> Table = new()

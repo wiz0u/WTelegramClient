@@ -36,7 +36,8 @@ An easy solution is to call `Interaction.InputBox("Enter verification code")` in
 This might require adding a reference *(and `using`)* to the Microsoft.VisualBasic assembly.
 
 A more complex solution requires the use of a `ManualResetEventSlim` that you will wait for in Config callback,
-and when the user has provided the verification_code through your GUI, you "set" the event to release your Config callback so it can return the code. ([see example](https://stackoverflow.com/a/70379582/3365403))
+and when the user has provided the verification_code through your GUI, you "set" the event to release your Config callback so it can return the code.
+([download a full example](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip))
 
 <a name="access-hash"></a>
 #### 4. Where to get the access_hash? Why the error `CHANNEL_INVALID` or `USER_ID_INVALID`?
@@ -84,8 +85,22 @@ If you use the Github source project in an old .NET Framework 4.x or .NET Core x
 
 To fix this, you should also switch to using the [WTelegramClient Nuget package](https://www.nuget.org/packages/WTelegramClient) as it will install the required dependencies for it to work.
 
+<a name="abuse"></a>
+#### 7. I get error FLOOD_WAIT_8xxxx or PEER_FLOOD, PHONE_NUMBER_BANNED. I can't import phone numbers.
+
+You can get these kind of problems if you abuse Telegram [Terms of Service](https://telegram.org/tos), or the [API Terms of Service](https://core.telegram.org/api/terms), or make excessive requests.
+
+You can try to wait more between the requests, wait for a day or two to see if the requests become possible again.  
+>ℹ️ For FLOOD_WAIT_X with X < 60 seconds (see `client.FloodRetryThreshold`), WTelegramClient will automatically wait the specified delay and retry the request for you.
+
+An account that was limited due to reported spam might receive PEER_FLOOD errors. Read [Telegram Spam FAQ](https://telegram.org/faq_spam) to learn more.
+
+If you think your phone number was banned from Telegram for a wrong reason, you may try to contact [recover@telegram.org](mailto:recover@telegram.org), explaining what you were doing.
+
+In any case, WTelegramClient is not responsible for the bad usage of the library and we are not affiliated to Telegram teams, so there is nothing we can do.
+
 <a name="prevent-ban"></a>
-#### 7. How to not get banned from Telegram?
+#### 8. How to not get banned from Telegram?
 
 **Do not share publicly your app's ID and hash!** They cannot be regenerated and are bound to your Telegram account.
 
@@ -111,19 +126,6 @@ Here are some key points:
 *(the above section is derived from [gotd SUPPORT.md](https://github.com/gotd/td/blob/main/.github/SUPPORT.md))*
 
 If your client displays Telegram channels to the user, you have to support and display [official sponsored messages](https://core.telegram.org/api/sponsored-messages).
-
-<a name="abuse"></a>
-#### 8. I can't import phone numbers. I get error PHONE_NUMBER_BANNED, FLOOD_WAIT_8xxxx or PEER_FLOOD
-
-You can get these kind of problems if you abuse Telegram [Terms of Service](https://telegram.org/tos), or the [API Terms of Service](https://core.telegram.org/api/terms), or make excessive requests.
-
-You can try to wait more between the requests, wait for a day or two to see if the requests become possible again.
-
-An account that was limited due to reported spam might receive PEER_FLOOD errors. Read [Telegram Spam FAQ](https://telegram.org/faq_spam) to learn more.
-
-If you think your phone number was banned from Telegram for a wrong reason, you may try to contact [recover@telegram.org](mailto:recover@telegram.org), explaining what you were doing.
-
-In any case, WTelegramClient is not responsible for the bad usage of the library and we are not affiliated to Telegram teams, so there is nothing we can do.
 
 <a name="chat-id"></a>
 #### 9. Why the error `CHAT_ID_INVALID`?
