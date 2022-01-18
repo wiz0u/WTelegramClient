@@ -1034,7 +1034,7 @@ namespace TL
 	}
 
 	/// <summary>Object containing detailed group info		<para>Derived classes: <see cref="ChatFull"/>, <see cref="ChannelFull"/></para>		<para>See <a href="https://corefork.telegram.org/type/ChatFull"/></para></summary>
-	public abstract class ChatFullBase : IObject
+	public abstract partial class ChatFullBase : IObject
 	{
 		/// <summary>ID of the chat</summary>
 		public abstract long ID { get; }
@@ -1066,7 +1066,7 @@ namespace TL
 	}
 	/// <summary>Detailed chat info		<para>See <a href="https://corefork.telegram.org/constructor/chatFull"/></para></summary>
 	[TLDef(0xD18EE226)]
-	public class ChatFull : ChatFullBase
+	public partial class ChatFull : ChatFullBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -1160,7 +1160,7 @@ namespace TL
 	}
 	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/constructor/channelFull"/></para></summary>
 	[TLDef(0xE13C3D20)]
-	public class ChannelFull : ChatFullBase
+	public partial class ChannelFull : ChatFullBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -1363,14 +1363,14 @@ namespace TL
 	}
 
 	/// <summary>Object contains info on group members.		<para>Derived classes: <see cref="ChatParticipantsForbidden"/>, <see cref="ChatParticipants"/></para>		<para>See <a href="https://corefork.telegram.org/type/ChatParticipants"/></para></summary>
-	public abstract class ChatParticipantsBase : IObject
+	public abstract partial class ChatParticipantsBase : IObject
 	{
 		/// <summary>Group ID</summary>
 		public abstract long ChatId { get; }
 	}
 	/// <summary>Info on members is unavailable		<para>See <a href="https://corefork.telegram.org/constructor/chatParticipantsForbidden"/></para></summary>
 	[TLDef(0x8763D3E1)]
-	public class ChatParticipantsForbidden : ChatParticipantsBase
+	public partial class ChatParticipantsForbidden : ChatParticipantsBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -1390,7 +1390,7 @@ namespace TL
 	}
 	/// <summary>Group members.		<para>See <a href="https://corefork.telegram.org/constructor/chatParticipants"/></para></summary>
 	[TLDef(0x3CBC93F8)]
-	public class ChatParticipants : ChatParticipantsBase
+	public partial class ChatParticipants : ChatParticipantsBase
 	{
 		/// <summary>Group identifier</summary>
 		public long chat_id;

@@ -103,6 +103,7 @@ namespace TL
 
 	partial class ChatBase : IPeerInfo
 	{
+		/// <summary>Is this chat among current user active chats?</summary>
 		public abstract bool IsActive { get; }
 		public abstract ChatPhoto Photo { get; }
 		/// <summary>returns true if you're banned of any of these rights</summary>
@@ -155,10 +156,18 @@ namespace TL
 		public override string ToString() => $"ChannelForbidden {id} \"{title}\"";
 	}
 
+	partial class ChatFullBase				{ public abstract int ParticipantsCount { get; } }
+	partial class ChatFull					{ public override int ParticipantsCount => participants.Participants.Length; }
+	partial class ChannelFull				{ public override int ParticipantsCount => participants_count; }
+
 	partial class ChatParticipantBase		{ public abstract bool IsAdmin { get; } }
 	partial class ChatParticipant			{ public override bool IsAdmin => false; }
 	partial class ChatParticipantCreator	{ public override bool IsAdmin => true; }
 	partial class ChatParticipantAdmin		{ public override bool IsAdmin => true; }
+
+	partial class ChatParticipantsBase		{ public abstract ChatParticipantBase[] Participants { get; }}
+	partial class ChatParticipantsForbidden { public override ChatParticipantBase[] Participants => Array.Empty<ChatParticipantBase>(); }
+	partial class ChatParticipants			{ public override ChatParticipantBase[] Participants => participants; }
 
 	partial class PhotoBase
 	{
