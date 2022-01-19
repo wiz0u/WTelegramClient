@@ -12507,7 +12507,7 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/availableReaction"/></para></summary>
-	[TLDef(0x021D7C4B)]
+	[TLDef(0xC077EC01)]
 	public class AvailableReaction : IObject
 	{
 		public Flags flags;
@@ -12518,10 +12518,14 @@ namespace TL
 		public DocumentBase select_animation;
 		public DocumentBase activate_animation;
 		public DocumentBase effect_animation;
+		[IfFlag(1)] public DocumentBase around_animation;
+		[IfFlag(1)] public DocumentBase center_icon;
 
 		[Flags] public enum Flags
 		{
 			inactive = 0x1,
+			/// <summary>Field <see cref="around_animation"/> has a value</summary>
+			has_around_animation = 0x2,
 		}
 	}
 

@@ -1,6 +1,6 @@
 [![NuGet version](https://img.shields.io/nuget/v/WTelegramClient)](https://www.nuget.org/packages/WTelegramClient/)
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
-[![API Layer](https://img.shields.io/badge/API_Layer-136-blueviolet)](https://corefork.telegram.org/methods)
+[![API Layer](https://img.shields.io/badge/API_Layer-137-blueviolet)](https://corefork.telegram.org/methods)
 [![dev nuget](https://img.shields.io/badge/dynamic/json?color=ffc040&label=dev%20nuget&query=%24.versions%5B0%5D&url=https%3A%2F%2Fpkgs.dev.azure.com%2Fwiz0u%2F81bd92b7-0bb9-4701-b426-09090b27e037%2F_packaging%2F46ce0497-7803-4bd4-8c6c-030583e7c371%2Fnuget%2Fv3%2Fflat2%2Fwtelegramclient%2Findex.json)](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://wizou.fr/donate.html)
@@ -35,7 +35,7 @@ If you run this program again, you will notice that only **api_id** and **api_ha
 
 This is because WTelegramClient saves (typically in the encrypted file **bin\WTelegram.session**) its state and the authentication keys that were negociated with Telegram so that you needn't sign-in again every time.
 
-That file path is configurable, and under various circumstances (changing user or server address) you may want to change it or simply delete the existing session file in order to restart the authentification process.
+That file path is configurable (session_pathname), and under various circumstances (changing user or server address) you may want to change it or simply delete the existing session file in order to restart the authentification process.
 
 # Non-interactive configuration
 Your next step will probably be to provide a configuration to the client so that the required elements (in bold above) are not prompted through the Console but answered by your program.
@@ -78,7 +78,7 @@ All the Telegram API classes/methods are fully documented through Intellisense: 
 
 The Telegram [API object classes](https://corefork.telegram.org/schema) are defined in the `TL` namespace, and the [API functions](https://corefork.telegram.org/methods) are available as async methods of `Client`.
 
-Below is an example of calling the [messages.getAllChats](https://corefork.telegram.org/method/messages.getAllChats) API function and enumerating the various groups/channels the user is in, and then using `client.SendMessageAsync` helper function to easily send a message:
+Below is an example of calling the [messages.getAllChats](https://corefork.telegram.org/method/messages.getAllChats) API function, enumerating the various groups/channels the user is in, and then using `client.SendMessageAsync` helper function to easily send a message:
 ```csharp
 using TL;
 ...
@@ -129,18 +129,18 @@ The other configuration items that you can override include: **session_pathname,
 
 Optional API parameters have a default value of `null` when unset. Passing `null` for a required string/array is the same as *empty* (0-length). Required API parameters/fields can sometimes be set to 0 or `null` when unused (check API documentation or experiment).
 
-I've added several useful converters, implicit cast or helper properties to various API object so that they are more easy to manipulate.
+I've added several useful converters, implicit cast or helper properties to various API objects so that they are more easy to manipulate.
 
 Beyond the TL async methods, the Client class offers a few other methods to simplify the sending/receiving of files, medias or messages.
 
-This library works best with **.NET 5.0+** and is also available for **.NET Standard 2.0** (.NET Framework 4.6.1+ & .NET Core 2.0+)
+This library works best (faster) with **.NET 5.0+** and is also available for **.NET Standard 2.0** (.NET Framework 4.6.1+ & .NET Core 2.0+)
 
 # Library uses and limitations
 This library can be used for any Telegram scenarios including:
 - Sequential or parallel automated steps based on API requests/responses
 - Real-time [monitoring](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#updates) of incoming Updates/Messages
 - Download/upload of files/media
-- or even a full-featured interactive client
+- Building a full-featured interactive client
 
 It has been tested in a Console app, [in a WinForms app](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#gui), [in ASP.NET webservice](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#logging).  
 Secret chats (end-to-end encryption, PFS) and connection to CDN DCs have not been tested yet.

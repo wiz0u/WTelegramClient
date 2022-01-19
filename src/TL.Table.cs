@@ -7,7 +7,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 136;					// fetched 30/12/2021 11:11:54
+		public const int Version = 137;					// fetched 19/01/2022 20:17:41
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -937,7 +937,7 @@ namespace TL
 			[0x087B6E36] = typeof(MessageReactions),
 			[0x932844FA] = typeof(MessageUserReaction),
 			[0xA366923C] = typeof(Messages_MessageReactionsList),
-			[0x021D7C4B] = typeof(AvailableReaction),
+			[0xC077EC01] = typeof(AvailableReaction),
 			[0x9F071957] = null,//Messages_AvailableReactionsNotModified
 			[0x768E3AAD] = typeof(Messages_AvailableReactions),
 			// from TL.Secret:
