@@ -252,5 +252,21 @@ namespace WTelegram
 			0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xff, 0xda, 0x00, 0x0c, 0x03, 0x01, 0x00, 0x02, 0x11, 0x03, 0x11, 0x00,
 			0x3f, 0x00
 		};
+
+		internal class StreamWithLength : Stream
+		{
+			public Stream innerStream;
+			public long length;
+			public override bool CanRead => true;
+			public override bool CanSeek => false;
+			public override bool CanWrite => false;
+			public override long Length => length;
+			public override long Position { get => innerStream.Position; set => throw new NotSupportedException(); }
+			public override void Flush() { }
+			public override int Read(byte[] buffer, int offset, int count) => innerStream.Read(buffer, offset, count);
+			public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+			public override void SetLength(long value) => throw new NotSupportedException();
+			public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+		}
 	}
 }

@@ -36,6 +36,11 @@ namespace TL
 		public override InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret) => new InputSecureFileUploaded { id = id, parts = parts, file_hash = file_hash, secret = secret };
 	}
 
+	partial class InputPhoto
+	{
+		public static implicit operator InputMediaPhoto(InputPhoto photo) => new() { id = photo };
+	}
+
 	partial class Peer
 	{
 		public abstract long ID { get; }
@@ -174,6 +179,7 @@ namespace TL
 		public abstract long ID { get; }
 		protected abstract InputPhoto ToInputPhoto();
 		public static implicit operator InputPhoto(PhotoBase photo) => photo.ToInputPhoto();
+		public static implicit operator InputMediaPhoto(PhotoBase photo) => photo.ToInputPhoto();
 	}
 	partial class PhotoEmpty
 	{
@@ -247,7 +253,18 @@ namespace TL
 		}
 	}
 
-	partial class Contacts_Blocked { public IPeerInfo UserOrChat(PeerBlocked peer) => peer.peer_id.UserOrChat(users, chats); }
+	public partial class InputMediaUploadedDocument
+	{
+		public InputMediaUploadedDocument() { }
+		public InputMediaUploadedDocument(InputFileBase inputFile, string mimeType)
+		{
+			file = inputFile;
+			mime_type = mimeType;
+			if (inputFile.Name is string filename) attributes = new[] { new DocumentAttributeFilename { file_name = filename } };
+		}
+	}
+
+	partial class Contacts_Blocked				{ public IPeerInfo UserOrChat(PeerBlocked peer) => peer.peer_id.UserOrChat(users, chats); }
 	partial class Messages_DialogsBase			{ public IPeerInfo UserOrChat(DialogBase dialog) => UserOrChat(dialog.Peer);
 												  public abstract int TotalCount { get; } }
 	partial class Messages_Dialogs				{ public override int TotalCount => dialogs.Length; }
@@ -318,11 +335,17 @@ namespace TL
 		public InputEncryptedFileLocation ToFileLocation() => new() { id = id, access_hash = access_hash };
 	}
 
+	partial class InputDocument
+	{
+		public static implicit operator InputMediaDocument(InputDocument document) => new() { id = document };
+	}
+
 	partial class DocumentBase
 	{
 		public abstract long ID { get; }
 		protected abstract InputDocument ToInputDocument();
 		public static implicit operator InputDocument(DocumentBase document) => document.ToInputDocument();
+		public static implicit operator InputMediaDocument(DocumentBase document) => document.ToInputDocument();
 	}
 	partial class DocumentEmpty
 	{

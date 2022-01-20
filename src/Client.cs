@@ -1297,8 +1297,7 @@ namespace WTelegram
 		/// <returns>The transmitted message confirmed by Telegram</returns>
 		public Task<Message> SendMediaAsync(InputPeer peer, string caption, InputFileBase mediaFile, string mimeType = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
 		{
-			var filename = mediaFile is InputFile iFile ? iFile.name : (mediaFile as InputFileBig)?.name;
-			mimeType ??= Path.GetExtension(filename)?.ToLowerInvariant() switch
+			mimeType ??= Path.GetExtension(mediaFile.Name)?.ToLowerInvariant() switch
 			{
 				".jpg" or ".jpeg" or ".png" or ".bmp" => "photo",
 				".gif" => "image/gif",
@@ -1309,13 +1308,8 @@ namespace WTelegram
 				_ => "", // send as generic document with undefined MIME type
 			};
 			if (mimeType == "photo")
-				return SendMessageAsync(peer, caption, new InputMediaUploadedPhoto { file = mediaFile },
-					reply_to_msg_id, entities, schedule_date);
-			var attributes = filename == null ? Array.Empty<DocumentAttribute>() : new[] { new DocumentAttributeFilename { file_name = filename } };
-			return SendMessageAsync(peer, caption, new InputMediaUploadedDocument
-			{
-				file = mediaFile, mime_type = mimeType, attributes = attributes
-			}, reply_to_msg_id, entities, schedule_date);
+				return SendMessageAsync(peer, caption, new InputMediaUploadedPhoto { file = mediaFile }, reply_to_msg_id, entities, schedule_date);
+			return SendMessageAsync(peer, caption, new InputMediaUploadedDocument(mediaFile, mimeType), reply_to_msg_id, entities, schedule_date);
 		}
 
 		/// <summary>Helper function to send a text or media message easily</summary>
@@ -1358,6 +1352,87 @@ namespace WTelegram
 					from_id = peer is InputPeerSelf ? null : new PeerUser { user_id = _session.UserId },
 					peer_id = InputToPeer(peer)
 				};
+			}
+			return null;
+		}
+
+		/// <summary>Helper function to send an album (media group) of photos or documents more easily</summary>
+		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>
+		/// <param name="medias">An array of <see cref="InputMedia">InputMedia</see>-derived class</param>
+		/// <param name="caption">Caption for the media <i>(in plain text)</i> or <see langword="null"/></param>
+		/// <param name="reply_to_msg_id">Your message is a reply to an existing message with this ID, in the same chat</param>
+		/// <param name="entities">Text formatting entities for the caption. You can use <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
+		/// <param name="schedule_date">UTC timestamp when the message should be sent</param>
+		/// <returns>The last of the media group messages, confirmed by Telegram</returns>
+		/// <remarks>
+		/// * The caption/entities are set on the last media<br/>
+		/// * <see cref="InputMediaDocumentExternal"/> and <see cref="InputMediaPhotoExternal"/> are supported by downloading the file from the web via HttpClient and sending it to Telegram.
+		///   WTelegramClient proxy settings don't apply to HttpClient<br/>
+		/// * You may run into errors if you mix, in the same album, photos and file documents having no thumbnails/video attributes
+		/// </remarks>
+		public async Task<Message> SendAlbumAsync(InputPeer peer, InputMedia[] medias, string caption = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
+		{
+			System.Net.Http.HttpClient httpClient = null;
+			var multiMedia = new InputSingleMedia[medias.Length];
+			for (int i = 0; i < medias.Length; i++)
+			{
+				var ism = multiMedia[i] = new InputSingleMedia { random_id = Helpers.RandomLong(), media = medias[i] };
+			retry:
+				switch (ism.media)
+				{
+					case InputMediaUploadedPhoto imup:
+						var mmp = (MessageMediaPhoto)await this.Messages_UploadMedia(peer, imup);
+						ism.media = mmp.photo;
+						break;
+					case InputMediaUploadedDocument imud:
+						var mmd = (MessageMediaDocument)await this.Messages_UploadMedia(peer, imud);
+						ism.media = mmd.document;
+						break;
+					case InputMediaDocumentExternal imde:
+						string mimeType = null;
+						var inputFile = await UploadFromUrl(imde.url);
+						ism.media = new InputMediaUploadedDocument(inputFile, mimeType);
+						goto retry;
+					case InputMediaPhotoExternal impe:
+						inputFile = await UploadFromUrl(impe.url);
+						ism.media = new InputMediaUploadedPhoto { file = inputFile };
+						goto retry;
+
+						async Task<InputFileBase> UploadFromUrl(string url)
+						{
+							var filename = Path.GetFileName(new Uri(url).LocalPath);
+							httpClient ??= new();
+							var response = await httpClient.GetAsync(url);
+							using var stream = await response.Content.ReadAsStreamAsync();
+							mimeType = response.Content.Headers.ContentType?.MediaType;
+							if (response.Content.Headers.ContentLength is long length)
+								return await UploadFileAsync(new Helpers.StreamWithLength { length = length, innerStream = stream }, filename);
+							else
+							{
+								using var ms = new MemoryStream();
+								await stream.CopyToAsync(ms);
+								ms.Position = 0;
+								return await UploadFileAsync(ms, filename);
+							}
+						}
+				}
+			}
+			var lastMedia = multiMedia[^1];
+			lastMedia.message = caption;
+			lastMedia.entities = entities;
+			if (entities != null) lastMedia.flags = InputSingleMedia.Flags.has_entities;
+
+			var updates = await this.Messages_SendMultiMedia(peer, multiMedia, reply_to_msg_id: reply_to_msg_id, schedule_date: schedule_date);
+			OnUpdate(updates);
+			int msgId = -1;
+			foreach (var update in updates.UpdateList)
+			{
+				switch (update)
+				{
+					case UpdateMessageID updMsgId when updMsgId.random_id == lastMedia.random_id: msgId = updMsgId.id; break;
+					case UpdateNewMessage { message: Message message } when message.id == msgId: return message;
+					case UpdateNewScheduledMessage { message: Message schedMsg } when schedMsg.id == msgId: return schedMsg;
+				}
 			}
 			return null;
 		}

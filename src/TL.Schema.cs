@@ -245,7 +245,7 @@ namespace TL
 	}
 	/// <summary>New document		<para>See <a href="https://corefork.telegram.org/constructor/inputMediaUploadedDocument"/></para></summary>
 	[TLDef(0x5B38C6C1)]
-	public class InputMediaUploadedDocument : InputMedia
+	public partial class InputMediaUploadedDocument : InputMedia
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -502,7 +502,7 @@ namespace TL
 	/// <summary>Defines a photo for further interaction.		<para>See <a href="https://corefork.telegram.org/constructor/inputPhoto"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/inputPhotoEmpty">inputPhotoEmpty</a></remarks>
 	[TLDef(0x3BB3B94A)]
-	public class InputPhoto : IObject
+	public partial class InputPhoto : IObject
 	{
 		/// <summary>Photo identifier</summary>
 		public long id;
@@ -4952,7 +4952,7 @@ namespace TL
 	/// <summary>Defines a video for subsequent interaction.		<para>See <a href="https://corefork.telegram.org/constructor/inputDocument"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/inputDocumentEmpty">inputDocumentEmpty</a></remarks>
 	[TLDef(0x1ABFB575)]
-	public class InputDocument : IObject
+	public partial class InputDocument : IObject
 	{
 		/// <summary>Document ID</summary>
 		public long id;
