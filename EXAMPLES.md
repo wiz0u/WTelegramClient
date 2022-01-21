@@ -396,7 +396,7 @@ WTelegram.Helpers.Log = (lvl, str) => _logger.Log((LogLevel)lvl, str);
 <a name="2FA"></a>
 ### Change 2FA password
 ```csharp
-const string old_password = "password";     // current password if any
+const string old_password = "password";     // current password if any (unused otherwise)
 const string new_password = "new_password"; // or null to disable 2FA
 var accountPassword = await client.Account_GetPassword();
 var password = accountPassword.current_algo == null ? null : await WTelegram.Client.InputCheckPassword(accountPassword, old_password);
@@ -408,7 +408,7 @@ await client.Account_UpdatePasswordSettings(password, new Account_PasswordInputS
     new_password_hash = new_password_hash?.A,
     new_algo = accountPassword.new_algo,
     hint = "new hint",
-}
+});
 ```
 
 <a name="reaction"></a>

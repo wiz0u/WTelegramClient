@@ -302,11 +302,13 @@ namespace TL
 			{
 				nonce = nonce,
 			});
+
 		public static Task<ResPQ> ReqPqMulti(this Client client, Int128 nonce)
 			=> client.InvokeBare(new ReqPqMulti
 			{
 				nonce = nonce,
 			});
+
 		public static Task<ServerDHParams> ReqDHParams(this Client client, Int128 nonce, Int128 server_nonce, byte[] p, byte[] q, long public_key_fingerprint, byte[] encrypted_data)
 			=> client.InvokeBare(new ReqDHParams
 			{
@@ -317,6 +319,7 @@ namespace TL
 				public_key_fingerprint = public_key_fingerprint,
 				encrypted_data = encrypted_data,
 			});
+
 		public static Task<SetClientDHParamsAnswer> SetClientDHParams(this Client client, Int128 nonce, Int128 server_nonce, byte[] encrypted_data)
 			=> client.InvokeBare(new SetClientDHParams
 			{
@@ -324,31 +327,37 @@ namespace TL
 				server_nonce = server_nonce,
 				encrypted_data = encrypted_data,
 			});
+
 		public static Task<DestroyAuthKeyRes> DestroyAuthKey(this Client client)
 			=> client.InvokeBare(new DestroyAuthKey
 			{
 			});
+
 		public static Task<RpcDropAnswer> RpcDropAnswer(this Client client, long req_msg_id)
 			=> client.InvokeBare(new Methods.RpcDropAnswer
 			{
 				req_msg_id = req_msg_id,
 			});
+
 		public static Task<FutureSalts> GetFutureSalts(this Client client, int num)
 			=> client.Invoke(new GetFutureSalts
 			{
 				num = num,
 			});
+
 		public static Task<Pong> Ping(this Client client, long ping_id)
 			=> client.Invoke(new Ping
 			{
 				ping_id = ping_id,
 			});
+
 		public static Task<Pong> PingDelayDisconnect(this Client client, long ping_id, int disconnect_delay)
 			=> client.Invoke(new PingDelayDisconnect
 			{
 				ping_id = ping_id,
 				disconnect_delay = disconnect_delay,
 			});
+
 		public static Task<DestroySessionRes> DestroySession(this Client client, long session_id)
 			=> client.InvokeBare(new DestroySession
 			{
