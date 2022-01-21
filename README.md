@@ -7,6 +7,8 @@
 
 ## _a Telegram Client API library written 100% in C# and .NET Standard_
 
+This ReadMe is a quick but important tutorial to learn the fundamentals about this library. Please read it all.
+
 # How to use
 
 >⚠️ This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this advanced topic before proceeding.  

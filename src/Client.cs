@@ -354,7 +354,9 @@ namespace WTelegram
 				{
 					_dcSession.DataCenter = _session.DcOptions.Where(dc => dc.id == TLConfig.this_dc)
 						.OrderByDescending(dc => dc.ip_address == endpoint?.Address.ToString())
-						.ThenByDescending(dc => dc.port == endpoint?.Port).First();
+						.ThenByDescending(dc => dc.port == endpoint?.Port)
+						.ThenByDescending(dc => dc.flags == (endpoint?.AddressFamily == AddressFamily.InterNetworkV6 ? DcOption.Flags.ipv6 : 0))
+						.First();
 					_session.DCSessions[TLConfig.this_dc] = _dcSession;
 				}
 				if (_session.MainDC == 0) _session.MainDC = TLConfig.this_dc;
