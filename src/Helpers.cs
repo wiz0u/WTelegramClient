@@ -253,20 +253,22 @@ namespace WTelegram
 			0x3f, 0x00
 		};
 
-		internal class StreamWithLength : Stream
+		public class IndirectStream : Stream
 		{
-			public Stream innerStream;
-			public long length;
-			public override bool CanRead => true;
-			public override bool CanSeek => false;
-			public override bool CanWrite => false;
-			public override long Length => length;
-			public override long Position { get => innerStream.Position; set => throw new NotSupportedException(); }
-			public override void Flush() { }
-			public override int Read(byte[] buffer, int offset, int count) => innerStream.Read(buffer, offset, count);
-			public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
-			public override void SetLength(long value) => throw new NotSupportedException();
-			public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+			public IndirectStream(Stream innerStream) => _innerStream = innerStream;
+			public long? ContentLength;
+			protected readonly Stream _innerStream;
+			public override bool CanRead => _innerStream.CanRead;
+			public override bool CanSeek => _innerStream.CanSeek;
+			public override bool CanWrite => _innerStream.CanWrite;
+			public override long Length => ContentLength ?? _innerStream.Length;
+			public override long Position { get => _innerStream.Position; set => _innerStream.Position = value; }
+			public override void Flush() => _innerStream.Flush();
+			public override int Read(byte[] buffer, int offset, int count) => _innerStream.Read(buffer, offset, count);
+			public override long Seek(long offset, SeekOrigin origin) => _innerStream.Seek(offset, origin);
+			public override void SetLength(long value) => _innerStream.SetLength(value);
+			public override void Write(byte[] buffer, int offset, int count) => _innerStream.Write(buffer, offset, count);
+			protected override void Dispose(bool disposing) => _innerStream.Dispose();
 		}
 	}
 }

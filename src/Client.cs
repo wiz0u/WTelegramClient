@@ -1227,7 +1227,7 @@ namespace WTelegram
 			=> UploadFileAsync(File.OpenRead(pathname), Path.GetFileName(pathname), progress);
 
 		/// <summary>Helper function to upload a file to Telegram</summary>
-		/// <param name="stream">Content of the file to upload</param>
+		/// <param name="stream">Content of the file to upload. This method close/dispose the stream</param>
 		/// <param name="filename">Name of the file</param>
 		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>
 		/// <returns>an <see cref="InputFile"/> or <see cref="InputFileBig"/> than can be used in various requests</returns>
@@ -1406,7 +1406,7 @@ namespace WTelegram
 							using var stream = await response.Content.ReadAsStreamAsync();
 							mimeType = response.Content.Headers.ContentType?.MediaType;
 							if (response.Content.Headers.ContentLength is long length)
-								return await UploadFileAsync(new Helpers.StreamWithLength { length = length, innerStream = stream }, filename);
+								return await UploadFileAsync(new Helpers.IndirectStream(stream) { ContentLength = length }, filename);
 							else
 							{
 								using var ms = new MemoryStream();
