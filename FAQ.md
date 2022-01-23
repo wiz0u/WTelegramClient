@@ -160,6 +160,28 @@ or if you are connected to a Test DC (a Telegram datacenter server for tests) in
 To help determine if `chats.chats` is empty or does not contain a certain chat, you should [dump the chat list to the screen](EXAMPLES.md#list-chats)
 or simply use a debugger: Place a breakpoint after the Messages_GetAllChats call, run the program up to there, and use a Watch pane to display the content of the chats.chats dictionary.
 
+<a name="shutdown"></a>
+#### 10. I get "Connection shut down" errors in my logs
+
+There are various reasons why you may get this error. Here are the explanation and how to solve it:
+
+1) On secondary DCs *(DC used to download files)*, a Connection shut down is considered "normal"  
+Your main DC is the one WTelegramClient connects to during login. Secondary DC connections are established and maintained when you download files.
+The DC number for an operation or error is indicated with a prefix like "2>" on the log line.
+If Telegram servers decide to shutdown this secondary connection, it's not an issue, WTelegramClient will re-established the connection later if necessary.
+
+2) Occasional connection shutdowns on the main DC should be caught by WTelegramClient and the reactor should automatically reconnect to the DC
+*(up to `MaxAutoReconnects` times)*.  
+This should be transparent and pending API calls should automatically be resent upon reconnection.
+You can choose to increase `MaxAutoReconnects` if it happens too often because your Internet connection is unstable.
+
+3) If you reach `MaxAutoReconnects` disconnections, then the **Update** event handler will receive a `ReactorError` object to notify you of the problem.  
+In this case, the recommended action would be to dispose the client and recreate one
+
+4) In case of slow Internet connection or if you break in the debugger for some time,
+you might also get Connection shutdown because your client couldn't send Pings to Telegram in the alloted time.  
+In this case, you can use the `PingInterval` property to increase the delay between pings *(for example 300 seconds instead of 60)*.
+
 <a name="troubleshoot"></a>
 ## Troubleshooting guide
 
