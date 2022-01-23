@@ -122,9 +122,9 @@ namespace WTelegram
 				Path.GetDirectoryName(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar)))
 				?? AppDomain.CurrentDomain.BaseDirectory, "WTelegram.session"),
 #if DEBUG
-			"server_address" => "149.154.167.40:443",
+			"server_address" => "149.154.167.40:443",	// Test DC 2
 #else
-			"server_address" => "149.154.167.50:443",
+			"server_address" => "149.154.167.50:443",	// DC 2
 #endif
 			"device_model" => Environment.Is64BitOperatingSystem ? "PC 64bit" : "PC 32bit",
 			"system_version" => System.Runtime.InteropServices.RuntimeInformation.OSDescription,
@@ -161,6 +161,7 @@ namespace WTelegram
 			Helpers.Log(2, $"{_dcSession.DcID}>Disposing the client");
 			Reset(false, IsMainDC);
 			_networkStream = null;
+			if (IsMainDC) _session.Dispose();
 			GC.SuppressFinalize(this);
 		}
 
@@ -973,8 +974,8 @@ namespace WTelegram
 					Helpers.Log(logLevel, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
 					switch (badMsgNotification.error_code)
 					{
-						case 16:
-						case 17:
+						case 16: // msg_id too low (most likely, client time is wrong; synchronize it using msg_id notifications and re-send the original message)
+						case 17: // msg_id too high (similar to the previous case, the client time has to be synchronized, and the message re-sent with the correct msg_id)
 							_dcSession.LastSentMsgId = 0;
 							var localTime = DateTime.UtcNow;
 							_dcSession.ServerTicksOffset = (_lastRecvMsgId >> 32) * 10000000 - localTime.Ticks + 621355968000000000L;

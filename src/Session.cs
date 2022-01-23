@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,9 +15,6 @@ namespace WTelegram
 		public int MainDC;
 		public Dictionary<int, DCSession> DCSessions = new();
 		public TL.DcOption[] DcOptions;
-
-		public UserShim User; // obsolete, to be removed
-		public class UserShim { public long id; } // to be removed
 
 		public class DCSession
 		{
@@ -39,19 +37,29 @@ namespace WTelegram
 		public DateTime SessionStart => _sessionStart;
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
 		private readonly SHA256 _sha256 = SHA256.Create();
-		private string _pathname;
+		private FileStream _fileStream;
+		private int _nextPosition;
 		private byte[] _apiHash;	// used as AES key for encryption of session file
 		private static readonly Aes aes = Aes.Create();
 
 		internal static Session LoadOrCreate(string pathname, byte[] apiHash)
 		{
-			if (File.Exists(pathname))
+			var header = new byte[8];
+			var fileStream = new FileStream(pathname, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1); // no buffering
+			if (fileStream.Read(header, 0, 8) == 8)
 			{
 				try
 				{
-					var session = Load(pathname, apiHash);
-					if (session.User != null) { session.UserId = session.User.id; session.User.id = 0; session.User = null; }
-					session._pathname = pathname;
+					var position = BinaryPrimitives.ReadInt32LittleEndian(header);
+					var length = BinaryPrimitives.ReadInt32LittleEndian(header.AsSpan(4));
+					if (position < 0 || length < 0 || position >= 65536 || length >= 32768){ position = 0; length = (int)fileStream.Length; }
+					var input = new byte[length];
+					fileStream.Position = position;
+					if (fileStream.Read(input, 0, length) != length)
+						throw new ApplicationException($"Can't read session block ({position}, {length})");
+					var session = Load(input, apiHash);
+					session._fileStream = fileStream;
+					session._nextPosition = position + length;
 					session._apiHash = apiHash;
 					Helpers.Log(2, "Loaded previous session");
 					return session;
@@ -61,12 +69,13 @@ namespace WTelegram
 					throw new ApplicationException($"Exception while reading session file: {ex.Message}\nDelete the file to start a new session", ex);
 				}
 			}
-			return new Session { _pathname = pathname, _apiHash = apiHash };
+			return new Session { _fileStream = fileStream, _nextPosition = 8, _apiHash = apiHash };
 		}
 
-		internal static Session Load(string pathname, byte[] apiHash)
+		internal void Dispose() => _fileStream.Dispose();
+
+		internal static Session Load(byte[] input, byte[] apiHash)
 		{
-			var input = File.ReadAllBytes(pathname);
 			using var sha256 = SHA256.Create();
 			using var decryptor = aes.CreateDecryptor(apiHash, input[0..16]);
 			var utf8Json = decryptor.TransformFinalBlock(input, 16, input.Length - 16);
@@ -86,12 +95,16 @@ namespace WTelegram
 			encryptor.TransformBlock(utf8Json, 0, utf8Json.Length & ~15, output, 48);
 			utf8Json.AsSpan(utf8Json.Length & ~15).CopyTo(finalBlock);
 			encryptor.TransformFinalBlock(finalBlock, 0, utf8Json.Length & 15).CopyTo(output.AsMemory(48 + utf8Json.Length & ~15));
-			string tempPathname = _pathname + ".tmp";
 			lock (this)
 			{
-				File.WriteAllBytes(tempPathname, output);
-				File.Copy(tempPathname, _pathname, true);
-				File.Delete(tempPathname);
+				if (_nextPosition > output.Length * 3) _nextPosition = 8;
+				_fileStream.Position = _nextPosition;
+				_fileStream.Write(output, 0, output.Length);
+				BinaryPrimitives.WriteInt32LittleEndian(finalBlock, _nextPosition);
+				BinaryPrimitives.WriteInt32LittleEndian(finalBlock.AsSpan(4), output.Length);
+				_nextPosition += output.Length;
+				_fileStream.Position = 0;
+				_fileStream.Write(finalBlock, 0, 8);
 			}
 		}
 	}
