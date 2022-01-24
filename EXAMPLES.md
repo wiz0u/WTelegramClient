@@ -156,6 +156,27 @@ var inputFile = await client.UploadFileAsync(Filepath);
 await client.SendMediaAsync(peer, "Here is the photo", inputFile);
 ```
 
+<a name="album"></a>
+### Send a grouped media album using photos from various sources
+```csharp
+// Photo 1 already on Telegram: latest photo found in the user's Saved Messages
+var history = await client.Messages_GetHistory(InputPeer.Self, 0, default, 0, 100, 0, 0, 0);
+PhotoBase photoFromTelegram = history.Messages.OfType<Message>().Select(m => m.media).OfType<MessageMediaPhoto>().First().photo;
+// Photo 2 uploaded now from our computer:
+var uploadedFile = await client.UploadFileAsync(@"C:\Pictures\flower.jpg");
+// Photo 3 specified by external url:
+const string photoUrl = "https://picsum.photos/310/200.jpg";
+
+var inputMedias = new InputMedia[]
+{
+    photoFromTelegram, // PhotoBase has implicit conversion to InputMediaPhoto
+    new InputMediaUploadedPhoto { file = uploadedFile },
+    new InputMediaPhotoExternal() { url = photoUrl },
+};
+await client.SendAlbumAsync(InputPeer.Self, inputMedias, "My first album");
+```
+*Note: Don't mix Photos and file Documents in your album, it doesn't work well*
+
 <a name="list-dialogs"></a>
 ### List all dialogs (chats/groups/channels/user chat) the user is in
 ```csharp
