@@ -40,10 +40,10 @@ namespace WTelegram
 		private readonly SHA256 _sha256 = SHA256.Create();
 		private FileStream _fileStream;
 		private int _nextPosition;
-		private byte[] _apiHash;	// used as AES key for encryption of session file
+		private byte[] _rgbKey;	// 32-byte encryption key
 		private static readonly Aes aes = Aes.Create();
 
-		internal static Session LoadOrCreate(string pathname, byte[] apiHash)
+		internal static Session LoadOrCreate(string pathname, byte[] rgbKey)
 		{
 			var header = new byte[8];
 			var fileStream = new FileStream(pathname, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1); // no buffering
@@ -58,10 +58,10 @@ namespace WTelegram
 					fileStream.Position = position;
 					if (fileStream.Read(input, 0, length) != length)
 						throw new ApplicationException($"Can't read session block ({position}, {length})");
-					var session = Load(input, apiHash);
+					var session = Load(input, rgbKey);
 					session._fileStream = fileStream;
 					session._nextPosition = position + length;
-					session._apiHash = apiHash;
+					session._rgbKey = rgbKey;
 					Helpers.Log(2, "Loaded previous session");
 					return session;
 				}
@@ -70,15 +70,15 @@ namespace WTelegram
 					throw new ApplicationException($"Exception while reading session file: {ex.Message}\nDelete the file to start a new session", ex);
 				}
 			}
-			return new Session { _fileStream = fileStream, _nextPosition = 8, _apiHash = apiHash };
+			return new Session { _fileStream = fileStream, _nextPosition = 8, _rgbKey = rgbKey };
 		}
 
 		internal void Dispose() => _fileStream.Dispose();
 
-		internal static Session Load(byte[] input, byte[] apiHash)
+		internal static Session Load(byte[] input, byte[] rgbKey)
 		{
 			using var sha256 = SHA256.Create();
-			using var decryptor = aes.CreateDecryptor(apiHash, input[0..16]);
+			using var decryptor = aes.CreateDecryptor(rgbKey, input[0..16]);
 			var utf8Json = decryptor.TransformFinalBlock(input, 16, input.Length - 16);
 			if (!sha256.ComputeHash(utf8Json, 32, utf8Json.Length - 32).SequenceEqual(utf8Json[0..32]))
 				throw new ApplicationException("Integrity check failed in session loading");
@@ -91,7 +91,7 @@ namespace WTelegram
 			var finalBlock = new byte[16];
 			var output = new byte[(16 + 32 + utf8Json.Length + 16) & ~15];
 			Encryption.RNG.GetBytes(output, 0, 16);
-			using var encryptor = aes.CreateEncryptor(_apiHash, output[0..16]);
+			using var encryptor = aes.CreateEncryptor(_rgbKey, output[0..16]);
 			encryptor.TransformBlock(_sha256.ComputeHash(utf8Json), 0, 32, output, 16);
 			encryptor.TransformBlock(utf8Json, 0, utf8Json.Length & ~15, output, 48);
 			utf8Json.AsSpan(utf8Json.Length & ~15).CopyTo(finalBlock);

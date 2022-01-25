@@ -23,7 +23,7 @@ If you need to manage these user accounts in parallel, you can create multiple i
 and give them a Config callback that will select a different session file ;
 for example: `new WTelegram.Client(what => Config(what, "session42"))`
 
-Also please note that the session files are encrypted with your api_hash, so if you change it, the existing session files can't be read anymore.
+Also please note that the session files are encrypted with your api_hash (or session_key), so if you change it, the existing session files can't be read anymore.
 Your api_id/api_hash represents your application, and shouldn't change with each user account the application will manage.
 
 <a name="GUI"></a>
