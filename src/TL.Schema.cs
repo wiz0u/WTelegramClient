@@ -5572,9 +5572,9 @@ namespace TL
 		/// <summary>App version</summary>
 		public string app_version;
 		/// <summary>When was the session created</summary>
-		public int date_created;
+		public DateTime date_created;
 		/// <summary>When was the session last active</summary>
-		public int date_active;
+		public DateTime date_active;
 		/// <summary>Last known IP</summary>
 		public string ip;
 		/// <summary>Country determined from IP</summary>
@@ -9542,9 +9542,9 @@ namespace TL
 		/// <summary>Platform</summary>
 		public string platform;
 		/// <summary>When was the web session created</summary>
-		public int date_created;
+		public DateTime date_created;
 		/// <summary>When was the web session last active</summary>
-		public int date_active;
+		public DateTime date_active;
 		/// <summary>IP address</summary>
 		public string ip;
 		/// <summary>Region, determined from IP address</summary>

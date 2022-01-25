@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -252,6 +253,16 @@ namespace WTelegram
 			0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xff, 0xda, 0x00, 0x0c, 0x03, 0x01, 0x00, 0x02, 0x11, 0x03, 0x11, 0x00,
 			0x3f, 0x00
 		};
+
+		internal static string GetSystemVersion()
+		{
+			var os = System.Runtime.InteropServices.RuntimeInformation.OSDescription;
+			int space = os.IndexOf(' ') + 1, dot = os.IndexOf('.');
+			return os[(os.IndexOf(' ', space) < 0 ? 0 : space)..(dot < 0 ? os.Length : dot)];
+		}
+
+		internal static string GetAppVersion()
+			=> (Assembly.GetEntryAssembly() ?? Array.Find(AppDomain.CurrentDomain.GetAssemblies(), a => a.EntryPoint != null))?.GetName().Version.ToString() ?? "0.0";
 
 		public class IndirectStream : Stream
 		{

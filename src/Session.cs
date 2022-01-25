@@ -11,6 +11,7 @@ namespace WTelegram
 {
 	internal class Session
 	{
+		public int ApiId;
 		public long UserId;
 		public int MainDC;
 		public Dictionary<int, DCSession> DCSessions = new();

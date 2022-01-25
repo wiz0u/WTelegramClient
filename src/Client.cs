@@ -50,9 +50,8 @@ namespace WTelegram
 		public delegate void ProgressCallback(long transmitted, long totalSize);
 
 		private readonly Func<string, string> _config;
-		private readonly int _apiId;
-		private readonly string _apiHash;
 		private readonly Session _session;
+		private string _apiHash;
 		private Session.DCSession _dcSession;
 		private TcpClient _tcpClient;
 		private Stream _networkStream;
@@ -89,9 +88,10 @@ namespace WTelegram
 		public Client(Func<string, string> configProvider = null)
 		{
 			_config = configProvider ?? DefaultConfigOrAsk;
-			_apiId = int.Parse(Config("api_id"));
-			_apiHash = Config("api_hash");
-			_session = Session.LoadOrCreate(Config("session_pathname"), Convert.FromHexString(_apiHash));
+			var session_pathname = Config("session_pathname");
+			var session_key = _config("session_key") ?? (_apiHash = Config("api_hash"));
+			_session = Session.LoadOrCreate(session_pathname, Convert.FromHexString(session_key));
+			if (_session.ApiId == 0) _session.ApiId = int.Parse(Config("api_id"));
 			if (_session.MainDC != 0) _session.DCSessions.TryGetValue(_session.MainDC, out _dcSession);
 			_dcSession ??= new() { Id = Helpers.RandomLong() };
 			_dcSession.Client = this;
@@ -102,8 +102,6 @@ namespace WTelegram
 		private Client(Client cloneOf, Session.DCSession dcSession)
 		{
 			_config = cloneOf._config;
-			_apiId = cloneOf._apiId;
-			_apiHash = cloneOf._apiHash;
 			_session = cloneOf._session;
 			TcpHandler = cloneOf.TcpHandler;
 			MTProxyUrl = cloneOf.MTProxyUrl;
@@ -127,8 +125,8 @@ namespace WTelegram
 			"server_address" => "149.154.167.50:443",	// DC 2
 #endif
 			"device_model" => Environment.Is64BitOperatingSystem ? "PC 64bit" : "PC 32bit",
-			"system_version" => System.Runtime.InteropServices.RuntimeInformation.OSDescription,
-			"app_version" => (Assembly.GetEntryAssembly() ?? AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.EntryPoint != null))?.GetName().Version.ToString() ?? "0.0",
+			"system_version" => Helpers.GetSystemVersion(),
+			"app_version" => Helpers.GetAppVersion(),
 			"system_lang_code" => CultureInfo.InstalledUICulture.TwoLetterISOLanguageName,
 			"lang_pack" => "",
 			"lang_code" => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
@@ -141,7 +139,8 @@ namespace WTelegram
 
 		private static string AskConfig(string config)
 		{
-			if (config == "api_id") Console.WriteLine("Welcome! You can obtain your api_id/api_hash at https://my.telegram.org/apps");
+			if (config == "session_key") return null;
+			if (config == "api_hash") Console.WriteLine("Welcome! You can obtain your api_id/api_hash at https://my.telegram.org/apps");
 			Console.Write($"Enter {config.Replace('_', ' ')}: ");
 			return Console.ReadLine();
 		}
@@ -340,7 +339,7 @@ namespace WTelegram
 				TLConfig = await this.InvokeWithLayer(Layer.Version,
 					new TL.Methods.InitConnection<Config>
 					{
-						api_id = _apiId,
+						api_id = _session.ApiId,
 						device_model = Config("device_model"),
 						system_version = Config("system_version"),
 						app_version = Config("app_version"),
@@ -1082,7 +1081,7 @@ namespace WTelegram
 				await this.Auth_LogOut();
 				_session.UserId = _dcSession.UserId = 0;
 			}
-			var authorization = await this.Auth_ImportBotAuthorization(0, _apiId, _apiHash, botToken);
+			var authorization = await this.Auth_ImportBotAuthorization(0, _session.ApiId, _apiHash ??= Config("api_hash"), botToken);
 			return LoginAlreadyDone(authorization);
 		}
 
@@ -1122,11 +1121,11 @@ namespace WTelegram
 			Auth_SentCode sentCode;
 			try
 			{
-				sentCode = await this.Auth_SendCode(phone_number, _apiId, _apiHash, settings ??= new());
+				sentCode = await this.Auth_SendCode(phone_number, _session.ApiId, _apiHash ??= Config("api_hash"), settings ??= new());
 			}
 			catch (RpcException ex) when (ex.Code == 500 && ex.Message == "AUTH_RESTART")
 			{
-				sentCode = await this.Auth_SendCode(phone_number, _apiId, _apiHash, settings ??= new());
+				sentCode = await this.Auth_SendCode(phone_number, _session.ApiId, _apiHash, settings);
 			}
 		resent:
 			var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);

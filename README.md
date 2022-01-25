@@ -23,7 +23,7 @@ static async Task Main(string[] _)
     Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name} (id {user.id})");
 }
 ```
-When run, this will prompt you interactively for your App **api_id** and **api_hash** (that you obtain through Telegram's [API development tools](https://my.telegram.org/apps) page) and try to connect to Telegram servers.
+When run, this will prompt you interactively for your App **api_hash** and **api_id** (that you obtain through Telegram's [API development tools](https://my.telegram.org/apps) page) and try to connect to Telegram servers.
 
 Then it will attempt to sign-in *(login)* as a user for which you must enter the **phone_number** and the **verification_code** that will be sent to this user (for example through SMS or another Telegram client app the user is connected to).
 
@@ -33,7 +33,7 @@ And that's it, you now have access to the **[full range of Telegram Client APIs]
 All those API methods are available *(with an underscore in the method name, instead of a dot)*, like this: `await client.Method_Name(...)`
 
 # Saved session
-If you run this program again, you will notice that only **api_id** and **api_hash** are requested, the other prompts are gone and you are automatically logged-on and ready to go.
+If you run this program again, you will notice that only **api_hash** is requested, the other prompts are gone and you are automatically logged-on and ready to go.
 
 This is because WTelegramClient saves (typically in the encrypted file **bin\WTelegram.session**) its state and the authentication keys that were negociated with Telegram so that you needn't sign-in again every time.
 
@@ -127,7 +127,7 @@ The Client class also offers an `Update` event that is triggered when Telegram s
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
-The other configuration items that you can override include: **session_pathname, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
+The other configuration items that you can override include: **session_pathname, session_key, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
 
 Optional API parameters have a default value of `null` when unset. Passing `null` for a required string/array is the same as *empty* (0-length). Required API parameters/fields can sometimes be set to 0 or `null` when unused (check API documentation or experiment).
 
