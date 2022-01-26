@@ -47,13 +47,13 @@ namespace WTelegram
 		{
 			var header = new byte[8];
 			var fileStream = new FileStream(pathname, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1); // no buffering
-			if (fileStream.Read(header, 0, 8) == 8)
+			try
 			{
-				try
+				if (fileStream.Read(header, 0, 8) == 8)
 				{
 					var position = BinaryPrimitives.ReadInt32LittleEndian(header);
 					var length = BinaryPrimitives.ReadInt32LittleEndian(header.AsSpan(4));
-					if (position < 0 || length < 0 || position >= 65536 || length >= 32768){ position = 0; length = (int)fileStream.Length; }
+					if (position < 0 || length < 0 || position >= 65536 || length >= 32768) { position = 0; length = (int)fileStream.Length; }
 					var input = new byte[length];
 					fileStream.Position = position;
 					if (fileStream.Read(input, 0, length) != length)
@@ -65,10 +65,11 @@ namespace WTelegram
 					Helpers.Log(2, "Loaded previous session");
 					return session;
 				}
-				catch (Exception ex)
-				{
-					throw new ApplicationException($"Exception while reading session file: {ex.Message}\nDelete the file to start a new session", ex);
-				}
+			}
+			catch (Exception ex)
+			{
+				fileStream.Dispose();
+				throw new ApplicationException($"Exception while reading session file: {ex.Message}\nDelete the file to start a new session", ex);
 			}
 			return new Session { _fileStream = fileStream, _nextPosition = 8, _rgbKey = rgbKey };
 		}
