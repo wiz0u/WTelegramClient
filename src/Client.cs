@@ -85,12 +85,13 @@ namespace WTelegram
 
 		/// <summary>Welcome to WTelegramClient! 🙂</summary>
 		/// <param name="configProvider">Config callback, is queried for: <b>api_id</b>, <b>api_hash</b>, <b>session_pathname</b></param>
-		public Client(Func<string, string> configProvider = null)
+		/// <param name="sessionStore">if specified, must support initial Length &amp; Read() of a session, then calls to Write() the updated session. Other calls can be ignored</param>
+		public Client(Func<string, string> configProvider = null, Stream sessionStore = null)
 		{
 			_config = configProvider ?? DefaultConfigOrAsk;
-			var session_pathname = Config("session_pathname");
+			sessionStore ??= new SessionStore(Config("session_pathname"));
 			var session_key = _config("session_key") ?? (_apiHash = Config("api_hash"));
-			_session = Session.LoadOrCreate(session_pathname, Convert.FromHexString(session_key));
+			_session = Session.LoadOrCreate(sessionStore, Convert.FromHexString(session_key));
 			if (_session.ApiId == 0) _session.ApiId = int.Parse(Config("api_id"));
 			if (_session.MainDC != 0) _session.DCSessions.TryGetValue(_session.MainDC, out _dcSession);
 			_dcSession ??= new() { Id = Helpers.RandomLong() };

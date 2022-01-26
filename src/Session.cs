@@ -38,29 +38,22 @@ namespace WTelegram
 		public DateTime SessionStart => _sessionStart;
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
 		private readonly SHA256 _sha256 = SHA256.Create();
-		private FileStream _fileStream;
-		private int _nextPosition;
+		private Stream _store;
 		private byte[] _rgbKey;	// 32-byte encryption key
 		private static readonly Aes aes = Aes.Create();
 
-		internal static Session LoadOrCreate(string pathname, byte[] rgbKey)
+		internal static Session LoadOrCreate(Stream store, byte[] rgbKey)
 		{
-			var header = new byte[8];
-			var fileStream = new FileStream(pathname, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1); // no buffering
 			try
 			{
-				if (fileStream.Read(header, 0, 8) == 8)
+				var length = (int)store.Length;
+				if (length > 0)
 				{
-					var position = BinaryPrimitives.ReadInt32LittleEndian(header);
-					var length = BinaryPrimitives.ReadInt32LittleEndian(header.AsSpan(4));
-					if (position < 0 || length < 0 || position >= 65536 || length >= 32768) { position = 0; length = (int)fileStream.Length; }
 					var input = new byte[length];
-					fileStream.Position = position;
-					if (fileStream.Read(input, 0, length) != length)
-						throw new ApplicationException($"Can't read session block ({position}, {length})");
+					if (store.Read(input, 0, length) != length)
+						throw new ApplicationException($"Can't read session block ({store.Position}, {length})");
 					var session = Load(input, rgbKey);
-					session._fileStream = fileStream;
-					session._nextPosition = position + length;
+					session._store = store;
 					session._rgbKey = rgbKey;
 					Helpers.Log(2, "Loaded previous session");
 					return session;
@@ -68,13 +61,13 @@ namespace WTelegram
 			}
 			catch (Exception ex)
 			{
-				fileStream.Dispose();
+				store.Dispose();
 				throw new ApplicationException($"Exception while reading session file: {ex.Message}\nDelete the file to start a new session", ex);
 			}
-			return new Session { _fileStream = fileStream, _nextPosition = 8, _rgbKey = rgbKey };
+			return new Session { _store = store, _rgbKey = rgbKey };
 		}
 
-		internal void Dispose() => _fileStream.Dispose();
+		internal void Dispose() => _store.Dispose();
 
 		internal static Session Load(byte[] input, byte[] rgbKey)
 		{
@@ -97,17 +90,47 @@ namespace WTelegram
 			encryptor.TransformBlock(utf8Json, 0, utf8Json.Length & ~15, output, 48);
 			utf8Json.AsSpan(utf8Json.Length & ~15).CopyTo(finalBlock);
 			encryptor.TransformFinalBlock(finalBlock, 0, utf8Json.Length & 15).CopyTo(output.AsMemory(48 + utf8Json.Length & ~15));
-			lock (this)
+			lock (_store)
 			{
-				if (_nextPosition > output.Length * 3) _nextPosition = 8;
-				_fileStream.Position = _nextPosition;
-				_fileStream.Write(output, 0, output.Length);
-				BinaryPrimitives.WriteInt32LittleEndian(finalBlock, _nextPosition);
-				BinaryPrimitives.WriteInt32LittleEndian(finalBlock.AsSpan(4), output.Length);
-				_nextPosition += output.Length;
-				_fileStream.Position = 0;
-				_fileStream.Write(finalBlock, 0, 8);
+				_store.Position = 0;
+				_store.Write(output, 0, output.Length);
+				_store.SetLength(output.Length);
 			}
+		}
+	}
+
+	internal class SessionStore : FileStream
+	{
+		public override long Length { get; }
+		private readonly byte[] _header = new byte[8];
+		private int _nextPosition = 8;
+		public override long Position { get => base.Position; set { } }
+		public override void SetLength(long value) { }
+
+		public SessionStore(string pathname)
+			: base(pathname, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1) // no buffering
+		{
+			if (base.Read(_header, 0, 8) == 8)
+			{
+				var position = BinaryPrimitives.ReadInt32LittleEndian(_header);
+				var length = BinaryPrimitives.ReadInt32LittleEndian(_header.AsSpan(4));
+				if (position < 0 || length < 0 || position >= 65536 || length >= 32768) { position = 0; length = (int)base.Length; }
+				base.Position = position;
+				Length = length;
+				_nextPosition = position + length;
+			}
+		}
+
+		public override void Write(byte[] buffer, int offset, int count)
+		{
+			if (_nextPosition > count * 3) _nextPosition = 8;
+			base.Position = _nextPosition;
+			base.Write(buffer, offset, count);
+			BinaryPrimitives.WriteInt32LittleEndian(_header, _nextPosition);
+			BinaryPrimitives.WriteInt32LittleEndian(_header.AsSpan(4), count);
+			_nextPosition += count;
+			base.Position = 0;
+			base.Write(_header, 0, 8);
 		}
 	}
 }
