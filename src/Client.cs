@@ -364,7 +364,7 @@ namespace WTelegram
 			}
 			finally
 			{
-				_session.Save();
+				lock (_session) _session.Save();
 			}
 			Helpers.Log(2, $"Connected to {(TLConfig.test_mode ? "Test DC" : "DC")} {TLConfig.this_dc}... {TLConfig.flags & (Config.Flags)~0xE00}");
 		}
@@ -907,7 +907,7 @@ namespace WTelegram
 					else if (rpcError.error_code == 500 && rpcError.error_message == "AUTH_RESTART")
 					{
 						_session.UserId = 0; // force a full login authorization flow, next time
-						_session.Save();
+						lock (_session) _session.Save();
 					}
 					throw new RpcException(rpcError.error_code, rpcError.error_message);
 				case ReactorError:
@@ -1186,7 +1186,7 @@ namespace WTelegram
 			if (authorization is not Auth_Authorization { user: User user })
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
 			_session.UserId = _dcSession.UserId = user.id;
-			_session.Save();
+			lock (_session) _session.Save();
 			return user;
 		}
 

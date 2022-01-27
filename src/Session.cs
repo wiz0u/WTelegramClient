@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace WTelegram
 {
-	internal class Session
+	internal class Session : IDisposable
 	{
 		public int ApiId;
 		public long UserId;
@@ -39,11 +39,24 @@ namespace WTelegram
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
 		private readonly SHA256 _sha256 = SHA256.Create();
 		private Stream _store;
-		private byte[] _rgbKey;	// 32-byte encryption key
-		private static readonly Aes aes = Aes.Create();
+		private byte[] _encrypted = new byte[16];
+		private ICryptoTransform _encryptor;
+		private Utf8JsonWriter _jsonWriter;
+		private readonly MemoryStream _jsonStream = new(4096);
+
+		public void Dispose()
+		{
+			_sha256.Dispose();
+			_store.Dispose();
+			_encryptor.Dispose();
+			_jsonWriter.Dispose();
+			_jsonStream.Dispose();
+		}
 
 		internal static Session LoadOrCreate(Stream store, byte[] rgbKey)
 		{
+			using var aes = Aes.Create();
+			Session session = null;
 			try
 			{
 				var length = (int)store.Length;
@@ -52,11 +65,13 @@ namespace WTelegram
 					var input = new byte[length];
 					if (store.Read(input, 0, length) != length)
 						throw new ApplicationException($"Can't read session block ({store.Position}, {length})");
-					var session = Load(input, rgbKey);
-					session._store = store;
-					session._rgbKey = rgbKey;
+					using var sha256 = SHA256.Create();
+					using var decryptor = aes.CreateDecryptor(rgbKey, input[0..16]);
+					var utf8Json = decryptor.TransformFinalBlock(input, 16, input.Length - 16);
+					if (!sha256.ComputeHash(utf8Json, 32, utf8Json.Length - 32).SequenceEqual(utf8Json[0..32]))
+						throw new ApplicationException("Integrity check failed in session loading");
+					session = JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), Helpers.JsonOptions);
 					Helpers.Log(2, "Loaded previous session");
-					return session;
 				}
 			}
 			catch (Exception ex)
@@ -64,48 +79,40 @@ namespace WTelegram
 				store.Dispose();
 				throw new ApplicationException($"Exception while reading session file: {ex.Message}\nDelete the file to start a new session", ex);
 			}
-			return new Session { _store = store, _rgbKey = rgbKey };
+			session ??= new Session();
+			session._store = store;
+			Encryption.RNG.GetBytes(session._encrypted, 0, 16);
+			session._encryptor = aes.CreateEncryptor(rgbKey, session._encrypted);
+			session._jsonWriter = new Utf8JsonWriter(session._jsonStream, default);
+			return session;
 		}
 
-		internal void Dispose() => _store.Dispose();
-
-		internal static Session Load(byte[] input, byte[] rgbKey)
+		internal void Save() // must be called with lock(session)
 		{
-			using var sha256 = SHA256.Create();
-			using var decryptor = aes.CreateDecryptor(rgbKey, input[0..16]);
-			var utf8Json = decryptor.TransformFinalBlock(input, 16, input.Length - 16);
-			if (!sha256.ComputeHash(utf8Json, 32, utf8Json.Length - 32).SequenceEqual(utf8Json[0..32]))
-				throw new ApplicationException("Integrity check failed in session loading");
-			return JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), Helpers.JsonOptions);
-		}
-
-		internal void Save()
-		{
-			var utf8Json = JsonSerializer.SerializeToUtf8Bytes(this, Helpers.JsonOptions);
-			var finalBlock = new byte[16];
-			var output = new byte[(16 + 32 + utf8Json.Length + 16) & ~15];
-			Encryption.RNG.GetBytes(output, 0, 16);
-			using var encryptor = aes.CreateEncryptor(_rgbKey, output[0..16]);
-			encryptor.TransformBlock(_sha256.ComputeHash(utf8Json), 0, 32, output, 16);
-			encryptor.TransformBlock(utf8Json, 0, utf8Json.Length & ~15, output, 48);
-			utf8Json.AsSpan(utf8Json.Length & ~15).CopyTo(finalBlock);
-			encryptor.TransformFinalBlock(finalBlock, 0, utf8Json.Length & 15).CopyTo(output.AsMemory(48 + utf8Json.Length & ~15));
-			lock (_store)
-			{
-				_store.Position = 0;
-				_store.Write(output, 0, output.Length);
-				_store.SetLength(output.Length);
-			}
+			JsonSerializer.Serialize(_jsonWriter, this, Helpers.JsonOptions);
+			var utf8Json = _jsonStream.GetBuffer();
+			var utf8JsonLen = (int)_jsonStream.Position;
+			int encryptedLen = 64 + (utf8JsonLen & ~15);
+			if (encryptedLen > _encrypted.Length)
+				Array.Copy(_encrypted, _encrypted = new byte[encryptedLen + 256], 16);
+			_encryptor.TransformBlock(_sha256.ComputeHash(utf8Json, 0, utf8JsonLen), 0, 32, _encrypted, 16);
+			_encryptor.TransformBlock(utf8Json, 0, encryptedLen - 64, _encrypted, 48);
+			_encryptor.TransformFinalBlock(utf8Json, encryptedLen - 64, utf8JsonLen & 15).CopyTo(_encrypted, encryptedLen - 16);
+			_store.Position = 0;
+			_store.Write(_encrypted, 0, encryptedLen);
+			_store.SetLength(encryptedLen);
+			_jsonStream.Position = 0;
+			_jsonWriter.Reset();
 		}
 	}
 
 	internal class SessionStore : FileStream
 	{
 		public override long Length { get; }
-		private readonly byte[] _header = new byte[8];
-		private int _nextPosition = 8;
 		public override long Position { get => base.Position; set { } }
 		public override void SetLength(long value) { }
+		private readonly byte[] _header = new byte[8];
+		private int _nextPosition = 8;
 
 		public SessionStore(string pathname)
 			: base(pathname, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1) // no buffering
