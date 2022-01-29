@@ -140,8 +140,11 @@ namespace WTelegram
 
 		private static string AskConfig(string config)
 		{
-			if (config == "session_key") return null;
-			if (config == "api_hash") Console.WriteLine("Welcome! You can obtain your api_id/api_hash at https://my.telegram.org/apps");
+			if (config == "session_key")
+			{
+				Console.WriteLine("Welcome! You can obtain your api_id/api_hash at https://my.telegram.org/apps");
+				return null;
+			}
 			Console.Write($"Enter {config.Replace('_', ' ')}: ");
 			return Console.ReadLine();
 		}

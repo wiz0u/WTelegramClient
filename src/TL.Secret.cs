@@ -111,7 +111,7 @@ namespace TL
 			/// <summary>Latitude of point</summary>
 			public double lat;
 			/// <summary>Longtitude of point</summary>
-			public double long_;
+			public double lon;
 		}
 		/// <summary>Contact attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaContact"/></para></summary>
 		[TLDef(0x588A0A97)]
@@ -459,7 +459,7 @@ namespace TL
 			/// <summary>Latitude of venue</summary>
 			public double lat;
 			/// <summary>Longitude of venue</summary>
-			public double long_;
+			public double lon;
 			/// <summary>Venue name</summary>
 			public string title;
 			/// <summary>Address</summary>

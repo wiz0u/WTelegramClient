@@ -488,7 +488,7 @@ namespace TL
 		/// <summary>Latitide</summary>
 		public double lat;
 		/// <summary>Longtitude</summary>
-		public double long_;
+		public double lon;
 		/// <summary>The estimated horizontal accuracy of the location, in meters; as defined by the sender.</summary>
 		[IfFlag(0)] public int accuracy_radius;
 
@@ -2279,7 +2279,7 @@ namespace TL
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		/// <summary>Longtitude</summary>
-		public double long_;
+		public double lon;
 		/// <summary>Latitude</summary>
 		public double lat;
 		/// <summary>Access hash</summary>
@@ -4187,20 +4187,24 @@ namespace TL
 	}
 
 	/// <summary>Object which is perceived by the client without a call on its part when an event occurs.		<para>Derived classes: <see cref="UpdatesTooLong"/>, <see cref="UpdateShortMessage"/>, <see cref="UpdateShortChatMessage"/>, <see cref="UpdateShort"/>, <see cref="UpdatesCombined"/>, <see cref="Updates"/>, <see cref="UpdateShortSentMessage"/></para>		<para>See <a href="https://corefork.telegram.org/type/Updates"/></para></summary>
-	public abstract partial class UpdatesBase : IObject
+	public abstract partial class UpdatesBase : IObject, IPeerResolver
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/updates">date</a></summary>
 		public abstract DateTime Date { get; }
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
 	/// <summary>Too many updates, it is necessary to execute <a href="https://corefork.telegram.org/method/updates.getDifference">updates.getDifference</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updatesTooLong"/></para></summary>
 	[TLDef(0xE317AF7E)]
-	public partial class UpdatesTooLong : UpdatesBase
+	public partial class UpdatesTooLong : UpdatesBase, IPeerResolver
 	{
 		public override DateTime Date => default;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 	/// <summary>Info about a message sent to (received from) another user		<para>See <a href="https://corefork.telegram.org/constructor/updateShortMessage"/></para></summary>
 	[TLDef(0x313BC7F8)]
-	public partial class UpdateShortMessage : UpdatesBase
+	public partial class UpdateShortMessage : UpdatesBase, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -4251,10 +4255,12 @@ namespace TL
 
 		/// <summary><a href="https://corefork.telegram.org/api/updates">date</a></summary>
 		public override DateTime Date => date;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 	/// <summary>Shortened constructor containing info on one new incoming text message from a chat		<para>See <a href="https://corefork.telegram.org/constructor/updateShortChatMessage"/></para></summary>
 	[TLDef(0x4D6DEEA5)]
-	public partial class UpdateShortChatMessage : UpdatesBase
+	public partial class UpdateShortChatMessage : UpdatesBase, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -4307,10 +4313,12 @@ namespace TL
 
 		/// <summary><a href="https://corefork.telegram.org/api/updates">date</a></summary>
 		public override DateTime Date => date;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 	/// <summary>Shortened constructor containing info on one update not requiring auxiliary data		<para>See <a href="https://corefork.telegram.org/constructor/updateShort"/></para></summary>
 	[TLDef(0x78D4DEC1)]
-	public partial class UpdateShort : UpdatesBase
+	public partial class UpdateShort : UpdatesBase, IPeerResolver
 	{
 		/// <summary>Update</summary>
 		public Update update;
@@ -4319,6 +4327,8 @@ namespace TL
 
 		/// <summary>Date of event</summary>
 		public override DateTime Date => date;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 	/// <summary>Constructor for a group of updates.		<para>See <a href="https://corefork.telegram.org/constructor/updatesCombined"/></para></summary>
 	[TLDef(0x725B04C3)]
@@ -4340,7 +4350,7 @@ namespace TL
 		/// <summary>Current date</summary>
 		public override DateTime Date => date;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Full constructor of updates		<para>See <a href="https://corefork.telegram.org/constructor/updates"/></para></summary>
 	[TLDef(0x74AE4240)]
@@ -4360,11 +4370,11 @@ namespace TL
 		/// <summary>Current date</summary>
 		public override DateTime Date => date;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 	/// <summary>Shortened constructor containing info on one outgoing message to a contact (the destination chat has to be extracted from the method call that returned this object).		<para>See <a href="https://corefork.telegram.org/constructor/updateShortSentMessage"/></para></summary>
 	[TLDef(0x9015E101)]
-	public partial class UpdateShortSentMessage : UpdatesBase
+	public partial class UpdateShortSentMessage : UpdatesBase, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -4397,6 +4407,8 @@ namespace TL
 
 		/// <summary><a href="https://corefork.telegram.org/api/updates">date</a></summary>
 		public override DateTime Date => date;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}
 
 	/// <summary>Full list of photos with auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/photos.photos"/></para></summary>
