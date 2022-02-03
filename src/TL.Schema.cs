@@ -2065,7 +2065,7 @@ namespace TL
 		public abstract int TopMessage { get; }
 	}
 	/// <summary>Chat		<para>See <a href="https://corefork.telegram.org/constructor/dialog"/></para></summary>
-	[TLDef(0x2C171F72)]
+	[TLDef(0xA8EDD0F5)]
 	public class Dialog : DialogBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -2082,6 +2082,7 @@ namespace TL
 		public int unread_count;
 		/// <summary>Number of <a href="https://corefork.telegram.org/api/mentions">unread mentions</a></summary>
 		public int unread_mentions_count;
+		public int unread_reactions_count;
 		/// <summary>Notification settings</summary>
 		public PeerNotifySettings notify_settings;
 		/// <summary><a href="https://corefork.telegram.org/api/updates">PTS</a></summary>
@@ -5897,6 +5898,7 @@ namespace TL
 			has_thumbs = 0x10,
 			/// <summary>Is this an animated stickerpack</summary>
 			animated = 0x20,
+			gifs = 0x40,
 		}
 	}
 
@@ -12472,42 +12474,33 @@ namespace TL
 	}
 
 	/// <summary>Message reactions		<para>See <a href="https://corefork.telegram.org/constructor/messageReactions"/></para></summary>
-	[TLDef(0x087B6E36)]
+	[TLDef(0x4F2B9479)]
 	public class MessageReactions : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		/// <summary>Reactions</summary>
 		public ReactionCount[] results;
-		[IfFlag(1)] public MessageUserReaction[] recent_reactons;
+		[IfFlag(1)] public MessagePeerReaction[] recent_reactions;
 
 		[Flags] public enum Flags
 		{
 			/// <summary>Similar to <a href="https://corefork.telegram.org/api/min">min</a> objects, used for message reaction constructors that are the same for all users so they don't have the reactions sent by the current user (you can use <a href="https://corefork.telegram.org/method/messages.getMessagesReactions">messages.getMessagesReactions</a> to get the full reaction info).</summary>
 			min = 0x1,
-			/// <summary>Field <see cref="recent_reactons"/> has a value</summary>
-			has_recent_reactons = 0x2,
+			/// <summary>Field <see cref="recent_reactions"/> has a value</summary>
+			has_recent_reactions = 0x2,
 			can_see_list = 0x4,
 		}
 	}
 
-	/// <summary>Message reaction		<para>See <a href="https://corefork.telegram.org/constructor/messageUserReaction"/></para></summary>
-	[TLDef(0x932844FA)]
-	public class MessageUserReaction : IObject
-	{
-		/// <summary>ID of user that reacted this way</summary>
-		public long user_id;
-		/// <summary>Reaction (UTF8 emoji)</summary>
-		public string reaction;
-	}
-
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.messageReactionsList"/></para></summary>
-	[TLDef(0xA366923C)]
-	public class Messages_MessageReactionsList : IObject
+	[TLDef(0x31BD492D)]
+	public class Messages_MessageReactionsList : IObject, IPeerResolver
 	{
 		public Flags flags;
 		public int count;
-		public MessageUserReaction[] reactions;
+		public MessagePeerReaction[] reactions;
+		public Dictionary<long, ChatBase> chats;
 		public Dictionary<long, User> users;
 		[IfFlag(0)] public string next_offset;
 
@@ -12516,6 +12509,8 @@ namespace TL
 			/// <summary>Field <see cref="next_offset"/> has a value</summary>
 			has_next_offset = 0x1,
 		}
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/availableReaction"/></para></summary>
@@ -12548,6 +12543,34 @@ namespace TL
 	{
 		public int hash;
 		public AvailableReaction[] reactions;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/messages.TranslatedText"/></para></summary>
+	public abstract class Messages_TranslatedText : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.translateNoResult"/></para></summary>
+	[TLDef(0x67CA4737)]
+	public class Messages_TranslateNoResult : Messages_TranslatedText { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.translateResultText"/></para></summary>
+	[TLDef(0xA214F7D0)]
+	public class Messages_TranslateResultText : Messages_TranslatedText
+	{
+		public string text;
+	}
+
+	/// <summary>Message reaction		<para>See <a href="https://corefork.telegram.org/constructor/messagePeerReaction"/></para></summary>
+	[TLDef(0x51B67EFF)]
+	public class MessagePeerReaction : IObject
+	{
+		public Flags flags;
+		public Peer peer_id;
+		/// <summary>Reaction (UTF8 emoji)</summary>
+		public string reaction;
+
+		[Flags] public enum Flags
+		{
+			big = 0x1,
+			unread = 0x2,
+		}
 	}
 
 	// ---functions---
@@ -15475,10 +15498,10 @@ namespace TL
 		/// <param name="peer">Peer</param>
 		/// <param name="msg_id">Message ID to react to</param>
 		/// <param name="reaction">Reaction (a UTF8 emoji)</param>
-		public static Task<UpdatesBase> Messages_SendReaction(this Client client, InputPeer peer, int msg_id, string reaction = null)
+		public static Task<UpdatesBase> Messages_SendReaction(this Client client, InputPeer peer, int msg_id, bool big = false, string reaction = null)
 			=> client.Invoke(new Messages_SendReaction
 			{
-				flags = (Messages_SendReaction.Flags)(reaction != null ? 0x1 : 0),
+				flags = (Messages_SendReaction.Flags)((big ? 0x2 : 0) | (reaction != null ? 0x1 : 0)),
 				peer = peer,
 				msg_id = msg_id,
 				reaction = reaction,
@@ -15532,6 +15555,37 @@ namespace TL
 			=> client.Invoke(new Messages_SetDefaultReaction
 			{
 				reaction = reaction,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.translateText"/></para></summary>
+		public static Task<Messages_TranslatedText> Messages_TranslateText(this Client client, string to_lang, InputPeer peer = null, int? msg_id = null, string text = null, string from_lang = null)
+			=> client.Invoke(new Messages_TranslateText
+			{
+				flags = (Messages_TranslateText.Flags)((peer != null ? 0x1 : 0) | (msg_id != null ? 0x1 : 0) | (text != null ? 0x2 : 0) | (from_lang != null ? 0x4 : 0)),
+				peer = peer,
+				msg_id = msg_id.GetValueOrDefault(),
+				text = text,
+				from_lang = from_lang,
+				to_lang = to_lang,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getUnreadReactions"/></para></summary>
+		public static Task<Messages_MessagesBase> Messages_GetUnreadReactions(this Client client, InputPeer peer, int offset_id, int add_offset, int limit, int max_id, int min_id)
+			=> client.Invoke(new Messages_GetUnreadReactions
+			{
+				peer = peer,
+				offset_id = offset_id,
+				add_offset = add_offset,
+				limit = limit,
+				max_id = max_id,
+				min_id = min_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.readReactions"/></para></summary>
+		public static Task<Messages_AffectedHistory> Messages_ReadReactions(this Client client, InputPeer peer)
+			=> client.Invoke(new Messages_ReadReactions
+			{
+				peer = peer,
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -19442,6 +19496,7 @@ namespace TL.Methods
 		{
 			/// <summary>Field <see cref="reaction"/> has a value</summary>
 			has_reaction = 0x1,
+			big = 0x2,
 		}
 	}
 
@@ -19488,6 +19543,44 @@ namespace TL.Methods
 	public class Messages_SetDefaultReaction : IMethod<bool>
 	{
 		public string reaction;
+	}
+
+	[TLDef(0x24CE6DEE)]
+	public class Messages_TranslateText : IMethod<Messages_TranslatedText>
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputPeer peer;
+		[IfFlag(0)] public int msg_id;
+		[IfFlag(1)] public string text;
+		[IfFlag(2)] public string from_lang;
+		public string to_lang;
+
+		[Flags] public enum Flags
+		{
+			/// <summary>Field <see cref="peer"/> has a value</summary>
+			has_peer = 0x1,
+			/// <summary>Field <see cref="text"/> has a value</summary>
+			has_text = 0x2,
+			/// <summary>Field <see cref="from_lang"/> has a value</summary>
+			has_from_lang = 0x4,
+		}
+	}
+
+	[TLDef(0xE85BAE1A)]
+	public class Messages_GetUnreadReactions : IMethod<Messages_MessagesBase>
+	{
+		public InputPeer peer;
+		public int offset_id;
+		public int add_offset;
+		public int limit;
+		public int max_id;
+		public int min_id;
+	}
+
+	[TLDef(0x82E251D7)]
+	public class Messages_ReadReactions : IMethod<Messages_AffectedHistory>
+	{
+		public InputPeer peer;
 	}
 
 	[TLDef(0xEDD4882A)]

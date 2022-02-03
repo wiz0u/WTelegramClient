@@ -7,7 +7,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 137;					// fetched 19/01/2022 20:17:41
+		public const int Version = 138;					// fetched 31/01/2022 22:18:08
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -186,7 +186,7 @@ namespace TL
 			[0xB3A07661] = typeof(MessageActionGroupCallScheduled),
 			[0xAA786345] = typeof(MessageActionSetChatTheme),
 			[0xEBBCA3CB] = typeof(MessageActionChatJoinedByRequest),
-			[0x2C171F72] = typeof(Dialog),
+			[0xA8EDD0F5] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
 			[0xFB197A65] = typeof(Photo),
@@ -934,12 +934,14 @@ namespace TL
 			[0x6880B94D] = typeof(Messages_PeerSettings),
 			[0xC3A2835F] = typeof(Auth_LoggedOut),
 			[0x6FB250D1] = typeof(ReactionCount),
-			[0x087B6E36] = typeof(MessageReactions),
-			[0x932844FA] = typeof(MessageUserReaction),
-			[0xA366923C] = typeof(Messages_MessageReactionsList),
+			[0x4F2B9479] = typeof(MessageReactions),
+			[0x31BD492D] = typeof(Messages_MessageReactionsList),
 			[0xC077EC01] = typeof(AvailableReaction),
 			[0x9F071957] = null,//Messages_AvailableReactionsNotModified
 			[0x768E3AAD] = typeof(Messages_AvailableReactions),
+			[0x67CA4737] = typeof(Messages_TranslateNoResult),
+			[0xA214F7D0] = typeof(Messages_TranslateResultText),
+			[0x51B67EFF] = typeof(MessagePeerReaction),
 			// from TL.Secret:
 			[0xBB718624] = typeof(Layer66.SendMessageUploadRoundAction),
 			[0xE50511D8] = typeof(Layer45.DecryptedMessageMediaWebPage),

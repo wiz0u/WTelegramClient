@@ -182,7 +182,7 @@ namespace WTelegram
 			{
 			}
 			_cts?.Cancel();
-			_sendSemaphore = new(0);
+			_sendSemaphore = new(0);	// initially taken, first released during DoConnectAsync
 			_reactorTask = null;
 			_networkStream?.Close();
 			_tcpClient?.Dispose();
@@ -815,26 +815,16 @@ namespace WTelegram
 			}
 			else
 			{
-				string typeName;
 				var ctorNb = reader.ReadUInt32();
 				if (ctorNb == Layer.VectorCtor)
 				{
 					reader.BaseStream.Position -= 4;
-					var array = reader.ReadTLVector(typeof(IObject[]));
-					if (array.Length > 0)
-					{
-						for (type = array.GetValue(0).GetType(); type.BaseType != typeof(object);) type = type.BaseType;
-						typeName = type.Name + "[]";
-					}
-					else
-						typeName = "object[]";
-					result = array;
+					result = reader.ReadTLVector(typeof(IObject[]));
 				}
-				else
-				{
-					result = reader.ReadTLObject(ctorNb);
-					typeName = result?.GetType().Name;
-				}
+				else if (ctorNb == (uint)Bool.False) result = false;
+				else if (ctorNb == (uint)Bool.True) result = true;
+				else result = reader.ReadTLObject(ctorNb);
+				var typeName = result?.GetType().Name;
 				if (MsgIdToStamp(msgId) >= _session.SessionStart)
 					Helpers.Log(4, $"             → {typeName,-37} for unknown msgId #{(short)msgId.GetHashCode():X4}");
 				else
