@@ -39,14 +39,14 @@ namespace TL
 			writer.Write(ctorNb);
 			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 			if (tlDef.inheritBefore) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
-			int flags = 0;
+			uint flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
 			{
-				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1 << ifFlag.Bit)) == 0) continue;
+				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1U << ifFlag.Bit)) == 0) continue;
 				object value = field.GetValue(obj);
 				writer.WriteTLValue(value, field.FieldType);
-				if (field.Name == "flags") flags = (int)value;
+				if (field.Name == "flags") flags = (uint)value;
 			}
 		}
 
@@ -63,14 +63,14 @@ namespace TL
 			var obj = Activator.CreateInstance(type);
 			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 			if (tlDef.inheritBefore) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
-			int flags = 0;
+			uint flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
 			{
-				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1 << ifFlag.Bit)) == 0) continue;
+				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1U << ifFlag.Bit)) == 0) continue;
 				object value = reader.ReadTLValue(field.FieldType);
 				field.SetValue(obj, value);
-				if (field.Name == "flags") flags = (int)value;
+				if (field.Name == "flags") flags = (uint)value;
 				else if (field.Name == "access_hash") reader.Client?.UpdateAccessHash(obj, type, value);
 			}
 			return (IObject)obj;
@@ -108,6 +108,8 @@ namespace TL
 						writer.Write(int256);
 					else if (value is IObject tlObject)
 						WriteTLObject(writer, tlObject);
+					else if (type.IsEnum) // needed for Mono (enums in generic types are seen as TypeCode.Object)
+						writer.Write((uint)value);
 					else
 						ShouldntBeHere();
 					break;

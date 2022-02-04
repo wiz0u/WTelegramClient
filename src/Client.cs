@@ -369,7 +369,7 @@ namespace WTelegram
 			{
 				lock (_session) _session.Save();
 			}
-			Helpers.Log(2, $"Connected to {(TLConfig.test_mode ? "Test DC" : "DC")} {TLConfig.this_dc}... {TLConfig.flags & (Config.Flags)~0xE00}");
+			Helpers.Log(2, $"Connected to {(TLConfig.test_mode ? "Test DC" : "DC")} {TLConfig.this_dc}... {TLConfig.flags & (Config.Flags)~0xE00U}");
 		}
 
 		/// <summary>Obtain/create a Client for a secondary session on a specific Data Center</summary>

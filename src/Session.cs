@@ -39,6 +39,7 @@ namespace WTelegram
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
 		private readonly SHA256 _sha256 = SHA256.Create();
 		private Stream _store;
+		private byte[] _reuseKey;   // used only if AES Encryptor.CanReuseTransform = false (Mono)
 		private byte[] _encrypted = new byte[16];
 		private ICryptoTransform _encryptor;
 		private Utf8JsonWriter _jsonWriter;
@@ -83,6 +84,7 @@ namespace WTelegram
 			session._store = store;
 			Encryption.RNG.GetBytes(session._encrypted, 0, 16);
 			session._encryptor = aes.CreateEncryptor(rgbKey, session._encrypted);
+			if (!session._encryptor.CanReuseTransform) session._reuseKey = rgbKey;
 			session._jsonWriter = new Utf8JsonWriter(session._jsonStream, default);
 			return session;
 		}
@@ -98,6 +100,9 @@ namespace WTelegram
 			_encryptor.TransformBlock(_sha256.ComputeHash(utf8Json, 0, utf8JsonLen), 0, 32, _encrypted, 16);
 			_encryptor.TransformBlock(utf8Json, 0, encryptedLen - 64, _encrypted, 48);
 			_encryptor.TransformFinalBlock(utf8Json, encryptedLen - 64, utf8JsonLen & 15).CopyTo(_encrypted, encryptedLen - 16);
+			if (!_encryptor.CanReuseTransform) // under Mono, AES encryptor is not reusable
+				using (var aes = Aes.Create())
+					_encryptor = aes.CreateEncryptor(_reuseKey, _encrypted[0..16]);
 			_store.Position = 0;
 			_store.Write(_encrypted, 0, encryptedLen);
 			_store.SetLength(encryptedLen);

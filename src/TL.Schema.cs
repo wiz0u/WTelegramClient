@@ -198,7 +198,7 @@ namespace TL
 		/// <summary>Time to live in seconds of self-destructing photo</summary>
 		[IfFlag(1)] public int ttl_seconds;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="stickers"/> has a value</summary>
 			has_stickers = 0x1,
@@ -217,7 +217,7 @@ namespace TL
 		/// <summary>Time to live in seconds of self-destructing photo</summary>
 		[IfFlag(0)] public int ttl_seconds;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="ttl_seconds"/> has a value</summary>
 			has_ttl_seconds = 0x1,
@@ -262,7 +262,7 @@ namespace TL
 		/// <summary>Time to live in seconds of self-destructing document</summary>
 		[IfFlag(1)] public int ttl_seconds;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="stickers"/> has a value</summary>
 			has_stickers = 0x1,
@@ -289,7 +289,7 @@ namespace TL
 		/// <summary>Text query or emoji that was used by the user to find this sticker or GIF: used to improve search result relevance.</summary>
 		[IfFlag(1)] public string query;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="ttl_seconds"/> has a value</summary>
 			has_ttl_seconds = 0x1,
@@ -325,7 +325,7 @@ namespace TL
 		/// <summary>Self-destruct time to live of photo</summary>
 		[IfFlag(0)] public int ttl_seconds;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="ttl_seconds"/> has a value</summary>
 			has_ttl_seconds = 0x1,
@@ -342,7 +342,7 @@ namespace TL
 		/// <summary>Self-destruct time to live of document</summary>
 		[IfFlag(0)] public int ttl_seconds;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="ttl_seconds"/> has a value</summary>
 			has_ttl_seconds = 0x1,
@@ -378,7 +378,7 @@ namespace TL
 		/// <summary>Start parameter</summary>
 		[IfFlag(1)] public string start_param;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="photo"/> has a value</summary>
 			has_photo = 0x1,
@@ -401,7 +401,7 @@ namespace TL
 		/// <summary>For <a href="https://corefork.telegram.org/api/live-location">live locations</a>, a maximum distance to another chat member for proximity alerts, in meters (0-100000)</summary>
 		[IfFlag(3)] public int proximity_notification_radius;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether sending of the geolocation was stopped</summary>
 			stopped = 0x1,
@@ -428,7 +428,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
 		[IfFlag(1)] public MessageEntity[] solution_entities;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="correct_answers"/> has a value</summary>
 			has_correct_answers = 0x1,
@@ -460,7 +460,7 @@ namespace TL
 		/// <summary>Timestamp that should be shown as static preview to the user (seconds)</summary>
 		[IfFlag(2)] public double video_start_ts;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="file"/> has a value</summary>
 			has_file = 0x1,
@@ -492,7 +492,7 @@ namespace TL
 		/// <summary>The estimated horizontal accuracy of the location, in meters; as defined by the sender.</summary>
 		[IfFlag(0)] public int accuracy_radius;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="accuracy_radius"/> has a value</summary>
 			has_accuracy_radius = 0x1,
@@ -602,7 +602,7 @@ namespace TL
 		/// <summary>Photo ID</summary>
 		public long photo_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether to download the high-quality version of the picture</summary>
 			big = 0x1,
@@ -634,7 +634,7 @@ namespace TL
 		/// <summary>Selected video quality (0 = lowest, 1 = medium, 2 = best)</summary>
 		[IfFlag(0)] public int video_quality;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="video_channel"/> has a value</summary>
 			has_video_channel = 0x1,
@@ -730,7 +730,7 @@ namespace TL
 		/// <summary>Language code of the user</summary>
 		[IfFlag(22)] public string lang_code;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="access_hash"/> has a value</summary>
 			has_access_hash = 0x1,
@@ -797,7 +797,7 @@ namespace TL
 		/// <summary>DC ID where the photo is stored</summary>
 		public int dc_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether an <a href="https://corefork.telegram.org/api/files#animated-profile-pictures">animated profile picture</a> is available for this user</summary>
 			has_video = 0x1,
@@ -877,7 +877,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/rights">Default banned rights</a> of all users in the group</summary>
 		[IfFlag(18)] public ChatBannedRights default_banned_rights;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the current user is the creator of the group</summary>
 			creator = 0x1,
@@ -948,7 +948,7 @@ namespace TL
 		/// <summary>Participant count</summary>
 		[IfFlag(17)] public int participants_count;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the current user is the creator of this channel</summary>
 			creator = 0x1,
@@ -1017,7 +1017,7 @@ namespace TL
 		/// <summary>The ban is valid until the specified date</summary>
 		[IfFlag(16)] public DateTime until_date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Is this a channel</summary>
 			broadcast = 0x20,
@@ -1100,7 +1100,7 @@ namespace TL
 		[IfFlag(17)] public long[] recent_requesters;
 		[IfFlag(18)] public string[] available_reactions;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="chat_photo"/> has a value</summary>
 			has_chat_photo = 0x4,
@@ -1231,7 +1231,7 @@ namespace TL
 		[IfFlag(29)] public Peer default_send_as;
 		[IfFlag(30)] public string[] available_reactions;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="participants_count"/> has a value</summary>
 			has_participants_count = 0x1,
@@ -1379,7 +1379,7 @@ namespace TL
 		/// <summary>Info about the group membership of the current user</summary>
 		[IfFlag(0)] public ChatParticipantBase self_participant;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="self_participant"/> has a value</summary>
 			has_self_participant = 0x1,
@@ -1417,7 +1417,7 @@ namespace TL
 		/// <summary>DC where this photo is stored</summary>
 		public int dc_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the user has an animated profile picture</summary>
 			has_video = 0x1,
@@ -1453,7 +1453,7 @@ namespace TL
 		/// <summary>Peer ID, the chat where this message was sent</summary>
 		[IfFlag(0)] public Peer peer_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="peer_id"/> has a value</summary>
 			has_peer_id = 0x1,
@@ -1514,7 +1514,7 @@ namespace TL
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
 		[IfFlag(25)] public int ttl_period;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Is this an outgoing message</summary>
 			out_ = 0x2,
@@ -1601,7 +1601,7 @@ namespace TL
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
 		[IfFlag(25)] public int ttl_period;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the message is outgoing</summary>
 			out_ = 0x2,
@@ -1651,7 +1651,7 @@ namespace TL
 		/// <summary>Time to live in seconds of self-destructing photo</summary>
 		[IfFlag(2)] public int ttl_seconds;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="photo"/> has a value</summary>
 			has_photo = 0x1,
@@ -1695,7 +1695,7 @@ namespace TL
 		/// <summary>Time to live of self-destructing document</summary>
 		[IfFlag(2)] public int ttl_seconds;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="document"/> has a value</summary>
 			has_document = 0x1,
@@ -1755,7 +1755,7 @@ namespace TL
 		/// <summary>Unique bot deep-linking parameter that can be used to generate this invoice</summary>
 		public string start_param;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="photo"/> has a value</summary>
 			has_photo = 0x1,
@@ -1782,7 +1782,7 @@ namespace TL
 		/// <summary>For <a href="https://corefork.telegram.org/api/live-location">live locations</a>, a maximum distance to another chat member for proximity alerts, in meters (0-100000).</summary>
 		[IfFlag(1)] public int proximity_notification_radius;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="heading"/> has a value</summary>
 			has_heading = 0x1,
@@ -1916,7 +1916,7 @@ namespace TL
 		/// <summary>Provider payment identifier</summary>
 		public PaymentCharge charge;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="info"/> has a value</summary>
 			has_info = 0x1,
@@ -1946,7 +1946,7 @@ namespace TL
 		/// <summary>Duration of the call in seconds</summary>
 		[IfFlag(1)] public int duration;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reason"/> has a value</summary>
 			has_reason = 0x1,
@@ -2014,7 +2014,7 @@ namespace TL
 		/// <summary>Group call duration</summary>
 		[IfFlag(0)] public int duration;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="duration"/> has a value</summary>
 			has_duration = 0x1,
@@ -2092,7 +2092,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		[IfFlag(4)] public int folder_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="pts"/> has a value</summary>
 			has_pts = 0x1,
@@ -2132,7 +2132,7 @@ namespace TL
 		/// <summary>Number of unread messages from unmuted peers in folder</summary>
 		public int unread_unmuted_messages_count;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Is this folder pinned</summary>
 			pinned = 0x4,
@@ -2174,7 +2174,7 @@ namespace TL
 		/// <summary>DC ID to use for download</summary>
 		public int dc_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the photo has mask stickers attached to it</summary>
 			has_stickers = 0x1,
@@ -2288,7 +2288,7 @@ namespace TL
 		/// <summary>The estimated horizontal accuracy of the location, in meters; as defined by the sender.</summary>
 		[IfFlag(0)] public int accuracy_radius;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="accuracy_radius"/> has a value</summary>
 			has_accuracy_radius = 0x1,
@@ -2310,7 +2310,7 @@ namespace TL
 		/// <summary>Timeout for reception of the phone code</summary>
 		[IfFlag(2)] public int timeout;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="next_type"/> has a value</summary>
 			has_next_type = 0x2,
@@ -2333,7 +2333,7 @@ namespace TL
 		/// <summary>Info on authorized user</summary>
 		public UserBase user;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="tmp_sessions"/> has a value</summary>
 			has_tmp_sessions = 0x1,
@@ -2349,7 +2349,7 @@ namespace TL
 		/// <summary>Telegram's terms of service: the user must read and accept the terms of service before signing up to telegram</summary>
 		[IfFlag(0)] public Help_TermsOfService terms_of_service;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="terms_of_service"/> has a value</summary>
 			has_terms_of_service = 0x1,
@@ -2400,7 +2400,7 @@ namespace TL
 		/// <summary>Name of an audio file for notification</summary>
 		[IfFlag(3)] public string sound;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="show_previews"/> has a value</summary>
 			has_show_previews = 0x1,
@@ -2428,7 +2428,7 @@ namespace TL
 		/// <summary>Audio file name for notifications</summary>
 		[IfFlag(3)] public string sound;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="show_previews"/> has a value</summary>
 			has_show_previews = 0x1,
@@ -2452,7 +2452,7 @@ namespace TL
 		[IfFlag(9)] public string request_chat_title;
 		[IfFlag(9)] public DateTime request_chat_date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether we can still report the user for spam</summary>
 			report_spam = 0x1,
@@ -2503,7 +2503,7 @@ namespace TL
 		/// <summary>Wallpaper settings</summary>
 		[IfFlag(2)] public WallPaperSettings settings;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Creator of the wallpaper</summary>
 			creator = 0x1,
@@ -2533,7 +2533,7 @@ namespace TL
 		/// <summary>Wallpaper settings</summary>
 		[IfFlag(2)] public WallPaperSettings settings;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this is the default wallpaper</summary>
 			default_ = 0x2,
@@ -2599,7 +2599,7 @@ namespace TL
 		[IfFlag(15)] public string theme_emoticon;
 		[IfFlag(16)] public string private_forward_name;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether you have blocked this user</summary>
 			blocked = 0x1,
@@ -2797,7 +2797,7 @@ namespace TL
 		/// <summary>Indicates the absolute position of <c>messages[0]</c> within the total result set with count <c>count</c>. <br/>This is useful, for example, if the result was fetched using <c>offset_id</c>, and we need to display a <c>progress/total</c> counter (like <c>photo 134 of 200</c>, for all media in a chat, we could simply use <c>photo ${offset_id_offset} of ${count}</c>.</summary>
 		[IfFlag(2)] public int offset_id_offset;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="next_rate"/> has a value</summary>
 			has_next_rate = 0x1,
@@ -2826,7 +2826,7 @@ namespace TL
 		/// <summary>Users</summary>
 		public Dictionary<long, User> users;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>If set, returned results may be inexact</summary>
 			inexact = 0x2,
@@ -2929,7 +2929,7 @@ namespace TL
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Return only missed phone calls</summary>
 			missed = 0x1,
@@ -3138,7 +3138,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
 		public MessageEntity[] entities;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>(boolTrue) if the message must be displayed in a popup.</summary>
 			popup = 0x1,
@@ -3183,7 +3183,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/updates">Number of events that were generated</a></summary>
 		public int pts_count;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="folder_id"/> has a value</summary>
 			has_folder_id = 0x1,
@@ -3235,7 +3235,7 @@ namespace TL
 		/// <summary>The <a href="https://corefork.telegram.org/api/updates">PTS</a>.</summary>
 		[IfFlag(0)] public int pts;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="pts"/> has a value</summary>
 			has_pts = 0x1,
@@ -3268,7 +3268,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/updates">Event count after generation</a></summary>
 		public int pts;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="folder_id"/> has a value</summary>
 			has_folder_id = 0x1,
@@ -3317,7 +3317,7 @@ namespace TL
 		/// <summary>New sticker order by sticker ID</summary>
 		public long[] order;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the updated stickers are mask stickers</summary>
 			masks = 0x1,
@@ -3348,7 +3348,7 @@ namespace TL
 		/// <summary>Offset to navigate through results</summary>
 		public string offset;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="geo"/> has a value</summary>
 			has_geo = 0x1,
@@ -3373,7 +3373,7 @@ namespace TL
 		/// <summary>Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message. Will be also received in callback queries and can be used to edit the message.</summary>
 		[IfFlag(1)] public InputBotInlineMessageIDBase msg_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="geo"/> has a value</summary>
 			has_geo = 0x1,
@@ -3405,7 +3405,7 @@ namespace TL
 		/// <summary>Short name of a Game to be returned, serves as the unique identifier for the game</summary>
 		[IfFlag(1)] public string game_short_name;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="data"/> has a value</summary>
 			has_data = 0x1,
@@ -3443,7 +3443,7 @@ namespace TL
 		/// <summary>Short name of a Game to be returned, serves as the unique identifier for the game</summary>
 		[IfFlag(1)] public string game_short_name;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="data"/> has a value</summary>
 			has_data = 0x1,
@@ -3499,7 +3499,7 @@ namespace TL
 		/// <summary>The dialog</summary>
 		public DialogPeerBase peer;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the dialog was pinned</summary>
 			pinned = 0x1,
@@ -3518,7 +3518,7 @@ namespace TL
 		/// <summary>New order of pinned dialogs</summary>
 		[IfFlag(0)] public DialogPeerBase[] order;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="order"/> has a value</summary>
 			has_order = 0x1,
@@ -3578,7 +3578,7 @@ namespace TL
 		/// <summary>Total amount in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long total_amount;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="info"/> has a value</summary>
 			has_info = 0x1,
@@ -3636,7 +3636,7 @@ namespace TL
 		/// <summary>The dialog</summary>
 		public DialogPeerBase peer;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Was the chat marked or unmarked as read</summary>
 			unread = 0x1,
@@ -3655,7 +3655,7 @@ namespace TL
 		/// <summary>New poll results</summary>
 		public PollResults results;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="poll"/> has a value</summary>
 			has_poll = 0x1,
@@ -3758,7 +3758,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> info</summary>
 		[IfFlag(0)] public DialogFilter filter;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="filter"/> has a value</summary>
 			has_filter = 0x1,
@@ -3809,7 +3809,7 @@ namespace TL
 		/// <summary>If set, contains the ID of the channel post that started the the <a href="https://corefork.telegram.org/api/threads">comment thread</a></summary>
 		[IfFlag(0)] public int broadcast_post;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="broadcast_id"/> has a value</summary>
 			has_broadcast_id = 0x1,
@@ -3850,7 +3850,7 @@ namespace TL
 		/// <summary>Whether the user is typing, sending a media or doing something else</summary>
 		public SendMessageAction action;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="top_msg_id"/> has a value</summary>
 			has_top_msg_id = 0x1,
@@ -3871,7 +3871,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/updates">Number of events that were generated</a></summary>
 		public int pts_count;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the messages were pinned or unpinned</summary>
 			pinned = 0x1,
@@ -3892,7 +3892,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/updates">Number of events that were generated</a></summary>
 		public int pts_count;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the messages were pinned or unpinned</summary>
 			pinned = 0x1,
@@ -3936,7 +3936,7 @@ namespace TL
 		/// <summary>The new Time-To-Live</summary>
 		[IfFlag(0)] public int ttl_period;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="ttl_period"/> has a value</summary>
 			has_ttl_period = 0x1,
@@ -3965,7 +3965,7 @@ namespace TL
 		/// <summary>New <strong>qts</strong> value, see <a href="https://corefork.telegram.org/api/updates">updates »</a> for more info.</summary>
 		public int qts;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="prev_participant"/> has a value</summary>
 			has_prev_participant = 0x1,
@@ -3998,7 +3998,7 @@ namespace TL
 		/// <summary>New <strong>qts</strong> value, see <a href="https://corefork.telegram.org/api/updates">updates »</a> for more info.</summary>
 		public int qts;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="prev_participant"/> has a value</summary>
 			has_prev_participant = 0x1,
@@ -4030,7 +4030,7 @@ namespace TL
 		/// <summary>WebRTC parameters</summary>
 		public DataJSON params_;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Are these parameters related to the screen capture session currently in progress?</summary>
 			presentation = 0x1,
@@ -4232,7 +4232,7 @@ namespace TL
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
 		[IfFlag(25)] public int ttl_period;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the message is outgoing</summary>
 			out_ = 0x2,
@@ -4290,7 +4290,7 @@ namespace TL
 		/// <summary>Time To Live of the message, once updateShortChatMessage.date+updateShortChatMessage.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
 		[IfFlag(25)] public int ttl_period;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the message is outgoing</summary>
 			out_ = 0x2,
@@ -4394,7 +4394,7 @@ namespace TL
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
 		[IfFlag(25)] public int ttl_period;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the message is outgoing</summary>
 			out_ = 0x2,
@@ -4483,7 +4483,7 @@ namespace TL
 		/// <summary>If the <c>tcpo_only</c> flag is set, specifies the secret to use when connecting using <a href="https://corefork.telegram.org/mtproto/mtproto-transports#transport-obfuscation">transport obfuscation</a></summary>
 		[IfFlag(10)] public byte[] secret;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the specified IP is an IPv6 address</summary>
 			ipv6 = 0x1,
@@ -4595,7 +4595,7 @@ namespace TL
 		/// <summary>Basic language pack version</summary>
 		[IfFlag(2)] public int base_lang_pack_version;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="tmp_sessions"/> has a value</summary>
 			has_tmp_sessions = 0x1,
@@ -4662,7 +4662,7 @@ namespace TL
 		/// <summary>Associated sticker</summary>
 		[IfFlag(3)] public DocumentBase sticker;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Unskippable, the new info must be shown to the user (with a popup or something else)</summary>
 			can_not_skip = 0x1,
@@ -4738,7 +4738,7 @@ namespace TL
 		/// <summary><c>A = g ^ a mod p</c>, see <a href="https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange">Wikipedia</a></summary>
 		public byte[] g_a;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="folder_id"/> has a value</summary>
 			has_folder_id = 0x1,
@@ -4778,7 +4778,7 @@ namespace TL
 		/// <summary>Chat ID</summary>
 		public int id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether both users of this secret chat should also remove all of its messages</summary>
 			history_deleted = 0x1,
@@ -5011,7 +5011,7 @@ namespace TL
 		/// <summary>Attributes</summary>
 		public DocumentAttribute[] attributes;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="thumbs"/> has a value</summary>
 			has_thumbs = 0x1,
@@ -5335,7 +5335,7 @@ namespace TL
 		/// <summary>Mask coordinates (if this is a mask sticker, attached to a photo)</summary>
 		[IfFlag(0)] public MaskCoords mask_coords;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="mask_coords"/> has a value</summary>
 			has_mask_coords = 0x1,
@@ -5356,7 +5356,7 @@ namespace TL
 		/// <summary>Video height</summary>
 		public int h;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this is a round video</summary>
 			round_message = 0x1,
@@ -5379,7 +5379,7 @@ namespace TL
 		/// <summary>Waveform</summary>
 		[IfFlag(2)] public byte[] waveform;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x1,
@@ -5515,7 +5515,7 @@ namespace TL
 		/// <summary>Webpage attributes</summary>
 		[IfFlag(12)] public WebPageAttribute[] attributes;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="type"/> has a value</summary>
 			has_type = 0x1,
@@ -5555,7 +5555,7 @@ namespace TL
 		/// <summary>Page view count</summary>
 		[IfFlag(0)] public int cached_page_views;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="cached_page_views"/> has a value</summary>
 			has_cached_page_views = 0x1,
@@ -5595,7 +5595,7 @@ namespace TL
 		/// <summary>Region determined from IP</summary>
 		public string region;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this is the current session</summary>
 			current = 0x1,
@@ -5642,7 +5642,7 @@ namespace TL
 		/// <summary>The 2FA password will be automatically removed at this date, unless the user cancels the operation</summary>
 		[IfFlag(5)] public DateTime pending_reset_date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the user has a recovery method configured</summary>
 			has_recovery = 0x1,
@@ -5670,7 +5670,7 @@ namespace TL
 		/// <summary>Telegram <a href="https://corefork.telegram.org/passport">passport</a> settings</summary>
 		[IfFlag(1)] public SecureSecretSettings secure_settings;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="email"/> has a value</summary>
 			has_email = 0x1,
@@ -5696,7 +5696,7 @@ namespace TL
 		/// <summary>Telegram <a href="https://corefork.telegram.org/passport">passport</a> settings</summary>
 		[IfFlag(2)] public SecureSecretSettings new_secure_settings;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="new_algo"/> has a value</summary>
 			has_new_algo = 0x1,
@@ -5750,7 +5750,7 @@ namespace TL
 		[IfFlag(7)] public int requested;
 		[IfFlag(8)] public string title;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this chat invite was revoked</summary>
 			revoked = 0x1,
@@ -5797,7 +5797,7 @@ namespace TL
 		/// <summary>A few of the participants that are in the group</summary>
 		[IfFlag(4)] public UserBase[] participants;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this is a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> or a <a href="https://corefork.telegram.org/api/channel">normal group</a></summary>
 			channel = 0x1,
@@ -5884,7 +5884,7 @@ namespace TL
 		/// <summary>Hash</summary>
 		public int hash;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="installed_date"/> has a value</summary>
 			has_installed_date = 0x1,
@@ -5971,7 +5971,7 @@ namespace TL
 		/// <summary>Callback data</summary>
 		public byte[] data;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the user should verify his identity by entering his <a href="https://corefork.telegram.org/api/srp">2FA SRP parameters</a> to the <a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer">messages.getBotCallbackAnswer</a> method. NOTE: telegram and the bot WILL NOT have access to the plaintext password, thanks to <a href="https://corefork.telegram.org/api/srp">SRP</a>. This button is mainly used by the official <a href="https://t.me/botfather">@botfather</a> bot, for verifying the user's identity before transferring ownership of a bot to another user.</summary>
 			requires_password = 0x1,
@@ -6001,7 +6001,7 @@ namespace TL
 		/// <summary>The inline query to use</summary>
 		public string query;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>If set, pressing the button will insert the bot‘s username and the specified inline <c>query</c> in the current chat's input field.</summary>
 			same_peer = 0x1,
@@ -6035,7 +6035,7 @@ namespace TL
 		/// <summary>ID of the button to pass to <a href="https://corefork.telegram.org/method/messages.requestUrlAuth">messages.requestUrlAuth</a></summary>
 		public int button_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="fwd_text"/> has a value</summary>
 			has_fwd_text = 0x1,
@@ -6059,7 +6059,7 @@ namespace TL
 		/// <summary>Username of a bot, which will be used for user authorization. See <a href="https://corefork.telegram.org/widgets/login#setting-up-a-bot">Setting up a bot</a> for more details. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See <a href="https://corefork.telegram.org/widgets/login#linking-your-domain-to-the-bot">Linking your domain to the bot</a> for more details.</summary>
 		public InputUserBase bot;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Set this flag to request the permission for your bot to send messages to the user.</summary>
 			request_write_access = 0x1,
@@ -6079,7 +6079,7 @@ namespace TL
 		/// <summary>If set, only quiz polls can be sent</summary>
 		[IfFlag(0)] public bool quiz;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="quiz"/> has a value</summary>
 			has_quiz = 0x1,
@@ -6118,7 +6118,7 @@ namespace TL
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Use this flag if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.<br/><br/>Example: A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet</summary>
 			selective = 0x4,
@@ -6133,7 +6133,7 @@ namespace TL
 		/// <summary>The placeholder to be shown in the input field when the keyboard is active; 1-64 characters.</summary>
 		[IfFlag(3)] public string placeholder;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat – the user can press a special button in the input field to see the custom keyboard again.</summary>
 			single_use = 0x2,
@@ -6154,7 +6154,7 @@ namespace TL
 		/// <summary>The placeholder to be shown in the input field when the keyboard is active; 1-64 characters.</summary>
 		[IfFlag(3)] public string placeholder;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). If not set, the custom keyboard is always of the same height as the app's standard keyboard.</summary>
 			resize = 0x1,
@@ -6334,7 +6334,7 @@ namespace TL
 		/// <summary>Clients are supposed to refetch the channel difference after timeout seconds have elapsed</summary>
 		[IfFlag(1)] public int timeout;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether there are more updates that must be fetched (always false)</summary>
 			final = 0x1,
@@ -6361,7 +6361,7 @@ namespace TL
 		/// <summary>Users from messages</summary>
 		public Dictionary<long, User> users;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether there are more updates that must be fetched (always false)</summary>
 			final = 0x1,
@@ -6390,7 +6390,7 @@ namespace TL
 		/// <summary>Users</summary>
 		public Dictionary<long, User> users;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether there are more updates to be fetched using getDifference, starting from the provided <c>pts</c></summary>
 			final = 0x1,
@@ -6411,7 +6411,7 @@ namespace TL
 		/// <summary>A range of messages to fetch</summary>
 		public MessageRange[] ranges;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether to exclude new messages from the search</summary>
 			exclude_new_messages = 0x2,
@@ -6441,7 +6441,7 @@ namespace TL
 		/// <summary>When did I join the channel/supergroup</summary>
 		public DateTime date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			via_request = 0x1,
 		}
@@ -6459,7 +6459,7 @@ namespace TL
 		/// <summary>The role (rank) of the group creator in the group: just an arbitrary string, <c>admin</c> by default</summary>
 		[IfFlag(0)] public string rank;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="rank"/> has a value</summary>
 			has_rank = 0x1,
@@ -6484,7 +6484,7 @@ namespace TL
 		/// <summary>The role (rank) of the admin in the group: just an arbitrary string, <c>admin</c> by default</summary>
 		[IfFlag(2)] public string rank;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Can this admin promote other admins with the same permissions?</summary>
 			can_edit = 0x1,
@@ -6509,7 +6509,7 @@ namespace TL
 		/// <summary>Banned <a href="https://corefork.telegram.org/api/rights">rights</a></summary>
 		public ChatBannedRights banned_rights;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the user has left the group</summary>
 			left = 0x1,
@@ -6573,7 +6573,7 @@ namespace TL
 		/// <summary>Look only for users that posted in this <a href="https://corefork.telegram.org/api/threads">thread</a></summary>
 		[IfFlag(1)] public int top_msg_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="q"/> has a value</summary>
 			has_q = 0x1,
@@ -6628,7 +6628,7 @@ namespace TL
 		/// <summary>Minimum age required to sign up to telegram, the user must confirm that they is older than the minimum age.</summary>
 		[IfFlag(1)] public int min_age_confirm;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether a prompt must be showed to the user, in order to accept the new terms.</summary>
 			popup = 0x1,
@@ -6665,7 +6665,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="entities"/> has a value</summary>
 			has_entities = 0x2,
@@ -6684,7 +6684,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Disable webpage preview</summary>
 			no_webpage = 0x1,
@@ -6709,7 +6709,7 @@ namespace TL
 		/// <summary>Reply markup for bot/inline keyboards</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="heading"/> has a value</summary>
 			has_heading = 0x1,
@@ -6740,7 +6740,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_markup"/> has a value</summary>
 			has_reply_markup = 0x4,
@@ -6761,7 +6761,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_markup"/> has a value</summary>
 			has_reply_markup = 0x4,
@@ -6774,7 +6774,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_markup"/> has a value</summary>
 			has_reply_markup = 0x4,
@@ -6801,7 +6801,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="photo"/> has a value</summary>
 			has_photo = 0x1,
@@ -6841,7 +6841,7 @@ namespace TL
 		/// <summary>Message to send when the result is selected</summary>
 		public InputBotInlineMessage send_message;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x2,
@@ -6897,7 +6897,7 @@ namespace TL
 		/// <summary>Message to send when the result is selected</summary>
 		public InputBotInlineMessage send_message;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x2,
@@ -6944,7 +6944,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="entities"/> has a value</summary>
 			has_entities = 0x2,
@@ -6963,7 +6963,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Disable webpage preview</summary>
 			no_webpage = 0x1,
@@ -6988,7 +6988,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="heading"/> has a value</summary>
 			has_heading = 0x1,
@@ -7019,7 +7019,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_markup"/> has a value</summary>
 			has_reply_markup = 0x4,
@@ -7040,7 +7040,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_markup"/> has a value</summary>
 			has_reply_markup = 0x4,
@@ -7063,7 +7063,7 @@ namespace TL
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="photo"/> has a value</summary>
 			has_photo = 0x1,
@@ -7113,7 +7113,7 @@ namespace TL
 		/// <summary>Message to send</summary>
 		public BotInlineMessage send_message;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x2,
@@ -7159,7 +7159,7 @@ namespace TL
 		/// <summary>Depending on the <c>type</c> and on the <see cref="BotInlineMessage"/>, contains the caption of the media or the content of the message to be sent <strong>instead</strong> of the media</summary>
 		public BotInlineMessage send_message;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="photo"/> has a value</summary>
 			has_photo = 0x1,
@@ -7202,7 +7202,7 @@ namespace TL
 		/// <summary>Users mentioned in the results</summary>
 		public Dictionary<long, User> users;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the result is a picture gallery</summary>
 			gallery = 0x1,
@@ -7246,7 +7246,7 @@ namespace TL
 		/// <summary>PSA type</summary>
 		[IfFlag(6)] public string psa_type;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="from_id"/> has a value</summary>
 			has_from_id = 0x1,
@@ -7328,7 +7328,7 @@ namespace TL
 		/// <summary>For how long should this answer be cached</summary>
 		public DateTime cache_time;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="message"/> has a value</summary>
 			has_message = 0x1,
@@ -7350,7 +7350,7 @@ namespace TL
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Media caption, if the specified media's caption can be edited</summary>
 			caption = 0x1,
@@ -7502,7 +7502,7 @@ namespace TL
 		/// <summary>When was the draft last updated</summary>
 		[IfFlag(0)] public DateTime date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="date"/> has a value</summary>
 			has_date = 0x1,
@@ -7523,7 +7523,7 @@ namespace TL
 		/// <summary>Date of last update of the draft.</summary>
 		public DateTime date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
 			has_reply_to_msg_id = 0x1,
@@ -7678,7 +7678,7 @@ namespace TL
 		/// <summary>Optional attached document</summary>
 		[IfFlag(0)] public DocumentBase document;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="document"/> has a value</summary>
 			has_document = 0x1,
@@ -7966,7 +7966,7 @@ namespace TL
 		/// <summary>ID of preview of the page the photo leads to when clicked</summary>
 		[IfFlag(0)] public long webpage_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="url"/> has a value</summary>
 			has_url = 0x1,
@@ -7983,7 +7983,7 @@ namespace TL
 		/// <summary>Caption</summary>
 		public PageCaption caption;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the video is set to autoplay</summary>
 			autoplay = 0x1,
@@ -8017,7 +8017,7 @@ namespace TL
 		/// <summary>Caption</summary>
 		public PageCaption caption;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the block should be full width</summary>
 			full_width = 0x1,
@@ -8104,7 +8104,7 @@ namespace TL
 		/// <summary>Table rows</summary>
 		public PageTableRow[] rows;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Does the table have a visible border?</summary>
 			bordered = 0x1,
@@ -8130,7 +8130,7 @@ namespace TL
 		/// <summary>Always visible heading for the block</summary>
 		public RichText title;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the block is open by default</summary>
 			open = 0x1,
@@ -8207,7 +8207,7 @@ namespace TL
 		/// <summary>A vector of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, not float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <c>max_tip_amount</c>.</summary>
 		[IfFlag(8)] public long[] suggested_tip_amounts;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Test invoice</summary>
 			test = 0x1,
@@ -8273,7 +8273,7 @@ namespace TL
 		/// <summary>User's shipping address</summary>
 		[IfFlag(3)] public PostAddress shipping_address;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="name"/> has a value</summary>
 			has_name = 0x1,
@@ -8453,7 +8453,7 @@ namespace TL
 		/// <summary>Users</summary>
 		public Dictionary<long, User> users;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="saved_info"/> has a value</summary>
 			has_saved_info = 0x1,
@@ -8479,7 +8479,7 @@ namespace TL
 		/// <summary>Shipping options</summary>
 		[IfFlag(1)] public ShippingOption[] shipping_options;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="id"/> has a value</summary>
 			has_id = 0x1,
@@ -8540,7 +8540,7 @@ namespace TL
 		/// <summary>Users</summary>
 		public Dictionary<long, User> users;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="info"/> has a value</summary>
 			has_info = 0x1,
@@ -8562,7 +8562,7 @@ namespace TL
 		/// <summary>Saved server-side order information</summary>
 		[IfFlag(0)] public PaymentRequestedInfo saved_info;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="saved_info"/> has a value</summary>
 			has_saved_info = 0x1,
@@ -8591,7 +8591,7 @@ namespace TL
 		/// <summary>Payment credentials</summary>
 		public DataJSON data;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Save payment credential for future use</summary>
 			save = 0x1,
@@ -8647,7 +8647,7 @@ namespace TL
 		/// <summary>Coordinates for mask sticker</summary>
 		[IfFlag(0)] public MaskCoords mask_coords;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="mask_coords"/> has a value</summary>
 			has_mask_coords = 0x1,
@@ -8701,7 +8701,7 @@ namespace TL
 		/// <summary>When was the phone call received</summary>
 		[IfFlag(0)] public DateTime receive_date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="receive_date"/> has a value</summary>
 			has_receive_date = 0x1,
@@ -8733,7 +8733,7 @@ namespace TL
 		/// <summary>Call protocol info to be passed to libtgvoip</summary>
 		public PhoneCallProtocol protocol;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this is a video call</summary>
 			video = 0x40,
@@ -8763,7 +8763,7 @@ namespace TL
 		/// <summary>Protocol to use for phone call</summary>
 		public PhoneCallProtocol protocol;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this is a video call</summary>
 			video = 0x40,
@@ -8799,7 +8799,7 @@ namespace TL
 		/// <summary>When was the call actually started</summary>
 		public DateTime start_date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether P2P connection to the other peer is allowed</summary>
 			p2p_allowed = 0x20,
@@ -8823,7 +8823,7 @@ namespace TL
 		/// <summary>Duration of the phone call in seconds</summary>
 		[IfFlag(1)] public int duration;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reason"/> has a value</summary>
 			has_reason = 0x1,
@@ -8896,7 +8896,7 @@ namespace TL
 		/// <summary>Password</summary>
 		public string password;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this is a TURN endpoint</summary>
 			turn = 0x1,
@@ -8927,7 +8927,7 @@ namespace TL
 		/// <summary>When using <a href="https://corefork.telegram.org/method/phone.requestCall">phone.requestCall</a> and <a href="https://corefork.telegram.org/method/phone.acceptCall">phone.acceptCall</a>, specify all library versions supported by the client. <br/>The server will merge and choose the best library version supported by both peers, returning only the best value in the result of the callee's <a href="https://corefork.telegram.org/method/phone.acceptCall">phone.acceptCall</a> and in the <see cref="PhoneCallAccepted"/> update received by the caller.</summary>
 		public string[] library_versions;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether to allow P2P connection to the other participant</summary>
 			udp_p2p = 0x1,
@@ -9020,7 +9020,7 @@ namespace TL
 		/// <summary>Default value</summary>
 		public string other_value;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="zero_value"/> has a value</summary>
 			has_zero_value = 0x1,
@@ -9085,7 +9085,7 @@ namespace TL
 		/// <summary>Link to language translation interface; empty for custom local language packs</summary>
 		public string translations_url;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the language pack is official</summary>
 			official = 0x1,
@@ -9406,7 +9406,7 @@ namespace TL
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary><see cref="ChannelAdminLogEventActionParticipantJoin"/></summary>
 			join = 0x1,
@@ -9534,7 +9534,7 @@ namespace TL
 		/// <summary>Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</summary>
 		[IfFlag(0)] public MessageEntity[] entities;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="entities"/> has a value</summary>
 			has_entities = 0x1,
@@ -9833,7 +9833,7 @@ namespace TL
 		/// <summary>Data hash</summary>
 		public byte[] hash;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="data"/> has a value</summary>
 			has_data = 0x1,
@@ -9875,7 +9875,7 @@ namespace TL
 		/// <summary>Plaintext verified <a href="https://corefork.telegram.org/passport">passport</a> data</summary>
 		[IfFlag(5)] public SecurePlainData plain_data;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="data"/> has a value</summary>
 			has_data = 0x1,
@@ -10066,7 +10066,7 @@ namespace TL
 		/// <summary>URL of the service's privacy policy</summary>
 		[IfFlag(0)] public string privacy_policy_url;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="privacy_policy_url"/> has a value</summary>
 			has_privacy_policy_url = 0x1,
@@ -10095,7 +10095,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
 		[IfFlag(1)] public MessageEntity[] entities;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>An update of the app is required to parse this link</summary>
 			update_app = 0x1,
@@ -10195,7 +10195,7 @@ namespace TL
 		/// <summary>Secure value type</summary>
 		public SecureValueType type;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Native names</summary>
 			native_names = 0x1,
@@ -10302,7 +10302,7 @@ namespace TL
 		/// <summary>For how many rows should this cell extend</summary>
 		[IfFlag(2)] public int rowspan;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Is this element part of the column header</summary>
 			header = 0x1,
@@ -10400,7 +10400,7 @@ namespace TL
 		/// <summary>Date of pubblication</summary>
 		[IfFlag(4)] public DateTime published_date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x1,
@@ -10432,7 +10432,7 @@ namespace TL
 		/// <summary>Viewcount</summary>
 		[IfFlag(3)] public int views;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Indicates that not full page preview is available to the client and it will need to fetch full Instant View from the server using <a href="https://corefork.telegram.org/method/messages.getWebPagePreview">messages.getWebPagePreview</a>.</summary>
 			part = 0x1,
@@ -10495,7 +10495,7 @@ namespace TL
 		/// <summary>Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future; can't be used together with close_period.</summary>
 		[IfFlag(5)] public DateTime close_date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the poll is closed and doesn't accept any more answers</summary>
 			closed = 0x1,
@@ -10523,7 +10523,7 @@ namespace TL
 		/// <summary>How many users voted for this option</summary>
 		public int voters;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether we have chosen this answer</summary>
 			chosen = 0x1,
@@ -10549,7 +10549,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text in quiz solution</a></summary>
 		[IfFlag(4)] public MessageEntity[] solution_entities;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Similar to <a href="https://corefork.telegram.org/api/min">min</a> objects, used for poll constructors that are the same for all users so they don't have option chosen by the current user (you can use <a href="https://corefork.telegram.org/method/messages.getPollResults">messages.getPollResults</a> to get the full poll results).</summary>
 			min = 0x1,
@@ -10587,7 +10587,7 @@ namespace TL
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>If set, allows the admin to modify the description of the <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a></summary>
 			change_info = 0x1,
@@ -10623,7 +10623,7 @@ namespace TL
 		/// <summary>Validity of said permissions (it is considered forever any value less then 30 seconds or more then 366 days).</summary>
 		public DateTime until_date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>If set, does not allow a user to view messages in a <a href="https://corefork.telegram.org/api/channel">supergroup/channel/chat</a></summary>
 			view_messages = 0x1,
@@ -10697,7 +10697,7 @@ namespace TL
 		public Flags flags;
 		[IfFlag(6)] public byte[][] logout_tokens;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether to allow phone verification via <a href="https://corefork.telegram.org/api/auth">phone calls</a>.</summary>
 			allow_flashcall = 0x1,
@@ -10730,7 +10730,7 @@ namespace TL
 		/// <summary>Clockwise rotation angle of the gradient, in degrees; 0-359. Should be always divisible by 45</summary>
 		[IfFlag(4)] public int rotation;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="background_color"/> has a value</summary>
 			has_background_color = 0x1,
@@ -10764,7 +10764,7 @@ namespace TL
 		/// <summary>Maximum suggested bitrate for <strong>uploading</strong> videos</summary>
 		public int video_upload_maxbitrate;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Disable automatic media downloads?</summary>
 			disabled = 0x1,
@@ -10845,7 +10845,7 @@ namespace TL
 		/// <summary>Folder picture</summary>
 		[IfFlag(3)] public ChatPhoto photo;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Automatically add new channels to this folder</summary>
 			autofill_new_broadcasts = 0x1,
@@ -10889,7 +10889,7 @@ namespace TL
 		/// <summary>Number of results that were found server-side</summary>
 		public int count;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>If set, the results may be inexact</summary>
 			inexact = 0x2,
@@ -10909,7 +10909,7 @@ namespace TL
 		/// <summary>The domain name of the website on which the user will log in.</summary>
 		public string domain;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the bot would like to send messages to the user</summary>
 			request_write_access = 0x1,
@@ -11021,7 +11021,7 @@ namespace TL
 		/// <summary>Installation count</summary>
 		[IfFlag(4)] public int installs_count;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the current user is the creator of this theme</summary>
 			creator = 0x1,
@@ -11086,7 +11086,7 @@ namespace TL
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether viewing of sensitive (NSFW) content is enabled</summary>
 			sensitive_enabled = 0x1,
@@ -11143,7 +11143,7 @@ namespace TL
 		/// <summary>Wallpaper settings</summary>
 		[IfFlag(1)] public WallPaperSettings wallpaper_settings;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="message_colors"/> has a value</summary>
 			has_message_colors = 0x1,
@@ -11173,7 +11173,7 @@ namespace TL
 		/// <summary>Wallpaper</summary>
 		[IfFlag(1)] public WallPaperBase wallpaper;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="message_colors"/> has a value</summary>
 			has_message_colors = 0x1,
@@ -11199,7 +11199,7 @@ namespace TL
 		/// <summary>Theme settings</summary>
 		[IfFlag(1)] public ThemeSettings settings;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="documents"/> has a value</summary>
 			has_documents = 0x1,
@@ -11278,7 +11278,7 @@ namespace TL
 		/// <summary>Offset to use with the next <a href="https://corefork.telegram.org/method/messages.getPollVotes">messages.getPollVotes</a> request, empty string if no more results are available.</summary>
 		[IfFlag(0)] public string next_offset;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="next_offset"/> has a value</summary>
 			has_next_offset = 0x1,
@@ -11324,7 +11324,7 @@ namespace TL
 		/// <summary>Exclude the following chats from this <a href="https://corefork.telegram.org/api/folders">folder</a></summary>
 		public InputPeer[] exclude_peers;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether to include all contacts in this <a href="https://corefork.telegram.org/api/folders">folder</a></summary>
 			contacts = 0x1,
@@ -11414,7 +11414,7 @@ namespace TL
 		/// <summary>Zoom token</summary>
 		[IfFlag(0)] public string zoom_token;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="zoom_token"/> has a value</summary>
 			has_zoom_token = 0x1,
@@ -11497,7 +11497,7 @@ namespace TL
 		/// <summary>PSA message</summary>
 		[IfFlag(2)] public string psa_message;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>MTProxy-related channel</summary>
 			proxy = 0x1,
@@ -11527,7 +11527,7 @@ namespace TL
 		/// <summary>Timestamp that should be shown as static preview to the user (seconds)</summary>
 		[IfFlag(0)] public double video_start_ts;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="video_start_ts"/> has a value</summary>
 			has_video_start_ts = 0x1,
@@ -11619,7 +11619,7 @@ namespace TL
 		/// <summary>Whether to archive and mute new chats from non-contacts</summary>
 		[IfFlag(0)] public bool archive_and_mute_new_noncontact_peers;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="archive_and_mute_new_noncontact_peers"/> has a value</summary>
 			has_archive_and_mute_new_noncontact_peers = 0x1,
@@ -11639,7 +11639,7 @@ namespace TL
 		/// <summary>Phone patterns: for example, <c>XXX XXX XXX</c></summary>
 		[IfFlag(1)] public string[] patterns;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="prefixes"/> has a value</summary>
 			has_prefixes = 0x1,
@@ -11663,7 +11663,7 @@ namespace TL
 		/// <summary>Phone codes/patterns</summary>
 		public Help_CountryCode[] country_codes;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this country should not be shown in the list</summary>
 			hidden = 0x1,
@@ -11696,7 +11696,7 @@ namespace TL
 		/// <summary>Reply and <a href="https://corefork.telegram.org/api/threads">thread</a> information of message</summary>
 		[IfFlag(2)] public MessageReplies replies;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="views"/> has a value</summary>
 			has_views = 0x1,
@@ -11742,7 +11742,7 @@ namespace TL
 		/// <summary>Users mentioned in constructor</summary>
 		public Dictionary<long, User> users;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="max_id"/> has a value</summary>
 			has_max_id = 0x1,
@@ -11768,7 +11768,7 @@ namespace TL
 		/// <summary>ID of the message that started this <a href="https://corefork.telegram.org/api/threads">message thread</a></summary>
 		[IfFlag(1)] public int reply_to_top_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_to_peer_id"/> has a value</summary>
 			has_reply_to_peer_id = 0x1,
@@ -11796,7 +11796,7 @@ namespace TL
 		/// <summary>Contains the ID of the latest read message in this thread or comment section.</summary>
 		[IfFlag(3)] public int read_max_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this constructor contains information about the <a href="https://corefork.telegram.org/api/threads">comment section of a channel post, or a simple message thread</a></summary>
 			comments = 0x1,
@@ -11878,7 +11878,7 @@ namespace TL
 		/// <summary>Version</summary>
 		public int version;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the user should be muted upon joining the call</summary>
 			join_muted = 0x2,
@@ -11945,7 +11945,7 @@ namespace TL
 		/// <summary>Info about the screen sharing stream the participant is currently broadcasting</summary>
 		[IfFlag(14)] public GroupCallParticipantVideo presentation;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the participant is muted</summary>
 			muted = 0x1,
@@ -12052,7 +12052,7 @@ namespace TL
 		/// <summary>Title of the chat.</summary>
 		[IfFlag(2)] public string title;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>The chat export file was generated from a private chat.</summary>
 			pm = 0x1,
@@ -12089,7 +12089,7 @@ namespace TL
 		[IfFlag(2)] public string about;
 		[IfFlag(1)] public long approved_by;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			requested = 0x1,
 			/// <summary>Field <see cref="approved_by"/> has a value</summary>
@@ -12237,7 +12237,7 @@ namespace TL
 		/// <summary>Audio source ID</summary>
 		[IfFlag(1)] public int audio_source;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the stream is currently paused</summary>
 			paused = 0x1,
@@ -12326,7 +12326,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
 		[IfFlag(1)] public MessageEntity[] entities;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="start_param"/> has a value</summary>
 			has_start_param = 0x1,
@@ -12379,7 +12379,7 @@ namespace TL
 		public Dictionary<long, ChatBase> chats;
 		public Dictionary<long, User> users;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			inexact = 0x1,
 			/// <summary>Field <see cref="offset_id_offset"/> has a value</summary>
@@ -12448,7 +12448,7 @@ namespace TL
 		public Flags flags;
 		[IfFlag(0)] public byte[] future_auth_token;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="future_auth_token"/> has a value</summary>
 			has_future_auth_token = 0x1,
@@ -12466,7 +12466,7 @@ namespace TL
 		/// <summary>NUmber of users that reacted with this emoji</summary>
 		public int count;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the current user sent this reaction</summary>
 			chosen = 0x1,
@@ -12483,7 +12483,7 @@ namespace TL
 		public ReactionCount[] results;
 		[IfFlag(1)] public MessagePeerReaction[] recent_reactions;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Similar to <a href="https://corefork.telegram.org/api/min">min</a> objects, used for message reaction constructors that are the same for all users so they don't have the reactions sent by the current user (you can use <a href="https://corefork.telegram.org/method/messages.getMessagesReactions">messages.getMessagesReactions</a> to get the full reaction info).</summary>
 			min = 0x1,
@@ -12504,7 +12504,7 @@ namespace TL
 		public Dictionary<long, User> users;
 		[IfFlag(0)] public string next_offset;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="next_offset"/> has a value</summary>
 			has_next_offset = 0x1,
@@ -12528,7 +12528,7 @@ namespace TL
 		[IfFlag(1)] public DocumentBase around_animation;
 		[IfFlag(1)] public DocumentBase center_icon;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			inactive = 0x1,
 			/// <summary>Field <see cref="around_animation"/> has a value</summary>
@@ -12566,7 +12566,7 @@ namespace TL
 		/// <summary>Reaction (UTF8 emoji)</summary>
 		public string reaction;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			big = 0x1,
 			unread = 0x2,
@@ -17038,7 +17038,7 @@ namespace TL.Methods
 		[IfFlag(1)] public JSONValue params_;
 		public IMethod<X> query;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="proxy"/> has a value</summary>
 			has_proxy = 0x1,
@@ -17153,7 +17153,7 @@ namespace TL.Methods
 		public string code;
 		[IfFlag(0)] public Account_PasswordInputSettings new_settings;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="new_settings"/> has a value</summary>
 			has_new_settings = 0x1,
@@ -17216,7 +17216,7 @@ namespace TL.Methods
 		public byte[] secret;
 		public long[] other_uids;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			no_muted = 0x1,
 		}
@@ -17254,7 +17254,7 @@ namespace TL.Methods
 		[IfFlag(1)] public string last_name;
 		[IfFlag(2)] public string about;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="first_name"/> has a value</summary>
 			has_first_name = 0x1,
@@ -17478,7 +17478,7 @@ namespace TL.Methods
 		public Flags flags;
 		[IfFlag(5)] public int file_max_size;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			contacts = 0x1,
 			message_users = 0x2,
@@ -17494,7 +17494,7 @@ namespace TL.Methods
 	{
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			success = 0x1,
 		}
@@ -17527,7 +17527,7 @@ namespace TL.Methods
 		public Flags flags;
 		[IfFlag(0)] public InputNotifyPeerBase peer;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="peer"/> has a value</summary>
 			has_peer = 0x1,
@@ -17576,7 +17576,7 @@ namespace TL.Methods
 		public Flags flags;
 		public AutoDownloadSettings settings;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			low = 0x1,
 			high = 0x2,
@@ -17592,7 +17592,7 @@ namespace TL.Methods
 		public string file_name;
 		public string mime_type;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="thumb"/> has a value</summary>
 			has_thumb = 0x1,
@@ -17608,7 +17608,7 @@ namespace TL.Methods
 		[IfFlag(2)] public InputDocument document;
 		[IfFlag(3)] public InputThemeSettings[] settings;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="document"/> has a value</summary>
 			has_document = 0x4,
@@ -17628,7 +17628,7 @@ namespace TL.Methods
 		[IfFlag(2)] public InputDocument document;
 		[IfFlag(3)] public InputThemeSettings[] settings;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="slug"/> has a value</summary>
 			has_slug = 0x1,
@@ -17656,7 +17656,7 @@ namespace TL.Methods
 		[IfFlag(2)] public string format;
 		[IfFlag(3)] public BaseTheme base_theme;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			dark = 0x1,
 			/// <summary>Field <see cref="theme"/> has a value</summary>
@@ -17688,7 +17688,7 @@ namespace TL.Methods
 	{
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			sensitive_enabled = 0x1,
 		}
@@ -17747,7 +17747,7 @@ namespace TL.Methods
 		[IfFlag(0)] public bool encrypted_requests_disabled;
 		[IfFlag(1)] public bool call_requests_disabled;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="encrypted_requests_disabled"/> has a value</summary>
 			has_encrypted_requests_disabled = 0x1,
@@ -17848,7 +17848,7 @@ namespace TL.Methods
 		public int limit;
 		public long hash;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			correspondents = 0x1,
 			bots_pm = 0x2,
@@ -17889,7 +17889,7 @@ namespace TL.Methods
 		public string last_name;
 		public string phone;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			add_phone_privacy_exception = 0x1,
 		}
@@ -17908,7 +17908,7 @@ namespace TL.Methods
 		public InputGeoPoint geo_point;
 		[IfFlag(0)] public int self_expires;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="self_expires"/> has a value</summary>
 			has_self_expires = 0x1,
@@ -17922,7 +17922,7 @@ namespace TL.Methods
 		public Flags flags;
 		public int msg_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			delete_message = 0x1,
 			delete_history = 0x2,
@@ -17947,7 +17947,7 @@ namespace TL.Methods
 		public int limit;
 		public long hash;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			exclude_pinned = 0x1,
 			/// <summary>Field <see cref="folder_id"/> has a value</summary>
@@ -17986,7 +17986,7 @@ namespace TL.Methods
 		public int min_id;
 		public long hash;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="from_id"/> has a value</summary>
 			has_from_id = 0x1,
@@ -18011,7 +18011,7 @@ namespace TL.Methods
 		[IfFlag(2)] public DateTime min_date;
 		[IfFlag(3)] public DateTime max_date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			just_clear = 0x1,
 			revoke = 0x2,
@@ -18028,7 +18028,7 @@ namespace TL.Methods
 		public Flags flags;
 		public int[] id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			revoke = 0x1,
 		}
@@ -18048,7 +18048,7 @@ namespace TL.Methods
 		[IfFlag(0)] public int top_msg_id;
 		public SendMessageAction action;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="top_msg_id"/> has a value</summary>
 			has_top_msg_id = 0x1,
@@ -18068,7 +18068,7 @@ namespace TL.Methods
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
 			has_reply_to_msg_id = 0x1,
@@ -18102,7 +18102,7 @@ namespace TL.Methods
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
 			has_reply_to_msg_id = 0x1,
@@ -18132,7 +18132,7 @@ namespace TL.Methods
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			silent = 0x20,
 			background = 0x40,
@@ -18209,7 +18209,7 @@ namespace TL.Methods
 		public long chat_id;
 		public InputUserBase user_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			revoke_history = 0x1,
 		}
@@ -18251,7 +18251,7 @@ namespace TL.Methods
 		public Flags flags;
 		public int chat_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			delete_history = 0x1,
 		}
@@ -18279,7 +18279,7 @@ namespace TL.Methods
 		public long random_id;
 		public byte[] data;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			silent = 0x1,
 		}
@@ -18294,7 +18294,7 @@ namespace TL.Methods
 		public byte[] data;
 		public InputEncryptedFileBase file;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			silent = 0x1,
 		}
@@ -18346,7 +18346,7 @@ namespace TL.Methods
 		public string message;
 		[IfFlag(3)] public MessageEntity[] entities;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="entities"/> has a value</summary>
 			has_entities = 0x8,
@@ -18362,7 +18362,7 @@ namespace TL.Methods
 		[IfFlag(1)] public int usage_limit;
 		[IfFlag(4)] public string title;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="expire_date"/> has a value</summary>
 			has_expire_date = 0x1,
@@ -18452,7 +18452,7 @@ namespace TL.Methods
 		public int offset_id;
 		public int limit;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="folder_id"/> has a value</summary>
 			has_folder_id = 0x1,
@@ -18465,7 +18465,7 @@ namespace TL.Methods
 		public Flags flags;
 		public long[] order;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			masks = 0x1,
 		}
@@ -18502,7 +18502,7 @@ namespace TL.Methods
 		public string query;
 		public string offset;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="geo_point"/> has a value</summary>
 			has_geo_point = 0x1,
@@ -18519,7 +18519,7 @@ namespace TL.Methods
 		[IfFlag(2)] public string next_offset;
 		[IfFlag(3)] public InlineBotSwitchPM switch_pm;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			gallery = 0x1,
 			private_ = 0x2,
@@ -18542,7 +18542,7 @@ namespace TL.Methods
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
 			has_reply_to_msg_id = 0x1,
@@ -18576,7 +18576,7 @@ namespace TL.Methods
 		[IfFlag(3)] public MessageEntity[] entities;
 		[IfFlag(15)] public DateTime schedule_date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			no_webpage = 0x2,
 			/// <summary>Field <see cref="reply_markup"/> has a value</summary>
@@ -18602,7 +18602,7 @@ namespace TL.Methods
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 		[IfFlag(3)] public MessageEntity[] entities;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			no_webpage = 0x2,
 			/// <summary>Field <see cref="reply_markup"/> has a value</summary>
@@ -18625,7 +18625,7 @@ namespace TL.Methods
 		[IfFlag(0)] public byte[] data;
 		[IfFlag(2)] public InputCheckPasswordSRP password;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="data"/> has a value</summary>
 			has_data = 0x1,
@@ -18644,7 +18644,7 @@ namespace TL.Methods
 		[IfFlag(2)] public string url;
 		public DateTime cache_time;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="message"/> has a value</summary>
 			has_message = 0x1,
@@ -18669,7 +18669,7 @@ namespace TL.Methods
 		public string message;
 		[IfFlag(3)] public MessageEntity[] entities;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
 			has_reply_to_msg_id = 0x1,
@@ -18700,7 +18700,7 @@ namespace TL.Methods
 		public Flags flags;
 		public long hash;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			attached = 0x1,
 		}
@@ -18713,7 +18713,7 @@ namespace TL.Methods
 		public InputDocument id;
 		public bool unsave;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			attached = 0x1,
 		}
@@ -18724,7 +18724,7 @@ namespace TL.Methods
 	{
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			attached = 0x1,
 		}
@@ -18737,7 +18737,7 @@ namespace TL.Methods
 		public long offset_id;
 		public int limit;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			masks = 0x1,
 		}
@@ -18764,7 +18764,7 @@ namespace TL.Methods
 		public InputUserBase user_id;
 		public int score;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			edit_message = 0x1,
 			force = 0x2,
@@ -18779,7 +18779,7 @@ namespace TL.Methods
 		public InputUserBase user_id;
 		public int score;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			edit_message = 0x1,
 			force = 0x2,
@@ -18828,7 +18828,7 @@ namespace TL.Methods
 		public Flags flags;
 		public InputDialogPeerBase peer;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			pinned = 0x1,
 		}
@@ -18841,7 +18841,7 @@ namespace TL.Methods
 		public int folder_id;
 		public InputDialogPeerBase[] order;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			force = 0x1,
 		}
@@ -18861,7 +18861,7 @@ namespace TL.Methods
 		[IfFlag(0)] public string error;
 		[IfFlag(1)] public ShippingOption[] shipping_options;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="error"/> has a value</summary>
 			has_error = 0x1,
@@ -18877,7 +18877,7 @@ namespace TL.Methods
 		public long query_id;
 		[IfFlag(0)] public string error;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="error"/> has a value</summary>
 			has_error = 0x1,
@@ -18948,7 +18948,7 @@ namespace TL.Methods
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
 			has_reply_to_msg_id = 0x1,
@@ -18977,7 +18977,7 @@ namespace TL.Methods
 		public string q;
 		public long hash;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			exclude_featured = 0x1,
 		}
@@ -18992,7 +18992,7 @@ namespace TL.Methods
 		public Flags flags;
 		public InputDialogPeerBase peer;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			unread = 0x1,
 		}
@@ -19011,7 +19011,7 @@ namespace TL.Methods
 		public InputPeer peer;
 		public int id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			silent = 0x1,
 			unpin = 0x2,
@@ -19095,7 +19095,7 @@ namespace TL.Methods
 		[IfFlag(1)] public int button_id;
 		[IfFlag(2)] public string url;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="peer"/> has a value</summary>
 			has_peer = 0x2,
@@ -19113,7 +19113,7 @@ namespace TL.Methods
 		[IfFlag(1)] public int button_id;
 		[IfFlag(2)] public string url;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			write_allowed = 0x1,
 			/// <summary>Field <see cref="peer"/> has a value</summary>
@@ -19167,7 +19167,7 @@ namespace TL.Methods
 		[IfFlag(1)] public string offset;
 		public int limit;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="option"/> has a value</summary>
 			has_option = 0x1,
@@ -19182,7 +19182,7 @@ namespace TL.Methods
 		public Flags flags;
 		public InputStickerSet[] stickersets;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			uninstall = 0x1,
 			archive = 0x2,
@@ -19203,7 +19203,7 @@ namespace TL.Methods
 		public int id;
 		[IfFlag(0)] public DialogFilter filter;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="filter"/> has a value</summary>
 			has_filter = 0x1,
@@ -19270,7 +19270,7 @@ namespace TL.Methods
 	{
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			revoke = 0x1,
 		}
@@ -19316,7 +19316,7 @@ namespace TL.Methods
 		[IfFlag(2)] public string offset_link;
 		public int limit;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="offset_date"/> has a value</summary>
 			has_offset_date = 0x4,
@@ -19342,7 +19342,7 @@ namespace TL.Methods
 		[IfFlag(3)] public bool request_needed;
 		[IfFlag(4)] public string title;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="expire_date"/> has a value</summary>
 			has_expire_date = 0x1,
@@ -19387,7 +19387,7 @@ namespace TL.Methods
 		public InputUserBase offset_user;
 		public int limit;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			requested = 0x1,
 			/// <summary>Field <see cref="link"/> has a value</summary>
@@ -19449,7 +19449,7 @@ namespace TL.Methods
 		public InputPeer peer;
 		public InputUserBase user_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			approved = 0x1,
 		}
@@ -19462,7 +19462,7 @@ namespace TL.Methods
 		public InputPeer peer;
 		[IfFlag(1)] public string link;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			approved = 0x1,
 			/// <summary>Field <see cref="link"/> has a value</summary>
@@ -19492,7 +19492,7 @@ namespace TL.Methods
 		public int msg_id;
 		[IfFlag(0)] public string reaction;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reaction"/> has a value</summary>
 			has_reaction = 0x1,
@@ -19517,7 +19517,7 @@ namespace TL.Methods
 		[IfFlag(1)] public string offset;
 		public int limit;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="reaction"/> has a value</summary>
 			has_reaction = 0x1,
@@ -19555,7 +19555,7 @@ namespace TL.Methods
 		[IfFlag(2)] public string from_lang;
 		public string to_lang;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="peer"/> has a value</summary>
 			has_peer = 0x1,
@@ -19595,7 +19595,7 @@ namespace TL.Methods
 		public DateTime date;
 		public int qts;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="pts_total_limit"/> has a value</summary>
 			has_pts_total_limit = 0x1,
@@ -19611,7 +19611,7 @@ namespace TL.Methods
 		public int pts;
 		public int limit;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			force = 0x1,
 		}
@@ -19631,7 +19631,7 @@ namespace TL.Methods
 		[IfFlag(1)] public InputFileBase video;
 		[IfFlag(2)] public double video_start_ts;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="file"/> has a value</summary>
 			has_file = 0x1,
@@ -19673,7 +19673,7 @@ namespace TL.Methods
 		public int offset;
 		public int limit;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			precise = 0x1,
 			cdn_supported = 0x2,
@@ -19903,7 +19903,7 @@ namespace TL.Methods
 		[IfFlag(2)] public InputGeoPoint geo_point;
 		[IfFlag(2)] public string address;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			broadcast = 0x1,
 			megagroup = 0x2,
@@ -19982,7 +19982,7 @@ namespace TL.Methods
 		public InputChannelBase channel;
 		public int id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			grouped = 0x1,
 			thread = 0x2,
@@ -20001,7 +20001,7 @@ namespace TL.Methods
 	{
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			by_location = 0x1,
 			check_limit = 0x2,
@@ -20028,7 +20028,7 @@ namespace TL.Methods
 		public long min_id;
 		public int limit;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="events_filter"/> has a value</summary>
 			has_events_filter = 0x1,
@@ -20183,7 +20183,7 @@ namespace TL.Methods
 		public int msg_id;
 		[IfFlag(0)] public DataJSON theme_params;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="theme_params"/> has a value</summary>
 			has_theme_params = 0x1,
@@ -20205,7 +20205,7 @@ namespace TL.Methods
 		public int msg_id;
 		public PaymentRequestedInfo info;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			save = 0x1,
 		}
@@ -20223,7 +20223,7 @@ namespace TL.Methods
 		public InputPaymentCredentialsBase credentials;
 		[IfFlag(2)] public long tip_amount;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="requested_info_id"/> has a value</summary>
 			has_requested_info_id = 0x1,
@@ -20242,7 +20242,7 @@ namespace TL.Methods
 	{
 		public Flags flags;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			credentials = 0x1,
 			info = 0x2,
@@ -20266,7 +20266,7 @@ namespace TL.Methods
 		public InputStickerSetItem[] stickers;
 		[IfFlag(3)] public string software;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			masks = 0x1,
 			animated = 0x2,
@@ -20328,7 +20328,7 @@ namespace TL.Methods
 		public byte[] g_a_hash;
 		public PhoneCallProtocol protocol;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			video = 0x1,
 		}
@@ -20366,7 +20366,7 @@ namespace TL.Methods
 		public PhoneCallDiscardReason reason;
 		public long connection_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			video = 0x1,
 		}
@@ -20380,7 +20380,7 @@ namespace TL.Methods
 		public int rating;
 		public string comment;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			user_initiative = 0x1,
 		}
@@ -20409,7 +20409,7 @@ namespace TL.Methods
 		[IfFlag(0)] public string title;
 		[IfFlag(1)] public DateTime schedule_date;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x1,
@@ -20427,7 +20427,7 @@ namespace TL.Methods
 		[IfFlag(1)] public string invite_hash;
 		public DataJSON params_;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			muted = 0x1,
 			/// <summary>Field <see cref="invite_hash"/> has a value</summary>
@@ -20463,7 +20463,7 @@ namespace TL.Methods
 		public InputGroupCall call;
 		[IfFlag(0)] public bool join_muted;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="join_muted"/> has a value</summary>
 			has_join_muted = 0x1,
@@ -20503,7 +20503,7 @@ namespace TL.Methods
 		[IfFlag(1)] public string title;
 		[IfFlag(2)] public bool video_portrait;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			start = 0x1,
 			/// <summary>Field <see cref="title"/> has a value</summary>
@@ -20525,7 +20525,7 @@ namespace TL.Methods
 		[IfFlag(4)] public bool video_paused;
 		[IfFlag(5)] public bool presentation_paused;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="muted"/> has a value</summary>
 			has_muted = 0x1,
@@ -20561,7 +20561,7 @@ namespace TL.Methods
 		public Flags flags;
 		public InputGroupCall call;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			can_self_unmute = 0x1,
 		}
@@ -20654,7 +20654,7 @@ namespace TL.Methods
 		public Flags flags;
 		public InputChannelBase channel;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			dark = 0x1,
 		}
@@ -20667,7 +20667,7 @@ namespace TL.Methods
 		public string token;
 		[IfFlag(0)] public long x;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="x"/> has a value</summary>
 			has_x = 0x1,
@@ -20680,7 +20680,7 @@ namespace TL.Methods
 		public Flags flags;
 		public InputChannelBase channel;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			dark = 0x1,
 		}
@@ -20704,7 +20704,7 @@ namespace TL.Methods
 		public InputChannelBase channel;
 		public int msg_id;
 
-		[Flags] public enum Flags
+		[Flags] public enum Flags : uint
 		{
 			dark = 0x1,
 		}

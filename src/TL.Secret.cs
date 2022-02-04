@@ -363,7 +363,7 @@ namespace TL
 			/// <summary>Random message ID of the message this message replies to (parameter added in layer 45)</summary>
 			[IfFlag(3)] public long reply_to_random_id;
 
-			[Flags] public enum Flags
+			[Flags] public enum Flags : uint
 			{
 				/// <summary>Field <see cref="reply_to_random_id"/> has a value</summary>
 				has_reply_to_random_id = 0x8,
@@ -503,7 +503,7 @@ namespace TL
 			/// <summary>Random group ID, assigned by the author of message.<br/>Multiple encrypted messages with a photo attached and with the same group ID indicate an <a href="https://corefork.telegram.org/api/files#albums-grouped-media">album or grouped media</a> (parameter added in layer 45)</summary>
 			[IfFlag(17)] public long grouped_id;
 
-			[Flags] public enum Flags
+			[Flags] public enum Flags : uint
 			{
 				/// <summary>Field <see cref="reply_to_random_id"/> has a value</summary>
 				has_reply_to_random_id = 0x8,
