@@ -1202,10 +1202,12 @@ namespace WTelegram
 			lock (_accessHashes)
 				_accessHashes.GetOrCreate(typeof(T))[id] = access_hash;
 		}
-		internal void UpdateAccessHash(object obj, Type type, object access_hash)
+		internal void MonitorField(FieldInfo fieldInfo, object obj, object access_hash)
 		{
 			if (!CollectAccessHash) return;
+			if (fieldInfo.Name != "access_hash") return;
 			if (access_hash is not long accessHash) return;
+			var type = fieldInfo.ReflectedType;
 			if (type.GetField("id") is not FieldInfo idField) return;
 			if (idField.GetValue(obj) is not long id)
 				if (idField.GetValue(obj) is not int idInt) return;
