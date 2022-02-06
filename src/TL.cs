@@ -46,7 +46,7 @@ namespace TL
 				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1U << ifFlag.Bit)) == 0) continue;
 				object value = field.GetValue(obj);
 				writer.WriteTLValue(value, field.FieldType);
-				if (field.Name == "flags") flags = (uint)value;
+				if (field.Name == "flags" && field.FieldType.IsEnum) flags = (uint)value;
 			}
 		}
 
@@ -70,7 +70,7 @@ namespace TL
 				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1U << ifFlag.Bit)) == 0) continue;
 				object value = reader.ReadTLValue(field.FieldType);
 				field.SetValue(obj, value);
-				if (field.Name == "flags") flags = (uint)value;
+				if (field.Name == "flags" && field.FieldType.IsEnum) flags = (uint)value;
 				else if (field.Name == "access_hash") reader.Client?.UpdateAccessHash(obj, type, value);
 			}
 			return (IObject)obj;
