@@ -201,8 +201,12 @@ namespace TL
 			{
 				int count = reader.ReadInt32();
 				Array array = (Array)Activator.CreateInstance(type, count);
-				for (int i = 0; i < count; i++)
-					array.SetValue(reader.ReadTLValue(elementType), i);
+				if (elementType.IsEnum)
+					for (int i = 0; i < count; i++)
+						array.SetValue(Enum.ToObject(elementType, reader.ReadTLValue(elementType)), i);
+				else
+					for (int i = 0; i < count; i++)
+						array.SetValue(reader.ReadTLValue(elementType), i);
 				return array;
 			}
 			else if (ctorNb < 1024 && !elementType.IsAbstract && elementType.GetCustomAttribute<TLDefAttribute>() is TLDefAttribute attr)
