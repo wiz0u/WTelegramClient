@@ -1634,7 +1634,7 @@ namespace WTelegram
 		/// <param name="alphabet2">second (and further) letters used to search for in participants names</param>
 		/// <returns>Field count indicates the total count of members. Field participants contains those that were successfully fetched</returns>
 		/// <remarks>⚠ This method can take a few minutes to complete on big broadcast channels. It likely won't be able to obtain the full total count of members</remarks>
-		public async Task<Channels_ChannelParticipants> Channels_GetAllParticipantsSlow(InputChannelBase channel, bool includeKickBan = false, string alphabet1 = "АБCДЕЄЖФГHИІJКЛМНОПQРСТУВWХЦЧШЩЫЮЯЗ", string alphabet2 = "АCЕHИJЛМНОРСТУВWЫ")
+		public async Task<Channels_ChannelParticipants> Channels_GetAllParticipants(InputChannelBase channel, bool includeKickBan = false, string alphabet1 = "АБCДЕЄЖФГHИІJКЛМНОПQРСТУВWХЦЧШЩЫЮЯЗ", string alphabet2 = "АCЕHИJЛМНОРСТУВWЫ")
 		{
 			alphabet2 ??= alphabet1;
 			var result = new Channels_ChannelParticipants { chats = new(), users = new() };
