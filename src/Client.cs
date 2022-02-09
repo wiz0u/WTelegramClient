@@ -1642,6 +1642,9 @@ namespace WTelegram
 			var participants = new List<ChannelParticipantBase>();
 
 			var mcf = await this.Channels_GetFullChannel(channel);
+			result.count = mcf.full_chat.ParticipantsCount;
+			if (result.count > 2000 && ((Channel)mcf.chats[channel.ChannelId]).IsChannel)
+				Helpers.Log(2, "Fetching all participants on a big channel can take several minutes...");
 			await GetWithFilter(new ChannelParticipantsAdmins());
 			await GetWithFilter(new ChannelParticipantsBots());
 			await GetWithFilter(new ChannelParticipantsSearch { q = "" }, (f, c) => new ChannelParticipantsSearch { q = f.q + c }, alphabet1);
@@ -1650,8 +1653,6 @@ namespace WTelegram
 				await GetWithFilter(new ChannelParticipantsKicked { q = "" }, (f, c) => new ChannelParticipantsKicked { q = f.q + c }, alphabet1);
 				await GetWithFilter(new ChannelParticipantsBanned { q = "" }, (f, c) => new ChannelParticipantsBanned { q = f.q + c }, alphabet1);
 			}
-
-			result.count = ((ChannelFull)mcf.full_chat).participants_count;
 			result.participants = participants.ToArray();
 			return result;
 
@@ -1672,6 +1673,7 @@ namespace WTelegram
 					offset += ccp.participants.Length;
 					if (offset >= ccp.count || ccp.participants.Length == 0) break;
 				}
+				Helpers.Log(0, $"GetParticipants({(filter as ChannelParticipantsSearch)?.q}) returned {ccp.count}/{maxCount}.\tAccumulated count: {participants.Count}");
 				if (recurse != null && (ccp.count < maxCount - 100 || ccp.count == 200 || ccp.count == 1000))
 					foreach (var c in alphabet)
 						await GetWithFilter(recurse(filter, c), recurse, c == 'А' ? alphabet : alphabet2);
