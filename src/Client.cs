@@ -1637,32 +1637,22 @@ namespace WTelegram
 		public async Task<Channels_ChannelParticipants> Channels_GetAllParticipantsSlow(InputChannelBase channel, bool includeKickBan = false, string alphabet1 = "АБCДЕЄЖФГHИІJКЛМНОПQРСТУВWХЦЧШЩЫЮЯЗ", string alphabet2 = "АCЕHИJЛМНОРСТУВWЫ")
 		{
 			alphabet2 ??= alphabet1;
-			File.AppendAllText("AllPart.txt", alphabet1 + "\n");
-			var sw = System.Diagnostics.Stopwatch.StartNew();
 			var result = new Channels_ChannelParticipants { chats = new(), users = new() };
-
-			var sem = new SemaphoreSlim(1); // prevents flooding Telegram with requests
 			var user_ids = new HashSet<long>();
 			var participants = new List<ChannelParticipantBase>();
 
-			var tasks = new List<Task>
-			{
-				GetWithFilter(new ChannelParticipantsAdmins()),
-				GetWithFilter(new ChannelParticipantsBots()),
-				GetWithFilter(new ChannelParticipantsSearch { q = "" }, (f, c) => new ChannelParticipantsSearch { q = f.q + c }, alphabet1),
-			};
-			var mcf = this.Channels_GetFullChannel(channel);
-			tasks.Add(mcf);
+			var mcf = await this.Channels_GetFullChannel(channel);
+			await GetWithFilter(new ChannelParticipantsAdmins());
+			await GetWithFilter(new ChannelParticipantsBots());
+			await GetWithFilter(new ChannelParticipantsSearch { q = "" }, (f, c) => new ChannelParticipantsSearch { q = f.q + c }, alphabet1);
 			if (includeKickBan)
 			{
-				tasks.Add(GetWithFilter(new ChannelParticipantsKicked { q = "" }, (f, c) => new ChannelParticipantsKicked { q = f.q + c }, alphabet1));
-				tasks.Add(GetWithFilter(new ChannelParticipantsBanned { q = "" }, (f, c) => new ChannelParticipantsBanned { q = f.q + c }, alphabet1));
+				await GetWithFilter(new ChannelParticipantsKicked { q = "" }, (f, c) => new ChannelParticipantsKicked { q = f.q + c }, alphabet1);
+				await GetWithFilter(new ChannelParticipantsBanned { q = "" }, (f, c) => new ChannelParticipantsBanned { q = f.q + c }, alphabet1);
 			}
-			await Task.WhenAll(tasks);
 
-			result.count = ((ChannelFull)mcf.Result.full_chat).participants_count;
+			result.count = ((ChannelFull)mcf.full_chat).participants_count;
 			result.participants = participants.ToArray();
-			File.AppendAllText("AllPart.txt", $"{alphabet1} {participants.Count}/{result.count} in {sw.Elapsed}\n");
 			return result;
 
 			async Task GetWithFilter<T>(T filter, Func<T, char, T> recurse = null, string alphabet = null) where T : ChannelParticipantsFilter
@@ -1671,16 +1661,8 @@ namespace WTelegram
 				int maxCount = 0;
 				for (int offset = 0; ;)
 				{
-					await sem.WaitAsync();
-					try
-					{
-						ccp = await this.Channels_GetParticipants(channel, filter, offset, 1024, 0);
-						if (ccp.count > maxCount) maxCount = ccp.count;
-					}
-					finally
-					{
-						sem.Release();
-					}
+					ccp = await this.Channels_GetParticipants(channel, filter, offset, 1024, 0);
+					if (ccp.count > maxCount) maxCount = ccp.count;
 					foreach (var kvp in ccp.chats) result.chats[kvp.Key] = kvp.Value;
 					foreach (var kvp in ccp.users) result.users[kvp.Key] = kvp.Value;
 					lock (participants)
@@ -1690,10 +1672,9 @@ namespace WTelegram
 					offset += ccp.participants.Length;
 					if (offset >= ccp.count || ccp.participants.Length == 0) break;
 				}
-				Console.WriteLine($"{participants.Count} {(filter as ChannelParticipantsSearch)?.q} {ccp.count} {maxCount}");
-				File.AppendAllText("AllPart.txt", $"{(filter as ChannelParticipantsSearch)?.q}\t{participants.Count,4}\t{ccp.count}/{maxCount}\n");
 				if (recurse != null && (ccp.count < maxCount - 100 || ccp.count == 200 || ccp.count == 1000))
-					await Task.WhenAll(alphabet.Select(c => GetWithFilter(recurse(filter, (char)c), recurse, c == 'А' ? alphabet : alphabet2)));
+					foreach (var c in alphabet)
+						await GetWithFilter(recurse(filter, c), recurse, c == 'А' ? alphabet : alphabet2);
 			}
 		}
 
