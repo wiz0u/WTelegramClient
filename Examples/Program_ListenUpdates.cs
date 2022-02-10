@@ -8,32 +8,37 @@ namespace WTelegramClientTest
 {
 	static class Program_ListenUpdates
 	{
+		static WTelegram.Client Client;
+		static User My;
+
 		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main(string[] _)
 		{
 			Console.WriteLine("The program will display updates received for the logged-in user. Press any key to terminate");
 			WTelegram.Helpers.Log = (l, s) => System.Diagnostics.Debug.WriteLine(s);
-			using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-			client.Update += Client_Update;
-			var my = await client.LoginUserIfNeeded();
-			_users[my.id] = my;
-			// Note that on login Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
-			Console.WriteLine($"We are logged-in as {my.username ?? my.first_name + " " + my.last_name} (id {my.id})");
-			// We collect all infos about the users/chats so that updates can be printed with their names
-			var dialogsBase = await client.Messages_GetDialogs(default, 0, null, 0, 0); // dialogs = groups/channels/users
-			if (dialogsBase is Messages_Dialogs dialogs)
-				while (dialogs.dialogs.Length != 0)
-				{
-					foreach (var (id, user) in dialogs.users) _users[id] = user;
-					foreach (var (id, chat) in dialogs.chats) _chats[id] = chat;
-					var lastDialog = dialogs.dialogs[^1];
-					var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
-					var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
-					dialogs = (Messages_Dialogs)await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, 500, 0);
-				}
-			Console.ReadKey();
+			Client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+			using (Client)
+			{
+				Client.Update += Client_Update;
+				My = await Client.LoginUserIfNeeded();
+				_users[My.id] = My;
+				// Note that on login Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
+				Console.WriteLine($"We are logged-in as {My.username ?? My.first_name + " " + My.last_name} (id {My.id})");
+				// We collect all infos about the users/chats so that updates can be printed with their names
+				var dialogsBase = await Client.Messages_GetDialogs(default, 0, null, 0, 0); // dialogs = groups/channels/users
+				if (dialogsBase is Messages_Dialogs dialogs)
+					while (dialogs.dialogs.Length != 0)
+					{
+						foreach (var (id, user) in dialogs.users) _users[id] = user;
+						foreach (var (id, chat) in dialogs.chats) _chats[id] = chat;
+						var lastDialog = dialogs.dialogs[^1];
+						var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
+						var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
+						dialogs = (Messages_Dialogs)await Client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, 500, 0);
+					}
+				Console.ReadKey();
+			}
 		}
-
 
 		private static readonly Dictionary<long, User> _users = new();
 		private static readonly Dictionary<long, ChatBase> _chats = new();

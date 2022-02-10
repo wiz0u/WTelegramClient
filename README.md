@@ -135,7 +135,7 @@ I've added several useful converters, implicit cast or helper properties to vari
 
 Beyond the TL async methods, the Client class offers a few other methods to simplify the sending/receiving of files, medias or messages.
 
-This library works best (faster) with **.NET 5.0+** and is also available for **.NET Standard 2.0** (.NET Framework 4.6.1+ & .NET Core 2.0+) and **Xamarin/Mono.Android**
+This library works best with **.NET 5.0+** (faster, no dependencies) and is also available for **.NET Standard 2.0** (.NET Framework 4.6.1+ & .NET Core 2.0+) and **Xamarin/Mono.Android**
 
 # Library uses and limitations
 This library can be used for any Telegram scenarios including:
