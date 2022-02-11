@@ -15,21 +15,6 @@ namespace TL
 
 	public static class Serialization
 	{
-		internal static byte[] Serialize(this IObject msg)
-		{
-			using var memStream = new MemoryStream(1024);
-			using (var writer = new BinaryWriter(memStream))
-				WriteTLObject(writer, msg);
-			return memStream.ToArray();
-		}
-
-		internal static T Deserialize<T>(byte[] bytes) where T : IObject
-		{
-			using var memStream = new MemoryStream(bytes);
-			using var reader = new BinaryReader(memStream, null);
-			return (T)reader.ReadTLObject();
-		}
-
 		internal static void WriteTLObject<T>(this BinaryWriter writer, T obj) where T : IObject
 		{
 			if (obj == null) { writer.WriteTLNull(typeof(T)); return; }
@@ -71,7 +56,7 @@ namespace TL
 				object value = reader.ReadTLValue(field.FieldType);
 				field.SetValue(obj, value);
 				if (field.FieldType.IsEnum && field.Name == "flags") flags = (uint)value;
-				reader.Client?.MonitorField(field, obj, value);
+				if (reader.Client.CollectAccessHash) reader.Client.CollectField(field, obj, value);
 			}
 			return (IObject)obj;
 		}
@@ -370,6 +355,13 @@ namespace TL
 	}
 
 	// Below TL types are commented "parsed manually" from https://github.com/telegramdesktop/tdesktop/blob/dev/Telegram/Resources/tl/mtproto.tl
+
+	[TLDef(0x7A19CB76)] //RSA_public_key#7a19cb76 n:bytes e:bytes = RSAPublicKey
+	public class RSAPublicKey : IObject
+	{
+		public byte[] n;
+		public byte[] e;
+	}
 
 	[TLDef(0xF35C6D01)] //rpc_result#f35c6d01 req_msg_id:long result:Object = RpcResult
 	public class RpcResult : IObject

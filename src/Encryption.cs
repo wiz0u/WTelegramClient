@@ -213,9 +213,6 @@ namespace WTelegram
 				throw new ApplicationException("g^a or g^b is not between 2^{2048-64} and dh_prime - 2^{2048-64}");
 		}
 
-		[TLDef(0x7A19CB76)] //RSA_public_key#7a19cb76 n:bytes e:bytes = RSAPublicKey
-		public class RSAPublicKey : IObject { public byte[] n, e; }
-
 		public static void LoadPublicKey(string pem)
 		{
 			using var rsa = RSA.Create();
@@ -224,7 +221,10 @@ namespace WTelegram
 			var rsaParam = rsa.ExportParameters(false);
 			if (rsaParam.Modulus[0] == 0) rsaParam.Modulus = rsaParam.Modulus[1..];
 			var publicKey = new RSAPublicKey { n = rsaParam.Modulus, e = rsaParam.Exponent };
-			var bareData = publicKey.Serialize(); // bare serialization
+			using var memStream = new MemoryStream(280);
+			using (var writer = new BinaryWriter(memStream))
+				writer.WriteTLObject(publicKey);
+			var bareData = memStream.ToArray();
 			var fingerprint = BinaryPrimitives.ReadInt64LittleEndian(sha1.ComputeHash(bareData, 4, bareData.Length - 4).AsSpan(12)); // 64 lower-order bits of SHA1
 			PublicKeys[fingerprint] = publicKey;
 			Helpers.Log(1, $"Loaded a public key with fingerprint {fingerprint:X}");
