@@ -24,6 +24,7 @@ static async Task Main(string[] _)
 }
 ```
 When run, this will prompt you interactively for your App **api_hash** and **api_id** (that you obtain through Telegram's [API development tools](https://my.telegram.org/apps) page) and try to connect to Telegram servers.
+Those api hash/id represent your application and one can be used for handling many user accounts.
 
 Then it will attempt to sign-in *(login)* as a user for which you must enter the **phone_number** and the **verification_code** that will be sent to this user (for example through SMS or another Telegram client app the user is connected to).
 

@@ -27,9 +27,9 @@ namespace WTelegram
 		/// <summary>This event will be called when an unsollicited update/message is sent by Telegram servers</summary>
 		/// <remarks>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_ListenUpdate.cs">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
 		public event Action<IObject> Update;
-		public delegate Task<TcpClient> TcpFactory(string host, int port);
 		/// <summary>Used to create a TcpClient connected to the given address/port, or throw an exception on failure</summary>
 		public TcpFactory TcpHandler { get; set; } = DefaultTcpHandler;
+		public delegate Task<TcpClient> TcpFactory(string host, int port);
 		/// <summary>Url for using a MTProxy. https://t.me/proxy?server=... </summary>
 		public string MTProxyUrl { get; set; }
 		/// <summary>Telegram configuration, obtained at connection time</summary>
@@ -71,13 +71,8 @@ namespace WTelegram
 		private const int FilePartSize = 512 * 1024;
 		private const string ConnectionShutDown = "Could not read payload length : Connection shut down";
 		private readonly SemaphoreSlim _parallelTransfers = new(10); // max parallel part uploads/downloads
-#if MTPROTO1
-		private readonly SHA1 _sha1 = SHA1.Create();
-		private readonly SHA1 _sha1Recv = SHA1.Create();
-#else
 		private readonly SHA256 _sha256 = SHA256.Create();
 		private readonly SHA256 _sha256Recv = SHA256.Create();
-#endif
 #if OBFUSCATION
 		private AesCtr _sendCtr, _recvCtr;
 #endif
@@ -575,11 +570,7 @@ namespace WTelegram
 			}
 			else
 			{
-#if MTPROTO1
-				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, dataLen - 24), false, _dcSession.AuthKey, data, 8, _sha1Recv);
-#else
 				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, (dataLen - 24) & ~0xF), false, _dcSession.AuthKey, data, 8, _sha256Recv);
-#endif
 				if (decrypted_data.Length < 36) // header below+ctorNb
 					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
 				using var reader = new TL.BinaryReader(new MemoryStream(decrypted_data), this);
@@ -603,18 +594,13 @@ namespace WTelegram
 				if (sessionId != _dcSession.Id) throw new ApplicationException($"Unexpected session ID {sessionId} != {_dcSession.Id}");
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				if ((seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msgId);
-#if MTPROTO1
-				if (decrypted_data.Length - 32 - length is < 0 or > 15) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
-				if (!data.AsSpan(8, 16).SequenceEqual(_sha1Recv.ComputeHash(decrypted_data, 0, 32 + length).AsSpan(4)))
-					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA1");
-#else
 				if (decrypted_data.Length - 32 - length is < 12 or > 1024) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
 				_sha256Recv.TransformBlock(_dcSession.AuthKey, 96, 32, null, 0);
 				_sha256Recv.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
 				if (!data.AsSpan(8, 16).SequenceEqual(_sha256Recv.Hash.AsSpan(8, 16)))
 					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA256");
 				_sha256Recv.Initialize();
-#endif
+
 				var ctorNb = reader.ReadUInt32();
 				if (ctorNb != Layer.BadMsgCtor && (msgStamp - DateTime.UtcNow).Ticks / TimeSpan.TicksPerSecond is > 30 or < -300)
 				{	// msg_id values that belong over 30 seconds in the future or over 300 seconds in the past are to be ignored.
@@ -677,12 +663,7 @@ namespace WTelegram
 				{
 					using var clearStream = new MemoryStream(1024);
 					using var clearWriter = new BinaryWriter(clearStream, Encoding.UTF8);
-#if MTPROTO1
-					const int prepend = 0;
-#else
-					const int prepend = 32;
-					clearWriter.Write(_dcSession.AuthKey, 88, prepend);
-#endif
+					clearWriter.Write(_dcSession.AuthKey, 88, 32);
 					clearWriter.Write(_dcSession.Salt);		// int64 salt
 					clearWriter.Write(_dcSession.Id);		// int64 session_id
 					clearWriter.Write(msgId);				// int64 message_id
@@ -693,24 +674,16 @@ namespace WTelegram
 					else
 						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_'),-40} {MsgIdToStamp(msgId):u} (svc)");
 					clearWriter.WriteTLObject(msg);			// bytes message_data
-					int clearLength = (int)clearStream.Length - prepend;  // length before padding (= 32 + message_data_length)
+					int clearLength = (int)clearStream.Length - 32;  // length before padding (= 32 + message_data_length)
 					int padding = (0x7FFFFFF0 - clearLength) % 16;
-#if !MTPROTO1
 					padding += _random.Next(1, 64) * 16;		// MTProto 2.0 padding must be between 12..1024 with total length divisible by 16
-#endif
-					clearStream.SetLength(prepend + clearLength + padding);
+					clearStream.SetLength(32 + clearLength + padding);
 					byte[] clearBuffer = clearStream.GetBuffer();
-					BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(prepend + 28), clearLength - 32);    // patch message_data_length
-					RNG.GetBytes(clearBuffer, prepend + clearLength, padding);
-#if MTPROTO1
-					var msgKeyLarge = _sha1.ComputeHash(clearBuffer, 0, clearLength); // padding excluded from computation!
-					const int msgKeyOffset = 4;	// msg_key = low 128-bits of SHA1(plaintext)
-					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(prepend, clearLength + padding), true, _dcSession.AuthKey, msgKeyLarge, msgKeyOffset, _sha1);
-#else
-					var msgKeyLarge = _sha256.ComputeHash(clearBuffer, 0, prepend + clearLength + padding);
+					BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(60), clearLength - 32);    // patch message_data_length
+					RNG.GetBytes(clearBuffer, 32 + clearLength, padding);
+					var msgKeyLarge = _sha256.ComputeHash(clearBuffer, 0, 32 + clearLength + padding);
 					const int msgKeyOffset = 8; // msg_key = middle 128-bits of SHA256(authkey_part+plaintext+padding)
-					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(prepend, clearLength + padding), true, _dcSession.AuthKey, msgKeyLarge, msgKeyOffset, _sha256);
-#endif
+					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(32, clearLength + padding), true, _dcSession.AuthKey, msgKeyLarge, msgKeyOffset, _sha256);
 
 					writer.Write(_dcSession.AuthKeyID);				// int64 auth_key_id
 					writer.Write(msgKeyLarge, msgKeyOffset, 16);	// int128 msg_key

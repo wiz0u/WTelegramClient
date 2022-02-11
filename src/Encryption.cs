@@ -33,11 +33,7 @@ namespace WTelegram
 
 			//1)
 			var nonce = new Int128(RNG);
-#if MTPROTO1
-			var resPQ = await client.ReqPQ(nonce);
-#else
 			var resPQ = await client.ReqPqMulti(nonce); 
-#endif
 			//2)
 			if (resPQ.nonce != nonce) throw new ApplicationException("Nonce mismatch");
 			var fingerprint = resPQ.server_public_key_fingerprints.FirstOrDefault(PublicKeys.ContainsKey);
@@ -62,19 +58,6 @@ namespace WTelegram
 			};
 			byte[] encrypted_data = null;
 			{
-#if OLDKEY
-				using var clearStream = new MemoryStream(255);
-				clearStream.Position = 20; // skip SHA1 area (to be patched)
-				using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
-				writer.WriteTLObject(pqInnerData);
-				int clearLength = (int)clearStream.Length;  // length before padding (= 20 + message_data_length)
-				if (clearLength > 255) throw new ApplicationException("PQInnerData too big");
-				byte[] clearBuffer = clearStream.GetBuffer();
-				RNG.GetBytes(clearBuffer, clearLength, 255 - clearLength);
-				sha1.ComputeHash(clearBuffer, 20, clearLength - 20).CopyTo(clearBuffer, 0); // patch with SHA1
-				encrypted_data = BigInteger.ModPow(BigEndianInteger(clearBuffer), // encrypt with RSA key
-					BigEndianInteger(publicKey.e), BigEndianInteger(publicKey.n)).ToByteArray(true, true);
-#else
 				//4.1) RSA_PAD(data, server_public_key)
 				using var clearStream = new MemoryStream(256);
 				using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
@@ -101,7 +84,6 @@ namespace WTelegram
 					if (x < n) // if good result, encrypt with RSA key:
 						encrypted_data = BigInteger.ModPow(x, BigEndianInteger(publicKey.e), n).To256Bytes();
 				} // otherwise, repeat the steps
-#endif
 			}
 			var serverDHparams = await client.ReqDHParams(pqInnerData.nonce, pqInnerData.server_nonce, pqInnerData.p, pqInnerData.q, fingerprint, encrypted_data);
 			//5)
@@ -250,17 +232,6 @@ namespace WTelegram
 
 		private static void LoadDefaultPublicKeys() 
 		{
-#if OLDKEY
-			// Old Public Key (C3B42B026CE86B21)
-			LoadPublicKey(@"-----BEGIN RSA PUBLIC KEY-----
-MIIBCgKCAQEAwVACPi9w23mF3tBkdZz+zwrzKOaaQdr01vAbU4E1pvkfj4sqDsm6
-lyDONS789sVoD/xCS9Y0hkkC3gtL1tSfTlgCMOOul9lcixlEKzwKENj1Yz/s7daS
-an9tqw3bfUV/nqgbhGX81v/+7RFAEd+RwFnK7a+XYl9sluzHRyVVaTTveB2GazTw
-Efzk2DWgkBluml8OREmvfraX3bkHZJTKX4EQSjBbbdJ2ZXIsRrYOXfaA+xayEGB+
-8hdlLmAjbCVfaigxX0CDqWeR1yFL9kwd9P0NsZRPsmoqVwMbMu7mStFai6aIhc3n
-Slv8kg9qv1m6XHVQY3PnEw+QQtqSIXklHwIDAQAB
------END RSA PUBLIC KEY-----");
-#else
 			// Production Public Key (D09D1D85DE64FD85)
 			LoadPublicKey(@"-----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEA6LszBcC1LGzyr992NzE0ieY+BSaOW622Aa9Bd4ZHLl+TuFQ4lo4g
@@ -279,42 +250,8 @@ j25sIWeYPHYeOrFp/eXaqhISP6G+q2IeTaWTXpwZj4LzXq5YOpk4bYEQ6mvRq7D1
 aHWfYmlEGepfaYR8Q0YqvvhYtMte3ITnuSJs171+GDqpdKcSwHnd6FudwGO4pcCO
 j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 -----END RSA PUBLIC KEY-----");
-#endif
 		}
 
-#if MTPROTO1
-		internal static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, byte[] authKey, byte[] msgKey, int msgKeyOffset, SHA1 sha1)
-		{
-			// first, construct AES key & IV
-			byte[] aes_key = new byte[32], aes_iv = new byte[32];
-			int x = encrypt ? 0 : 8;
-			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
-			sha1.TransformFinalBlock(authKey, x, 32);                   // authKey[x:32]
-			var sha1_a = sha1.Hash;
-			sha1.Initialize();
-			sha1.TransformBlock(authKey, 32 + x, 16, null, 0);          // authKey[32+x:16]
-			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
-			sha1.TransformFinalBlock(authKey, 48 + x, 16);              // authKey[48+x:16]
-			var sha1_b = sha1.Hash;
-			sha1.Initialize();
-			sha1.TransformBlock(authKey, 64 + x, 32, null, 0);          // authKey[64+x:32]
-			sha1.TransformFinalBlock(msgKey, msgKeyOffset, 16);         // msgKey
-			var sha1_c = sha1.Hash;
-			sha1.Initialize();
-			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
-			sha1.TransformFinalBlock(authKey, 96 + x, 32);              // authKey[96+x:32]
-			var sha1_d = sha1.Hash;
-			sha1.Initialize();
-			Array.Copy(sha1_a, 0, aes_key, 0, 8);
-			Array.Copy(sha1_b, 8, aes_key, 8, 12);
-			Array.Copy(sha1_c, 4, aes_key, 20, 12);
-			Array.Copy(sha1_a, 8, aes_iv, 0, 12);
-			Array.Copy(sha1_b, 0, aes_iv, 12, 8);
-			Array.Copy(sha1_c, 16, aes_iv, 20, 4);
-			Array.Copy(sha1_d, 0, aes_iv, 24, 8);
-			return AES_IGE_EncryptDecrypt(input, aes_key, aes_iv, encrypt);
-		}
-#else
 		internal static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, byte[] authKey, byte[] msgKey, int msgKeyOffset, SHA256 sha256)
 		{
 			// first, construct AES key & IV
@@ -336,7 +273,6 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			Array.Copy(sha256_b, 24, aes_iv, 24, 8);
 			return AES_IGE_EncryptDecrypt(input, aes_key, aes_iv, encrypt);
 		}
-#endif
 
 		private static byte[] AES_IGE_EncryptDecrypt(Span<byte> input, byte[] aes_key, byte[] aes_iv, bool encrypt)
 		{
@@ -346,20 +282,17 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			var output = new byte[input.Length];
 			var xPrev = aes_iv.AsSpan(encrypt ? 16 : 0, 16);
 			var yPrev = aes_iv.AsSpan(encrypt ? 0 : 16, 16);
-			var aesCrypto = encrypt ? AesECB.CreateEncryptor(aes_key, null) : AesECB.CreateDecryptor(aes_key, null);
-			using (aesCrypto)
+			using var aesCrypto = encrypt ? AesECB.CreateEncryptor(aes_key, null) : AesECB.CreateDecryptor(aes_key, null);
+			byte[] yXOR = new byte[16];
+			for (int i = 0; i < input.Length; i += 16)
 			{
-				byte[] yXOR = new byte[16];
-				for (int i = 0; i < input.Length; i += 16)
-				{
-					for (int j = 0; j < 16; j++)
-						yXOR[j] = (byte)(input[i + j] ^ yPrev[j]);
-					aesCrypto.TransformBlock(yXOR, 0, 16, output, i);
-					for (int j = 0; j < 16; j++)
-						output[i + j] ^= xPrev[j];
-					xPrev = input.Slice(i, 16);
-					yPrev = output.AsSpan(i, 16);
-				}
+				for (int j = 0; j < 16; j++)
+					yXOR[j] = (byte)(input[i + j] ^ yPrev[j]);
+				aesCrypto.TransformBlock(yXOR, 0, 16, output, i);
+				for (int j = 0; j < 16; j++)
+					output[i + j] ^= xPrev[j];
+				xPrev = input.Slice(i, 16);
+				yPrev = output.AsSpan(i, 16);
 			}
 			return output;
 		}

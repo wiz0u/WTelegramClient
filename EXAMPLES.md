@@ -14,6 +14,8 @@ and add at least these variables with adequate value: **api_id, api_hash, phone_
 Remember that these are just simple example codes that you should adjust to your needs.
 In real production code, you might want to properly test the success of each operation or handle exceptions.
 
+More examples can also be found in answers to [StackOverflow questions](https://stackoverflow.com/questions/tagged/wtelegramclient).
+
 <a name="msg-by-name"></a>
 ### Send a message to someone by @username
 ```csharp
