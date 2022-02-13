@@ -85,7 +85,7 @@ Below is an example of calling the [messages.getAllChats](https://corefork.teleg
 ```csharp
 using TL;
 ...
-var chats = await client.Messages_GetAllChats(null);
+var chats = await client.Messages_GetAllChats();
 Console.WriteLine("This user has joined the following:");
 foreach (var (id, chat) in chats.chats)
     switch (chat) // example of downcasting to their real classes:

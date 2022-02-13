@@ -68,18 +68,18 @@ var user = await client.LoginUserIfNeeded();
 var random = new Random();
 
 // • List all stickerSets the user has added to his account
-var allStickers = await client.Messages_GetAllStickers(0);
+var allStickers = await client.Messages_GetAllStickers();
 foreach (var stickerSet in allStickers.sets)
     Console.WriteLine($"Pack {stickerSet.short_name} contains {stickerSet.count} stickers");
-//if you need details on each: var sticketSetDetails = await client.Messages_GetStickerSet(stickerSet, 0);
+//if you need details on each: var sticketSetDetails = await client.Messages_GetStickerSet(stickerSet);
 
 // • Send a random sticker from the user's favorites stickers
-var favedStickers = await client.Messages_GetFavedStickers(0);
+var favedStickers = await client.Messages_GetFavedStickers();
 var stickerDoc = favedStickers.stickers[random.Next(favedStickers.stickers.Length)];
 await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDocument { id = stickerDoc });
 
 // • Send a specific sticker given the stickerset shortname and emoticon
-var friendlyPanda = await client.Messages_GetStickerSet(new InputStickerSetShortName { short_name = "Friendly_Panda" }, 0);
+var friendlyPanda = await client.Messages_GetStickerSet(new InputStickerSetShortName { short_name = "Friendly_Panda" });
 var laughId = friendlyPanda.packs.First(p => p.emoticon == "😂").documents[0];
 var laughDoc = friendlyPanda.documents.First(d => d.ID == laughId);
 await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDocument { id = laughDoc });
@@ -118,7 +118,7 @@ await Task.Delay(5000);
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var chats = await client.Messages_GetAllChats(null);
+var chats = await client.Messages_GetAllChats();
 foreach (var (id, chat) in chats.chats)
     if (chat.IsActive)
         Console.WriteLine($"{id} : {chat}");
@@ -138,7 +138,7 @@ but the old `Chat` will be marked with flag [deactivated] and should not be used
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var chats = await client.Messages_GetAllChats(null);
+var chats = await client.Messages_GetAllChats();
 InputPeer peer = chats.chats[1234567890]; // the chat we want
 DateTime when = DateTime.UtcNow.AddMinutes(3);
 await client.SendMessageAsync(peer, "This will be posted in 3 minutes", schedule_date: when);
@@ -152,7 +152,7 @@ const string Filepath = @"C:\...\photo.jpg";
 
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var chats = await client.Messages_GetAllChats(null);
+var chats = await client.Messages_GetAllChats();
 InputPeer peer = chats.chats[ChatId];
 var inputFile = await client.UploadFileAsync(Filepath);
 await client.SendMediaAsync(peer, "Here is the photo", inputFile);
@@ -162,7 +162,7 @@ await client.SendMediaAsync(peer, "Here is the photo", inputFile);
 ### Send a grouped media album using photos from various sources
 ```csharp
 // Photo 1 already on Telegram: latest photo found in the user's Saved Messages
-var history = await client.Messages_GetHistory(InputPeer.Self, 0, default, 0, 100, 0, 0, 0);
+var history = await client.Messages_GetHistory(InputPeer.Self);
 PhotoBase photoFromTelegram = history.Messages.OfType<Message>().Select(m => m.media).OfType<MessageMediaPhoto>().First().photo;
 // Photo 2 uploaded now from our computer:
 var uploadedFile = await client.UploadFileAsync(@"C:\Pictures\flower.jpg");
@@ -184,7 +184,7 @@ await client.SendAlbumAsync(InputPeer.Self, inputMedias, "My first album");
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var dialogs = await client.Messages_GetDialogs(default, 0, null, 0, 0);
+var dialogs = await client.Messages_GetDialogs();
 while (dialogs.Dialogs.Length != 0)
 {
     foreach (var dialog in dialogs.Dialogs)
@@ -196,7 +196,7 @@ while (dialogs.Dialogs.Length != 0)
     var lastDialog = dialogs.Dialogs[^1];
     var lastMsg = dialogs.Messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
     var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
-    dialogs = await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, 500, 0);
+    dialogs = await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer);
 }
 ```
 
@@ -218,11 +218,11 @@ For a Channel/Group:
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var chats = await client.Messages_GetAllChats(null);
+var chats = await client.Messages_GetAllChats();
 var channel = (Channel)chats.chats[1234567890]; // the channel we want
 for (int offset = 0; ;)
 {
-    var participants = await client.Channels_GetParticipants(channel, null, offset, 1000, 0);
+    var participants = await client.Channels_GetParticipants(channel, null, offset);
     foreach (var (id, user) in participants.users)
         Console.WriteLine(user);
     offset += participants.participants.Length;
@@ -235,7 +235,7 @@ In this case, you can use this helper method, but it can take several minutes to
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var chats = await client.Messages_GetAllChats(null);
+var chats = await client.Messages_GetAllChats();
 var channel = (Channel)chats.chats[1234567890]; // the channel we want
 var participants = await client.Channels_GetAllParticipants(channel);
 ```
@@ -255,7 +255,7 @@ if (resolved.Chat is Channel channel)
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var chats = await client.Messages_GetAllChats(null);
+var chats = await client.Messages_GetAllChats();
 var chat = chats.chats[1234567890]; // the target chat
 ```
 After the above code, once you [have obtained](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash) an `InputUser` or `User`, you can:
@@ -286,16 +286,16 @@ await client.DeleteChatUser(chat, user);
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var chats = await client.Messages_GetAllChats(null);
+var chats = await client.Messages_GetAllChats();
 InputPeer peer = chats.chats[1234567890]; // the chat we want
-for (int offset = 0; ;)
+for (int offset_id = 0; ;)
 {
-    var messages = await client.Messages_GetHistory(peer, 0, default, offset, 1000, 0, 0, 0);
+    var messages = await client.Messages_GetHistory(peer, offset_id);
+    if (messages.Messages.Length == 0) break;
     foreach (var msgBase in messages.Messages)
         if (msgBase is Message msg)
             Console.WriteLine(msg.message);
-    offset += messages.Messages.Length;
-    if (offset >= messages.Count) break;
+    offset_id = messages.Messages[^1].ID;
 }
 ```
 
@@ -305,7 +305,7 @@ There are two different methods. Here is the simpler one:
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var contacts = await client.Contacts_GetContacts(0);
+var contacts = await client.Contacts_GetContacts();
 foreach (User contact in contacts.users.Values)
     Console.WriteLine($"{contact} {contact.phone}");
 ```
@@ -441,11 +441,11 @@ This code fetches the available reactions in a given chat, and sends the first r
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 await client.LoginUserIfNeeded();
-var chats = await client.Messages_GetAllChats(null);
+var chats = await client.Messages_GetAllChats();
 var chat = chats.chats[1234567890]; // the chat we want
 var full = await client.GetFullChat(chat);
 var reaction = full.full_chat.AvailableReactions[0]; // choose the first available reaction emoji
-var messages = await client.Messages_Search(chat, null, new InputMessagesFilterPinned(), default, default, 0, 0, 2, 0, 0, 0);
+var messages = await client.Messages_Search<InputMessagesFilterPinned>(chat, limit: 2);
 foreach (var msg in messages.Messages)
     await client.Messages_SendReaction(chat, msg.ID, reaction);
 ```

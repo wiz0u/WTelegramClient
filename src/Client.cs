@@ -38,7 +38,7 @@ namespace WTelegram
 		public int MaxAutoReconnects { get; set; } = 5;
 		/// <summary>Number of seconds under which an error 420 FLOOD_WAIT_X will not be raised and your request will instead be auto-retried after the delay</summary>
 		public int FloodRetryThreshold { get; set; } = 60;
-		/// <summary>Number of seconds between each keep-alive ping. Increase this if you have a slow connection</summary>
+		/// <summary>Number of seconds between each keep-alive ping. Increase this if you have a slow connection or you're debugging your code</summary>
 		public int PingInterval { get; set; } = 60;
 		/// <summary>Is this Client instance the main or a secondary DC session</summary>
 		public bool IsMainDC => (_dcSession?.DataCenter?.id ?? 0) == _session.MainDC;
@@ -1255,6 +1255,15 @@ namespace WTelegram
 					: new InputFile { id = file_id, parts = file_total_parts, name = filename, md5_checksum = md5.Hash };
 			}
 		}
+
+		/// <summary>Search messages with <see href="https://corefork.telegram.org/type/MessagesFilter">filter</see> and text		<para>See <a href="https://corefork.telegram.org/method/messages.search"/></para></summary>
+		/// <typeparam name="T">See <see cref="MessagesFilter"/> for a list of possible filter types</typeparam>
+		/// <param name="peer">User or chat, histories with which are searched, or <see langword="null"/> constructor for global search</param>
+		/// <param name="text">Text search request</param>
+		/// <param name="offset_id">Only return messages starting from the specified message ID</param>
+		/// <param name="limit"><a href="https://corefork.telegram.org/api/offsets">Number of results to return</a></param>
+		public Task<Messages_MessagesBase> Messages_Search<T>(InputPeer peer, string text = null, int offset_id = 0, int limit = int.MaxValue) where T : MessagesFilter, new()
+			=> this.Messages_Search(peer, text, new T(), offset_id: offset_id, limit: limit);
 
 		/// <summary>Helper function to send a media message more easily</summary>
 		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>

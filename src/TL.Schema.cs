@@ -12806,7 +12806,7 @@ namespace TL
 
 		/// <summary>Delete all temporary authorization keys <strong>except for</strong> the ones specified		<para>See <a href="https://corefork.telegram.org/method/auth.dropTempAuthKeys"/> [bots: ✓]</para></summary>
 		/// <param name="except_auth_keys">The auth keys that <strong>shouldn't</strong> be dropped.</param>
-		public static Task<bool> Auth_DropTempAuthKeys(this Client client, long[] except_auth_keys)
+		public static Task<bool> Auth_DropTempAuthKeys(this Client client, long[] except_auth_keys = null)
 			=> client.Invoke(new Auth_DropTempAuthKeys
 			{
 				except_auth_keys = except_auth_keys,
@@ -12816,7 +12816,7 @@ namespace TL
 		/// <param name="api_id">Application identifier (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="api_hash">Application identifier hash (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="except_ids">List of already logged-in user IDs, to prevent logging in twice with the same user</param>
-		public static Task<Auth_LoginTokenBase> Auth_ExportLoginToken(this Client client, int api_id, string api_hash, long[] except_ids)
+		public static Task<Auth_LoginTokenBase> Auth_ExportLoginToken(this Client client, int api_id, string api_hash, long[] except_ids = null)
 			=> client.Invoke(new Auth_ExportLoginToken
 			{
 				api_id = api_id,
@@ -12926,7 +12926,7 @@ namespace TL
 		/// <summary>Returns a list of available wallpapers.		<para>See <a href="https://corefork.telegram.org/method/account.getWallPapers"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.wallPapersNotModified">account.wallPapersNotModified</a></returns>
-		public static Task<Account_WallPapers> Account_GetWallPapers(this Client client, long hash)
+		public static Task<Account_WallPapers> Account_GetWallPapers(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetWallPapers
 			{
 				hash = hash,
@@ -13438,7 +13438,7 @@ namespace TL
 		/// <param name="format">Theme format, a string that identifies the theming engines supported by the client</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.themesNotModified">account.themesNotModified</a></returns>
-		public static Task<Account_Themes> Account_GetThemes(this Client client, string format, long hash)
+		public static Task<Account_Themes> Account_GetThemes(this Client client, string format, long hash = default)
 			=> client.Invoke(new Account_GetThemes
 			{
 				format = format,
@@ -13510,7 +13510,7 @@ namespace TL
 		/// <summary>Get all available chat themes		<para>See <a href="https://corefork.telegram.org/method/account.getChatThemes"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.themesNotModified">account.themesNotModified</a></returns>
-		public static Task<Account_Themes> Account_GetChatThemes(this Client client, long hash)
+		public static Task<Account_Themes> Account_GetChatThemes(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetChatThemes
 			{
 				hash = hash,
@@ -13561,7 +13561,7 @@ namespace TL
 
 		/// <summary>Get contact by telegram IDs		<para>See <a href="https://corefork.telegram.org/method/contacts.getContactIDs"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
-		public static Task<int[]> Contacts_GetContactIDs(this Client client, long hash)
+		public static Task<int[]> Contacts_GetContactIDs(this Client client, long hash = default)
 			=> client.Invoke(new Contacts_GetContactIDs
 			{
 				hash = hash,
@@ -13576,7 +13576,7 @@ namespace TL
 		/// <summary>Returns the current user's contact list.		<para>See <a href="https://corefork.telegram.org/method/contacts.getContacts"/></para></summary>
 		/// <param name="hash">If there already is a full contact list on the client, a <a href="https://corefork.telegram.org/api/offsets#hash-generation">hash</a> of a the list of contact IDs in ascending order may be passed in this parameter. If the contact set was not changed, <see langword="null"/> will be returned.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/contacts.contactsNotModified">contacts.contactsNotModified</a></returns>
-		public static Task<Contacts_Contacts> Contacts_GetContacts(this Client client, long hash)
+		public static Task<Contacts_Contacts> Contacts_GetContacts(this Client client, long hash = default)
 			=> client.Invoke(new Contacts_GetContacts
 			{
 				hash = hash,
@@ -13625,7 +13625,7 @@ namespace TL
 		/// <summary>Returns the list of blocked users.		<para>See <a href="https://corefork.telegram.org/method/contacts.getBlocked"/></para></summary>
 		/// <param name="offset">The number of list elements to be skipped</param>
 		/// <param name="limit">The number of list elements to be returned</param>
-		public static Task<Contacts_Blocked> Contacts_GetBlocked(this Client client, int offset, int limit)
+		public static Task<Contacts_Blocked> Contacts_GetBlocked(this Client client, int offset = default, int limit = int.MaxValue)
 			=> client.Invoke(new Contacts_GetBlocked
 			{
 				offset = offset,
@@ -13635,7 +13635,7 @@ namespace TL
 		/// <summary>Returns users found by username substring.		<para>See <a href="https://corefork.telegram.org/method/contacts.search"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.search#possible-errors">details</a>)</para></summary>
 		/// <param name="q">Target substring</param>
 		/// <param name="limit">Maximum number of users to be returned</param>
-		public static Task<Contacts_Found> Contacts_Search(this Client client, string q, int limit)
+		public static Task<Contacts_Found> Contacts_Search(this Client client, string q, int limit = int.MaxValue)
 			=> client.Invoke(new Contacts_Search
 			{
 				q = q,
@@ -13663,7 +13663,7 @@ namespace TL
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/contacts.topPeersNotModified">contacts.topPeersNotModified</a></returns>
-		public static Task<Contacts_TopPeersBase> Contacts_GetTopPeers(this Client client, int offset, int limit, long hash, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false)
+		public static Task<Contacts_TopPeersBase> Contacts_GetTopPeers(this Client client, int offset = default, int limit = int.MaxValue, long hash = default, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false)
 			=> client.Invoke(new Contacts_GetTopPeers
 			{
 				flags = (Contacts_GetTopPeers.Flags)((correspondents ? 0x1 : 0) | (bots_pm ? 0x2 : 0) | (bots_inline ? 0x4 : 0) | (phone_calls ? 0x8 : 0) | (forward_users ? 0x10 : 0) | (forward_chats ? 0x20 : 0) | (groups ? 0x400 : 0) | (channels ? 0x8000 : 0)),
@@ -13766,7 +13766,7 @@ namespace TL
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offset peer for pagination</a></param>
 		/// <param name="limit">Number of list elements to be returned</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
-		public static Task<Messages_DialogsBase> Messages_GetDialogs(this Client client, DateTime offset_date, int offset_id, InputPeer offset_peer, int limit, long hash, bool exclude_pinned = false, int? folder_id = null)
+		public static Task<Messages_DialogsBase> Messages_GetDialogs(this Client client, DateTime offset_date = default, int offset_id = default, InputPeer offset_peer = null, int limit = int.MaxValue, long hash = default, bool exclude_pinned = false, int? folder_id = null)
 			=> client.Invoke(new Messages_GetDialogs
 			{
 				flags = (Messages_GetDialogs.Flags)((exclude_pinned ? 0x1 : 0) | (folder_id != null ? 0x2 : 0)),
@@ -13787,7 +13787,7 @@ namespace TL
 		/// <param name="max_id">If a positive value was transferred, the method will return only messages with IDs less than <strong>max_id</strong></param>
 		/// <param name="min_id">If a positive value was transferred, the method will return only messages with IDs more than <strong>min_id</strong></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets">Result hash</a></param>
-		public static Task<Messages_MessagesBase> Messages_GetHistory(this Client client, InputPeer peer, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash)
+		public static Task<Messages_MessagesBase> Messages_GetHistory(this Client client, InputPeer peer, int offset_id = default, DateTime offset_date = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default)
 			=> client.Invoke(new Messages_GetHistory
 			{
 				peer = peer,
@@ -13814,7 +13814,7 @@ namespace TL
 		/// <param name="max_id"><a href="https://corefork.telegram.org/api/offsets">Maximum message ID to return</a></param>
 		/// <param name="min_id"><a href="https://corefork.telegram.org/api/offsets">Minimum message ID to return</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets">Hash</a></param>
-		public static Task<Messages_MessagesBase> Messages_Search(this Client client, InputPeer peer, string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_id, int add_offset, int limit, int max_id, int min_id, long hash, InputPeer from_id = null, int? top_msg_id = null)
+		public static Task<Messages_MessagesBase> Messages_Search(this Client client, InputPeer peer, string q, MessagesFilter filter, DateTime min_date = default, DateTime max_date = default, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default, InputPeer from_id = null, int? top_msg_id = null)
 			=> client.Invoke(new Messages_Search
 			{
 				flags = (Messages_Search.Flags)((from_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x2 : 0)),
@@ -13836,7 +13836,7 @@ namespace TL
 		/// <summary>Marks message history as read.		<para>See <a href="https://corefork.telegram.org/method/messages.readHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Target user or group</param>
 		/// <param name="max_id">If a positive value is passed, only messages with identifiers less or equal than the given one will be read</param>
-		public static Task<Messages_AffectedMessages> Messages_ReadHistory(this Client client, InputPeer peer, int max_id)
+		public static Task<Messages_AffectedMessages> Messages_ReadHistory(this Client client, InputPeer peer, int max_id = default)
 			=> client.Invoke(new Messages_ReadHistory
 			{
 				peer = peer,
@@ -13848,7 +13848,7 @@ namespace TL
 		/// <param name="revoke">Whether to delete the message history for all chat participants</param>
 		/// <param name="peer">User or chat, communication history of which will be deleted</param>
 		/// <param name="max_id">Maximum ID of message to delete</param>
-		public static Task<Messages_AffectedHistory> Messages_DeleteHistory(this Client client, InputPeer peer, int max_id, bool just_clear = false, bool revoke = false, DateTime? min_date = null, DateTime? max_date = null)
+		public static Task<Messages_AffectedHistory> Messages_DeleteHistory(this Client client, InputPeer peer, int max_id = default, bool just_clear = false, bool revoke = false, DateTime? min_date = null, DateTime? max_date = null)
 			=> client.Invoke(new Messages_DeleteHistory
 			{
 				flags = (Messages_DeleteHistory.Flags)((just_clear ? 0x1 : 0) | (revoke ? 0x2 : 0) | (min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0)),
@@ -13870,7 +13870,7 @@ namespace TL
 
 		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Confirms receipt of messages by a client, cancels PUSH-notification sending.		<para>See <a href="https://corefork.telegram.org/method/messages.receivedMessages"/></para></summary>
 		/// <param name="max_id">Maximum message ID available in a client.</param>
-		public static Task<ReceivedNotifyMessage[]> Messages_ReceivedMessages(this Client client, int max_id)
+		public static Task<ReceivedNotifyMessage[]> Messages_ReceivedMessages(this Client client, int max_id = default)
 			=> client.Invoke(new Messages_ReceivedMessages
 			{
 				max_id = max_id,
@@ -14122,7 +14122,7 @@ namespace TL
 		/// <summary>Marks message history within a secret chat as read.		<para>See <a href="https://corefork.telegram.org/method/messages.readEncryptedHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readEncryptedHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Secret chat ID</param>
 		/// <param name="max_date">Maximum date value for received messages in history</param>
-		public static Task<bool> Messages_ReadEncryptedHistory(this Client client, InputEncryptedChat peer, DateTime max_date)
+		public static Task<bool> Messages_ReadEncryptedHistory(this Client client, InputEncryptedChat peer, DateTime max_date = default)
 			=> client.Invoke(new Messages_ReadEncryptedHistory
 			{
 				peer = peer,
@@ -14199,7 +14199,7 @@ namespace TL
 		/// <param name="emoticon">The emoji</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickersNotModified">messages.stickersNotModified</a></returns>
-		public static Task<Messages_Stickers> Messages_GetStickers(this Client client, string emoticon, long hash)
+		public static Task<Messages_Stickers> Messages_GetStickers(this Client client, string emoticon, long hash = default)
 			=> client.Invoke(new Messages_GetStickers
 			{
 				emoticon = emoticon,
@@ -14209,7 +14209,7 @@ namespace TL
 		/// <summary>Get all installed stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getAllStickers"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.allStickersNotModified">messages.allStickersNotModified</a></returns>
-		public static Task<Messages_AllStickers> Messages_GetAllStickers(this Client client, long hash)
+		public static Task<Messages_AllStickers> Messages_GetAllStickers(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetAllStickers
 			{
 				hash = hash,
@@ -14261,7 +14261,7 @@ namespace TL
 		/// <summary>Get info about a stickerset		<para>See <a href="https://corefork.telegram.org/method/messages.getStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getStickerSet#possible-errors">details</a>)</para></summary>
 		/// <param name="stickerset">Stickerset</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
-		public static Task<Messages_StickerSet> Messages_GetStickerSet(this Client client, InputStickerSet stickerset, int hash)
+		public static Task<Messages_StickerSet> Messages_GetStickerSet(this Client client, InputStickerSet stickerset, int hash = default)
 			=> client.Invoke(new Messages_GetStickerSet
 			{
 				stickerset = stickerset,
@@ -14342,7 +14342,7 @@ namespace TL
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
-		public static Task<Messages_MessagesBase> Messages_SearchGlobal(this Client client, string q, MessagesFilter filter, DateTime min_date, DateTime max_date, int offset_rate, InputPeer offset_peer, int offset_id, int limit, int? folder_id = null)
+		public static Task<Messages_MessagesBase> Messages_SearchGlobal(this Client client, string q, MessagesFilter filter, DateTime min_date = default, DateTime max_date = default, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue, int? folder_id = null)
 			=> client.Invoke(new Messages_SearchGlobal
 			{
 				flags = (Messages_SearchGlobal.Flags)(folder_id != null ? 0x1 : 0),
@@ -14382,7 +14382,7 @@ namespace TL
 		/// <summary>Get saved GIFs		<para>See <a href="https://corefork.telegram.org/method/messages.getSavedGifs"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.savedGifsNotModified">messages.savedGifsNotModified</a></returns>
-		public static Task<Messages_SavedGifs> Messages_GetSavedGifs(this Client client, long hash)
+		public static Task<Messages_SavedGifs> Messages_GetSavedGifs(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetSavedGifs
 			{
 				hash = hash,
@@ -14572,7 +14572,7 @@ namespace TL
 
 		/// <summary>Get featured stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getFeaturedStickers"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
-		public static Task<Messages_FeaturedStickersBase> Messages_GetFeaturedStickers(this Client client, long hash)
+		public static Task<Messages_FeaturedStickersBase> Messages_GetFeaturedStickers(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetFeaturedStickers
 			{
 				hash = hash,
@@ -14590,7 +14590,7 @@ namespace TL
 		/// <param name="attached">Get stickers recently attached to photo or video files</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.recentStickersNotModified">messages.recentStickersNotModified</a></returns>
-		public static Task<Messages_RecentStickers> Messages_GetRecentStickers(this Client client, long hash, bool attached = false)
+		public static Task<Messages_RecentStickers> Messages_GetRecentStickers(this Client client, long hash = default, bool attached = false)
 			=> client.Invoke(new Messages_GetRecentStickers
 			{
 				flags = (Messages_GetRecentStickers.Flags)(attached ? 0x1 : 0),
@@ -14621,7 +14621,7 @@ namespace TL
 		/// <param name="masks">Get mask stickers</param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_ArchivedStickers> Messages_GetArchivedStickers(this Client client, long offset_id, int limit, bool masks = false)
+		public static Task<Messages_ArchivedStickers> Messages_GetArchivedStickers(this Client client, long offset_id = default, int limit = int.MaxValue, bool masks = false)
 			=> client.Invoke(new Messages_GetArchivedStickers
 			{
 				flags = (Messages_GetArchivedStickers.Flags)(masks ? 0x1 : 0),
@@ -14632,7 +14632,7 @@ namespace TL
 		/// <summary>Get installed mask stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getMaskStickers"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.allStickersNotModified">messages.allStickersNotModified</a></returns>
-		public static Task<Messages_AllStickers> Messages_GetMaskStickers(this Client client, long hash)
+		public static Task<Messages_AllStickers> Messages_GetMaskStickers(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetMaskStickers
 			{
 				hash = hash,
@@ -14704,7 +14704,7 @@ namespace TL
 		/// <param name="user_id">User ID</param>
 		/// <param name="max_id">Maximum ID of chat to return (see <a href="https://corefork.telegram.org/api/offsets">pagination</a>)</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_Chats> Messages_GetCommonChats(this Client client, InputUserBase user_id, long max_id, int limit)
+		public static Task<Messages_Chats> Messages_GetCommonChats(this Client client, InputUserBase user_id, long max_id = default, int limit = int.MaxValue)
 			=> client.Invoke(new Messages_GetCommonChats
 			{
 				user_id = user_id,
@@ -14714,7 +14714,7 @@ namespace TL
 
 		/// <summary>Get all chats, channels and supergroups		<para>See <a href="https://corefork.telegram.org/method/messages.getAllChats"/></para></summary>
 		/// <param name="except_ids">Except these chats/channels/supergroups</param>
-		public static Task<Messages_Chats> Messages_GetAllChats(this Client client, long[] except_ids)
+		public static Task<Messages_Chats> Messages_GetAllChats(this Client client, long[] except_ids = null)
 			=> client.Invoke(new Messages_GetAllChats
 			{
 				except_ids = except_ids,
@@ -14723,7 +14723,7 @@ namespace TL
 		/// <summary>Get <a href="https://instantview.telegram.org">instant view</a> page		<para>See <a href="https://corefork.telegram.org/method/messages.getWebPage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getWebPage#possible-errors">details</a>)</para></summary>
 		/// <param name="url">URL of IV page to fetch</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
-		public static Task<WebPageBase> Messages_GetWebPage(this Client client, string url, int hash)
+		public static Task<WebPageBase> Messages_GetWebPage(this Client client, string url, int hash = default)
 			=> client.Invoke(new Messages_GetWebPage
 			{
 				url = url,
@@ -14811,7 +14811,7 @@ namespace TL
 		/// <summary>Get faved stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getFavedStickers"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.favedStickersNotModified">messages.favedStickersNotModified</a></returns>
-		public static Task<Messages_FavedStickers> Messages_GetFavedStickers(this Client client, long hash)
+		public static Task<Messages_FavedStickers> Messages_GetFavedStickers(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetFavedStickers
 			{
 				hash = hash,
@@ -14834,7 +14834,7 @@ namespace TL
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="max_id">Maximum message ID to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="min_id">Minimum message ID to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_MessagesBase> Messages_GetUnreadMentions(this Client client, InputPeer peer, int offset_id, int add_offset, int limit, int max_id, int min_id)
+		public static Task<Messages_MessagesBase> Messages_GetUnreadMentions(this Client client, InputPeer peer, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default)
 			=> client.Invoke(new Messages_GetUnreadMentions
 			{
 				peer = peer,
@@ -14857,7 +14857,7 @@ namespace TL
 		/// <param name="peer">User</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
-		public static Task<Messages_MessagesBase> Messages_GetRecentLocations(this Client client, InputPeer peer, int limit, long hash)
+		public static Task<Messages_MessagesBase> Messages_GetRecentLocations(this Client client, InputPeer peer, int limit = int.MaxValue, long hash = default)
 			=> client.Invoke(new Messages_GetRecentLocations
 			{
 				peer = peer,
@@ -14900,7 +14900,7 @@ namespace TL
 		/// <param name="q">Query string</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.foundStickerSetsNotModified">messages.foundStickerSetsNotModified</a></returns>
-		public static Task<Messages_FoundStickerSets> Messages_SearchStickerSets(this Client client, string q, long hash, bool exclude_featured = false)
+		public static Task<Messages_FoundStickerSets> Messages_SearchStickerSets(this Client client, string q, long hash = default, bool exclude_featured = false)
 			=> client.Invoke(new Messages_SearchStickerSets
 			{
 				flags = (Messages_SearchStickerSets.Flags)(exclude_featured ? 0x1 : 0),
@@ -15086,7 +15086,7 @@ namespace TL
 		/// <summary>Get scheduled messages		<para>See <a href="https://corefork.telegram.org/method/messages.getScheduledHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getScheduledHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
-		public static Task<Messages_MessagesBase> Messages_GetScheduledHistory(this Client client, InputPeer peer, long hash)
+		public static Task<Messages_MessagesBase> Messages_GetScheduledHistory(this Client client, InputPeer peer, long hash = default)
 			=> client.Invoke(new Messages_GetScheduledHistory
 			{
 				peer = peer,
@@ -15129,7 +15129,7 @@ namespace TL
 		/// <param name="option">Get only results for the specified poll <c>option</c></param>
 		/// <param name="offset">Offset for results, taken from the <c>next_offset</c> field of <see cref="Messages_VotesList"/>, initially an empty string. <br/>Note: if no more results are available, the method call will return an empty <c>next_offset</c>; thus, avoid providing the <c>next_offset</c> returned in <see cref="Messages_VotesList"/> if it is empty, to avoid an infinite loop.</param>
 		/// <param name="limit">Number of results to return</param>
-		public static Task<Messages_VotesList> Messages_GetPollVotes(this Client client, InputPeer peer, int id, int limit, byte[] option = null, string offset = null)
+		public static Task<Messages_VotesList> Messages_GetPollVotes(this Client client, InputPeer peer, int id, int limit = int.MaxValue, byte[] option = null, string offset = null)
 			=> client.Invoke(new Messages_GetPollVotes
 			{
 				flags = (Messages_GetPollVotes.Flags)((option != null ? 0x1 : 0) | (offset != null ? 0x2 : 0)),
@@ -15187,7 +15187,7 @@ namespace TL
 		/// <param name="offset">Offset</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
-		public static Task<Messages_FeaturedStickersBase> Messages_GetOldFeaturedStickers(this Client client, int offset, int limit, long hash)
+		public static Task<Messages_FeaturedStickersBase> Messages_GetOldFeaturedStickers(this Client client, int offset = default, int limit = int.MaxValue, long hash = default)
 			=> client.Invoke(new Messages_GetOldFeaturedStickers
 			{
 				offset = offset,
@@ -15205,7 +15205,7 @@ namespace TL
 		/// <param name="max_id">If a positive value was transferred, the method will return only messages with ID smaller than max_id</param>
 		/// <param name="min_id">If a positive value was transferred, the method will return only messages with ID bigger than min_id</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
-		public static Task<Messages_MessagesBase> Messages_GetReplies(this Client client, InputPeer peer, int msg_id, int offset_id, DateTime offset_date, int add_offset, int limit, int max_id, int min_id, long hash)
+		public static Task<Messages_MessagesBase> Messages_GetReplies(this Client client, InputPeer peer, int msg_id, int offset_id = default, DateTime offset_date = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default)
 			=> client.Invoke(new Messages_GetReplies
 			{
 				peer = peer,
@@ -15317,7 +15317,7 @@ namespace TL
 		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_link"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_ExportedChatInvites> Messages_GetExportedChatInvites(this Client client, InputPeer peer, InputUserBase admin_id, int limit, bool revoked = false, DateTime? offset_date = null, string offset_link = null)
+		public static Task<Messages_ExportedChatInvites> Messages_GetExportedChatInvites(this Client client, InputPeer peer, InputUserBase admin_id, int limit = int.MaxValue, bool revoked = false, DateTime? offset_date = null, string offset_link = null)
 			=> client.Invoke(new Messages_GetExportedChatInvites
 			{
 				flags = (Messages_GetExportedChatInvites.Flags)((revoked ? 0x8 : 0) | (offset_date != null ? 0x4 : 0) | (offset_link != null ? 0x4 : 0)),
@@ -15390,7 +15390,7 @@ namespace TL
 		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_user">User ID for <a href="https://corefork.telegram.org/api/offsets">pagination</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(this Client client, InputPeer peer, DateTime offset_date, InputUserBase offset_user, int limit, bool requested = false, string link = null, string q = null)
+		public static Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(this Client client, InputPeer peer, DateTime offset_date = default, InputUserBase offset_user = null, int limit = int.MaxValue, bool requested = false, string link = null, string q = null)
 			=> client.Invoke(new Messages_GetChatInviteImporters
 			{
 				flags = (Messages_GetChatInviteImporters.Flags)((requested ? 0x1 : 0) | (link != null ? 0x2 : 0) | (q != null ? 0x4 : 0)),
@@ -15441,7 +15441,7 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsCalendar"/></para></summary>
-		public static Task<Messages_SearchResultsCalendar> Messages_GetSearchResultsCalendar(this Client client, InputPeer peer, MessagesFilter filter, int offset_id, DateTime offset_date)
+		public static Task<Messages_SearchResultsCalendar> Messages_GetSearchResultsCalendar(this Client client, InputPeer peer, MessagesFilter filter, int offset_id = default, DateTime offset_date = default)
 			=> client.Invoke(new Messages_GetSearchResultsCalendar
 			{
 				peer = peer,
@@ -15451,7 +15451,7 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsPositions"/></para></summary>
-		public static Task<Messages_SearchResultsPositions> Messages_GetSearchResultsPositions(this Client client, InputPeer peer, MessagesFilter filter, int offset_id, int limit)
+		public static Task<Messages_SearchResultsPositions> Messages_GetSearchResultsPositions(this Client client, InputPeer peer, MessagesFilter filter, int offset_id = default, int limit = int.MaxValue)
 			=> client.Invoke(new Messages_GetSearchResultsPositions
 			{
 				peer = peer,
@@ -15523,7 +15523,7 @@ namespace TL
 		/// <param name="reaction">Get only reactions of this type (UTF8 emoji)</param>
 		/// <param name="offset">Offset (typically taken from the <c>next_offset</c> field of the returned <see cref="Messages_MessageReactionsList"/>)</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_MessageReactionsList> Messages_GetMessageReactionsList(this Client client, InputPeer peer, int id, int limit, string reaction = null, string offset = null)
+		public static Task<Messages_MessageReactionsList> Messages_GetMessageReactionsList(this Client client, InputPeer peer, int id, int limit = int.MaxValue, string reaction = null, string offset = null)
 			=> client.Invoke(new Messages_GetMessageReactionsList
 			{
 				flags = (Messages_GetMessageReactionsList.Flags)((reaction != null ? 0x1 : 0) | (offset != null ? 0x2 : 0)),
@@ -15544,7 +15544,7 @@ namespace TL
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getAvailableReactions"/></para></summary>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.availableReactionsNotModified">messages.availableReactionsNotModified</a></returns>
-		public static Task<Messages_AvailableReactions> Messages_GetAvailableReactions(this Client client, int hash)
+		public static Task<Messages_AvailableReactions> Messages_GetAvailableReactions(this Client client, int hash = default)
 			=> client.Invoke(new Messages_GetAvailableReactions
 			{
 				hash = hash,
@@ -15570,7 +15570,7 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getUnreadReactions"/></para></summary>
-		public static Task<Messages_MessagesBase> Messages_GetUnreadReactions(this Client client, InputPeer peer, int offset_id, int add_offset, int limit, int max_id, int min_id)
+		public static Task<Messages_MessagesBase> Messages_GetUnreadReactions(this Client client, InputPeer peer, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default)
 			=> client.Invoke(new Messages_GetUnreadReactions
 			{
 				peer = peer,
@@ -15615,7 +15615,7 @@ namespace TL
 		/// <param name="filter">Messsage filter</param>
 		/// <param name="pts">Persistent timestamp (see <a href="https://corefork.telegram.org/api/updates">updates</a>)</param>
 		/// <param name="limit">How many updates to fetch, max <c>100000</c><br/>Ordinary (non-bot) users are supposed to pass <c>10-100</c></param>
-		public static Task<Updates_ChannelDifferenceBase> Updates_GetChannelDifference(this Client client, InputChannelBase channel, ChannelMessagesFilter filter, int pts, int limit, bool force = false)
+		public static Task<Updates_ChannelDifferenceBase> Updates_GetChannelDifference(this Client client, InputChannelBase channel, ChannelMessagesFilter filter, int pts, int limit = int.MaxValue, bool force = false)
 			=> client.Invoke(new Updates_GetChannelDifference
 			{
 				flags = (Updates_GetChannelDifference.Flags)(force ? 0x1 : 0),
@@ -15659,7 +15659,7 @@ namespace TL
 		/// <param name="offset">Number of list elements to be skipped</param>
 		/// <param name="max_id">If a positive value was transferred, the method will return only photos with IDs less than the set one</param>
 		/// <param name="limit">Number of list elements to be returned</param>
-		public static Task<Photos_Photos> Photos_GetUserPhotos(this Client client, InputUserBase user_id, int offset, long max_id, int limit)
+		public static Task<Photos_Photos> Photos_GetUserPhotos(this Client client, InputUserBase user_id, int offset = default, long max_id = default, int limit = int.MaxValue)
 			=> client.Invoke(new Photos_GetUserPhotos
 			{
 				user_id = user_id,
@@ -15686,7 +15686,7 @@ namespace TL
 		/// <param name="location">File location</param>
 		/// <param name="offset">Number of bytes to be skipped</param>
 		/// <param name="limit">Number of bytes to be returned</param>
-		public static Task<Upload_FileBase> Upload_GetFile(this Client client, InputFileLocationBase location, int offset, int limit, bool precise = false, bool cdn_supported = false)
+		public static Task<Upload_FileBase> Upload_GetFile(this Client client, InputFileLocationBase location, int offset = default, int limit = int.MaxValue, bool precise = false, bool cdn_supported = false)
 			=> client.Invoke(new Upload_GetFile
 			{
 				flags = (Upload_GetFile.Flags)((precise ? 0x1 : 0) | (cdn_supported ? 0x2 : 0)),
@@ -15713,7 +15713,7 @@ namespace TL
 		/// <param name="location">The file to download</param>
 		/// <param name="offset">Number of bytes to be skipped</param>
 		/// <param name="limit">Number of bytes to be returned</param>
-		public static Task<Upload_WebFile> Upload_GetWebFile(this Client client, InputWebFileLocationBase location, int offset, int limit)
+		public static Task<Upload_WebFile> Upload_GetWebFile(this Client client, InputWebFileLocationBase location, int offset = default, int limit = int.MaxValue)
 			=> client.Invoke(new Upload_GetWebFile
 			{
 				location = location,
@@ -15725,7 +15725,7 @@ namespace TL
 		/// <param name="file_token">File token</param>
 		/// <param name="offset">Offset of chunk to download</param>
 		/// <param name="limit">Length of chunk to download</param>
-		public static Task<Upload_CdnFileBase> Upload_GetCdnFile(this Client client, byte[] file_token, int offset, int limit)
+		public static Task<Upload_CdnFileBase> Upload_GetCdnFile(this Client client, byte[] file_token, int offset = default, int limit = int.MaxValue)
 			=> client.Invoke(new Upload_GetCdnFile
 			{
 				file_token = file_token,
@@ -15746,7 +15746,7 @@ namespace TL
 		/// <summary>Get SHA256 hashes for verifying downloaded <a href="https://corefork.telegram.org/cdn">CDN</a> files		<para>See <a href="https://corefork.telegram.org/method/upload.getCdnFileHashes"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.getCdnFileHashes#possible-errors">details</a>)</para></summary>
 		/// <param name="file_token">File</param>
 		/// <param name="offset">Offset from which to start getting hashes</param>
-		public static Task<FileHash[]> Upload_GetCdnFileHashes(this Client client, byte[] file_token, int offset)
+		public static Task<FileHash[]> Upload_GetCdnFileHashes(this Client client, byte[] file_token, int offset = default)
 			=> client.Invoke(new Upload_GetCdnFileHashes
 			{
 				file_token = file_token,
@@ -15756,7 +15756,7 @@ namespace TL
 		/// <summary>Get SHA256 hashes for verifying downloaded files		<para>See <a href="https://corefork.telegram.org/method/upload.getFileHashes"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.getFileHashes#possible-errors">details</a>)</para></summary>
 		/// <param name="location">File</param>
 		/// <param name="offset">Offset from which to get file hashes</param>
-		public static Task<FileHash[]> Upload_GetFileHashes(this Client client, InputFileLocationBase location, int offset)
+		public static Task<FileHash[]> Upload_GetFileHashes(this Client client, InputFileLocationBase location, int offset = default)
 			=> client.Invoke(new Upload_GetFileHashes
 			{
 				location = location,
@@ -15868,7 +15868,7 @@ namespace TL
 		/// <summary>Get <a href="https://corefork.telegram.org/passport">passport</a> configuration		<para>See <a href="https://corefork.telegram.org/method/help.getPassportConfig"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.passportConfigNotModified">help.passportConfigNotModified</a></returns>
-		public static Task<Help_PassportConfig> Help_GetPassportConfig(this Client client, int hash)
+		public static Task<Help_PassportConfig> Help_GetPassportConfig(this Client client, int hash = default)
 			=> client.Invoke(new Help_GetPassportConfig
 			{
 				hash = hash,
@@ -15930,7 +15930,7 @@ namespace TL
 		/// <param name="lang_code">Language code of the current user</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.countriesListNotModified">help.countriesListNotModified</a></returns>
-		public static Task<Help_CountriesList> Help_GetCountriesList(this Client client, string lang_code, int hash)
+		public static Task<Help_CountriesList> Help_GetCountriesList(this Client client, string lang_code, int hash = default)
 			=> client.Invoke(new Help_GetCountriesList
 			{
 				lang_code = lang_code,
@@ -15940,7 +15940,7 @@ namespace TL
 		/// <summary>Mark <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> history as read		<para>See <a href="https://corefork.telegram.org/method/channels.readHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.readHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a></param>
 		/// <param name="max_id">ID of message up to which messages should be marked as read</param>
-		public static Task<bool> Channels_ReadHistory(this Client client, InputChannelBase channel, int max_id)
+		public static Task<bool> Channels_ReadHistory(this Client client, InputChannelBase channel, int max_id = default)
 			=> client.Invoke(new Channels_ReadHistory
 			{
 				channel = channel,
@@ -15985,7 +15985,7 @@ namespace TL
 		/// <param name="limit"><a href="https://corefork.telegram.org/api/offsets">Limit</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets">Hash</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/channels.channelParticipantsNotModified">channels.channelParticipantsNotModified</a></returns>
-		public static Task<Channels_ChannelParticipants> Channels_GetParticipants(this Client client, InputChannelBase channel, ChannelParticipantsFilter filter, int offset, int limit, long hash)
+		public static Task<Channels_ChannelParticipants> Channels_GetParticipants(this Client client, InputChannelBase channel, ChannelParticipantsFilter filter, int offset = default, int limit = int.MaxValue, long hash = default)
 			=> client.Invoke(new Channels_GetParticipants
 			{
 				channel = channel,
@@ -16179,7 +16179,7 @@ namespace TL
 		/// <param name="max_id">Maximum ID of message to return (see <a href="https://corefork.telegram.org/api/offsets">pagination</a>)</param>
 		/// <param name="min_id">Minimum ID of message to return (see <a href="https://corefork.telegram.org/api/offsets">pagination</a>)</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Channels_AdminLogResults> Channels_GetAdminLog(this Client client, InputChannelBase channel, string q, long max_id, long min_id, int limit, ChannelAdminLogEventsFilter events_filter = null, InputUserBase[] admins = null)
+		public static Task<Channels_AdminLogResults> Channels_GetAdminLog(this Client client, InputChannelBase channel, string q, long max_id = default, long min_id = default, int limit = int.MaxValue, ChannelAdminLogEventsFilter events_filter = null, InputUserBase[] admins = null)
 			=> client.Invoke(new Channels_GetAdminLog
 			{
 				flags = (Channels_GetAdminLog.Flags)((events_filter != null ? 0x1 : 0) | (admins != null ? 0x2 : 0)),
@@ -16215,7 +16215,7 @@ namespace TL
 		/// <summary>Delete the history of a <a href="https://corefork.telegram.org/api/channel">supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.deleteHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Supergroup</a> whose history must be deleted</param>
 		/// <param name="max_id">ID of message <strong>up to which</strong> the history must be deleted</param>
-		public static Task<bool> Channels_DeleteHistory(this Client client, InputChannelBase channel, int max_id)
+		public static Task<bool> Channels_DeleteHistory(this Client client, InputChannelBase channel, int max_id = default)
 			=> client.Invoke(new Channels_DeleteHistory
 			{
 				channel = channel,
@@ -16234,7 +16234,7 @@ namespace TL
 
 		/// <summary>Get a list of <a href="https://corefork.telegram.org/api/channel">channels/supergroups</a> we left		<para>See <a href="https://corefork.telegram.org/method/channels.getLeftChannels"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/channels.getLeftChannels#possible-errors">details</a>)</para></summary>
 		/// <param name="offset">Offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a></param>
-		public static Task<Messages_Chats> Channels_GetLeftChannels(this Client client, int offset)
+		public static Task<Messages_Chats> Channels_GetLeftChannels(this Client client, int offset = default)
 			=> client.Invoke(new Channels_GetLeftChannels
 			{
 				offset = offset,
@@ -16731,7 +16731,7 @@ namespace TL
 		/// <summary>Get info about a group call		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCall"/></para></summary>
 		/// <param name="call">The group call</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Phone_GroupCall> Phone_GetGroupCall(this Client client, InputGroupCall call, int limit)
+		public static Task<Phone_GroupCall> Phone_GetGroupCall(this Client client, InputGroupCall call, int limit = int.MaxValue)
 			=> client.Invoke(new Phone_GetGroupCall
 			{
 				call = call,
@@ -16744,7 +16744,7 @@ namespace TL
 		/// <param name="sources">If specified, will fetch group participant info about the specified WebRTC source IDs</param>
 		/// <param name="offset">Offset for results, taken from the <c>next_offset</c> field of <see cref="Phone_GroupParticipants"/>, initially an empty string. <br/>Note: if no more results are available, the method call will return an empty <c>next_offset</c>; thus, avoid providing the <c>next_offset</c> returned in <see cref="Phone_GroupParticipants"/> if it is empty, to avoid an infinite loop.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Phone_GroupParticipants> Phone_GetGroupParticipants(this Client client, InputGroupCall call, InputPeer[] ids, int[] sources, string offset, int limit)
+		public static Task<Phone_GroupParticipants> Phone_GetGroupParticipants(this Client client, InputGroupCall call, InputPeer[] ids, int[] sources, string offset, int limit = int.MaxValue)
 			=> client.Invoke(new Phone_GetGroupParticipants
 			{
 				call = call,
@@ -16982,7 +16982,7 @@ namespace TL
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_MessagesBase> Stats_GetMessagePublicForwards(this Client client, InputChannelBase channel, int msg_id, int offset_rate, InputPeer offset_peer, int offset_id, int limit)
+		public static Task<Messages_MessagesBase> Stats_GetMessagePublicForwards(this Client client, InputChannelBase channel, int msg_id, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue)
 			=> client.Invoke(new Stats_GetMessagePublicForwards
 			{
 				channel = channel,

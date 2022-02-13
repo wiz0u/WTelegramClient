@@ -271,11 +271,11 @@ namespace TL
 	partial class Messages_DialogsSlice			{ public override int TotalCount => count; }
 	partial class Messages_DialogsNotModified	{ public override int TotalCount => count; }
 
-	partial class Messages_MessagesBase			{ public abstract int Count { get; } }
-	partial class Messages_Messages				{ public override int Count => messages.Length; }
-	partial class Messages_MessagesSlice		{ public override int Count => count; }
-	partial class Messages_ChannelMessages		{ public override int Count => count; }
-	partial class Messages_MessagesNotModified	{ public override int Count => count; }
+	partial class Messages_MessagesBase			{ public abstract int Count { get; } public abstract int Offset { get; } }
+	partial class Messages_Messages				{ public override int Count => messages.Length; public override int Offset => 0; }
+	partial class Messages_MessagesSlice		{ public override int Count => count; public override int Offset => offset_id_offset; }
+	partial class Messages_ChannelMessages		{ public override int Count => count; public override int Offset => offset_id_offset; }
+	partial class Messages_MessagesNotModified	{ public override int Count => count; public override int Offset => 0; }
 
 	partial class Updates_DifferenceBase		{ public abstract Updates_State State { get; } }
 	partial class Updates_DifferenceEmpty		{ public override Updates_State State => null; }
