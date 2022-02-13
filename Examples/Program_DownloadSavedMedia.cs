@@ -14,7 +14,6 @@ namespace WTelegramClientTest
 		{
 			Console.WriteLine("The program will download photos/medias from messages you send/forward to yourself (Saved Messages)");
 			using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-			await client.ConnectAsync();
 			var user = await client.LoginUserIfNeeded();
 			client.Update += Client_Update;
 			Console.ReadKey();

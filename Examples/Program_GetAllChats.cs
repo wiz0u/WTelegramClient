@@ -26,11 +26,10 @@ namespace WTelegramClientTest
 		static async Task Main(string[] _)
 		{
 			using var client = new WTelegram.Client(Config);
-			await client.ConnectAsync();
 			var user = await client.LoginUserIfNeeded();
 			Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name} (id {user.id})");
 
-			var chats = await client.Messages_GetAllChats(null); // chats = groups/channels (does not include users dialogs)
+			var chats = await client.Messages_GetAllChats(); // chats = groups/channels (does not include users dialogs)
 			Console.WriteLine("This user has joined the following:");
 			foreach (var (id, chat) in chats.chats)
 				switch (chat)

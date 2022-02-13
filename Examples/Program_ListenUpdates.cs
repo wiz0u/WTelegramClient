@@ -25,7 +25,7 @@ namespace WTelegramClientTest
 				// Note that on login Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
 				Console.WriteLine($"We are logged-in as {My.username ?? My.first_name + " " + My.last_name} (id {My.id})");
 				// We collect all infos about the users/chats so that updates can be printed with their names
-				var dialogsBase = await Client.Messages_GetDialogs(default, 0, null, 0, 0); // dialogs = groups/channels/users
+				var dialogsBase = await Client.Messages_GetDialogs(); // dialogs = groups/channels/users
 				if (dialogsBase is Messages_Dialogs dialogs)
 					while (dialogs.dialogs.Length != 0)
 					{
@@ -34,7 +34,7 @@ namespace WTelegramClientTest
 						var lastDialog = dialogs.dialogs[^1];
 						var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
 						var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
-						dialogs = (Messages_Dialogs)await Client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, 500, 0);
+						dialogs = (Messages_Dialogs)await Client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer);
 					}
 				Console.ReadKey();
 			}

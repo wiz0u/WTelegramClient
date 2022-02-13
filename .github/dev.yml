@@ -2,7 +2,7 @@ pr: none
 trigger:
 - master
 
-name: 2.1.1-dev.$(Rev:r)
+name: 2.1.2-dev.$(Rev:r)
 
 pool:
   vmImage: ubuntu-latest
@@ -35,5 +35,4 @@ steps:
     publishPackageMetadata: true
     nuGetFeedType: 'internal'
     publishVstsFeed: 'WTelegramClient/WTelegramClient'
-
 

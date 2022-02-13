@@ -32,7 +32,6 @@ namespace WTelegramClientTest
 			}
 
 			Console.WriteLine("Connecting to Telegram...");
-			await client.ConnectAsync();
 			await client.LoginUserIfNeeded();
 
 			var durovAccessHash = client.GetAccessHashFor<Channel>(DurovID);
