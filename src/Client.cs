@@ -445,12 +445,15 @@ namespace WTelegram
 			int ping_id = _random.Next();
 			while (!ct.IsCancellationRequested)
 			{
-				await Task.Delay(PingInterval * 1000, ct);
+				await Task.Delay(Math.Abs(PingInterval) * 1000, ct);
 				if (_saltChangeCounter > 0) --_saltChangeCounter;
+				if (PingInterval <= 0)
+					await this.Ping(ping_id++);
+				else // see https://core.telegram.org/api/optimisation#grouping-updates
 #if DEBUG
-				await this.PingDelayDisconnect(ping_id++, PingInterval * 5);
+					await this.PingDelayDisconnect(ping_id++, PingInterval * 5);
 #else
-				await this.PingDelayDisconnect(ping_id++, PingInterval * 5 / 4);
+					await this.PingDelayDisconnect(ping_id++, PingInterval * 5 / 4);
 #endif
 			}
 		}

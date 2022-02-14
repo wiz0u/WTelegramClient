@@ -1,11 +1,15 @@
 ﻿## FAQ
 
+Before asking questions, make sure to **[read through the ReadMe first](README.md)**,
+take a look at the [example programs](EXAMPLES.md) or [StackOverflow questions](https://stackoverflow.com/questions/tagged/wtelegramclient),
+and refer to the [API method list](https://corefork.telegram.org/methods) for the full range of Telegram services available in this library.
+
 <a name="remove-logs"></a>
 #### 1. How to remove the Console logs?
 
 Writing the library logs to the Console is the default behavior of the `WTelegram.Helpers.Log` delegate.  
 You can change the delegate with the `+=` operator to **also** write them somewhere else, or with the `=` operator to prevent them from being printed to screen and instead write them somewhere (file, logger, ...).
-In any case, it is not recommended to totally ignore those logs because you wouldn't be able to analyze a problem after it happens.  
+In any case, it is not recommended to totally ignore those logs because you wouldn't be able to diagnose a problem after it happens.  
 
 Read the [example about logging settings](EXAMPLES.md#logging) for how to write logs to a file.
 
@@ -27,23 +31,24 @@ Also please note that the session files are encrypted with your api_hash (or ses
 Your api_id/api_hash represents your application, and shouldn't change with each user account the application will manage.
 
 <a name="GUI"></a>
-#### 3. How to use the library in a WinForms or WPF application
+<a name="ASPNET"></a>
+#### 3. How to use the library in a WinForms, WPF or ASP.NET application
 
-The library should work without a problem in a GUI application.
+The library should work without a problem in such applications.
 The difficulty might be in your Config callback when the user must enter the verification code or password, as you can't use `Console.ReadLine` here.
 
-An easy solution is to call `Interaction.InputBox("Enter verification code")` instead.  
+For GUI apps, an easy solution is to call `Interaction.InputBox("Enter verification code")` instead.  
 This might require adding a reference *(and `using`)* to the Microsoft.VisualBasic assembly.
 
 A more complex solution requires the use of a `ManualResetEventSlim` that you will wait for in Config callback,
-and when the user has provided the verification_code through your GUI, you "set" the event to release your Config callback so it can return the code.
-([download a full example](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip))
+and when the user has provided the verification_code through your app, you "set" the event to release your Config callback so it can return the code.  
+You can download such full example apps [for WinForms](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip) and [for ASP.NET](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/ASPnet_webapp.zip)
 
 <a name="access-hash"></a>
 #### 4. Where to get the access_hash? Why the error `CHANNEL_INVALID` or `USER_ID_INVALID`?
 
 An `access_hash` is required by Telegram when dealing with a channel, user, photo, document, etc...  
-This serves as a proof that you are entitled to access it (otherwise, anybody with the ID could access it)
+This serves as a proof that the logged-in user is entitled to access it (otherwise, anybody with the ID could access it)
 
 > A small private `Chat` don't need an access_hash and can be queried using their `chat_id` only.
 However most common chat groups are not `Chat` but a `Channel` supergroup (without the `broadcast` flag). See [Terminology in ReadMe](README.md#terminology).  
@@ -58,17 +63,18 @@ Once you obtained the description structure, there are 3 methods for building yo
 you will see that they have conversion implicit operators or methods that can create the `Input...` structure for you automatically.  
 So you can just pass that structure you already have, in place of the `Input...` argument, it will work!
 * Alternatively, you can manually create the `Input...` structure yourself by extracting the `access_hash` from the **description structure**
-* If you have enabled the [CollectAccessHash system](EXAMPLES.md#collect-access-hash) at the start of your session, it will have collected the `access_hash`.
+* If you have enabled the [CollectAccessHash system](EXAMPLES.md#collect-access-hash) at the start of your session, it will have collected the `access_hash` automatically when you obtained the description structure.
 You can then retrieve it with `client.GetAccessHashFor<User/Channel/Photo/Document>(id)`
 
-⚠️ *`access_hash` obtained from a User or Channel with flag `min` may not be used for most requests. See [Min constructors](https://core.telegram.org/api/min).*
+⚠️ *An `access_hash` obtained from a User/Channel structure with flag `min` may not be used for most requests. See [Min constructors](https://core.telegram.org/api/min).*
 
 <a name="dev-versions"></a>
 #### 5. I need to test a feature that has been developed but not yet released in WTelegramClient nuget
 
 The developmental versions of the library are available through Azure DevOps as part of the Continuous Integration builds after each Github commit.
 
-You can access these versions for testing in your program by going to our [private nuget feed](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&view=overview&package=WTelegramClient&protocolType=NuGet), then click on "Connect to feed" and follow the steps.
+You can access these versions for testing in your program by going to our [private nuget feed](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&view=overview&package=WTelegramClient&protocolType=NuGet),
+then click on "Connect to feed" and follow the steps to setup your dev environment.
 After that, you should be able to see/install the pre-release versions in your Nuget package manager and install them in your application. *(make sure you enable the **pre-release** checkbox)*
 
 <a name="wrong-server"></a>
@@ -95,7 +101,7 @@ You can get these kind of problems if you abuse Telegram [Terms of Service](http
 You can try to wait more between the requests, wait for a day or two to see if the requests become possible again.  
 >ℹ️ For FLOOD_WAIT_X with X < 60 seconds (see `client.FloodRetryThreshold`), WTelegramClient will automatically wait the specified delay and retry the request for you.
 
-An account that was limited due to reported spam might receive PEER_FLOOD errors. Read [Telegram Spam FAQ](https://telegram.org/faq_spam) to learn more.
+An account that was restricted due to reported spam might receive PEER_FLOOD errors. Read [Telegram Spam FAQ](https://telegram.org/faq_spam) to learn more.
 
 If you think your phone number was banned from Telegram for a wrong reason, you may try to contact [recover@telegram.org](mailto:recover@telegram.org), explaining what you were doing.
 
@@ -113,7 +119,7 @@ From the [official documentation](https://core.telegram.org/api/obtaining_api_id
 > Due to excessive abuse of the Telegram API, **all accounts that sign up or log in using unofficial Telegram clients are automatically
 > put under observation** to avoid violations of the [Terms of Service](https://core.telegram.org/api/terms).
 
-Here are some key points:
+Here are some advices from [another similar library](https://github.com/gotd/td/blob/main/.github/SUPPORT.md#how-to-not-get-banned):
 
 1. This client is unofficial, Telegram treats such clients suspiciously, especially fresh ones.
 2. Use regular bots instead of userbots whenever possible.
@@ -124,8 +130,6 @@ Here are some key points:
    * Do not use VoIP numbers.
    * Do not abuse, spam or use it for other suspicious activities.
    * Implement a rate limiting system.
-
-*(the above section is derived from [gotd SUPPORT.md](https://github.com/gotd/td/blob/main/.github/SUPPORT.md))*
 
 If your client displays Telegram channels to the user, you have to support and display [official sponsored messages](https://core.telegram.org/api/sponsored-messages).
 
@@ -196,11 +200,11 @@ So you can either:
     - Build your code in RELEASE mode
     - Modify your config callback to reply to "server_address" with the IP address of Telegram production servers (as found on your API development tools)
 
-2) After `ConnectAsync()`, are you calling `LoginUserIfNeeded()`?  
+2) Did you call `LoginUserIfNeeded()`?  
 If you don't authenticate as a user (or bot), you have access to a very limited subset of Telegram APIs
 
 3) Did you use `await` with every Client methods?  
-This library is completely Task-based and you should learn, understand and use the [asynchronous model of C# programming](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/) before proceeding further.
+This library is completely Task-based. You should learn, understand and use the [asynchronous model of C# programming](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/) before proceeding further.
 
 4) Is your program ending immediately instead of waiting for Updates?  
 Your program must be running/waiting continuously in order for the background Task to receive and process the Updates. So make sure your main program doesn't end immediately. For a console program, this is typical done by waiting for a key or some close event.

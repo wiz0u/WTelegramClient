@@ -1,13 +1,16 @@
 ﻿## Example programs using WTelegramClient
 
-The following codes can be saved into a Program.cs file with the only addition of some `using` on top of file, like
+For these examples to work as a fully-functional Program.cs, be sure to start with these lines:
 ```csharp
 using System;
 using System.Linq;
 using TL;
+
+using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
+var myself = await client.LoginUserIfNeeded();
 ```
 
-Those examples use environment variables for configuration so make sure to
+In this case, environment variables are used for configuration so make sure to
 go to your **Project Properties > Debug > Environment variables**
 and add at least these variables with adequate value: **api_id, api_hash, phone_number**
 
@@ -19,8 +22,6 @@ More examples can also be found in answers to [StackOverflow questions](https://
 <a name="msg-by-name"></a>
 ### Send a message to someone by @username
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var resolved = await client.Contacts_ResolveUsername("username"); // without the @
 await client.SendMessageAsync(resolved, "Hello!");
 ```
@@ -30,8 +31,6 @@ If the username is invalid/unused, the API call raises an exception.*
 <a name="msg-by-phone"></a>
 ### Send a message to someone by phone number
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var contacts = await client.Contacts_ImportContacts(new[] { new InputPhoneContact { phone = "+PHONENUMBER" } });
 if (contacts.imported.Length > 0)
     await client.SendMessageAsync(contacts.users[contacts.imported[0].user_id], "Hello!");
@@ -42,17 +41,14 @@ if (contacts.imported.Length > 0)
 <a name="html"></a>
 ### Send a Markdown or HTML-formatted message to ourself (Saved Messages)
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-var user = await client.LoginUserIfNeeded();
-
 // Markdown-style text:
-var text = $"Hello __dear *{Markdown.Escape(user.first_name)}*__\n" +
+var text = $"Hello __dear *{Markdown.Escape(myself.first_name)}*__\n" +
             "Enjoy this `userbot` written with [WTelegramClient](https://github.com/wiz0u/WTelegramClient)";
 var entities = client.MarkdownToEntities(ref text);
 await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
 
 // HTML-formatted text:
-var text2 = $"Hello <u>dear <b>{HtmlText.Escape(user.first_name)}</b></u>\n" +
+var text2 = $"Hello <u>dear <b>{HtmlText.Escape(myself.first_name)}</b></u>\n" +
             "Enjoy this <code>userbot</code> written with <a href=\"https://github.com/wiz0u/WTelegramClient\">WTelegramClient</a>";
 var entities2 = client.HtmlToEntities(ref text2);
 await client.SendMessageAsync(InputPeer.Self, text2, entities: entities2);
@@ -63,10 +59,6 @@ See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2
 <a name="fun"></a>
 ### Fun with stickers, GIFs, dice, and animated emojies
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-var user = await client.LoginUserIfNeeded();
-var random = new Random();
-
 // • List all stickerSets the user has added to his account
 var allStickers = await client.Messages_GetAllStickers();
 foreach (var stickerSet in allStickers.sets)
@@ -75,7 +67,7 @@ foreach (var stickerSet in allStickers.sets)
 
 // • Send a random sticker from the user's favorites stickers
 var favedStickers = await client.Messages_GetFavedStickers();
-var stickerDoc = favedStickers.stickers[random.Next(favedStickers.stickers.Length)];
+var stickerDoc = favedStickers.stickers[new Random().Next(favedStickers.stickers.Length)];
 await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDocument { id = stickerDoc });
 
 // • Send a specific sticker given the stickerset shortname and emoticon
@@ -95,7 +87,7 @@ await client.SendMediaAsync(InputPeer.Self, null, inputFile);
 // • Send a random dice/game-of-chance effect from the list of available "dices", see https://core.telegram.org/api/dice
 var appConfig = await client.Help_GetAppConfig();
 var emojies_send_dice = appConfig["emojies_send_dice"] as string[];
-var dice_emoji = emojies_send_dice[random.Next(emojies_send_dice.Length)];
+var dice_emoji = emojies_send_dice[new Random().Next(emojies_send_dice.Length)];
 var diceMsg = await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDice { emoticon = dice_emoji });
 Console.WriteLine("Dice result:" + ((MessageMediaDice)diceMsg.media).value);
 
@@ -116,8 +108,6 @@ await Task.Delay(5000);
 <a name="list-chats"></a>
 ### List all chats (groups/channels) the user is in and send a message to one
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats();
 foreach (var (id, chat) in chats.chats)
     if (chat.IsActive)
@@ -136,8 +126,6 @@ but the old `Chat` will be marked with flag [deactivated] and should not be used
 <a name="schedule-msg"></a>
 ### Schedule a message to be sent to a chat
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats();
 InputPeer peer = chats.chats[1234567890]; // the chat we want
 DateTime when = DateTime.UtcNow.AddMinutes(3);
@@ -150,8 +138,6 @@ await client.SendMessageAsync(peer, "This will be posted in 3 minutes", schedule
 const int ChatId = 1234567890; // the chat we want
 const string Filepath = @"C:\...\photo.jpg";
 
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats();
 InputPeer peer = chats.chats[ChatId];
 var inputFile = await client.UploadFileAsync(Filepath);
@@ -182,8 +168,6 @@ await client.SendAlbumAsync(InputPeer.Self, inputMedias, "My first album");
 <a name="list-dialogs"></a>
 ### List all dialogs (chats/groups/channels/user chat) the user is in
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var dialogs = await client.Messages_GetDialogs();
 while (dialogs.Dialogs.Length != 0)
 {
@@ -205,10 +189,8 @@ See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Progr
 
 <a name="list-members"></a>
 ### Get all members from a chat
-For a simple Chat: (see Terminology in [ReadMe](README.md#terminology))
+For a simple Chat: *(see Terminology in [ReadMe](README.md#terminology))*
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var chatFull = await client.Messages_GetFullChat(1234567890); // the chat we want
 foreach (var (id, user) in chatFull.users)
     Console.WriteLine(user);
@@ -216,8 +198,6 @@ foreach (var (id, user) in chatFull.users)
 
 For a Channel/Group:
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats();
 var channel = (Channel)chats.chats[1234567890]; // the channel we want
 for (int offset = 0; ;)
@@ -233,8 +213,6 @@ for (int offset = 0; ;)
 For big Channel/Group, Telegram servers might limit the number of members you can obtain with the normal above method.  
 In this case, you can use this helper method, but it can take several minutes to complete:
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats();
 var channel = (Channel)chats.chats[1234567890]; // the channel we want
 var participants = await client.Channels_GetAllParticipants(channel);
@@ -243,8 +221,6 @@ var participants = await client.Channels_GetAllParticipants(channel);
 <a name="join-channel"></a>
 ### Join a channel/group by @channelname
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var resolved = await client.Contacts_ResolveUsername("channelname"); // without the @
 if (resolved.Chat is Channel channel)
     await client.Channels_JoinChannel(channel);
@@ -253,8 +229,6 @@ if (resolved.Chat is Channel channel)
 <a name="add-members"></a>
 ### Add/Invite/Remove someone in a chat
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats();
 var chat = chats.chats[1234567890]; // the target chat
 ```
@@ -284,8 +258,6 @@ await client.DeleteChatUser(chat, user);
 <a name="history"></a>
 ### Get all messages (history) from a chat
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats();
 InputPeer peer = chats.chats[1234567890]; // the chat we want
 for (int offset_id = 0; ;)
@@ -303,8 +275,6 @@ for (int offset_id = 0; ;)
 ### Retrieve the current user's contacts list
 There are two different methods. Here is the simpler one:
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var contacts = await client.Contacts_GetContacts();
 foreach (User contact in contacts.users.Values)
     Console.WriteLine($"{contact} {contact.phone}");
@@ -315,8 +285,6 @@ Here is an example on how to implement it:
 ```csharp
 using TL.Methods; // methods as structures, for Invoke* calls
 
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var takeout = await client.Account_InitTakeoutSession(contacts: true);
 var finishTakeout = new Account_FinishTakeoutSession();
 try
@@ -349,12 +317,12 @@ See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](Examples/
 You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.
 
 <a name="download"></a>
-### Download media files you forward to yourself (Saved Messages)
+### Downloading photos, medias, files
 
 This is done using the helper method `client.DownloadFileAsync(file, outputStream)`
-that simplify the download of a photo/document/file once you get a reference to its location.
+that simplify the download of a photo/document/file once you get a reference to its location *(through updates or API calls)*.
 
-See [Examples/Program_DownloadSavedMedia.cs](Examples/Program_DownloadSavedMedia.cs).
+See [Examples/Program_DownloadSavedMedia.cs](Examples/Program_DownloadSavedMedia.cs) that download all media files you forward to yourself (Saved Messages)
 
 <a name="collect-access-hash"></a>
 ### Collect Access Hash and save them for later use
@@ -375,7 +343,7 @@ client.TcpHandler = async (address, port) =>
     var proxy = new Socks5ProxyClient(ProxyHost, ProxyPort, ProxyUsername, ProxyPassword);
     return proxy.CreateConnection(address, port);
 };
-var user = await client.LoginUserIfNeeded();
+var myself = await client.LoginUserIfNeeded();
 ```
 or with [xNetStandard](https://www.nuget.org/packages/xNetStandard/):
 ```csharp
@@ -390,10 +358,9 @@ MTProxy (MTProto proxy) can be used to prevent ISP blocks, through the `client.M
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 client.MTProxyUrl = "http://t.me/proxy?server=...&port=...&secret=...";
-var user = await client.LoginUserIfNeeded();
+var myself = await client.LoginUserIfNeeded();
 ```
 *Note: WTelegramClient always uses transport obfuscation when connecting to Telegram servers, even without MTProxy*
-
 
 <a name="logging"></a>
 ### Change logging settings
@@ -430,7 +397,7 @@ await client.Account_UpdatePasswordSettings(password, new Account_PasswordInputS
     flags = Account_PasswordInputSettings.Flags.has_new_algo,
     new_password_hash = new_password_hash?.A,
     new_algo = accountPassword.new_algo,
-    hint = "new hint",
+    hint = "new password hint",
 });
 ```
 
@@ -439,8 +406,6 @@ await client.Account_UpdatePasswordSettings(password, new Account_PasswordInputS
 ### Send a message reaction on pinned messages
 This code fetches the available reactions in a given chat, and sends the first reaction emoji (usually 👍) on the last 2 pinned messages:
 ```csharp
-using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-await client.LoginUserIfNeeded();
 var chats = await client.Messages_GetAllChats();
 var chat = chats.chats[1234567890]; // the chat we want
 var full = await client.GetFullChat(chat);

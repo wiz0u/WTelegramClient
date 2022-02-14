@@ -19,8 +19,8 @@ After installing WTelegramClient through Nuget, your first Console program will 
 static async Task Main(string[] _)
 {
     using var client = new WTelegram.Client();
-    var user = await client.LoginUserIfNeeded();
-    Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name} (id {user.id})");
+    var my = await client.LoginUserIfNeeded();
+    Console.WriteLine($"We are logged-in as {my.username ?? my.first_name + " " + my.last_name} (id {my.id})");
 }
 ```
 When run, this will prompt you interactively for your App **api_hash** and **api_id** (that you obtain through Telegram's [API development tools](https://my.telegram.org/apps) page) and try to connect to Telegram servers.
