@@ -29,8 +29,7 @@ namespace WTelegramClientTest
 				if (dialogsBase is Messages_Dialogs dialogs)
 					while (dialogs.dialogs.Length != 0)
 					{
-						foreach (var (id, user) in dialogs.users) _users[id] = user;
-						foreach (var (id, chat) in dialogs.chats) _chats[id] = chat;
+						dialogs.CollectUsersChats(_users, _chats);
 						var lastDialog = dialogs.dialogs[^1];
 						var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
 						var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
@@ -50,8 +49,7 @@ namespace WTelegramClientTest
 		private static void Client_Update(IObject arg)
 		{
 			if (arg is not UpdatesBase updates) return;
-			foreach (var (id, user) in updates.Users) _users[id] = user;
-			foreach (var (id, chat) in updates.Chats) _chats[id] = chat;
+			updates.CollectUsersChats(_users, _chats);
 			foreach (var update in updates.UpdateList)
 				switch (update)
 				{

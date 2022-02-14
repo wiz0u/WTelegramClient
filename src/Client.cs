@@ -1175,11 +1175,16 @@ namespace WTelegram
 			lock (_accessHashes)
 				_accessHashes.GetOrCreate(typeof(T))[id] = access_hash;
 		}
+		static readonly FieldInfo userFlagsField = typeof(User).GetField("flags");
+		static readonly FieldInfo channelFlagsField = typeof(Channel).GetField("flags");
 		internal void CollectField(FieldInfo fieldInfo, object obj, object access_hash)
 		{
 			if (fieldInfo.Name != "access_hash") return;
 			if (access_hash is not long accessHash) return;
 			var type = fieldInfo.ReflectedType;
+			if ((type == typeof(User) && ((User.Flags)userFlagsField.GetValue(obj)).HasFlag(User.Flags.min)) ||
+				(type == typeof(Channel) && ((Channel.Flags)channelFlagsField.GetValue(obj)).HasFlag(Channel.Flags.min)))
+				return; // access_hash from Min constructors are mostly useless. see https://core.telegram.org/api/min
 			if (type.GetField("id") is not FieldInfo idField) return;
 			if (idField.GetValue(obj) is not long id)
 				if (idField.GetValue(obj) is not int idInt) return;

@@ -13,7 +13,7 @@ namespace TL
 	public interface IMethod<ReturnType> : IObject { }
 	public interface IPeerResolver { IPeerInfo UserOrChat(Peer peer); }
 
-	public static class Serialization
+	internal static class Serialization
 	{
 		internal static void WriteTLObject<T>(this BinaryWriter writer, T obj) where T : IObject
 		{

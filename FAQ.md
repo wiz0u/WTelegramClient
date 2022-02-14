@@ -61,6 +61,8 @@ So you can just pass that structure you already have, in place of the `Input...`
 * If you have enabled the [CollectAccessHash system](EXAMPLES.md#collect-access-hash) at the start of your session, it will have collected the `access_hash`.
 You can then retrieve it with `client.GetAccessHashFor<User/Channel/Photo/Document>(id)`
 
+⚠️ *`access_hash` obtained from a User or Channel with flag `min` may not be used for most requests. See [Min constructors](https://core.telegram.org/api/min).*
+
 <a name="dev-versions"></a>
 #### 5. I need to test a feature that has been developed but not yet released in WTelegramClient nuget
 

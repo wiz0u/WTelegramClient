@@ -518,6 +518,38 @@ namespace TL
 		}
 	}
 
+	public static class Helpers
+	{
+		private class CollectorPeer : Peer
+		{
+			public override long ID => 0;
+			internal Dictionary<long, User> _users;
+			internal Dictionary<long, ChatBase> _chats;
+			internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
+			{
+				lock (_users)
+					foreach (var user in users.Values)
+						if (user != null)
+							if (!user.flags.HasFlag(User.Flags.min) || !_users.TryGetValue(user.id, out var prevUser) || prevUser.flags.HasFlag(User.Flags.min))
+								_users[user.id] = user;
+				lock (_chats)
+					foreach (var kvp in chats)
+						if (kvp.Value is not Channel channel)
+							_chats[kvp.Key] = kvp.Value;
+						else if (!channel.flags.HasFlag(Channel.Flags.min) || !_chats.TryGetValue(channel.id, out var prevChat) || prevChat is not Channel prevChannel || prevChannel.flags.HasFlag(Channel.Flags.min))
+							_chats[kvp.Key] = channel;
+				return null;
+			}
+		}
+
+		/// <summary>Accumulate users/chats found in this structure in your dictionaries, ignoring <see href="https://core.telegram.org/api/min">Min constructors</see> when the full object is already stored</summary>
+		/// <param name="structure">The structure having a <c>users</c></param>
+		/// <param name="users"></param>
+		/// <param name="chats"></param>
+		public static void CollectUsersChats(this IPeerResolver structure, Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
+			=>  structure.UserOrChat(new CollectorPeer { _users = users, _chats = chats });
+	}
+
 	public static class Markdown
 	{
 		/// <summary>Converts a <a href="https://core.telegram.org/bots/api/#markdownv2-style">Markdown text</a> into the (Entities + plain text) format used by Telegram messages</summary>
