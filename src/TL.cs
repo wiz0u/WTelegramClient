@@ -13,6 +13,39 @@ namespace TL
 	public interface IMethod<ReturnType> : IObject { }
 	public interface IPeerResolver { IPeerInfo UserOrChat(Peer peer); }
 
+	[AttributeUsage(AttributeTargets.Class)]
+	public class TLDefAttribute : Attribute
+	{
+		public readonly uint CtorNb;
+		public TLDefAttribute(uint ctorNb) => CtorNb = ctorNb;
+		public bool inheritBefore;
+	}
+
+	[AttributeUsage(AttributeTargets.Field)]
+	public class IfFlagAttribute : Attribute
+	{
+		public readonly int Bit;
+		public IfFlagAttribute(int bit) => Bit = bit;
+	}
+
+	public class RpcException : Exception
+	{
+		public readonly int Code;
+		public RpcException(int code, string message) : base(message) => Code = code;
+		public override string ToString() { var str = base.ToString(); return str.Insert(str.IndexOf(':') + 1, " " + Code); }
+	}
+
+	public class ReactorError : IObject
+	{
+		public Exception Exception;
+	}
+
+	internal class BinaryReader : System.IO.BinaryReader
+	{
+		public readonly WTelegram.Client Client;
+		public BinaryReader(Stream stream, WTelegram.Client client) : base(stream) => Client = client;
+	}
+
 	internal static class Serialization
 	{
 		internal static void WriteTLObject<T>(this BinaryWriter writer, T obj) where T : IObject
@@ -72,13 +105,13 @@ namespace TL
 			switch (Type.GetTypeCode(type))
 			{
 				case TypeCode.Int32: writer.Write((int)value); break;
-				case TypeCode.UInt32: writer.Write((uint)value); break;
 				case TypeCode.Int64: writer.Write((long)value); break;
+				case TypeCode.UInt32: writer.Write((uint)value); break;
 				case TypeCode.UInt64: writer.Write((ulong)value); break;
 				case TypeCode.Double: writer.Write((double)value); break;
 				case TypeCode.String: writer.WriteTLString((string)value); break;
-				case TypeCode.DateTime: writer.WriteTLStamp((DateTime)value); break;
 				case TypeCode.Boolean: writer.Write((bool)value ? 0x997275B5 : 0xBC799737); break;
+				case TypeCode.DateTime: writer.WriteTLStamp((DateTime)value); break;
 				case TypeCode.Object:
 					if (type.IsArray)
 						if (value is byte[] bytes)
@@ -109,8 +142,8 @@ namespace TL
 			switch (Type.GetTypeCode(type))
 			{
 				case TypeCode.Int32: return reader.ReadInt32();
-				case TypeCode.UInt32: return reader.ReadUInt32();
 				case TypeCode.Int64: return reader.ReadInt64();
+				case TypeCode.UInt32: return reader.ReadUInt32();
 				case TypeCode.UInt64: return reader.ReadUInt64();
 				case TypeCode.Double: return reader.ReadDouble();
 				case TypeCode.String: return reader.ReadTLString();
@@ -293,37 +326,16 @@ namespace TL
 #endif
 	}
 
-	public class BinaryReader : System.IO.BinaryReader
-	{
-		public readonly WTelegram.Client Client;
-		public BinaryReader(Stream stream, WTelegram.Client client) : base(stream) => Client = client;
-	}
-
-	[AttributeUsage(AttributeTargets.Class)]
-	public class TLDefAttribute : Attribute
-	{
-		public readonly uint CtorNb;
-		public TLDefAttribute(uint ctorNb) => CtorNb = ctorNb;
-		public bool inheritBefore;
-	}
-
-	[AttributeUsage(AttributeTargets.Field)]
-	public class IfFlagAttribute : Attribute
-	{
-		public readonly int Bit;
-		public IfFlagAttribute(int bit) => Bit = bit;
-	}
-
 	public struct Int128
 	{
 		public byte[] raw;
 
-		public Int128(BinaryReader reader) => raw = reader.ReadBytes(16);
+		public Int128(System.IO.BinaryReader reader) => raw = reader.ReadBytes(16);
 		public Int128(RNGCryptoServiceProvider rng) => rng.GetBytes(raw = new byte[16]);
 		public static bool operator ==(Int128 left, Int128 right) { for (int i = 0; i < 16; i++) if (left.raw[i] != right.raw[i]) return false; return true; }
 		public static bool operator !=(Int128 left, Int128 right) { for (int i = 0; i < 16; i++) if (left.raw[i] != right.raw[i]) return true; return false; }
 		public override bool Equals(object obj) => obj is Int128 other && this == other;
-		public override int GetHashCode() => HashCode.Combine(raw[0], raw[1]);
+		public override int GetHashCode() => BitConverter.ToInt32(raw, 0);
 		public override string ToString() => Convert.ToHexString(raw);
 		public static implicit operator byte[](Int128 int128) => int128.raw;
 	}
@@ -332,26 +344,14 @@ namespace TL
 	{
 		public byte[] raw;
 
-		public Int256(BinaryReader reader) => raw = reader.ReadBytes(32);
+		public Int256(System.IO.BinaryReader reader) => raw = reader.ReadBytes(32);
 		public Int256(RNGCryptoServiceProvider rng) => rng.GetBytes(raw = new byte[32]);
 		public static bool operator ==(Int256 left, Int256 right) { for (int i = 0; i < 32; i++) if (left.raw[i] != right.raw[i]) return false; return true; }
 		public static bool operator !=(Int256 left, Int256 right) { for (int i = 0; i < 32; i++) if (left.raw[i] != right.raw[i]) return true; return false; }
 		public override bool Equals(object obj) => obj is Int256 other && this == other;
-		public override int GetHashCode() => HashCode.Combine(raw[0], raw[1]);
+		public override int GetHashCode() => BitConverter.ToInt32(raw, 0);
 		public override string ToString() => Convert.ToHexString(raw);
 		public static implicit operator byte[](Int256 int256) => int256.raw;
-	}
-
-	public class RpcException : Exception
-	{
-		public readonly int Code;
-		public RpcException(int code, string message) : base(message) => Code = code;
-		public override string ToString() { var str = base.ToString(); return str.Insert(str.IndexOf(':') + 1, " " + Code); }
-	}
-
-	public class ReactorError : IObject
-	{
-		public Exception Exception;
 	}
 
 	// Below TL types are commented "parsed manually" from https://github.com/telegramdesktop/tdesktop/blob/dev/Telegram/Resources/tl/mtproto.tl

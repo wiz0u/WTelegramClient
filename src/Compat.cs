@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Formats.Asn1;
+using System.Linq;
 using System.Net;
 using System.Numerics;
 using System.Security.Cryptography;
@@ -61,17 +61,16 @@ namespace WTelegram
 			return new IPEndPoint(IPAddress.Parse(addr[0..colon]), int.Parse(addr[(colon + 1)..]));
 		}
 
+		private static readonly byte[] PemStart = new byte[] { 0x30, 0x82, 0x01, 0x0A, 0x02, 0x82, 0x01, 0x01 };
 		internal static void ImportFromPem(this RSA rsa, string pem)
 		{
 			var header = pem.IndexOf("-----BEGIN RSA PUBLIC KEY-----");
 			var footer = pem.IndexOf("-----END RSA PUBLIC KEY-----");
 			if (header == -1 || footer <= header) throw new ArgumentException("Invalid RSA Public Key");
 			byte[] bytes = System.Convert.FromBase64String(pem[(header+30)..footer]);
-			var reader = new AsnReader(bytes, AsnEncodingRules.BER);
-			reader = reader.ReadSequence(Asn1Tag.Sequence);
-			var m = reader.ReadIntegerBytes();
-			var e = reader.ReadIntegerBytes();
-			rsa.ImportParameters(new RSAParameters { Modulus = m.ToArray(), Exponent = e.ToArray() });
+			if (bytes.Length != 270 || !bytes.Take(8).SequenceEqual(PemStart) || bytes[265] != 0x02 || bytes[266] != 0x03)
+				throw new ArgumentException("Unrecognized sequence in RSA Public Key");
+			rsa.ImportParameters(new RSAParameters { Modulus = bytes[8..265], Exponent = bytes[267..270] });
 		}
 	}
 }
