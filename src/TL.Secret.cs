@@ -1,6 +1,4 @@
-﻿// This file is generated automatically
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace TL
 {
