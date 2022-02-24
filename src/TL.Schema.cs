@@ -15527,7 +15527,7 @@ namespace TL
 		/// <param name="peer">Peer</param>
 		/// <param name="id">Message ID</param>
 		/// <param name="reaction">Get only reactions of this type (UTF8 emoji)</param>
-		/// <param name="offset">Offset (typically taken from the <c>next_offset</c> field of the returned <see cref="MessageReactionsList"/>)</param>
+		/// <param name="offset">Offset (typically taken from the <c>next_offset</c> field of the returned <see cref="Messages_MessageReactionsList"/>)</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_MessageReactionsList> Messages_GetMessageReactionsList(this Client client, InputPeer peer, int id, int limit = int.MaxValue, string reaction = null, string offset = null)
 			=> client.Invoke(new Messages_GetMessageReactionsList

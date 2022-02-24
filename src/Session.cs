@@ -120,7 +120,7 @@ namespace WTelegram
 		private int _nextPosition = 8;
 
 		public SessionStore(string pathname)
-			: base(pathname, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1) // no buffering
+			: base(pathname, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1) // no in-app buffering
 		{
 			if (base.Read(_header, 0, 8) == 8)
 			{

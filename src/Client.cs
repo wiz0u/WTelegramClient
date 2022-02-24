@@ -40,6 +40,8 @@ namespace WTelegram
 		public int FloodRetryThreshold { get; set; } = 60;
 		/// <summary>Number of seconds between each keep-alive ping. Increase this if you have a slow connection or you're debugging your code</summary>
 		public int PingInterval { get; set; } = 60;
+		/// <summary>Size of chunks when uploading/downloading files. Reduce this if you don't have much memory</summary>
+		public int FilePartSize { get; set; } = 512 * 1024;
 		/// <summary>Is this Client instance the main or a secondary DC session</summary>
 		public bool IsMainDC => (_dcSession?.DataCenter?.id ?? 0) == _session.MainDC;
 		/// <summary>Has this Client established connection been disconnected?</summary>
@@ -68,7 +70,6 @@ namespace WTelegram
 		private Task _connecting;
 		private CancellationTokenSource _cts;
 		private int _reactorReconnects = 0;
-		private const int FilePartSize = 512 * 1024;
 		private const string ConnectionShutDown = "Could not read payload length : Connection shut down";
 		private readonly SemaphoreSlim _parallelTransfers = new(10); // max parallel part uploads/downloads
 		private readonly SHA256 _sha256 = SHA256.Create();
@@ -840,6 +841,7 @@ namespace WTelegram
 			var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 			lock (_pendingRequests)
 				_pendingRequests[msgId] = (typeof(X), tcs);
+			bool got503 = false;
 			var result = await tcs.Task;
 			switch (result)
 			{
@@ -872,6 +874,11 @@ namespace WTelegram
 							await Task.Delay(number * 1000);
 							goto retry;
 						}
+					}
+					else if (rpcError.error_code == -503 && !got503)
+					{
+						got503 = true;
+						goto retry;
 					}
 					else if (rpcError.error_code == 500 && rpcError.error_message == "AUTH_RESTART")
 					{

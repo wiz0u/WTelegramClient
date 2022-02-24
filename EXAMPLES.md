@@ -371,10 +371,7 @@ If you are not in a Console app or don't want the logs on screen, you can redire
 // • Log to VS Output debugging pane in addition to default Console screen logging:
 WTelegram.Helpers.Log += (lvl, str) => System.Diagnostics.Debug.WriteLine(str);
 
-// • Log to file in replacement of default Console screen logging:
-WTelegram.Helpers.Log = (lvl, str) => File.AppendAllText("WTelegram.log", str + Environment.NewLine);
-
-// • More efficient example with a static variable and detailed logging to file:
+// • Log to file in replacement of default Console screen logging, using this static variable:
 static StreamWriter WTelegramLogs = new StreamWriter("WTelegram.log", true, Encoding.UTF8) { AutoFlush = true };
 ...
 WTelegram.Helpers.Log = (lvl, str) => WTelegramLogs.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{"TDIWE!"[lvl]}] {str}");
