@@ -896,6 +896,7 @@ namespace TL
 			call_active = 0x800000,
 			/// <summary>Whether there's anyone in the group call</summary>
 			call_not_empty = 0x1000000,
+			/// <summary>Whether this group is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a>, thus does not allow forwarding messages from it</summary>
 			noforwards = 0x2000000,
 		}
 
@@ -993,6 +994,7 @@ namespace TL
 			fake = 0x2000000,
 			/// <summary>Whether this <a href="https://corefork.telegram.org/api/channel">supergroup</a> is a gigagroup</summary>
 			gigagroup = 0x4000000,
+			/// <summary>Whether this channel or group is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a>, thus does not allow forwarding messages from it</summary>
 			noforwards = 0x8000000,
 		}
 
@@ -1059,8 +1061,11 @@ namespace TL
 		public abstract Peer GroupcallDefaultJoinAs { get; }
 		/// <summary>Emoji representing a specific chat theme</summary>
 		public abstract string ThemeEmoticon { get; }
+		/// <summary>Pending join requests</summary>
 		public abstract int RequestsPending { get; }
+		/// <summary>IDs of users who requested to join recently</summary>
 		public abstract long[] RecentRequesters { get; }
+		/// <summary>Allowed message reactions</summary>
 		public abstract string[] AvailableReactions { get; }
 	}
 	/// <summary>Detailed chat info		<para>See <a href="https://corefork.telegram.org/constructor/chatFull"/></para></summary>
@@ -1095,8 +1100,11 @@ namespace TL
 		[IfFlag(15)] public Peer groupcall_default_join_as;
 		/// <summary>Emoji representing a specific chat theme</summary>
 		[IfFlag(16)] public string theme_emoticon;
+		/// <summary>Pending join requests</summary>
 		[IfFlag(17)] public int requests_pending;
+		/// <summary>IDs of users who requested to join recently</summary>
 		[IfFlag(17)] public long[] recent_requesters;
+		/// <summary>Allowed message reactions</summary>
 		[IfFlag(18)] public string[] available_reactions;
 
 		[Flags] public enum Flags : uint
@@ -1153,8 +1161,11 @@ namespace TL
 		public override Peer GroupcallDefaultJoinAs => groupcall_default_join_as;
 		/// <summary>Emoji representing a specific chat theme</summary>
 		public override string ThemeEmoticon => theme_emoticon;
+		/// <summary>Pending join requests</summary>
 		public override int RequestsPending => requests_pending;
+		/// <summary>IDs of users who requested to join recently</summary>
 		public override long[] RecentRequesters => recent_requesters;
+		/// <summary>Allowed message reactions</summary>
 		public override string[] AvailableReactions => available_reactions;
 	}
 	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/constructor/channelFull"/></para></summary>
@@ -1225,9 +1236,13 @@ namespace TL
 		[IfFlag(26)] public Peer groupcall_default_join_as;
 		/// <summary>Emoji representing a specific chat theme</summary>
 		[IfFlag(27)] public string theme_emoticon;
+		/// <summary>Pending join requests</summary>
 		[IfFlag(28)] public int requests_pending;
+		/// <summary>IDs of users who requested to join recently</summary>
 		[IfFlag(28)] public long[] recent_requesters;
+		/// <summary>Default peer used for sending messages to this channel</summary>
 		[IfFlag(29)] public Peer default_send_as;
+		/// <summary>Allowed message reactions</summary>
 		[IfFlag(30)] public string[] available_reactions;
 
 		[Flags] public enum Flags : uint
@@ -1320,8 +1335,11 @@ namespace TL
 		public override Peer GroupcallDefaultJoinAs => groupcall_default_join_as;
 		/// <summary>Emoji representing a specific chat theme</summary>
 		public override string ThemeEmoticon => theme_emoticon;
+		/// <summary>Pending join requests</summary>
 		public override int RequestsPending => requests_pending;
+		/// <summary>IDs of users who requested to join recently</summary>
 		public override long[] RecentRequesters => recent_requesters;
+		/// <summary>Allowed message reactions</summary>
 		public override string[] AvailableReactions => available_reactions;
 	}
 
@@ -1507,6 +1525,7 @@ namespace TL
 		[IfFlag(16)] public string post_author;
 		/// <summary>Multiple media messages sent using <a href="https://corefork.telegram.org/method/messages.sendMultiMedia">messages.sendMultiMedia</a> with the same grouped ID indicate an <a href="https://corefork.telegram.org/api/files#albums-grouped-media">album or media group</a></summary>
 		[IfFlag(17)] public long grouped_id;
+		/// <summary>Reactions to this message</summary>
 		[IfFlag(20)] public MessageReactions reactions;
 		/// <summary>Contains the reason why access to this message must be restricted.</summary>
 		[IfFlag(22)] public RestrictionReason[] restriction_reason;
@@ -1563,6 +1582,7 @@ namespace TL
 			pinned = 0x1000000,
 			/// <summary>Field <see cref="ttl_period"/> has a value</summary>
 			has_ttl_period = 0x2000000,
+			/// <summary>Whether this message is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a> and thus cannot be forwarded</summary>
 			noforwards = 0x4000000,
 		}
 
@@ -2081,6 +2101,7 @@ namespace TL
 		public int unread_count;
 		/// <summary>Number of <a href="https://corefork.telegram.org/api/mentions">unread mentions</a></summary>
 		public int unread_mentions_count;
+		/// <summary>Number of unread reactions to messages you sent</summary>
 		public int unread_reactions_count;
 		/// <summary>Notification settings</summary>
 		public PeerNotifySettings notify_settings;
@@ -2326,6 +2347,7 @@ namespace TL
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Iff setup_password_required is set, the user will be able to log into their account via SMS only once every this many days.</summary>
 		[IfFlag(1)] public int otherwise_relogin_days;
 		/// <summary>Temporary <a href="https://corefork.telegram.org/passport">passport</a> sessions</summary>
 		[IfFlag(0)] public int tmp_sessions;
@@ -2336,6 +2358,7 @@ namespace TL
 		{
 			/// <summary>Field <see cref="tmp_sessions"/> has a value</summary>
 			has_tmp_sessions = 0x1,
+			/// <summary>Suggests the user to set up a 2-step verification password to be able to log in again</summary>
 			setup_password_required = 0x2,
 		}
 	}
@@ -2575,6 +2598,7 @@ namespace TL
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>User ID</summary>
 		public long id;
 		/// <summary>Bio of the user</summary>
 		[IfFlag(1)] public string about;
@@ -5602,7 +5626,9 @@ namespace TL
 			official_app = 0x2,
 			/// <summary>Whether the session is still waiting for a 2FA password</summary>
 			password_pending = 0x4,
+			/// <summary>Whether this session will accept encrypted chats</summary>
 			encrypted_requests_disabled = 0x8,
+			/// <summary>Whether this session will accept phone calls</summary>
 			call_requests_disabled = 0x10,
 		}
 	}
@@ -5611,6 +5637,7 @@ namespace TL
 	[TLDef(0x4BFF8EA0)]
 	public class Account_Authorizations : IObject
 	{
+		/// <summary>Time-to-live of session</summary>
 		public int authorization_ttl_days;
 		/// <summary>Logged-in sessions</summary>
 		public Authorization[] authorizations;
@@ -6084,19 +6111,23 @@ namespace TL
 			has_quiz = 0x1,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputKeyboardButtonUserProfile"/></para></summary>
+	/// <summary>Button that links directly to a user profile		<para>See <a href="https://corefork.telegram.org/constructor/inputKeyboardButtonUserProfile"/></para></summary>
 	[TLDef(0xE988037B)]
 	public class InputKeyboardButtonUserProfile : KeyboardButtonBase
 	{
+		/// <summary>Button text</summary>
 		public string text;
+		/// <summary>User ID</summary>
 		public InputUserBase user_id;
 
+		/// <summary>Button text</summary>
 		public override string Text => text;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonUserProfile"/></para></summary>
+	/// <summary>Button that links directly to a user profile		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonUserProfile"/></para></summary>
 	[TLDef(0x308660C1, inheritBefore = true)]
 	public class KeyboardButtonUserProfile : KeyboardButton
 	{
+		/// <summary>User ID</summary>
 		public long user_id;
 	}
 
@@ -6254,7 +6285,7 @@ namespace TL
 	/// <summary>Indicates a credit card number		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityBankCard"/></para></summary>
 	[TLDef(0x761E6AF4)]
 	public class MessageEntityBankCard : MessageEntity { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageEntitySpoiler"/></para></summary>
+	/// <summary>Message entity representing a spoiler		<para>See <a href="https://corefork.telegram.org/constructor/messageEntitySpoiler"/></para></summary>
 	[TLDef(0x32CA960F)]
 	public class MessageEntitySpoiler : MessageEntity { }
 
@@ -7274,7 +7305,7 @@ namespace TL
 		Call = 0x741CD3E3,
 		///<summary>Type of verification code that will be sent next if you call the resendCode method: SMS code</summary>
 		FlashCall = 0x226CCEFB,
-		///<summary>See <a href="https://corefork.telegram.org/constructor/auth.codeTypeMissedCall"/></summary>
+		///<summary>The next time, the authentication code will be delivered via an immediately canceled incoming call, handled manually by the user.</summary>
 		MissedCall = 0xD61AD6EE,
 	}
 
@@ -7308,10 +7339,11 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/pattern">pattern</a> to match</summary>
 		public string pattern;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeMissedCall"/></para></summary>
+	/// <summary>The code will be sent via a flash phone call, that will be closed immediately. The last digits of the phone number that calls are the code that must be entered manually by the user.		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeMissedCall"/></para></summary>
 	[TLDef(0x82006484)]
 	public class Auth_SentCodeTypeMissedCall : Auth_SentCodeTypeCall
 	{
+		/// <summary>Prefix of the phone number from which the call will be made</summary>
 		public string prefix;
 	}
 
@@ -9344,30 +9376,36 @@ namespace TL
 		/// <summary>New value</summary>
 		public int new_value;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionParticipantJoinByRequest"/></para></summary>
+	/// <summary>A new member was accepted to the chat by an admin		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionParticipantJoinByRequest"/></para></summary>
 	[TLDef(0xAFB6144A)]
 	public class ChannelAdminLogEventActionParticipantJoinByRequest : ChannelAdminLogEventAction
 	{
+		/// <summary>The invite link that was used to join the chat</summary>
 		public ExportedChatInvite invite;
+		/// <summary>ID of the admin that approved the invite</summary>
 		public long approved_by;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionToggleNoForwards"/></para></summary>
+	/// <summary>Forwards were enabled or disabled		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionToggleNoForwards"/></para></summary>
 	[TLDef(0xCB2AC766)]
 	public class ChannelAdminLogEventActionToggleNoForwards : ChannelAdminLogEventAction
 	{
+		/// <summary>Old value</summary>
 		public bool new_value;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionSendMessage"/></para></summary>
+	/// <summary>A message was sent		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionSendMessage"/></para></summary>
 	[TLDef(0x278F2868)]
 	public class ChannelAdminLogEventActionSendMessage : ChannelAdminLogEventAction
 	{
+		/// <summary>The message that was sent</summary>
 		public MessageBase message;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionChangeAvailableReactions"/></para></summary>
+	/// <summary>The set of allowed message reactions for this channel has changed		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionChangeAvailableReactions"/></para></summary>
 	[TLDef(0x9CF7F76A)]
 	public class ChannelAdminLogEventActionChangeAvailableReactions : ChannelAdminLogEventAction
 	{
+		/// <summary>Previously allowed reaction emojis</summary>
 		public string[] prev_value;
+		/// <summary>New allowed reaction emojis</summary>
 		public string[] new_value;
 	}
 
@@ -9440,6 +9478,7 @@ namespace TL
 			group_call = 0x4000,
 			/// <summary>Invite events</summary>
 			invites = 0x8000,
+			/// <summary>New value</summary>
 			send = 0x10000,
 		}
 	}
@@ -11017,6 +11056,7 @@ namespace TL
 		[IfFlag(2)] public DocumentBase document;
 		/// <summary>Theme settings</summary>
 		[IfFlag(3)] public ThemeSettings[] settings;
+		/// <summary>Theme emoji</summary>
 		[IfFlag(6)] public string emoticon;
 		/// <summary>Installation count</summary>
 		[IfFlag(4)] public int installs_count;
@@ -12317,8 +12357,11 @@ namespace TL
 		public byte[] random_id;
 		/// <summary>ID of the sender of the message</summary>
 		[IfFlag(3)] public Peer from_id;
+		/// <summary>Information about the chat invite hash specified in <c>chat_invite_hash</c></summary>
 		[IfFlag(4)] public ChatInviteBase chat_invite;
+		/// <summary>Chat invite</summary>
 		[IfFlag(4)] public string chat_invite_hash;
+		/// <summary>Optional link to a channel post if <c>from_id</c> points to a channel</summary>
 		[IfFlag(2)] public int channel_post;
 		/// <summary>Parameter for the bot start message if the sponsored chat is a chat with a bot.</summary>
 		[IfFlag(0)] public string start_param;
@@ -12366,23 +12409,27 @@ namespace TL
 		public int count;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.searchResultsCalendar"/></para></summary>
+	/// <summary>Information about found messages sent on a specific day		<para>See <a href="https://corefork.telegram.org/constructor/messages.searchResultsCalendar"/></para></summary>
 	[TLDef(0x147EE23C)]
 	public class Messages_SearchResultsCalendar : IObject, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Total number of results matching query</summary>
 		public int count;
 		public DateTime min_date;
 		public int min_msg_id;
 		[IfFlag(1)] public int offset_id_offset;
 		public SearchResultsCalendarPeriod[] periods;
 		public MessageBase[] messages;
+		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
+		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>If set, indicates that the results may be inexact</summary>
 			inexact = 0x1,
 			/// <summary>Field <see cref="offset_id_offset"/> has a value</summary>
 			has_offset_id_offset = 0x2,
@@ -12391,7 +12438,7 @@ namespace TL
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
-	/// <summary><para>Derived classes: <see cref="SearchResultPosition"/></para>		<para>See <a href="https://corefork.telegram.org/type/SearchResultsPosition"/></para></summary>
+	/// <summary>Information about a message in a specific position		<para>Derived classes: <see cref="SearchResultPosition"/></para>		<para>See <a href="https://corefork.telegram.org/type/SearchResultsPosition"/></para></summary>
 	public abstract class SearchResultsPosition : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/searchResultPosition"/></para></summary>
 	[TLDef(0x7F648B67)]
@@ -12410,45 +12457,55 @@ namespace TL
 		public SearchResultsPosition[] positions;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channels.sendAsPeers"/></para></summary>
+	/// <summary>A list of peers that can be used to send messages in a specific group		<para>See <a href="https://corefork.telegram.org/constructor/channels.sendAsPeers"/></para></summary>
 	[TLDef(0x8356CDA9)]
 	public class Channels_SendAsPeers : IObject, IPeerResolver
 	{
+		/// <summary>Peers that can be used to send messages to the group</summary>
 		public Peer[] peers;
+		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
+		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/users.userFull"/></para></summary>
+	/// <summary>Full user information		<para>See <a href="https://corefork.telegram.org/constructor/users.userFull"/></para></summary>
 	[TLDef(0x3B6D152E)]
 	public class Users_UserFull : IObject, IPeerResolver
 	{
+		/// <summary>Full user information</summary>
 		public UserFull full_user;
+		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
+		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.peerSettings"/></para></summary>
+	/// <summary>Peer settings		<para>See <a href="https://corefork.telegram.org/constructor/messages.peerSettings"/></para></summary>
 	[TLDef(0x6880B94D)]
 	public class Messages_PeerSettings : IObject, IPeerResolver
 	{
+		/// <summary>Peer settings</summary>
 		public PeerSettings settings;
+		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
+		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.loggedOut"/></para></summary>
+	/// <summary>Authentication token to be used on subsequent authorizations		<para>See <a href="https://corefork.telegram.org/constructor/auth.loggedOut"/></para></summary>
 	[TLDef(0xC3A2835F)]
 	public class Auth_LoggedOut : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Authentication token to be used on subsequent authorizations</summary>
 		[IfFlag(0)] public byte[] future_auth_token;
 
 		[Flags] public enum Flags : uint
@@ -12484,6 +12541,7 @@ namespace TL
 		public Flags flags;
 		/// <summary>Reactions</summary>
 		public ReactionCount[] results;
+		/// <summary>List of recent peers and their reactions</summary>
 		[IfFlag(1)] public MessagePeerReaction[] recent_reactions;
 
 		[Flags] public enum Flags : uint
@@ -12492,20 +12550,26 @@ namespace TL
 			min = 0x1,
 			/// <summary>Field <see cref="recent_reactions"/> has a value</summary>
 			has_recent_reactions = 0x2,
+			/// <summary>Whether <a href="https://corefork.telegram.org/method/messages.getMessageReactionsList">messages.getMessageReactionsList</a> can be used to see how each specific peer reacted to the message</summary>
 			can_see_list = 0x4,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.messageReactionsList"/></para></summary>
+	/// <summary>List of peers that reacted to a specific message		<para>See <a href="https://corefork.telegram.org/constructor/messages.messageReactionsList"/></para></summary>
 	[TLDef(0x31BD492D)]
 	public class Messages_MessageReactionsList : IObject, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Total number of reactions matching query</summary>
 		public int count;
+		/// <summary>List of peers that reacted to a specific message</summary>
 		public MessagePeerReaction[] reactions;
+		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
+		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
+		/// <summary>If set, indicates the next offset to use to load more results by invoking <a href="https://corefork.telegram.org/method/messages.getMessageReactionsList">messages.getMessageReactionsList</a>.</summary>
 		[IfFlag(0)] public string next_offset;
 
 		[Flags] public enum Flags : uint
@@ -12517,14 +12581,17 @@ namespace TL
 		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/availableReaction"/></para></summary>
+	/// <summary>Animations associated with a message reaction		<para>See <a href="https://corefork.telegram.org/constructor/availableReaction"/></para></summary>
 	[TLDef(0xC077EC01)]
 	public class AvailableReaction : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Reaction emoji</summary>
 		public string reaction;
+		/// <summary>Reaction description</summary>
 		public string title;
+		/// <summary>Static icon for the reaction</summary>
 		public DocumentBase static_icon;
 		public DocumentBase appear_animation;
 		public DocumentBase select_animation;
@@ -12535,46 +12602,52 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>If not set, the reaction can be added to new messages and enabled in chats.</summary>
 			inactive = 0x1,
 			/// <summary>Field <see cref="around_animation"/> has a value</summary>
 			has_around_animation = 0x2,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.availableReactions"/></para></summary>
+	/// <summary>Animations and metadata associated with message reactions		<para>See <a href="https://corefork.telegram.org/constructor/messages.availableReactions"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.availableReactionsNotModified">messages.availableReactionsNotModified</a></remarks>
 	[TLDef(0x768E3AAD)]
 	public class Messages_AvailableReactions : IObject
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public int hash;
+		/// <summary>Animations and metadata associated with message reactions</summary>
 		public AvailableReaction[] reactions;
 	}
 
-	/// <summary><para>Derived classes: <see cref="Messages_TranslateNoResult"/>, <see cref="Messages_TranslateResultText"/></para>		<para>See <a href="https://corefork.telegram.org/type/messages.TranslatedText"/></para></summary>
+	/// <summary>Translated text, or no result		<para>Derived classes: <see cref="Messages_TranslateNoResult"/>, <see cref="Messages_TranslateResultText"/></para>		<para>See <a href="https://corefork.telegram.org/type/messages.TranslatedText"/></para></summary>
 	public abstract class Messages_TranslatedText : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.translateNoResult"/></para></summary>
+	/// <summary>No translation is available		<para>See <a href="https://corefork.telegram.org/constructor/messages.translateNoResult"/></para></summary>
 	[TLDef(0x67CA4737)]
 	public class Messages_TranslateNoResult : Messages_TranslatedText { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.translateResultText"/></para></summary>
+	/// <summary>Translated text		<para>See <a href="https://corefork.telegram.org/constructor/messages.translateResultText"/></para></summary>
 	[TLDef(0xA214F7D0)]
 	public class Messages_TranslateResultText : Messages_TranslatedText
 	{
+		/// <summary>Translated text</summary>
 		public string text;
 	}
 
-	/// <summary>Message reaction		<para>See <a href="https://corefork.telegram.org/constructor/messagePeerReaction"/></para></summary>
+	/// <summary>How a certain peer reacted to the message		<para>See <a href="https://corefork.telegram.org/constructor/messagePeerReaction"/></para></summary>
 	[TLDef(0x51B67EFF)]
 	public class MessagePeerReaction : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Peer that reacted to the message</summary>
 		public Peer peer_id;
-		/// <summary>Reaction (UTF8 emoji)</summary>
+		/// <summary>Reaction emoji</summary>
 		public string reaction;
 
 		[Flags] public enum Flags : uint
 		{
 			big = 0x1,
+			/// <summary>Whether the reaction wasn't yet marked as read by the current user</summary>
 			unread = 0x2,
 		}
 	}
@@ -13419,6 +13492,7 @@ namespace TL
 		/// <param name="dark">Whether to install the dark version</param>
 		/// <param name="theme">Theme to install</param>
 		/// <param name="format">Theme format, a string that identifies the theming engines supported by the client</param>
+		/// <param name="base_theme">Indicates a basic theme provided by all clients</param>
 		public static Task<bool> Account_InstallTheme(this Client client, bool dark = false, InputThemeBase theme = null, string format = null, BaseTheme base_theme = default)
 			=> client.Invoke(new Account_InstallTheme
 			{
@@ -13522,14 +13596,17 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.setAuthorizationTTL"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 406 (<a href="https://corefork.telegram.org/method/account.setAuthorizationTTL#possible-errors">details</a>)</para></summary>
+		/// <summary>Set time-to-live of current session		<para>See <a href="https://corefork.telegram.org/method/account.setAuthorizationTTL"/></para>		<para>Possible <see cref="RpcException"/> codes: 406 (<a href="https://corefork.telegram.org/method/account.setAuthorizationTTL#possible-errors">details</a>)</para></summary>
+		/// <param name="authorization_ttl_days">Time-to-live of current session in days</param>
 		public static Task<bool> Account_SetAuthorizationTTL(this Client client, int authorization_ttl_days)
 			=> client.Invoke(new Account_SetAuthorizationTTL
 			{
 				authorization_ttl_days = authorization_ttl_days,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.changeAuthorizationSettings"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.changeAuthorizationSettings#possible-errors">details</a>)</para></summary>
+		/// <summary>Change authorization settings		<para>See <a href="https://corefork.telegram.org/method/account.changeAuthorizationSettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.changeAuthorizationSettings#possible-errors">details</a>)</para></summary>
+		/// <param name="encrypted_requests_disabled">Whether to enable or disable receiving encrypted chats: if the flag is not set, the previous setting is not changed</param>
+		/// <param name="call_requests_disabled">Whether to enable or disable receiving calls: if the flag is not set, the previous setting is not changed</param>
 		public static Task<bool> Account_ChangeAuthorizationSettings(this Client client, long hash, bool? encrypted_requests_disabled = default, bool? call_requests_disabled = default)
 			=> client.Invoke(new Account_ChangeAuthorizationSettings
 			{
@@ -13854,6 +13931,8 @@ namespace TL
 		/// <param name="revoke">Whether to delete the message history for all chat participants</param>
 		/// <param name="peer">User or chat, communication history of which will be deleted</param>
 		/// <param name="max_id">Maximum ID of message to delete</param>
+		/// <param name="min_date">Delete all messages newer than this UNIX timestamp</param>
+		/// <param name="max_date">Delete all messages older than this UNIX timestamp</param>
 		public static Task<Messages_AffectedHistory> Messages_DeleteHistory(this Client client, InputPeer peer, int max_id = default, bool just_clear = false, bool revoke = false, DateTime? min_date = null, DateTime? max_date = null)
 			=> client.Invoke(new Messages_DeleteHistory
 			{
@@ -13907,6 +13986,7 @@ namespace TL
 		/// <param name="reply_markup">Reply markup for sending bot buttons</param>
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
+		/// <param name="send_as">Send this message as the specified peer</param>
 		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_SendMessage
 			{
@@ -13933,6 +14013,7 @@ namespace TL
 		/// <param name="reply_markup">Reply markup for bot keyboards</param>
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
+		/// <param name="send_as">Send this message as the specified peer</param>
 		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_SendMedia
 			{
@@ -14266,6 +14347,7 @@ namespace TL
 
 		/// <summary>Get info about a stickerset		<para>See <a href="https://corefork.telegram.org/method/messages.getStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 406 (<a href="https://corefork.telegram.org/method/messages.getStickerSet#possible-errors">details</a>)</para></summary>
 		/// <param name="stickerset">Stickerset</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
 		public static Task<Messages_StickerSet> Messages_GetStickerSet(this Client client, InputStickerSet stickerset, int hash = default)
 			=> client.Invoke(new Messages_GetStickerSet
@@ -14451,6 +14533,7 @@ namespace TL
 		/// <param name="query_id">Query ID from <a href="https://corefork.telegram.org/method/messages.getInlineBotResults">messages.getInlineBotResults</a></param>
 		/// <param name="id">Result ID from <a href="https://corefork.telegram.org/method/messages.getInlineBotResults">messages.getInlineBotResults</a></param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
+		/// <param name="send_as">Send this message as the specified peer</param>
 		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false, int? reply_to_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_SendInlineBotResult
 			{
@@ -14879,6 +14962,7 @@ namespace TL
 		/// <param name="reply_to_msg_id">The message to reply to</param>
 		/// <param name="multi_media">The medias to send</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
+		/// <param name="send_as">Send this message as the specified peer</param>
 		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, int? reply_to_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
@@ -15446,7 +15530,11 @@ namespace TL
 				msg_id = msg_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsCalendar"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes:  (<a href="https://corefork.telegram.org/method/messages.getSearchResultsCalendar#possible-errors">details</a>)</para></summary>
+		/// <summary>Get information about messages sent on a specific day		<para>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsCalendar"/></para>		<para>Possible <see cref="RpcException"/> codes:  (<a href="https://corefork.telegram.org/method/messages.getSearchResultsCalendar#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer where where to search</param>
+		/// <param name="filter">Message filter</param>
+		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
+		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		public static Task<Messages_SearchResultsCalendar> Messages_GetSearchResultsCalendar(this Client client, InputPeer peer, MessagesFilter filter, int offset_id = default, DateTime offset_date = default)
 			=> client.Invoke(new Messages_GetSearchResultsCalendar
 			{
@@ -15456,7 +15544,7 @@ namespace TL
 				offset_date = offset_date,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsPositions"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSearchResultsPositions"/></para></summary>
 		public static Task<Messages_SearchResultsPositions> Messages_GetSearchResultsPositions(this Client client, InputPeer peer, MessagesFilter filter, int offset_id = default, int limit = int.MaxValue)
 			=> client.Invoke(new Messages_GetSearchResultsPositions
 			{
@@ -15466,7 +15554,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.hideChatJoinRequest"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.hideChatJoinRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.hideChatJoinRequest#possible-errors">details</a>)</para></summary>
 		public static Task<UpdatesBase> Messages_HideChatJoinRequest(this Client client, InputPeer peer, InputUserBase user_id, bool approved = false)
 			=> client.Invoke(new Messages_HideChatJoinRequest
 			{
@@ -15475,7 +15563,7 @@ namespace TL
 				user_id = user_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.hideAllChatJoinRequests"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.hideAllChatJoinRequests"/></para></summary>
 		public static Task<UpdatesBase> Messages_HideAllChatJoinRequests(this Client client, InputPeer peer, bool approved = false, string link = null)
 			=> client.Invoke(new Messages_HideAllChatJoinRequests
 			{
@@ -15484,7 +15572,7 @@ namespace TL
 				link = link,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleNoForwards"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleNoForwards"/></para></summary>
 		public static Task<UpdatesBase> Messages_ToggleNoForwards(this Client client, InputPeer peer, bool enabled)
 			=> client.Invoke(new Messages_ToggleNoForwards
 			{
@@ -15492,7 +15580,9 @@ namespace TL
 				enabled = enabled,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.saveDefaultSendAs"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.saveDefaultSendAs#possible-errors">details</a>)</para></summary>
+		/// <summary>Change the default peer that should be used when sending messages to a specific group		<para>See <a href="https://corefork.telegram.org/method/messages.saveDefaultSendAs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.saveDefaultSendAs#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Group</param>
+		/// <param name="send_as">The default peer that should be used when sending messages to the group</param>
 		public static Task<bool> Messages_SaveDefaultSendAs(this Client client, InputPeer peer, InputPeer send_as)
 			=> client.Invoke(new Messages_SaveDefaultSendAs
 			{
@@ -15500,7 +15590,7 @@ namespace TL
 				send_as = send_as,
 			});
 
-		/// <summary>Send reaction to message		<para>See <a href="https://corefork.telegram.org/method/messages.sendReaction"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendReaction#possible-errors">details</a>)</para></summary>
+		/// <summary>Send reaction to message		<para>See <a href="https://corefork.telegram.org/method/messages.sendReaction"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendReaction#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="msg_id">Message ID to react to</param>
 		/// <param name="reaction">Reaction (a UTF8 emoji)</param>
@@ -15523,7 +15613,7 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary>Get full message reaction list		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageReactionsList"/> [bots: ✓]</para></summary>
+		/// <summary>Get full message reaction list		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageReactionsList"/></para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="id">Message ID</param>
 		/// <param name="reaction">Get only reactions of this type (UTF8 emoji)</param>
@@ -15540,7 +15630,9 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setChatAvailableReactions"/> [bots: ✓]</para></summary>
+		/// <summary>Change the set of message reactions that can be used in a certain group, supergroup or channel		<para>See <a href="https://corefork.telegram.org/method/messages.setChatAvailableReactions"/></para></summary>
+		/// <param name="peer">Group where to apply changes</param>
+		/// <param name="available_reactions">Allowed reaction emojis</param>
 		public static Task<UpdatesBase> Messages_SetChatAvailableReactions(this Client client, InputPeer peer, string[] available_reactions)
 			=> client.Invoke(new Messages_SetChatAvailableReactions
 			{
@@ -15548,7 +15640,8 @@ namespace TL
 				available_reactions = available_reactions,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getAvailableReactions"/> [bots: ✓]</para></summary>
+		/// <summary>Obtain available message reactions		<para>See <a href="https://corefork.telegram.org/method/messages.getAvailableReactions"/></para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.availableReactionsNotModified">messages.availableReactionsNotModified</a></returns>
 		public static Task<Messages_AvailableReactions> Messages_GetAvailableReactions(this Client client, int hash = default)
 			=> client.Invoke(new Messages_GetAvailableReactions
@@ -15556,14 +15649,17 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setDefaultReaction"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setDefaultReaction"/></para></summary>
 		public static Task<bool> Messages_SetDefaultReaction(this Client client, string reaction)
 			=> client.Invoke(new Messages_SetDefaultReaction
 			{
 				reaction = reaction,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.translateText"/> [bots: ✓]</para></summary>
+		/// <summary>Translate a given text		<para>See <a href="https://corefork.telegram.org/method/messages.translateText"/> [bots: ✓]</para></summary>
+		/// <param name="text">The text to translate</param>
+		/// <param name="from_lang">Two-letter ISO 639-1 language code of the language from which the message is translated, if not set will be autodetected</param>
+		/// <param name="to_lang">Two-letter ISO 639-1 language code of the language to which the message is translated</param>
 		public static Task<Messages_TranslatedText> Messages_TranslateText(this Client client, string to_lang, InputPeer peer = null, int? msg_id = null, string text = null, string from_lang = null)
 			=> client.Invoke(new Messages_TranslateText
 			{
@@ -15575,7 +15671,13 @@ namespace TL
 				to_lang = to_lang,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getUnreadReactions"/> [bots: ✓]</para></summary>
+		/// <summary>Get unread reactions to messages you sent		<para>See <a href="https://corefork.telegram.org/method/messages.getUnreadReactions"/> [bots: ✓]</para></summary>
+		/// <param name="peer">Peer</param>
+		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
+		/// <param name="add_offset"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
+		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
+		/// <param name="max_id">Only return reactions for messages up until this message ID</param>
+		/// <param name="min_id">Only return reactions for messages starting from this message ID</param>
 		public static Task<Messages_MessagesBase> Messages_GetUnreadReactions(this Client client, InputPeer peer, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default)
 			=> client.Invoke(new Messages_GetUnreadReactions
 			{
@@ -15587,7 +15689,8 @@ namespace TL
 				min_id = min_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.readReactions"/> [bots: ✓]</para></summary>
+		/// <summary>Mark message reactions as read		<para>See <a href="https://corefork.telegram.org/method/messages.readReactions"/> [bots: ✓]</para></summary>
+		/// <param name="peer">Peer</param>
 		public static Task<Messages_AffectedHistory> Messages_ReadReactions(this Client client, InputPeer peer)
 			=> client.Invoke(new Messages_ReadReactions
 			{
@@ -15965,6 +16068,7 @@ namespace TL
 
 		/// <summary>Reports some messages from a user in a supergroup as spam; requires administrator rights in the supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.reportSpam"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.reportSpam#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Supergroup</param>
+		/// <param name="participant">Participant whose messages should be reported</param>
 		/// <param name="id">IDs of spam messages</param>
 		public static Task<bool> Channels_ReportSpam(this Client client, InputChannelBase channel, InputPeer participant, int[] id)
 			=> client.Invoke(new Channels_ReportSpam
@@ -16328,14 +16432,17 @@ namespace TL
 				channel = channel,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.getSendAs"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getSendAs#possible-errors">details</a>)</para></summary>
+		/// <summary>Obtains a list of peers that can be used to send messages in a specific group		<para>See <a href="https://corefork.telegram.org/method/channels.getSendAs"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getSendAs#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">The group where we intend to send messages</param>
 		public static Task<Channels_SendAsPeers> Channels_GetSendAs(this Client client, InputPeer peer)
 			=> client.Invoke(new Channels_GetSendAs
 			{
 				peer = peer,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.deleteParticipantHistory"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.deleteParticipantHistory#possible-errors">details</a>)</para></summary>
+		/// <summary>Delete all messages sent by a specific participant of a given supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.deleteParticipantHistory"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.deleteParticipantHistory#possible-errors">details</a>)</para></summary>
+		/// <param name="channel">Supergroup</param>
+		/// <param name="participant">The participant whose messages should be deleted</param>
 		public static Task<Messages_AffectedHistory> Channels_DeleteParticipantHistory(this Client client, InputChannelBase channel, InputPeer participant)
 			=> client.Invoke(new Channels_DeleteParticipantHistory
 			{

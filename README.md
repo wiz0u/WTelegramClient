@@ -5,14 +5,14 @@
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://wizou.fr/donate.html)
 
-## _a Telegram Client API library written 100% in C# and .NET Standard_
+## _Telegram Client API library written 100% in C# and .NET Standard_
 
 This ReadMe is a quick but important tutorial to learn the fundamentals about this library. Please read it all.
 
-# How to use
-
 >⚠️ This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this advanced topic before proceeding.  
 >If you are a beginner in C#, starting a project based on this library might not be a great idea.
+
+# How to use
 
 After installing WTelegramClient through Nuget, your first Console program will be as simple as:
 ```csharp
