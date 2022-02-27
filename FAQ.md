@@ -55,7 +55,7 @@ However most common chat groups are not `Chat` but a `Channel` supergroup (witho
 Some TL methods only applies to private `Chat`, some only applies to `Channel` and some to both.
 
 The `access_hash` must usually be provided within the `Input...` structure you pass in argument to an API method (`InputPeer`, `InputChannel`, `InputUser`, etc...).  
-You obtain the `access_hash` through **description structures** like `Channel`, `User`, `Photo`, `Document` that you receive through updates or when you query them through API methods like `Messages_GetAllChats`, `Messages_GetDialogs`, `Contacts_ResolveUsername`, etc...  
+You obtain the `access_hash` through **description structures** like `Channel`, `User`, `Photo`, `Document` that you receive through updates or when you query them through API methods like `Messages_GetAllChats`, `Messages_GetAllDialogs`, `Contacts_ResolveUsername`, etc...  
 *(if you have a `Peer` object, you can convert it to a `User`/`Channel`/`Chat` via the `UserOrChat` helper from the root class that contained the peer)*
 
 Once you obtained the description structure, there are 3 methods for building your `Input...` structure:
@@ -157,7 +157,7 @@ API method [Messages_GetAllChats](https://corefork.telegram.org/method/messages.
 Telegram Client API don't use these kind of IDs for chats. Remove the -100 prefix and try again with the rest (1234567890).
 - You're trying to use a user ID instead of a chat ID.  
 Private messages with a user are not called "chats". See [Terminology in ReadMe](README.md#terminology).  
-To obtain the list of users (as well as chats and channels) the logged-in user is currenly engaged in a discussion with, you should [use the API method Messages_GetDialogs](EXAMPLES.md#list-dialogs)
+To obtain the list of users (as well as chats and channels) the logged-in user is currenly engaged in a discussion with, you should [use the API method Messages_GetAllDialogs](EXAMPLES.md#list-dialogs)
 - the `chats.chats` dictionary is empty.  
 This is the case if you are logged-in as a brand new user account (that hasn't join any chat groups/channels)
 or if you are connected to a Test DC (a Telegram datacenter server for tests) instead of Production DC

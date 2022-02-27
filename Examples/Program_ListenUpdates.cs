@@ -25,16 +25,8 @@ namespace WTelegramClientTest
 				// Note that on login Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
 				Console.WriteLine($"We are logged-in as {My.username ?? My.first_name + " " + My.last_name} (id {My.id})");
 				// We collect all infos about the users/chats so that updates can be printed with their names
-				var dialogsBase = await Client.Messages_GetDialogs(); // dialogs = groups/channels/users
-				if (dialogsBase is Messages_Dialogs dialogs)
-					while (dialogs.dialogs.Length != 0)
-					{
-						dialogs.CollectUsersChats(_users, _chats);
-						var lastDialog = dialogs.dialogs[^1];
-						var lastMsg = dialogs.messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
-						var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
-						dialogs = (Messages_Dialogs)await Client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer);
-					}
+				var dialogs = await Client.Messages_GetAllDialogs(); // dialogs = groups/channels/users
+				dialogs.CollectUsersChats(_users, _chats);
 				Console.ReadKey();
 			}
 		}
@@ -64,7 +56,7 @@ namespace WTelegramClientTest
 					case UpdateUserStatus uus: Console.WriteLine($"{User(uus.user_id)} is now {uus.status.GetType().Name[10..]}"); break;
 					case UpdateUserName uun: Console.WriteLine($"{User(uun.user_id)} has changed profile name: @{uun.username} {uun.first_name} {uun.last_name}"); break;
 					case UpdateUserPhoto uup: Console.WriteLine($"{User(uup.user_id)} has changed profile photo"); break;
-					default: Console.WriteLine(update.GetType().Name); break;
+					default: Console.WriteLine(update.GetType().Name); break; // there are much more update types than the above cases
 				}
 		}
 

@@ -117,7 +117,7 @@ long chatId = long.Parse(Console.ReadLine());
 await client.SendMessageAsync(chats.chats[chatId], "Hello, World");
 ```
 Notes:
-- This list does not include discussions with other users. For this, you need to use [Messages_GetDialogs](#list-dialogs).
+- This list does not include discussions with other users. For this, you need to use [Messages_GetAllDialogs](#list-dialogs).
 - The list returned by Messages_GetAllChats contains the `access_hash` for those chats. Read [FAQ #4](FAQ.MD#access-hash) about this.
 - If a small private chat group has been migrated to a supergroup, you may find both the old `Chat` and a `Channel` with different IDs in the `chats.chats` result,
 but the old `Chat` will be marked with flag [deactivated] and should not be used anymore. See [Terminology in ReadMe](README.md#terminology).
@@ -168,23 +168,16 @@ await client.SendAlbumAsync(InputPeer.Self, inputMedias, "My first album");
 <a name="list-dialogs"></a>
 ### List all dialogs (chats/groups/channels/user chat) the user is in
 ```csharp
-var dialogs = await client.Messages_GetDialogs();
-while (dialogs.Dialogs.Length != 0)
-{
-    foreach (var dialog in dialogs.Dialogs)
-        switch (dialogs.UserOrChat(dialog))
-        {
-            case User     user when user.IsActive: Console.WriteLine("User " + user); break;
-            case ChatBase chat when chat.IsActive: Console.WriteLine(chat); break;
-        }
-    var lastDialog = dialogs.Dialogs[^1];
-    var lastMsg = dialogs.Messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
-    var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
-    dialogs = await client.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer);
-}
+var dialogs = await client.Messages_GetAllDialogs();
+foreach (var dialog in dialogs.dialogs)
+    switch (dialogs.UserOrChat(dialog))
+    {
+        case User     user when user.IsActive: Console.WriteLine("User " + user); break;
+        case ChatBase chat when chat.IsActive: Console.WriteLine(chat); break;
+    }
 ```
 
-*Note: the lists returned by Messages_GetDialogs contains the `access_hash` for those chats and users.*  
+*Note: the lists returned by Messages_GetAllDialogs contains the `access_hash` for those chats and users.*  
 See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
 <a name="list-members"></a>

@@ -1532,7 +1532,7 @@ namespace WTelegram
 						_parallelTransfers.Release();
 					}
 					if (fileBase is not Upload_File fileData)
-						throw new ApplicationException("Upload_GetFile returned unsupported " + fileBase.GetType().Name);
+						throw new ApplicationException("Upload_GetFile returned unsupported " + fileBase?.GetType().Name);
 					if (fileData.bytes.Length != FilePartSize) abort = true;
 					if (fileData.bytes.Length != 0)
 					{
@@ -1621,6 +1621,37 @@ namespace WTelegram
 			outputStream.WriteByte(0xff);
 			outputStream.WriteByte(0xd9);
 			return true;
+		}
+
+		/// <summary>Returns the current user dialog list.		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getDialogs#possible-errors">details</a>)</para></summary>
+		/// <param name="folder_id"><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></param>
+		/// <returns>See <a href="https://corefork.telegram.org/constructor/messages.dialogs"/></returns>
+		public async Task<Messages_Dialogs> Messages_GetAllDialogs(int? folder_id = null)
+		{
+			var dialogs = await this.Messages_GetDialogs(folder_id: folder_id);
+			switch (dialogs)
+			{
+				case Messages_DialogsSlice mds:
+					var dialogList = new List<DialogBase>();
+					var messageList = new List<MessageBase>();
+					while (dialogs.Dialogs.Length != 0)
+					{
+						dialogList.AddRange(dialogs.Dialogs);
+						messageList.AddRange(dialogs.Messages);
+						var lastDialog = dialogs.Dialogs[^1];
+						var lastMsg = dialogs.Messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
+						var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
+						dialogs = await this.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, folder_id: folder_id);
+						if (dialogs is not Messages_Dialogs md) break;
+						foreach (var (key, value) in md.chats) mds.chats[key] = value;
+						foreach (var (key, value) in md.users) mds.users[key] = value;
+					}
+					mds.dialogs = dialogList.ToArray();
+					mds.messages = messageList.ToArray();
+					return mds;
+				case Messages_Dialogs md: return md;
+				default: throw new ApplicationException("Messages_GetDialogs returned unexpected " + dialogs?.GetType().Name);
+			}
 		}
 
 		/// <summary>Helper method that tries to fetch all participants from a Channel (beyond Telegram server-side limitations)</summary>

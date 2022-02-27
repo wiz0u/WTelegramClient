@@ -44,8 +44,8 @@ namespace WTelegramClientTest
 			{
 				// Zero means the access hash for Durov's Channel was not collected yet.
 				// So we need to obtain it through Client API calls whose results contains the access_hash field, such as:
-				// - Messages_GetAllChats (see Program_GetAllChats.cs   for an example on how to use it)
-				// - Messages_GetDialogs  (see Program_ListenUpdates.cs for an example on how to use it)
+				// - Messages_GetAllChats   (see Program_GetAllChats.cs   for an example on how to use it)
+				// - Messages_GetAllDialogs (see Program_ListenUpdates.cs for an example on how to use it)
 				// - Contacts_ResolveUsername                (see below for an example on how to use it)
 				// and many more API methods...
 				// The access_hash fields can be found inside instance of User, Channel, Photo, Document, etc..

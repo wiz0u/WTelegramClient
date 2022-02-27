@@ -2723,7 +2723,7 @@ namespace TL
 		/// <summary>List of users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 	/// <summary>Incomplete list of blocked users.		<para>See <a href="https://corefork.telegram.org/constructor/contacts.blockedSlice"/></para></summary>
 	[TLDef(0xE1664194)]
@@ -2761,7 +2761,7 @@ namespace TL
 		/// <summary>List of last messages from each chat</summary>
 		public override MessageBase[] Messages => messages;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public override IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 	/// <summary>Incomplete list of dialogs with messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.dialogsSlice"/></para></summary>
 	[TLDef(0x71E094F3)]
@@ -2805,7 +2805,7 @@ namespace TL
 		/// <summary>List of messages</summary>
 		public override MessageBase[] Messages => messages;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public override IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 	/// <summary>Incomplete list of messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.messagesSlice"/></para></summary>
 	[TLDef(0x3A54685E)]
@@ -2860,7 +2860,7 @@ namespace TL
 		/// <summary>Found messages</summary>
 		public override MessageBase[] Messages => messages;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public override IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 	/// <summary>No new messages matching the query were found		<para>See <a href="https://corefork.telegram.org/constructor/messages.messagesNotModified"/></para></summary>
 	[TLDef(0x74535F21)]
@@ -2900,7 +2900,7 @@ namespace TL
 		/// <summary>List of users mentioned above</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Affected part of communication history with the user or in a chat.		<para>See <a href="https://corefork.telegram.org/constructor/messages.affectedHistory"/></para></summary>
@@ -4168,7 +4168,7 @@ namespace TL
 		/// <summary>List of updates</summary>
 		public override Update[] OtherUpdates => other_updates;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public override IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 	/// <summary>Incomplete list of occurred events.		<para>See <a href="https://corefork.telegram.org/constructor/updates.differenceSlice"/></para></summary>
 	[TLDef(0xA8FB1981)]
@@ -4194,7 +4194,7 @@ namespace TL
 		/// <summary>List of updates</summary>
 		public override Update[] OtherUpdates => other_updates;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public override IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 	/// <summary>The difference is <a href="https://corefork.telegram.org/api/updates#recovering-gaps">too long</a>, and the specified state must be used to refetch updates.		<para>See <a href="https://corefork.telegram.org/constructor/updates.differenceTooLong"/></para></summary>
 	[TLDef(0x4AFE8F6D)]
@@ -4374,7 +4374,7 @@ namespace TL
 		/// <summary>Current date</summary>
 		public override DateTime Date => date;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public override IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 	/// <summary>Full constructor of updates		<para>See <a href="https://corefork.telegram.org/constructor/updates"/></para></summary>
 	[TLDef(0x74AE4240)]
@@ -4394,7 +4394,7 @@ namespace TL
 		/// <summary>Current date</summary>
 		public override DateTime Date => date;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public override IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 	/// <summary>Shortened constructor containing info on one outgoing message to a contact (the destination chat has to be extracted from the method call that returned this object).		<para>See <a href="https://corefork.telegram.org/constructor/updateShortSentMessage"/></para></summary>
 	[TLDef(0x9015E101)]
@@ -5178,7 +5178,7 @@ namespace TL
 		/// <summary>List of users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Privacy key		<para>See <a href="https://corefork.telegram.org/type/InputPrivacyKey"/></para></summary>
@@ -5320,7 +5320,7 @@ namespace TL
 		/// <summary>Users to which the rules apply</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Time to live in days of the current account		<para>See <a href="https://corefork.telegram.org/constructor/accountDaysTTL"/></para></summary>
@@ -6334,7 +6334,7 @@ namespace TL
 		/// <summary>Users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the result</summary>
-		public IPeerInfo UserOrChat => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Indicates a range of chat messages		<para>See <a href="https://corefork.telegram.org/constructor/messageRange"/></para></summary>
@@ -6399,7 +6399,7 @@ namespace TL
 			has_timeout = 0x2,
 		}
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public override IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 	/// <summary>The new updates		<para>See <a href="https://corefork.telegram.org/constructor/updates.channelDifference"/></para></summary>
 	[TLDef(0x2064674E)]
@@ -6428,7 +6428,7 @@ namespace TL
 			has_timeout = 0x2,
 		}
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public override IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public override IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Filter for getting only certain types of channel messages		<para>See <a href="https://corefork.telegram.org/constructor/channelMessagesFilter"/></para></summary>
@@ -6627,7 +6627,7 @@ namespace TL
 		/// <summary>Users mentioned in participant info</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Represents a channel participant		<para>See <a href="https://corefork.telegram.org/constructor/channels.channelParticipant"/></para></summary>
@@ -6641,7 +6641,7 @@ namespace TL
 		/// <summary>Users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Info about the latest telegram Terms Of Service		<para>See <a href="https://corefork.telegram.org/constructor/help.termsOfService"/></para></summary>
@@ -7457,7 +7457,7 @@ namespace TL
 		/// <summary>Current <a href="https://corefork.telegram.org/api/updates">update state of dialog</a></summary>
 		public Updates_State state;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Top peer		<para>See <a href="https://corefork.telegram.org/constructor/topPeer"/></para></summary>
@@ -7517,7 +7517,7 @@ namespace TL
 		/// <summary>Users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 	/// <summary>Top peers disabled		<para>See <a href="https://corefork.telegram.org/constructor/contacts.topPeersDisabled"/></para></summary>
 	[TLDef(0xB52C939D)]
@@ -9434,7 +9434,7 @@ namespace TL
 		/// <summary>Users mentioned in events</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Filter only certain admin log events		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventsFilter"/></para></summary>
@@ -9555,7 +9555,7 @@ namespace TL
 		/// <summary>Users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>A single media in an <a href="https://corefork.telegram.org/api/files#albums-grouped-media">album or grouped media</a> sent with <a href="https://corefork.telegram.org/method/messages.sendMultiMedia">messages.sendMultiMedia</a>.		<para>See <a href="https://corefork.telegram.org/constructor/inputSingleMedia"/></para></summary>
@@ -11146,7 +11146,7 @@ namespace TL
 		/// <summary>Users mentioned in the chat list</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Basic theme settings		<para>See <a href="https://corefork.telegram.org/type/BaseTheme"/></para></summary>
@@ -11547,7 +11547,7 @@ namespace TL
 			has_psa_message = 0x4,
 		}
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the result</summary>
-		public IPeerInfo UserOrChat => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> in MPEG4 format		<para>See <a href="https://corefork.telegram.org/constructor/videoSize"/></para></summary>
@@ -11758,7 +11758,7 @@ namespace TL
 		/// <summary>Users mentioned in constructor</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Information about a <a href="https://corefork.telegram.org/api/threads">message thread</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.discussionMessage"/></para></summary>
@@ -11792,7 +11792,7 @@ namespace TL
 			has_read_outbox_max_id = 0x4,
 		}
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Message replies and <a href="https://corefork.telegram.org/api/threads">thread</a> information		<para>See <a href="https://corefork.telegram.org/constructor/messageReplyHeader"/></para></summary>
@@ -12037,7 +12037,7 @@ namespace TL
 		/// <summary>Users mentioned in the participants vector</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Info about the participants of a group call or livestream		<para>See <a href="https://corefork.telegram.org/constructor/phone.groupParticipants"/></para></summary>
@@ -12057,7 +12057,7 @@ namespace TL
 		/// <summary>Version info</summary>
 		public int version;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Type of the chat from which the inline query was sent.		<para>See <a href="https://corefork.telegram.org/type/InlineQueryPeerType"/></para></summary>
@@ -12244,7 +12244,7 @@ namespace TL
 		/// <summary>Users mentioned in the peers vector</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>An invite to a group call or livestream		<para>See <a href="https://corefork.telegram.org/constructor/phone.exportedGroupCallInvite"/></para></summary>
@@ -12396,7 +12396,7 @@ namespace TL
 		/// <summary>Users mentioned in the sponsored messages</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/searchResultsCalendarPeriod"/></para></summary>
@@ -12435,7 +12435,7 @@ namespace TL
 			has_offset_id_offset = 0x2,
 		}
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Information about a message in a specific position		<para>Derived classes: <see cref="SearchResultPosition"/></para>		<para>See <a href="https://corefork.telegram.org/type/SearchResultsPosition"/></para></summary>
@@ -12468,7 +12468,7 @@ namespace TL
 		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Full user information		<para>See <a href="https://corefork.telegram.org/constructor/users.userFull"/></para></summary>
@@ -12482,7 +12482,7 @@ namespace TL
 		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Peer settings		<para>See <a href="https://corefork.telegram.org/constructor/messages.peerSettings"/></para></summary>
@@ -12496,7 +12496,7 @@ namespace TL
 		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Authentication token to be used on subsequent authorizations		<para>See <a href="https://corefork.telegram.org/constructor/auth.loggedOut"/></para></summary>
@@ -12578,7 +12578,7 @@ namespace TL
 			has_next_offset = 0x1,
 		}
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
-		public IPeerInfo UserOrChat(Peer peer) => peer.UserOrChat(users, chats);
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Animations associated with a message reaction		<para>See <a href="https://corefork.telegram.org/constructor/availableReaction"/></para></summary>
