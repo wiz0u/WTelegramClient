@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 138;					// fetched 31/01/2022 22:18:08
+		public const int Version = 139;					// fetched 01/03/2022 09:53:50
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -941,6 +941,9 @@ namespace TL
 			[0x67CA4737] = typeof(Messages_TranslateNoResult),
 			[0xA214F7D0] = typeof(Messages_TranslateResultText),
 			[0x51B67EFF] = typeof(MessagePeerReaction),
+			[0x80EB48AF] = typeof(GroupCallStreamChannel),
+			[0xD0E482B2] = typeof(Phone_GroupCallStreamChannels),
+			[0x2DBF3432] = typeof(Phone_GroupCallStreamRtmpUrl),
 			// from TL.Secret:
 			[0xBB718624] = typeof(Layer66.SendMessageUploadRoundAction),
 			[0xE50511D8] = typeof(Layer45.DecryptedMessageMediaWebPage),

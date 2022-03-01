@@ -102,13 +102,13 @@ namespace TL
 			/// <summary>Initialization vector</summary>
 			public byte[] iv;
 		}
-		/// <summary>GeoPont attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaGeoPoint"/></para></summary>
+		/// <summary>GeoPoint attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaGeoPoint"/></para></summary>
 		[TLDef(0x35480A59)]
 		public class DecryptedMessageMediaGeoPoint : DecryptedMessageMedia
 		{
 			/// <summary>Latitude of point</summary>
 			public double lat;
-			/// <summary>Longtitude of point</summary>
+			/// <summary>Longitude of point</summary>
 			public double lon;
 		}
 		/// <summary>Contact attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaContact"/></para></summary>
@@ -289,7 +289,7 @@ namespace TL
 		[TLDef(0xF3048883)]
 		public class DecryptedMessageActionNotifyLayer : DecryptedMessageAction
 		{
-			/// <summary>Layer number, must be <strong>17</strong> or higher (this contructor was introduced in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>).</summary>
+			/// <summary>Layer number, must be <strong>17</strong> or higher (this constructor was introduced in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>).</summary>
 			public int layer;
 		}
 		/// <summary>User is preparing a message: typing, recording, uploading, etc.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionTyping"/></para></summary>
