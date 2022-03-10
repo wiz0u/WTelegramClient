@@ -369,7 +369,7 @@ static StreamWriter WTelegramLogs = new StreamWriter("WTelegram.log", true, Enco
 ...
 WTelegram.Helpers.Log = (lvl, str) => WTelegramLogs.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{"TDIWE!"[lvl]}] {str}");
 
-// • In an ASP.NET service, you will typically send logs to a `ILogger`:
+// • In an ASP.NET service, you will typically send logs to a ILogger:
 WTelegram.Helpers.Log = (lvl, str) => _logger.Log((LogLevel)lvl, str);
 ```
 
