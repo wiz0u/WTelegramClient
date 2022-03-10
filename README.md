@@ -28,7 +28,10 @@ Those api hash/id represent your application and one can be used for handling ma
 
 Then it will attempt to sign-in *(login)* as a user for which you must enter the **phone_number** and the **verification_code** that will be sent to this user (for example through SMS or another Telegram client app the user is connected to).
 
-If the verification succeeds but the phone number is unknown to Telegram, the user might be prompted to sign-up *(register their account by accepting the Terms of Service)* and provide their **first_name** and **last_name**.
+If the verification succeeds but the phone number is unknown to Telegram, the user might be prompted to sign-up
+*(register their account by accepting the Terms of Service)* and provide their **first_name** and **last_name**.  
+If the account already exists and has enabled two-step verification (2FA) a **password** might be required.  
+All these login scenarios are handled automatically within the call to `LoginUserIfNeeded`.
 
 And that's it, you now have access to the **[full range of Telegram Client APIs](https://corefork.telegram.org/methods)**. 
 All those API methods are available *(with an underscore in the method name, instead of a dot)*, like this: `await client.Method_Name(...)`
