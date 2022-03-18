@@ -1034,7 +1034,7 @@ namespace TL
 		public override string Title => title;
 	}
 
-	/// <summary>Object containing detailed group info		<para>Derived classes: <see cref="ChatFull"/>, <see cref="ChannelFull"/></para>		<para>See <a href="https://corefork.telegram.org/type/ChatFull"/></para></summary>
+	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel#channels">channel</a>, <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a>, <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a> or <a href="https://corefork.telegram.org/api/channel#legacy-groups">legacy group</a>.		<para>Derived classes: <see cref="ChatFull"/>, <see cref="ChannelFull"/></para>		<para>See <a href="https://corefork.telegram.org/type/ChatFull"/></para></summary>
 	public abstract partial class ChatFullBase : IObject
 	{
 		/// <summary>ID of the chat</summary>
@@ -1068,7 +1068,7 @@ namespace TL
 		/// <summary>Allowed <a href="https://corefork.telegram.org/api/reactions">message reactions »</a></summary>
 		public abstract string[] AvailableReactions { get; }
 	}
-	/// <summary>Detailed chat info		<para>See <a href="https://corefork.telegram.org/constructor/chatFull"/></para></summary>
+	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel#legacy-groups">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/constructor/chatFull"/></para></summary>
 	[TLDef(0xD18EE226)]
 	public partial class ChatFull : ChatFullBase
 	{
@@ -1168,7 +1168,7 @@ namespace TL
 		/// <summary>Allowed <a href="https://corefork.telegram.org/api/reactions">message reactions »</a></summary>
 		public override string[] AvailableReactions => available_reactions;
 	}
-	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/constructor/channelFull"/></para></summary>
+	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel#channels">channel</a>, <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a> or <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a>.		<para>See <a href="https://corefork.telegram.org/constructor/channelFull"/></para></summary>
 	[TLDef(0xE13C3D20)]
 	public partial class ChannelFull : ChatFullBase
 	{
@@ -2593,9 +2593,9 @@ namespace TL
 		GeoIrrelevant = 0xDBD4FEED,
 		///<summary>Report for impersonation</summary>
 		Fake = 0xF5DDD6E7,
-		///<summary>See <a href="https://corefork.telegram.org/constructor/inputReportReasonIllegalDrugs"/></summary>
+		///<summary>Report for illegal drugs</summary>
 		IllegalDrugs = 0x0A8EB2BE,
-		///<summary>See <a href="https://corefork.telegram.org/constructor/inputReportReasonPersonalDetails"/></summary>
+		///<summary>Report for divulgation of personal details</summary>
 		PersonalDetails = 0x9EC7863D,
 	}
 
@@ -2897,15 +2897,15 @@ namespace TL
 		public int count;
 	}
 
-	/// <summary>Extended info on chat and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.chatFull"/></para></summary>
+	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel#channels">channel</a>, <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a>, <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a> or <a href="https://corefork.telegram.org/api/channel#legacy-groups">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messages.chatFull"/></para></summary>
 	[TLDef(0xE5D7D19C)]
 	public class Messages_ChatFull : IObject, IPeerResolver
 	{
-		/// <summary>Extended info on a chat</summary>
+		/// <summary>Full info</summary>
 		public ChatFullBase full_chat;
-		/// <summary>List containing basic info on chat</summary>
+		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
-		/// <summary>List of users mentioned above</summary>
+		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
@@ -2987,7 +2987,7 @@ namespace TL
 
 	/// <summary>Object contains info on events occurred.		<para>Derived classes: <see cref="UpdateNewMessage"/>, <see cref="UpdateMessageID"/>, <see cref="UpdateDeleteMessages"/>, <see cref="UpdateUserTyping"/>, <see cref="UpdateChatUserTyping"/>, <see cref="UpdateChatParticipants"/>, <see cref="UpdateUserStatus"/>, <see cref="UpdateUserName"/>, <see cref="UpdateUserPhoto"/>, <see cref="UpdateNewEncryptedMessage"/>, <see cref="UpdateEncryptedChatTyping"/>, <see cref="UpdateEncryption"/>, <see cref="UpdateEncryptedMessagesRead"/>, <see cref="UpdateChatParticipantAdd"/>, <see cref="UpdateChatParticipantDelete"/>, <see cref="UpdateDcOptions"/>, <see cref="UpdateNotifySettings"/>, <see cref="UpdateServiceNotification"/>, <see cref="UpdatePrivacy"/>, <see cref="UpdateUserPhone"/>, <see cref="UpdateReadHistoryInbox"/>, <see cref="UpdateReadHistoryOutbox"/>, <see cref="UpdateWebPage"/>, <see cref="UpdateReadMessagesContents"/>, <see cref="UpdateChannelTooLong"/>, <see cref="UpdateChannel"/>, <see cref="UpdateNewChannelMessage"/>, <see cref="UpdateReadChannelInbox"/>, <see cref="UpdateDeleteChannelMessages"/>, <see cref="UpdateChannelMessageViews"/>, <see cref="UpdateChatParticipantAdmin"/>, <see cref="UpdateNewStickerSet"/>, <see cref="UpdateStickerSetsOrder"/>, <see cref="UpdateStickerSets"/>, <see cref="UpdateSavedGifs"/>, <see cref="UpdateBotInlineQuery"/>, <see cref="UpdateBotInlineSend"/>, <see cref="UpdateEditChannelMessage"/>, <see cref="UpdateBotCallbackQuery"/>, <see cref="UpdateEditMessage"/>, <see cref="UpdateInlineBotCallbackQuery"/>, <see cref="UpdateReadChannelOutbox"/>, <see cref="UpdateDraftMessage"/>, <see cref="UpdateReadFeaturedStickers"/>, <see cref="UpdateRecentStickers"/>, <see cref="UpdateConfig"/>, <see cref="UpdatePtsChanged"/>, <see cref="UpdateChannelWebPage"/>, <see cref="UpdateDialogPinned"/>, <see cref="UpdatePinnedDialogs"/>, <see cref="UpdateBotWebhookJSON"/>, <see cref="UpdateBotWebhookJSONQuery"/>, <see cref="UpdateBotShippingQuery"/>, <see cref="UpdateBotPrecheckoutQuery"/>, <see cref="UpdatePhoneCall"/>, <see cref="UpdateLangPackTooLong"/>, <see cref="UpdateLangPack"/>, <see cref="UpdateFavedStickers"/>, <see cref="UpdateChannelReadMessagesContents"/>, <see cref="UpdateContactsReset"/>, <see cref="UpdateChannelAvailableMessages"/>, <see cref="UpdateDialogUnreadMark"/>, <see cref="UpdateMessagePoll"/>, <see cref="UpdateChatDefaultBannedRights"/>, <see cref="UpdateFolderPeers"/>, <see cref="UpdatePeerSettings"/>, <see cref="UpdatePeerLocated"/>, <see cref="UpdateNewScheduledMessage"/>, <see cref="UpdateDeleteScheduledMessages"/>, <see cref="UpdateTheme"/>, <see cref="UpdateGeoLiveViewed"/>, <see cref="UpdateLoginToken"/>, <see cref="UpdateMessagePollVote"/>, <see cref="UpdateDialogFilter"/>, <see cref="UpdateDialogFilterOrder"/>, <see cref="UpdateDialogFilters"/>, <see cref="UpdatePhoneCallSignalingData"/>, <see cref="UpdateChannelMessageForwards"/>, <see cref="UpdateReadChannelDiscussionInbox"/>, <see cref="UpdateReadChannelDiscussionOutbox"/>, <see cref="UpdatePeerBlocked"/>, <see cref="UpdateChannelUserTyping"/>, <see cref="UpdatePinnedMessages"/>, <see cref="UpdatePinnedChannelMessages"/>, <see cref="UpdateChat"/>, <see cref="UpdateGroupCallParticipants"/>, <see cref="UpdateGroupCall"/>, <see cref="UpdatePeerHistoryTTL"/>, <see cref="UpdateChatParticipant"/>, <see cref="UpdateChannelParticipant"/>, <see cref="UpdateBotStopped"/>, <see cref="UpdateGroupCallConnection"/>, <see cref="UpdateBotCommands"/>, <see cref="UpdatePendingJoinRequests"/>, <see cref="UpdateBotChatInviteRequester"/>, <see cref="UpdateMessageReactions"/></para>		<para>See <a href="https://corefork.telegram.org/type/Update"/></para></summary>
 	public abstract class Update : IObject { }
-	/// <summary>New message in a private chat or in a <a href="https://core.telegram.org/api/channel">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateNewMessage"/></para></summary>
+	/// <summary>New message in a private chat or in a <a href="https://core.telegram.org/api/channel#legacy-groups">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateNewMessage"/></para></summary>
 	[TLDef(0x1F2B0AFD)]
 	public class UpdateNewMessage : Update
 	{
@@ -3321,7 +3321,7 @@ namespace TL
 		/// <summary>New view counter</summary>
 		public int views;
 	}
-	/// <summary>Admin permissions of a user in a <a href="https://corefork.telegram.org/api/channel">legacy group</a> were changed		<para>See <a href="https://corefork.telegram.org/constructor/updateChatParticipantAdmin"/></para></summary>
+	/// <summary>Admin permissions of a user in a <a href="https://corefork.telegram.org/api/channel#legacy-groups">legacy group</a> were changed		<para>See <a href="https://corefork.telegram.org/constructor/updateChatParticipantAdmin"/></para></summary>
 	[TLDef(0xD7CA61A2, inheritBefore = true)]
 	public class UpdateChatParticipantAdmin : UpdateChat
 	{
@@ -11970,6 +11970,7 @@ namespace TL
 			record_video_active = 0x800,
 			/// <summary>Whether RTMP streams are allowed</summary>
 			rtmp_stream = 0x1000,
+			/// <summary>Whether the listeners list is hidden and cannot be fetched using <a href="https://corefork.telegram.org/method/phone.getGroupParticipants">phone.getGroupParticipants</a>. The <c>phone.groupParticipants.count</c> and <c>groupCall.participants_count</c> counters will still include listeners.</summary>
 			listeners_hidden = 0x2000,
 		}
 
@@ -12705,27 +12706,33 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/groupCallStreamChannel"/></para></summary>
+	/// <summary>Info about an RTMP stream in a group call or livestream		<para>See <a href="https://corefork.telegram.org/constructor/groupCallStreamChannel"/></para></summary>
 	[TLDef(0x80EB48AF)]
 	public class GroupCallStreamChannel : IObject
 	{
+		/// <summary>Channel ID</summary>
 		public int channel;
+		/// <summary>Specifies the duration of the video segment to fetch in milliseconds, by bitshifting <c>1000</c> to the right <c>scale</c> times: <c>duration_ms := 1000 &gt;&gt; scale</c>.</summary>
 		public int scale;
+		/// <summary>Last seen timestamp to easily start fetching livestream chunks using <see cref="InputGroupCallStream"/></summary>
 		public long last_timestamp_ms;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/phone.groupCallStreamChannels"/></para></summary>
+	/// <summary>Info about RTMP streams in a group call or livestream		<para>See <a href="https://corefork.telegram.org/constructor/phone.groupCallStreamChannels"/></para></summary>
 	[TLDef(0xD0E482B2)]
 	public class Phone_GroupCallStreamChannels : IObject
 	{
+		/// <summary>RTMP streams</summary>
 		public GroupCallStreamChannel[] channels;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/phone.groupCallStreamRtmpUrl"/></para></summary>
+	/// <summary>RTMP URL and stream key to be used in streaming software		<para>See <a href="https://corefork.telegram.org/constructor/phone.groupCallStreamRtmpUrl"/></para></summary>
 	[TLDef(0x2DBF3432)]
 	public class Phone_GroupCallStreamRtmpUrl : IObject
 	{
+		/// <summary>RTMP URL</summary>
 		public string url;
+		/// <summary>Stream key</summary>
 		public string key;
 	}
 
@@ -13377,9 +13384,9 @@ namespace TL
 		/// <summary>Initialize account takeout session		<para>See <a href="https://corefork.telegram.org/method/account.initTakeoutSession"/></para>		<para>Possible <see cref="RpcException"/> codes: 420 (<a href="https://corefork.telegram.org/method/account.initTakeoutSession#possible-errors">details</a>)</para></summary>
 		/// <param name="contacts">Whether to export contacts</param>
 		/// <param name="message_users">Whether to export messages in private chats</param>
-		/// <param name="message_chats">Whether to export messages in <a href="https://corefork.telegram.org/api/channel">legacy groups</a></param>
-		/// <param name="message_megagroups">Whether to export messages in <a href="https://corefork.telegram.org/api/channel">supergroups</a></param>
-		/// <param name="message_channels">Whether to export messages in <a href="https://corefork.telegram.org/api/channel">channels</a></param>
+		/// <param name="message_chats">Whether to export messages in <a href="https://corefork.telegram.org/api/channel#legacy-groups">legacy groups</a></param>
+		/// <param name="message_megagroups">Whether to export messages in <a href="https://corefork.telegram.org/api/channel#supergroups">supergroups</a></param>
+		/// <param name="message_channels">Whether to export messages in <a href="https://corefork.telegram.org/api/channel#channels">channels</a></param>
 		/// <param name="files">Whether to export files</param>
 		/// <param name="file_max_size">Maximum size of files to export</param>
 		public static Task<Account_Takeout> Account_InitTakeoutSession(this Client client, bool contacts = false, bool message_users = false, bool message_chats = false, bool message_megagroups = false, bool message_channels = false, bool files = false, int? file_max_size = null)
@@ -13911,7 +13918,8 @@ namespace TL
 				msg_id = msg_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.resolvePhone"/></para></summary>
+		/// <summary>Resolve a phone number to get user info, if their privacy settings allow it.		<para>See <a href="https://corefork.telegram.org/method/contacts.resolvePhone"/></para></summary>
+		/// <param name="phone">Phone number in international format, possibly obtained from a <c>t.me/+number</c> or <c>tg://resolve?phone=number</c> URI.</param>
 		public static Task<Contacts_ResolvedPeer> Contacts_ResolvePhone(this Client client, string phone)
 			=> client.Invoke(new Contacts_ResolvePhone
 			{
@@ -14179,8 +14187,8 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns full chat info according to its ID.		<para>See <a href="https://corefork.telegram.org/method/messages.getFullChat"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getFullChat#possible-errors">details</a>)</para></summary>
-		/// <param name="chat_id">Chat ID</param>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Get full info about a <a href="https://corefork.telegram.org/api/channel#legacy-groups">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getFullChat"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getFullChat#possible-errors">details</a>)</para></summary>
+		/// <param name="chat_id"><a href="https://corefork.telegram.org/api/channel#legacy-groups">Legacy group</a> ID.</param>
 		public static Task<Messages_ChatFull> Messages_GetFullChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_GetFullChat
 			{
@@ -14491,7 +14499,7 @@ namespace TL
 				increment = increment,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Make a user admin in a <a href="https://corefork.telegram.org/api/channel">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAdmin"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatAdmin#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Make a user admin in a <a href="https://corefork.telegram.org/api/channel#legacy-groups">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAdmin"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatAdmin#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">The ID of the group</param>
 		/// <param name="user_id">The user to make admin</param>
 		/// <param name="is_admin">Whether to make them admin</param>
@@ -14503,8 +14511,8 @@ namespace TL
 				is_admin = is_admin,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Turn a <a href="https://corefork.telegram.org/api/channel">legacy group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
-		/// <param name="chat_id">Legacy group to migrate</param>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Turn a <a href="https://corefork.telegram.org/api/channel#migration">legacy group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
+		/// <param name="chat_id"><a href="https://corefork.telegram.org/api/channel#legacy-groups">Legacy group</a> to migrate</param>
 		public static Task<UpdatesBase> Messages_MigrateChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_MigrateChat
 			{
@@ -15809,7 +15817,10 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.searchSentMedia"/></para></summary>
+		/// <summary>View and search recently sent media.<br/>This method does not support pagination.		<para>See <a href="https://corefork.telegram.org/method/messages.searchSentMedia"/></para></summary>
+		/// <param name="q">Optional search query</param>
+		/// <param name="filter">Message filter</param>
+		/// <param name="limit">Maximum number of results to return (max 100).</param>
 		public static Task<Messages_MessagesBase> Messages_SearchSentMedia(this Client client, string q, MessagesFilter filter, int limit = int.MaxValue)
 			=> client.Invoke(new Messages_SearchSentMedia
 			{
@@ -16244,8 +16255,8 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary>Get full info about a channel		<para>See <a href="https://corefork.telegram.org/method/channels.getFullChannel"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/channels.getFullChannel#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">The channel to get info about</param>
+		/// <summary>Get full info about a <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a>, <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a> or <a href="https://corefork.telegram.org/api/channel#channels">channel</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getFullChannel"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/channels.getFullChannel#possible-errors">details</a>)</para></summary>
+		/// <param name="channel">The <a href="https://corefork.telegram.org/api/channel#channels">channel</a>, <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a> or <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a> to get info about</param>
 		public static Task<Messages_ChatFull> Channels_GetFullChannel(this Client client, InputChannelBase channel)
 			=> client.Invoke(new Channels_GetFullChannel
 			{
@@ -16892,7 +16903,7 @@ namespace TL
 			});
 
 		/// <summary>Create a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.createGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.createGroupCall#possible-errors">details</a>)</para></summary>
-		/// <param name="rtmp_stream">Whether RTMP stream support should be enabled</param>
+		/// <param name="rtmp_stream">Whether RTMP stream support should be enabled: only the <a href="https://corefork.telegram.org/api/channel">group/supergroup/channel</a> owner can use this flag.</param>
 		/// <param name="peer">Associate the group call or livestream to the provided <a href="https://corefork.telegram.org/api/channel">group/supergroup/channel</a></param>
 		/// <param name="random_id">Unique client message ID required to prevent creation of duplicate group calls</param>
 		/// <param name="title">Call title</param>
@@ -17112,14 +17123,17 @@ namespace TL
 				call = call,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallStreamChannels"/></para></summary>
+		/// <summary>Get info about RTMP streams in a group call or livestream.<br/>This method should be invoked to the same group/channel-related DC used for <a href="https://corefork.telegram.org/api/files#downloading-files">downloading livestream chunks</a>.<br/>As usual, the media DC is preferred, if available.		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallStreamChannels"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.getGroupCallStreamChannels#possible-errors">details</a>)</para></summary>
+		/// <param name="call">Group call or livestream</param>
 		public static Task<Phone_GroupCallStreamChannels> Phone_GetGroupCallStreamChannels(this Client client, InputGroupCall call)
 			=> client.Invoke(new Phone_GetGroupCallStreamChannels
 			{
 				call = call,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallStreamRtmpUrl"/></para></summary>
+		/// <summary>Get RTMP URL and stream key for RTMP livestreams. Can be used even before creating the actual RTMP livestream with <a href="https://corefork.telegram.org/method/phone.createGroupCall">phone.createGroupCall</a> (the <c>rtmp_stream</c> flag must be set).		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallStreamRtmpUrl"/></para></summary>
+		/// <param name="peer">Peer to livestream into</param>
+		/// <param name="revoke">Whether to revoke the previous stream key or simply return the existing one</param>
 		public static Task<Phone_GroupCallStreamRtmpUrl> Phone_GetGroupCallStreamRtmpUrl(this Client client, InputPeer peer, bool revoke)
 			=> client.Invoke(new Phone_GetGroupCallStreamRtmpUrl
 			{
