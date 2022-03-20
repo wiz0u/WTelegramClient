@@ -95,17 +95,20 @@ namespace WTelegram
 			var utf8Json = _jsonStream.GetBuffer();
 			var utf8JsonLen = (int)_jsonStream.Position;
 			int encryptedLen = 64 + (utf8JsonLen & ~15);
-			if (encryptedLen > _encrypted.Length)
-				Array.Copy(_encrypted, _encrypted = new byte[encryptedLen + 256], 16);
-			_encryptor.TransformBlock(_sha256.ComputeHash(utf8Json, 0, utf8JsonLen), 0, 32, _encrypted, 16);
-			_encryptor.TransformBlock(utf8Json, 0, encryptedLen - 64, _encrypted, 48);
-			_encryptor.TransformFinalBlock(utf8Json, encryptedLen - 64, utf8JsonLen & 15).CopyTo(_encrypted, encryptedLen - 16);
-			if (!_encryptor.CanReuseTransform) // under Mono, AES encryptor is not reusable
-				using (var aes = Aes.Create())
-					_encryptor = aes.CreateEncryptor(_reuseKey, _encrypted[0..16]);
-			_store.Position = 0;
-			_store.Write(_encrypted, 0, encryptedLen);
-			_store.SetLength(encryptedLen);
+			lock (_store) // while updating _encrypted buffer and writing to store
+			{
+				if (encryptedLen > _encrypted.Length)
+					Array.Copy(_encrypted, _encrypted = new byte[encryptedLen + 256], 16);
+				_encryptor.TransformBlock(_sha256.ComputeHash(utf8Json, 0, utf8JsonLen), 0, 32, _encrypted, 16);
+				_encryptor.TransformBlock(utf8Json, 0, encryptedLen - 64, _encrypted, 48);
+				_encryptor.TransformFinalBlock(utf8Json, encryptedLen - 64, utf8JsonLen & 15).CopyTo(_encrypted, encryptedLen - 16);
+				if (!_encryptor.CanReuseTransform) // under Mono, AES encryptor is not reusable
+					using (var aes = Aes.Create())
+						_encryptor = aes.CreateEncryptor(_reuseKey, _encrypted[0..16]);
+				_store.Position = 0;
+				_store.Write(_encrypted, 0, encryptedLen);
+				_store.SetLength(encryptedLen);
+			}
 			_jsonStream.Position = 0;
 			_jsonWriter.Reset();
 		}

@@ -361,7 +361,7 @@ By default, WTelegramClient logs are displayed on the Console screen.
 If you are not in a Console app or don't want the logs on screen, you can redirect them as you prefer:
 
 ```csharp
-// • Log to VS Output debugging pane in addition to default Console screen logging:
+// • Log to VS Output debugging pane in addition (+=) to default Console screen logging:
 WTelegram.Helpers.Log += (lvl, str) => System.Diagnostics.Debug.WriteLine(str);
 
 // • Log to file in replacement of default Console screen logging, using this static variable:
@@ -369,7 +369,7 @@ static StreamWriter WTelegramLogs = new StreamWriter("WTelegram.log", true, Enco
 ...
 WTelegram.Helpers.Log = (lvl, str) => WTelegramLogs.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{"TDIWE!"[lvl]}] {str}");
 
-// • In an ASP.NET service, you will typically send logs to a ILogger:
+// • In an ASP.NET service, you will typically send logs to an ILogger:
 WTelegram.Helpers.Log = (lvl, str) => _logger.Log((LogLevel)lvl, str);
 ```
 

@@ -174,7 +174,7 @@ There are various reasons why you may get this error. Here are the explanation a
 1) On secondary DCs *(DC used to download files)*, a Connection shut down is considered "normal"  
 Your main DC is the one WTelegramClient connects to during login. Secondary DC connections are established and maintained when you download files.
 The DC number for an operation or error is indicated with a prefix like "2>" on the log line.
-If Telegram servers decide to shutdown this secondary connection, it's not an issue, WTelegramClient will re-established the connection later if necessary.
+If Telegram servers decide to shutdown this secondary connection, it's not an issue, WTelegramClient will re-establish the connection later if necessary.
 
 2) Occasional connection shutdowns on the main DC should be caught by WTelegramClient and the reactor should automatically reconnect to the DC
 *(up to `MaxAutoReconnects` times)*.  
@@ -185,7 +185,7 @@ You can choose to increase `MaxAutoReconnects` if it happens too often because y
 In this case, the recommended action would be to dispose the client and recreate one
 
 4) In case of slow Internet connection or if you break in the debugger for some time,
-you might also get Connection shutdown because your client couldn't send Pings to Telegram in the alloted time.  
+you might also get Connection shutdown because your client couldn't send Pings to Telegram in the allotted time.  
 In this case, you can use the `PingInterval` property to increase the delay between pings *(for example 300 seconds instead of 60)*.
 
 <a name="TLSharp"></a>
