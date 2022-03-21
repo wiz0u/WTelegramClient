@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TL.Methods;
+using Client = WTelegram.Client;
 
 namespace TL
 {
-	using TL.Methods;
-	using Client = WTelegram.Client;
-
 	[TLDef(0x05162463)] //resPQ#05162463 nonce:int128 server_nonce:int128 pq:bytes server_public_key_fingerprints:Vector<long> = ResPQ
 	public class ResPQ : IObject
 	{
