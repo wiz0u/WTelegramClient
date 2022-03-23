@@ -40,7 +40,7 @@ namespace TL
 
 	public static class Markdown
 	{
-		/// <summary>Converts a <a href="https://core.telegram.org/bots/api/#markdownv2-style">Markdown text</a> into the (Entities + plain text) format used by Telegram messages</summary>
+		/// <summary>Converts a <a href="https://core.telegram.org/bots/api/#markdownv2-style">Markdown text</a> into the (plain text + entities) format used by Telegram messages</summary>
 		/// <param name="client">Client, used for getting access_hash for <c>tg://user?id=</c> URLs</param>
 		/// <param name="text">[in] The Markdown text<br/>[out] The same (plain) text, stripped of all Markdown notation</param>
 		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="WTelegram.Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="WTelegram.Client.SendMediaAsync">SendMediaAsync</see></returns>
@@ -135,6 +135,11 @@ namespace TL
 			return entities.Count == 0 ? null : entities.ToArray();
 		}
 
+		/// <summary>Converts the (plain text + entities) format used by Telegram messages into a <a href="https://core.telegram.org/bots/api/#markdownv2-style">Markdown text</a></summary>
+		/// <param name="client">Client, used only for getting current user ID in case of <c>InputMessageEntityMentionName+InputUserSelf</c></param>
+		/// <param name="message">The plain text, typically obtained from <see cref="TL.Message.message"/></param>
+		/// <param name="entities">The array of formatting entities, typically obtained from <see cref="TL.Message.entities"/></param>
+		/// <returns>The message text with MarkdownV2 formattings</returns>
 		public static string EntitiesToMarkdown(this WTelegram.Client client, string message, MessageEntity[] entities)
 		{
 			if (entities == null || entities.Length == 0) return Escape(message);
@@ -223,7 +228,7 @@ namespace TL
 
 	public static class HtmlText
 	{
-		/// <summary>Converts an <a href="https://core.telegram.org/bots/api/#html-style">HTML-formatted text</a> into the (Entities + plain text) format used by Telegram messages</summary>
+		/// <summary>Converts an <a href="https://core.telegram.org/bots/api/#html-style">HTML-formatted text</a> into the (plain text + entities) format used by Telegram messages</summary>
 		/// <param name="client">Client, used for getting access_hash for <c>tg://user?id=</c> URLs</param>
 		/// <param name="text">[in] The HTML-formatted text<br/>[out] The same (plain) text, stripped of all HTML tags</param>
 		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="WTelegram.Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="WTelegram.Client.SendMediaAsync">SendMediaAsync</see></returns>
@@ -309,6 +314,11 @@ namespace TL
 			return entities.Count == 0 ? null : entities.ToArray();
 		}
 
+		/// <summary>Converts the (plain text + entities) format used by Telegram messages into an <a href="https://core.telegram.org/bots/api/#html-style">HTML-formatted text</a></summary>
+		/// <param name="client">Client, used only for getting current user ID in case of <c>InputMessageEntityMentionName+InputUserSelf</c></param>
+		/// <param name="message">The plain text, typically obtained from <see cref="TL.Message.message"/></param>
+		/// <param name="entities">The array of formatting entities, typically obtained from <see cref="TL.Message.entities"/></param>
+		/// <returns>The message text with HTML formatting tags</returns>
 		public static string EntitiesToHtml(this WTelegram.Client client, string message, MessageEntity[] entities)
 		{
 			if (entities == null || entities.Length == 0) return Escape(message);
