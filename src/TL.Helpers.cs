@@ -14,11 +14,19 @@ namespace TL
 		InputPeer ToInputPeer();
 	}
 
-	partial class InputPeer			{ public static InputPeerSelf Self => new(); }
-	partial class InputUser			{ public static InputUserSelf Self => new(); }
-	partial class InputPeerChannel	{ public static implicit operator InputChannel(InputPeerChannel channel) => new() { channel_id = channel.channel_id, access_hash = channel.access_hash }; }
-	partial class InputPeerUser		{ public static implicit operator InputUser(InputPeerUser user) => new() { user_id = user.user_id, access_hash = user.access_hash }; }
-	partial class InputUser			{ public static implicit operator InputPeerUser(InputUser user) => new() { user_id = user.user_id, access_hash = user.access_hash }; }
+	partial class InputPeer				{ public static InputPeerSelf Self => new(); }
+	partial class InputPeerChannel		{ public static implicit operator InputChannel(InputPeerChannel channel) => new() { channel_id = channel.channel_id, access_hash = channel.access_hash }; }
+	partial class InputPeerUser			{ public static implicit operator InputUser(InputPeerUser user) => new() { user_id = user.user_id, access_hash = user.access_hash }; }
+
+	partial class InputUserBase			{ public abstract long? UserId { get; } }
+	partial class InputUserSelf			{ public override long? UserId => null; }
+	partial class InputUserFromMessage	{ public override long? UserId => user_id; }
+	partial class InputUser
+	{
+		public override long? UserId => user_id;
+		public static InputUserSelf Self => new();
+		public static implicit operator InputPeerUser(InputUser user) => new() { user_id = user.user_id, access_hash = user.access_hash };
+	}
 
 	partial class InputFileBase
 	{

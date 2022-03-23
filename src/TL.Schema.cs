@@ -87,10 +87,10 @@ namespace TL
 
 	/// <summary>Defines a user for subsequent interaction.		<para>Derived classes: <see cref="InputUserSelf"/>, <see cref="InputUser"/>, <see cref="InputUserFromMessage"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputUser"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/inputUserEmpty">inputUserEmpty</a></remarks>
-	public abstract class InputUserBase : IObject { }
+	public abstract partial class InputUserBase : IObject { }
 	/// <summary>Defines the current user.		<para>See <a href="https://corefork.telegram.org/constructor/inputUserSelf"/></para></summary>
 	[TLDef(0xF7C1B13F)]
-	public class InputUserSelf : InputUserBase { }
+	public partial class InputUserSelf : InputUserBase { }
 	/// <summary>Defines a user for further interaction.		<para>See <a href="https://corefork.telegram.org/constructor/inputUser"/></para></summary>
 	[TLDef(0xF21158C6)]
 	public partial class InputUser : InputUserBase
@@ -102,7 +102,7 @@ namespace TL
 	}
 	/// <summary>Defines a <a href="https://corefork.telegram.org/api/min">min</a> user that was seen in a certain message of a certain chat.		<para>See <a href="https://corefork.telegram.org/constructor/inputUserFromMessage"/></para></summary>
 	[TLDef(0x1DA448E2)]
-	public class InputUserFromMessage : InputUserBase
+	public partial class InputUserFromMessage : InputUserBase
 	{
 		/// <summary>The chat where the user was seen</summary>
 		public InputPeer peer;

@@ -46,6 +46,8 @@ namespace WTelegram
 		public bool IsMainDC => (_dcSession?.DataCenter?.id ?? 0) == _session.MainDC;
 		/// <summary>Has this Client established connection been disconnected?</summary>
 		public bool Disconnected => _tcpClient != null && !(_tcpClient.Client?.Connected ?? false);
+		/// <summary>ID of the current logged-in user or 0</summary>
+		public long UserId => _session.UserId;
 
 		/// <summary>Used to indicate progression of file download/upload</summary>
 		/// <param name="totalSize">total size of file in bytes, or 0 if unknown</param>
