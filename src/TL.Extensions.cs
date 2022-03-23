@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -51,6 +52,7 @@ namespace TL
 			{
 				switch (sb[offset])
 				{
+					case '\r': sb.Remove(offset, 1); break;
 					case '\\': sb.Remove(offset++, 1); break;
 					case '*': ProcessEntity<MessageEntityBold>(); break;
 					case '~': ProcessEntity<MessageEntityStrike>(); break;
@@ -83,6 +85,7 @@ namespace TL
 								while (offset + len < sb.Length && !char.IsWhiteSpace(sb[offset + len]))
 									len++;
 								entities.Add(new MessageEntityPre { offset = offset, length = -1, language = sb.ToString(offset + 3, len - 3) });
+								if (sb[offset + len] == '\n') len++;
 							}
 							sb.Remove(offset, len);
 						}
@@ -131,6 +134,71 @@ namespace TL
 			text = sb.ToString();
 			return entities.Count == 0 ? null : entities.ToArray();
 		}
+
+		public static string EntitiesToMarkdown(this WTelegram.Client client, string message, MessageEntity[] entities)
+		{
+			if (entities == null || entities.Length == 0) return Escape(message);
+			var closings = new List<(int offset, string md)>();
+			var sb = new StringBuilder(message);
+			int entityIndex = 0;
+			var nextEntity = entities[entityIndex];
+			for (int offset = 0, i = 0; ; offset++, i++)
+			{
+				while (closings.Count != 0 && offset == closings[0].offset)
+				{
+					var md = closings[0].md;
+					if (i > 0 && md[0] == '_' && sb[i - 1] == '_') md = '\r' + md;
+					sb.Insert(i, md); i += md.Length;
+					closings.RemoveAt(0);
+				}
+				if (i == sb.Length) break;
+				while (offset == nextEntity?.offset)
+				{
+					if (entityToMD.TryGetValue(nextEntity.GetType(), out var md))
+					{
+						var closing = (nextEntity.offset + nextEntity.length, md);
+						if (md[0] == '[')
+						{
+							if (nextEntity is MessageEntityTextUrl metu)
+								closing.md = $"]({metu.url.Replace("\\", "\\\\").Replace(")", "\\)").Replace(">", "%3E")})";
+							else if (nextEntity is MessageEntityMentionName memn)
+								closing.md = $"](tg://user?id={memn.user_id})";
+							else if (nextEntity is InputMessageEntityMentionName imemn)
+								closing.md = $"](tg://user?id={imemn.user_id.UserId ?? client.UserId})";
+						}
+						else if (nextEntity is MessageEntityPre mep)
+							md = $"```{mep.language}\n";
+						int index = ~closings.BinarySearch(closing, Comparer<(int, string)>.Create((x, y) => x.Item1.CompareTo(y.Item1) | 1));
+						closings.Insert(index, closing);
+						if (i > 0 && md[0] == '_' && sb[i - 1] == '_') md = '\r' + md;
+						sb.Insert(i, md); i += md.Length;
+					}
+					nextEntity = ++entityIndex < entities.Length ? entities[entityIndex] : null;
+				}
+				switch (sb[i])
+				{
+					case '_': case '*': case '~': case '`': case '#': case '+': case '-': case '=': case '.': case '!':
+					case '[': case ']': case '(': case ')': case '{': case '}': case '>': case '|': case '\\':
+						sb.Insert(i, '\\'); i++;
+						break;
+				}
+			}
+			return sb.ToString();
+		}
+
+		static readonly Dictionary<Type, string> entityToMD = new()
+		{
+			[typeof(MessageEntityBold)] = "*",
+			[typeof(MessageEntityItalic)] = "_",
+			[typeof(MessageEntityCode)] = "`",
+			[typeof(MessageEntityPre)] = "```",
+			[typeof(MessageEntityTextUrl)] = "[",
+			[typeof(MessageEntityMentionName)] = "[",
+			[typeof(InputMessageEntityMentionName)] = "[",
+			[typeof(MessageEntityUnderline)] = "__",
+			[typeof(MessageEntityStrike)] = "~",
+			[typeof(MessageEntitySpoiler)] = "||",
+		};
 
 		/// <summary>Insert backslashes in front of Markdown reserved characters</summary>
 		/// <param name="text">The text to escape</param>
@@ -240,6 +308,73 @@ namespace TL
 			text = sb.ToString();
 			return entities.Count == 0 ? null : entities.ToArray();
 		}
+
+		public static string EntitiesToHtml(this WTelegram.Client client, string message, MessageEntity[] entities)
+		{
+			if (entities == null || entities.Length == 0) return Escape(message);
+			var closings = new List<(int offset, string tag)>();
+			var sb = new StringBuilder(message);
+			int entityIndex = 0;
+			var nextEntity = entities[entityIndex];
+			for (int offset = 0, i = 0; ; offset++, i++)
+			{
+				while (closings.Count != 0 && offset == closings[0].offset)
+				{
+					var tag = closings[0].tag;
+					sb.Insert(i, tag); i += tag.Length;
+					closings.RemoveAt(0);
+				}
+				if (i == sb.Length) break;
+				while (offset == nextEntity?.offset)
+				{
+					if (entityToTag.TryGetValue(nextEntity.GetType(), out var tag))
+					{
+						var closing = (nextEntity.offset + nextEntity.length, $"</{tag}>");
+						if (tag[0] == 'a')
+						{
+							if (nextEntity is MessageEntityTextUrl metu)
+								tag = $"<a href=\"{metu.url}\">";
+							else if (nextEntity is MessageEntityMentionName memn)
+								tag = $"<a href=\"tg://user?id={memn.user_id}\">";
+							else if (nextEntity is InputMessageEntityMentionName imemn)
+								tag = $"<a href=\"tg://user?id={imemn.user_id.UserId ?? client.UserId}\">";
+						}
+						else if (nextEntity is MessageEntityPre mep && !string.IsNullOrEmpty(mep.language))
+						{
+							closing.Item2 = "</code></pre>";
+							tag = $"<pre><code class=\"language-{mep.language}\">";
+						}
+						else
+							tag = $"<{tag}>";
+						int index = ~closings.BinarySearch(closing, Comparer<(int, string)>.Create((x, y) => x.Item1.CompareTo(y.Item1) | 1));
+						closings.Insert(index, closing);
+						sb.Insert(i, tag); i += tag.Length;
+					}
+					nextEntity = ++entityIndex < entities.Length ? entities[entityIndex] : null;
+				}
+				switch (sb[i])
+				{
+					case '&': sb.Insert(i + 1, "amp;"); i += 4; break;
+					case '<': sb.Remove(i, 1).Insert(i, "&lt;"); i += 3; break;
+					case '>': sb.Remove(i, 1).Insert(i, "&gt;"); i += 3; break;
+				}
+			}
+			return sb.ToString();
+		}
+
+		static readonly Dictionary<Type, string> entityToTag = new()
+		{
+			[typeof(MessageEntityBold)] = "b",
+			[typeof(MessageEntityItalic)] = "i",
+			[typeof(MessageEntityCode)] = "code",
+			[typeof(MessageEntityPre)] = "pre",
+			[typeof(MessageEntityTextUrl)] = "a",
+			[typeof(MessageEntityMentionName)] = "a",
+			[typeof(InputMessageEntityMentionName)] = "a",
+			[typeof(MessageEntityUnderline)] = "u",
+			[typeof(MessageEntityStrike)] = "s",
+			[typeof(MessageEntitySpoiler)] = "tg-spoiler",
+		};
 
 		/// <summary>Replace special HTML characters with their &amp;xx; equivalent</summary>
 		/// <param name="text">The text to make HTML-safe</param>
