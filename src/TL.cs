@@ -374,6 +374,7 @@ namespace TL
 	[TLDef(0x5BB8E511)] //message#5bb8e511 msg_id:long seqno:int bytes:int body:Object = Message
 	public class _Message
 	{
+		public _Message(long msgId, int seqNo, IObject obj) { msg_id = msgId; seqno = seqNo; body = obj; }
 		public long msg_id;
 		public int seqno;
 		public int bytes;
