@@ -78,7 +78,7 @@ namespace TL
 				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
 			if (type == null) return null; // nullable ctor (class meaning is associated with null)
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
-			var obj = Activator.CreateInstance(type);
+			var obj = Activator.CreateInstance(type, true);
 			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 			if (tlDef.inheritBefore) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			uint flags = 0;

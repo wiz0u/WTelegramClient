@@ -20,12 +20,14 @@ namespace TL
 		/// <summary>⚠ Only for small private Chat. Chat groups of type Channel must use InputPeerChannel. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> in README</summary>
 		/// <param name="chat_id">Chat identifier</param>
 		public InputPeerChat(long chat_id) => this.chat_id = chat_id;
+		internal InputPeerChat() { }
 	}
 	partial class InputPeerUser
 	{
 		/// <param name="user_id">User identifier</param>
 		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="User"/> constructor</param>
 		public InputPeerUser(long user_id, long access_hash) { this.user_id = user_id; this.access_hash = access_hash; }
+		internal InputPeerUser() { }
 		public static implicit operator InputUser(InputPeerUser user) => new(user.user_id, user.access_hash);
 	}
 	partial class InputPeerChannel
@@ -33,6 +35,7 @@ namespace TL
 		/// <param name="channel_id">Channel identifier</param>
 		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="Channel"/> constructor</param>
 		public InputPeerChannel(long channel_id, long access_hash) { this.channel_id = channel_id; this.access_hash = access_hash; }
+		internal InputPeerChannel() { }
 		public static implicit operator InputChannel(InputPeerChannel channel) => new(channel.channel_id, channel.access_hash);
 	}
 
@@ -46,6 +49,7 @@ namespace TL
 		/// <param name="user_id">User identifier</param>
 		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="User"/> constructor</param>
 		public InputUser(long user_id, long access_hash) { this.user_id = user_id; this.access_hash = access_hash; }
+		internal InputUser() { }
 		public static implicit operator InputPeerUser(InputUser user) => new(user.user_id, user.access_hash);
 	}
 
@@ -421,6 +425,7 @@ namespace TL
 		/// <param name="channel_id">Channel identifier</param>
 		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="Channel"/> constructor</param>
 		public InputChannel(long channel_id, long access_hash) { this.channel_id = channel_id; this.access_hash = access_hash; }
+		internal InputChannel() { }
 		public static implicit operator InputPeerChannel(InputChannel channel) => new(channel.channel_id, channel.access_hash);
 	}
 
