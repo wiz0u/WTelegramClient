@@ -39,7 +39,7 @@ namespace TL
 	public class InputPeerSelf : InputPeer { }
 	/// <summary>Defines a chat for further interaction.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerChat"/></para></summary>
 	[TLDef(0x35A95CB9)]
-	public class InputPeerChat : InputPeer
+	public partial class InputPeerChat : InputPeer
 	{
 		/// <summary>Chat identifier</summary>
 		public long chat_id;

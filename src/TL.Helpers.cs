@@ -15,8 +15,26 @@ namespace TL
 	}
 
 	partial class InputPeer				{ public static InputPeerSelf Self => new(); }
-	partial class InputPeerChannel		{ public static implicit operator InputChannel(InputPeerChannel channel) => new() { channel_id = channel.channel_id, access_hash = channel.access_hash }; }
-	partial class InputPeerUser			{ public static implicit operator InputUser(InputPeerUser user) => new() { user_id = user.user_id, access_hash = user.access_hash }; }
+	partial class InputPeerChat
+	{
+		/// <summary>⚠ Only for small private Chat. Chat groups of type Channel must use InputPeerChannel. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> in README</summary>
+		/// <param name="chat_id">Chat identifier</param>
+		public InputPeerChat(long chat_id) => this.chat_id = chat_id;
+	}
+	partial class InputPeerUser
+	{
+		/// <param name="user_id">User identifier</param>
+		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="User"/> constructor</param>
+		public InputPeerUser(long user_id, long access_hash) { this.user_id = user_id; this.access_hash = access_hash; }
+		public static implicit operator InputUser(InputPeerUser user) => new(user.user_id, user.access_hash);
+	}
+	partial class InputPeerChannel
+	{
+		/// <param name="channel_id">Channel identifier</param>
+		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="Channel"/> constructor</param>
+		public InputPeerChannel(long channel_id, long access_hash) { this.channel_id = channel_id; this.access_hash = access_hash; }
+		public static implicit operator InputChannel(InputPeerChannel channel) => new(channel.channel_id, channel.access_hash);
+	}
 
 	partial class InputUserBase			{ public abstract long? UserId { get; } }
 	partial class InputUserSelf			{ public override long? UserId => null; }
@@ -25,7 +43,10 @@ namespace TL
 	{
 		public override long? UserId => user_id;
 		public static InputUserSelf Self => new();
-		public static implicit operator InputPeerUser(InputUser user) => new() { user_id = user.user_id, access_hash = user.access_hash };
+		/// <param name="user_id">User identifier</param>
+		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="User"/> constructor</param>
+		public InputUser(long user_id, long access_hash) { this.user_id = user_id; this.access_hash = access_hash; }
+		public static implicit operator InputPeerUser(InputUser user) => new(user.user_id, user.access_hash);
 	}
 
 	partial class InputFileBase
@@ -95,8 +116,8 @@ namespace TL
 		public override long ID => id;
 		public override bool IsActive => (flags & Flags.deleted) == 0;
 		public override string ToString() => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
-		public override InputPeer ToInputPeer() => new InputPeerUser { user_id = id, access_hash = access_hash };
-		protected override InputUser ToInputUser() => new() { user_id = id, access_hash = access_hash };
+		public override InputPeer ToInputPeer() => new InputPeerUser(id, access_hash);
+		protected override InputUser ToInputUser() => new(id, access_hash);
 		/// <summary>An estimation of the number of days ago the user was last seen (Online=0, Recently=1, LastWeek=5, LastMonth=20, LongTimeAgo=150)</summary>
 		public TimeSpan LastSeenAgo => status?.LastSeenAgo ?? TimeSpan.FromDays(150);
 	}
@@ -137,7 +158,7 @@ namespace TL
 		public override bool IsActive => (flags & (Flags.kicked | Flags.left | Flags.deactivated)) == 0;
 		public override ChatPhoto Photo => photo;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((default_banned_rights?.flags ?? 0) & flags) != 0;
-		public override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
+		public override InputPeer ToInputPeer() => new InputPeerChat(id);
 		public override string ToString() => $"Chat \"{title}\"" + (flags.HasFlag(Flags.deactivated) ? " [deactivated]" : null);
 	}
 	partial class ChatForbidden
@@ -145,7 +166,7 @@ namespace TL
 		public override bool IsActive => false;
 		public override ChatPhoto Photo => null;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
-		public override InputPeer ToInputPeer() => new InputPeerChat { chat_id = id };
+		public override InputPeer ToInputPeer() => new InputPeerChat(id);
 		public override string ToString() => $"ChatForbidden {id} \"{title}\"";
 	}
 	partial class Channel
@@ -153,8 +174,8 @@ namespace TL
 		public override bool IsActive => (flags & Flags.left) == 0;
 		public override ChatPhoto Photo => photo;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((banned_rights?.flags ?? 0) & flags) != 0 || ((default_banned_rights?.flags ?? 0) & flags) != 0;
-		public override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
-		public static implicit operator InputChannel(Channel channel) => new() { channel_id = channel.id, access_hash = channel.access_hash };
+		public override InputPeer ToInputPeer() => new InputPeerChannel(id, access_hash);
+		public static implicit operator InputChannel(Channel channel) => new(channel.id, channel.access_hash);
 		public override string ToString() =>
 			(flags.HasFlag(Flags.broadcast) ? "Channel " : "Group ") + (username != null ? '@' + username : $"\"{title}\"");
 		public bool IsChannel => (flags & Flags.broadcast) != 0;
@@ -165,7 +186,7 @@ namespace TL
 		public override bool IsActive => false;
 		public override ChatPhoto Photo => null;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
-		public override InputPeer ToInputPeer() => new InputPeerChannel { channel_id = id, access_hash = access_hash };
+		public override InputPeer ToInputPeer() => new InputPeerChannel(id, access_hash);
 		public override string ToString() => $"ChannelForbidden {id} \"{title}\"";
 	}
 
@@ -395,7 +416,13 @@ namespace TL
 		public static implicit operator InputStickerSetID(StickerSet stickerSet) => new() { id = stickerSet.id, access_hash = stickerSet.access_hash };
 	}
 
-	partial class InputChannel { public static implicit operator InputPeerChannel(InputChannel channel) => new() { channel_id = channel.channel_id, access_hash = channel.access_hash }; }
+	partial class InputChannel
+	{
+		/// <param name="channel_id">Channel identifier</param>
+		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="Channel"/> constructor</param>
+		public InputChannel(long channel_id, long access_hash) { this.channel_id = channel_id; this.access_hash = access_hash; }
+		public static implicit operator InputPeerChannel(InputChannel channel) => new(channel.channel_id, channel.access_hash);
+	}
 
 	partial class Contacts_ResolvedPeer
 	{

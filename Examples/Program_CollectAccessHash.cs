@@ -61,7 +61,7 @@ namespace WTelegramClientTest
 			}
 
 			Console.WriteLine("With the access hash, we can now join the channel for example.");
-			await client.Channels_JoinChannel(new InputChannel { channel_id = DurovID, access_hash = durovAccessHash });
+			await client.Channels_JoinChannel(new InputChannel(DurovID, durovAccessHash));
 
 			Console.WriteLine("Channel joined. Press any key to save and exit");
 			Console.ReadKey(true);

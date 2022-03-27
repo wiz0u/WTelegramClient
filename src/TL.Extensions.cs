@@ -112,7 +112,7 @@ namespace TL
 								}
 								textUrl.url = sb.ToString(offset + 2, offset2 - offset - 3);
 								if (textUrl.url.StartsWith("tg://user?id=") && long.TryParse(textUrl.url[13..], out var user_id) && client.GetAccessHashFor<User>(user_id) is long hash)
-									entities[lastIndex] = new InputMessageEntityMentionName { offset = textUrl.offset, length = textUrl.length, user_id = new InputUser { user_id = user_id, access_hash = hash } };
+									entities[lastIndex] = new InputMessageEntityMentionName { offset = textUrl.offset, length = textUrl.length, user_id = new InputUser(user_id, hash) };
 								sb.Remove(offset, offset2 - offset);
 								break;
 							}
@@ -287,7 +287,7 @@ namespace TL
 							{
 								tag = tag[8..^1];
 								if (tag.StartsWith("tg://user?id=") && long.TryParse(tag[13..], out var user_id) && client.GetAccessHashFor<User>(user_id) is long hash)
-									entities.Add(new InputMessageEntityMentionName { offset = offset, length = -1, user_id = new InputUser { user_id = user_id, access_hash = hash } });
+									entities.Add(new InputMessageEntityMentionName { offset = offset, length = -1, user_id = new InputUser(user_id, hash) });
 								else
 									entities.Add(new MessageEntityTextUrl { offset = offset, length = -1, url = tag });
 							}
