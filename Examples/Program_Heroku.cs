@@ -25,7 +25,8 @@ namespace WTelegramClientTest
 		{
 			var exit = new SemaphoreSlim(0);
 			AppDomain.CurrentDomain.ProcessExit += (s, e) => exit.Release(); // detect SIGTERM to exit gracefully
-			var store = new PostgreStore(); // if DB does not contain a session, client will be run in interactive mode
+			var store = new PostgreStore(Environment.GetEnvironmentVariable("DATABASE_URL"));
+			// if DB does not contain a session yet, client will be run in interactive mode
 			Client = new WTelegram.Client(store.Length == 0 ? null : Environment.GetEnvironmentVariable, store);
 			using (Client)
 			{
@@ -65,9 +66,9 @@ namespace WTelegramClientTest
 		private DateTime _lastWrite;
 		private Task _delayedWrite;
 
-		public PostgreStore()
+		public PostgreStore(string databaseUrl) // Heroku DB URL of the form "postgres://user:password@host:port/database"
 		{
-			var parts = Environment.GetEnvironmentVariable("DATABASE_URL").Split(':', '/', '@'); // parse Heroku DB URL
+			var parts = databaseUrl.Split(':', '/', '@');
 			_sql = new NpgsqlConnection($"User ID={parts[3]};Password={parts[4]};Host={parts[5]};Port={parts[6]};Database={parts[7]};Pooling=true;SSL Mode=Require;Trust Server Certificate=True;");
 			_sql.Open();
 			using (var create = new NpgsqlCommand($"CREATE TABLE IF NOT EXISTS WTelegram (name text NOT NULL PRIMARY KEY, data bytea)", _sql))
