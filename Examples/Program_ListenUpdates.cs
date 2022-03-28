@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using TL;
 
@@ -10,6 +9,8 @@ namespace WTelegramClientTest
 	{
 		static WTelegram.Client Client;
 		static User My;
+		static readonly Dictionary<long, User> Users = new();
+		static readonly Dictionary<long, ChatBase> Chats = new();
 
 		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main(string[] _)
@@ -21,27 +22,20 @@ namespace WTelegramClientTest
 			{
 				Client.Update += Client_Update;
 				My = await Client.LoginUserIfNeeded();
-				_users[My.id] = My;
+				Users[My.id] = My;
 				// Note that on login Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
 				Console.WriteLine($"We are logged-in as {My.username ?? My.first_name + " " + My.last_name} (id {My.id})");
 				// We collect all infos about the users/chats so that updates can be printed with their names
 				var dialogs = await Client.Messages_GetAllDialogs(); // dialogs = groups/channels/users
-				dialogs.CollectUsersChats(_users, _chats);
+				dialogs.CollectUsersChats(Users, Chats);
 				Console.ReadKey();
 			}
 		}
 
-		private static readonly Dictionary<long, User> _users = new();
-		private static readonly Dictionary<long, ChatBase> _chats = new();
-		private static string User(long id) => _users.TryGetValue(id, out var user) ? user.ToString() : $"User {id}";
-		private static string Chat(long id) => _chats.TryGetValue(id, out var chat) ? chat.ToString() : $"Chat {id}";
-		private static string Peer(Peer peer) => peer is null ? null : peer is PeerUser user ? User(user.user_id)
-			: peer is PeerChat or PeerChannel ? Chat(peer.ID) : $"Peer {peer.ID}";
-
 		private static void Client_Update(IObject arg)
 		{
 			if (arg is not UpdatesBase updates) return;
-			updates.CollectUsersChats(_users, _chats);
+			updates.CollectUsersChats(Users, Chats);
 			foreach (var update in updates.UpdateList)
 				switch (update)
 				{
@@ -69,5 +63,10 @@ namespace WTelegramClientTest
 				case MessageService ms: Console.WriteLine($"{Peer(ms.from_id)} in {Peer(ms.peer_id)} [{ms.action.GetType().Name[13..]}]"); break;
 			}
 		}
+
+		private static string User(long id) => Users.TryGetValue(id, out var user) ? user.ToString() : $"User {id}";
+		private static string Chat(long id) => Chats.TryGetValue(id, out var chat) ? chat.ToString() : $"Chat {id}";
+		private static string Peer(Peer peer) => peer is null ? null : peer is PeerUser user ? User(user.user_id)
+			: peer is PeerChat or PeerChannel ? Chat(peer.ID) : $"Peer {peer.ID}";
 	}
 }
