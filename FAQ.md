@@ -212,6 +212,16 @@ In particular, it will detect and handle automatically the various login cases/p
 
 Contrary to TLSharp, WTelegram supports MTProto v2.0, protocol security checks, transport obfuscation, MTProto Proxy, real-time updates, multiple DC connections, API documentation in Intellisense...
 
+<a name="heroku"></a><a name="vps"></a><a name="host"></a>
+#### 12. How to host my userbot online?
+
+If you need your userbot to run 24/7, you would typically design your userbot as a Console program, compiled for Linux or Windows,
+and hosted online on any [VPS Hosting](https://www.google.com/search?q=vps+hosting) (Virtual Private Server).  
+Pure WebApp hosts might not be adequate as they will recycle (stop) your app if there is no incoming HTTP requests.
+
+There are many cheap VPS Hosting offers available, and some even have free tier, like Heroku:  
+See [Examples/Program_Heroku.cs](Examples/Program_Heroku.cs) for such an implementation and the steps to host/deploy it.
+
 <a name="troubleshoot"></a>
 ## Troubleshooting guide
 
