@@ -39,19 +39,23 @@ if (contacts.imported.Length > 0)
 
 <a name="markdown"></a>
 <a name="html"></a>
-### Send a Markdown or HTML-formatted message to ourself (Saved Messages)
+### Send an HTML/Markdown formatted message to ourself (Saved Messages)
 ```csharp
-// Markdown-style text:
-var text = $"Hello __dear *{Markdown.Escape(myself.first_name)}*__\n" +
-            "Enjoy this `userbot` written with [WTelegramClient](https://github.com/wiz0u/WTelegramClient)";
-var entities = client.MarkdownToEntities(ref text);
-await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
-
 // HTML-formatted text:
-var text2 = $"Hello <u>dear <b>{HtmlText.Escape(myself.first_name)}</b></u>\n" +
+var text = $"Hello <u>dear <b>{HtmlText.Escape(myself.first_name)}</b></u>\n" +
             "Enjoy this <code>userbot</code> written with <a href=\"https://github.com/wiz0u/WTelegramClient\">WTelegramClient</a>";
-var entities2 = client.HtmlToEntities(ref text2);
-await client.SendMessageAsync(InputPeer.Self, text2, entities: entities2);
+var entities = client.HtmlToEntities(ref text);
+var sent = await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
+// if you need to convert a Message to HTML: (for easier storage)
+text = client.EntitiesToHtml(sent.message, sent.entities);
+
+// Markdown-style text:
+var text2 = $"Hello __dear *{Markdown.Escape(myself.first_name)}*__\n" +
+            "Enjoy this `userbot` written with [WTelegramClient](https://github.com/wiz0u/WTelegramClient)";
+var entities2 = client.MarkdownToEntities(ref text2);
+var sent2 = await client.SendMessageAsync(InputPeer.Self, text2, entities: entities2);
+// if you need to convert a Message to Markdown: (for easier storage)
+text2 = client.EntitiesToMarkdown(sent2.message, sent2.entities);
 ```
 See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) and [HTML formatting style](https://core.telegram.org/bots/api/#html-style) for details.  
 *Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#collect-access-hash))*
@@ -411,7 +415,7 @@ foreach (var msg in messages.Messages)
 If you don't want to store session data into files *(for example if your VPS Hosting doesn't allow that)*, or just for easier management,
 you can choose to store the session data somewhere else, like in a database.
 
-The WTelegram.Client constructor takes an optional `sessionStore` parameter to allow storing sessions in a custom manner.  
+The WTelegram.Client constructor takes an optional `sessionStore` parameter to allow storing sessions in an alternate manner.  
 Use it to pass a custom Stream-derived class that will **read** (first initial call to Length & Read) and **store** (subsequent Writes) session data to database.
 
 You can find an example for such custom session store in [Examples/Program_Heroku.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_Heroku.cs#L61)
