@@ -7,7 +7,7 @@
 
 ## _Telegram Client API library written 100% in C# and .NET Standard_
 
-This ReadMe is a quick but important tutorial to learn the fundamentals about this library. Please read it all.
+This ReadMe is a **quick but important tutorial** to learn the fundamentals about this library. Please read it all.
 
 >⚠️ This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this advanced topic before proceeding.  
 >If you are a beginner in C#, starting a project based on this library might not be a great idea.
@@ -44,7 +44,7 @@ This is because WTelegramClient saves (typically in the encrypted file **bin\WTe
 That file path is configurable (session_pathname), and under various circumstances (changing user or server address) you may want to change it or simply delete the existing session file in order to restart the authentification process.
 
 # Non-interactive configuration
-Your next step will probably be to provide a configuration to the client so that the required elements (in bold above) are not prompted through the Console but answered by your program.
+Your next step will probably be to provide a configuration to the client so that the required elements are not prompted through the Console but answered by your program.
 
 To do this, you need to write a method that will provide the answers, and pass it on the constructor:
 ```csharp
@@ -68,19 +68,19 @@ using var client = new WTelegram.Client(Config);
 There are other configuration items that are queried to your method but returning `null` let WTelegramClient choose a default adequate value.
 Those shown above are the only ones that have no default values and should be provided by your method.
 Returning `null` for verification_code or password will show a prompt for console apps, or an error otherwise.
-Returning an empty string for verification_code requests resending the code through another method (SMS or Call).
+Returning `""` for verification_code requests resending the code through another method (SMS or Call).
 
 Another simple approach is to pass `Environment.GetEnvironmentVariable` as the config callback and define the configuration items as environment variables.
 Undefined variables get the default `null` behavior.
 
 Finally, if you want to redirect the library logs to your logger instead of the Console, you can install a delegate in the `WTelegram.Helpers.Log` static property.
-Its `int` argument is the log severity, compatible with the classic [LogLevel enum](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel)
+Its `int` argument is the log severity, compatible with the [LogLevel enum](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel)
 
 # Example of API call
 
 >ℹ️ The Telegram API makes extensive usage of base and derived classes, so be ready to use the various syntaxes C# offer to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
 
-All the Telegram API classes/methods are fully documented through Intellisense: Place your mouse over a class/method name, or start typing the call arguments to see a tooltip display their description, the list of derived classes and a web link to the official API page.
+All the Telegram API classes/methods are fully documented through Intellisense: Place your mouse over a class/method name, or start typing the call arguments to see a tooltip displaying their description, the list of derived classes and a web link to the official API page.
 
 The Telegram [API object classes](https://corefork.telegram.org/schema) are defined in the `TL` namespace, and the [API functions](https://corefork.telegram.org/methods) are available as async methods of `Client`.
 
@@ -121,13 +121,13 @@ In the API, Telegram uses some terms/classnames that can be confusing as they di
 **⚠️ Most chat groups you see are really of type `Channel`, not `Chat`!**
 - chats : In plural or general meaning, it means either `Chat` or `Channel`
 - `Peer` : Either a `Chat`, `Channel` or a private chat with a `User`
-- Dialog : The current status of a chat with a `Peer` *(draft, last message, unread count, pinned...)*
+- Dialog : The current status of a chat with a `Peer` *(draft, last message, unread count, pinned...)*. It represents each line from your Telegram chat list.
 - DC (DataCenter) : There are a few datacenters depending on where in the world the user (or an uploaded media file) is from.
 - Access Hash : Telegram requires you to provide a specific `access_hash` for users, channels, and other resources before interacting with them. See [FAQ #4](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash) to learn more about it.
 
 # Other things to know
 
-The Client class also offers an `Update` event that is triggered when Telegram servers sends unsollicited Updates or notifications/information/status/service messages, independently of your API requests. See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs)
+The Client class also offers an `Update` event that is triggered when Telegram servers sends Updates (like new messages or status), independently of your API requests. See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs)
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
@@ -148,8 +148,8 @@ This library can be used for any Telegram scenarios including:
 - Download/upload of files/media
 - Building a full-featured interactive client
 
-It has been tested in a Console app, [in a WinForms app](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#gui), [in ASP.NET webservice](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#logging).  
-Secret chats (end-to-end encryption, PFS) and connection to CDN DCs have not been tested yet.
+It has been tested in a Console app, [in a WinForms app](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#gui),
+[in ASP.NET webservice](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#logging), and in Xamarin/Android.  
 
 Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos) as well as the [API Terms of Service](https://core.telegram.org/api/terms) or you might get banned from Telegram servers.
 

@@ -4572,9 +4572,7 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="proxy"/> has a value</summary>
 			has_proxy = 0x1,
-			/// <summary>Field <see cref="params_"/> has a value</summary>
 			has_params = 0x2,
 		}
 	}
@@ -4687,7 +4685,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="new_settings"/> has a value</summary>
 			has_new_settings = 0x1,
 		}
 	}
@@ -4788,11 +4785,8 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="first_name"/> has a value</summary>
 			has_first_name = 0x1,
-			/// <summary>Field <see cref="last_name"/> has a value</summary>
 			has_last_name = 0x2,
-			/// <summary>Field <see cref="about"/> has a value</summary>
 			has_about = 0x4,
 		}
 	}
@@ -5061,7 +5055,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="peer"/> has a value</summary>
 			has_peer = 0x1,
 			compare_sound = 0x2,
 		}
@@ -5126,7 +5119,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="thumb"/> has a value</summary>
 			has_thumb = 0x1,
 		}
 	}
@@ -5142,9 +5134,7 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="document"/> has a value</summary>
 			has_document = 0x4,
-			/// <summary>Field <see cref="settings"/> has a value</summary>
 			has_settings = 0x8,
 		}
 	}
@@ -5162,13 +5152,9 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="slug"/> has a value</summary>
 			has_slug = 0x1,
-			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x2,
-			/// <summary>Field <see cref="document"/> has a value</summary>
 			has_document = 0x4,
-			/// <summary>Field <see cref="settings"/> has a value</summary>
 			has_settings = 0x8,
 		}
 	}
@@ -5191,11 +5177,8 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			dark = 0x1,
-			/// <summary>Field <see cref="theme"/> has a value</summary>
 			has_theme = 0x2,
-			/// <summary>Field <see cref="format"/> has a value</summary>
 			has_format = 0x4,
-			/// <summary>Field <see cref="base_theme"/> has a value</summary>
 			has_base_theme = 0x8,
 		}
 	}
@@ -5281,9 +5264,7 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="encrypted_requests_disabled"/> has a value</summary>
 			has_encrypted_requests_disabled = 0x1,
-			/// <summary>Field <see cref="call_requests_disabled"/> has a value</summary>
 			has_call_requests_disabled = 0x2,
 		}
 	}
@@ -5442,7 +5423,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="self_expires"/> has a value</summary>
 			has_self_expires = 0x1,
 			background = 0x2,
 		}
@@ -5488,7 +5468,6 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			exclude_pinned = 0x1,
-			/// <summary>Field <see cref="folder_id"/> has a value</summary>
 			has_folder_id = 0x2,
 		}
 	}
@@ -5526,9 +5505,7 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="from_id"/> has a value</summary>
 			has_from_id = 0x1,
-			/// <summary>Field <see cref="top_msg_id"/> has a value</summary>
 			has_top_msg_id = 0x2,
 		}
 	}
@@ -5553,9 +5530,7 @@ namespace TL.Methods
 		{
 			just_clear = 0x1,
 			revoke = 0x2,
-			/// <summary>Field <see cref="min_date"/> has a value</summary>
 			has_min_date = 0x4,
-			/// <summary>Field <see cref="max_date"/> has a value</summary>
 			has_max_date = 0x8,
 		}
 	}
@@ -5588,7 +5563,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="top_msg_id"/> has a value</summary>
 			has_top_msg_id = 0x1,
 		}
 	}
@@ -5608,19 +5582,14 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
 			has_reply_to_msg_id = 0x1,
 			no_webpage = 0x2,
-			/// <summary>Field <see cref="reply_markup"/> has a value</summary>
 			has_reply_markup = 0x4,
-			/// <summary>Field <see cref="entities"/> has a value</summary>
 			has_entities = 0x8,
 			silent = 0x20,
 			background = 0x40,
 			clear_draft = 0x80,
-			/// <summary>Field <see cref="schedule_date"/> has a value</summary>
 			has_schedule_date = 0x400,
-			/// <summary>Field <see cref="send_as"/> has a value</summary>
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
 		}
@@ -5642,18 +5611,13 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
 			has_reply_to_msg_id = 0x1,
-			/// <summary>Field <see cref="reply_markup"/> has a value</summary>
 			has_reply_markup = 0x4,
-			/// <summary>Field <see cref="entities"/> has a value</summary>
 			has_entities = 0x8,
 			silent = 0x20,
 			background = 0x40,
 			clear_draft = 0x80,
-			/// <summary>Field <see cref="schedule_date"/> has a value</summary>
 			has_schedule_date = 0x400,
-			/// <summary>Field <see cref="send_as"/> has a value</summary>
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
 		}
@@ -5675,11 +5639,9 @@ namespace TL.Methods
 			silent = 0x20,
 			background = 0x40,
 			with_my_score = 0x100,
-			/// <summary>Field <see cref="schedule_date"/> has a value</summary>
 			has_schedule_date = 0x400,
 			drop_author = 0x800,
 			drop_media_captions = 0x1000,
-			/// <summary>Field <see cref="send_as"/> has a value</summary>
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
 		}
@@ -5886,7 +5848,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="entities"/> has a value</summary>
 			has_entities = 0x8,
 		}
 	}
@@ -5902,13 +5863,10 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="expire_date"/> has a value</summary>
 			has_expire_date = 0x1,
-			/// <summary>Field <see cref="usage_limit"/> has a value</summary>
 			has_usage_limit = 0x2,
 			legacy_revoke_permanent = 0x4,
 			request_needed = 0x8,
-			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x10,
 		}
 	}
@@ -5992,7 +5950,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="folder_id"/> has a value</summary>
 			has_folder_id = 0x1,
 		}
 	}
@@ -6042,7 +5999,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="geo_point"/> has a value</summary>
 			has_geo_point = 0x1,
 		}
 	}
@@ -6061,9 +6017,7 @@ namespace TL.Methods
 		{
 			gallery = 0x1,
 			private_ = 0x2,
-			/// <summary>Field <see cref="next_offset"/> has a value</summary>
 			has_next_offset = 0x4,
-			/// <summary>Field <see cref="switch_pm"/> has a value</summary>
 			has_switch_pm = 0x8,
 		}
 	}
@@ -6082,15 +6036,12 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
 			has_reply_to_msg_id = 0x1,
 			silent = 0x20,
 			background = 0x40,
 			clear_draft = 0x80,
-			/// <summary>Field <see cref="schedule_date"/> has a value</summary>
 			has_schedule_date = 0x400,
 			hide_via = 0x800,
-			/// <summary>Field <see cref="send_as"/> has a value</summary>
 			has_send_as = 0x2000,
 		}
 	}
@@ -6117,15 +6068,10 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			no_webpage = 0x2,
-			/// <summary>Field <see cref="reply_markup"/> has a value</summary>
 			has_reply_markup = 0x4,
-			/// <summary>Field <see cref="entities"/> has a value</summary>
 			has_entities = 0x8,
-			/// <summary>Field <see cref="message"/> has a value</summary>
 			has_message = 0x800,
-			/// <summary>Field <see cref="media"/> has a value</summary>
 			has_media = 0x4000,
-			/// <summary>Field <see cref="schedule_date"/> has a value</summary>
 			has_schedule_date = 0x8000,
 		}
 	}
@@ -6143,13 +6089,9 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			no_webpage = 0x2,
-			/// <summary>Field <see cref="reply_markup"/> has a value</summary>
 			has_reply_markup = 0x4,
-			/// <summary>Field <see cref="entities"/> has a value</summary>
 			has_entities = 0x8,
-			/// <summary>Field <see cref="message"/> has a value</summary>
 			has_message = 0x800,
-			/// <summary>Field <see cref="media"/> has a value</summary>
 			has_media = 0x4000,
 		}
 	}
@@ -6165,10 +6107,8 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="data"/> has a value</summary>
 			has_data = 0x1,
 			game = 0x2,
-			/// <summary>Field <see cref="password"/> has a value</summary>
 			has_password = 0x4,
 		}
 	}
@@ -6184,10 +6124,8 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="message"/> has a value</summary>
 			has_message = 0x1,
 			alert = 0x2,
-			/// <summary>Field <see cref="url"/> has a value</summary>
 			has_url = 0x4,
 		}
 	}
@@ -6209,10 +6147,8 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
 			has_reply_to_msg_id = 0x1,
 			no_webpage = 0x2,
-			/// <summary>Field <see cref="entities"/> has a value</summary>
 			has_entities = 0x8,
 		}
 	}
@@ -6401,9 +6337,7 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="error"/> has a value</summary>
 			has_error = 0x1,
-			/// <summary>Field <see cref="shipping_options"/> has a value</summary>
 			has_shipping_options = 0x2,
 		}
 	}
@@ -6417,7 +6351,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="error"/> has a value</summary>
 			has_error = 0x1,
 			success = 0x2,
 		}
@@ -6488,14 +6421,11 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="reply_to_msg_id"/> has a value</summary>
 			has_reply_to_msg_id = 0x1,
 			silent = 0x20,
 			background = 0x40,
 			clear_draft = 0x80,
-			/// <summary>Field <see cref="schedule_date"/> has a value</summary>
 			has_schedule_date = 0x400,
-			/// <summary>Field <see cref="send_as"/> has a value</summary>
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
 		}
@@ -6635,9 +6565,7 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="peer"/> has a value</summary>
 			has_peer = 0x2,
-			/// <summary>Field <see cref="url"/> has a value</summary>
 			has_url = 0x4,
 		}
 	}
@@ -6654,9 +6582,7 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			write_allowed = 0x1,
-			/// <summary>Field <see cref="peer"/> has a value</summary>
 			has_peer = 0x2,
-			/// <summary>Field <see cref="url"/> has a value</summary>
 			has_url = 0x4,
 		}
 	}
@@ -6707,9 +6633,7 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="option"/> has a value</summary>
 			has_option = 0x1,
-			/// <summary>Field <see cref="offset"/> has a value</summary>
 			has_offset = 0x2,
 		}
 	}
@@ -6743,7 +6667,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="filter"/> has a value</summary>
 			has_filter = 0x1,
 		}
 	}
@@ -6856,7 +6779,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="offset_date"/> has a value</summary>
 			has_offset_date = 0x4,
 			revoked = 0x8,
 		}
@@ -6882,14 +6804,10 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="expire_date"/> has a value</summary>
 			has_expire_date = 0x1,
-			/// <summary>Field <see cref="usage_limit"/> has a value</summary>
 			has_usage_limit = 0x2,
 			revoked = 0x4,
-			/// <summary>Field <see cref="request_needed"/> has a value</summary>
 			has_request_needed = 0x8,
-			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x10,
 		}
 	}
@@ -6928,9 +6846,7 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			requested = 0x1,
-			/// <summary>Field <see cref="link"/> has a value</summary>
 			has_link = 0x2,
-			/// <summary>Field <see cref="q"/> has a value</summary>
 			has_q = 0x4,
 		}
 	}
@@ -7003,7 +6919,6 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			approved = 0x1,
-			/// <summary>Field <see cref="link"/> has a value</summary>
 			has_link = 0x2,
 		}
 	}
@@ -7032,7 +6947,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="reaction"/> has a value</summary>
 			has_reaction = 0x1,
 			big = 0x2,
 		}
@@ -7057,9 +6971,7 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="reaction"/> has a value</summary>
 			has_reaction = 0x1,
-			/// <summary>Field <see cref="offset"/> has a value</summary>
 			has_offset = 0x2,
 		}
 	}
@@ -7095,11 +7007,8 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="peer"/> has a value</summary>
 			has_peer = 0x1,
-			/// <summary>Field <see cref="text"/> has a value</summary>
 			has_text = 0x2,
-			/// <summary>Field <see cref="from_lang"/> has a value</summary>
 			has_from_lang = 0x4,
 		}
 	}
@@ -7143,7 +7052,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="pts_total_limit"/> has a value</summary>
 			has_pts_total_limit = 0x1,
 		}
 	}
@@ -7179,11 +7087,8 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="file"/> has a value</summary>
 			has_file = 0x1,
-			/// <summary>Field <see cref="video"/> has a value</summary>
 			has_video = 0x2,
-			/// <summary>Field <see cref="video_start_ts"/> has a value</summary>
 			has_video_start_ts = 0x4,
 		}
 	}
@@ -7453,7 +7358,6 @@ namespace TL.Methods
 		{
 			broadcast = 0x1,
 			megagroup = 0x2,
-			/// <summary>Field <see cref="geo_point"/> has a value</summary>
 			has_geo_point = 0x4,
 			for_import = 0x8,
 		}
@@ -7576,9 +7480,7 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="events_filter"/> has a value</summary>
 			has_events_filter = 0x1,
-			/// <summary>Field <see cref="admins"/> has a value</summary>
 			has_admins = 0x2,
 		}
 	}
@@ -7731,7 +7633,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="theme_params"/> has a value</summary>
 			has_theme_params = 0x1,
 		}
 	}
@@ -7771,11 +7672,8 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="requested_info_id"/> has a value</summary>
 			has_requested_info_id = 0x1,
-			/// <summary>Field <see cref="shipping_option_id"/> has a value</summary>
 			has_shipping_option_id = 0x2,
-			/// <summary>Field <see cref="tip_amount"/> has a value</summary>
 			has_tip_amount = 0x4,
 		}
 	}
@@ -7816,9 +7714,7 @@ namespace TL.Methods
 		{
 			masks = 0x1,
 			animated = 0x2,
-			/// <summary>Field <see cref="thumb"/> has a value</summary>
 			has_thumb = 0x4,
-			/// <summary>Field <see cref="software"/> has a value</summary>
 			has_software = 0x8,
 			videos = 0x10,
 		}
@@ -7958,9 +7854,7 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x1,
-			/// <summary>Field <see cref="schedule_date"/> has a value</summary>
 			has_schedule_date = 0x2,
 			rtmp_stream = 0x4,
 		}
@@ -7978,7 +7872,6 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			muted = 0x1,
-			/// <summary>Field <see cref="invite_hash"/> has a value</summary>
 			has_invite_hash = 0x2,
 			video_stopped = 0x4,
 		}
@@ -8013,7 +7906,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="join_muted"/> has a value</summary>
 			has_join_muted = 0x1,
 			reset_invite_hash = 0x2,
 		}
@@ -8054,7 +7946,6 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			start = 0x1,
-			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x2,
 			video = 0x4,
 		}
@@ -8075,17 +7966,11 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="muted"/> has a value</summary>
 			has_muted = 0x1,
-			/// <summary>Field <see cref="volume"/> has a value</summary>
 			has_volume = 0x2,
-			/// <summary>Field <see cref="raise_hand"/> has a value</summary>
 			has_raise_hand = 0x4,
-			/// <summary>Field <see cref="video_stopped"/> has a value</summary>
 			has_video_stopped = 0x8,
-			/// <summary>Field <see cref="video_paused"/> has a value</summary>
 			has_video_paused = 0x10,
-			/// <summary>Field <see cref="presentation_paused"/> has a value</summary>
 			has_presentation_paused = 0x20,
 		}
 	}
@@ -8230,7 +8115,6 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="x"/> has a value</summary>
 			has_x = 0x1,
 		}
 	}

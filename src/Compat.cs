@@ -29,7 +29,7 @@ namespace WTelegram
 			return new BigInteger(data);
 		}
 
-		internal static byte[] ToByteArray(this BigInteger bigInteger, bool isUnsigned = false, bool isBigEndian = false)
+		internal static byte[] ToByteArray(this BigInteger bigInteger, bool isUnsigned, bool isBigEndian)
 		{
 			if (!isBigEndian || !isUnsigned) throw new ArgumentException("Unexpected parameters to ToByteArray");
 			var result = bigInteger.ToByteArray();
@@ -50,11 +50,7 @@ namespace WTelegram
 		public static V GetValueOrDefault<K, V>(this Dictionary<K, V> dictionary, K key, V defaultValue = default)
 			=> dictionary.TryGetValue(key, out V value) ? value : defaultValue;
 
-		public static void Deconstruct<K, V>(this KeyValuePair<K, V> kvp, out K key, out V value)
-		{
-			key = kvp.Key;
-			value = kvp.Value;
-		}
+		public static void Deconstruct<K, V>(this KeyValuePair<K, V> kvp, out K key, out V value) { key = kvp.Key; value = kvp.Value; }
 
 		internal static IPEndPoint IPEndPoint_Parse(string addr)
 		{
@@ -78,14 +74,7 @@ namespace WTelegram
 static class Convert
 {
 	internal static string ToHexString(byte[] data) => BitConverter.ToString(data).Replace("-", "");
-	internal static byte[] FromHexString(string hex)
-	{
-		int NumberChars = hex.Length;
-		byte[] bytes = new byte[NumberChars / 2];
-		for (int i = 0; i < NumberChars; i += 2)
-			bytes[i / 2] = System.Convert.ToByte(hex.Substring(i, 2), 16);
-		return bytes;
-	}
+	internal static byte[] FromHexString(string hex) => Enumerable.Range(0, hex.Length / 2).Select(i => System.Convert.ToByte(hex.Substring(i * 2, 2), 16)).ToArray();
 }
 #endif
 
