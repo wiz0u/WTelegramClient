@@ -1088,41 +1088,40 @@ namespace WTelegram
 			}
 		}
 
-		internal async Task<X> InvokeBare<X>(IMethod<X> request)
+		internal async Task<T> InvokeBare<T>(IMethod<T> request)
 		{
 			if (_bareRpc != null) throw new ApplicationException("A bare request is already undergoing");
-			_bareRpc = new Rpc { type = typeof(X) };
+			_bareRpc = new Rpc { type = typeof(T) };
 			await SendAsync(request, false, _bareRpc);
-			return (X)await _bareRpc.Task;
+			return (T)await _bareRpc.Task;
 		}
 
 		/// <summary>Call the given TL method <i>(You shouldn't need to use this method directly)</i></summary>
-		/// <typeparam name="X">Expected type of the returned object</typeparam>
+		/// <typeparam name="T">Expected type of the returned object</typeparam>
 		/// <param name="query">TL method structure</param>
 		/// <returns>Wait for the reply and return the resulting object, or throws an RpcException if an error was replied</returns>
-		public async Task<X> Invoke<X>(IMethod<X> query)
+		public async Task<T> Invoke<T>(IMethod<T> query)
 		{
-		retry:
-			var rpc = new Rpc { type = typeof(X) };
-			await SendAsync(query, true, rpc);
 			bool got503 = false;
+		retry:
+			var rpc = new Rpc { type = typeof(T) };
+			await SendAsync(query, true, rpc);
 			var result = await rpc.Task;
 			switch (result)
 			{
-				case X resultX: return resultX;
+				case T resultT: return resultT;
 				case RpcError rpcError:
-					int number;
-					if (rpcError.error_code == 303 && ((number = rpcError.error_message.IndexOf("_MIGRATE_")) > 0))
+					var x = rpcError.ParseX();
+					if (rpcError.error_code == 303 && rpcError.error_message.EndsWith("_MIGRATE_X"))
 					{
-						if (!rpcError.error_message.StartsWith("FILE_"))
+						if (rpcError.error_message != "FILE_MIGRATE_X")
 						{
-							number = int.Parse(rpcError.error_message[(number + 9)..]);
 							// this is a hack to migrate _dcSession in-place (staying in same Client):
 							Session.DCSession dcSession;
 							lock (_session)
-								dcSession = GetOrCreateDCSession(number, _dcSession.DataCenter.flags);
+								dcSession = GetOrCreateDCSession(x, _dcSession.DataCenter.flags);
 							Reset(false, false);
-							_session.MainDC = number;
+							_session.MainDC = x;
 							_dcSession.Client = null;
 							_dcSession = dcSession;
 							_dcSession.Client = this;
@@ -1130,12 +1129,11 @@ namespace WTelegram
 							goto retry;
 						}
 					}
-					else if (rpcError.error_code == 420 && ((number = rpcError.error_message.IndexOf("_WAIT_")) > 0))
+					else if (rpcError.error_code == 420 && rpcError.error_message.EndsWith("_WAIT_X"))
 					{
-						number = int.Parse(rpcError.error_message[(number + 6)..]);
-						if (number <= FloodRetryThreshold)
+						if (x <= FloodRetryThreshold)
 						{
-							await Task.Delay(number * 1000);
+							await Task.Delay(x * 1000);
 							goto retry;
 						}
 					}
@@ -1149,11 +1147,11 @@ namespace WTelegram
 						_session.UserId = 0; // force a full login authorization flow, next time
 						lock (_session) _session.Save();
 					}
-					throw new RpcException(rpcError.error_code, rpcError.error_message);
+					throw new RpcException(rpcError.error_code, rpcError.error_message, x);
 				case ReactorError:
 					goto retry;
 				default:
-					throw new ApplicationException($"{query.GetType().Name} call got a result of type {result.GetType().Name} instead of {typeof(X).Name}");
+					throw new ApplicationException($"{query.GetType().Name} call got a result of type {result.GetType().Name} instead of {typeof(T).Name}");
 			}
 		}
 	}

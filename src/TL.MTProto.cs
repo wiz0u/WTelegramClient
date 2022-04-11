@@ -198,6 +198,22 @@ namespace TL
 	{
 		public int error_code;
 		public string error_message;
+
+		public int ParseX() // ⚠ Method replace number in error_message with a X
+		{
+			for (int index = error_message.Length - 1; index > 0 && (index = error_message.LastIndexOf('_', index - 1)) >= 0;)
+			{
+				if (error_message[index + 1] is >= '0' and <= '9')
+				{
+					int end = ++index;
+					do end++; while (end < error_message.Length && error_message[end] is >= '0' and <= '9');
+					var x = int.Parse(error_message[index..end]);
+					error_message = $"{error_message[0..index]}X{error_message[end..]}";
+					return x;
+				}
+			}
+			return -1;
+		}
 	}
 
 	public abstract class RpcDropAnswer : IObject { }

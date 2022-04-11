@@ -31,7 +31,9 @@ namespace TL
 	public class RpcException : Exception
 	{
 		public readonly int Code;
-		public RpcException(int code, string message) : base(message) => Code = code;
+		/// <summary>The value of X in the message, -1 if no variable X was found</summary>
+		public readonly int X;
+		public RpcException(int code, string message, int x = -1) : base(message) { Code = code; X = x; }
 		public override string ToString() { var str = base.ToString(); return str.Insert(str.IndexOf(':') + 1, " " + Code); }
 	}
 

@@ -362,10 +362,9 @@ namespace WTelegram
 					{
 						fileBase = await client.Upload_GetFile(fileLocation, offset, FilePartSize);
 					}
-					catch (RpcException ex) when (ex.Code == 303 && ex.Message.StartsWith("FILE_MIGRATE_"))
+					catch (RpcException ex) when (ex.Code == 303 && ex.Message == "FILE_MIGRATE_X")
 					{
-						var dcId = int.Parse(ex.Message[13..]);
-						client = await GetClientForDC(dcId, true);
+						client = await GetClientForDC(ex.X, true);
 						fileBase = await client.Upload_GetFile(fileLocation, offset, FilePartSize);
 					}
 					catch (RpcException ex) when (ex.Code == 400 && ex.Message == "OFFSET_INVALID")
