@@ -23,8 +23,8 @@ More examples can also be found in answers to [StackOverflow questions](https://
 <a name="msg-by-name"></a>
 ### Send a message to someone by @username
 ```csharp
-var resolved = await client.Contacts_ResolveUsername("username"); // without the @
-await client.SendMessageAsync(resolved, "Hello!");
+var resolved = await client.Contacts_ResolveUsername("MyEch0_Bot"); // username without the @
+await client.SendMessageAsync(resolved, "/start");
 ```
 *Note: This also works if the @username points to a channel/group, but you must already have joined that channel before posting there.
 If the username is invalid/unused, the API call raises an exception.*

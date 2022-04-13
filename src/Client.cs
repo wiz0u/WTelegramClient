@@ -1110,11 +1110,21 @@ namespace WTelegram
 			switch (result)
 			{
 				case T resultT: return resultT;
-				case RpcError rpcError:
-					var x = rpcError.ParseX();
-					if (rpcError.error_code == 303 && rpcError.error_message.EndsWith("_MIGRATE_X"))
+				case RpcError { error_code: var code, error_message: var message }:
+					int x = -1;
+					for (int index = message.Length - 1; index > 0 && (index = message.LastIndexOf('_', index - 1)) >= 0;)
+						if (message[index + 1] is >= '0' and <= '9')
+						{
+							int end = ++index;
+							do end++; while (end < message.Length && message[end] is >= '0' and <= '9');
+							x = int.Parse(message[index..end]);
+							message = $"{message[0..index]}X{message[end..]}";
+							break;
+						}
+
+					if (code == 303 && message.EndsWith("_MIGRATE_X"))
 					{
-						if (rpcError.error_message != "FILE_MIGRATE_X")
+						if (message != "FILE_MIGRATE_X")
 						{
 							// this is a hack to migrate _dcSession in-place (staying in same Client):
 							Session.DCSession dcSession;
@@ -1129,7 +1139,7 @@ namespace WTelegram
 							goto retry;
 						}
 					}
-					else if (rpcError.error_code == 420 && rpcError.error_message.EndsWith("_WAIT_X"))
+					else if (code == 420 && message.EndsWith("_WAIT_X"))
 					{
 						if (x <= FloodRetryThreshold)
 						{
@@ -1137,17 +1147,17 @@ namespace WTelegram
 							goto retry;
 						}
 					}
-					else if (rpcError.error_code == -503 && !got503)
+					else if (code == -503 && !got503)
 					{
 						got503 = true;
 						goto retry;
 					}
-					else if (rpcError.error_code == 500 && rpcError.error_message == "AUTH_RESTART")
+					else if (code == 500 && message == "AUTH_RESTART")
 					{
 						_session.UserId = 0; // force a full login authorization flow, next time
 						lock (_session) _session.Save();
 					}
-					throw new RpcException(rpcError.error_code, rpcError.error_message, x);
+					throw new RpcException(code, message, x);
 				case ReactorError:
 					goto retry;
 				default:

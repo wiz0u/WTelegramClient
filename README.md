@@ -1,13 +1,15 @@
 [![NuGet version](https://img.shields.io/nuget/v/WTelegramClient)](https://www.nuget.org/packages/WTelegramClient/)
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
-[![API Layer](https://img.shields.io/badge/API_Layer-139-blueviolet)](https://corefork.telegram.org/methods)
+[![API Layer](https://img.shields.io/badge/API_Layer-140-blueviolet)](https://corefork.telegram.org/methods)
 [![dev nuget](https://img.shields.io/badge/dynamic/json?color=ffc040&label=dev%20nuget&query=%24.versions%5B0%5D&url=https%3A%2F%2Fpkgs.dev.azure.com%2Fwiz0u%2F81bd92b7-0bb9-4701-b426-09090b27e037%2F_packaging%2F46ce0497-7803-4bd4-8c6c-030583e7c371%2Fnuget%2Fv3%2Fflat2%2Fwtelegramclient%2Findex.json)](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://wizou.fr/donate.html)
 
 ## _Telegram Client API library written 100% in C# and .NET Standard_
 
-This ReadMe is a **quick but important tutorial** to learn the fundamentals about this library. Please read it all.
+This ReadMe is a **quick but important tutorial** to learn the fundamentals about this library. Please read it all.  
+This library allows you to connect to Telegram and control a user programmatically (or a bot, but [Telegram.Bot](https://github.com/TelegramBots/Telegram.Bot) is much easier for that).
+All the Telegram Client APIs are supported so you can do everything the user could do with a full Telegram GUI client.
 
 >⚠️ This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this advanced topic before proceeding.  
 >If you are a beginner in C#, starting a project based on this library might not be a great idea.
