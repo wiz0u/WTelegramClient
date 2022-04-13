@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 139;					// fetched 01/03/2022 09:53:50
+		public const int Version = 140;					// fetched 13/04/2022 12:36:36
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -131,7 +131,7 @@ namespace TL
 			[0x8261AC61] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
 			[0xD18EE226] = typeof(ChatFull),
-			[0xE13C3D20] = typeof(ChannelFull),
+			[0xEA68A619] = typeof(ChannelFull),
 			[0xC02D4007] = typeof(ChatParticipant),
 			[0xE46BCEE4] = typeof(ChatParticipantCreator),
 			[0xA0933F5B] = typeof(ChatParticipantAdmin),
@@ -185,6 +185,8 @@ namespace TL
 			[0xB3A07661] = typeof(MessageActionGroupCallScheduled),
 			[0xAA786345] = typeof(MessageActionSetChatTheme),
 			[0xEBBCA3CB] = typeof(MessageActionChatJoinedByRequest),
+			[0x47DD8079] = typeof(MessageActionWebViewDataSentMe),
+			[0xB4C38CB5] = typeof(MessageActionWebViewDataSent),
 			[0xA8EDD0F5] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -205,12 +207,12 @@ namespace TL
 			[0x193B4417] = typeof(InputNotifyUsers),
 			[0x4A95E84E] = typeof(InputNotifyChats),
 			[0xB1DB7C7E] = typeof(InputNotifyBroadcasts),
-			[0x9C3D198E] = typeof(InputPeerNotifySettings),
-			[0xAF509D20] = typeof(PeerNotifySettings),
+			[0xDF1F002B] = typeof(InputPeerNotifySettings),
+			[0xA83B0426] = typeof(PeerNotifySettings),
 			[0xA518110D] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0xCF366521] = typeof(UserFull),
+			[0x8C72EA81] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -343,6 +345,10 @@ namespace TL
 			[0x7063C3DB] = typeof(UpdatePendingJoinRequests),
 			[0x11DFA986] = typeof(UpdateBotChatInviteRequester),
 			[0x154798C3] = typeof(UpdateMessageReactions),
+			[0x17B7A20B] = typeof(UpdateAttachMenuBots),
+			[0x1592B79D] = typeof(UpdateWebViewResultSent),
+			[0x14B85813] = typeof(UpdateBotMenuButton),
+			[0x74D8BE99] = typeof(UpdateSavedRingtones),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -468,7 +474,7 @@ namespace TL
 			[0xB60A24A6] = typeof(Messages_StickerSet),
 			[0xD3F924EB] = null,//Messages_StickerSetNotModified
 			[0xC27AC8C7] = typeof(BotCommand),
-			[0x1B74B335] = typeof(BotInfo),
+			[0xE4169B5D] = typeof(BotInfo),
 			[0xA2FA4880] = typeof(KeyboardButton),
 			[0x258AFF05] = typeof(KeyboardButtonUrl),
 			[0x35BBDB6B] = typeof(KeyboardButtonCallback),
@@ -482,6 +488,8 @@ namespace TL
 			[0xBBC7515D] = typeof(KeyboardButtonRequestPoll),
 			[0xE988037B] = typeof(InputKeyboardButtonUserProfile),
 			[0x308660C1] = typeof(KeyboardButtonUserProfile),
+			[0x13767230] = typeof(KeyboardButtonWebView),
+			[0xA0C0505C] = typeof(KeyboardButtonSimpleWebView),
 			[0x77608B83] = typeof(KeyboardButtonRow),
 			[0xA03E5B85] = typeof(ReplyKeyboardHide),
 			[0x86B40B08] = typeof(ReplyKeyboardForceReply),
@@ -944,6 +952,26 @@ namespace TL
 			[0x80EB48AF] = typeof(GroupCallStreamChannel),
 			[0xD0E482B2] = typeof(Phone_GroupCallStreamChannels),
 			[0x2DBF3432] = typeof(Phone_GroupCallStreamRtmpUrl),
+			[0x4576F3F0] = typeof(AttachMenuBotIconColor),
+			[0xB2A7386B] = typeof(AttachMenuBotIcon),
+			[0xE93CB772] = typeof(AttachMenuBot),
+			[0xF1D88A5C] = null,//AttachMenuBotsNotModified
+			[0x3C4301C0] = typeof(AttachMenuBots),
+			[0x93BF667F] = typeof(AttachMenuBotsBot),
+			[0x0C14557C] = typeof(WebViewResultUrl),
+			[0x882F76BB] = typeof(SimpleWebViewResultUrl),
+			[0x0C94511C] = typeof(WebViewMessageSent),
+			[0x7533A588] = typeof(BotMenuButtonDefault),
+			[0x4258C205] = typeof(BotMenuButtonCommands),
+			[0xC7B57CE6] = typeof(BotMenuButton),
+			[0xFBF6E8B1] = null,//Account_SavedRingtonesNotModified
+			[0xC1E92CC5] = typeof(Account_SavedRingtones),
+			[0x97E8BEBE] = typeof(NotificationSoundDefault),
+			[0x6F0C34DF] = typeof(NotificationSoundNone),
+			[0x830B9AE4] = typeof(NotificationSoundLocal),
+			[0xFF6C8049] = typeof(NotificationSoundRingtone),
+			[0xB7263F6D] = typeof(Account_SavedRingtone),
+			[0x1F307EB7] = typeof(Account_SavedRingtoneConverted),
 			// from TL.Secret:
 			[0xBB718624] = typeof(Layer66.SendMessageUploadRoundAction),
 			[0xE50511D8] = typeof(Layer45.DecryptedMessageMediaWebPage),
@@ -1045,6 +1073,8 @@ namespace TL
 			[typeof(Account_Themes)]                 = 0xF41EB622, //account.themesNotModified
 			[typeof(Help_CountriesList)]             = 0x93CC1F32, //help.countriesListNotModified
 			[typeof(Messages_AvailableReactions)]    = 0x9F071957, //messages.availableReactionsNotModified
+			[typeof(AttachMenuBots)]                 = 0xF1D88A5C, //attachMenuBotsNotModified
+			[typeof(Account_SavedRingtones)]         = 0xFBF6E8B1, //account.savedRingtonesNotModified
 			// from TL.Secret:
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 			// The End

@@ -159,7 +159,7 @@ namespace TL
 	}
 	partial class Chat
 	{
-		public override bool IsActive => (flags & (Flags.kicked | Flags.left | Flags.deactivated)) == 0;
+		public override bool IsActive => (flags & (Flags.left | Flags.deactivated)) == 0;
 		public override ChatPhoto Photo => photo;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		public override InputPeer ToInputPeer() => new InputPeerChat(id);

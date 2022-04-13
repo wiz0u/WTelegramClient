@@ -968,6 +968,31 @@ namespace TL
 				call_requests_disabled = call_requests_disabled.GetValueOrDefault(),
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getSavedRingtones"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.savedRingtonesNotModified">account.savedRingtonesNotModified</a></returns>
+		public static Task<Account_SavedRingtones> Account_GetSavedRingtones(this Client client, long hash = default)
+			=> client.Invoke(new Account_GetSavedRingtones
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.saveRingtone"/></para></summary>
+		public static Task<Account_SavedRingtone> Account_SaveRingtone(this Client client, InputDocument id, bool unsave)
+			=> client.Invoke(new Account_SaveRingtone
+			{
+				id = id,
+				unsave = unsave,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.uploadRingtone"/></para></summary>
+		public static Task<DocumentBase> Account_UploadRingtone(this Client client, InputFileBase file, string file_name, string mime_type)
+			=> client.Invoke(new Account_UploadRingtone
+			{
+				file = file,
+				file_name = file_name,
+				mime_type = mime_type,
+			});
+
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, InputUserBase[] id)
@@ -3096,6 +3121,81 @@ namespace TL
 				limit = limit,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getAttachMenuBots"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/attachMenuBotsNotModified">attachMenuBotsNotModified</a></returns>
+		public static Task<AttachMenuBots> Messages_GetAttachMenuBots(this Client client, long hash = default)
+			=> client.Invoke(new Messages_GetAttachMenuBots
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getAttachMenuBot"/></para></summary>
+		public static Task<AttachMenuBotsBot> Messages_GetAttachMenuBot(this Client client, InputUserBase bot)
+			=> client.Invoke(new Messages_GetAttachMenuBot
+			{
+				bot = bot,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleBotInAttachMenu"/></para></summary>
+		public static Task<bool> Messages_ToggleBotInAttachMenu(this Client client, InputUserBase bot, bool enabled)
+			=> client.Invoke(new Messages_ToggleBotInAttachMenu
+			{
+				bot = bot,
+				enabled = enabled,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.requestWebView"/></para></summary>
+		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, bool from_bot_menu = false, bool silent = false, string url = null, string start_param = null, DataJSON theme_params = null, int? reply_to_msg_id = null)
+			=> client.Invoke(new Messages_RequestWebView
+			{
+				flags = (Messages_RequestWebView.Flags)((from_bot_menu ? 0x10 : 0) | (silent ? 0x20 : 0) | (url != null ? 0x2 : 0) | (start_param != null ? 0x8 : 0) | (theme_params != null ? 0x4 : 0) | (reply_to_msg_id != null ? 0x1 : 0)),
+				peer = peer,
+				bot = bot,
+				url = url,
+				start_param = start_param,
+				theme_params = theme_params,
+				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.prolongWebView"/></para></summary>
+		public static Task<bool> Messages_ProlongWebView(this Client client, InputPeer peer, InputUserBase bot, long query_id, bool silent = false, int? reply_to_msg_id = null)
+			=> client.Invoke(new Messages_ProlongWebView
+			{
+				flags = (Messages_ProlongWebView.Flags)((silent ? 0x20 : 0) | (reply_to_msg_id != null ? 0x1 : 0)),
+				peer = peer,
+				bot = bot,
+				query_id = query_id,
+				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.requestSimpleWebView"/></para></summary>
+		public static Task<SimpleWebViewResult> Messages_RequestSimpleWebView(this Client client, InputUserBase bot, string url, DataJSON theme_params = null)
+			=> client.Invoke(new Messages_RequestSimpleWebView
+			{
+				flags = (Messages_RequestSimpleWebView.Flags)(theme_params != null ? 0x1 : 0),
+				bot = bot,
+				url = url,
+				theme_params = theme_params,
+			});
+
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		<para>See <a href="https://corefork.telegram.org/method/messages.sendWebViewResultMessage"/></para></summary>
+		public static Task<WebViewMessageSent> Messages_SendWebViewResultMessage(this Client client, string bot_query_id, InputBotInlineResultBase result)
+			=> client.Invoke(new Messages_SendWebViewResultMessage
+			{
+				bot_query_id = bot_query_id,
+				result = result,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.sendWebViewData"/></para></summary>
+		public static Task<UpdatesBase> Messages_SendWebViewData(this Client client, InputUserBase bot, long random_id, string button_text, string data)
+			=> client.Invoke(new Messages_SendWebViewData
+			{
+				bot = bot,
+				random_id = random_id,
+				button_text = button_text,
+				data = data,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -3724,9 +3824,10 @@ namespace TL
 		/// <summary>Delete the history of a <a href="https://corefork.telegram.org/api/channel">supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.deleteHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Supergroup</a> whose history must be deleted</param>
 		/// <param name="max_id">ID of message <strong>up to which</strong> the history must be deleted</param>
-		public static Task<bool> Channels_DeleteHistory(this Client client, InputChannelBase channel, int max_id = default)
+		public static Task<UpdatesBase> Channels_DeleteHistory(this Client client, InputChannelBase channel, int max_id = default, bool for_everyone = false)
 			=> client.Invoke(new Channels_DeleteHistory
 			{
+				flags = (Channels_DeleteHistory.Flags)(for_everyone ? 0x1 : 0),
 				channel = channel,
 				max_id = max_id,
 			});
@@ -3899,6 +4000,35 @@ namespace TL
 			{
 				scope = scope,
 				lang_code = lang_code,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.setBotMenuButton"/></para></summary>
+		public static Task<bool> Bots_SetBotMenuButton(this Client client, InputUserBase user_id, BotMenuButtonBase button)
+			=> client.Invoke(new Bots_SetBotMenuButton
+			{
+				user_id = user_id,
+				button = button,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.getBotMenuButton"/></para></summary>
+		public static Task<BotMenuButtonBase> Bots_GetBotMenuButton(this Client client, InputUserBase user_id)
+			=> client.Invoke(new Bots_GetBotMenuButton
+			{
+				user_id = user_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.setBotBroadcastDefaultAdminRights"/></para></summary>
+		public static Task<bool> Bots_SetBotBroadcastDefaultAdminRights(this Client client, ChatAdminRights admin_rights)
+			=> client.Invoke(new Bots_SetBotBroadcastDefaultAdminRights
+			{
+				admin_rights = admin_rights,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.setBotGroupDefaultAdminRights"/></para></summary>
+		public static Task<bool> Bots_SetBotGroupDefaultAdminRights(this Client client, ChatAdminRights admin_rights)
+			=> client.Invoke(new Bots_SetBotGroupDefaultAdminRights
+			{
+				admin_rights = admin_rights,
 			});
 
 		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
@@ -5267,6 +5397,27 @@ namespace TL.Methods
 			has_encrypted_requests_disabled = 0x1,
 			has_call_requests_disabled = 0x2,
 		}
+	}
+
+	[TLDef(0xE1902288)]
+	public class Account_GetSavedRingtones : IMethod<Account_SavedRingtones>
+	{
+		public long hash;
+	}
+
+	[TLDef(0x3DEA5B03)]
+	public class Account_SaveRingtone : IMethod<Account_SavedRingtone>
+	{
+		public InputDocument id;
+		public bool unsave;
+	}
+
+	[TLDef(0x831A83A2)]
+	public class Account_UploadRingtone : IMethod<DocumentBase>
+	{
+		public InputFileBase file;
+		public string file_name;
+		public string mime_type;
 	}
 
 	[TLDef(0x0D91A548)]
@@ -7038,6 +7189,93 @@ namespace TL.Methods
 		public int limit;
 	}
 
+	[TLDef(0x16FCC2CB)]
+	public class Messages_GetAttachMenuBots : IMethod<AttachMenuBots>
+	{
+		public long hash;
+	}
+
+	[TLDef(0x77216192)]
+	public class Messages_GetAttachMenuBot : IMethod<AttachMenuBotsBot>
+	{
+		public InputUserBase bot;
+	}
+
+	[TLDef(0x1AEE33AF)]
+	public class Messages_ToggleBotInAttachMenu : IMethod<bool>
+	{
+		public InputUserBase bot;
+		public bool enabled;
+	}
+
+	[TLDef(0x0FA04DFF)]
+	public class Messages_RequestWebView : IMethod<WebViewResult>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public InputUserBase bot;
+		[IfFlag(1)] public string url;
+		[IfFlag(3)] public string start_param;
+		[IfFlag(2)] public DataJSON theme_params;
+		[IfFlag(0)] public int reply_to_msg_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_reply_to_msg_id = 0x1,
+			has_url = 0x2,
+			has_theme_params = 0x4,
+			has_start_param = 0x8,
+			from_bot_menu = 0x10,
+			silent = 0x20,
+		}
+	}
+
+	[TLDef(0xD22AD148)]
+	public class Messages_ProlongWebView : IMethod<bool>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public InputUserBase bot;
+		public long query_id;
+		[IfFlag(0)] public int reply_to_msg_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_reply_to_msg_id = 0x1,
+			silent = 0x20,
+		}
+	}
+
+	[TLDef(0x6ABB2F73)]
+	public class Messages_RequestSimpleWebView : IMethod<SimpleWebViewResult>
+	{
+		public Flags flags;
+		public InputUserBase bot;
+		public string url;
+		[IfFlag(0)] public DataJSON theme_params;
+
+		[Flags] public enum Flags : uint
+		{
+			has_theme_params = 0x1,
+		}
+	}
+
+	[TLDef(0x0A4314F5)]
+	public class Messages_SendWebViewResultMessage : IMethod<WebViewMessageSent>
+	{
+		public string bot_query_id;
+		public InputBotInlineResultBase result;
+	}
+
+	[TLDef(0xDC0242C8)]
+	public class Messages_SendWebViewData : IMethod<UpdatesBase>
+	{
+		public InputUserBase bot;
+		public long random_id;
+		public string button_text;
+		public string data;
+	}
+
 	[TLDef(0xEDD4882A)]
 	public class Updates_GetState : IMethod<Updates_State> { }
 
@@ -7499,11 +7737,17 @@ namespace TL.Methods
 		public int[] id;
 	}
 
-	[TLDef(0xAF369D42)]
-	public class Channels_DeleteHistory : IMethod<bool>
+	[TLDef(0x9BAA9647)]
+	public class Channels_DeleteHistory : IMethod<UpdatesBase>
 	{
+		public Flags flags;
 		public InputChannelBase channel;
 		public int max_id;
+
+		[Flags] public enum Flags : uint
+		{
+			for_everyone = 0x1,
+		}
 	}
 
 	[TLDef(0xEABBB94C)]
@@ -7621,6 +7865,31 @@ namespace TL.Methods
 	{
 		public BotCommandScope scope;
 		public string lang_code;
+	}
+
+	[TLDef(0x4504D54F)]
+	public class Bots_SetBotMenuButton : IMethod<bool>
+	{
+		public InputUserBase user_id;
+		public BotMenuButtonBase button;
+	}
+
+	[TLDef(0x9C60EB28)]
+	public class Bots_GetBotMenuButton : IMethod<BotMenuButtonBase>
+	{
+		public InputUserBase user_id;
+	}
+
+	[TLDef(0x788464E1)]
+	public class Bots_SetBotBroadcastDefaultAdminRights : IMethod<bool>
+	{
+		public ChatAdminRights admin_rights;
+	}
+
+	[TLDef(0x925EC9EA)]
+	public class Bots_SetBotGroupDefaultAdminRights : IMethod<bool>
+	{
+		public ChatAdminRights admin_rights;
 	}
 
 	[TLDef(0x8A333C8D)]

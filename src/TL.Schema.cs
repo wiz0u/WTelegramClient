@@ -775,6 +775,7 @@ namespace TL
 			apply_min_photo = 0x2000000,
 			/// <summary>If set, this user was reported by many users as a fake or scam user: be careful when interacting with them.</summary>
 			fake = 0x4000000,
+			bot_attach_menu = 0x8000000,
 		}
 	}
 
@@ -876,8 +877,6 @@ namespace TL
 		{
 			/// <summary>Whether the current user is the creator of the group</summary>
 			creator = 0x1,
-			/// <summary>Whether the current user was kicked from the group</summary>
-			kicked = 0x2,
 			/// <summary>Whether the current user has left the group</summary>
 			left = 0x4,
 			/// <summary>Whether the group was <a href="https://corefork.telegram.org/api/channel">migrated</a></summary>
@@ -1165,11 +1164,12 @@ namespace TL
 		public override string[] AvailableReactions => available_reactions;
 	}
 	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel#channels">channel</a>, <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a> or <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a>.		<para>See <a href="https://corefork.telegram.org/constructor/channelFull"/></para></summary>
-	[TLDef(0xE13C3D20)]
+	[TLDef(0xEA68A619)]
 	public partial class ChannelFull : ChatFullBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		public Flags2 flags2;
 		/// <summary>ID of the channel</summary>
 		public long id;
 		/// <summary>Info about the channel</summary>
@@ -1305,6 +1305,11 @@ namespace TL
 			has_default_send_as = 0x20000000,
 			/// <summary>Field <see cref="available_reactions"/> has a value</summary>
 			has_available_reactions = 0x40000000,
+		}
+
+		[Flags] public enum Flags2 : uint
+		{
+			can_delete_channel = 0x1,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -2070,6 +2075,18 @@ namespace TL
 	/// <summary>A user was accepted into the group by an admin		<para>See <a href="https://corefork.telegram.org/constructor/messageActionChatJoinedByRequest"/></para></summary>
 	[TLDef(0xEBBCA3CB)]
 	public class MessageActionChatJoinedByRequest : MessageAction { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionWebViewDataSentMe"/></para></summary>
+	[TLDef(0x47DD8079, inheritBefore = true)]
+	public class MessageActionWebViewDataSentMe : MessageActionWebViewDataSent
+	{
+		public string data;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionWebViewDataSent"/></para></summary>
+	[TLDef(0xB4C38CB5)]
+	public class MessageActionWebViewDataSent : MessageAction
+	{
+		public string text;
+	}
 
 	/// <summary>Chat info.		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para>		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para></summary>
 	public abstract class DialogBase : IObject
@@ -2404,7 +2421,7 @@ namespace TL
 	public class InputNotifyBroadcasts : InputNotifyPeerBase { }
 
 	/// <summary>Notification settings.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerNotifySettings"/></para></summary>
-	[TLDef(0x9C3D198E)]
+	[TLDef(0xDF1F002B)]
 	public class InputPeerNotifySettings : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -2416,7 +2433,7 @@ namespace TL
 		/// <summary>Date until which all notifications shall be switched off</summary>
 		[IfFlag(2)] public int mute_until;
 		/// <summary>Name of an audio file for notification</summary>
-		[IfFlag(3)] public string sound;
+		[IfFlag(3)] public NotificationSound sound;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2432,7 +2449,7 @@ namespace TL
 	}
 
 	/// <summary>Notification settings.		<para>See <a href="https://corefork.telegram.org/constructor/peerNotifySettings"/></para></summary>
-	[TLDef(0xAF509D20)]
+	[TLDef(0xA83B0426)]
 	public class PeerNotifySettings : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -2443,8 +2460,9 @@ namespace TL
 		[IfFlag(1)] public bool silent;
 		/// <summary>Mute all notifications until this date</summary>
 		[IfFlag(2)] public int mute_until;
-		/// <summary>Audio file name for notifications</summary>
-		[IfFlag(3)] public string sound;
+		[IfFlag(3)] public NotificationSound ios_sound;
+		[IfFlag(4)] public NotificationSound android_sound;
+		[IfFlag(5)] public NotificationSound other_sound;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2454,8 +2472,12 @@ namespace TL
 			has_silent = 0x2,
 			/// <summary>Field <see cref="mute_until"/> has a value</summary>
 			has_mute_until = 0x4,
-			/// <summary>Field <see cref="sound"/> has a value</summary>
-			has_sound = 0x8,
+			/// <summary>Field <see cref="ios_sound"/> has a value</summary>
+			has_ios_sound = 0x8,
+			/// <summary>Field <see cref="android_sound"/> has a value</summary>
+			has_android_sound = 0x10,
+			/// <summary>Field <see cref="other_sound"/> has a value</summary>
+			has_other_sound = 0x20,
 		}
 	}
 
@@ -2596,7 +2618,7 @@ namespace TL
 	}
 
 	/// <summary>Extended user info		<para>See <a href="https://corefork.telegram.org/constructor/userFull"/></para></summary>
-	[TLDef(0xCF366521)]
+	[TLDef(0x8C72EA81)]
 	public class UserFull : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -2625,6 +2647,8 @@ namespace TL
 		[IfFlag(15)] public string theme_emoticon;
 		/// <summary>Anonymized text to be shown instead of the the user's name on forwarded messages</summary>
 		[IfFlag(16)] public string private_forward_name;
+		[IfFlag(17)] public ChatAdminRights bot_group_admin_rights;
+		[IfFlag(18)] public ChatAdminRights bot_broadcast_admin_rights;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2656,6 +2680,10 @@ namespace TL
 			has_theme_emoticon = 0x8000,
 			/// <summary>Field <see cref="private_forward_name"/> has a value</summary>
 			has_private_forward_name = 0x10000,
+			/// <summary>Field <see cref="bot_group_admin_rights"/> has a value</summary>
+			has_bot_group_admin_rights = 0x20000,
+			/// <summary>Field <see cref="bot_broadcast_admin_rights"/> has a value</summary>
+			has_bot_broadcast_admin_rights = 0x40000,
 		}
 	}
 
@@ -4113,6 +4141,25 @@ namespace TL
 		/// <summary>Reactions</summary>
 		public MessageReactions reactions;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateAttachMenuBots"/></para></summary>
+	[TLDef(0x17B7A20B)]
+	public class UpdateAttachMenuBots : Update { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateWebViewResultSent"/></para></summary>
+	[TLDef(0x1592B79D)]
+	public class UpdateWebViewResultSent : Update
+	{
+		public long query_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBotMenuButton"/></para></summary>
+	[TLDef(0x14B85813)]
+	public class UpdateBotMenuButton : Update
+	{
+		public long bot_id;
+		public BotMenuButtonBase button;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSavedRingtones"/></para></summary>
+	[TLDef(0x74D8BE99)]
+	public class UpdateSavedRingtones : Update { }
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]
@@ -5971,7 +6018,7 @@ namespace TL
 	}
 
 	/// <summary>Info about bots (available bot commands, etc)		<para>See <a href="https://corefork.telegram.org/constructor/botInfo"/></para></summary>
-	[TLDef(0x1B74B335)]
+	[TLDef(0xE4169B5D)]
 	public class BotInfo : IObject
 	{
 		/// <summary>ID of the bot</summary>
@@ -5980,6 +6027,7 @@ namespace TL
 		public string description;
 		/// <summary>Bot commands that can be used in the chat</summary>
 		public BotCommand[] commands;
+		public BotMenuButtonBase menu_button;
 	}
 
 	/// <summary>Bot or inline keyboard buttons		<para>Derived classes: <see cref="KeyboardButton"/>, <see cref="KeyboardButtonUrl"/>, <see cref="KeyboardButtonCallback"/>, <see cref="KeyboardButtonRequestPhone"/>, <see cref="KeyboardButtonRequestGeoLocation"/>, <see cref="KeyboardButtonSwitchInline"/>, <see cref="KeyboardButtonGame"/>, <see cref="KeyboardButtonBuy"/>, <see cref="KeyboardButtonUrlAuth"/>, <see cref="InputKeyboardButtonUrlAuth"/>, <see cref="KeyboardButtonRequestPoll"/>, <see cref="InputKeyboardButtonUserProfile"/>, <see cref="KeyboardButtonUserProfile"/></para>		<para>See <a href="https://corefork.telegram.org/type/KeyboardButton"/></para></summary>
@@ -6148,6 +6196,17 @@ namespace TL
 	{
 		/// <summary>User ID</summary>
 		public long user_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonWebView"/></para></summary>
+	[TLDef(0x13767230, inheritBefore = true)]
+	public class KeyboardButtonWebView : KeyboardButton
+	{
+		public string url;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonSimpleWebView"/></para></summary>
+	[TLDef(0xA0C0505C)]
+	public class KeyboardButtonSimpleWebView : KeyboardButtonWebView
+	{
 	}
 
 	/// <summary>Inline keyboard row		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRow"/></para></summary>
@@ -6700,15 +6759,13 @@ namespace TL
 	}
 
 	/// <summary>Represents a sent inline message from the perspective of a bot		<para>Derived classes: <see cref="InputBotInlineMessageMediaAuto"/>, <see cref="InputBotInlineMessageText"/>, <see cref="InputBotInlineMessageMediaGeo"/>, <see cref="InputBotInlineMessageMediaVenue"/>, <see cref="InputBotInlineMessageMediaContact"/>, <see cref="InputBotInlineMessageGame"/>, <see cref="InputBotInlineMessageMediaInvoice"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputBotInlineMessage"/></para></summary>
-	public abstract class InputBotInlineMessage : IObject
-	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-		public int flags;
-	}
+	public abstract class InputBotInlineMessage : IObject { }
 	/// <summary>A media		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageMediaAuto"/></para></summary>
-	[TLDef(0x3380C786, inheritBefore = true)]
+	[TLDef(0x3380C786)]
 	public class InputBotInlineMessageMediaAuto : InputBotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Caption</summary>
 		public string message;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
@@ -6725,9 +6782,11 @@ namespace TL
 		}
 	}
 	/// <summary>Simple text message		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageText"/></para></summary>
-	[TLDef(0x3DCD7A87, inheritBefore = true)]
+	[TLDef(0x3DCD7A87)]
 	public class InputBotInlineMessageText : InputBotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Message</summary>
 		public string message;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
@@ -6746,9 +6805,11 @@ namespace TL
 		}
 	}
 	/// <summary>Geolocation		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageMediaGeo"/></para></summary>
-	[TLDef(0x96929A85, inheritBefore = true)]
+	[TLDef(0x96929A85)]
 	public class InputBotInlineMessageMediaGeo : InputBotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Geolocation</summary>
 		public InputGeoPoint geo_point;
 		/// <summary>For <a href="https://corefork.telegram.org/api/live-location">live locations</a>, a direction in which the location moves, in degrees; 1-360</summary>
@@ -6773,9 +6834,11 @@ namespace TL
 		}
 	}
 	/// <summary>Venue		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageMediaVenue"/></para></summary>
-	[TLDef(0x417BBF11, inheritBefore = true)]
+	[TLDef(0x417BBF11)]
 	public class InputBotInlineMessageMediaVenue : InputBotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Geolocation</summary>
 		public InputGeoPoint geo_point;
 		/// <summary>Venue name</summary>
@@ -6798,9 +6861,11 @@ namespace TL
 		}
 	}
 	/// <summary>A contact		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageMediaContact"/></para></summary>
-	[TLDef(0xA6EDBFFD, inheritBefore = true)]
+	[TLDef(0xA6EDBFFD)]
 	public class InputBotInlineMessageMediaContact : InputBotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Phone number</summary>
 		public string phone_number;
 		/// <summary>First name</summary>
@@ -6819,9 +6884,11 @@ namespace TL
 		}
 	}
 	/// <summary>A game		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageGame"/></para></summary>
-	[TLDef(0x4B425864, inheritBefore = true)]
+	[TLDef(0x4B425864)]
 	public class InputBotInlineMessageGame : InputBotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 
@@ -6832,9 +6899,11 @@ namespace TL
 		}
 	}
 	/// <summary>An invoice		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageMediaInvoice"/></para></summary>
-	[TLDef(0xD7E78225, inheritBefore = true)]
+	[TLDef(0xD7E78225)]
 	public class InputBotInlineMessageMediaInvoice : InputBotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Product name, 1-32 characters</summary>
 		public string title;
 		/// <summary>Product description, 1-255 characters</summary>
@@ -6979,15 +7048,13 @@ namespace TL
 	}
 
 	/// <summary>Inline message		<para>Derived classes: <see cref="BotInlineMessageMediaAuto"/>, <see cref="BotInlineMessageText"/>, <see cref="BotInlineMessageMediaGeo"/>, <see cref="BotInlineMessageMediaVenue"/>, <see cref="BotInlineMessageMediaContact"/>, <see cref="BotInlineMessageMediaInvoice"/></para>		<para>See <a href="https://corefork.telegram.org/type/BotInlineMessage"/></para></summary>
-	public abstract class BotInlineMessage : IObject
-	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
-		public int flags;
-	}
+	public abstract class BotInlineMessage : IObject { }
 	/// <summary>Send whatever media is attached to the <see cref="BotInlineMediaResult"/>		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageMediaAuto"/></para></summary>
-	[TLDef(0x764CF810, inheritBefore = true)]
+	[TLDef(0x764CF810)]
 	public class BotInlineMessageMediaAuto : BotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Caption</summary>
 		public string message;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
@@ -7004,9 +7071,11 @@ namespace TL
 		}
 	}
 	/// <summary>Send a simple text message		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageText"/></para></summary>
-	[TLDef(0x8C7F65E2, inheritBefore = true)]
+	[TLDef(0x8C7F65E2)]
 	public class BotInlineMessageText : BotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>The message</summary>
 		public string message;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
@@ -7025,9 +7094,11 @@ namespace TL
 		}
 	}
 	/// <summary>Send a geolocation		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageMediaGeo"/></para></summary>
-	[TLDef(0x051846FD, inheritBefore = true)]
+	[TLDef(0x051846FD)]
 	public class BotInlineMessageMediaGeo : BotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Geolocation</summary>
 		public GeoPoint geo;
 		/// <summary>For <a href="https://corefork.telegram.org/api/live-location">live locations</a>, a direction in which the location moves, in degrees; 1-360.</summary>
@@ -7052,9 +7123,11 @@ namespace TL
 		}
 	}
 	/// <summary>Send a venue		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageMediaVenue"/></para></summary>
-	[TLDef(0x8A86659C, inheritBefore = true)]
+	[TLDef(0x8A86659C)]
 	public class BotInlineMessageMediaVenue : BotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Geolocation of venue</summary>
 		public GeoPoint geo;
 		/// <summary>Venue name</summary>
@@ -7077,9 +7150,11 @@ namespace TL
 		}
 	}
 	/// <summary>Send a contact		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageMediaContact"/></para></summary>
-	[TLDef(0x18D1CDC2, inheritBefore = true)]
+	[TLDef(0x18D1CDC2)]
 	public class BotInlineMessageMediaContact : BotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Phone number</summary>
 		public string phone_number;
 		/// <summary>First name</summary>
@@ -7098,9 +7173,11 @@ namespace TL
 		}
 	}
 	/// <summary>Send an invoice		<para>See <a href="https://corefork.telegram.org/constructor/botInlineMessageMediaInvoice"/></para></summary>
-	[TLDef(0x354A9B09, inheritBefore = true)]
+	[TLDef(0x354A9B09)]
 	public class BotInlineMessageMediaInvoice : BotInlineMessage
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		public Flags flags;
 		/// <summary>Product name, 1-32 characters</summary>
 		public string title;
 		/// <summary>Product description, 1-255 characters</summary>
@@ -12730,5 +12807,150 @@ namespace TL
 		public string url;
 		/// <summary>Stream key</summary>
 		public string key;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/attachMenuBotIconColor"/></para></summary>
+	[TLDef(0x4576F3F0)]
+	public class AttachMenuBotIconColor : IObject
+	{
+		public string name;
+		public int color;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/attachMenuBotIcon"/></para></summary>
+	[TLDef(0xB2A7386B)]
+	public class AttachMenuBotIcon : IObject
+	{
+		public Flags flags;
+		public string name;
+		public DocumentBase icon;
+		[IfFlag(0)] public AttachMenuBotIconColor[] colors;
+
+		[Flags] public enum Flags : uint
+		{
+			has_colors = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/attachMenuBot"/></para></summary>
+	[TLDef(0xE93CB772)]
+	public class AttachMenuBot : IObject
+	{
+		public Flags flags;
+		public long bot_id;
+		public string short_name;
+		public AttachMenuBotIcon[] icons;
+
+		[Flags] public enum Flags : uint
+		{
+			inactive = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/attachMenuBots"/></para></summary>
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/attachMenuBotsNotModified">attachMenuBotsNotModified</a></remarks>
+	[TLDef(0x3C4301C0)]
+	public class AttachMenuBots : IObject
+	{
+		public long hash;
+		public AttachMenuBot[] bots;
+		public Dictionary<long, User> users;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/attachMenuBotsBot"/></para></summary>
+	[TLDef(0x93BF667F)]
+	public class AttachMenuBotsBot : IObject
+	{
+		public AttachMenuBot bot;
+		public Dictionary<long, User> users;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/WebViewResult"/></para></summary>
+	public abstract class WebViewResult : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/webViewResultUrl"/></para></summary>
+	[TLDef(0x0C14557C)]
+	public class WebViewResultUrl : WebViewResult
+	{
+		public long query_id;
+		public string url;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/SimpleWebViewResult"/></para></summary>
+	public abstract class SimpleWebViewResult : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/simpleWebViewResultUrl"/></para></summary>
+	[TLDef(0x882F76BB)]
+	public class SimpleWebViewResultUrl : SimpleWebViewResult
+	{
+		public string url;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/webViewMessageSent"/></para></summary>
+	[TLDef(0x0C94511C)]
+	public class WebViewMessageSent : IObject
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputBotInlineMessageIDBase msg_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_msg_id = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/BotMenuButton"/></para></summary>
+	public abstract class BotMenuButtonBase : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/botMenuButtonDefault"/></para></summary>
+	[TLDef(0x7533A588)]
+	public class BotMenuButtonDefault : BotMenuButtonBase { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/botMenuButtonCommands"/></para></summary>
+	[TLDef(0x4258C205)]
+	public class BotMenuButtonCommands : BotMenuButtonBase { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/botMenuButton"/></para></summary>
+	[TLDef(0xC7B57CE6)]
+	public class BotMenuButton : BotMenuButtonBase
+	{
+		public string text;
+		public string url;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.savedRingtones"/></para></summary>
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.savedRingtonesNotModified">account.savedRingtonesNotModified</a></remarks>
+	[TLDef(0xC1E92CC5)]
+	public class Account_SavedRingtones : IObject
+	{
+		public long hash;
+		public DocumentBase[] ringtones;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/NotificationSound"/></para></summary>
+	public abstract class NotificationSound : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/notificationSoundDefault"/></para></summary>
+	[TLDef(0x97E8BEBE)]
+	public class NotificationSoundDefault : NotificationSound { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/notificationSoundNone"/></para></summary>
+	[TLDef(0x6F0C34DF)]
+	public class NotificationSoundNone : NotificationSound { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/notificationSoundLocal"/></para></summary>
+	[TLDef(0x830B9AE4)]
+	public class NotificationSoundLocal : NotificationSound
+	{
+		public string title;
+		public string data;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/notificationSoundRingtone"/></para></summary>
+	[TLDef(0xFF6C8049)]
+	public class NotificationSoundRingtone : NotificationSound
+	{
+		public long id;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.savedRingtone"/></para></summary>
+	[TLDef(0xB7263F6D)]
+	public class Account_SavedRingtone : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.savedRingtoneConverted"/></para></summary>
+	[TLDef(0x1F307EB7)]
+	public class Account_SavedRingtoneConverted : Account_SavedRingtone
+	{
+		public DocumentBase document;
 	}
 }
