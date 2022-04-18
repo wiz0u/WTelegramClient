@@ -1109,6 +1109,7 @@ namespace WTelegram
 			var result = await rpc.Task;
 			switch (result)
 			{
+				case null: return default;
 				case T resultT: return resultT;
 				case RpcError { error_code: var code, error_message: var message }:
 					int x = -1;

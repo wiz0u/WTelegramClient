@@ -352,12 +352,15 @@ client.TcpHandler = async (address, port) =>
 };
 ```
 <a name="mtproxy"></a>
-MTProxy (MTProto proxy) can be used to prevent ISP blocks, through the `client.MTProxyUrl` property:
+MTProxy (MTProto proxy) can be used to prevent ISP blocking Telegram servers, through the `client.MTProxyUrl` property:
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 client.MTProxyUrl = "http://t.me/proxy?server=...&port=...&secret=...";
 var myself = await client.LoginUserIfNeeded();
 ```
+You can find a list of working MTProxies in channels like [@ProxyMTProto](https://t.me/ProxyMTProto) or [@MTProxyT](https://t.me/MTProxyT) *(right-click the "Connect" buttons)*  
+If your Telegram client is already connected to such MTPROTO proxy, you can also export its URL by clicking on the shield button ![🛡](https://raw.githubusercontent.com/telegramdesktop/tdesktop/dev/Telegram/Resources/icons/proxy_on.png) and then **⋮** > **Share**
+
 *Note: WTelegramClient always uses transport obfuscation when connecting to Telegram servers, even without MTProxy*
 
 <a name="logging"></a>

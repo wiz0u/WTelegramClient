@@ -7,9 +7,10 @@
 
 ## _Telegram Client API library written 100% in C# and .NET Standard_
 
-This ReadMe is a **quick but important tutorial** to learn the fundamentals about this library. Please read it all.  
 This library allows you to connect to Telegram and control a user programmatically (or a bot, but [Telegram.Bot](https://github.com/TelegramBots/Telegram.Bot) is much easier for that).
 All the Telegram Client APIs are supported so you can do everything the user could do with a full Telegram GUI client.
+
+This ReadMe is a **quick but important tutorial** to learn the fundamentals about this library. Please read it all.
 
 >⚠️ This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this advanced topic before proceeding.  
 >If you are a beginner in C#, starting a project based on this library might not be a great idea.
