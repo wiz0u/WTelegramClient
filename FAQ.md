@@ -73,8 +73,8 @@ You can then retrieve it with `client.GetAccessHashFor<User/Channel/Photo/Docume
 
 The developmental versions of the library are available through Azure DevOps as part of the Continuous Integration builds after each Github commit.
 
-You can access these versions for testing in your program by going to our [private nuget feed](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&view=overview&package=WTelegramClient&protocolType=NuGet),
-then click on "Connect to feed" and follow the steps to setup your dev environment.
+You can access these versions for testing in your program by going to our [private nuget feeds](https://dev.azure.com/wiz0u/WTelegramClient/_artifacts/feed/WTelegramClient),
+click on "WTelegramClient" feed, then on button "Connect to feed" and follow the steps to setup your dev environment.
 After that, you should be able to see/install the pre-release versions in your Nuget package manager and install them in your application. *(make sure you enable the **pre-release** checkbox)*
 
 <a name="wrong-server"></a>
