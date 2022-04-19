@@ -955,8 +955,7 @@ namespace WTelegram
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
 			{
 				var waitUntil = DateTime.UtcNow.AddSeconds(3);
-				if (signUpRequired.terms_of_service != null)
-					OnUpdate(signUpRequired.terms_of_service); // give caller the possibility to read and accept TOS
+				OnUpdate(signUpRequired); // give caller the possibility to read and accept TOS
 				var first_name = Config("first_name");
 				var last_name = Config("last_name");
 				var wait = waitUntil - DateTime.UtcNow;
