@@ -25,7 +25,7 @@ namespace WTelegramClientTest
 		{
 			var exit = new SemaphoreSlim(0);
 			AppDomain.CurrentDomain.ProcessExit += (s, e) => exit.Release(); // detect SIGTERM to exit gracefully
-			var store = new PostgreStore(Environment.GetEnvironmentVariable("DATABASE_URL"));
+			var store = new PostgreStore(Environment.GetEnvironmentVariable("DATABASE_URL"), Environment.GetEnvironmentVariable("SESSION_NAME"));
 			// if DB does not contain a session yet, client will be run in interactive mode
 			Client = new WTelegram.Client(store.Length == 0 ? null : Environment.GetEnvironmentVariable, store);
 			using (Client)
@@ -61,19 +61,23 @@ namespace WTelegramClientTest
 	class PostgreStore : Stream
 	{
 		private readonly NpgsqlConnection _sql;
+		private readonly string _sessionName;
 		private byte[] _data;
 		private int _dataLen;
 		private DateTime _lastWrite;
 		private Task _delayedWrite;
 
-		public PostgreStore(string databaseUrl) // Heroku DB URL of the form "postgres://user:password@host:port/database"
+		/// <param name="databaseUrl">Heroku DB URL of the form "postgres://user:password@host:port/database"</param>
+		/// <param name="sessionName">Entry name for the session data in the WTelegram_sessions table (default: "Heroku")</param>
+		public PostgreStore(string databaseUrl, string sessionName = null)
 		{
+			_sessionName = sessionName ?? "Heroku";
 			var parts = databaseUrl.Split(':', '/', '@');
 			_sql = new NpgsqlConnection($"User ID={parts[3]};Password={parts[4]};Host={parts[5]};Port={parts[6]};Database={parts[7]};Pooling=true;SSL Mode=Require;Trust Server Certificate=True;");
 			_sql.Open();
-			using (var create = new NpgsqlCommand($"CREATE TABLE IF NOT EXISTS WTelegram (name text NOT NULL PRIMARY KEY, data bytea)", _sql))
+			using (var create = new NpgsqlCommand($"CREATE TABLE IF NOT EXISTS WTelegram_sessions (name text NOT NULL PRIMARY KEY, data bytea)", _sql))
 				create.ExecuteNonQuery();
-			using var cmd = new NpgsqlCommand($"SELECT data FROM WTelegram WHERE name = 'session'", _sql);
+			using var cmd = new NpgsqlCommand($"SELECT data FROM WTelegram_sessions WHERE name = '{_sessionName}'", _sql);
 			using var rdr = cmd.ExecuteReader();
 			if (rdr.Read())
 				_dataLen = (_data = rdr[0] as byte[]).Length;
@@ -98,7 +102,7 @@ namespace WTelegramClientTest
 			var left = 1000 - (int)(DateTime.UtcNow - _lastWrite).TotalMilliseconds;
 			if (left < 0)
 			{
-				using var cmd = new NpgsqlCommand($"INSERT INTO WTelegram (name, data) VALUES ('session', @data) ON CONFLICT (name) DO UPDATE SET data = EXCLUDED.data", _sql);
+				using var cmd = new NpgsqlCommand($"INSERT INTO WTelegram_sessions (name, data) VALUES ('{_sessionName}', @data) ON CONFLICT (name) DO UPDATE SET data = EXCLUDED.data", _sql);
 				cmd.Parameters.AddWithValue("data", count == buffer.Length ? buffer : buffer[offset..(offset + count)]);
 				cmd.ExecuteNonQuery();
 				_lastWrite = DateTime.UtcNow;
@@ -144,5 +148,6 @@ HOW TO USE AND DEPLOY THIS EXAMPLE HEROKU USERBOT:
 - Now your userbot should be running 24/7. Note however that a full month of usage is 31*24 = 744 dyno hours.
   By default a free account gets 550 free dyno hours per month after which your app is stopped. If you register
   a credit card with your account, 450 additional free dyno hours are offered at no charge, which should be enough for 24/7
+- To prevent AUTH_KEY_DUPLICATED issues, set a SESSION_NAME env variable in your local VS project with a value like "PC"
 DISCLAIMER: I'm not affiliated nor expert with Heroku, so if you have any problem with the above I might not be able to help
 ******************************************************************************************************************************/
