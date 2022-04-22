@@ -912,6 +912,7 @@ namespace WTelegram
 			}
 			phone_number ??= Config("phone_number");
 			Auth_SentCode sentCode;
+#pragma warning disable CS0618 // Auth_* methods are marked as obsolete
 			try
 			{
 				sentCode = await this.Auth_SendCode(phone_number, _session.ApiId, _apiHash ??= Config("api_hash"), settings ??= new());
@@ -920,38 +921,46 @@ namespace WTelegram
 			{
 				sentCode = await this.Auth_SendCode(phone_number, _session.ApiId, _apiHash, settings);
 			}
-		resent:
-			var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);
-			OnUpdate(sentCode);
-			Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
 			Auth_AuthorizationBase authorization = null;
-			for (int retry = 1; authorization == null; retry++)
-				try
-				{
-					var verification_code = await ConfigAsync("verification_code");
-					if (verification_code == "" && sentCode.next_type != 0)
+			try
+			{
+			resent:
+				var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);
+				OnUpdate(sentCode);
+				Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
+				for (int retry = 1; authorization == null; retry++)
+					try
 					{
-						var mustWait = timeout - DateTime.UtcNow;
-						if (mustWait.Ticks > 0)
+						var verification_code = await ConfigAsync("verification_code");
+						if (verification_code == "" && sentCode.next_type != 0)
 						{
-							Helpers.Log(3, $"You must wait {(int)(mustWait.TotalSeconds + 0.5)} more seconds before requesting the code to be sent via {sentCode.next_type}");
-							continue;
+							var mustWait = timeout - DateTime.UtcNow;
+							if (mustWait.Ticks > 0)
+							{
+								Helpers.Log(3, $"You must wait {(int)(mustWait.TotalSeconds + 0.5)} more seconds before requesting the code to be sent via {sentCode.next_type}");
+								continue;
+							}
+							sentCode = await this.Auth_ResendCode(phone_number, sentCode.phone_code_hash);
+							goto resent;
 						}
-						sentCode = await this.Auth_ResendCode(phone_number, sentCode.phone_code_hash);
-						goto resent;
+						authorization = await this.Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
 					}
-					authorization = await this.Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
-				}
-				catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
-				{
-					var accountPassword = await this.Account_GetPassword();
-					OnUpdate(accountPassword);
-					var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
-					authorization = await this.Auth_CheckPassword(checkPasswordSRP);
-				}
-				catch (RpcException e) when (e.Code == 400 && e.Message == "PHONE_CODE_INVALID" && retry != 3)
-				{
-				}
+					catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
+					{
+						var accountPassword = await this.Account_GetPassword();
+						OnUpdate(accountPassword);
+						var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
+						authorization = await this.Auth_CheckPassword(checkPasswordSRP);
+					}
+					catch (RpcException e) when (e.Code == 400 && e.Message == "PHONE_CODE_INVALID" && retry != 3)
+					{
+					}
+			}
+			catch
+			{
+				await this.Auth_CancelCode(phone_number, sentCode.phone_code_hash);
+				throw;
+			}
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
 			{
 				var waitUntil = DateTime.UtcNow.AddSeconds(3);
@@ -962,6 +971,7 @@ namespace WTelegram
 				if (wait > TimeSpan.Zero) await Task.Delay(wait); // we get a FLOOD_WAIT_3 if we SignUp too fast
 				authorization = await this.Auth_SignUp(phone_number, sentCode.phone_code_hash, first_name, last_name);
 			}
+#pragma warning restore CS0618
 			return LoginAlreadyDone(authorization);
 		}
 

@@ -201,8 +201,8 @@ See the [full method list](https://core.telegram.org/methods) (just replace the 
 A session file is created or resumed automatically on startup, and maintained up-to-date automatically throughout the session.  
 That session file is incompatible with TLSharp so you cannot reuse a TLSharp .dat file. You'll need to create a new session.
 
-You don't have to call methods Auth_SignIn/SignUp/.. manually anymore because all the login phase is handled automatically by calling `await client.LoginUserIfNeeded()` after creating the client.
-Your Config callback just need to provide the various login answers if they are needed.  
+**DON'T** call methods Auth_SendCode/SignIn/SignUp/... because all the login phase is handled automatically by calling `await client.LoginUserIfNeeded()` after creating the client.
+Your Config callback just need to provide the various login answers if they are needed (see [ReadMe](README.md)).  
 In particular, it will detect and handle automatically the various login cases/particularity like:
 * Login not necessary (when a session is resumed with an already logged-in user)
 * 2FA password required (your Config needs to provide "password")

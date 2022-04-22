@@ -97,6 +97,7 @@ namespace TL
 		/// <param name="api_id">Application identifier (see <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="api_hash">Application secret hash (see <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="settings">Settings for the code type to send</param>
+		[Obsolete("Use LoginUserIfNeeded instead of this method. See https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#tlsharp")]
 		public static Task<Auth_SentCode> Auth_SendCode(this Client client, string phone_number, int api_id, string api_hash, CodeSettings settings)
 			=> client.Invoke(new Auth_SendCode
 			{
@@ -111,6 +112,7 @@ namespace TL
 		/// <param name="phone_code_hash">SMS-message ID</param>
 		/// <param name="first_name">New user first name</param>
 		/// <param name="last_name">New user last name</param>
+		[Obsolete("Use LoginUserIfNeeded instead of this method. See https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#tlsharp")]
 		public static Task<Auth_AuthorizationBase> Auth_SignUp(this Client client, string phone_number, string phone_code_hash, string first_name, string last_name)
 			=> client.Invoke(new Auth_SignUp
 			{
@@ -124,6 +126,7 @@ namespace TL
 		/// <param name="phone_number">Phone number in the international format</param>
 		/// <param name="phone_code_hash">SMS-message ID, obtained from <a href="https://corefork.telegram.org/method/auth.sendCode">auth.sendCode</a></param>
 		/// <param name="phone_code">Valid numerical code from the SMS-message</param>
+		[Obsolete("Use LoginUserIfNeeded instead of this method. See https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#tlsharp")]
 		public static Task<Auth_AuthorizationBase> Auth_SignIn(this Client client, string phone_number, string phone_code_hash, string phone_code)
 			=> client.Invoke(new Auth_SignIn
 			{
@@ -217,6 +220,7 @@ namespace TL
 		/// <summary>Resend the login code via another medium, the phone code type is determined by the return value of the previous auth.sendCode/auth.resendCode: see <a href="https://corefork.telegram.org/api/auth">login</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/auth.resendCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/auth.resendCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">The phone number</param>
 		/// <param name="phone_code_hash">The phone code hash obtained from <a href="https://corefork.telegram.org/method/auth.sendCode">auth.sendCode</a></param>
+		[Obsolete("Use LoginUserIfNeeded instead of this method. See https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#tlsharp")]
 		public static Task<Auth_SentCode> Auth_ResendCode(this Client client, string phone_number, string phone_code_hash)
 			=> client.Invoke(new Auth_ResendCode
 			{
@@ -227,6 +231,7 @@ namespace TL
 		/// <summary>Cancel the login verification code		<para>See <a href="https://corefork.telegram.org/method/auth.cancelCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/auth.cancelCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">Phone number</param>
 		/// <param name="phone_code_hash">Phone code hash from <a href="https://corefork.telegram.org/method/auth.sendCode">auth.sendCode</a></param>
+		[Obsolete("Use LoginUserIfNeeded instead of this method. See https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#tlsharp")]
 		public static Task<bool> Auth_CancelCode(this Client client, string phone_number, string phone_code_hash)
 			=> client.Invoke(new Auth_CancelCode
 			{
