@@ -1149,7 +1149,7 @@ namespace WTelegram
 							goto retry;
 						}
 					}
-					else if (code == 420 && message.EndsWith("_WAIT_X"))
+					else if (code == 420 && (message.EndsWith("_WAIT_X") || message.EndsWith("_DELAY_X")))
 					{
 						if (x <= FloodRetryThreshold)
 						{

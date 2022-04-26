@@ -656,7 +656,7 @@ namespace TL
 		/// <summary>Initialize account takeout session		<para>See <a href="https://corefork.telegram.org/method/account.initTakeoutSession"/></para>		<para>Possible <see cref="RpcException"/> codes: 420 (<a href="https://corefork.telegram.org/method/account.initTakeoutSession#possible-errors">details</a>)</para></summary>
 		/// <param name="contacts">Whether to export contacts</param>
 		/// <param name="message_users">Whether to export messages in private chats</param>
-		/// <param name="message_chats">Whether to export messages in <a href="https://corefork.telegram.org/api/channel#legacy-groups">legacy groups</a></param>
+		/// <param name="message_chats">Whether to export messages in <a href="https://corefork.telegram.org/api/channel#legacy-groups">basic groups</a></param>
 		/// <param name="message_megagroups">Whether to export messages in <a href="https://corefork.telegram.org/api/channel#supergroups">supergroups</a></param>
 		/// <param name="message_channels">Whether to export messages in <a href="https://corefork.telegram.org/api/channel#channels">channels</a></param>
 		/// <param name="files">Whether to export files</param>
@@ -1484,8 +1484,8 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Get full info about a <a href="https://corefork.telegram.org/api/channel#legacy-groups">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getFullChat"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getFullChat#possible-errors">details</a>)</para></summary>
-		/// <param name="chat_id"><a href="https://corefork.telegram.org/api/channel#legacy-groups">Legacy group</a> ID.</param>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Get full info about a <a href="https://corefork.telegram.org/api/channel#legacy-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getFullChat"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getFullChat#possible-errors">details</a>)</para></summary>
+		/// <param name="chat_id"><a href="https://corefork.telegram.org/api/channel#legacy-groups">Basic group</a> ID.</param>
 		public static Task<Messages_ChatFull> Messages_GetFullChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_GetFullChat
 			{
@@ -1796,7 +1796,7 @@ namespace TL
 				increment = increment,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Make a user admin in a <a href="https://corefork.telegram.org/api/channel#legacy-groups">legacy group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAdmin"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatAdmin#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Make a user admin in a <a href="https://corefork.telegram.org/api/channel#legacy-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAdmin"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatAdmin#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">The ID of the group</param>
 		/// <param name="user_id">The user to make admin</param>
 		/// <param name="is_admin">Whether to make them admin</param>
@@ -1808,8 +1808,8 @@ namespace TL
 				is_admin = is_admin,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Turn a <a href="https://corefork.telegram.org/api/channel#migration">legacy group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
-		/// <param name="chat_id"><a href="https://corefork.telegram.org/api/channel#legacy-groups">Legacy group</a> to migrate</param>
+		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Turn a <a href="https://corefork.telegram.org/api/channel#migration">basic group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
+		/// <param name="chat_id"><a href="https://corefork.telegram.org/api/channel#legacy-groups">Basic group</a> to migrate</param>
 		public static Task<UpdatesBase> Messages_MigrateChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_MigrateChat
 			{

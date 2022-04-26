@@ -202,7 +202,7 @@ A session file is created or resumed automatically on startup, and maintained up
 That session file is incompatible with TLSharp so you cannot reuse a TLSharp .dat file. You'll need to create a new session.
 
 **DON'T** call methods Auth_SendCode/SignIn/SignUp/... because all the login phase is handled automatically by calling `await client.LoginUserIfNeeded()` after creating the client.
-Your Config callback just need to provide the various login answers if they are needed (see [ReadMe](README.md)).  
+Your Config callback just need to provide the various login answers if they are needed (see [ReadMe](README.md) and [FAQ #4](#GUI)).  
 In particular, it will detect and handle automatically the various login cases/particularity like:
 * Login not necessary (when a session is resumed with an already logged-in user)
 * 2FA password required (your Config needs to provide "password")
