@@ -42,7 +42,7 @@ All those API methods are available *(with an underscore in the method name, ins
 # Saved session
 If you run this program again, you will notice that only **api_hash** is requested, the other prompts are gone and you are automatically logged-on and ready to go.
 
-This is because WTelegramClient saves (typically in the encrypted file **bin\WTelegram.session**) its state and the authentication keys that were negociated with Telegram so that you needn't sign-in again every time.
+This is because WTelegramClient saves (typically in the encrypted file **bin\WTelegram.session**) its state and the authentication keys that were negotiated with Telegram so that you needn't sign-in again every time.
 
 That file path is configurable (session_pathname), and under various circumstances (changing user or server address) you may want to change it or simply delete the existing session file in order to restart the authentification process.
 
@@ -119,7 +119,7 @@ await client.SendMessageAsync(target, "Hello, World");
 # Terminology in Telegram Client API
 
 In the API, Telegram uses some terms/classnames that can be confusing as they differ from the terms shown to end-users:
-- `Channel` : A (large or public) chat group *(sometimes called supergroup)* or a broadcast channel (the `broadcast` flag differenciate those)
+- `Channel` : A (large or public) chat group *(sometimes called supergroup)* or a broadcast channel (the `broadcast` flag differentiate those)
 - `Chat` : A private simple chat group with less than 200 members (it may be migrated to a supergroup `Channel` with a new ID when it gets bigger or public, in which case the old `Chat` will still exist but be `deactivated`)  
 **⚠️ Most chat groups you see are really of type `Channel`, not `Chat`!**
 - chats : In plural or general meaning, it means either `Chat` or `Channel`
