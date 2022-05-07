@@ -189,7 +189,7 @@ you might also get Connection shutdown because your client couldn't send Pings t
 In this case, you can use the `PingInterval` property to increase the delay between pings *(for example 300 seconds instead of 60)*.
 
 <a name="TLSharp"></a>
-#### 11. How to migrate from TLSharp? How to sign-in/sign-up/register account?
+#### 11. How to migrate from TLSharp? How to sign-in/sign-up/register account properly?
 
 First, make sure you read the [ReadMe documentation](README.md) completely, it contains essential information and a quick tutorial to easily understand how to correctly use the library.
 
@@ -199,18 +199,20 @@ All client APIs have dedicated async methods that you can call like this: `await
 See the [full method list](https://core.telegram.org/methods) (just replace the dot with an underscore in the names)
 
 A session file is created or resumed automatically on startup, and maintained up-to-date automatically throughout the session.  
-That session file is incompatible with TLSharp so you cannot reuse a TLSharp .dat file. You'll need to create a new session.
+That session file is incompatible with TLSharp so you cannot reuse a TLSharp .dat file. You'll need to create a new session.  
+To fight against the reselling of fake user accounts, we don't support the import/export of session files from external sources.
 
 **DON'T** call methods Auth_SendCode/SignIn/SignUp/... because all the login phase is handled automatically by calling `await client.LoginUserIfNeeded()` after creating the client.
 Your Config callback just need to provide the various login answers if they are needed (see [ReadMe](README.md) and [FAQ #4](#GUI)).  
-In particular, it will detect and handle automatically the various login cases/particularity like:
+In particular, it will detect and handle automatically and properly the various login cases/particularity like:
 * Login not necessary (when a session is resumed with an already logged-in user)
+* Logout required (if you want to change the logged-in user)
 * 2FA password required (your Config needs to provide "password")
 * Account registration/sign-up required (your Config needs to provide "first_name", "last_name")
 * Request to resend the verification code through alternate ways like SMS (if your Config answer an empty "verification_code" initially)
-* Transient failures, slowness to respond, check for encryption key safety, etc..
+* Transient failures, slowness to respond, checks for encryption key safety, etc..
 
-Contrary to TLSharp, WTelegram supports MTProto v2.0, protocol security checks, transport obfuscation, MTProto Proxy, real-time updates, multiple DC connections, API documentation in Intellisense...
+Contrary to TLSharp, WTelegramClient supports MTProto v2.0 (more secured), transport obfuscation, protocol security checks, MTProto Proxy, real-time updates, multiple DC connections, API documentation in Intellisense...
 
 <a name="heroku"></a><a name="vps"></a><a name="host"></a>
 #### 12. How to host my userbot online?
