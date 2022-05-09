@@ -113,7 +113,7 @@ Console.WriteLine($"Sending a message in chat {chatId}: {target.Title}");
 await client.SendMessageAsync(target, "Hello, World");
 ```
 
-➡️ You can find more useful code snippets in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md) and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).
+➡️ You can find lots of useful code snippets in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md) and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).
 
 <a name="terminology"></a>
 # Terminology in Telegram Client API

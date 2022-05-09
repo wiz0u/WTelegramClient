@@ -176,11 +176,14 @@ namespace WTelegram
 				if (CheckMsgsToAck() is MsgsAck msgsAck)
 					SendAsync(msgsAck, false).Wait(1000);
 			}
-			catch (Exception)
-			{
-			}
+			catch { }
 			_cts?.Cancel();
 			_sendSemaphore = new(0);	// initially taken, first released during DoConnectAsync
+			try
+			{
+				_reactorTask?.Wait(1000);
+			}
+			catch { }
 			_reactorTask = null;
 			_networkStream?.Close();
 			_tcpClient?.Dispose();
@@ -668,7 +671,7 @@ namespace WTelegram
 			{
 				await tcpClient.ConnectAsync(host, port);
 			}
-			catch (Exception)
+			catch
 			{
 				tcpClient.Dispose();
 				throw;
@@ -769,7 +772,7 @@ namespace WTelegram
 						}
 					}
 				}
-				catch (Exception)
+				catch
 				{
 					tcpClient?.Dispose();
 					throw;
