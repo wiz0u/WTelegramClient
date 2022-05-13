@@ -343,9 +343,9 @@ namespace TL
 	{
 		message = new Message
 		{
-			flags = (Message.Flags)flags | Message.Flags.has_from_id, id = id, date = date,
+			flags = (Message.Flags)flags | (flags.HasFlag(Flags.out_) ? 0 : Message.Flags.has_from_id), id = id, date = date,
 			message = message, entities = entities, reply_to = reply_to,
-			from_id = new PeerUser { user_id = user_id },
+			from_id = flags.HasFlag(Flags.out_) ? null : new PeerUser { user_id = user_id },
 			peer_id = new PeerUser { user_id = user_id },
 			fwd_from = fwd_from, via_bot_id = via_bot_id, ttl_period = ttl_period
 		}, pts = pts, pts_count = pts_count
