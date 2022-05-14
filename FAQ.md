@@ -94,7 +94,7 @@ If you use the Github source project in an old .NET Framework 4.x or .NET Core x
 To fix this, you should also switch to using the [WTelegramClient Nuget package](https://www.nuget.org/packages/WTelegramClient) as it will install the required dependencies for it to work.
 
 <a name="abuse"></a>
-#### 7. I get error FLOOD_WAIT_8xxxx or PEER_FLOOD, PHONE_NUMBER_BANNED. I can't import phone numbers.
+#### 7. I get errors FLOOD_WAIT_X or PEER_FLOOD, PHONE_NUMBER_BANNED. I can't import phone numbers.
 
 You can get these kind of problems if you abuse Telegram [Terms of Service](https://telegram.org/tos), or the [API Terms of Service](https://core.telegram.org/api/terms), or make excessive requests.
 

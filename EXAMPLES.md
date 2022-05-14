@@ -18,7 +18,7 @@ Remember that these are just simple example codes that you should adjust to your
 In real production code, you might want to properly test the success of each operation or handle exceptions.
 
 ℹ️ WTelegramClient covers 100% of Telegram Client API, much more than the examples below: check the [full API methods list](https://corefork.telegram.org/methods)!  
-More examples can also be found in answers to [StackOverflow questions](https://stackoverflow.com/questions/tagged/wtelegramclient).
+More examples can also be found in the [Examples folder](Examples) and in answers to [StackOverflow questions](https://stackoverflow.com/questions/tagged/wtelegramclient).
 
 <a name="msg-by-name"></a>
 ### Send a message to someone by @username
