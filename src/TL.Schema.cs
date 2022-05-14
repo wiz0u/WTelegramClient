@@ -991,6 +991,8 @@ namespace TL
 			gigagroup = 0x4000000,
 			/// <summary>Whether this channel or group is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a>, thus does not allow forwarding messages from it</summary>
 			noforwards = 0x8000000,
+			join_to_send = 0x10000000,
+			join_request = 0x20000000,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -4578,6 +4580,7 @@ namespace TL
 			cdn = 0x8,
 			/// <summary>If set, this IP should be used when connecting through a proxy</summary>
 			static_ = 0x10,
+			this_port_only = 0x20,
 			/// <summary>Field <see cref="secret"/> has a value</summary>
 			has_secret = 0x400,
 		}
@@ -4708,6 +4711,7 @@ namespace TL
 			has_static_maps_provider = 0x1000,
 			/// <summary>Whether <a href="https://corefork.telegram.org/api/pfs">pfs</a> was used</summary>
 			pfs_enabled = 0x2000,
+			force_try_ipv6 = 0x4000,
 		}
 	}
 
@@ -8983,9 +8987,10 @@ namespace TL
 		public abstract int Port { get; }
 	}
 	/// <summary>Identifies an endpoint that can be used to connect to the other user in a phone call		<para>See <a href="https://corefork.telegram.org/constructor/phoneConnection"/></para></summary>
-	[TLDef(0x9D4C17C0)]
+	[TLDef(0x9CC123C7)]
 	public class PhoneConnection : PhoneConnectionBase
 	{
+		public Flags flags;
 		/// <summary>Endpoint ID</summary>
 		public long id;
 		/// <summary>IP address of endpoint</summary>
@@ -8996,6 +9001,11 @@ namespace TL
 		public int port;
 		/// <summary>Our peer tag</summary>
 		public byte[] peer_tag;
+
+		[Flags] public enum Flags : uint
+		{
+			tcp = 0x1,
+		}
 
 		/// <summary>Endpoint ID</summary>
 		public override long ID => id;
@@ -11913,6 +11923,7 @@ namespace TL
 			has_reply_to_peer_id = 0x1,
 			/// <summary>Field <see cref="reply_to_top_id"/> has a value</summary>
 			has_reply_to_top_id = 0x2,
+			reply_to_scheduled = 0x4,
 		}
 	}
 
@@ -12488,6 +12499,7 @@ namespace TL
 			has_from_id = 0x8,
 			/// <summary>Field <see cref="chat_invite"/> has a value</summary>
 			has_chat_invite = 0x10,
+			recommended = 0x20,
 		}
 	}
 

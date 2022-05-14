@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 140;					// fetched 01/05/2022 19:32:46
+		public const int Version = 142;					// fetched 14/05/2022 22:26:18
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -680,7 +680,7 @@ namespace TL
 			[0x3660C311] = typeof(PhoneCallAccepted),
 			[0x967F7C67] = typeof(PhoneCall),
 			[0x50CA4DE1] = typeof(PhoneCallDiscarded),
-			[0x9D4C17C0] = typeof(PhoneConnection),
+			[0x9CC123C7] = typeof(PhoneConnection),
 			[0x635FE375] = typeof(PhoneConnectionWebrtc),
 			[0xFC878FC8] = typeof(PhoneCallProtocol),
 			[0xEC82E140] = typeof(Phone_PhoneCall),

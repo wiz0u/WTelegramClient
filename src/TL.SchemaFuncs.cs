@@ -4543,6 +4543,14 @@ namespace TL
 				revoke = revoke,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.saveCallLog"/></para></summary>
+		public static Task<bool> Phone_SaveCallLog(this Client client, InputPhoneCall peer, InputFileBase file)
+			=> client.Invoke(new Phone_SaveCallLog
+			{
+				peer = peer,
+				file = file,
+			});
+
 		/// <summary>Get localization pack strings		<para>See <a href="https://corefork.telegram.org/method/langpack.getLangPack"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/langpack.getLangPack#possible-errors">details</a>)</para></summary>
 		/// <param name="lang_pack">Language pack name</param>
 		/// <param name="lang_code">Language code</param>
@@ -8318,6 +8326,13 @@ namespace TL.Methods
 	{
 		public InputPeer peer;
 		public bool revoke;
+	}
+
+	[TLDef(0x41248786)]
+	public class Phone_SaveCallLog : IMethod<bool>
+	{
+		public InputPhoneCall peer;
+		public InputFileBase file;
 	}
 
 	[TLDef(0xF2F2330A)]
