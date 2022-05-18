@@ -276,7 +276,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 
 		private static byte[] AES_IGE_EncryptDecrypt(Span<byte> input, byte[] aes_key, byte[] aes_iv, bool encrypt)
 		{
-			if (input.Length % 16 != 0) throw new ApplicationException("intput size not divisible by 16");
+			if (input.Length % 16 != 0) throw new ApplicationException("AES_IGE input size not divisible by 16");
 
 			// code adapted from PHP implementation found at https://mgp25.com/AESIGE/
 			var output = new byte[input.Length];

@@ -94,7 +94,7 @@ If you use the Github source project in an old .NET Framework 4.x or .NET Core x
 To fix this, you should also switch to using the [WTelegramClient Nuget package](https://www.nuget.org/packages/WTelegramClient) as it will install the required dependencies for it to work.
 
 <a name="abuse"></a>
-#### 7. I get errors FLOOD_WAIT_X or PEER_FLOOD, PHONE_NUMBER_BANNED. I can't import phone numbers.
+#### 7. I get errors FLOOD_WAIT_X or PEER_FLOOD, PHONE_NUMBER_BANNED, USER_DEACTIVATED_BAN. I can't import phone numbers.
 
 You can get these kind of problems if you abuse Telegram [Terms of Service](https://telegram.org/tos), or the [API Terms of Service](https://core.telegram.org/api/terms), or make excessive requests.
 
@@ -108,7 +108,7 @@ If you think your phone number was banned from Telegram for a wrong reason, you 
 In any case, WTelegramClient is not responsible for the bad usage of the library and we are not affiliated to Telegram teams, so there is nothing we can do.
 
 <a name="prevent-ban"></a>
-#### 8. How to not get banned from Telegram?
+#### 8. How to NOT get banned from Telegram?
 
 **Do not share publicly your app's ID and hash!** They cannot be regenerated and are bound to your Telegram account.
 

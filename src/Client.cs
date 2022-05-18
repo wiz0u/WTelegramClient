@@ -383,12 +383,27 @@ namespace WTelegram
 				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, (dataLen - 24) & ~0xF), false, _dcSession.AuthKey, data, 8, _sha256Recv);
 				if (decrypted_data.Length < 36) // header below+ctorNb
 					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
+				_sha256Recv.TransformBlock(_dcSession.AuthKey, 96, 32, null, 0);
+				_sha256Recv.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
+				if (!data.AsSpan(8, 16).SequenceEqual(_sha256Recv.Hash.AsSpan(8, 16)))
+					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA256");
+				_sha256Recv.Initialize();
 				using var reader = new TL.BinaryReader(new MemoryStream(decrypted_data), this);
 				var serverSalt = reader.ReadInt64();    // int64 salt
 				var sessionId = reader.ReadInt64();     // int64 session_id
 				var msgId = reader.ReadInt64();         // int64 message_id
 				var seqno = reader.ReadInt32();         // int32 msg_seqno
 				var length = reader.ReadInt32();        // int32 message_data_length
+				
+				if (length < 0 || length % 4 != 0) throw new ApplicationException($"Invalid message_data_length: {length}");
+				if (decrypted_data.Length - 32 - length is < 12 or > 1024) throw new ApplicationException($"Invalid message padding length: {decrypted_data.Length - 32}-{length}");
+				if (sessionId != _dcSession.Id) throw new ApplicationException($"Unexpected session ID: {sessionId} != {_dcSession.Id}");
+				if ((msgId & 1) == 0) throw new ApplicationException($"msg_id is not odd: {msgId}");
+				if (!_dcSession.CheckNewMsgId(msgId))
+				{
+					Helpers.Log(3, $"{_dcSession.DcID}>Ignoring duplicate or old msg_id {msgId}");
+					return null;
+				}
 				if (_lastRecvMsgId == 0) // resync ServerTicksOffset on first message
 					_dcSession.ServerTicksOffset = (msgId >> 32) * 10000000 - DateTime.UtcNow.Ticks + 621355968000000000L;
 				var msgStamp = MsgIdToStamp(_lastRecvMsgId = msgId);
@@ -401,15 +416,7 @@ namespace WTelegram
 					if (_saltChangeCounter >= 30)
 						throw new ApplicationException($"Server salt changed too often! Security issue?");
 				}
-				if (sessionId != _dcSession.Id) throw new ApplicationException($"Unexpected session ID {sessionId} != {_dcSession.Id}");
-				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				if ((seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msgId);
-				if (decrypted_data.Length - 32 - length is < 12 or > 1024) throw new ApplicationException($"Unexpected decrypted message_data_length {length} / {decrypted_data.Length - 32}");
-				_sha256Recv.TransformBlock(_dcSession.AuthKey, 96, 32, null, 0);
-				_sha256Recv.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
-				if (!data.AsSpan(8, 16).SequenceEqual(_sha256Recv.Hash.AsSpan(8, 16)))
-					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA256");
-				_sha256Recv.Initialize();
 
 				var ctorNb = reader.ReadUInt32();
 				if (ctorNb != Layer.BadMsgCtor && (msgStamp - DateTime.UtcNow).Ticks / TimeSpan.TicksPerSecond is > 30 or < -300)

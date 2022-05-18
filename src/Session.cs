@@ -33,6 +33,41 @@ namespace WTelegram
 			internal int DcID => DataCenter?.id ?? 0;
 			internal IPEndPoint EndPoint => DataCenter == null ? null : new(IPAddress.Parse(DataCenter.ip_address), DataCenter.port);
 			internal void Renew() { Helpers.Log(3, $"Renewing session on DC {DcID}..."); Id = Helpers.RandomLong(); Seqno = 0; LastSentMsgId = 0; }
+			
+			const int msgIdsN = 512;
+			private long[] msgIds;
+			private int msgIdsHead;
+			internal bool CheckNewMsgId(long msg_id)
+			{
+				if (msgIds == null)
+				{
+					msgIds = new long[msgIdsN];
+					for (int i = 0; i < msgIdsN; i++) msgIds[i] = msg_id;
+					return true;
+				}
+				int newHead = (msgIdsHead + 1) % msgIdsN;
+				if (msg_id > msgIds[msgIdsHead])
+					msgIds[msgIdsHead = newHead] = msg_id;
+				else if (msg_id <= msgIds[newHead])
+					return false;
+				else
+				{
+					int min = 0, max = msgIdsN - 1;
+					while (min <= max)  // binary search (rotated at newHead)
+					{
+						int mid = (min + max) / 2;
+						int sign = msg_id.CompareTo(msgIds[(mid + newHead) % msgIdsN]);
+						if (sign == 0) return false;
+						else if (sign < 0) max = mid - 1;
+						else min = mid + 1;
+					}
+					msgIdsHead = newHead;
+					for (min = (min + newHead) % msgIdsN; newHead != min;)
+						msgIds[newHead] = msgIds[newHead = newHead == 0 ? msgIdsN - 1 : newHead - 1];
+					msgIds[min] = msg_id;
+				}
+				return true;
+			}
 		}
 
 		public DateTime SessionStart => _sessionStart;
