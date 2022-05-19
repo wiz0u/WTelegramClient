@@ -73,8 +73,8 @@ You can then retrieve it with `client.GetAccessHashFor<User/Channel/Photo/Docume
 
 The developmental versions of the library are available through Azure DevOps as part of the Continuous Integration builds after each Github commit.
 
-You can access these versions for testing in your program by going to our [private nuget feeds](https://dev.azure.com/wiz0u/WTelegramClient/_artifacts/feed/WTelegramClient),
-click on "WTelegramClient" feed, then on button "Connect to feed" and follow the steps to setup your dev environment.
+You can access these versions for testing in your program by going to our [private nuget feeds](https://dev.azure.com/wiz0u/WTelegramClient/_artifacts/feed/WTelegramClient/NuGet/WTelegramClient),
+click on button "Connect to feed" and follow the steps to setup your dev environment.
 After that, you should be able to see/install the pre-release versions in your Nuget package manager and install them in your application. *(make sure you enable the **pre-release** checkbox)*
 
 <a name="wrong-server"></a>
@@ -232,7 +232,7 @@ Here is a list of common issues and how to fix them so that your program work co
 It is not recommended to copy/compile the source code of the library for a normal usage.
 When built in DEBUG mode, the source code connects to Telegram test servers (see also [FAQ #6](#wrong-server)).  
 So you can either:
-    - **Recommended:** Use the [official Nuget package](https://www.nuget.org/packages/WTelegramClient) or the [private nuget feed of development builds](https://dev.azure.com/wiz0u/WTelegramClient/_packaging?_a=package&feed=WTelegramClient&package=WTelegramClient&protocolType=NuGet)
+    - **Recommended:** Use the [official Nuget package](https://www.nuget.org/packages/WTelegramClient) or the [private nuget feed of development builds](https://dev.azure.com/wiz0u/WTelegramClient/_artifacts/feed/WTelegramClient/NuGet/WTelegramClient)
     - Build your code in RELEASE mode
     - Modify your config callback to reply to "server_address" with the IP address of Telegram production servers (as found on your API development tools)
 
