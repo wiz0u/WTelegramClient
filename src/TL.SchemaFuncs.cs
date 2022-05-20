@@ -406,7 +406,7 @@ namespace TL
 		/// <summary>Change privacy settings of current account		<para>See <a href="https://corefork.telegram.org/method/account.setPrivacy"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.setPrivacy#possible-errors">details</a>)</para></summary>
 		/// <param name="key">Peers to which the privacy rules apply</param>
 		/// <param name="rules">New privacy rules</param>
-		public static Task<Account_PrivacyRules> Account_SetPrivacy(this Client client, InputPrivacyKey key, InputPrivacyRule[] rules)
+		public static Task<Account_PrivacyRules> Account_SetPrivacy(this Client client, InputPrivacyKey key, params InputPrivacyRule[] rules)
 			=> client.Invoke(new Account_SetPrivacy
 			{
 				key = key,
@@ -561,7 +561,7 @@ namespace TL
 
 		/// <summary>Get saved <a href="https://corefork.telegram.org/passport">Telegram Passport</a> document, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/method/account.getSecureValue"/></para></summary>
 		/// <param name="types">Requested value types</param>
-		public static Task<SecureValue[]> Account_GetSecureValue(this Client client, SecureValueType[] types)
+		public static Task<SecureValue[]> Account_GetSecureValue(this Client client, params SecureValueType[] types)
 			=> client.Invoke(new Account_GetSecureValue
 			{
 				types = types,
@@ -579,7 +579,7 @@ namespace TL
 
 		/// <summary>Delete stored <a href="https://corefork.telegram.org/passport">Telegram Passport</a> documents, <a href="https://corefork.telegram.org/passport/encryption#encryption">for more info see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/method/account.deleteSecureValue"/></para></summary>
 		/// <param name="types">Document types to delete</param>
-		public static Task<bool> Account_DeleteSecureValue(this Client client, SecureValueType[] types)
+		public static Task<bool> Account_DeleteSecureValue(this Client client, params SecureValueType[] types)
 			=> client.Invoke(new Account_DeleteSecureValue
 			{
 				types = types,
@@ -897,7 +897,7 @@ namespace TL
 
 		/// <summary>Get info about multiple wallpapers		<para>See <a href="https://corefork.telegram.org/method/account.getMultiWallPapers"/></para></summary>
 		/// <param name="wallpapers">Wallpapers to fetch info about</param>
-		public static Task<WallPaperBase[]> Account_GetMultiWallPapers(this Client client, InputWallPaperBase[] wallpapers)
+		public static Task<WallPaperBase[]> Account_GetMultiWallPapers(this Client client, params InputWallPaperBase[] wallpapers)
 			=> client.Invoke(new Account_GetMultiWallPapers
 			{
 				wallpapers = wallpapers,
@@ -1000,7 +1000,7 @@ namespace TL
 
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
-		public static Task<UserBase[]> Users_GetUsers(this Client client, InputUserBase[] id)
+		public static Task<UserBase[]> Users_GetUsers(this Client client, params InputUserBase[] id)
 			=> client.Invoke(new Users_GetUsers
 			{
 				id = id,
@@ -1017,7 +1017,7 @@ namespace TL
 		/// <summary>Notify the user that the sent <a href="https://corefork.telegram.org/passport">passport</a> data contains some errors The user will not be able to re-submit their Passport data to you until the errors are fixed (the contents of the field for which you returned the error must change).		<para>See <a href="https://corefork.telegram.org/method/users.setSecureValueErrors"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.setSecureValueErrors#possible-errors">details</a>)</para></summary>
 		/// <param name="id">The user</param>
 		/// <param name="errors">Errors</param>
-		public static Task<bool> Users_SetSecureValueErrors(this Client client, InputUserBase id, SecureValueErrorBase[] errors)
+		public static Task<bool> Users_SetSecureValueErrors(this Client client, InputUserBase id, params SecureValueErrorBase[] errors)
 			=> client.Invoke(new Users_SetSecureValueErrors
 			{
 				id = id,
@@ -1049,7 +1049,7 @@ namespace TL
 
 		/// <summary>Imports contacts: saves a full list on the server, adds already registered contacts to the contact list, returns added contacts and their info.		<para>See <a href="https://corefork.telegram.org/method/contacts.importContacts"/></para></summary>
 		/// <param name="contacts">List of contacts to import</param>
-		public static Task<Contacts_ImportedContacts> Contacts_ImportContacts(this Client client, InputContact[] contacts)
+		public static Task<Contacts_ImportedContacts> Contacts_ImportContacts(this Client client, params InputContact[] contacts)
 			=> client.Invoke(new Contacts_ImportContacts
 			{
 				contacts = contacts,
@@ -1057,7 +1057,7 @@ namespace TL
 
 		/// <summary>Deletes several contacts from the list.		<para>See <a href="https://corefork.telegram.org/method/contacts.deleteContacts"/></para></summary>
 		/// <param name="id">User ID list</param>
-		public static Task<UpdatesBase> Contacts_DeleteContacts(this Client client, InputUserBase[] id)
+		public static Task<UpdatesBase> Contacts_DeleteContacts(this Client client, params InputUserBase[] id)
 			=> client.Invoke(new Contacts_DeleteContacts
 			{
 				id = id,
@@ -1225,7 +1225,7 @@ namespace TL
 
 		/// <summary><para>⚠ <b>This method is only for small private Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para></summary>
 		/// <param name="id">Message ID list</param>
-		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client client, InputMessage[] id)
+		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client client, params InputMessage[] id)
 			=> client.Invoke(new Messages_GetMessages
 			{
 				id = id,
@@ -2027,7 +2027,7 @@ namespace TL
 
 		/// <summary>Get dialog info of specified peers		<para>See <a href="https://corefork.telegram.org/method/messages.getPeerDialogs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getPeerDialogs#possible-errors">details</a>)</para></summary>
 		/// <param name="peers">Peers</param>
-		public static Task<Messages_PeerDialogs> Messages_GetPeerDialogs(this Client client, InputDialogPeerBase[] peers)
+		public static Task<Messages_PeerDialogs> Messages_GetPeerDialogs(this Client client, params InputDialogPeerBase[] peers)
 			=> client.Invoke(new Messages_GetPeerDialogs
 			{
 				peers = peers,
@@ -2524,7 +2524,7 @@ namespace TL
 		/// <summary>Get the number of results that would be found by a <a href="https://corefork.telegram.org/method/messages.search">messages.search</a> call with the same parameters		<para>See <a href="https://corefork.telegram.org/method/messages.getSearchCounters"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getSearchCounters#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer where to search</param>
 		/// <param name="filters">Search filters</param>
-		public static Task<Messages_SearchCounter[]> Messages_GetSearchCounters(this Client client, InputPeer peer, MessagesFilter[] filters)
+		public static Task<Messages_SearchCounter[]> Messages_GetSearchCounters(this Client client, InputPeer peer, params MessagesFilter[] filters)
 			=> client.Invoke(new Messages_GetSearchCounters
 			{
 				peer = peer,
@@ -3261,7 +3261,7 @@ namespace TL
 
 		/// <summary>Deletes profile photos.		<para>See <a href="https://corefork.telegram.org/method/photos.deletePhotos"/></para></summary>
 		/// <param name="id">Input photos to delete</param>
-		public static Task<long[]> Photos_DeletePhotos(this Client client, InputPhoto[] id)
+		public static Task<long[]> Photos_DeletePhotos(this Client client, params InputPhoto[] id)
 			=> client.Invoke(new Photos_DeletePhotos
 			{
 				id = id,
@@ -3472,7 +3472,7 @@ namespace TL
 
 		/// <summary>Saves logs of application on the server.		<para>See <a href="https://corefork.telegram.org/method/help.saveAppLog"/></para></summary>
 		/// <param name="events">List of input events</param>
-		public static Task<bool> Help_SaveAppLog(this Client client, InputAppEvent[] events)
+		public static Task<bool> Help_SaveAppLog(this Client client, params InputAppEvent[] events)
 			=> client.Invoke(new Help_SaveAppLog
 			{
 				events = events,
@@ -3507,7 +3507,7 @@ namespace TL
 		/// <param name="message">Message</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.userInfoEmpty">help.userInfoEmpty</a></returns>
-		public static Task<Help_UserInfo> Help_EditUserInfo(this Client client, InputUserBase user_id, string message, MessageEntity[] entities)
+		public static Task<Help_UserInfo> Help_EditUserInfo(this Client client, InputUserBase user_id, string message, params MessageEntity[] entities)
 			=> client.Invoke(new Help_EditUserInfo
 			{
 				user_id = user_id,
@@ -3585,7 +3585,7 @@ namespace TL
 		/// <summary>Get <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> messages		<para>See <a href="https://corefork.telegram.org/method/channels.getMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup</param>
 		/// <param name="id">IDs of messages to get</param>
-		public static Task<Messages_MessagesBase> Channels_GetMessages(this Client client, InputChannelBase channel, InputMessage[] id)
+		public static Task<Messages_MessagesBase> Channels_GetMessages(this Client client, InputChannelBase channel, params InputMessage[] id)
 			=> client.Invoke(new Channels_GetMessages
 			{
 				channel = channel,
@@ -3621,7 +3621,7 @@ namespace TL
 
 		/// <summary>Get info about <a href="https://corefork.telegram.org/api/channel">channels/supergroups</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getChannels"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getChannels#possible-errors">details</a>)</para></summary>
 		/// <param name="id">IDs of channels/supergroups to get info about</param>
-		public static Task<Messages_Chats> Channels_GetChannels(this Client client, InputChannelBase[] id)
+		public static Task<Messages_Chats> Channels_GetChannels(this Client client, params InputChannelBase[] id)
 			=> client.Invoke(new Channels_GetChannels
 			{
 				id = id,
@@ -3726,7 +3726,7 @@ namespace TL
 		/// <summary>Invite users to a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.inviteToChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.inviteToChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup</param>
 		/// <param name="users">Users to invite</param>
-		public static Task<UpdatesBase> Channels_InviteToChannel(this Client client, InputChannelBase channel, InputUserBase[] users)
+		public static Task<UpdatesBase> Channels_InviteToChannel(this Client client, InputChannelBase channel, params InputUserBase[] users)
 			=> client.Invoke(new Channels_InviteToChannel
 			{
 				channel = channel,
@@ -3979,7 +3979,7 @@ namespace TL
 		/// <param name="scope">Command scope</param>
 		/// <param name="lang_code">Language code</param>
 		/// <param name="commands">Bot commands</param>
-		public static Task<bool> Bots_SetBotCommands(this Client client, BotCommandScope scope, string lang_code, BotCommand[] commands)
+		public static Task<bool> Bots_SetBotCommands(this Client client, BotCommandScope scope, string lang_code, params BotCommand[] commands)
 			=> client.Invoke(new Bots_SetBotCommands
 			{
 				scope = scope,
@@ -4350,7 +4350,7 @@ namespace TL
 		/// <summary>Invite a set of users to a group call.		<para>See <a href="https://corefork.telegram.org/method/phone.inviteToGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.inviteToGroupCall#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The group call</param>
 		/// <param name="users">The users to invite.</param>
-		public static Task<UpdatesBase> Phone_InviteToGroupCall(this Client client, InputGroupCall call, InputUserBase[] users)
+		public static Task<UpdatesBase> Phone_InviteToGroupCall(this Client client, InputGroupCall call, params InputUserBase[] users)
 			=> client.Invoke(new Phone_InviteToGroupCall
 			{
 				call = call,
@@ -4605,7 +4605,7 @@ namespace TL
 
 		/// <summary>Edit peers in <a href="https://corefork.telegram.org/api/folders#peer-folders">peer folder</a>		<para>See <a href="https://corefork.telegram.org/method/folders.editPeerFolders"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/folders.editPeerFolders#possible-errors">details</a>)</para></summary>
 		/// <param name="folder_peers">New peer list</param>
-		public static Task<UpdatesBase> Folders_EditPeerFolders(this Client client, InputFolderPeer[] folder_peers)
+		public static Task<UpdatesBase> Folders_EditPeerFolders(this Client client, params InputFolderPeer[] folder_peers)
 			=> client.Invoke(new Folders_EditPeerFolders
 			{
 				folder_peers = folder_peers,
