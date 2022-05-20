@@ -9722,7 +9722,7 @@ namespace TL
 	}
 
 	/// <summary>A message		<para>Derived classes: <see cref="InputMessageID"/>, <see cref="InputMessageReplyTo"/>, <see cref="InputMessagePinned"/>, <see cref="InputMessageCallbackQuery"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputMessage"/></para></summary>
-	public abstract class InputMessage : IObject { }
+	public abstract partial class InputMessage : IObject { }
 	/// <summary>Message by ID		<para>See <a href="https://corefork.telegram.org/constructor/inputMessageID"/></para></summary>
 	[TLDef(0xA676A322)]
 	public class InputMessageID : InputMessage

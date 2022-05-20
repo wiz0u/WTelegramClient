@@ -491,6 +491,11 @@ namespace TL
 
 	partial class WebDocument { public static implicit operator InputWebFileLocation(WebDocument doc) => new() { url = doc.url, access_hash = doc.access_hash }; }
 
+	partial class InputMessage
+	{
+		public static implicit operator InputMessage(int id) => new InputMessageID() { id = id };
+	}
+
 	partial class SecureFile
 	{
 		public static implicit operator InputSecureFile(SecureFile file) => new() { id = file.id, access_hash = file.access_hash };

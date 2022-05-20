@@ -631,6 +631,14 @@ namespace WTelegram
 					throw new ArgumentException("This method works on Chat & Channel only");
 			}
 		}
+
+		public async Task<Messages_MessagesBase> GetMessages(InputPeer peer, params InputMessage[] id)
+		{
+			if (peer is InputPeerChannel channel)
+				return await this.Channels_GetMessages(channel, id);
+			else
+				return await this.Messages_GetMessages(id);
+		}
 		#endregion
 	}
 }
