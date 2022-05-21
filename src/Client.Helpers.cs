@@ -639,6 +639,14 @@ namespace WTelegram
 			else
 				return await this.Messages_GetMessages(id);
 		}
+
+		public async Task<Messages_AffectedMessages> DeleteMessages(InputPeer peer, params int[] id)
+		{
+			if (peer is InputPeerChannel channel)
+				return await this.Channels_DeleteMessages(channel, id);
+			else
+				return await this.Messages_DeleteMessages(id);
+		}
 		#endregion
 	}
 }

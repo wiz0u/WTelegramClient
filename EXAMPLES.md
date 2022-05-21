@@ -124,7 +124,7 @@ await client.SendMessageAsync(chats.chats[chatId], "Hello, World");
 Notes:
 - This list does not include discussions with other users. For this, you need to use [Messages_GetAllDialogs](#list-dialogs).
 - The list returned by Messages_GetAllChats contains the `access_hash` for those chats. Read [FAQ #4](FAQ.MD#access-hash) about this.
-- If a small private chat group has been migrated to a supergroup, you may find both the old `Chat` and a `Channel` with different IDs in the `chats.chats` result,
+- If a basic chat group has been migrated to a supergroup, you may find both the old `Chat` and a `Channel` with different IDs in the `chats.chats` result,
 but the old `Chat` will be marked with flag [deactivated] and should not be used anymore. See [Terminology in ReadMe](README.md#terminology).
 - You can find a longer version of this method call in [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
 
@@ -187,7 +187,7 @@ See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Progr
 
 <a name="list-members"></a>
 ### Get all members from a chat
-For a simple Chat: *(see Terminology in [ReadMe](README.md#terminology))*
+For a basic Chat: *(see Terminology in [ReadMe](README.md#terminology))*
 ```csharp
 var chatFull = await client.Messages_GetFullChat(1234567890); // the chat we want
 foreach (var (id, user) in chatFull.users)
