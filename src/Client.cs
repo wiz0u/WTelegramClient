@@ -36,6 +36,8 @@ namespace WTelegram
 		public Config TLConfig { get; private set; }
 		/// <summary>Number of automatic reconnections on connection/reactor failure</summary>
 		public int MaxAutoReconnects { get; set; } = 5;
+		/// <summary>Number of attempts in case of wrong verification_code or password</summary>
+		public int MaxCodePwdAttempts { get; set; } = 3;
 		/// <summary>Number of seconds under which an error 420 FLOOD_WAIT_X will not be raised and your request will instead be auto-retried after the delay</summary>
 		public int FloodRetryThreshold { get; set; } = 60;
 		/// <summary>Number of seconds between each keep-alive ping. Increase this if you have a slow connection or you're debugging your code</summary>
@@ -955,15 +957,26 @@ namespace WTelegram
 						}
 						authorization = await this.Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
 					}
+					catch (RpcException e) when (e.Code == 400 && e.Message == "PHONE_CODE_INVALID")
+					{
+						Helpers.Log(4, "Wrong verification code!");
+						if (retry == MaxCodePwdAttempts) throw;
+					}
 					catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
 					{
-						var accountPassword = await this.Account_GetPassword();
-						OnUpdate(accountPassword);
-						var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
-						authorization = await this.Auth_CheckPassword(checkPasswordSRP);
-					}
-					catch (RpcException e) when (e.Code == 400 && e.Message == "PHONE_CODE_INVALID" && retry != 3)
-					{
+						for (int pwdRetry = 1; authorization == null; pwdRetry++)
+							try
+							{
+								var accountPassword = await this.Account_GetPassword();
+								OnUpdate(accountPassword);
+								var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
+								authorization = await this.Auth_CheckPassword(checkPasswordSRP);
+							}
+							catch (RpcException pe) when (pe.Code == 400 && pe.Message == "PASSWORD_HASH_INVALID")
+							{
+								Helpers.Log(4, "Wrong password!");
+								if (pwdRetry == MaxCodePwdAttempts) throw;
+							}
 					}
 			}
 			catch
