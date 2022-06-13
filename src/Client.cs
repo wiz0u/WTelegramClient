@@ -24,7 +24,7 @@ namespace WTelegram
 {
 	public partial class Client : IDisposable
 	{
-		/// <summary>This event will be called when an unsollicited update/message is sent by Telegram servers</summary>
+		/// <summary>This event will be called when unsollicited updates/messages are sent by Telegram servers</summary>
 		/// <remarks>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_ListenUpdate.cs">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
 		public event Action<IObject> Update;
 		/// <summary>Used to create a TcpClient connected to the given address/port, or throw an exception on failure</summary>
@@ -322,8 +322,8 @@ namespace WTelegram
 							// TODO: implement an Updates gaps handling system? https://core.telegram.org/api/updates
 							if (IsMainDC)
 							{
-								var udpatesState = await this.Updates_GetState(); // this call reenables incoming Updates
-								OnUpdate(udpatesState);
+								var updatesState = await this.Updates_GetState(); // this call reenables incoming Updates
+								OnUpdate(updatesState);
 							}
 						}
 						else
@@ -669,7 +669,7 @@ namespace WTelegram
 			}
 			catch (Exception ex)
 			{
-				Helpers.Log(4, $"Update callback on {obj.GetType().Name} raised {ex}");
+				Helpers.Log(4, $"{nameof(Update)} callback on {obj.GetType().Name} raised {ex}");
 			}
 		}
 

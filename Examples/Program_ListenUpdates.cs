@@ -23,7 +23,7 @@ namespace WTelegramClientTest
 				Client.Update += Client_Update;
 				My = await Client.LoginUserIfNeeded();
 				Users[My.id] = My;
-				// Note that on login Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
+				// Note: on login, Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
 				Console.WriteLine($"We are logged-in as {My.username ?? My.first_name + " " + My.last_name} (id {My.id})");
 				// We collect all infos about the users/chats so that updates can be printed with their names
 				var dialogs = await Client.Messages_GetAllDialogs(); // dialogs = groups/channels/users

@@ -210,7 +210,7 @@ In particular, it will detect and handle automatically and properly the various 
 * 2FA password required (your Config needs to provide "password")
 * Account registration/sign-up required (your Config needs to provide "first_name", "last_name")
 * Request to resend the verification code through alternate ways like SMS (if your Config answer an empty "verification_code" initially)
-* Transient failures, slowness to respond, checks for encryption key safety, etc..
+* Transient failures, slowness to respond, wrong code/password, checks for encryption key safety, etc..
 
 Contrary to TLSharp, WTelegramClient supports MTProto v2.0 (more secured), transport obfuscation, protocol security checks, MTProto Proxy, real-time updates, multiple DC connections, API documentation in Intellisense...
 
