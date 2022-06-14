@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 142;					// fetched 14/05/2022 22:26:18
+		public const int Version = 143;					// fetched 14/06/2022 23:30:05
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -170,7 +170,7 @@ namespace TL
 			[0x9FBAB604] = typeof(MessageActionHistoryClear),
 			[0x92A72876] = typeof(MessageActionGameScore),
 			[0x8F31B327] = typeof(MessageActionPaymentSentMe),
-			[0x40699CD0] = typeof(MessageActionPaymentSent),
+			[0x96163F56] = typeof(MessageActionPaymentSent),
 			[0x80E11A7F] = typeof(MessageActionPhoneCall),
 			[0x4792929B] = typeof(MessageActionScreenshotTaken),
 			[0xFAE69F56] = typeof(MessageActionCustomAction),
@@ -349,6 +349,7 @@ namespace TL
 			[0x1592B79D] = typeof(UpdateWebViewResultSent),
 			[0x14B85813] = typeof(UpdateBotMenuButton),
 			[0x74D8BE99] = typeof(UpdateSavedRingtones),
+			[0x0084CD5A] = typeof(UpdateTranscribedAudio),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -379,7 +380,7 @@ namespace TL
 			[0x1E1C7C45] = typeof(EncryptedChatDiscarded),
 			[0xF141B5E1] = typeof(InputEncryptedChat),
 			[0xC21F497E] = null,//EncryptedFileEmpty
-			[0x4A70994C] = typeof(EncryptedFile),
+			[0xA8008CD8] = typeof(EncryptedFile),
 			[0x1837C364] = null,//InputEncryptedFileEmpty
 			[0x64BD0306] = typeof(InputEncryptedFileUploaded),
 			[0x5A17B5E5] = typeof(InputEncryptedFile),
@@ -393,7 +394,7 @@ namespace TL
 			[0x72F0EAAE] = null,//InputDocumentEmpty
 			[0x1ABFB575] = typeof(InputDocument),
 			[0x36F8C871] = typeof(DocumentEmpty),
-			[0x1E87342B] = typeof(Document),
+			[0x8FD4C4D8] = typeof(Document),
 			[0x17C6B5F6] = typeof(Help_Support),
 			[0x9FD40BD8] = typeof(NotifyPeer),
 			[0xB4C83B4C] = typeof(NotifyUsers),
@@ -461,6 +462,7 @@ namespace TL
 			[0x137948A5] = typeof(Auth_PasswordRecovery),
 			[0xA384B779] = typeof(ReceivedNotifyMessage),
 			[0x0AB4A819] = typeof(ChatInviteExported),
+			[0xED107AB7] = typeof(ChatInvitePublicJoinRequests),
 			[0x5A686D7C] = typeof(ChatInviteAlready),
 			[0x300C44C1] = typeof(ChatInvite),
 			[0x61695CB0] = typeof(ChatInvitePeek),
@@ -474,7 +476,7 @@ namespace TL
 			[0xB60A24A6] = typeof(Messages_StickerSet),
 			[0xD3F924EB] = null,//Messages_StickerSetNotModified
 			[0xC27AC8C7] = typeof(BotCommand),
-			[0xE4169B5D] = typeof(BotInfo),
+			[0x8F300B57] = typeof(BotInfo),
 			[0xA2FA4880] = typeof(KeyboardButton),
 			[0x258AFF05] = typeof(KeyboardButtonUrl),
 			[0x35BBDB6B] = typeof(KeyboardButtonCallback),
@@ -649,7 +651,7 @@ namespace TL
 			[0xA44F3EF6] = typeof(PageBlockMap),
 			[0x7D748D04] = typeof(DataJSON),
 			[0xCB296BF8] = typeof(LabeledPrice),
-			[0x0CD886E0] = typeof(Invoice),
+			[0x3E85A91B] = typeof(Invoice),
 			[0xEA02C27E] = typeof(PaymentCharge),
 			[0x1E8CAAEB] = typeof(PostAddress),
 			[0x909C3F94] = typeof(PaymentRequestedInfo),
@@ -660,7 +662,7 @@ namespace TL
 			[0xC239D686] = typeof(InputWebFileLocation),
 			[0x9F2221C9] = typeof(InputWebFileGeoPointLocation),
 			[0x21E753BC] = typeof(Upload_WebFile),
-			[0x1694761B] = typeof(Payments_PaymentForm),
+			[0xB0133B37] = typeof(Payments_PaymentForm),
 			[0xD1451883] = typeof(Payments_ValidatedRequestedInfo),
 			[0x4E5F810D] = typeof(Payments_PaymentResult),
 			[0xD8411139] = typeof(Payments_PaymentVerificationNeeded),
@@ -754,14 +756,14 @@ namespace TL
 			[0x514519E2] = typeof(DialogPeerFolder),
 			[0x0D54B65D] = null,//Messages_FoundStickerSetsNotModified
 			[0x8AF09DD2] = typeof(Messages_FoundStickerSets),
-			[0x6242C773] = typeof(FileHash),
+			[0xF39B035C] = typeof(FileHash),
 			[0x75588B3F] = typeof(InputClientProxy),
 			[0xE3309F7F] = typeof(Help_TermsOfServiceUpdateEmpty),
 			[0x28ECF961] = typeof(Help_TermsOfServiceUpdate),
 			[0x3334B0F0] = typeof(InputSecureFileUploaded),
 			[0x5367E5BE] = typeof(InputSecureFile),
 			[0x64199744] = null,//SecureFileEmpty
-			[0xE0277A62] = typeof(SecureFile),
+			[0x7D09C27E] = typeof(SecureFile),
 			[0x8AEABEC3] = typeof(SecureData),
 			[0x7D6099DD] = typeof(SecurePlainPhone),
 			[0x21EC5A5F] = typeof(SecurePlainEmail),
@@ -831,7 +833,7 @@ namespace TL
 			[0xCDC3858C] = typeof(Account_WallPapers),
 			[0x8A6469C2] = typeof(CodeSettings),
 			[0x1DC1BCA4] = typeof(WallPaperSettings),
-			[0xE04232F3] = typeof(AutoDownloadSettings),
+			[0x8EFAB953] = typeof(AutoDownloadSettings),
 			[0x63CACF26] = typeof(Account_AutoDownloadSettings),
 			[0xD5B3B9F9] = typeof(EmojiKeyword),
 			[0x236DF622] = typeof(EmojiKeywordDeleted),
@@ -870,6 +872,7 @@ namespace TL
 			[0xF568028A] = typeof(BankCardOpenUrl),
 			[0x3E24E573] = typeof(Payments_BankCardData),
 			[0x7438F7E8] = typeof(DialogFilter),
+			[0x363293AE] = typeof(DialogFilterDefault),
 			[0x77744D4A] = typeof(DialogFilterSuggested),
 			[0xB637EDAF] = typeof(StatsDateRangeDays),
 			[0xCB43ACDE] = typeof(StatsAbsValueAndPrev),
@@ -954,7 +957,7 @@ namespace TL
 			[0x2DBF3432] = typeof(Phone_GroupCallStreamRtmpUrl),
 			[0x4576F3F0] = typeof(AttachMenuBotIconColor),
 			[0xB2A7386B] = typeof(AttachMenuBotIcon),
-			[0xE93CB772] = typeof(AttachMenuBot),
+			[0xC8AA2CD2] = typeof(AttachMenuBot),
 			[0xF1D88A5C] = null,//AttachMenuBotsNotModified
 			[0x3C4301C0] = typeof(AttachMenuBots),
 			[0x93BF667F] = typeof(AttachMenuBotsBot),
@@ -972,6 +975,11 @@ namespace TL
 			[0xFF6C8049] = typeof(NotificationSoundRingtone),
 			[0xB7263F6D] = typeof(Account_SavedRingtone),
 			[0x1F307EB7] = typeof(Account_SavedRingtoneConverted),
+			[0xC5B56859] = typeof(InputInvoiceMessage),
+			[0xC326CAEF] = typeof(InputInvoiceSlug),
+			[0xAED0CBD9] = typeof(Payments_ExportedInvoice),
+			[0x93752C52] = typeof(Messages_TranscribedAudio),
+			[0x8A4F3C29] = typeof(Help_PremiumPromo),
 			// from TL.Secret:
 			[0xBB718624] = typeof(Layer66.SendMessageUploadRoundAction),
 			[0xE50511D8] = typeof(Layer45.DecryptedMessageMediaWebPage),

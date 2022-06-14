@@ -330,15 +330,15 @@ namespace WTelegram
 		/// <param name="fileSize">(optional) Expected file size</param>
 		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>
 		/// <returns>The file type</returns>
-		public async Task<Storage_FileType> DownloadFileAsync(InputFileLocationBase fileLocation, Stream outputStream, int dc_id = 0, int fileSize = 0, ProgressCallback progress = null)
+		public async Task<Storage_FileType> DownloadFileAsync(InputFileLocationBase fileLocation, Stream outputStream, int dc_id = 0, long fileSize = 0, ProgressCallback progress = null)
 		{
 			Storage_FileType fileType = Storage_FileType.unknown;
 			var client = dc_id == 0 ? this : await GetClientForDC(dc_id, true);
 			using var writeSem = new SemaphoreSlim(1);
 			long streamStartPos = outputStream.Position;
-			int fileOffset = 0, maxOffsetSeen = 0;
+			long fileOffset = 0, maxOffsetSeen = 0;
 			long transmitted = 0;
-			var tasks = new Dictionary<int, Task>();
+			var tasks = new Dictionary<long, Task>();
 			progress?.Invoke(0, fileSize);
 			bool abort = false;
 			while (!abort)
@@ -355,7 +355,7 @@ namespace WTelegram
 					break;
 				}
 
-				async Task<int> LoadPart(int offset)
+				async Task<int> LoadPart(long offset)
 				{
 					Upload_FileBase fileBase;
 					try

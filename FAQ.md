@@ -58,15 +58,15 @@ The `access_hash` must usually be provided within the `Input...` structure you p
 You obtain the `access_hash` through **description structures** like `Channel`, `User`, `Photo`, `Document` that you receive through updates or when you query them through API methods like `Messages_GetAllChats`, `Messages_GetAllDialogs`, `Contacts_ResolveUsername`, etc...  
 *(if you have a `Peer` object, you can convert it to a `User`/`Channel`/`Chat` via the `UserOrChat` helper from the root class that contained the peer)*
 
-Once you obtained the description structure, there are 3 methods for building your `Input...` structure:
-* **Recommended:** If you take a look at the **description structure** class or base class `ChatBase/UserBase`, 
+Once you obtained the description structure, there are 3 methods for building your `Input...` request structure:
+* **Recommended:** If you take a look at the **description structure** base class `ChatBase/UserBase`, 
 you will see that they have conversion implicit operators or methods that can create the `Input...` structure for you automatically.  
 So you can just pass that structure you already have, in place of the `Input...` argument, it will work!
 * Alternatively, you can manually create the `Input...` structure yourself by extracting the `access_hash` from the **description structure**
 * If you have enabled the [CollectAccessHash system](EXAMPLES.md#collect-access-hash) at the start of your session, it will have collected the `access_hash` automatically when you obtained the description structure.
 You can then retrieve it with `client.GetAccessHashFor<User/Channel/Photo/Document>(id)`
 
-⚠️ *An `access_hash` obtained from a User/Channel structure with flag `min` may not be used for most requests. See [Min constructors](https://core.telegram.org/api/min).*
+⚠️ *An `access_hash` obtained from a User/Channel structure with flag `min` may not be usable for most requests. See [Min constructors](https://core.telegram.org/api/min).*
 
 <a name="dev-versions"></a>
 #### 5. I need to test a feature that has been developed but not yet released in WTelegramClient nuget

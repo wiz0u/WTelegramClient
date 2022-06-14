@@ -661,7 +661,7 @@ namespace TL
 		/// <param name="message_channels">Whether to export messages in <a href="https://corefork.telegram.org/api/channel#channels">channels</a></param>
 		/// <param name="files">Whether to export files</param>
 		/// <param name="file_max_size">Maximum size of files to export</param>
-		public static Task<Account_Takeout> Account_InitTakeoutSession(this Client client, bool contacts = false, bool message_users = false, bool message_chats = false, bool message_megagroups = false, bool message_channels = false, bool files = false, int? file_max_size = null)
+		public static Task<Account_Takeout> Account_InitTakeoutSession(this Client client, bool contacts = false, bool message_users = false, bool message_chats = false, bool message_megagroups = false, bool message_channels = false, bool files = false, long? file_max_size = null)
 			=> client.Invoke(new Account_InitTakeoutSession
 			{
 				flags = (Account_InitTakeoutSession.Flags)((contacts ? 0x1 : 0) | (message_users ? 0x2 : 0) | (message_chats ? 0x4 : 0) | (message_megagroups ? 0x8 : 0) | (message_channels ? 0x10 : 0) | (files ? 0x20 : 0) | (file_max_size != null ? 0x20 : 0)),
@@ -1855,7 +1855,7 @@ namespace TL
 		/// <param name="sha256">SHA256 of file</param>
 		/// <param name="size">Size of the file in bytes</param>
 		/// <param name="mime_type">Mime type</param>
-		public static Task<DocumentBase> Messages_GetDocumentByHash(this Client client, byte[] sha256, int size, string mime_type)
+		public static Task<DocumentBase> Messages_GetDocumentByHash(this Client client, byte[] sha256, long size, string mime_type)
 			=> client.Invoke(new Messages_GetDocumentByHash
 			{
 				sha256 = sha256,
@@ -2640,7 +2640,7 @@ namespace TL
 			});
 
 		/// <summary>Get <a href="https://corefork.telegram.org/api/folders">folders</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogFilters"/></para></summary>
-		public static Task<DialogFilter[]> Messages_GetDialogFilters(this Client client)
+		public static Task<DialogFilterBase[]> Messages_GetDialogFilters(this Client client)
 			=> client.Invoke(new Messages_GetDialogFilters
 			{
 			});
@@ -2654,7 +2654,7 @@ namespace TL
 		/// <summary>Update <a href="https://corefork.telegram.org/api/folders">folder</a>		<para>See <a href="https://corefork.telegram.org/method/messages.updateDialogFilter"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.updateDialogFilter#possible-errors">details</a>)</para></summary>
 		/// <param name="id"><a href="https://corefork.telegram.org/api/folders">Folder</a> ID</param>
 		/// <param name="filter"><a href="https://corefork.telegram.org/api/folders">Folder</a> info</param>
-		public static Task<bool> Messages_UpdateDialogFilter(this Client client, int id, DialogFilter filter = null)
+		public static Task<bool> Messages_UpdateDialogFilter(this Client client, int id, DialogFilterBase filter = null)
 			=> client.Invoke(new Messages_UpdateDialogFilter
 			{
 				flags = (Messages_UpdateDialogFilter.Flags)(filter != null ? 0x1 : 0),
@@ -3150,27 +3150,29 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.requestWebView"/></para></summary>
-		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, bool from_bot_menu = false, bool silent = false, string url = null, string start_param = null, DataJSON theme_params = null, int? reply_to_msg_id = null)
+		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, bool from_bot_menu = false, bool silent = false, string url = null, string start_param = null, DataJSON theme_params = null, int? reply_to_msg_id = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_RequestWebView
 			{
-				flags = (Messages_RequestWebView.Flags)((from_bot_menu ? 0x10 : 0) | (silent ? 0x20 : 0) | (url != null ? 0x2 : 0) | (start_param != null ? 0x8 : 0) | (theme_params != null ? 0x4 : 0) | (reply_to_msg_id != null ? 0x1 : 0)),
+				flags = (Messages_RequestWebView.Flags)((from_bot_menu ? 0x10 : 0) | (silent ? 0x20 : 0) | (url != null ? 0x2 : 0) | (start_param != null ? 0x8 : 0) | (theme_params != null ? 0x4 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (send_as != null ? 0x2000 : 0)),
 				peer = peer,
 				bot = bot,
 				url = url,
 				start_param = start_param,
 				theme_params = theme_params,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
+				send_as = send_as,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.prolongWebView"/></para></summary>
-		public static Task<bool> Messages_ProlongWebView(this Client client, InputPeer peer, InputUserBase bot, long query_id, bool silent = false, int? reply_to_msg_id = null)
+		public static Task<bool> Messages_ProlongWebView(this Client client, InputPeer peer, InputUserBase bot, long query_id, bool silent = false, int? reply_to_msg_id = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_ProlongWebView
 			{
-				flags = (Messages_ProlongWebView.Flags)((silent ? 0x20 : 0) | (reply_to_msg_id != null ? 0x1 : 0)),
+				flags = (Messages_ProlongWebView.Flags)((silent ? 0x20 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (send_as != null ? 0x2000 : 0)),
 				peer = peer,
 				bot = bot,
 				query_id = query_id,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
+				send_as = send_as,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.requestSimpleWebView"/></para></summary>
@@ -3199,6 +3201,24 @@ namespace TL
 				random_id = random_id,
 				button_text = button_text,
 				data = data,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.transcribeAudio"/></para></summary>
+		public static Task<Messages_TranscribedAudio> Messages_TranscribeAudio(this Client client, InputPeer peer, int msg_id)
+			=> client.Invoke(new Messages_TranscribeAudio
+			{
+				peer = peer,
+				msg_id = msg_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.rateTranscribedAudio"/></para></summary>
+		public static Task<bool> Messages_RateTranscribedAudio(this Client client, InputPeer peer, int msg_id, long transcription_id, bool good)
+			=> client.Invoke(new Messages_RateTranscribedAudio
+			{
+				peer = peer,
+				msg_id = msg_id,
+				transcription_id = transcription_id,
+				good = good,
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -3299,7 +3319,7 @@ namespace TL
 		/// <param name="location">File location</param>
 		/// <param name="offset">Number of bytes to be skipped</param>
 		/// <param name="limit">Number of bytes to be returned</param>
-		public static Task<Upload_FileBase> Upload_GetFile(this Client client, InputFileLocationBase location, int offset = default, int limit = int.MaxValue, bool precise = false, bool cdn_supported = false)
+		public static Task<Upload_FileBase> Upload_GetFile(this Client client, InputFileLocationBase location, long offset = default, int limit = int.MaxValue, bool precise = false, bool cdn_supported = false)
 			=> client.Invoke(new Upload_GetFile
 			{
 				flags = (Upload_GetFile.Flags)((precise ? 0x1 : 0) | (cdn_supported ? 0x2 : 0)),
@@ -3338,7 +3358,7 @@ namespace TL
 		/// <param name="file_token">File token</param>
 		/// <param name="offset">Offset of chunk to download</param>
 		/// <param name="limit">Length of chunk to download</param>
-		public static Task<Upload_CdnFileBase> Upload_GetCdnFile(this Client client, byte[] file_token, int offset = default, int limit = int.MaxValue)
+		public static Task<Upload_CdnFileBase> Upload_GetCdnFile(this Client client, byte[] file_token, long offset = default, int limit = int.MaxValue)
 			=> client.Invoke(new Upload_GetCdnFile
 			{
 				file_token = file_token,
@@ -3359,7 +3379,7 @@ namespace TL
 		/// <summary>Get SHA256 hashes for verifying downloaded <a href="https://corefork.telegram.org/cdn">CDN</a> files		<para>See <a href="https://corefork.telegram.org/method/upload.getCdnFileHashes"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.getCdnFileHashes#possible-errors">details</a>)</para></summary>
 		/// <param name="file_token">File</param>
 		/// <param name="offset">Offset from which to start getting hashes</param>
-		public static Task<FileHash[]> Upload_GetCdnFileHashes(this Client client, byte[] file_token, int offset = default)
+		public static Task<FileHash[]> Upload_GetCdnFileHashes(this Client client, byte[] file_token, long offset = default)
 			=> client.Invoke(new Upload_GetCdnFileHashes
 			{
 				file_token = file_token,
@@ -3369,7 +3389,7 @@ namespace TL
 		/// <summary>Get SHA256 hashes for verifying downloaded files		<para>See <a href="https://corefork.telegram.org/method/upload.getFileHashes"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.getFileHashes#possible-errors">details</a>)</para></summary>
 		/// <param name="location">File</param>
 		/// <param name="offset">Offset from which to get file hashes</param>
-		public static Task<FileHash[]> Upload_GetFileHashes(this Client client, InputFileLocationBase location, int offset = default)
+		public static Task<FileHash[]> Upload_GetFileHashes(this Client client, InputFileLocationBase location, long offset = default)
 			=> client.Invoke(new Upload_GetFileHashes
 			{
 				location = location,
@@ -3548,6 +3568,12 @@ namespace TL
 			{
 				lang_code = lang_code,
 				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/help.getPremiumPromo"/></para></summary>
+		public static Task<Help_PremiumPromo> Help_GetPremiumPromo(this Client client)
+			=> client.Invoke(new Help_GetPremiumPromo
+			{
 			});
 
 		/// <summary>Mark <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> history as read		<para>See <a href="https://corefork.telegram.org/method/channels.readHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.readHistory#possible-errors">details</a>)</para></summary>
@@ -3955,6 +3981,22 @@ namespace TL
 				participant = participant,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.toggleJoinToSend"/></para></summary>
+		public static Task<UpdatesBase> Channels_ToggleJoinToSend(this Client client, InputChannelBase channel, bool enabled)
+			=> client.Invoke(new Channels_ToggleJoinToSend
+			{
+				channel = channel,
+				enabled = enabled,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.toggleJoinRequest"/></para></summary>
+		public static Task<UpdatesBase> Channels_ToggleJoinRequest(this Client client, InputChannelBase channel, bool enabled)
+			=> client.Invoke(new Channels_ToggleJoinRequest
+			{
+				channel = channel,
+				enabled = enabled,
+			});
+
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
 		/// <param name="custom_method">The method name</param>
 		/// <param name="params_">JSON-serialized method parameters</param>
@@ -4037,15 +4079,12 @@ namespace TL
 			});
 
 		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
-		/// <param name="peer">The peer where the payment form was sent</param>
-		/// <param name="msg_id">Message ID of payment form</param>
 		/// <param name="theme_params">A JSON object with the following keys, containing color theme information (integers, RGB24) to pass to the payment provider, to apply in eventual verification pages: <br/><c>bg_color</c> - Background color <br/><c>text_color</c> - Text color <br/><c>hint_color</c> - Hint text color <br/><c>link_color</c> - Link color <br/><c>button_color</c> - Button color <br/><c>button_text_color</c> - Button text color</param>
-		public static Task<Payments_PaymentForm> Payments_GetPaymentForm(this Client client, InputPeer peer, int msg_id, DataJSON theme_params = null)
+		public static Task<Payments_PaymentForm> Payments_GetPaymentForm(this Client client, InputInvoice invoice, DataJSON theme_params = null)
 			=> client.Invoke(new Payments_GetPaymentForm
 			{
 				flags = (Payments_GetPaymentForm.Flags)(theme_params != null ? 0x1 : 0),
-				peer = peer,
-				msg_id = msg_id,
+				invoice = invoice,
 				theme_params = theme_params,
 			});
 
@@ -4061,33 +4100,27 @@ namespace TL
 
 		/// <summary>Submit requested order information for validation		<para>See <a href="https://corefork.telegram.org/method/payments.validateRequestedInfo"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.validateRequestedInfo#possible-errors">details</a>)</para></summary>
 		/// <param name="save">Save order information to re-use it for future orders</param>
-		/// <param name="peer">Peer where the payment form was sent</param>
-		/// <param name="msg_id">Message ID of payment form</param>
 		/// <param name="info">Requested order information</param>
-		public static Task<Payments_ValidatedRequestedInfo> Payments_ValidateRequestedInfo(this Client client, InputPeer peer, int msg_id, PaymentRequestedInfo info, bool save = false)
+		public static Task<Payments_ValidatedRequestedInfo> Payments_ValidateRequestedInfo(this Client client, InputInvoice invoice, PaymentRequestedInfo info, bool save = false)
 			=> client.Invoke(new Payments_ValidateRequestedInfo
 			{
 				flags = (Payments_ValidateRequestedInfo.Flags)(save ? 0x1 : 0),
-				peer = peer,
-				msg_id = msg_id,
+				invoice = invoice,
 				info = info,
 			});
 
 		/// <summary>Send compiled payment form		<para>See <a href="https://corefork.telegram.org/method/payments.sendPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.sendPaymentForm#possible-errors">details</a>)</para></summary>
 		/// <param name="form_id">Form ID</param>
-		/// <param name="peer">The peer where the payment form was sent</param>
-		/// <param name="msg_id">Message ID of form</param>
 		/// <param name="requested_info_id">ID of saved and validated <see cref="Payments_ValidatedRequestedInfo"/></param>
 		/// <param name="shipping_option_id">Chosen shipping option ID</param>
 		/// <param name="credentials">Payment credentials</param>
 		/// <param name="tip_amount">Tip, in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</param>
-		public static Task<Payments_PaymentResultBase> Payments_SendPaymentForm(this Client client, long form_id, InputPeer peer, int msg_id, InputPaymentCredentialsBase credentials, string requested_info_id = null, string shipping_option_id = null, long? tip_amount = null)
+		public static Task<Payments_PaymentResultBase> Payments_SendPaymentForm(this Client client, long form_id, InputInvoice invoice, InputPaymentCredentialsBase credentials, string requested_info_id = null, string shipping_option_id = null, long? tip_amount = null)
 			=> client.Invoke(new Payments_SendPaymentForm
 			{
 				flags = (Payments_SendPaymentForm.Flags)((requested_info_id != null ? 0x1 : 0) | (shipping_option_id != null ? 0x2 : 0) | (tip_amount != null ? 0x4 : 0)),
 				form_id = form_id,
-				peer = peer,
-				msg_id = msg_id,
+				invoice = invoice,
 				requested_info_id = requested_info_id,
 				shipping_option_id = shipping_option_id,
 				credentials = credentials,
@@ -4115,6 +4148,51 @@ namespace TL
 			=> client.Invoke(new Payments_GetBankCardData
 			{
 				number = number,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.exportInvoice"/></para></summary>
+		public static Task<Payments_ExportedInvoice> Payments_ExportInvoice(this Client client, InputMedia invoice_media)
+			=> client.Invoke(new Payments_ExportInvoice
+			{
+				invoice_media = invoice_media,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.assignAppStoreTransaction"/></para></summary>
+		public static Task<UpdatesBase> Payments_AssignAppStoreTransaction(this Client client, string transaction_id, byte[] receipt, bool restore = false)
+			=> client.Invoke(new Payments_AssignAppStoreTransaction
+			{
+				flags = (Payments_AssignAppStoreTransaction.Flags)(restore ? 0x1 : 0),
+				transaction_id = transaction_id,
+				receipt = receipt,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.assignPlayMarketTransaction"/></para></summary>
+		public static Task<UpdatesBase> Payments_AssignPlayMarketTransaction(this Client client, string purchase_token)
+			=> client.Invoke(new Payments_AssignPlayMarketTransaction
+			{
+				purchase_token = purchase_token,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.restorePlayMarketReceipt"/></para></summary>
+		public static Task<UpdatesBase> Payments_RestorePlayMarketReceipt(this Client client, byte[] receipt)
+			=> client.Invoke(new Payments_RestorePlayMarketReceipt
+			{
+				receipt = receipt,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.canPurchasePremium"/></para></summary>
+		public static Task<bool> Payments_CanPurchasePremium(this Client client)
+			=> client.Invoke(new Payments_CanPurchasePremium
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.requestRecurringPayment"/></para></summary>
+		public static Task<UpdatesBase> Payments_RequestRecurringPayment(this Client client, InputUserBase user_id, string recurring_init_charge, InputMedia invoice_media)
+			=> client.Invoke(new Payments_RequestRecurringPayment
+			{
+				user_id = user_id,
+				recurring_init_charge = recurring_init_charge,
+				invoice_media = invoice_media,
 			});
 
 		/// <summary>Create a stickerset, bots only.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -5141,11 +5219,11 @@ namespace TL.Methods
 		public string code;
 	}
 
-	[TLDef(0xF05B4804)]
+	[TLDef(0x8EF3EAB0)]
 	public class Account_InitTakeoutSession : IMethod<Account_Takeout>
 	{
 		public Flags flags;
-		[IfFlag(5)] public int file_max_size;
+		[IfFlag(5)] public long file_max_size;
 
 		[Flags] public enum Flags : uint
 		{
@@ -6130,11 +6208,11 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x338E2464)]
+	[TLDef(0xB1F2061F)]
 	public class Messages_GetDocumentByHash : IMethod<DocumentBase>
 	{
 		public byte[] sha256;
-		public int size;
+		public long size;
 		public string mime_type;
 	}
 
@@ -6817,7 +6895,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xF19ED96D)]
-	public class Messages_GetDialogFilters : IMethod<DialogFilter[]> { }
+	public class Messages_GetDialogFilters : IMethod<DialogFilterBase[]> { }
 
 	[TLDef(0xA29CD42C)]
 	public class Messages_GetSuggestedDialogFilters : IMethod<DialogFilterSuggested[]> { }
@@ -6827,7 +6905,7 @@ namespace TL.Methods
 	{
 		public Flags flags;
 		public int id;
-		[IfFlag(0)] public DialogFilter filter;
+		[IfFlag(0)] public DialogFilterBase filter;
 
 		[Flags] public enum Flags : uint
 		{
@@ -7221,7 +7299,7 @@ namespace TL.Methods
 		public bool enabled;
 	}
 
-	[TLDef(0x0FA04DFF)]
+	[TLDef(0x91B15831)]
 	public class Messages_RequestWebView : IMethod<WebViewResult>
 	{
 		public Flags flags;
@@ -7231,6 +7309,7 @@ namespace TL.Methods
 		[IfFlag(3)] public string start_param;
 		[IfFlag(2)] public DataJSON theme_params;
 		[IfFlag(0)] public int reply_to_msg_id;
+		[IfFlag(13)] public InputPeer send_as;
 
 		[Flags] public enum Flags : uint
 		{
@@ -7240,10 +7319,11 @@ namespace TL.Methods
 			has_start_param = 0x8,
 			from_bot_menu = 0x10,
 			silent = 0x20,
+			has_send_as = 0x2000,
 		}
 	}
 
-	[TLDef(0xD22AD148)]
+	[TLDef(0xEA5FBCCE)]
 	public class Messages_ProlongWebView : IMethod<bool>
 	{
 		public Flags flags;
@@ -7251,11 +7331,13 @@ namespace TL.Methods
 		public InputUserBase bot;
 		public long query_id;
 		[IfFlag(0)] public int reply_to_msg_id;
+		[IfFlag(13)] public InputPeer send_as;
 
 		[Flags] public enum Flags : uint
 		{
 			has_reply_to_msg_id = 0x1,
 			silent = 0x20,
+			has_send_as = 0x2000,
 		}
 	}
 
@@ -7287,6 +7369,22 @@ namespace TL.Methods
 		public long random_id;
 		public string button_text;
 		public string data;
+	}
+
+	[TLDef(0x269E9A49)]
+	public class Messages_TranscribeAudio : IMethod<Messages_TranscribedAudio>
+	{
+		public InputPeer peer;
+		public int msg_id;
+	}
+
+	[TLDef(0x7F1D072F)]
+	public class Messages_RateTranscribedAudio : IMethod<bool>
+	{
+		public InputPeer peer;
+		public int msg_id;
+		public long transcription_id;
+		public bool good;
 	}
 
 	[TLDef(0xEDD4882A)]
@@ -7367,12 +7465,12 @@ namespace TL.Methods
 		public byte[] bytes;
 	}
 
-	[TLDef(0xB15A9AFC)]
+	[TLDef(0xBE5335BE)]
 	public class Upload_GetFile : IMethod<Upload_FileBase>
 	{
 		public Flags flags;
 		public InputFileLocationBase location;
-		public int offset;
+		public long offset;
 		public int limit;
 
 		[Flags] public enum Flags : uint
@@ -7399,11 +7497,11 @@ namespace TL.Methods
 		public int limit;
 	}
 
-	[TLDef(0x2000BCC3)]
+	[TLDef(0x395F69DA)]
 	public class Upload_GetCdnFile : IMethod<Upload_CdnFileBase>
 	{
 		public byte[] file_token;
-		public int offset;
+		public long offset;
 		public int limit;
 	}
 
@@ -7414,18 +7512,18 @@ namespace TL.Methods
 		public byte[] request_token;
 	}
 
-	[TLDef(0x4DA54231)]
+	[TLDef(0x91DC3F31)]
 	public class Upload_GetCdnFileHashes : IMethod<FileHash[]>
 	{
 		public byte[] file_token;
-		public int offset;
+		public long offset;
 	}
 
-	[TLDef(0xC7025931)]
+	[TLDef(0x9156982A)]
 	public class Upload_GetFileHashes : IMethod<FileHash[]>
 	{
 		public InputFileLocationBase location;
-		public int offset;
+		public long offset;
 	}
 
 	[TLDef(0xC4F9186B)]
@@ -7537,6 +7635,9 @@ namespace TL.Methods
 		public string lang_code;
 		public int hash;
 	}
+
+	[TLDef(0xB81B93D4)]
+	public class Help_GetPremiumPromo : IMethod<Help_PremiumPromo> { }
 
 	[TLDef(0xCC104937)]
 	public class Channels_ReadHistory : IMethod<bool>
@@ -7844,6 +7945,20 @@ namespace TL.Methods
 		public InputPeer participant;
 	}
 
+	[TLDef(0xE4CB9580)]
+	public class Channels_ToggleJoinToSend : IMethod<UpdatesBase>
+	{
+		public InputChannelBase channel;
+		public bool enabled;
+	}
+
+	[TLDef(0x4C2985B6)]
+	public class Channels_ToggleJoinRequest : IMethod<UpdatesBase>
+	{
+		public InputChannelBase channel;
+		public bool enabled;
+	}
+
 	[TLDef(0xAA2769ED)]
 	public class Bots_SendCustomRequest : IMethod<DataJSON>
 	{
@@ -7905,12 +8020,11 @@ namespace TL.Methods
 		public ChatAdminRights admin_rights;
 	}
 
-	[TLDef(0x8A333C8D)]
+	[TLDef(0x37148DBB)]
 	public class Payments_GetPaymentForm : IMethod<Payments_PaymentForm>
 	{
 		public Flags flags;
-		public InputPeer peer;
-		public int msg_id;
+		public InputInvoice invoice;
 		[IfFlag(0)] public DataJSON theme_params;
 
 		[Flags] public enum Flags : uint
@@ -7926,12 +8040,11 @@ namespace TL.Methods
 		public int msg_id;
 	}
 
-	[TLDef(0xDB103170)]
+	[TLDef(0xB6C8F12B)]
 	public class Payments_ValidateRequestedInfo : IMethod<Payments_ValidatedRequestedInfo>
 	{
 		public Flags flags;
-		public InputPeer peer;
-		public int msg_id;
+		public InputInvoice invoice;
 		public PaymentRequestedInfo info;
 
 		[Flags] public enum Flags : uint
@@ -7940,13 +8053,12 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x30C3BC9D)]
+	[TLDef(0x2D03522F)]
 	public class Payments_SendPaymentForm : IMethod<Payments_PaymentResultBase>
 	{
 		public Flags flags;
 		public long form_id;
-		public InputPeer peer;
-		public int msg_id;
+		public InputInvoice invoice;
 		[IfFlag(0)] public string requested_info_id;
 		[IfFlag(1)] public string shipping_option_id;
 		public InputPaymentCredentialsBase credentials;
@@ -7979,6 +8091,48 @@ namespace TL.Methods
 	public class Payments_GetBankCardData : IMethod<Payments_BankCardData>
 	{
 		public string number;
+	}
+
+	[TLDef(0x0F91B065)]
+	public class Payments_ExportInvoice : IMethod<Payments_ExportedInvoice>
+	{
+		public InputMedia invoice_media;
+	}
+
+	[TLDef(0x0FEC13C6)]
+	public class Payments_AssignAppStoreTransaction : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public string transaction_id;
+		public byte[] receipt;
+
+		[Flags] public enum Flags : uint
+		{
+			restore = 0x1,
+		}
+	}
+
+	[TLDef(0x4FAA4AED)]
+	public class Payments_AssignPlayMarketTransaction : IMethod<UpdatesBase>
+	{
+		public string purchase_token;
+	}
+
+	[TLDef(0xD164E36A)]
+	public class Payments_RestorePlayMarketReceipt : IMethod<UpdatesBase>
+	{
+		public byte[] receipt;
+	}
+
+	[TLDef(0xAA6A90C8)]
+	public class Payments_CanPurchasePremium : IMethod<bool> { }
+
+	[TLDef(0x146E958D)]
+	public class Payments_RequestRecurringPayment : IMethod<UpdatesBase>
+	{
+		public InputUserBase user_id;
+		public string recurring_init_charge;
+		public InputMedia invoice_media;
 	}
 
 	[TLDef(0x9021AB67)]

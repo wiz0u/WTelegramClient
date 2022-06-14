@@ -74,6 +74,7 @@ namespace TL
 		public static implicit operator InputMediaPhoto(InputPhoto photo) => new() { id = photo };
 	}
 
+	/// <remarks>Use the <c>UserOrChat(peer)</c> method from the root class you received, in order to convert this to a more useful <see cref="TL.User"/> or <see cref="TL.ChatBase"/></remarks>
 	partial class Peer
 	{
 		public abstract long ID { get; }

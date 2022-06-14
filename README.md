@@ -1,6 +1,6 @@
 [![NuGet version](https://img.shields.io/nuget/v/WTelegramClient)](https://www.nuget.org/packages/WTelegramClient/)
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
-[![API Layer](https://img.shields.io/badge/API_Layer-142-blueviolet)](https://corefork.telegram.org/methods)
+[![API Layer](https://img.shields.io/badge/API_Layer-143-blueviolet)](https://corefork.telegram.org/methods)
 [![dev nuget](https://img.shields.io/badge/dynamic/json?color=ffc040&label=dev%20nuget&query=%24.versions%5B0%5D&url=https%3A%2F%2Fpkgs.dev.azure.com%2Fwiz0u%2F81bd92b7-0bb9-4701-b426-09090b27e037%2F_packaging%2F46ce0497-7803-4bd4-8c6c-030583e7c371%2Fnuget%2Fv3%2Fflat2%2Fwtelegramclient%2Findex.json)](https://dev.azure.com/wiz0u/WTelegramClient/_artifacts/feed/WTelegramClient/NuGet/WTelegramClient)
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://wizou.fr/donate.html)
@@ -37,7 +37,7 @@ If the account already exists and has enabled two-step verification (2FA) a **pa
 All these login scenarios are handled automatically within the call to `LoginUserIfNeeded`.
 
 And that's it, you now have access to the **[full range of Telegram Client APIs](https://corefork.telegram.org/methods)**. 
-All those API methods are available *(with an underscore in the method name, instead of a dot)*, like this: `await client.Method_Name(...)`
+All those API methods are available in the `TL` namespace *(with an underscore in the method name, instead of a dot)*, like this: `await client.Method_Name(...)`
 
 # Saved session
 If you run this program again, you will notice that only **api_hash** is requested, the other prompts are gone and you are automatically logged-on and ready to go.
@@ -96,8 +96,8 @@ Console.WriteLine("This user has joined the following:");
 foreach (var (id, chat) in chats.chats)
     switch (chat) // example of downcasting to their real classes:
     {
-        case Chat smallgroup when smallgroup.IsActive:
-            Console.WriteLine($"{id}:  Small group: {smallgroup.title} with {smallgroup.participants_count} members");
+        case Chat basicChat when basicChat.IsActive:
+            Console.WriteLine($"{id}:  Basic chat: {basicChat.title} with {basicChat.participants_count} members");
             break;
         case Channel group when group.IsGroup:
             Console.WriteLine($"{id}: Group {group.username}: {group.title}");

@@ -776,6 +776,8 @@ namespace TL
 			/// <summary>If set, this user was reported by many users as a fake or scam user: be careful when interacting with them.</summary>
 			fake = 0x4000000,
 			bot_attach_menu = 0x8000000,
+			premium = 0x10000000,
+			attach_menu_enabled = 0x20000000,
 		}
 	}
 
@@ -1723,6 +1725,7 @@ namespace TL
 			has_document = 0x1,
 			/// <summary>Field <see cref="ttl_seconds"/> has a value</summary>
 			has_ttl_seconds = 0x4,
+			nopremium = 0x8,
 		}
 	}
 	/// <summary>Preview of webpage		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaWebPage"/></para></summary>
@@ -1944,16 +1947,28 @@ namespace TL
 			has_info = 0x1,
 			/// <summary>Field <see cref="shipping_option_id"/> has a value</summary>
 			has_shipping_option_id = 0x2,
+			recurring_init = 0x4,
+			recurring_used = 0x8,
 		}
 	}
 	/// <summary>A payment was sent		<para>See <a href="https://corefork.telegram.org/constructor/messageActionPaymentSent"/></para></summary>
-	[TLDef(0x40699CD0)]
+	[TLDef(0x96163F56)]
 	public class MessageActionPaymentSent : MessageAction
 	{
+		public Flags flags;
 		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
 		public string currency;
 		/// <summary>Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long total_amount;
+		[IfFlag(0)] public string invoice_slug;
+
+		[Flags] public enum Flags : uint
+		{
+			/// <summary>Field <see cref="invoice_slug"/> has a value</summary>
+			has_invoice_slug = 0x1,
+			recurring_init = 0x4,
+			recurring_used = 0x8,
+		}
 	}
 	/// <summary>A phone call		<para>See <a href="https://corefork.telegram.org/constructor/messageActionPhoneCall"/></para></summary>
 	[TLDef(0x80E11A7F)]
@@ -3813,7 +3828,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> ID</summary>
 		public int id;
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> info</summary>
-		[IfFlag(0)] public DialogFilter filter;
+		[IfFlag(0)] public DialogFilterBase filter;
 
 		[Flags] public enum Flags : uint
 		{
@@ -4162,6 +4177,21 @@ namespace TL
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSavedRingtones"/></para></summary>
 	[TLDef(0x74D8BE99)]
 	public class UpdateSavedRingtones : Update { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateTranscribedAudio"/></para></summary>
+	[TLDef(0x0084CD5A)]
+	public class UpdateTranscribedAudio : Update
+	{
+		public Flags flags;
+		public Peer peer;
+		public int msg_id;
+		public long transcription_id;
+		public string text;
+
+		[Flags] public enum Flags : uint
+		{
+			pending = 0x1,
+		}
+	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]
@@ -4887,7 +4917,7 @@ namespace TL
 
 	/// <summary>Encrypted file.		<para>See <a href="https://corefork.telegram.org/constructor/encryptedFile"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/encryptedFileEmpty">encryptedFileEmpty</a></remarks>
-	[TLDef(0x4A70994C)]
+	[TLDef(0xA8008CD8)]
 	public partial class EncryptedFile : IObject
 	{
 		/// <summary>File ID</summary>
@@ -4895,7 +4925,7 @@ namespace TL
 		/// <summary>Checking sum depending on user ID</summary>
 		public long access_hash;
 		/// <summary>File size in bytes</summary>
-		public int size;
+		public long size;
 		/// <summary>Number of data center</summary>
 		public int dc_id;
 		/// <summary>32-bit fingerprint of key used for file encryption</summary>
@@ -5072,7 +5102,7 @@ namespace TL
 		public long id;
 	}
 	/// <summary>Document		<para>See <a href="https://corefork.telegram.org/constructor/document"/></para></summary>
-	[TLDef(0x1E87342B)]
+	[TLDef(0x8FD4C4D8)]
 	public partial class Document : DocumentBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -5088,7 +5118,7 @@ namespace TL
 		/// <summary>MIME type</summary>
 		public string mime_type;
 		/// <summary>Size</summary>
-		public int size;
+		public long size;
 		/// <summary>Thumbnails</summary>
 		[IfFlag(0)] public PhotoSizeBase[] thumbs;
 		/// <summary>Video thumbnails</summary>
@@ -5864,6 +5894,9 @@ namespace TL
 			has_title = 0x100,
 		}
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/chatInvitePublicJoinRequests"/></para></summary>
+	[TLDef(0xED107AB7)]
+	public class ChatInvitePublicJoinRequests : ExportedChatInvite { }
 
 	/// <summary>Chat invite		<para>Derived classes: <see cref="ChatInviteAlready"/>, <see cref="ChatInvite"/>, <see cref="ChatInvitePeek"/></para>		<para>See <a href="https://corefork.telegram.org/type/ChatInvite"/></para></summary>
 	public abstract class ChatInviteBase : IObject { }
@@ -6022,16 +6055,35 @@ namespace TL
 	}
 
 	/// <summary>Info about bots (available bot commands, etc)		<para>See <a href="https://corefork.telegram.org/constructor/botInfo"/></para></summary>
-	[TLDef(0xE4169B5D)]
+	[TLDef(0x8F300B57)]
 	public class BotInfo : IObject
 	{
+		public Flags flags;
 		/// <summary>ID of the bot</summary>
-		public long user_id;
+		[IfFlag(0)] public long user_id;
 		/// <summary>Description of the bot</summary>
-		public string description;
+		[IfFlag(1)] public string description;
+		[IfFlag(4)] public PhotoBase description_photo;
+		[IfFlag(5)] public DocumentBase description_document;
 		/// <summary>Bot commands that can be used in the chat</summary>
-		public BotCommand[] commands;
-		public BotMenuButtonBase menu_button;
+		[IfFlag(2)] public BotCommand[] commands;
+		[IfFlag(3)] public BotMenuButtonBase menu_button;
+
+		[Flags] public enum Flags : uint
+		{
+			/// <summary>Field <see cref="user_id"/> has a value</summary>
+			has_user_id = 0x1,
+			/// <summary>Field <see cref="description"/> has a value</summary>
+			has_description = 0x2,
+			/// <summary>Field <see cref="commands"/> has a value</summary>
+			has_commands = 0x4,
+			/// <summary>Field <see cref="menu_button"/> has a value</summary>
+			has_menu_button = 0x8,
+			/// <summary>Field <see cref="description_photo"/> has a value</summary>
+			has_description_photo = 0x10,
+			/// <summary>Field <see cref="description_document"/> has a value</summary>
+			has_description_document = 0x20,
+		}
 	}
 
 	/// <summary>Bot or inline keyboard buttons		<para>Derived classes: <see cref="KeyboardButton"/>, <see cref="KeyboardButtonUrl"/>, <see cref="KeyboardButtonCallback"/>, <see cref="KeyboardButtonRequestPhone"/>, <see cref="KeyboardButtonRequestGeoLocation"/>, <see cref="KeyboardButtonSwitchInline"/>, <see cref="KeyboardButtonGame"/>, <see cref="KeyboardButtonBuy"/>, <see cref="KeyboardButtonUrlAuth"/>, <see cref="InputKeyboardButtonUrlAuth"/>, <see cref="KeyboardButtonRequestPoll"/>, <see cref="InputKeyboardButtonUserProfile"/>, <see cref="KeyboardButtonUserProfile"/></para>		<para>See <a href="https://corefork.telegram.org/type/KeyboardButton"/></para></summary>
@@ -8326,7 +8378,7 @@ namespace TL
 	}
 
 	/// <summary>Invoice		<para>See <a href="https://corefork.telegram.org/constructor/invoice"/></para></summary>
-	[TLDef(0x0CD886E0)]
+	[TLDef(0x3E85A91B)]
 	public class Invoice : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -8339,6 +8391,7 @@ namespace TL
 		[IfFlag(8)] public long max_tip_amount;
 		/// <summary>A vector of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, not float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <c>max_tip_amount</c>.</summary>
 		[IfFlag(8)] public long[] suggested_tip_amounts;
+		[IfFlag(9)] public string recurring_terms_url;
 
 		[Flags] public enum Flags : uint
 		{
@@ -8360,6 +8413,7 @@ namespace TL
 			email_to_provider = 0x80,
 			/// <summary>Field <see cref="max_tip_amount"/> has a value</summary>
 			has_max_tip_amount = 0x100,
+			recurring = 0x200,
 		}
 	}
 
@@ -8560,7 +8614,7 @@ namespace TL
 	}
 
 	/// <summary>Payment form		<para>See <a href="https://corefork.telegram.org/constructor/payments.paymentForm"/></para></summary>
-	[TLDef(0x1694761B)]
+	[TLDef(0xB0133B37)]
 	public class Payments_PaymentForm : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -8569,6 +8623,9 @@ namespace TL
 		public long form_id;
 		/// <summary>Bot ID</summary>
 		public long bot_id;
+		public string title;
+		public string description;
+		[IfFlag(5)] public WebDocumentBase photo;
 		/// <summary>Invoice</summary>
 		public Invoice invoice;
 		/// <summary>Payment provider ID.</summary>
@@ -8598,6 +8655,8 @@ namespace TL
 			password_missing = 0x8,
 			/// <summary>Field <see cref="native_provider"/> has a value</summary>
 			has_native_provider = 0x10,
+			/// <summary>Field <see cref="photo"/> has a value</summary>
+			has_photo = 0x20,
 		}
 	}
 
@@ -9796,11 +9855,11 @@ namespace TL
 	}
 
 	/// <summary>SHA256 Hash of an uploaded file, to be checked for validity after download		<para>See <a href="https://corefork.telegram.org/constructor/fileHash"/></para></summary>
-	[TLDef(0x6242C773)]
+	[TLDef(0xF39B035C)]
 	public class FileHash : IObject
 	{
 		/// <summary>Offset from where to start computing SHA-256 hash</summary>
-		public int offset;
+		public long offset;
 		/// <summary>Length</summary>
 		public int limit;
 		/// <summary>SHA-256 Hash of file chunk, to be checked for validity after download</summary>
@@ -9875,7 +9934,7 @@ namespace TL
 
 	/// <summary>Secure <a href="https://corefork.telegram.org/passport">passport</a> file, for more info <a href="https://corefork.telegram.org/passport/encryption#inputsecurefile">see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/constructor/secureFile"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/secureFileEmpty">secureFileEmpty</a></remarks>
-	[TLDef(0xE0277A62)]
+	[TLDef(0x7D09C27E)]
 	public partial class SecureFile : IObject
 	{
 		/// <summary>ID</summary>
@@ -9883,7 +9942,7 @@ namespace TL
 		/// <summary>Access hash</summary>
 		public long access_hash;
 		/// <summary>File size</summary>
-		public int size;
+		public long size;
 		/// <summary>DC ID</summary>
 		public int dc_id;
 		/// <summary>Date of upload</summary>
@@ -10898,7 +10957,7 @@ namespace TL
 	}
 
 	/// <summary>Autodownload settings		<para>See <a href="https://corefork.telegram.org/constructor/autoDownloadSettings"/></para></summary>
-	[TLDef(0xE04232F3)]
+	[TLDef(0x8EFAB953)]
 	public class AutoDownloadSettings : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -10906,9 +10965,9 @@ namespace TL
 		/// <summary>Maximum size of photos to preload</summary>
 		public int photo_size_max;
 		/// <summary>Maximum size of videos to preload</summary>
-		public int video_size_max;
+		public long video_size_max;
 		/// <summary>Maximum size of other files to preload</summary>
-		public int file_size_max;
+		public long file_size_max;
 		/// <summary>Maximum suggested bitrate for <strong>uploading</strong> videos</summary>
 		public int video_upload_maxbitrate;
 
@@ -11454,9 +11513,11 @@ namespace TL
 		public BankCardOpenUrl[] open_urls;
 	}
 
+	/// <summary>Dialog filter (folders)		<para>Derived classes: <see cref="DialogFilter"/></para>		<para>See <a href="https://corefork.telegram.org/type/DialogFilter"/></para></summary>
+	public abstract class DialogFilterBase : IObject { }
 	/// <summary>Dialog filter AKA <a href="https://corefork.telegram.org/api/folders">folder</a>		<para>See <a href="https://corefork.telegram.org/constructor/dialogFilter"/></para></summary>
 	[TLDef(0x7438F7E8)]
-	public class DialogFilter : IObject
+	public class DialogFilter : DialogFilterBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -11495,13 +11556,16 @@ namespace TL
 			has_emoticon = 0x2000000,
 		}
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/dialogFilterDefault"/></para></summary>
+	[TLDef(0x363293AE)]
+	public class DialogFilterDefault : DialogFilterBase { }
 
 	/// <summary>Suggested <a href="https://corefork.telegram.org/api/folders">folders</a>		<para>See <a href="https://corefork.telegram.org/constructor/dialogFilterSuggested"/></para></summary>
 	[TLDef(0x77744D4A)]
 	public class DialogFilterSuggested : IObject
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder info</a></summary>
-		public DialogFilter filter;
+		public DialogFilterBase filter;
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> description</summary>
 		public string description;
 	}
@@ -12744,6 +12808,7 @@ namespace TL
 			inactive = 0x1,
 			/// <summary>Field <see cref="around_animation"/> has a value</summary>
 			has_around_animation = 0x2,
+			premium = 0x4,
 		}
 	}
 
@@ -12845,17 +12910,19 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/attachMenuBot"/></para></summary>
-	[TLDef(0xE93CB772)]
+	[TLDef(0xC8AA2CD2)]
 	public class AttachMenuBot : IObject
 	{
 		public Flags flags;
 		public long bot_id;
 		public string short_name;
+		public AttachMenuPeerType[] peer_types;
 		public AttachMenuBotIcon[] icons;
 
 		[Flags] public enum Flags : uint
 		{
 			inactive = 0x1,
+			has_settings = 0x2,
 		}
 	}
 
@@ -12964,5 +13031,70 @@ namespace TL
 	public class Account_SavedRingtoneConverted : Account_SavedRingtone
 	{
 		public DocumentBase document;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/AttachMenuPeerType"/></para></summary>
+	public enum AttachMenuPeerType : uint
+	{
+		///<summary>See <a href="https://corefork.telegram.org/constructor/attachMenuPeerTypeSameBotPM"/></summary>
+		SameBotPM = 0x7D6BE90E,
+		///<summary>See <a href="https://corefork.telegram.org/constructor/attachMenuPeerTypeBotPM"/></summary>
+		BotPM = 0xC32BFA1A,
+		///<summary>See <a href="https://corefork.telegram.org/constructor/attachMenuPeerTypePM"/></summary>
+		PM = 0xF146D31F,
+		///<summary>See <a href="https://corefork.telegram.org/constructor/attachMenuPeerTypeChat"/></summary>
+		Chat = 0x0509113F,
+		///<summary>See <a href="https://corefork.telegram.org/constructor/attachMenuPeerTypeBroadcast"/></summary>
+		Broadcast = 0x7BFBDEFC,
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputInvoice"/></para></summary>
+	public abstract class InputInvoice : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceMessage"/></para></summary>
+	[TLDef(0xC5B56859)]
+	public class InputInvoiceMessage : InputInvoice
+	{
+		public InputPeer peer;
+		public int msg_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceSlug"/></para></summary>
+	[TLDef(0xC326CAEF)]
+	public class InputInvoiceSlug : InputInvoice
+	{
+		public string slug;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.exportedInvoice"/></para></summary>
+	[TLDef(0xAED0CBD9)]
+	public class Payments_ExportedInvoice : IObject
+	{
+		public string url;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.transcribedAudio"/></para></summary>
+	[TLDef(0x93752C52)]
+	public class Messages_TranscribedAudio : IObject
+	{
+		public Flags flags;
+		public long transcription_id;
+		public string text;
+
+		[Flags] public enum Flags : uint
+		{
+			pending = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/help.premiumPromo"/></para></summary>
+	[TLDef(0x8A4F3C29)]
+	public class Help_PremiumPromo : IObject
+	{
+		public string status_text;
+		public MessageEntity[] status_entities;
+		public string[] video_sections;
+		public DocumentBase[] videos;
+		public string currency;
+		public long monthly_amount;
+		public Dictionary<long, User> users;
 	}
 }
