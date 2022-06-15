@@ -47,12 +47,13 @@ namespace WTelegramClientTest
 			{
 				Console.WriteLine(update.GetType().Name);
 				if (update is UpdateNewMessage { message: Message { peer_id: PeerUser { user_id: var user_id } } msg }) // private message
-					if (Users.TryGetValue(user_id, out var user))
-					{
-						Console.WriteLine($"New message from {user}: {msg.message}");
-						if (msg.message.Equals("Ping", StringComparison.OrdinalIgnoreCase))
-							await Client.SendMessageAsync(user, "Pong");
-					}
+					if (!msg.flags.HasFlag(Message.Flags.out_)) // ignore our own outgoing messages
+						if (Users.TryGetValue(user_id, out var user))
+						{
+							Console.WriteLine($"New message from {user}: {msg.message}");
+							if (msg.message.Equals("Ping", StringComparison.OrdinalIgnoreCase))
+								await Client.SendMessageAsync(user, "Pong");
+						}
 			}
 		}
 	}
