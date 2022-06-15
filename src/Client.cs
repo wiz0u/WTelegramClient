@@ -630,7 +630,7 @@ namespace WTelegram
 					}
 					else if (PullPendingRequest(badMsgNotification.bad_msg_id) is Rpc rpc)
 					{
-						if (_bareRpc.msgId == badMsgNotification.bad_msg_id) _bareRpc = null;
+						if (_bareRpc?.msgId == badMsgNotification.bad_msg_id) _bareRpc = null;
 						rpc.tcs.SetException(new ApplicationException($"BadMsgNotification {badMsgNotification.error_code}"));
 					}
 					else
