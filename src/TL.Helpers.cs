@@ -416,6 +416,11 @@ namespace TL
 	partial class SendMessageEmojiInteraction		{ public override string ToString() => "clicking on emoji"; }
 	partial class SendMessageEmojiInteractionSeen	{ public override string ToString() => "watching emoji reaction"; }
 
+	partial class InputStickerSet
+	{
+		public static implicit operator InputStickerSet(string shortName) => new InputStickerSetShortName { short_name = shortName };
+	}
+
 	partial class StickerSet
 	{
 		public static implicit operator InputStickerSetID(StickerSet stickerSet) => new() { id = stickerSet.id, access_hash = stickerSet.access_hash };

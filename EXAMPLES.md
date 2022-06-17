@@ -73,13 +73,13 @@ foreach (var stickerSet in allStickers.sets)
 // • Send a random sticker from the user's favorites stickers
 var favedStickers = await client.Messages_GetFavedStickers();
 var stickerDoc = favedStickers.stickers[new Random().Next(favedStickers.stickers.Length)];
-await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDocument { id = stickerDoc });
+await client.SendMessageAsync(InputPeer.Self, null, stickerDoc);
 
 // • Send a specific sticker given the stickerset shortname and emoticon
-var friendlyPanda = await client.Messages_GetStickerSet(new InputStickerSetShortName { short_name = "Friendly_Panda" });
+var friendlyPanda = await client.Messages_GetStickerSet("Friendly_Panda");
 var laughId = friendlyPanda.packs.First(p => p.emoticon == "😂").documents[0];
 var laughDoc = friendlyPanda.documents.First(d => d.ID == laughId);
-await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDocument { id = laughDoc });
+await client.SendMessageAsync(InputPeer.Self, null, laughDoc);
 
 // • Send a GIF from an internet URL
 await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDocumentExternal
