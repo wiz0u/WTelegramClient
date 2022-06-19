@@ -355,7 +355,7 @@ namespace WTelegram
 
 		internal IObject ReadFrame(byte[] data, int dataLen)
 		{
-			if (dataLen == 4 && data[3] == 0xFF)
+			if (dataLen < 8 && data[3] == 0xFF)
 			{
 				int error_code = -BinaryPrimitives.ReadInt32LittleEndian(data);
 				throw new RpcException(error_code, TransportError(error_code));
@@ -448,6 +448,7 @@ namespace WTelegram
 			{
 				404 => "Auth key not found",
 				429 => "Transport flood",
+				444 => "Invalid DC",
 				_ => Enum.GetName(typeof(HttpStatusCode), error_code) ?? "Transport error"
 			};
 		}
@@ -708,7 +709,7 @@ namespace WTelegram
 			if (MTProxyUrl != null)
 			{
 #if OBFUSCATION
-				if (!IsMainDC) dcId = -dcId;
+				if (_dcSession.DataCenter?.flags.HasFlag(DcOption.Flags.media_only) == true) dcId = -dcId;
 				var parms = HttpUtility.ParseQueryString(MTProxyUrl[MTProxyUrl.IndexOf('?')..]);
 				var server = parms["server"];
 				int port = int.Parse(parms["port"]);
