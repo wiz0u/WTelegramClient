@@ -961,7 +961,7 @@ namespace TL
 			});
 
 		/// <summary>Change authorization settings		<para>See <a href="https://corefork.telegram.org/method/account.changeAuthorizationSettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.changeAuthorizationSettings#possible-errors">details</a>)</para></summary>
-		/// <param name="hash">Session ID from the <see cref="Authorization"/> constructor, fetchable using <a href="https://corefork.telegram.org/method/account.getAuthorizations">account.getAuthorizations</a></param>
+		/// <param name="hash">Session ID from the <see cref="Authorization"/>, fetchable using <a href="https://corefork.telegram.org/method/account.getAuthorizations">account.getAuthorizations</a></param>
 		/// <param name="encrypted_requests_disabled">Whether to enable or disable receiving encrypted chats: if the flag is not set, the previous setting is not changed</param>
 		/// <param name="call_requests_disabled">Whether to enable or disable receiving calls: if the flag is not set, the previous setting is not changed</param>
 		public static Task<bool> Account_ChangeAuthorizationSettings(this Client client, long hash, bool? encrypted_requests_disabled = default, bool? call_requests_disabled = default)
@@ -1274,7 +1274,7 @@ namespace TL
 			});
 
 		/// <summary>Gets back found messages		<para>See <a href="https://corefork.telegram.org/method/messages.search"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.search#possible-errors">details</a>)</para></summary>
-		/// <param name="peer">User or chat, histories with which are searched, or <see langword="null"/> constructor for global search</param>
+		/// <param name="peer">User or chat, histories with which are searched, or <see langword="null"/> for global search</param>
 		/// <param name="q">Text search request</param>
 		/// <param name="from_id">Only return messages sent by the specified user ID</param>
 		/// <param name="top_msg_id"><a href="https://corefork.telegram.org/api/threads">Thread ID</a></param>
@@ -1287,7 +1287,7 @@ namespace TL
 		/// <param name="max_id"><a href="https://corefork.telegram.org/api/offsets">Maximum message ID to return</a></param>
 		/// <param name="min_id"><a href="https://corefork.telegram.org/api/offsets">Minimum message ID to return</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets">Hash</a></param>
-		public static Task<Messages_MessagesBase> Messages_Search(this Client client, InputPeer peer, string q, MessagesFilter filter, DateTime min_date = default, DateTime max_date = default, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default, InputPeer from_id = null, int? top_msg_id = null)
+		public static Task<Messages_MessagesBase> Messages_Search(this Client client, InputPeer peer, string q, MessagesFilter filter = null, DateTime min_date = default, DateTime max_date = default, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default, InputPeer from_id = null, int? top_msg_id = null)
 			=> client.Invoke(new Messages_Search
 			{
 				flags = (Messages_Search.Flags)((from_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x2 : 0)),
@@ -1826,7 +1826,7 @@ namespace TL
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
-		public static Task<Messages_MessagesBase> Messages_SearchGlobal(this Client client, string q, MessagesFilter filter, DateTime min_date = default, DateTime max_date = default, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue, int? folder_id = null)
+		public static Task<Messages_MessagesBase> Messages_SearchGlobal(this Client client, string q, MessagesFilter filter = null, DateTime min_date = default, DateTime max_date = default, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue, int? folder_id = null)
 			=> client.Invoke(new Messages_SearchGlobal
 			{
 				flags = (Messages_SearchGlobal.Flags)(folder_id != null ? 0x1 : 0),
@@ -2936,7 +2936,7 @@ namespace TL
 		/// <param name="filter">Message filter, <see langword="null"/>, <see cref="InputMessagesFilterMyMentions"/> filters are not supported by this method.</param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
-		public static Task<Messages_SearchResultsCalendar> Messages_GetSearchResultsCalendar(this Client client, InputPeer peer, MessagesFilter filter, int offset_id = default, DateTime offset_date = default)
+		public static Task<Messages_SearchResultsCalendar> Messages_GetSearchResultsCalendar(this Client client, InputPeer peer, MessagesFilter filter = null, int offset_id = default, DateTime offset_date = default)
 			=> client.Invoke(new Messages_GetSearchResultsCalendar
 			{
 				peer = peer,
@@ -2950,7 +2950,7 @@ namespace TL
 		/// <param name="filter">Message filter, <see langword="null"/>, <see cref="InputMessagesFilterMyMentions"/> filters are not supported by this method.</param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_SearchResultsPositions> Messages_GetSearchResultsPositions(this Client client, InputPeer peer, MessagesFilter filter, int offset_id = default, int limit = int.MaxValue)
+		public static Task<Messages_SearchResultsPositions> Messages_GetSearchResultsPositions(this Client client, InputPeer peer, MessagesFilter filter = null, int offset_id = default, int limit = int.MaxValue)
 			=> client.Invoke(new Messages_GetSearchResultsPositions
 			{
 				peer = peer,
@@ -3118,7 +3118,7 @@ namespace TL
 		/// <param name="q">Optional search query</param>
 		/// <param name="filter">Message filter</param>
 		/// <param name="limit">Maximum number of results to return (max 100).</param>
-		public static Task<Messages_MessagesBase> Messages_SearchSentMedia(this Client client, string q, MessagesFilter filter, int limit = int.MaxValue)
+		public static Task<Messages_MessagesBase> Messages_SearchSentMedia(this Client client, string q, MessagesFilter filter = null, int limit = int.MaxValue)
 			=> client.Invoke(new Messages_SearchSentMedia
 			{
 				q = q,
@@ -3429,7 +3429,7 @@ namespace TL
 			{
 			});
 
-		/// <summary>Get changelog of current app.<br/>Typically, an <see cref="Updates"/> constructor will be returned, containing one or more <see cref="UpdateServiceNotification"/> updates with app-specific changelogs.		<para>See <a href="https://corefork.telegram.org/method/help.getAppChangelog"/></para></summary>
+		/// <summary>Get changelog of current app.<br/>Typically, an <see cref="Updates"/> will be returned, containing one or more <see cref="UpdateServiceNotification"/> updates with app-specific changelogs.		<para>See <a href="https://corefork.telegram.org/method/help.getAppChangelog"/></para></summary>
 		/// <param name="prev_app_version">Previous app version</param>
 		public static Task<UpdatesBase> Help_GetAppChangelog(this Client client, string prev_app_version)
 			=> client.Invoke(new Help_GetAppChangelog
@@ -4708,7 +4708,7 @@ namespace TL
 			});
 
 		/// <summary>Load <a href="https://corefork.telegram.org/api/stats">channel statistics graph</a> asynchronously		<para>See <a href="https://corefork.telegram.org/method/stats.loadAsyncGraph"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.loadAsyncGraph#possible-errors">details</a>)</para></summary>
-		/// <param name="token">Graph token from <see cref="StatsGraphAsync"/> constructor</param>
+		/// <param name="token">Graph token from <see cref="StatsGraphAsync"/></param>
 		/// <param name="x">Zoom value, if required</param>
 		public static Task<StatsGraphBase> Stats_LoadAsyncGraph(this Client client, string token, long? x = null)
 			=> client.Invoke(new Stats_LoadAsyncGraph

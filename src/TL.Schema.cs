@@ -50,7 +50,7 @@ namespace TL
 	{
 		/// <summary>User identifier</summary>
 		public long user_id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="User"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="User"/></summary>
 		public long access_hash;
 	}
 	/// <summary>Defines a channel for further interaction.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerChannel"/></para></summary>
@@ -59,7 +59,7 @@ namespace TL
 	{
 		/// <summary>Channel identifier</summary>
 		public long channel_id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="Channel"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="Channel"/></summary>
 		public long access_hash;
 	}
 	/// <summary>Defines a <a href="https://corefork.telegram.org/api/min">min</a> user that was seen in a certain message of a certain chat.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerUserFromMessage"/></para></summary>
@@ -97,7 +97,7 @@ namespace TL
 	{
 		/// <summary>User identifier</summary>
 		public long user_id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="User"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="User"/></summary>
 		public long access_hash;
 	}
 	/// <summary>Defines a <a href="https://corefork.telegram.org/api/min">min</a> user that was seen in a certain message of a certain chat.		<para>See <a href="https://corefork.telegram.org/constructor/inputUserFromMessage"/></para></summary>
@@ -501,7 +501,7 @@ namespace TL
 	{
 		/// <summary>Photo identifier</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="Photo"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="Photo"/></summary>
 		public long access_hash;
 		/// <summary><a href="https://corefork.telegram.org/api/file_reference">File reference</a></summary>
 		public byte[] file_reference;
@@ -537,7 +537,7 @@ namespace TL
 	{
 		/// <summary>Document ID</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> parameter from the <see cref="Document"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> parameter from the <see cref="Document"/></summary>
 		public long access_hash;
 		/// <summary><a href="https://corefork.telegram.org/api/file_reference">File reference</a></summary>
 		public byte[] file_reference;
@@ -3099,9 +3099,9 @@ namespace TL
 	{
 		/// <summary>User identifier</summary>
 		public long user_id;
-		/// <summary>New first name. Corresponds to the new value of <strong>real_first_name</strong> field of the <see cref="UserFull"/> constructor.</summary>
+		/// <summary>New first name. Corresponds to the new value of <strong>real_first_name</strong> field of the <see cref="UserFull"/>.</summary>
 		public string first_name;
-		/// <summary>New last name. Corresponds to the new value of <strong>real_last_name</strong> field of the <see cref="UserFull"/> constructor.</summary>
+		/// <summary>New last name. Corresponds to the new value of <strong>real_last_name</strong> field of the <see cref="UserFull"/>.</summary>
 		public string last_name;
 		/// <summary>New username.<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-18">Layer 18</a>.</summary>
 		public string username;
@@ -5086,7 +5086,7 @@ namespace TL
 	{
 		/// <summary>Document ID</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> parameter from the <see cref="Document"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> parameter from the <see cref="Document"/></summary>
 		public long access_hash;
 		/// <summary><a href="https://corefork.telegram.org/api/file_reference">File reference</a></summary>
 		public byte[] file_reference;
@@ -6394,7 +6394,7 @@ namespace TL
 		/// <summary>Identifier of the user that was mentioned</summary>
 		public long user_id;
 	}
-	/// <summary>Message entity that can be used to create a user <a href="https://corefork.telegram.org/api/mentions">user mention</a>: received mentions use the <see cref="MessageEntityMentionName"/> constructor, instead.		<para>See <a href="https://corefork.telegram.org/constructor/inputMessageEntityMentionName"/></para></summary>
+	/// <summary>Message entity that can be used to create a user <a href="https://corefork.telegram.org/api/mentions">user mention</a>: received mentions use the <see cref="MessageEntityMentionName"/>, instead.		<para>See <a href="https://corefork.telegram.org/constructor/inputMessageEntityMentionName"/></para></summary>
 	[TLDef(0x208E68C9, inheritBefore = true)]
 	public class InputMessageEntityMentionName : MessageEntity
 	{
@@ -6436,7 +6436,7 @@ namespace TL
 	{
 		/// <summary>Channel ID</summary>
 		public long channel_id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash taken from the <see cref="Channel"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash taken from the <see cref="Channel"/></summary>
 		public long access_hash;
 
 		/// <summary>Channel ID</summary>
@@ -8266,7 +8266,7 @@ namespace TL
 	[TLDef(0x804361EA)]
 	public class PageBlockAudio : PageBlock
 	{
-		/// <summary>Audio ID (to be fetched from the container <see cref="Page"/> constructor</summary>
+		/// <summary>Audio ID (to be fetched from the container <see cref="Page"/></summary>
 		public long audio_id;
 		/// <summary>Audio caption</summary>
 		public PageCaption caption;
@@ -12581,7 +12581,7 @@ namespace TL
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
-	/// <summary>Information about found messages sent on a specific day, used to split the <c>messages</c> in <see cref="Messages_SearchResultsCalendar"/> constructors by days.		<para>See <a href="https://corefork.telegram.org/constructor/searchResultsCalendarPeriod"/></para></summary>
+	/// <summary>Information about found messages sent on a specific day, used to split the <c>messages</c> in <see cref="Messages_SearchResultsCalendar"/>s by days.		<para>See <a href="https://corefork.telegram.org/constructor/searchResultsCalendarPeriod"/></para></summary>
 	[TLDef(0xC9B0539F)]
 	public class SearchResultsCalendarPeriod : IObject
 	{
