@@ -574,16 +574,16 @@ namespace WTelegram
 			_ => throw new ArgumentException("This method works on Chat & Channel only"),
 		};
 
-		public Task<UpdatesBase> DeleteChatUser(InputPeer peer, InputUser user, bool revoke_history = true) => peer switch
+		public Task<UpdatesBase> DeleteChatUser(InputPeer peer, InputUser user) => peer switch
 		{
-			InputPeerChat chat => this.Messages_DeleteChatUser(chat.chat_id, user, revoke_history),
+			InputPeerChat chat => this.Messages_DeleteChatUser(chat.chat_id, user, true),
 			InputPeerChannel channel => this.Channels_EditBanned(channel, user, new ChatBannedRights { flags = ChatBannedRights.Flags.view_messages }),
 			_ => throw new ArgumentException("This method works on Chat & Channel only"),
 		};
 
-		public Task<UpdatesBase> LeaveChat(InputPeer peer, bool revoke_history = true) => peer switch
+		public Task<UpdatesBase> LeaveChat(InputPeer peer) => peer switch
 		{
-			InputPeerChat chat => this.Messages_DeleteChatUser(chat.chat_id, InputUser.Self, revoke_history),
+			InputPeerChat chat => this.Messages_DeleteChatUser(chat.chat_id, InputUser.Self, true),
 			InputPeerChannel channel => this.Channels_LeaveChannel(channel),
 			_ => throw new ArgumentException("This method works on Chat & Channel only"),
 		};
