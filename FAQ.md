@@ -100,6 +100,7 @@ You can get these kind of problems if you abuse Telegram [Terms of Service](http
 
 You can try to wait more between the requests, wait for a day or two to see if the requests become possible again.  
 >ℹ️ For FLOOD_WAIT_X with X < 60 seconds (see `client.FloodRetryThreshold`), WTelegramClient will automatically wait the specified delay and retry the request for you.
+For longer delays, you can catch the thrown `RpcException` and check the value of property X.
 
 An account that was restricted due to reported spam might receive PEER_FLOOD errors. Read [Telegram Spam FAQ](https://telegram.org/faq_spam) to learn more.
 

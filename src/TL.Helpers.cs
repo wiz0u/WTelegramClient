@@ -298,7 +298,7 @@ namespace TL
 		}
 	}
 
-	partial class Contacts_Blocked				{ public IPeerInfo UserOrChat(PeerBlocked peer) => peer.peer_id.UserOrChat(users, chats); }
+	partial class Contacts_Blocked				{ public IPeerInfo UserOrChat(PeerBlocked peer) => peer.peer_id?.UserOrChat(users, chats); }
 	partial class Messages_DialogsBase			{ public IPeerInfo UserOrChat(DialogBase dialog) => UserOrChat(dialog.Peer);
 												  public abstract int TotalCount { get; } }
 	partial class Messages_Dialogs				{ public override int TotalCount => dialogs.Length; }
@@ -437,7 +437,7 @@ namespace TL
 
 	partial class Contacts_ResolvedPeer
 	{
-		public static implicit operator InputPeer(Contacts_ResolvedPeer resolved) => resolved.UserOrChat.ToInputPeer();
+		public static implicit operator InputPeer(Contacts_ResolvedPeer resolved) => resolved?.UserOrChat.ToInputPeer();
 		/// <returns>A <see cref="TL.User"/>, or <see langword="null"/> if the username was for a channel</returns>
 		public User User => peer is PeerUser pu ? users[pu.user_id] : null;
 		/// <returns>A <see cref="Channel"/> or <see cref="ChannelForbidden"/>, or <see langword="null"/> if the username was for a user</returns>
@@ -493,7 +493,7 @@ namespace TL
 	partial class ChannelParticipantBanned	{ public override long UserID => peer is PeerUser pu ? pu.user_id : 0; }
 	partial class ChannelParticipantLeft	{ public override long UserID => peer is PeerUser pu ? pu.user_id : 0; }
 
-	partial class Messages_PeerDialogs { public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer.UserOrChat(users, chats); }
+	partial class Messages_PeerDialogs { public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer?.UserOrChat(users, chats); }
 
 	partial class WebDocument { public static implicit operator InputWebFileLocation(WebDocument doc) => new() { url = doc.url, access_hash = doc.access_hash }; }
 
