@@ -123,7 +123,7 @@ await client.SendMessageAsync(chats.chats[chatId], "Hello, World");
 ```
 Notes:
 - This list does not include discussions with other users. For this, you need to use [Messages_GetAllDialogs](#list-dialogs).
-- The list returned by Messages_GetAllChats contains the `access_hash` for those chats. Read [FAQ #4](FAQ.MD#access-hash) about this.
+- The list returned by Messages_GetAllChats contains the `access_hash` for those chats. Read [FAQ #4](FAQ.md#access-hash) about this.
 - If a basic chat group has been migrated to a supergroup, you may find both the old `Chat` and a `Channel` with different IDs in the `chats.chats` result,
 but the old `Chat` will be marked with flag [deactivated] and should not be used anymore. See [Terminology in ReadMe](README.md#terminology).
 - You can find a longer version of this method call in [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
@@ -217,11 +217,22 @@ var participants = await client.Channels_GetAllParticipants(channel);
 ```
 
 <a name="join-channel"></a>
-### Join a channel/group by @channelname
+### Join a channel/group by their public name or invite link
+* For a public channel/group `@channelname`  
+If you have a link of the form `https://t.me/channelname`, you need to extract the `channelname` from the URL.  
+You can resolve the channel/group username and join it like this:
 ```csharp
 var resolved = await client.Contacts_ResolveUsername("channelname"); // without the @
 if (resolved.Chat is Channel channel)
     await client.Channels_JoinChannel(channel);
+```
+* For a private channel/group/chat, you need to have an invite link  
+Telegram invite links can typically have two forms: `https://t․me/joinchat/HASH` or `https://t․me/+HASH` *(note the '+' prefix here)*  
+To use them, you need to extract the `HASH` part from the URL and then you can use those two methods:  
+```csharp
+var chatInvite = await client.Messages_CheckChatInvite("HASH"); // optional: get information before joining  
+await client.Messages_ImportChatInvite("HASH"); // join the channel/group  
+// Note: This works also with invite links of public channel/group
 ```
 
 <a name="add-members"></a>

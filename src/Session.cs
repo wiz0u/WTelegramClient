@@ -42,7 +42,9 @@ namespace WTelegram
 				if (msgIds == null)
 				{
 					msgIds = new long[msgIdsN];
-					for (int i = 0; i < msgIdsN; i++) msgIds[i] = msg_id;
+					msgIds[0] = msg_id;
+					msg_id -= 300L << 32; // until the array is filled with real values, allow ids up to 300 seconds in the past
+					for (int i = 1; i < msgIdsN; i++) msgIds[i] = msg_id;
 					return true;
 				}
 				int newHead = (msgIdsHead + 1) % msgIdsN;

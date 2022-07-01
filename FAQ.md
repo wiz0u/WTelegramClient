@@ -82,7 +82,7 @@ After that, you should be able to see/install the pre-release versions in your N
 This happens when you connect to Telegram Test servers instead of Production servers.
 On these separate test servers, all created accounts and chats are periodically deleted, so you shouldn't use them under normal circumstances.
 
-You can verify this is your issue by looking at [WTelegram logs](EXAMPLES.MD#logging) on the line `Connected to (Test) DC x...`
+You can verify this is your issue by looking at [WTelegram logs](EXAMPLES.md#logging) on the line `Connected to (Test) DC x...`
 
 This wrong-server problem typically happens when you use WTelegramClient Github source project in your application in DEBUG builds.  
 It is **not recommended** to use WTelegramClient in source code form.
