@@ -18,9 +18,11 @@ namespace WTelegram
 		#region Collect Access Hash system
 		/// <summary>Enable the collection of id/access_hash pairs (experimental)</summary>
 		public bool CollectAccessHash { get; set; }
-		readonly Dictionary<Type, Dictionary<long, long>> _accessHashes = new();
-		public IEnumerable<KeyValuePair<long, long>> AllAccessHashesFor<T>() where T : IObject
-			=> _accessHashes.GetValueOrDefault(typeof(T));
+		public IEnumerable<KeyValuePair<long, long>> AllAccessHashesFor<T>() where T : IObject => _accessHashes.GetValueOrDefault(typeof(T));
+		private readonly Dictionary<Type, Dictionary<long, long>> _accessHashes = new();
+		private static readonly FieldInfo userFlagsField = typeof(User).GetField("flags");
+		private static readonly FieldInfo channelFlagsField = typeof(Channel).GetField("flags");
+
 		/// <summary>Retrieve the access_hash associated with this id (for a TL class) if it was collected</summary>
 		/// <remarks>This requires <see cref="CollectAccessHash"/> to be set to <see langword="true"/> first.
 		/// <br/>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_CollectAccessHash.cs">Examples/Program_CollectAccessHash.cs</see> for how to use this</remarks>
@@ -35,8 +37,6 @@ namespace WTelegram
 			lock (_accessHashes)
 				_accessHashes.GetOrCreate(typeof(T))[id] = access_hash;
 		}
-		static readonly FieldInfo userFlagsField = typeof(User).GetField("flags");
-		static readonly FieldInfo channelFlagsField = typeof(Channel).GetField("flags");
 		internal void CollectField(FieldInfo fieldInfo, object obj, object access_hash)
 		{
 			if (fieldInfo.Name != "access_hash") return;
@@ -55,6 +55,11 @@ namespace WTelegram
 		#endregion
 
 		#region Client TL Helpers
+		/// <summary>Used to indicate progression of file download/upload</summary>
+		/// <param name="transmitted">transmitted bytes</param>
+		/// <param name="totalSize">total size of file in bytes, or 0 if unknown</param>
+		public delegate void ProgressCallback(long transmitted, long totalSize);
+
 		/// <summary>Helper function to upload a file to Telegram</summary>
 		/// <param name="pathname">Path to the file to upload</param>
 		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>

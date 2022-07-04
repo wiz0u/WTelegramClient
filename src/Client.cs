@@ -51,10 +51,6 @@ namespace WTelegram
 		/// <summary>ID of the current logged-in user or 0</summary>
 		public long UserId => _session.UserId;
 
-		/// <summary>Used to indicate progression of file download/upload</summary>
-		/// <param name="totalSize">total size of file in bytes, or 0 if unknown</param>
-		public delegate void ProgressCallback(long transmitted, long totalSize);
-
 		private readonly Func<string, string> _config;
 		private readonly Session _session;
 		private string _apiHash;

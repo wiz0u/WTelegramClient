@@ -132,7 +132,16 @@ Here are some advices from [another similar library](https://github.com/gotd/td/
    * Do not abuse, spam or use it for other suspicious activities.
    * Implement a rate limiting system.
 
-If your client displays Telegram channels to the user, you have to support and display [official sponsored messages](https://core.telegram.org/api/sponsored-messages).
+Some additional advices from me:
+
+5. Avoid repetitive polling or repetitive sequence of actions/requests: Save the initial results of your queries, and update those results when you're informed of a change through `Update` events.
+6. If a phone number is brand new, it will be closely monitored by Telegram for abuse, and it can even already be considered a bad user due to bad behavior from the previous owner of that phone number (which may happens often with VoIP or other easy-to-buy-online numbers, so expect fast ban)
+7. You may want to use your new phone number account with an official Telegram client and act like a normal user for some time (some weeks/months), before using it for automation with WTelegramClient.
+8. When creating a new API ID/Hash, I recommend you use your own phone number with long history of normal Telegram usage, rather than a brand new phone number with short history.
+In particular, DON'T create an API ID/Hash for every phone numbers you will control. One API ID/Hash represents your application, which can be used to control several user accounts.
+9. If you actually do use the library to spam, scam, or other stuff annoying to everybody, GTFO and don't cry that you got banned using WTelegramClient. Some people don't seem to realize by themselves that what they plan to do with the library is actually negative for the community and are surprised that they got caught.
+We don't support such use of the library, and will not help people asking for support if we suspect them of mass-user manipulation.
+10. If your client displays Telegram channels to your users, you have to support and display [official sponsored messages](https://core.telegram.org/api/sponsored-messages).
 
 <a name="chat-id"></a>
 #### 9. Why the error `CHAT_ID_INVALID`?
