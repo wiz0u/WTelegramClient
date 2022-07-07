@@ -891,9 +891,10 @@ namespace WTelegram
 		/// <br/><i>(this method calls ConnectAsync if necessary)</i></summary>
 		/// <remarks>Config callback is queried for: <b>phone_number</b>, <b>verification_code</b> <br/>and eventually <b>first_name</b>, <b>last_name</b> (signup required), <b>password</b> (2FA auth), <b>user_id</b> (alt validation)</remarks>
 		/// <param name="settings">(optional) Preference for verification_code sending</param>
+		/// <param name="reloginOnFailedResume">Proceed to logout and login if active user session cannot be resumed successfully</param>
 		/// <returns>Detail about the logged-in user
 		/// <br/>Most methods of this class are async (Task), so please use <see langword="await"/> to get the result</returns>
-		public async Task<User> LoginUserIfNeeded(CodeSettings settings = null)
+		public async Task<User> LoginUserIfNeeded(CodeSettings settings = null, bool reloginOnFailedResume = true)
 		{
 			await ConnectAsync();
 			string phone_number = null;
@@ -910,12 +911,15 @@ namespace WTelegram
 						_session.UserId = _dcSession.UserId = self.id;
 						return self;
 					}
-					Helpers.Log(3, $"Current logged user {self.id} mismatched user_id or phone_number. Logging out and in...");
+					var mismatch = $"Current logged user {self.id} mismatched user_id or phone_number";
+					Helpers.Log(3, mismatch);
+					if (!reloginOnFailedResume) throw new ApplicationException(mismatch);
 				}
-				catch (Exception ex)
+				catch (RpcException ex) when (reloginOnFailedResume)
 				{
-					Helpers.Log(4, $"Error while verifying current user! ({ex.Message}) Proceeding to login...");
+					Helpers.Log(4, $"Error while fetching current user! ({ex.Message})");
 				}
+				Helpers.Log(3, $"Proceeding to logout and login...");
 				await this.Auth_LogOut();
 				_session.UserId = _dcSession.UserId = 0;
 			}
