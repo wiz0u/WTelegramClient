@@ -37,7 +37,7 @@ If the account already exists and has enabled two-step verification (2FA) a **pa
 All these login scenarios are handled automatically within the call to `LoginUserIfNeeded`.
 
 And that's it, you now have access to the **[full range of Telegram Client APIs](https://corefork.telegram.org/methods)**. 
-All those API methods are available in the `TL` namespace *(with an underscore in the method name, instead of a dot)*, like this: `await client.Method_Name(...)`
+All those API methods require `using TL;` namespace and are called with an underscore instead of a dot in the method name, like this: `await client.Method_Name(...)`
 
 # Saved session
 If you run this program again, you will notice that only **api_hash** is requested, the other prompts are gone and you are automatically logged-on and ready to go.

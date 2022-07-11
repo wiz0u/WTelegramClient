@@ -164,6 +164,8 @@ namespace WTelegram
 			GC.SuppressFinalize(this);
 		}
 
+		public void DisableUpdates(bool disable = true) => _dcSession.DisableUpdates(disable);
+
 		/// <summary>Disconnect from Telegram <i>(shouldn't be needed in normal usage)</i></summary>
 		/// <param name="resetUser">Forget about logged-in user</param>
 		/// <param name="resetSessions">Disconnect secondary sessions with other DCs</param>
@@ -902,7 +904,7 @@ namespace WTelegram
 			{
 				try
 				{
-					var users = await this.Users_GetUsers(new[] { InputUser.Self }); // this calls also reenable incoming Updates
+					var users = await this.Users_GetUsers(new[] { InputUser.Self }); // this call also reenable incoming Updates
 					var self = users[0] as User;
 					// check user_id or phone_number match currently logged-in user
 					if ((long.TryParse(_config("user_id"), out long id) && (id == -1 || self.id == id)) ||
@@ -1135,6 +1137,8 @@ namespace WTelegram
 		/// <returns>Wait for the reply and return the resulting object, or throws an RpcException if an error was replied</returns>
 		public async Task<T> Invoke<T>(IMethod<T> query)
 		{
+			if (_dcSession.WithoutUpdates && query is not IMethod<Pong>)
+				query = new TL.Methods.InvokeWithoutUpdates<T> { query = query };
 			bool got503 = false;
 		retry:
 			var rpc = new Rpc { type = typeof(T) };

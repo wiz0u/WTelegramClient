@@ -28,12 +28,14 @@ namespace WTelegram
 			public long ServerTicksOffset;
 			public long LastSentMsgId;
 			public TL.DcOption DataCenter;
+			public bool WithoutUpdates;
 
 			internal Client Client;
 			internal int DcID => DataCenter?.id ?? 0;
 			internal IPEndPoint EndPoint => DataCenter == null ? null : new(IPAddress.Parse(DataCenter.ip_address), DataCenter.port);
 			internal void Renew() { Helpers.Log(3, $"Renewing session on DC {DcID}..."); Id = Helpers.RandomLong(); Seqno = 0; LastSentMsgId = 0; }
-			
+			public void DisableUpdates(bool disable = true) { if (WithoutUpdates != disable) { WithoutUpdates = disable; Renew(); } }
+
 			const int msgIdsN = 512;
 			private long[] msgIds;
 			private int msgIdsHead;
