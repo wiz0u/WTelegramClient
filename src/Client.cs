@@ -329,6 +329,7 @@ namespace WTelegram
 					}
 					catch
 					{
+						OnUpdate(reactorError);
 						lock (_pendingRpcs) // abort all pending requests
 						{
 							foreach (var rpc in _pendingRpcs.Values)
@@ -336,7 +337,6 @@ namespace WTelegram
 							_pendingRpcs.Clear();
 							_bareRpc = null;
 						}
-						OnUpdate(reactorError);
 					}
 					finally
 					{
