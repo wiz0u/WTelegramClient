@@ -228,13 +228,14 @@ namespace WTelegram
 		///   WTelegramClient proxy settings don't apply to HttpClient<br/>
 		/// * You may run into errors if you mix, in the same album, photos and file documents having no thumbnails/video attributes
 		/// </remarks>
-		public async Task<Message> SendAlbumAsync(InputPeer peer, InputMedia[] medias, string caption = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
+		public async Task<Message[]> SendAlbumAsync(InputPeer peer, InputMedia[] medias, string caption = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
 		{
 			System.Net.Http.HttpClient httpClient = null;
 			var multiMedia = new InputSingleMedia[medias.Length];
+			var random_id = Helpers.RandomLong();
 			for (int i = 0; i < medias.Length; i++)
 			{
-				var ism = multiMedia[i] = new InputSingleMedia { random_id = Helpers.RandomLong(), media = medias[i] };
+				var ism = multiMedia[i] = new InputSingleMedia { random_id = random_id + i, media = medias[i] };
 			retry:
 				switch (ism.media)
 				{
@@ -282,17 +283,18 @@ namespace WTelegram
 
 			var updates = await this.Messages_SendMultiMedia(peer, multiMedia, reply_to_msg_id: reply_to_msg_id, schedule_date: schedule_date);
 			OnUpdate(updates);
-			int msgId = -1;
+			var msgIds = new int[medias.Length];
+			var result = new Message[medias.Length];
 			foreach (var update in updates.UpdateList)
 			{
 				switch (update)
 				{
-					case UpdateMessageID updMsgId when updMsgId.random_id == lastMedia.random_id: msgId = updMsgId.id; break;
-					case UpdateNewMessage { message: Message message } when message.id == msgId: return message;
-					case UpdateNewScheduledMessage { message: Message schedMsg } when schedMsg.id == msgId: return schedMsg;
+					case UpdateMessageID updMsgId: msgIds[updMsgId.random_id - random_id] = updMsgId.id; break;
+					case UpdateNewMessage { message: Message message }: result[Array.IndexOf(msgIds, message.id)] = message; break;
+					case UpdateNewScheduledMessage { message: Message schedMsg }: result[Array.IndexOf(msgIds, schedMsg.id)] = schedMsg; break;
 				}
 			}
-			return null;
+			return result;
 		}
 
 		private Peer InputToPeer(InputPeer peer) => peer switch

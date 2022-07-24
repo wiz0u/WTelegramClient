@@ -4084,7 +4084,7 @@ namespace TL
 	[TLDef(0xC4870A49)]
 	public class UpdateBotStopped : Update
 	{
-		/// <summary>The bot ID</summary>
+		/// <summary>The user ID</summary>
 		public long user_id;
 		/// <summary>When did this action occur</summary>
 		public DateTime date;
