@@ -2104,6 +2104,14 @@ namespace TL
 	{
 		public string text;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionGiftPremium"/></para></summary>
+	[TLDef(0xABA0F5C6)]
+	public class MessageActionGiftPremium : MessageAction
+	{
+		public string currency;
+		public long amount;
+		public int months;
+	}
 
 	/// <summary>Chat info.		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para>		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para></summary>
 	public abstract class DialogBase : IObject
@@ -2635,7 +2643,7 @@ namespace TL
 	}
 
 	/// <summary>Extended user info		<para>See <a href="https://corefork.telegram.org/constructor/userFull"/></para></summary>
-	[TLDef(0x8C72EA81)]
+	[TLDef(0xC4B1FC3F)]
 	public class UserFull : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -2666,6 +2674,7 @@ namespace TL
 		[IfFlag(16)] public string private_forward_name;
 		[IfFlag(17)] public ChatAdminRights bot_group_admin_rights;
 		[IfFlag(18)] public ChatAdminRights bot_broadcast_admin_rights;
+		[IfFlag(19)] public PremiumGiftOption[] premium_gifts;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2701,6 +2710,9 @@ namespace TL
 			has_bot_group_admin_rights = 0x20000,
 			/// <summary>Field <see cref="bot_broadcast_admin_rights"/> has a value</summary>
 			has_bot_broadcast_admin_rights = 0x40000,
+			/// <summary>Field <see cref="premium_gifts"/> has a value</summary>
+			has_premium_gifts = 0x80000,
+			voice_messages_forbidden = 0x100000,
 		}
 	}
 
@@ -3393,6 +3405,7 @@ namespace TL
 		{
 			/// <summary>Whether the updated stickers are mask stickers</summary>
 			masks = 0x1,
+			emojis = 0x2,
 		}
 	}
 	/// <summary>Installed stickersets have changed, the client should refetch them using <a href="https://core.telegram.org/method/messages.getAllStickers">messages.getAllStickers</a>		<para>See <a href="https://corefork.telegram.org/constructor/updateStickerSets"/></para></summary>
@@ -4192,6 +4205,9 @@ namespace TL
 			pending = 0x1,
 		}
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateReadFeaturedEmojiStickers"/></para></summary>
+	[TLDef(0xFB4C496C)]
+	public class UpdateReadFeaturedEmojiStickers : Update { }
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]
@@ -5294,6 +5310,8 @@ namespace TL
 		PhoneNumber = 0x0352DAFA,
 		///<summary>Whether people can add you to their contact list by your phone number</summary>
 		AddedByPhone = 0xD1219BDD,
+		///<summary>See <a href="https://corefork.telegram.org/constructor/inputPrivacyKeyVoiceMessages"/></summary>
+		VoiceMessages = 0xAEE69D68,
 	}
 
 	/// <summary>Privacy key		<para>See <a href="https://corefork.telegram.org/type/PrivacyKey"/></para></summary>
@@ -5315,6 +5333,8 @@ namespace TL
 		PhoneNumber = 0xD19AE46D,
 		///<summary>Whether people can add you to their contact list by your phone number</summary>
 		AddedByPhone = 0x42FFD42B,
+		///<summary>See <a href="https://corefork.telegram.org/constructor/privacyKeyVoiceMessages"/></summary>
+		VoiceMessages = 0x0697F414,
 	}
 
 	/// <summary>Privacy rule		<para>Derived classes: <see cref="InputPrivacyValueAllowContacts"/>, <see cref="InputPrivacyValueAllowAll"/>, <see cref="InputPrivacyValueAllowUsers"/>, <see cref="InputPrivacyValueDisallowContacts"/>, <see cref="InputPrivacyValueDisallowAll"/>, <see cref="InputPrivacyValueDisallowUsers"/>, <see cref="InputPrivacyValueAllowChatParticipants"/>, <see cref="InputPrivacyValueDisallowChatParticipants"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputPrivacyRule"/></para></summary>
@@ -5518,6 +5538,19 @@ namespace TL
 	/// <summary>Whether the current document has stickers attached		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeHasStickers"/></para></summary>
 	[TLDef(0x9801D2F7)]
 	public class DocumentAttributeHasStickers : DocumentAttribute { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/documentAttributeCustomEmoji"/></para></summary>
+	[TLDef(0xFD149899)]
+	public class DocumentAttributeCustomEmoji : DocumentAttribute
+	{
+		public Flags flags;
+		public string alt;
+		public InputStickerSet stickerset;
+
+		[Flags] public enum Flags : uint
+		{
+			free = 0x1,
+		}
+	}
 
 	/// <summary>Found stickers		<para>See <a href="https://corefork.telegram.org/constructor/messages.stickers"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickersNotModified">messages.stickersNotModified</a></remarks>
@@ -5984,9 +6017,12 @@ namespace TL
 	/// <summary>Animated emoji reaction stickerset (contains animations to play when a user clicks on a given animated emoji)		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetAnimatedEmojiAnimations"/></para></summary>
 	[TLDef(0x0CDE3739)]
 	public class InputStickerSetAnimatedEmojiAnimations : InputStickerSet { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetPremiumGifts"/></para></summary>
+	[TLDef(0xC88B3B02)]
+	public class InputStickerSetPremiumGifts : InputStickerSet { }
 
 	/// <summary>Represents a stickerset (stickerpack)		<para>See <a href="https://corefork.telegram.org/constructor/stickerSet"/></para></summary>
-	[TLDef(0xD7DF217A)]
+	[TLDef(0x2DD14EDC)]
 	public partial class StickerSet : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -6007,6 +6043,7 @@ namespace TL
 		[IfFlag(4)] public int thumb_dc_id;
 		/// <summary>Thumbnail version</summary>
 		[IfFlag(4)] public int thumb_version;
+		[IfFlag(8)] public long thumb_document_id;
 		/// <summary>Number of stickers in pack</summary>
 		public int count;
 		/// <summary>Hash</summary>
@@ -6028,6 +6065,9 @@ namespace TL
 			animated = 0x20,
 			/// <summary>Is this a video stickerpack</summary>
 			videos = 0x40,
+			emojis = 0x80,
+			/// <summary>Field <see cref="thumb_document_id"/> has a value</summary>
+			has_thumb_document_id = 0x100,
 		}
 	}
 
@@ -6422,6 +6462,12 @@ namespace TL
 	/// <summary>Message entity representing a spoiler		<para>See <a href="https://corefork.telegram.org/constructor/messageEntitySpoiler"/></para></summary>
 	[TLDef(0x32CA960F)]
 	public class MessageEntitySpoiler : MessageEntity { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageEntityCustomEmoji"/></para></summary>
+	[TLDef(0xC8CF05F8, inheritBefore = true)]
+	public class MessageEntityCustomEmoji : MessageEntity
+	{
+		public long document_id;
+	}
 
 	/// <summary>Represents a channel		<para>Derived classes: <see cref="InputChannel"/>, <see cref="InputChannelFromMessage"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputChannel"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/inputChannelEmpty">inputChannelEmpty</a></remarks>
@@ -7729,9 +7775,10 @@ namespace TL
 		public int count;
 	}
 	/// <summary>Featured stickersets		<para>See <a href="https://corefork.telegram.org/constructor/messages.featuredStickers"/></para></summary>
-	[TLDef(0x84C02310)]
+	[TLDef(0xBE382906)]
 	public class Messages_FeaturedStickers : Messages_FeaturedStickersBase
 	{
+		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public long hash;
 		/// <summary>Total number of featured stickers</summary>
@@ -7740,6 +7787,11 @@ namespace TL
 		public StickerSetCoveredBase[] sets;
 		/// <summary>IDs of new featured stickersets</summary>
 		public long[] unread;
+
+		[Flags] public enum Flags : uint
+		{
+			premium = 0x1,
+		}
 	}
 
 	/// <summary>Recently used stickers		<para>See <a href="https://corefork.telegram.org/constructor/messages.recentStickers"/></para></summary>
@@ -7808,6 +7860,16 @@ namespace TL
 		public DocumentBase[] covers;
 
 		/// <summary>Stickerset</summary>
+		public override StickerSet Set => set;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stickerSetFullCovered"/></para></summary>
+	[TLDef(0x1AED5EE5)]
+	public class StickerSetFullCovered : StickerSetCoveredBase
+	{
+		public StickerSet set;
+		public StickerPack[] packs;
+		public DocumentBase[] documents;
+
 		public override StickerSet Set => set;
 	}
 
@@ -8614,7 +8676,7 @@ namespace TL
 	}
 
 	/// <summary>Payment form		<para>See <a href="https://corefork.telegram.org/constructor/payments.paymentForm"/></para></summary>
-	[TLDef(0xB0133B37)]
+	[TLDef(0xA0058751)]
 	public class Payments_PaymentForm : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -8636,10 +8698,11 @@ namespace TL
 		[IfFlag(4)] public string native_provider;
 		/// <summary>Contains information about the payment provider, if available, to support it natively without the need for opening the URL.<br/>A JSON object that can contain the following fields:<br/><br/>- <c>apple_pay_merchant_id</c>: Apple Pay merchant ID<br/>- <c>google_pay_public_key</c>: Google Pay public key<br/>- <c>need_country</c>: True, if the user country must be provided,<br/>- <c>need_zip</c>: True, if the user ZIP/postal code must be provided,<br/>- <c>need_cardholder_name</c>: True, if the cardholder name must be provided<br/></summary>
 		[IfFlag(4)] public DataJSON native_params;
+		[IfFlag(6)] public PaymentFormMethod[] additional_methods;
 		/// <summary>Saved server-side order information</summary>
 		[IfFlag(0)] public PaymentRequestedInfo saved_info;
 		/// <summary>Contains information about saved card credentials</summary>
-		[IfFlag(1)] public PaymentSavedCredentials saved_credentials;
+		[IfFlag(1)] public PaymentSavedCredentials[] saved_credentials;
 		/// <summary>Users</summary>
 		public Dictionary<long, User> users;
 
@@ -8657,6 +8720,8 @@ namespace TL
 			has_native_provider = 0x10,
 			/// <summary>Field <see cref="photo"/> has a value</summary>
 			has_photo = 0x20,
+			/// <summary>Field <see cref="additional_methods"/> has a value</summary>
+			has_additional_methods = 0x40,
 		}
 	}
 
@@ -13096,5 +13161,52 @@ namespace TL
 		public string currency;
 		public long monthly_amount;
 		public Dictionary<long, User> users;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputStorePaymentPurpose"/></para></summary>
+	public abstract class InputStorePaymentPurpose : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentPremiumSubscription"/></para></summary>
+	[TLDef(0xA6751E66)]
+	public class InputStorePaymentPremiumSubscription : InputStorePaymentPurpose
+	{
+		public Flags flags;
+
+		[Flags] public enum Flags : uint
+		{
+			restore = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentGiftPremium"/></para></summary>
+	[TLDef(0x616F7FE8)]
+	public class InputStorePaymentGiftPremium : InputStorePaymentPurpose
+	{
+		public InputUserBase user_id;
+		public string currency;
+		public long amount;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/premiumGiftOption"/></para></summary>
+	[TLDef(0x74C34319)]
+	public class PremiumGiftOption : IObject
+	{
+		public Flags flags;
+		public int months;
+		public string currency;
+		public long amount;
+		public string bot_url;
+		[IfFlag(0)] public string store_product;
+
+		[Flags] public enum Flags : uint
+		{
+			has_store_product = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/paymentFormMethod"/></para></summary>
+	[TLDef(0x88F8F21B)]
+	public class PaymentFormMethod : IObject
+	{
+		public string url;
+		public string title;
 	}
 }

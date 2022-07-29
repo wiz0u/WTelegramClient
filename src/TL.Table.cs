@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 143;					// fetched 14/06/2022 23:30:05
+		public const int Version = 144;					// fetched 28/07/2022 23:41:51
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -187,6 +187,7 @@ namespace TL
 			[0xEBBCA3CB] = typeof(MessageActionChatJoinedByRequest),
 			[0x47DD8079] = typeof(MessageActionWebViewDataSentMe),
 			[0xB4C38CB5] = typeof(MessageActionWebViewDataSent),
+			[0xABA0F5C6] = typeof(MessageActionGiftPremium),
 			[0xA8EDD0F5] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -212,7 +213,7 @@ namespace TL
 			[0xA518110D] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0x8C72EA81] = typeof(UserFull),
+			[0xC4B1FC3F] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -350,6 +351,7 @@ namespace TL
 			[0x14B85813] = typeof(UpdateBotMenuButton),
 			[0x74D8BE99] = typeof(UpdateSavedRingtones),
 			[0x0084CD5A] = typeof(UpdateTranscribedAudio),
+			[0xFB4C496C] = typeof(UpdateReadFeaturedEmojiStickers),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -444,6 +446,7 @@ namespace TL
 			[0x9852F9C6] = typeof(DocumentAttributeAudio),
 			[0x15590068] = typeof(DocumentAttributeFilename),
 			[0x9801D2F7] = typeof(DocumentAttributeHasStickers),
+			[0xFD149899] = typeof(DocumentAttributeCustomEmoji),
 			[0xF1749A22] = null,//Messages_StickersNotModified
 			[0x30A6EC7E] = typeof(Messages_Stickers),
 			[0x12B299D4] = typeof(StickerPack),
@@ -472,7 +475,8 @@ namespace TL
 			[0x028703C8] = typeof(InputStickerSetAnimatedEmoji),
 			[0xE67F520E] = typeof(InputStickerSetDice),
 			[0x0CDE3739] = typeof(InputStickerSetAnimatedEmojiAnimations),
-			[0xD7DF217A] = typeof(StickerSet),
+			[0xC88B3B02] = typeof(InputStickerSetPremiumGifts),
+			[0x2DD14EDC] = typeof(StickerSet),
 			[0xB60A24A6] = typeof(Messages_StickerSet),
 			[0xD3F924EB] = null,//Messages_StickerSetNotModified
 			[0xC27AC8C7] = typeof(BotCommand),
@@ -517,6 +521,7 @@ namespace TL
 			[0x020DF5D0] = typeof(MessageEntityBlockquote),
 			[0x761E6AF4] = typeof(MessageEntityBankCard),
 			[0x32CA960F] = typeof(MessageEntitySpoiler),
+			[0xC8CF05F8] = typeof(MessageEntityCustomEmoji),
 			[0xEE8C1E86] = null,//InputChannelEmpty
 			[0xF35AEC28] = typeof(InputChannel),
 			[0x5B934F9D] = typeof(InputChannelFromMessage),
@@ -588,7 +593,7 @@ namespace TL
 			[0x1B0C841A] = typeof(DraftMessageEmpty),
 			[0xFD8E711F] = typeof(DraftMessage),
 			[0xC6DC0C66] = typeof(Messages_FeaturedStickersNotModified),
-			[0x84C02310] = typeof(Messages_FeaturedStickers),
+			[0xBE382906] = typeof(Messages_FeaturedStickers),
 			[0x0B17F890] = null,//Messages_RecentStickersNotModified
 			[0x88D37C56] = typeof(Messages_RecentStickers),
 			[0x4FCBA9C8] = typeof(Messages_ArchivedStickers),
@@ -596,6 +601,7 @@ namespace TL
 			[0x35E410A8] = typeof(Messages_StickerSetInstallResultArchive),
 			[0x6410A5D2] = typeof(StickerSetCovered),
 			[0x3407E51B] = typeof(StickerSetMultiCovered),
+			[0x1AED5EE5] = typeof(StickerSetFullCovered),
 			[0xAED6DBB2] = typeof(MaskCoords),
 			[0x4A992157] = typeof(InputStickeredMediaPhoto),
 			[0x0438865B] = typeof(InputStickeredMediaDocument),
@@ -662,7 +668,7 @@ namespace TL
 			[0xC239D686] = typeof(InputWebFileLocation),
 			[0x9F2221C9] = typeof(InputWebFileGeoPointLocation),
 			[0x21E753BC] = typeof(Upload_WebFile),
-			[0xB0133B37] = typeof(Payments_PaymentForm),
+			[0xA0058751] = typeof(Payments_PaymentForm),
 			[0xD1451883] = typeof(Payments_ValidatedRequestedInfo),
 			[0x4E5F810D] = typeof(Payments_PaymentResult),
 			[0xD8411139] = typeof(Payments_PaymentVerificationNeeded),
@@ -980,6 +986,10 @@ namespace TL
 			[0xAED0CBD9] = typeof(Payments_ExportedInvoice),
 			[0x93752C52] = typeof(Messages_TranscribedAudio),
 			[0x8A4F3C29] = typeof(Help_PremiumPromo),
+			[0xA6751E66] = typeof(InputStorePaymentPremiumSubscription),
+			[0x616F7FE8] = typeof(InputStorePaymentGiftPremium),
+			[0x74C34319] = typeof(PremiumGiftOption),
+			[0x88F8F21B] = typeof(PaymentFormMethod),
 			// from TL.Secret:
 			[0xBB718624] = typeof(Layer66.SendMessageUploadRoundAction),
 			[0xE50511D8] = typeof(Layer45.DecryptedMessageMediaWebPage),

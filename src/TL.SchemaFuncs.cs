@@ -415,10 +415,12 @@ namespace TL
 
 		/// <summary>Delete the user's account from the telegram servers. Can be used, for example, to delete the account of a user that provided the login code, but forgot the <a href="https://corefork.telegram.org/api/srp">2FA password and no recovery method is configured</a>.		<para>See <a href="https://corefork.telegram.org/method/account.deleteAccount"/></para>		<para>Possible <see cref="RpcException"/> codes: 420 (<a href="https://corefork.telegram.org/method/account.deleteAccount#possible-errors">details</a>)</para></summary>
 		/// <param name="reason">Why is the account being deleted, can be empty</param>
-		public static Task<bool> Account_DeleteAccount(this Client client, string reason)
+		public static Task<bool> Account_DeleteAccount(this Client client, string reason, InputCheckPasswordSRP password = null)
 			=> client.Invoke(new Account_DeleteAccount
 			{
+				flags = (Account_DeleteAccount.Flags)(password != null ? 0x1 : 0),
 				reason = reason,
+				password = password,
 			});
 
 		/// <summary>Get days to live of account		<para>See <a href="https://corefork.telegram.org/method/account.getAccountTTL"/></para></summary>
@@ -1844,10 +1846,10 @@ namespace TL
 		/// <summary>Reorder installed stickersets		<para>See <a href="https://corefork.telegram.org/method/messages.reorderStickerSets"/></para></summary>
 		/// <param name="masks">Reorder mask stickersets</param>
 		/// <param name="order">New stickerset order by stickerset IDs</param>
-		public static Task<bool> Messages_ReorderStickerSets(this Client client, long[] order, bool masks = false)
+		public static Task<bool> Messages_ReorderStickerSets(this Client client, long[] order, bool masks = false, bool emojis = false)
 			=> client.Invoke(new Messages_ReorderStickerSets
 			{
-				flags = (Messages_ReorderStickerSets.Flags)(masks ? 0x1 : 0),
+				flags = (Messages_ReorderStickerSets.Flags)((masks ? 0x1 : 0) | (emojis ? 0x2 : 0)),
 				order = order,
 			});
 
@@ -2106,10 +2108,10 @@ namespace TL
 		/// <param name="masks">Get mask stickers</param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_ArchivedStickers> Messages_GetArchivedStickers(this Client client, long offset_id = default, int limit = int.MaxValue, bool masks = false)
+		public static Task<Messages_ArchivedStickers> Messages_GetArchivedStickers(this Client client, long offset_id = default, int limit = int.MaxValue, bool masks = false, bool emojis = false)
 			=> client.Invoke(new Messages_GetArchivedStickers
 			{
-				flags = (Messages_GetArchivedStickers.Flags)(masks ? 0x1 : 0),
+				flags = (Messages_GetArchivedStickers.Flags)((masks ? 0x1 : 0) | (emojis ? 0x2 : 0)),
 				offset_id = offset_id,
 				limit = limit,
 			});
@@ -3221,6 +3223,28 @@ namespace TL
 				good = good,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getCustomEmojiDocuments"/></para></summary>
+		public static Task<DocumentBase[]> Messages_GetCustomEmojiDocuments(this Client client, long[] document_id)
+			=> client.Invoke(new Messages_GetCustomEmojiDocuments
+			{
+				document_id = document_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStickers"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.allStickersNotModified">messages.allStickersNotModified</a></returns>
+		public static Task<Messages_AllStickers> Messages_GetEmojiStickers(this Client client, long hash = default)
+			=> client.Invoke(new Messages_GetEmojiStickers
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getFeaturedEmojiStickers"/></para></summary>
+		public static Task<Messages_FeaturedStickersBase> Messages_GetFeaturedEmojiStickers(this Client client, long hash = default)
+			=> client.Invoke(new Messages_GetFeaturedEmojiStickers
+			{
+				hash = hash,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -4158,32 +4182,26 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.assignAppStoreTransaction"/></para></summary>
-		public static Task<UpdatesBase> Payments_AssignAppStoreTransaction(this Client client, string transaction_id, byte[] receipt, bool restore = false)
+		public static Task<UpdatesBase> Payments_AssignAppStoreTransaction(this Client client, byte[] receipt, InputStorePaymentPurpose purpose)
 			=> client.Invoke(new Payments_AssignAppStoreTransaction
 			{
-				flags = (Payments_AssignAppStoreTransaction.Flags)(restore ? 0x1 : 0),
-				transaction_id = transaction_id,
 				receipt = receipt,
+				purpose = purpose,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.assignPlayMarketTransaction"/></para></summary>
-		public static Task<UpdatesBase> Payments_AssignPlayMarketTransaction(this Client client, string purchase_token)
+		public static Task<UpdatesBase> Payments_AssignPlayMarketTransaction(this Client client, DataJSON receipt, InputStorePaymentPurpose purpose)
 			=> client.Invoke(new Payments_AssignPlayMarketTransaction
 			{
-				purchase_token = purchase_token,
-			});
-
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.restorePlayMarketReceipt"/></para></summary>
-		public static Task<UpdatesBase> Payments_RestorePlayMarketReceipt(this Client client, byte[] receipt)
-			=> client.Invoke(new Payments_RestorePlayMarketReceipt
-			{
 				receipt = receipt,
+				purpose = purpose,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.canPurchasePremium"/></para></summary>
-		public static Task<bool> Payments_CanPurchasePremium(this Client client)
+		public static Task<bool> Payments_CanPurchasePremium(this Client client, InputStorePaymentPurpose purpose)
 			=> client.Invoke(new Payments_CanPurchasePremium
 			{
+				purpose = purpose,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.requestRecurringPayment"/></para></summary>
@@ -5057,10 +5075,17 @@ namespace TL.Methods
 		public InputPrivacyRule[] rules;
 	}
 
-	[TLDef(0x418D4E0B)]
+	[TLDef(0xA2C0CF74)]
 	public class Account_DeleteAccount : IMethod<bool>
 	{
+		public Flags flags;
 		public string reason;
+		[IfFlag(0)] public InputCheckPasswordSRP password;
+
+		[Flags] public enum Flags : uint
+		{
+			has_password = 0x1,
+		}
 	}
 
 	[TLDef(0x08FC711D)]
@@ -6205,6 +6230,7 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			masks = 0x1,
+			emojis = 0x2,
 		}
 	}
 
@@ -6456,6 +6482,7 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			masks = 0x1,
+			emojis = 0x2,
 		}
 	}
 
@@ -7387,6 +7414,24 @@ namespace TL.Methods
 		public bool good;
 	}
 
+	[TLDef(0xD9AB0F54)]
+	public class Messages_GetCustomEmojiDocuments : IMethod<DocumentBase[]>
+	{
+		public long[] document_id;
+	}
+
+	[TLDef(0xFBFCA18F)]
+	public class Messages_GetEmojiStickers : IMethod<Messages_AllStickers>
+	{
+		public long hash;
+	}
+
+	[TLDef(0x0ECF6736)]
+	public class Messages_GetFeaturedEmojiStickers : IMethod<Messages_FeaturedStickersBase>
+	{
+		public long hash;
+	}
+
 	[TLDef(0xEDD4882A)]
 	public class Updates_GetState : IMethod<Updates_State> { }
 
@@ -8099,33 +8144,25 @@ namespace TL.Methods
 		public InputMedia invoice_media;
 	}
 
-	[TLDef(0x0FEC13C6)]
+	[TLDef(0x80ED747D)]
 	public class Payments_AssignAppStoreTransaction : IMethod<UpdatesBase>
 	{
-		public Flags flags;
-		public string transaction_id;
 		public byte[] receipt;
-
-		[Flags] public enum Flags : uint
-		{
-			restore = 0x1,
-		}
+		public InputStorePaymentPurpose purpose;
 	}
 
-	[TLDef(0x4FAA4AED)]
+	[TLDef(0xDFFD50D3)]
 	public class Payments_AssignPlayMarketTransaction : IMethod<UpdatesBase>
 	{
-		public string purchase_token;
+		public DataJSON receipt;
+		public InputStorePaymentPurpose purpose;
 	}
 
-	[TLDef(0xD164E36A)]
-	public class Payments_RestorePlayMarketReceipt : IMethod<UpdatesBase>
+	[TLDef(0x9FC19EB6)]
+	public class Payments_CanPurchasePremium : IMethod<bool>
 	{
-		public byte[] receipt;
+		public InputStorePaymentPurpose purpose;
 	}
-
-	[TLDef(0xAA6A90C8)]
-	public class Payments_CanPurchasePremium : IMethod<bool> { }
 
 	[TLDef(0x146E958D)]
 	public class Payments_RequestRecurringPayment : IMethod<UpdatesBase>
