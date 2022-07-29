@@ -134,7 +134,7 @@ Here are some advices from [another similar library](https://github.com/gotd/td/
 
 Some additional advices from me:
 
-5. Avoid repetitive polling or repetitive sequence of actions/requests: Save the initial results of your queries, and update those results when you're informed of a change through `Update` events.
+5. Avoid repetitive polling or repetitive sequence of actions/requests: Save the initial results of your queries, and update those results when you're informed of a change through `OnUpdate` events.
 6. If a phone number is brand new, it will be closely monitored by Telegram for abuse, and it can even already be considered a bad user due to bad behavior from the previous owner of that phone number (which may happens often with VoIP or other easy-to-buy-online numbers, so expect fast ban)
 7. You may want to use your new phone number account with an official Telegram client and act like a normal user for some time (some weeks/months), before using it for automation with WTelegramClient.
 8. When creating a new API ID/Hash, I recommend you use your own phone number with long history of normal Telegram usage, rather than a brand new phone number with short history.
@@ -191,7 +191,7 @@ If Telegram servers decide to shutdown this secondary connection, it's not an is
 This should be transparent and pending API calls should automatically be resent upon reconnection.
 You can choose to increase `MaxAutoReconnects` if it happens too often because your Internet connection is unstable.
 
-3) If you reach `MaxAutoReconnects` disconnections, then the **Update** event handler will receive a `ReactorError` object to notify you of the problem,
+3) If you reach `MaxAutoReconnects` disconnections, then the **OnUpdate** event handler will receive a `ReactorError` object to notify you of the problem.  
 and pending API calls throw the network IOException.  
 In this case, the recommended action would be to dispose the client and recreate one
 

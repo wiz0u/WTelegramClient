@@ -25,8 +25,8 @@ namespace WTelegram
 	public partial class Client : IDisposable
 	{
 		/// <summary>This event will be called when unsollicited updates/messages are sent by Telegram servers</summary>
-		/// <remarks>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_ListenUpdate.cs">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
-		public event Action<IObject> Update;
+		/// <remarks>Make your handler <see langword="async"/>, or return <see cref="Task.CompletedTask"></see><br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
+		public event Func<IObject, Task> OnUpdate;
 		/// <summary>Used to create a TcpClient connected to the given address/port, or throw an exception on failure</summary>
 		public TcpFactory TcpHandler { get; set; } = DefaultTcpHandler;
 		public delegate Task<TcpClient> TcpFactory(string host, int port);
@@ -150,7 +150,7 @@ namespace WTelegram
 		public static void LoadPublicKey(string pem) => Encryption.LoadPublicKey(pem);
 
 		/// <summary>Builds a structure that is used to validate a 2FA password</summary>
-		/// <param name="accountPassword">Password validation configuration. You can obtain this though an Update event as part of the login process</param>
+		/// <param name="accountPassword">Password validation configuration. You can obtain this via <c>Account_GetPassword</c> or through OnUpdate as part of the login process</param>
 		/// <param name="password">The password to validate</param>
 		public static Task<InputCheckPasswordSRP> InputCheckPassword(Account_Password accountPassword, string password)
 			=> Check2FA(accountPassword, () => Task.FromResult(password));
@@ -321,7 +321,7 @@ namespace WTelegram
 							if (IsMainDC)
 							{
 								var updatesState = await this.Updates_GetState(); // this call reenables incoming Updates
-								OnUpdate(updatesState);
+								RaiseUpdate(updatesState);
 							}
 						}
 						else
@@ -329,7 +329,7 @@ namespace WTelegram
 					}
 					catch
 					{
-						OnUpdate(reactorError);
+						RaiseUpdate(reactorError);
 						lock (_pendingRpcs) // abort all pending requests
 						{
 							foreach (var rpc in _pendingRpcs.Values)
@@ -633,7 +633,7 @@ namespace WTelegram
 						rpc.tcs.SetException(new ApplicationException($"BadMsgNotification {badMsgNotification.error_code}"));
 					}
 					else
-						OnUpdate(obj);
+						RaiseUpdate(obj);
 					break;
 				default:
 					if (_bareRpc != null)
@@ -648,7 +648,7 @@ namespace WTelegram
 						else
 							Helpers.Log(4, $"Received a {obj.GetType()} incompatible with expected bare {rpc?.type}");
 					}
-					OnUpdate(obj);
+					RaiseUpdate(obj);
 					break;
 			}
 
@@ -658,19 +658,19 @@ namespace WTelegram
 				if (rpc != null)
 					rpc.tcs.SetResult(result);
 				else
-					OnUpdate(obj);
+					RaiseUpdate(obj);
 			}
 		}
 
-		private void OnUpdate(IObject obj)
+		private async void RaiseUpdate(IObject obj)
 		{
 			try
 			{
-				Update?.Invoke(obj);
+				await OnUpdate?.Invoke(obj);
 			}
 			catch (Exception ex)
 			{
-				Helpers.Log(4, $"{nameof(Update)} callback on {obj.GetType().Name} raised {ex}");
+				Helpers.Log(4, $"{nameof(OnUpdate)}({obj?.GetType().Name}) raised {ex}");
 			}
 		}
 
@@ -943,7 +943,7 @@ namespace WTelegram
 			{
 			resent:
 				var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);
-				OnUpdate(sentCode);
+				RaiseUpdate(sentCode);
 				Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
 				for (int retry = 1; authorization == null; retry++)
 					try
@@ -973,7 +973,7 @@ namespace WTelegram
 							try
 							{
 								var accountPassword = await this.Account_GetPassword();
-								OnUpdate(accountPassword);
+								RaiseUpdate(accountPassword);
 								var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
 								authorization = await this.Auth_CheckPassword(checkPasswordSRP);
 							}
@@ -992,7 +992,7 @@ namespace WTelegram
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
 			{
 				var waitUntil = DateTime.UtcNow.AddSeconds(3);
-				OnUpdate(signUpRequired); // give caller the possibility to read and accept TOS
+				RaiseUpdate(signUpRequired); // give caller the possibility to read and accept TOS
 				var first_name = Config("first_name");
 				var last_name = Config("last_name");
 				var wait = waitUntil - DateTime.UtcNow;

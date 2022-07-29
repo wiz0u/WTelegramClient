@@ -189,7 +189,7 @@ namespace WTelegram
 			else
 				updates = await this.Messages_SendMedia(peer, media, text, random_id, entities: entities,
 					reply_to_msg_id: reply_to_msg_id == 0 ? null : reply_to_msg_id, schedule_date: schedule_date == default ? null : schedule_date);
-			OnUpdate(updates);
+			RaiseUpdate(updates);
 			int msgId = -1;
 			foreach (var update in updates.UpdateList)
 			{
@@ -282,7 +282,7 @@ namespace WTelegram
 			if (entities != null) lastMedia.flags = InputSingleMedia.Flags.has_entities;
 
 			var updates = await this.Messages_SendMultiMedia(peer, multiMedia, reply_to_msg_id: reply_to_msg_id, schedule_date: schedule_date);
-			OnUpdate(updates);
+			RaiseUpdate(updates);
 			var msgIds = new int[medias.Length];
 			var result = new Message[medias.Length];
 			foreach (var update in updates.UpdateList)

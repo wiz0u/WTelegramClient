@@ -20,7 +20,7 @@ namespace WTelegramClientTest
 			Client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 			using (Client)
 			{
-				Client.Update += Client_Update;
+				Client.OnUpdate += Client_OnUpdate;
 				My = await Client.LoginUserIfNeeded();
 				Users[My.id] = My;
 				// Note: on login, Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
@@ -32,9 +32,10 @@ namespace WTelegramClientTest
 			}
 		}
 
-		private static void Client_Update(IObject arg)
+		// in this example, we're not using async/await, so we just return Task.CompletedTask
+		private static Task Client_OnUpdate(IObject arg)
 		{
-			if (arg is not UpdatesBase updates) return;
+			if (arg is not UpdatesBase updates) return Task.CompletedTask;
 			updates.CollectUsersChats(Users, Chats);
 			foreach (var update in updates.UpdateList)
 				switch (update)
@@ -52,6 +53,7 @@ namespace WTelegramClientTest
 					case UpdateUserPhoto uup: Console.WriteLine($"{User(uup.user_id)} has changed profile photo"); break;
 					default: Console.WriteLine(update.GetType().Name); break; // there are much more update types than the above cases
 				}
+			return Task.CompletedTask;
 		}
 
 		private static void DisplayMessage(MessageBase messageBase, bool edit = false)

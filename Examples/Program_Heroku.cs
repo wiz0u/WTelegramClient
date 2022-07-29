@@ -30,7 +30,7 @@ namespace WTelegramClientTest
 			Client = new WTelegram.Client(store.Length == 0 ? null : Environment.GetEnvironmentVariable, store);
 			using (Client)
 			{
-				Client.Update += Client_Update;
+				Client.OnUpdate += Client_OnUpdate;
 				My = await Client.LoginUserIfNeeded();
 				Console.WriteLine($"We are logged-in as {My.username ?? My.first_name + " " + My.last_name} (id {My.id})");
 				var dialogs = await Client.Messages_GetAllDialogs();
@@ -39,7 +39,7 @@ namespace WTelegramClientTest
 			}
 		}
 
-		private static async void Client_Update(IObject arg)
+		private static async Task Client_OnUpdate(IObject arg)
 		{
 			if (arg is not UpdatesBase updates) return;
 			updates.CollectUsersChats(Users, Chats);

@@ -312,14 +312,15 @@ finally
 <a name="updates"></a>
 ### Monitor all Telegram events happening for the user
 
-This is done through the `client.Update` callback event.
+This is done through the `client.OnUpdate` callback event.  
+Your event handler implementation can either return `Task.CompletedTask` or be an `async Task` method.
 
 See [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
 <a name="monitor-msg"></a>
 ### Monitor new messages being posted in chats
 
-You have to handle `client.Update` events containing an `UpdateNewMessage`.
+You have to handle `client.OnUpdate` events containing an `UpdateNewMessage`.
 
 See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
@@ -336,7 +337,7 @@ See [Examples/Program_DownloadSavedMedia.cs](Examples/Program_DownloadSavedMedia
 <a name="collect-access-hash"></a>
 ### Collect Access Hash and save them for later use
 
-You can automate the collection of `access_hash` for the various resources obtained in response to API calls or Update events,
+You can automate the collection of `access_hash` for the various resources obtained in response to API calls or Updates,
 so that you don't have to remember them by yourself or ask the API about them each time.
 
 This is done by activating the experimental `client.CollectAccessHash` system.  

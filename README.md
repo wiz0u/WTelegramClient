@@ -130,7 +130,7 @@ In the API, Telegram uses some terms/classnames that can be confusing as they di
 
 # Other things to know
 
-The Client class also offers an `Update` event that is triggered when Telegram servers sends Updates (like new messages or status), independently of your API requests. See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs)
+The Client class also offers an `OnUpdate` event that is triggered when Telegram servers sends Updates (like new messages or status), independently of your API requests. See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs)
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
