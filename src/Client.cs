@@ -313,7 +313,7 @@ namespace WTelegram
 							lock (_pendingRpcs) // retry all pending requests
 							{
 								foreach (var rpc in _pendingRpcs.Values)
-									rpc.tcs.SetResult(reactorError);
+									rpc.tcs.SetResult(reactorError); // this leads to a retry (see Invoke<T> method)
 								_pendingRpcs.Clear();
 								_bareRpc = null;
 							}
@@ -645,6 +645,8 @@ namespace WTelegram
 							rpc.tcs.SetResult(obj);
 							break;
 						}
+						else
+							Helpers.Log(4, $"Received a {obj.GetType()} incompatible with expected bare {rpc?.type}");
 					}
 					OnUpdate(obj);
 					break;

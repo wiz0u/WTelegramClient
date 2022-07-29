@@ -40,14 +40,14 @@ if (contacts.imported.Length > 0)
 
 <a name="markdown"></a>
 <a name="html"></a>
-### Send an HTML/Markdown formatted message to ourself (Saved Messages)
+### Convert message to/from HTML or Markdown, and send it to ourself (Saved Messages)
 ```csharp
 // HTML-formatted text:
 var text = $"Hello <u>dear <b>{HtmlText.Escape(myself.first_name)}</b></u>\n" +
             "Enjoy this <code>userbot</code> written with <a href=\"https://github.com/wiz0u/WTelegramClient\">WTelegramClient</a>";
 var entities = client.HtmlToEntities(ref text);
 var sent = await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
-// if you need to convert a Message to HTML: (for easier storage)
+// if you need to convert a sent/received Message to HTML: (easier to store)
 text = client.EntitiesToHtml(sent.message, sent.entities);
 
 // Markdown-style text:
@@ -55,7 +55,7 @@ var text2 = $"Hello __dear *{Markdown.Escape(myself.first_name)}*__\n" +
             "Enjoy this `userbot` written with [WTelegramClient](https://github.com/wiz0u/WTelegramClient)";
 var entities2 = client.MarkdownToEntities(ref text2);
 var sent2 = await client.SendMessageAsync(InputPeer.Self, text2, entities: entities2);
-// if you need to convert a Message to Markdown: (for easier storage)
+// if you need to convert a sent/received Message to Markdown: (easier to store)
 text2 = client.EntitiesToMarkdown(sent2.message, sent2.entities);
 ```
 See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) and [HTML formatting style](https://core.telegram.org/bots/api/#html-style) for details.  
