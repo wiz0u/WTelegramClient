@@ -177,7 +177,7 @@ To help determine if `chats.chats` is empty or does not contain a certain chat, 
 or simply use a debugger: Place a breakpoint after the Messages_GetAllChats call, run the program up to there, and use a Watch pane to display the content of the chats.chats dictionary.
 
 <a name="shutdown"></a>
-#### 10. I get "Connection shut down" errors in my logs
+#### 11. I get "Connection shut down" errors in my logs
 
 There are various reasons why you may get this error. Here are the explanation and how to solve it:
 
@@ -200,7 +200,7 @@ you might also get Connection shutdown because your client couldn't send Pings t
 In this case, you can use the `PingInterval` property to increase the delay between pings *(for example 300 seconds instead of 60)*.
 
 <a name="TLSharp"></a>
-#### 11. How to migrate from TLSharp? How to sign-in/sign-up/register account properly?
+#### 12. How to migrate from TLSharp? How to sign-in/sign-up/register account properly?
 
 First, make sure you read the [ReadMe documentation](README.md) completely, it contains essential information and a quick tutorial to easily understand how to correctly use the library.
 
@@ -226,7 +226,7 @@ In particular, it will detect and handle automatically and properly the various 
 Contrary to TLSharp, WTelegramClient supports MTProto v2.0 (more secured), transport obfuscation, protocol security checks, MTProto Proxy, real-time updates, multiple DC connections, API documentation in Intellisense...
 
 <a name="heroku"></a><a name="vps"></a><a name="host"></a>
-#### 12. How to host my userbot online?
+#### 13. How to host my userbot online?
 
 If you need your userbot to run 24/7, you would typically design your userbot as a Console program, compiled for Linux or Windows,
 and hosted online on any [VPS Hosting](https://www.google.com/search?q=vps+hosting) (Virtual Private Server).  

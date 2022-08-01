@@ -1046,6 +1046,7 @@ namespace WTelegram
 
 		private async Task SendAsync(IObject msg, bool isContent, Rpc rpc = null)
 		{
+			if (_reactorTask == null) throw new ApplicationException("You must connect to Telegram first");
 			isContent &= _dcSession.AuthKeyID != 0;
 			(long msgId, int seqno) = NewMsgId(isContent);
 			if (rpc != null)

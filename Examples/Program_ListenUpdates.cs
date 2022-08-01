@@ -32,16 +32,16 @@ namespace WTelegramClientTest
 			}
 		}
 
-		// in this example, we're not using async/await, so we just return Task.CompletedTask
-		private static Task Client_OnUpdate(IObject arg)
+		// if not using async/await, we could just return Task.CompletedTask
+		private static async Task Client_OnUpdate(IObject arg)
 		{
-			if (arg is not UpdatesBase updates) return Task.CompletedTask;
+			if (arg is not UpdatesBase updates) return;
 			updates.CollectUsersChats(Users, Chats);
 			foreach (var update in updates.UpdateList)
 				switch (update)
 				{
-					case UpdateNewMessage unm: DisplayMessage(unm.message); break;
-					case UpdateEditMessage uem: DisplayMessage(uem.message, true); break;
+					case UpdateNewMessage unm: await DisplayMessage(unm.message); break;
+					case UpdateEditMessage uem: await DisplayMessage(uem.message, true); break;
 					case UpdateDeleteChannelMessages udcm: Console.WriteLine($"{udcm.messages.Length} message(s) deleted in {Chat(udcm.channel_id)}"); break;
 					case UpdateDeleteMessages udm: Console.WriteLine($"{udm.messages.Length} message(s) deleted"); break;
 					case UpdateUserTyping uut: Console.WriteLine($"{User(uut.user_id)} is {uut.action}"); break;
@@ -53,10 +53,10 @@ namespace WTelegramClientTest
 					case UpdateUserPhoto uup: Console.WriteLine($"{User(uup.user_id)} has changed profile photo"); break;
 					default: Console.WriteLine(update.GetType().Name); break; // there are much more update types than the above cases
 				}
-			return Task.CompletedTask;
 		}
 
-		private static void DisplayMessage(MessageBase messageBase, bool edit = false)
+		// in this example method, we're not using async/await, so we just return Task.CompletedTask
+		private static Task DisplayMessage(MessageBase messageBase, bool edit = false)
 		{
 			if (edit) Console.Write("(Edit): ");
 			switch (messageBase)
@@ -64,6 +64,7 @@ namespace WTelegramClientTest
 				case Message m: Console.WriteLine($"{Peer(m.from_id) ?? m.post_author} in {Peer(m.peer_id)}> {m.message}"); break;
 				case MessageService ms: Console.WriteLine($"{Peer(ms.from_id)} in {Peer(ms.peer_id)} [{ms.action.GetType().Name[13..]}]"); break;
 			}
+			return Task.CompletedTask;
 		}
 
 		private static string User(long id) => Users.TryGetValue(id, out var user) ? user.ToString() : $"User {id}";

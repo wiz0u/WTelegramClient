@@ -345,7 +345,7 @@ See [Examples/Program_CollectAccessHash.cs](Examples/Program_CollectAccessHash.c
 
 <a name="proxy"></a>
 ### Use a proxy to connect to Telegram
-SOCKS/HTTP proxies can be used through the `client.TcpHandler` delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/):
+SOCKS/HTTPS proxies can be used through the `client.TcpHandler` delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/):
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 client.TcpHandler = async (address, port) =>
