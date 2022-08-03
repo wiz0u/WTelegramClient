@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 144;					// fetched 28/07/2022 23:41:51
+		public const int Version = 144;					// fetched 03/08/2022 22:13:22
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -667,6 +667,7 @@ namespace TL
 			[0x9BED434D] = typeof(InputWebDocument),
 			[0xC239D686] = typeof(InputWebFileLocation),
 			[0x9F2221C9] = typeof(InputWebFileGeoPointLocation),
+			[0xF46FE924] = typeof(InputWebFileAudioAlbumThumbLocation),
 			[0x21E753BC] = typeof(Upload_WebFile),
 			[0xA0058751] = typeof(Payments_PaymentForm),
 			[0xD1451883] = typeof(Payments_ValidatedRequestedInfo),

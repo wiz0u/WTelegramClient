@@ -8621,11 +8621,7 @@ namespace TL
 	}
 
 	/// <summary>Location of remote file		<para>Derived classes: <see cref="InputWebFileLocation"/>, <see cref="InputWebFileGeoPointLocation"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputWebFileLocation"/></para></summary>
-	public abstract class InputWebFileLocationBase : IObject
-	{
-		/// <summary>Access hash</summary>
-		public abstract long AccessHash { get; }
-	}
+	public abstract class InputWebFileLocationBase : IObject { }
 	/// <summary>Location of a remote HTTP(s) file		<para>See <a href="https://corefork.telegram.org/constructor/inputWebFileLocation"/></para></summary>
 	[TLDef(0xC239D686)]
 	public class InputWebFileLocation : InputWebFileLocationBase
@@ -8634,9 +8630,6 @@ namespace TL
 		public string url;
 		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
-
-		/// <summary>Access hash</summary>
-		public override long AccessHash => access_hash;
 	}
 	/// <summary>Geolocation		<para>See <a href="https://corefork.telegram.org/constructor/inputWebFileGeoPointLocation"/></para></summary>
 	[TLDef(0x9F2221C9)]
@@ -8654,9 +8647,22 @@ namespace TL
 		public int zoom;
 		/// <summary>Map scale; 1-3</summary>
 		public int scale;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputWebFileAudioAlbumThumbLocation"/></para></summary>
+	[TLDef(0xF46FE924)]
+	public class InputWebFileAudioAlbumThumbLocation : InputWebFileLocationBase
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputDocument document;
+		[IfFlag(1)] public string title;
+		[IfFlag(1)] public string performer;
 
-		/// <summary>Access hash</summary>
-		public override long AccessHash => access_hash;
+		[Flags] public enum Flags : uint
+		{
+			has_document = 0x1,
+			has_title = 0x2,
+			small = 0x4,
+		}
 	}
 
 	/// <summary>Represents a chunk of an <a href="https://corefork.telegram.org/api/files">HTTP webfile</a> downloaded through telegram's secure MTProto servers		<para>See <a href="https://corefork.telegram.org/constructor/upload.webFile"/></para></summary>
