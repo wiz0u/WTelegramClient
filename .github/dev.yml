@@ -2,7 +2,7 @@ pr: none
 trigger:
 - master
 
-name: 2.6.1-dev.$(Rev:r)
+name: 2.6.2-dev.$(Rev:r)
 
 pool:
   vmImage: ubuntu-latest

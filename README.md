@@ -70,11 +70,13 @@ using var client = new WTelegram.Client(Config);
 ```
 There are other configuration items that are queried to your method but returning `null` let WTelegramClient choose a default adequate value.
 Those shown above are the only ones that have no default values and should be provided by your method.
-Returning `null` for verification_code or password will show a prompt for console apps, or an error otherwise.
-Returning `""` for verification_code requests resending the code through another method (SMS or Call).
 
-Another simple approach is to pass `Environment.GetEnvironmentVariable` as the config callback and define the configuration items as environment variables.
-Undefined variables get the default `null` behavior.
+Returning `null` for verification_code or password will show a prompt for console apps, or an error otherwise
+*(see [FAQ #3](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#GUI) for WinForms)*  
+Returning `""` for verification_code requests the resending of the code through another system (SMS or Call).
+
+Another simple approach is to pass `Environment.GetEnvironmentVariable` as the config callback and define the configuration items as environment variables
+*(undefined variables get the default `null` behavior)*.
 
 Finally, if you want to redirect the library logs to your logger instead of the Console, you can install a delegate in the `WTelegram.Helpers.Log` static property.
 Its `int` argument is the log severity, compatible with the [LogLevel enum](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel)
@@ -123,10 +125,11 @@ In the API, Telegram uses some terms/classnames that can be confusing as they di
 - `Chat` : A private [basic chat group](https://corefork.telegram.org/api/channel#basic-groups) with less than 200 members (it may be migrated to a supergroup `Channel` with a new ID when it gets bigger or public, in which case the old `Chat` will still exist but be `deactivated`)  
 **⚠️ Most chat groups you see are really of type `Channel`, not `Chat`!**
 - chats : In plural or general meaning, it means either `Chat` or `Channel`
-- `Peer` : Either a `Chat`, `Channel` or a private chat with a `User`
-- Dialog : The current status of a chat with a `Peer` *(draft, last message, unread count, pinned...)*. It represents each line from your Telegram chat list.
+- `Peer` : Either a `Chat`, a `Channel` or a `User`
+- Dialog : Status of chat with a `Peer` *(draft, last message, unread count, pinned...)*. It represents each line from your Telegram chat list.
 - DC (DataCenter) : There are a few datacenters depending on where in the world the user (or an uploaded media file) is from.
-- Access Hash : Telegram requires you to provide a specific `access_hash` for users, channels, and other resources before interacting with them. See [FAQ #4](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash) to learn more about it.
+- Access Hash : Telegram requires you to provide a specific `access_hash` for users, channels, and other resources before interacting with them.
+See [FAQ #4](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash) to learn more about it.
 
 # Other things to know
 

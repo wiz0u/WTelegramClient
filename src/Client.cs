@@ -666,7 +666,8 @@ namespace WTelegram
 		{
 			try
 			{
-				await OnUpdate?.Invoke(obj);
+				var task = OnUpdate?.Invoke(obj);
+				if (task != null) await task;
 			}
 			catch (Exception ex)
 			{
