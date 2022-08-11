@@ -168,7 +168,6 @@ namespace WTelegram
 			{
 				var position = BinaryPrimitives.ReadInt32LittleEndian(_header);
 				var length = BinaryPrimitives.ReadInt32LittleEndian(_header.AsSpan(4));
-				if (position < 0 || length < 0 || position >= 65536 || length >= 32768) { position = 0; length = (int)base.Length; }
 				base.Position = position;
 				Length = length;
 				_nextPosition = position + length;

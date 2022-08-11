@@ -175,7 +175,7 @@ namespace WTelegram
 		/// <param name="text">The plain text of the message (or media caption)</param>
 		/// <param name="media">An instance of <see cref="InputMedia">InputMedia</see>-derived class, or <see langword="null"/> if there is no associated media</param>
 		/// <param name="reply_to_msg_id">Your message is a reply to an existing message with this ID, in the same chat</param>
-		/// <param name="entities">Text formatting entities. You can use <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
+		/// <param name="entities">Text formatting entities. You can use <see cref="HtmlText.HtmlToEntities">HtmlToEntities</see> or <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
 		/// <param name="schedule_date">UTC timestamp when the message should be sent</param>
 		/// <param name="disable_preview">Should website/media preview be shown or not, for URLs in your message</param>
 		/// <returns>The transmitted message as confirmed by Telegram</returns>

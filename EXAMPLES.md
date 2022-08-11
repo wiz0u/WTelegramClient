@@ -49,7 +49,8 @@ var entities = client.HtmlToEntities(ref text);
 var sent = await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
 // if you need to convert a sent/received Message to HTML: (easier to store)
 text = client.EntitiesToHtml(sent.message, sent.entities);
-
+```
+```csharp
 // Markdown-style text:
 var text2 = $"Hello __dear *{Markdown.Escape(myself.first_name)}*__\n" +
             "Enjoy this `userbot` written with [WTelegramClient](https://github.com/wiz0u/WTelegramClient)";
