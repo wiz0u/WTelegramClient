@@ -17,9 +17,6 @@ using System.Web;
 using TL;
 using static WTelegram.Encryption;
 
-// necessary for .NET Standard 2.0 compilation:
-#pragma warning disable CA1835 // Prefer the 'Memory'-based overloads for 'ReadAsync' and 'WriteAsync'
-
 namespace WTelegram
 {
 	public partial class Client : IDisposable

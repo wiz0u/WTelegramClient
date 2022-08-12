@@ -16,7 +16,7 @@ namespace WTelegram
 		internal static IPEndPoint IPEndPoint_Parse(string addr) => IPEndPoint.Parse(addr);
 	}
 }
-#else
+#else // Compatibility shims for methods missing in netstandard2.0:
 namespace WTelegram
 {
 	static class Compat

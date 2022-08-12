@@ -64,7 +64,7 @@ namespace WTelegram
 				using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
 				byte[] aes_key = new byte[32], zero_iv = new byte[32];
 				var n = BigEndianInteger(publicKey.n);
-				while (encrypted_data == null)
+				do
 				{
 					RNG.GetBytes(aes_key);
 					clearStream.Position = 0;
@@ -84,7 +84,7 @@ namespace WTelegram
 					var x = BigEndianInteger(clearBuffer);
 					if (x < n) // if good result, encrypt with RSA key:
 						encrypted_data = BigInteger.ModPow(x, BigEndianInteger(publicKey.e), n).To256Bytes();
-				} // otherwise, repeat the steps
+				} while (encrypted_data == null); // otherwise, repeat the steps
 			}
 			var serverDHparams = await client.ReqDHParams(pqInnerData.nonce, pqInnerData.server_nonce, pqInnerData.p, pqInnerData.q, fingerprint, encrypted_data);
 			//5)
@@ -95,11 +95,11 @@ namespace WTelegram
 			var (tmp_aes_key, tmp_aes_iv) = ConstructTmpAESKeyIV(resPQ.server_nonce, pqInnerData.new_nonce);
 			var answer = AES_IGE_EncryptDecrypt(serverDHparamsOk.encrypted_answer, tmp_aes_key, tmp_aes_iv, false);
 
-			using var encryptedReader = new TL.BinaryReader(new MemoryStream(answer), client);
-			var answerHash = encryptedReader.ReadBytes(20);
-			var answerObj = encryptedReader.ReadTLObject();
+			using var answerReader = new TL.BinaryReader(new MemoryStream(answer), client);
+			var answerHash = answerReader.ReadBytes(20);
+			var answerObj = answerReader.ReadTLObject();
 			if (answerObj is not ServerDHInnerData serverDHinnerData) throw new ApplicationException("not server_DH_inner_data");
-			long padding = encryptedReader.BaseStream.Length - encryptedReader.BaseStream.Position;
+			long padding = answerReader.BaseStream.Length - answerReader.BaseStream.Position;
 			if (padding >= 16) throw new ApplicationException("Too much pad");
 			if (!Enumerable.SequenceEqual(sha1.ComputeHash(answer, 20, answer.Length - (int)padding - 20), answerHash))
 				throw new ApplicationException("Answer SHA1 mismatch");

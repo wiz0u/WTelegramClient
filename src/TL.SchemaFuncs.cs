@@ -413,8 +413,9 @@ namespace TL
 				rules = rules,
 			});
 
-		/// <summary>Delete the user's account from the telegram servers. Can be used, for example, to delete the account of a user that provided the login code, but forgot the <a href="https://corefork.telegram.org/api/srp">2FA password and no recovery method is configured</a>.		<para>See <a href="https://corefork.telegram.org/method/account.deleteAccount"/></para>		<para>Possible <see cref="RpcException"/> codes: 420 (<a href="https://corefork.telegram.org/method/account.deleteAccount#possible-errors">details</a>)</para></summary>
+		/// <summary>Delete the user's account from the telegram servers.		<para>See <a href="https://corefork.telegram.org/method/account.deleteAccount"/></para>		<para>Possible <see cref="RpcException"/> codes: 420 (<a href="https://corefork.telegram.org/method/account.deleteAccount#possible-errors">details</a>)</para></summary>
 		/// <param name="reason">Why is the account being deleted, can be empty</param>
+		/// <param name="password"><a href="https://corefork.telegram.org/api/srp">2FA password</a>: this field can be omitted even for accounts with 2FA enabled: in this case account account deletion will be delayed by 7 days <a href="https://corefork.telegram.org/api/account-deletion">as specified in the docs »</a></param>
 		public static Task<bool> Account_DeleteAccount(this Client client, string reason, InputCheckPasswordSRP password = null)
 			=> client.Invoke(new Account_DeleteAccount
 			{
