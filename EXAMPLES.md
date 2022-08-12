@@ -59,7 +59,7 @@ var sent2 = await client.SendMessageAsync(InputPeer.Self, text2, entities: entit
 // if you need to convert a sent/received Message to Markdown: (easier to store)
 text2 = client.EntitiesToMarkdown(sent2.message, sent2.entities);
 ```
-See [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) and [HTML formatting style](https://core.telegram.org/bots/api/#html-style) for details.  
+See [HTML formatting style](https://core.telegram.org/bots/api/#html-style) and [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) for details.  
 *Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#collect-access-hash))*
 
 <a name="fun"></a>
@@ -112,7 +112,7 @@ await Task.Delay(5000);
 ```
 
 <a name="list-chats"></a>
-### List all chats (groups/channels) the user is in and send a message to one
+### List all chats (groups/channels NOT users) that we joined and send a message to one
 ```csharp
 var chats = await client.Messages_GetAllChats();
 foreach (var (id, chat) in chats.chats)
@@ -128,6 +128,21 @@ Notes:
 - If a basic chat group has been migrated to a supergroup, you may find both the old `Chat` and a `Channel` with different IDs in the `chats.chats` result,
 but the old `Chat` will be marked with flag [deactivated] and should not be used anymore. See [Terminology in ReadMe](README.md#terminology).
 - You can find a longer version of this method call in [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
+
+<a name="list-dialogs"></a>
+### List all dialogs (chats/groups/channels/user chat) we are currently in
+```csharp
+var dialogs = await client.Messages_GetAllDialogs();
+foreach (var dialog in dialogs.dialogs)
+    switch (dialogs.UserOrChat(dialog))
+    {
+        case User     user when user.IsActive: Console.WriteLine("User " + user); break;
+        case ChatBase chat when chat.IsActive: Console.WriteLine(chat); break;
+    }
+```
+
+*Note: the lists returned by Messages_GetAllDialogs contains the `access_hash` for those chats and users.*  
+See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
 <a name="schedule-msg"></a>
 ### Schedule a message to be sent to a chat
@@ -170,21 +185,6 @@ var inputMedias = new InputMedia[]
 await client.SendAlbumAsync(InputPeer.Self, inputMedias, "My first album");
 ```
 *Note: Don't mix Photos and file Documents in your album, it doesn't work well*
-
-<a name="list-dialogs"></a>
-### List all dialogs (chats/groups/channels/user chat) the user is in
-```csharp
-var dialogs = await client.Messages_GetAllDialogs();
-foreach (var dialog in dialogs.dialogs)
-    switch (dialogs.UserOrChat(dialog))
-    {
-        case User     user when user.IsActive: Console.WriteLine("User " + user); break;
-        case ChatBase chat when chat.IsActive: Console.WriteLine(chat); break;
-    }
-```
-
-*Note: the lists returned by Messages_GetAllDialogs contains the `access_hash` for those chats and users.*  
-See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
 <a name="list-members"></a>
 ### Get all members from a chat

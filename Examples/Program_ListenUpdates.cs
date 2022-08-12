@@ -42,6 +42,7 @@ namespace WTelegramClientTest
 				{
 					case UpdateNewMessage unm: await DisplayMessage(unm.message); break;
 					case UpdateEditMessage uem: await DisplayMessage(uem.message, true); break;
+					// Note: UpdateNewChannelMessage and UpdateEditChannelMessage are also handled by above cases
 					case UpdateDeleteChannelMessages udcm: Console.WriteLine($"{udcm.messages.Length} message(s) deleted in {Chat(udcm.channel_id)}"); break;
 					case UpdateDeleteMessages udm: Console.WriteLine($"{udm.messages.Length} message(s) deleted"); break;
 					case UpdateUserTyping uut: Console.WriteLine($"{User(uut.user_id)} is {uut.action}"); break;

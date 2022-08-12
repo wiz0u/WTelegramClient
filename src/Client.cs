@@ -690,8 +690,8 @@ namespace WTelegram
 			return tcpClient;
 		}
 
-		/// <summary>Establish connection to Telegram servers</summary>
-		/// <remarks>Config callback is queried for: <b>server_address</b></remarks>
+		/// <summary>Establish connection to Telegram servers without negociating a user session</summary>
+		/// <remarks>Usually you shouldn't need to call this method: Use <see cref="LoginUserIfNeeded">LoginUserIfNeeded</see> instead. <br/>Config callback is queried for: <b>server_address</b></remarks>
 		/// <returns>Most methods of this class are async (Task), so please use <see langword="await"/></returns>
 		public async Task ConnectAsync()
 		{
@@ -893,7 +893,7 @@ namespace WTelegram
 		}
 
 		/// <summary>Login as a user (if not already logged-in).
-		/// <br/><i>(this method calls ConnectAsync if necessary)</i></summary>
+		/// <br/><i>(this method calls <see cref="ConnectAsync">ConnectAsync</see> if necessary)</i></summary>
 		/// <remarks>Config callback is queried for: <b>phone_number</b>, <b>verification_code</b> <br/>and eventually <b>first_name</b>, <b>last_name</b> (signup required), <b>password</b> (2FA auth), <b>user_id</b> (alt validation)</remarks>
 		/// <param name="settings">(optional) Preference for verification_code sending</param>
 		/// <param name="reloginOnFailedResume">Proceed to logout and login if active user session cannot be resumed successfully</param>
