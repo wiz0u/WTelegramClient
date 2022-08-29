@@ -190,6 +190,7 @@ namespace WTelegram
 #endif
 			_paddedMode = false;
 			_connecting = null;
+			_bareRpc = null;
 			if (resetSessions)
 			{
 				foreach (var altSession in _session.DCSessions.Values)
