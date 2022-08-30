@@ -370,10 +370,11 @@ namespace WTelegram
 				int length = reader.ReadInt32();
 				dataLen -= 20;
 				if (length > dataLen || length < dataLen - (_paddedMode ? 15 : 0))
-					throw new ApplicationException($"Unexpected unencrypted length {length} != {dataLen}");
+					throw new ApplicationException($"Unexpected unencrypted/padding length {dataLen} - {length}");
 
 				var obj = reader.ReadTLObject();
 				Helpers.Log(1, $"{_dcSession.DcID}>Receiving {obj.GetType().Name,-40} {MsgIdToStamp(msgId):u} clear{((msgId & 2) == 0 ? "" : " NAR")}");
+				if (_bareRpc == null) throw new ApplicationException("Shouldn't receive unencrypted packet at this point");
 				return obj;
 			}
 			else
@@ -384,7 +385,7 @@ namespace WTelegram
 				_sha256Recv.TransformBlock(_dcSession.AuthKey, 96, 32, null, 0);
 				_sha256Recv.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
 				if (!data.AsSpan(8, 16).SequenceEqual(_sha256Recv.Hash.AsSpan(8, 16)))
-					throw new ApplicationException($"Mismatch between MsgKey & decrypted SHA256");
+					throw new ApplicationException("Mismatch between MsgKey & decrypted SHA256");
 				_sha256Recv.Initialize();
 				using var reader = new TL.BinaryReader(new MemoryStream(decrypted_data), this);
 				var serverSalt = reader.ReadInt64();    // int64 salt
@@ -412,7 +413,7 @@ namespace WTelegram
 					_dcSession.Salt = serverSalt;
 					_saltChangeCounter += 20; // counter is decreased by KeepAlive every minute (we have margin of 10)
 					if (_saltChangeCounter >= 30)
-						throw new ApplicationException($"Server salt changed too often! Security issue?");
+						throw new ApplicationException("Server salt changed too often! Security issue?");
 				}
 				if ((seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msgId);
 
@@ -558,6 +559,15 @@ namespace WTelegram
 
 		private async Task HandleMessageAsync(IObject obj)
 		{
+			if (_bareRpc != null)
+			{
+				var rpc = PullPendingRequest(_bareRpc.msgId);
+				if ((rpc?.type.IsAssignableFrom(obj.GetType())) != true)
+					throw new ApplicationException($"Received a {obj.GetType()} incompatible with expected bare {rpc?.type}");
+				_bareRpc = null;
+				rpc.tcs.SetResult(obj);
+				return;
+			}
 			switch (obj)
 			{
 				case MsgContainer container:
@@ -634,18 +644,6 @@ namespace WTelegram
 						RaiseUpdate(obj);
 					break;
 				default:
-					if (_bareRpc != null)
-					{
-						var rpc = PullPendingRequest(_bareRpc.msgId);
-						if (rpc?.type.IsAssignableFrom(obj.GetType()) == true)
-						{
-							_bareRpc = null;
-							rpc.tcs.SetResult(obj);
-							break;
-						}
-						else
-							Helpers.Log(4, $"Received a {obj.GetType()} incompatible with expected bare {rpc?.type}");
-					}
 					RaiseUpdate(obj);
 					break;
 			}
@@ -1067,6 +1065,7 @@ namespace WTelegram
 
 				if (_dcSession.AuthKeyID == 0) // send unencrypted message
 				{
+					if (_bareRpc == null) throw new ApplicationException($"Shouldn't send a {msg.GetType().Name} unencrypted");
 					writer.Write(0L);						// int64 auth_key_id = 0 (Unencrypted)
 					writer.Write(msgId);					// int64 message_id
 					writer.Write(0);						// int32 message_data_length (to be patched)
