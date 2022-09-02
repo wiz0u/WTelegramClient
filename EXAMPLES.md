@@ -26,7 +26,7 @@ More examples can also be found in the [Examples folder](Examples) and in answer
 var resolved = await client.Contacts_ResolveUsername("MyEch0_Bot"); // username without the @
 await client.SendMessageAsync(resolved, "/start");
 ```
-*Note: This also works if the @username points to a channel/group, but you must already have joined that channel before posting there.
+*Note: This also works if the @username points to a channel/group, but you must already have joined that channel before sending a message to it.
 If the username is invalid/unused, the API call raises an exception.*
 
 <a name="msg-by-phone"></a>
@@ -210,7 +210,7 @@ for (int offset = 0; ;)
 ```
 
 For big Channel/Group, Telegram servers might limit the number of members you can obtain with the normal above method.  
-In this case, you can use this helper method, but it can take several minutes to complete:
+In this case, you can use the following helper method, but it can take several minutes to complete:
 ```csharp
 var chats = await client.Messages_GetAllChats();
 var channel = (Channel)chats.chats[1234567890]; // the channel we want
@@ -233,7 +233,7 @@ To use them, you need to extract the `HASH` part from the URL and then you can u
 ```csharp
 var chatInvite = await client.Messages_CheckChatInvite("HASH"); // optional: get information before joining  
 await client.Messages_ImportChatInvite("HASH"); // join the channel/group  
-// Note: This works also with invite links of public channel/group
+// Note: This works also with hash invite links of public channel/group
 ```
 
 <a name="add-members"></a>
@@ -319,7 +319,7 @@ Your event handler implementation can either return `Task.CompletedTask` or be a
 See [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
 <a name="monitor-msg"></a>
-### Monitor new messages being posted in chats
+### Monitor new messages being posted in chats in real-time
 
 You have to handle `client.OnUpdate` events containing an `UpdateNewMessage`.
 

@@ -3,7 +3,7 @@
 [![API Layer](https://img.shields.io/badge/API_Layer-144-blueviolet)](https://corefork.telegram.org/methods)
 [![dev nuget](https://img.shields.io/badge/dynamic/json?color=ffc040&label=dev%20nuget&query=%24.versions%5B0%5D&url=https%3A%2F%2Fpkgs.dev.azure.com%2Fwiz0u%2F81bd92b7-0bb9-4701-b426-09090b27e037%2F_packaging%2F46ce0497-7803-4bd4-8c6c-030583e7c371%2Fnuget%2Fv3%2Fflat2%2Fwtelegramclient%2Findex.json)](https://dev.azure.com/wiz0u/WTelegramClient/_artifacts/feed/WTelegramClient/NuGet/WTelegramClient)
 [![Support Chat](https://img.shields.io/badge/Chat_with_us-on_Telegram-0088cc)](https://t.me/WTelegramClient)
-[![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://wizou.fr/donate.html)
+[![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://t.me/WTelegramBot?start=donate)
 
 ## _Telegram Client API library written 100% in C# and .NET Standard_
 
@@ -36,7 +36,7 @@ If the verification succeeds but the phone number is unknown to Telegram, the us
 If the account already exists and has enabled two-step verification (2FA) a **password** might be required.  
 All these login scenarios are handled automatically within the call to `LoginUserIfNeeded`.
 
-And that's it, you now have access to the **[full range of Telegram Client APIs](https://corefork.telegram.org/methods)**. 
+After login, you now have access to the **[full range of Telegram Client APIs](https://corefork.telegram.org/methods)**. 
 All those API methods require `using TL;` namespace and are called with an underscore instead of a dot in the method name, like this: `await client.Method_Name(...)`
 
 # Saved session
@@ -162,4 +162,4 @@ Please don't use this library for Spam or Scam. Respect Telegram [Terms of Servi
 Developers feedback is welcome in the Telegram support group [@WTelegramClient](https://t.me/WTelegramClient)  
 You can also check our [📖 Frequently Asked Questions](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) for more help and troubleshooting guide.
 
-If you like this library, please [consider a donation](http://wizou.fr/donate.html).❤ This will help the project keep going.
+If you like this library, please [consider a donation](http://t.me/WTelegramBot?start=donate).❤ This will help the project keep going.

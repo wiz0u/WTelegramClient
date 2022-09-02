@@ -87,6 +87,7 @@ You can verify this is your issue by looking at [WTelegram logs](EXAMPLES.md#log
 This wrong-server problem typically happens when you use WTelegramClient Github source project in your application in DEBUG builds.  
 It is **not recommended** to use WTelegramClient in source code form.
 Instead, you should use the Nuget manager to **install package WTelegramClient** into your application.
+*And remember to delete the WTelegram.session file to force a new login on the correct server.*
 
 If you use the Github source project in an old .NET Framework 4.x or .NET Core x.x application, you may also experience the following error
 > System.TypeInitializationException (FileNotFoundException for "System.Text.Json Version=5.0.0.0 ...")
@@ -163,7 +164,7 @@ That object must be created with both fields `channel_id` and `access_hash` corr
 There can be several reasons why `chats.chats[id]` raise an error:
 - The user account you're currently logged-in as has not joined this particular chat.  
 API method [Messages_GetAllChats](https://corefork.telegram.org/method/messages.getAllChats) will only return those chat groups/channels the user is in, not all Telegram chat groups.
-- You're trying to use a Telegram.Bot (or TDLib) numerical ID, like -1001234567890  
+- You're trying to use a Bot API (or TDLib) numerical ID, like -1001234567890  
 Telegram Client API don't use these kind of IDs for chats. Remove the -100 prefix and try again with the rest (1234567890).
 - You're trying to use a user ID instead of a chat ID.  
 Private messages with a user are not called "chats". See [Terminology in ReadMe](README.md#terminology).  
@@ -232,7 +233,7 @@ If you need your userbot to run 24/7, you would typically design your userbot as
 and hosted online on any [VPS Hosting](https://www.google.com/search?q=vps+hosting) (Virtual Private Server).  
 Pure WebApp hosts might not be adequate as they will recycle (stop) your app if there is no incoming HTTP requests.
 
-There are many cheap VPS Hosting offers available, and some even have free tier, like Heroku:  
+There are many cheap VPS Hosting offers available, for example Heroku:  
 See [Examples/Program_Heroku.cs](Examples/Program_Heroku.cs) for such an implementation and the steps to host/deploy it.
 
 <a name="troubleshoot"></a>

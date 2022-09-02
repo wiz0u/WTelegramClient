@@ -370,7 +370,7 @@ namespace TL
 		public string provider;
 		/// <summary>JSON-encoded data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.</summary>
 		public DataJSON provider_data;
-		/// <summary>Start parameter</summary>
+		/// <summary>Unique <a href="https://corefork.telegram.org/api/links#not-invoice">bot deep links start parameter</a>. If present, forwarded copies of the sent message will have a URL button with a <a href="https://corefork.telegram.org/api/links#bot-links">deep link</a> to the bot (instead of a Pay button), with the value used as the start parameter. If absent, forwarded copies of the sent message will have a Pay button, allowing multiple users to pay directly from the forwarded message, using the same invoice.</summary>
 		[IfFlag(1)] public string start_param;
 
 		[Flags] public enum Flags : uint
@@ -775,9 +775,11 @@ namespace TL
 			apply_min_photo = 0x2000000,
 			/// <summary>If set, this user was reported by many users as a fake or scam user: be careful when interacting with them.</summary>
 			fake = 0x4000000,
+			/// <summary>Whether this bot offers an <a href="https://corefork.telegram.org/api/bots/attach">attachment menu web app</a></summary>
 			bot_attach_menu = 0x8000000,
 			/// <summary>Whether this user is a Telegram Premium user</summary>
 			premium = 0x10000000,
+			/// <summary>Whether we installed the <a href="https://corefork.telegram.org/api/bots/attach">attachment menu web app</a> offered by this bot</summary>
 			attach_menu_enabled = 0x20000000,
 		}
 	}
@@ -1953,7 +1955,9 @@ namespace TL
 			has_info = 0x1,
 			/// <summary>Field <see cref="shipping_option_id"/> has a value</summary>
 			has_shipping_option_id = 0x2,
+			/// <summary>Whether this is the first payment of a recurring payment we just subscribed to</summary>
 			recurring_init = 0x4,
+			/// <summary>Whether this payment is part of a recurring payment</summary>
 			recurring_used = 0x8,
 		}
 	}
@@ -1967,15 +1971,16 @@ namespace TL
 		public string currency;
 		/// <summary>Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long total_amount;
-		/// <summary>An invoice slug taken from a t.me/invoice/<slug> link or from the <a href="https://corefork.telegram.org/api/config#client-configuration"><c>premium_invoice_slug</c> app config parameter »</a></slug></summary>
+		/// <summary>An invoice slug taken from an <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a> or from the <a href="https://corefork.telegram.org/api/config#client-configuration"><c>premium_invoice_slug</c> app config parameter »</a></summary>
 		[IfFlag(0)] public string invoice_slug;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="invoice_slug"/> has a value</summary>
 			has_invoice_slug = 0x1,
-			/// <summary>Whether this is a recurring payment</summary>
+			/// <summary>Whether this is the first payment of a recurring payment we just subscribed to</summary>
 			recurring_init = 0x4,
+			/// <summary>Whether this payment is part of a recurring payment</summary>
 			recurring_used = 0x8,
 		}
 	}
@@ -2101,16 +2106,18 @@ namespace TL
 	/// <summary>A user was accepted into the group by an admin		<para>See <a href="https://corefork.telegram.org/constructor/messageActionChatJoinedByRequest"/></para></summary>
 	[TLDef(0xEBBCA3CB)]
 	public class MessageActionChatJoinedByRequest : MessageAction { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionWebViewDataSentMe"/></para></summary>
+	/// <summary>Data from an opened <a href="https://corefork.telegram.org/api/bots/webapps">reply keyboard bot web app</a> was relayed to the bot that owns it (bot side service message).		<para>See <a href="https://corefork.telegram.org/constructor/messageActionWebViewDataSentMe"/></para></summary>
 	[TLDef(0x47DD8079, inheritBefore = true)]
 	public class MessageActionWebViewDataSentMe : MessageActionWebViewDataSent
 	{
+		/// <summary>Relayed data.</summary>
 		public string data;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionWebViewDataSent"/></para></summary>
+	/// <summary>Data from an opened <a href="https://corefork.telegram.org/api/bots/webapps">reply keyboard bot web app</a> was relayed to the bot that owns it (user side service message).		<para>See <a href="https://corefork.telegram.org/constructor/messageActionWebViewDataSent"/></para></summary>
 	[TLDef(0xB4C38CB5)]
 	public class MessageActionWebViewDataSent : MessageAction
 	{
+		/// <summary>Text of the <see cref="KeyboardButtonSimpleWebView"/> that was pressed to open the web app.</summary>
 		public string text;
 	}
 	/// <summary>Info about a gifted Telegram Premium subscription		<para>See <a href="https://corefork.telegram.org/constructor/messageActionGiftPremium"/></para></summary>
@@ -2561,15 +2568,15 @@ namespace TL
 		}
 	}
 
-	/// <summary>Object contains info on a wallpaper.		<para>Derived classes: <see cref="WallPaper"/>, <see cref="WallPaperNoFile"/></para>		<para>See <a href="https://corefork.telegram.org/type/WallPaper"/></para></summary>
+	/// <summary>Object contains info on a <a href="https://corefork.telegram.org/api/wallpapers">wallpaper</a>.		<para>Derived classes: <see cref="WallPaper"/>, <see cref="WallPaperNoFile"/></para>		<para>See <a href="https://corefork.telegram.org/type/WallPaper"/></para></summary>
 	public abstract class WallPaperBase : IObject
 	{
 		/// <summary>Identifier</summary>
 		public abstract long ID { get; }
-		/// <summary>Wallpaper settings</summary>
+		/// <summary>Info on how to generate the wallpaper, according to <a href="https://corefork.telegram.org/api/wallpapers">these instructions »</a>.</summary>
 		public abstract WallPaperSettings Settings { get; }
 	}
-	/// <summary>Wallpaper settings.		<para>See <a href="https://corefork.telegram.org/constructor/wallPaper"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/wallpapers">wallpaper</a> based on an image.		<para>See <a href="https://corefork.telegram.org/constructor/wallPaper"/></para></summary>
 	[TLDef(0xA437C3ED)]
 	public class WallPaper : WallPaperBase
 	{
@@ -2579,33 +2586,33 @@ namespace TL
 		public Flags flags;
 		/// <summary>Access hash</summary>
 		public long access_hash;
-		/// <summary>Unique wallpaper ID</summary>
+		/// <summary>Unique wallpaper ID, used when generating <a href="https://corefork.telegram.org/api/links#wallpaper-links">wallpaper links</a> or <a href="https://corefork.telegram.org/api/wallpapers">importing wallpaper links</a>.</summary>
 		public string slug;
 		/// <summary>The actual wallpaper</summary>
 		public DocumentBase document;
-		/// <summary>Wallpaper settings</summary>
+		/// <summary>Info on how to generate the wallpaper, according to <a href="https://corefork.telegram.org/api/wallpapers">these instructions »</a>.</summary>
 		[IfFlag(2)] public WallPaperSettings settings;
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Creator of the wallpaper</summary>
+			/// <summary>Whether we created this wallpaper</summary>
 			creator = 0x1,
 			/// <summary>Whether this is the default wallpaper</summary>
 			default_ = 0x2,
 			/// <summary>Field <see cref="settings"/> has a value</summary>
 			has_settings = 0x4,
-			/// <summary>Pattern</summary>
+			/// <summary>Whether this is a <a href="https://corefork.telegram.org/api/wallpapers#pattern-wallpaper">pattern wallpaper »</a></summary>
 			pattern = 0x8,
-			/// <summary>Dark mode</summary>
+			/// <summary>Whether this wallpaper should be used in dark mode.</summary>
 			dark = 0x10,
 		}
 
 		/// <summary>Identifier</summary>
 		public override long ID => id;
-		/// <summary>Wallpaper settings</summary>
+		/// <summary>Info on how to generate the wallpaper, according to <a href="https://corefork.telegram.org/api/wallpapers">these instructions »</a>.</summary>
 		public override WallPaperSettings Settings => settings;
 	}
-	/// <summary>Wallpaper with no file access hash, used for example when deleting (<c>unsave=true</c>) wallpapers using <a href="https://corefork.telegram.org/method/account.saveWallPaper">account.saveWallPaper</a>, specifying just the wallpaper ID.<br/>Also used for some default wallpapers which contain only colours.		<para>See <a href="https://corefork.telegram.org/constructor/wallPaperNoFile"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/wallpapers">wallpaper</a> only based on colors/gradients.		<para>See <a href="https://corefork.telegram.org/constructor/wallPaperNoFile"/></para></summary>
 	[TLDef(0xE0804116)]
 	public class WallPaperNoFile : WallPaperBase
 	{
@@ -2613,7 +2620,7 @@ namespace TL
 		public long id;
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
-		/// <summary>Wallpaper settings</summary>
+		/// <summary>Info on how to generate the wallpaper.</summary>
 		[IfFlag(2)] public WallPaperSettings settings;
 
 		[Flags] public enum Flags : uint
@@ -2622,13 +2629,13 @@ namespace TL
 			default_ = 0x2,
 			/// <summary>Field <see cref="settings"/> has a value</summary>
 			has_settings = 0x4,
-			/// <summary>Dark mode</summary>
+			/// <summary>Whether this wallpaper should be used in dark mode.</summary>
 			dark = 0x10,
 		}
 
 		/// <summary>Wallpaper ID</summary>
 		public override long ID => id;
-		/// <summary>Wallpaper settings</summary>
+		/// <summary>Info on how to generate the wallpaper.</summary>
 		public override WallPaperSettings Settings => settings;
 	}
 
@@ -2687,10 +2694,11 @@ namespace TL
 		[IfFlag(15)] public string theme_emoticon;
 		/// <summary>Anonymized text to be shown instead of the the user's name on forwarded messages</summary>
 		[IfFlag(16)] public string private_forward_name;
-		/// <summary>A suggested default set of administrator rights for the bot, to be shown when adding the bot as admin to a supergroup (only a suggestion, the admin right set may be modified by the user before adding the bot as admin)</summary>
+		/// <summary>A <a href="https://corefork.telegram.org/api/rights#suggested-bot-rights">suggested set of administrator rights</a> for the bot, to be shown when adding the bot as admin to a group, see <a href="https://corefork.telegram.org/api/rights#suggested-bot-rights">here for more info on how to handle them »</a>.</summary>
 		[IfFlag(17)] public ChatAdminRights bot_group_admin_rights;
-		/// <summary>A suggested default set of administrator rights for the bot, to be shown when adding the bot as admin to a channel (only a suggestion, the admin right set may be modified by the user before adding the bot as admin)</summary>
+		/// <summary>A <a href="https://corefork.telegram.org/api/rights#suggested-bot-rights">suggested set of administrator rights</a> for the bot, to be shown when adding the bot as admin to a channel, see <a href="https://corefork.telegram.org/api/rights#suggested-bot-rights">here for more info on how to handle them »</a>.</summary>
 		[IfFlag(18)] public ChatAdminRights bot_broadcast_admin_rights;
+		/// <summary>Telegram Premium subscriptions gift options</summary>
 		[IfFlag(19)] public PremiumGiftOption[] premium_gifts;
 
 		[Flags] public enum Flags : uint
@@ -4190,13 +4198,14 @@ namespace TL
 		/// <summary>Reactions</summary>
 		public MessageReactions reactions;
 	}
-	/// <summary>The list of added <a href="https://corefork.telegram.org/bots/webapps#launching-web-apps-from-the-attachment-menu">bot web apps »</a> has changed, use <a href="https://corefork.telegram.org/method/messages.getAttachMenuBots">messages.getAttachMenuBots</a> to fetch the updated list.		<para>See <a href="https://corefork.telegram.org/constructor/updateAttachMenuBots"/></para></summary>
+	/// <summary>The list of installed <a href="https://corefork.telegram.org/api/bots/attach">attachment menu entries »</a> has changed, use <a href="https://corefork.telegram.org/method/messages.getAttachMenuBots">messages.getAttachMenuBots</a> to fetch the updated list.		<para>See <a href="https://corefork.telegram.org/constructor/updateAttachMenuBots"/></para></summary>
 	[TLDef(0x17B7A20B)]
 	public class UpdateAttachMenuBots : Update { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateWebViewResultSent"/></para></summary>
+	/// <summary>Indicates to a bot that a webview was closed and an inline message was sent on behalf of the user using <a href="https://corefork.telegram.org/method/messages.sendWebViewResultMessage">messages.sendWebViewResultMessage</a>		<para>See <a href="https://corefork.telegram.org/constructor/updateWebViewResultSent"/></para></summary>
 	[TLDef(0x1592B79D)]
 	public class UpdateWebViewResultSent : Update
 	{
+		/// <summary>Web app interaction ID</summary>
 		public long query_id;
 	}
 	/// <summary>The menu button behavior for the specified bot has changed		<para>See <a href="https://corefork.telegram.org/constructor/updateBotMenuButton"/></para></summary>
@@ -4211,7 +4220,7 @@ namespace TL
 	/// <summary>The list of saved notification sounds has changed, use <a href="https://corefork.telegram.org/method/account.getSavedRingtones">account.getSavedRingtones</a> to fetch the new list.		<para>See <a href="https://corefork.telegram.org/constructor/updateSavedRingtones"/></para></summary>
 	[TLDef(0x74D8BE99)]
 	public class UpdateSavedRingtones : Update { }
-	/// <summary>A pending transcription initiated with <a href="https://corefork.telegram.org/method/messages.transcribeAudio">messages.transcribeAudio</a> was updated.		<para>See <a href="https://corefork.telegram.org/constructor/updateTranscribedAudio"/></para></summary>
+	/// <summary>A pending <a href="https://corefork.telegram.org/api/transcribe">voice message transcription »</a> initiated with <a href="https://corefork.telegram.org/method/messages.transcribeAudio">messages.transcribeAudio</a> was updated.		<para>See <a href="https://corefork.telegram.org/constructor/updateTranscribedAudio"/></para></summary>
 	[TLDef(0x0084CD5A)]
 	public class UpdateTranscribedAudio : Update
 	{
@@ -4232,7 +4241,7 @@ namespace TL
 			pending = 0x1,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateReadFeaturedEmojiStickers"/></para></summary>
+	/// <summary>Some featured emoji stickers were marked as read		<para>See <a href="https://corefork.telegram.org/constructor/updateReadFeaturedEmojiStickers"/></para></summary>
 	[TLDef(0xFB4C496C)]
 	public class UpdateReadFeaturedEmojiStickers : Update { }
 
@@ -4605,7 +4614,7 @@ namespace TL
 	{
 		/// <summary>File type</summary>
 		public Storage_FileType type;
-		/// <summary>Modification type</summary>
+		/// <summary>Modification time</summary>
 		public int mtime;
 		/// <summary>Binary data, file content</summary>
 		public byte[] bytes;
@@ -4729,7 +4738,7 @@ namespace TL
 		public int call_connect_timeout_ms;
 		/// <summary>If during a VoIP call a packet isn't received for the specified period of time, the call must be aborted</summary>
 		public int call_packet_timeout_ms;
-		/// <summary>The domain to use to parse in-app links.<br/>For example t.me indicates that t.me/username links should parsed to @username, t.me/addsticker/name should be parsed to the appropriate stickerset and so on...</summary>
+		/// <summary>The domain to use to parse <a href="https://corefork.telegram.org/api/links">deep links »</a>.</summary>
 		public string me_url_prefix;
 		/// <summary>URL to use to auto-update the current app</summary>
 		[IfFlag(7)] public string autoupdate_url_prefix;
@@ -4745,7 +4754,7 @@ namespace TL
 		public int caption_length_max;
 		/// <summary>Maximum length of messages (length in utf8 codepoints)</summary>
 		public int message_length_max;
-		/// <summary>DC ID to use to download <a href="https://corefork.telegram.org/api/files">webfiles</a></summary>
+		/// <summary>DC ID to use to download <a href="https://corefork.telegram.org/api/files#downloading-webfiles">webfiles</a></summary>
 		public int webfile_dc_id;
 		/// <summary>Suggested language code</summary>
 		[IfFlag(2)] public string suggested_lang_code;
@@ -5123,7 +5132,7 @@ namespace TL
 		public EncryptedFile file;
 	}
 
-	/// <summary>Defines a video for subsequent interaction.		<para>See <a href="https://corefork.telegram.org/constructor/inputDocument"/></para></summary>
+	/// <summary>Defines a document for subsequent interaction.		<para>See <a href="https://corefork.telegram.org/constructor/inputDocument"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/inputDocumentEmpty">inputDocumentEmpty</a></remarks>
 	[TLDef(0x1ABFB575)]
 	public partial class InputDocument : IObject
@@ -5322,19 +5331,19 @@ namespace TL
 	/// <summary>Privacy key		<para>See <a href="https://corefork.telegram.org/type/InputPrivacyKey"/></para></summary>
 	public enum InputPrivacyKey : uint
 	{
-		///<summary>Whether we can see the exact last online timestamp of the user</summary>
+		///<summary>Whether people will be able to see your exact last online timestamp</summary>
 		StatusTimestamp = 0x4F96CB18,
-		///<summary>Whether the user can be invited to chats</summary>
+		///<summary>Whether people will be able to invite you to chats</summary>
 		ChatInvite = 0xBDFB0426,
-		///<summary>Whether the user will accept phone calls</summary>
+		///<summary>Whether you will accept phone calls</summary>
 		PhoneCall = 0xFABADC5F,
-		///<summary>Whether the user allows P2P communication during VoIP calls</summary>
+		///<summary>Whether to allow P2P communication during VoIP calls</summary>
 		PhoneP2P = 0xDB9E70D2,
-		///<summary>Whether messages forwarded from this user will be <a href="https://telegram.org/blog/unsend-privacy-emoji#anonymous-forwarding">anonymous</a></summary>
+		///<summary>Whether messages forwarded from you will be <a href="https://telegram.org/blog/unsend-privacy-emoji#anonymous-forwarding">anonymous</a></summary>
 		Forwards = 0xA4DD4C08,
-		///<summary>Whether people will be able to see the user's profile picture</summary>
+		///<summary>Whether people will be able to see your profile picture</summary>
 		ProfilePhoto = 0x5719BACC,
-		///<summary>Whether people will be able to see the user's phone number</summary>
+		///<summary>Whether people will be able to see your phone number</summary>
 		PhoneNumber = 0x0352DAFA,
 		///<summary>Whether people can add you to their contact list by your phone number</summary>
 		AddedByPhone = 0xD1219BDD,
@@ -5345,13 +5354,13 @@ namespace TL
 	/// <summary>Privacy key		<para>See <a href="https://corefork.telegram.org/type/PrivacyKey"/></para></summary>
 	public enum PrivacyKey : uint
 	{
-		///<summary>Whether we can see the last online timestamp</summary>
+		///<summary>Whether we can see the last online timestamp of this user</summary>
 		StatusTimestamp = 0xBC2EAB30,
 		///<summary>Whether the user can be invited to chats</summary>
 		ChatInvite = 0x500E6DFA,
 		///<summary>Whether the user accepts phone calls</summary>
 		PhoneCall = 0x3D662B7B,
-		///<summary>Whether P2P connections in phone calls are allowed</summary>
+		///<summary>Whether P2P connections in phone calls with this user are allowed</summary>
 		PhoneP2P = 0x39491CC8,
 		///<summary>Whether messages forwarded from the user will be <a href="https://telegram.org/blog/unsend-privacy-emoji#anonymous-forwarding">anonymously forwarded</a></summary>
 		Forwards = 0x69EC56A3,
@@ -5359,7 +5368,7 @@ namespace TL
 		ProfilePhoto = 0x96151FED,
 		///<summary>Whether the user allows us to see his phone number</summary>
 		PhoneNumber = 0xD19AE46D,
-		///<summary>Whether people can add you to their contact list by your phone number</summary>
+		///<summary>Whether this user can be added to our contact list by their phone number</summary>
 		AddedByPhone = 0x42FFD42B,
 		///<summary>Whether the user accepts voice messages</summary>
 		VoiceMessages = 0x0697F414,
@@ -5579,6 +5588,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether this custom emoji can be sent by non-Premium users</summary>
 			free = 0x1,
 		}
 	}
@@ -5958,7 +5968,7 @@ namespace TL
 			has_title = 0x100,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/chatInvitePublicJoinRequests"/></para></summary>
+	/// <summary>Used in updates and in the channel log to indicate when a user is requesting to join or has joined a <a href="https://corefork.telegram.org/api/discussion#requiring-users-to-join-the-group">discussion group</a>		<para>See <a href="https://corefork.telegram.org/constructor/chatInvitePublicJoinRequests"/></para></summary>
 	[TLDef(0xED107AB7)]
 	public class ChatInvitePublicJoinRequests : ExportedChatInvite { }
 
@@ -6028,11 +6038,11 @@ namespace TL
 		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
-	/// <summary>Stickerset by short name, from <c>tg://addstickers?set=short_name</c>		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetShortName"/></para></summary>
+	/// <summary>Stickerset by short name, from a <a href="https://corefork.telegram.org/api/links#stickerset-links">stickerset deep link »</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetShortName"/></para></summary>
 	[TLDef(0x861CC8A0)]
 	public class InputStickerSetShortName : InputStickerSet
 	{
-		/// <summary>From <c>tg://addstickers?set=short_name</c></summary>
+		/// <summary>Short name from a <a href="https://corefork.telegram.org/api/links#stickerset-links">stickerset deep link »</a></summary>
 		public string short_name;
 	}
 	/// <summary>Animated emojis stickerset		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetAnimatedEmoji"/></para></summary>
@@ -6048,7 +6058,7 @@ namespace TL
 	/// <summary>Animated emoji reaction stickerset (contains animations to play when a user clicks on a given animated emoji)		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetAnimatedEmojiAnimations"/></para></summary>
 	[TLDef(0x0CDE3739)]
 	public class InputStickerSetAnimatedEmojiAnimations : InputStickerSet { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetPremiumGifts"/></para></summary>
+	/// <summary>Stickers to show when receiving a gifted Telegram Premium subscription		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetPremiumGifts"/></para></summary>
 	[TLDef(0xC88B3B02)]
 	public class InputStickerSetPremiumGifts : InputStickerSet { }
 
@@ -6066,7 +6076,7 @@ namespace TL
 		public long access_hash;
 		/// <summary>Title of stickerset</summary>
 		public string title;
-		/// <summary>Short name of stickerset to use in <c>tg://addstickers?set=short_name</c></summary>
+		/// <summary>Short name of stickerset, used when sharing stickerset using <a href="https://corefork.telegram.org/api/links#stickerset-links">stickerset deep links</a>.</summary>
 		public string short_name;
 		/// <summary>Stickerset thumbnail</summary>
 		[IfFlag(4)] public PhotoSizeBase[] thumbs;
@@ -6330,13 +6340,14 @@ namespace TL
 		/// <summary>User ID</summary>
 		public long user_id;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonWebView"/></para></summary>
+	/// <summary>Button to open a <a href="https://corefork.telegram.org/api/bots/webapps">bot web app</a> using <a href="https://corefork.telegram.org/method/messages.requestWebView">messages.requestWebView</a>, sending over user information after user confirmation.		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonWebView"/></para></summary>
 	[TLDef(0x13767230, inheritBefore = true)]
 	public class KeyboardButtonWebView : KeyboardButton
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/bots/webapps">Web app url</a></summary>
 		public string url;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonSimpleWebView"/></para></summary>
+	/// <summary>Button to open a <a href="https://corefork.telegram.org/api/bots/webapps">bot web app</a> using <a href="https://corefork.telegram.org/method/messages.requestSimpleWebView">messages.requestSimpleWebView</a>, without sending user information to the web app.		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonSimpleWebView"/></para></summary>
 	[TLDef(0xA0C0505C)]
 	public class KeyboardButtonSimpleWebView : KeyboardButtonWebView
 	{
@@ -7536,11 +7547,11 @@ namespace TL
 	/// <summary>Type of verification code that will be sent next if you call the resendCode method		<para>See <a href="https://corefork.telegram.org/type/auth.CodeType"/></para></summary>
 	public enum Auth_CodeType : uint
 	{
-		///<summary>Type of verification code that will be sent next if you call the resendCode method: SMS code</summary>
+		///<summary>The next time, the authentication code will be delivered via an immediately canceled incoming call.</summary>
 		Sms = 0x72A3158C,
-		///<summary>Type of verification code that will be sent next if you call the resendCode method: SMS code</summary>
+		///<summary>The next time, the authentication code is to be delivered via an outgoing phone call.</summary>
 		Call = 0x741CD3E3,
-		///<summary>Type of verification code that will be sent next if you call the resendCode method: SMS code</summary>
+		///<summary>The next time, the authentication code will be delivered via an immediately canceled incoming call.</summary>
 		FlashCall = 0x226CCEFB,
 		///<summary>The next time, the authentication code will be delivered via an immediately canceled incoming call, handled manually by the user.</summary>
 		MissedCall = 0xD61AD6EE,
@@ -7872,13 +7883,13 @@ namespace TL
 		public StickerSetCoveredBase[] sets;
 	}
 
-	/// <summary>Stickerset, with a specific sticker as preview		<para>Derived classes: <see cref="StickerSetCovered"/>, <see cref="StickerSetMultiCovered"/>, <see cref="StickerSetFullCovered"/></para>		<para>See <a href="https://corefork.telegram.org/type/StickerSetCovered"/></para></summary>
+	/// <summary>Stickerset preview		<para>Derived classes: <see cref="StickerSetCovered"/>, <see cref="StickerSetMultiCovered"/>, <see cref="StickerSetFullCovered"/></para>		<para>See <a href="https://corefork.telegram.org/type/StickerSetCovered"/></para></summary>
 	public abstract class StickerSetCoveredBase : IObject
 	{
 		/// <summary>Stickerset</summary>
 		public abstract StickerSet Set { get; }
 	}
-	/// <summary>Stickerset, with a specific sticker as preview		<para>See <a href="https://corefork.telegram.org/constructor/stickerSetCovered"/></para></summary>
+	/// <summary>Stickerset with a single sticker as preview		<para>See <a href="https://corefork.telegram.org/constructor/stickerSetCovered"/></para></summary>
 	[TLDef(0x6410A5D2)]
 	public class StickerSetCovered : StickerSetCoveredBase
 	{
@@ -7890,7 +7901,7 @@ namespace TL
 		/// <summary>Stickerset</summary>
 		public override StickerSet Set => set;
 	}
-	/// <summary>Stickerset, with a specific set of stickers as preview		<para>See <a href="https://corefork.telegram.org/constructor/stickerSetMultiCovered"/></para></summary>
+	/// <summary>Stickerset, with multiple stickers as preview		<para>See <a href="https://corefork.telegram.org/constructor/stickerSetMultiCovered"/></para></summary>
 	[TLDef(0x3407E51B)]
 	public class StickerSetMultiCovered : StickerSetCoveredBase
 	{
@@ -7902,14 +7913,18 @@ namespace TL
 		/// <summary>Stickerset</summary>
 		public override StickerSet Set => set;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stickerSetFullCovered"/></para></summary>
+	/// <summary>Stickerset preview with all stickers of the stickerset included.<br/>Currently used only for custom emoji stickersets, to avoid a further call to <a href="https://corefork.telegram.org/method/messages.getStickerSet">messages.getStickerSet</a>.		<para>See <a href="https://corefork.telegram.org/constructor/stickerSetFullCovered"/></para></summary>
 	[TLDef(0x1AED5EE5)]
 	public class StickerSetFullCovered : StickerSetCoveredBase
 	{
+		/// <summary>Stickerset</summary>
 		public StickerSet set;
+		/// <summary>Emoji information about every sticker in the stickerset</summary>
 		public StickerPack[] packs;
+		/// <summary>Stickers</summary>
 		public DocumentBase[] documents;
 
+		/// <summary>Stickerset</summary>
 		public override StickerSet Set => set;
 	}
 
@@ -7989,7 +8004,7 @@ namespace TL
 	{
 		/// <summary>The bot that provides the game</summary>
 		public InputUserBase bot_id;
-		/// <summary>The game's short name</summary>
+		/// <summary>The game's short name, usually obtained from a <a href="https://corefork.telegram.org/api/links#game-links">game link »</a></summary>
 		public string short_name;
 	}
 
@@ -8673,13 +8688,13 @@ namespace TL
 		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
-	/// <summary>Geolocation		<para>See <a href="https://corefork.telegram.org/constructor/inputWebFileGeoPointLocation"/></para></summary>
+	/// <summary>Used to download a server-generated image with the map preview from a <see cref="GeoPoint"/>, see the <a href="https://corefork.telegram.org/api/files#downloading-webfiles">webfile docs for more info »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/inputWebFileGeoPointLocation"/></para></summary>
 	[TLDef(0x9F2221C9)]
 	public class InputWebFileGeoPointLocation : InputWebFileLocationBase
 	{
-		/// <summary>Geolocation</summary>
+		/// <summary>Generated from the <c>lat</c>, <c>long</c> and <c>accuracy_radius</c> parameters of the <see cref="GeoPoint"/></summary>
 		public InputGeoPoint geo_point;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash of the <see cref="GeoPoint"/></summary>
 		public long access_hash;
 		/// <summary>Map width in pixels before applying scale; 16-1024</summary>
 		public int w;
@@ -8690,14 +8705,17 @@ namespace TL
 		/// <summary>Map scale; 1-3</summary>
 		public int scale;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputWebFileAudioAlbumThumbLocation"/></para></summary>
+	/// <summary>Used to download an album cover for any music file using <a href="https://corefork.telegram.org/method/upload.getWebFile">upload.getWebFile</a>, see the <a href="https://corefork.telegram.org/api/files#downloading-webfiles">webfile docs for more info »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/inputWebFileAudioAlbumThumbLocation"/></para></summary>
 	[TLDef(0xF46FE924)]
 	public class InputWebFileAudioAlbumThumbLocation : InputWebFileLocationBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>The audio file in question: must NOT be provided in secret chats, provide the <c>title</c> and <c>performer</c> fields instead.</summary>
 		[IfFlag(0)] public InputDocument document;
+		/// <summary>Song title: should only be used in secret chats, in normal chats provide <c>document</c> instead, as it has more lax rate limits.</summary>
 		[IfFlag(1)] public string title;
+		/// <summary>Song performer: should only be used in secret chats, in normal chats provide <c>document</c> instead, as it has more lax rate limits.</summary>
 		[IfFlag(1)] public string performer;
 
 		[Flags] public enum Flags : uint
@@ -8706,6 +8724,7 @@ namespace TL
 			has_document = 0x1,
 			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x2,
+			/// <summary>Used to return a thumbnail with <c>100x100</c> resolution (instead of the default <c>600x600</c>)</summary>
 			small = 0x4,
 		}
 	}
@@ -10410,7 +10429,7 @@ namespace TL
 		public int length;
 	}
 
-	/// <summary>Deep linking info		<para>See <a href="https://corefork.telegram.org/constructor/help.deepLinkInfo"/></para></summary>
+	/// <summary>Deep link info, see <a href="https://corefork.telegram.org/api/links#unsupported-links">the here for more details</a>		<para>See <a href="https://corefork.telegram.org/constructor/help.deepLinkInfo"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.deepLinkInfoEmpty">help.deepLinkInfoEmpty</a></remarks>
 	[TLDef(0x6A4EE832)]
 	public class Help_DeepLinkInfo : IObject
@@ -10936,7 +10955,7 @@ namespace TL
 			anonymous = 0x400,
 			/// <summary>If set, allows the admin to change group call/livestream settings</summary>
 			manage_call = 0x800,
-			/// <summary>Set this flag if none of the other flags are set, but you still want the user to be an admin.</summary>
+			/// <summary>Set this flag if none of the other flags are set, but you still want the user to be an admin: if this or any of the other flags are set, the admin can get the chat <a href="https://corefork.telegram.org/api/recent-actions">admin log</a>, get <a href="https://corefork.telegram.org/api/stats">chat statistics</a>, get <a href="https://corefork.telegram.org/api/stats">message statistics in channels</a>, get channel members, see anonymous administrators in supergroups and ignore slow mode.</summary>
 			other = 0x1000,
 		}
 	}
@@ -10979,25 +10998,25 @@ namespace TL
 		}
 	}
 
-	/// <summary>Wallpaper		<para>Derived classes: <see cref="InputWallPaper"/>, <see cref="InputWallPaperSlug"/>, <see cref="InputWallPaperNoFile"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputWallPaper"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a>		<para>Derived classes: <see cref="InputWallPaper"/>, <see cref="InputWallPaperSlug"/>, <see cref="InputWallPaperNoFile"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputWallPaper"/></para></summary>
 	public abstract class InputWallPaperBase : IObject { }
-	/// <summary>Wallpaper		<para>See <a href="https://corefork.telegram.org/constructor/inputWallPaper"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputWallPaper"/></para></summary>
 	[TLDef(0xE630B979)]
 	public class InputWallPaper : InputWallPaperBase
 	{
-		/// <summary>Wallpaper ID</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a> ID</summary>
 		public long id;
 		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
-	/// <summary>Wallpaper by slug (a unique ID)		<para>See <a href="https://corefork.telegram.org/constructor/inputWallPaperSlug"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a> by slug (a unique ID, obtained from a <a href="https://corefork.telegram.org/api/links#wallpaper-links">wallpaper link »</a>)		<para>See <a href="https://corefork.telegram.org/constructor/inputWallPaperSlug"/></para></summary>
 	[TLDef(0x72091C80)]
 	public class InputWallPaperSlug : InputWallPaperBase
 	{
 		/// <summary>Unique wallpaper ID</summary>
 		public string slug;
 	}
-	/// <summary>Wallpaper with no file access hash, used for example when deleting (<c>unsave=true</c>) wallpapers using <a href="https://corefork.telegram.org/method/account.saveWallPaper">account.saveWallPaper</a>, specifying just the wallpaper ID.		<para>See <a href="https://corefork.telegram.org/constructor/inputWallPaperNoFile"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a> with no file access hash, used for example when deleting (<c>unsave=true</c>) wallpapers using <a href="https://corefork.telegram.org/method/account.saveWallPaper">account.saveWallPaper</a>, specifying just the wallpaper ID.		<para>See <a href="https://corefork.telegram.org/constructor/inputWallPaperNoFile"/></para></summary>
 	[TLDef(0x967A462E)]
 	public class InputWallPaperNoFile : InputWallPaperBase
 	{
@@ -11005,14 +11024,14 @@ namespace TL
 		public long id;
 	}
 
-	/// <summary>Installed wallpapers		<para>See <a href="https://corefork.telegram.org/constructor/account.wallPapers"/></para></summary>
+	/// <summary>Installed <a href="https://corefork.telegram.org/api/wallpapers">wallpapers</a>		<para>See <a href="https://corefork.telegram.org/constructor/account.wallPapers"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.wallPapersNotModified">account.wallPapersNotModified</a></remarks>
 	[TLDef(0xCDC3858C)]
 	public class Account_WallPapers : IObject
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public long hash;
-		/// <summary>Wallpapers</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpapers</a></summary>
 		public WallPaperBase[] wallpapers;
 	}
 
@@ -11040,32 +11059,32 @@ namespace TL
 		}
 	}
 
-	/// <summary>Wallpaper settings		<para>See <a href="https://corefork.telegram.org/constructor/wallPaperSettings"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a> rendering information.		<para>See <a href="https://corefork.telegram.org/constructor/wallPaperSettings"/></para></summary>
 	[TLDef(0x1DC1BCA4)]
 	public class WallPaperSettings : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
-		/// <summary>If set, a PNG pattern is to be combined with the <c>color</c> chosen by the user: the main color of the background in RGB24 format</summary>
+		/// <summary>Used for <a href="https://corefork.telegram.org/api/wallpapers#solid-fill">solid »</a>, <a href="https://corefork.telegram.org/api/wallpapers#gradient-fill">gradient »</a> and <a href="https://corefork.telegram.org/api/wallpapers#freeform-gradient-fill">freeform gradient »</a> fills.</summary>
 		[IfFlag(0)] public int background_color;
-		/// <summary>If set, a PNG pattern is to be combined with the first and second background colors (RGB24 format) in a top-bottom gradient</summary>
+		/// <summary>Used for <a href="https://corefork.telegram.org/api/wallpapers#gradient-fill">gradient »</a> and <a href="https://corefork.telegram.org/api/wallpapers#freeform-gradient-fill">freeform gradient »</a> fills.</summary>
 		[IfFlag(4)] public int second_background_color;
-		/// <summary>If set, a PNG pattern is to be combined with the first, second and third background colors (RGB24 format) in a freeform gradient</summary>
+		/// <summary>Used for <a href="https://corefork.telegram.org/api/wallpapers#freeform-gradient-fill">freeform gradient »</a> fills.</summary>
 		[IfFlag(5)] public int third_background_color;
-		/// <summary>If set, a PNG pattern is to be combined with the first, second, third and fourth background colors (RGB24 format) in a freeform gradient</summary>
+		/// <summary>Used for <a href="https://corefork.telegram.org/api/wallpapers#freeform-gradient-fill">freeform gradient »</a> fills.</summary>
 		[IfFlag(6)] public int fourth_background_color;
-		/// <summary>Intensity of the pattern when it is shown above the main background color, 0-100</summary>
+		/// <summary>Used for <a href="https://corefork.telegram.org/api/wallpapers#pattern-wallpapers">pattern wallpapers »</a>.</summary>
 		[IfFlag(3)] public int intensity;
-		/// <summary>Clockwise rotation angle of the gradient, in degrees; 0-359. Should be always divisible by 45</summary>
+		/// <summary>Clockwise rotation angle of the gradient, in degrees; 0-359. Should be always divisible by 45.</summary>
 		[IfFlag(4)] public int rotation;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="background_color"/> has a value</summary>
 			has_background_color = 0x1,
-			/// <summary>If set, the wallpaper must be downscaled to fit in 450x450 square and then box-blurred with radius 12</summary>
+			/// <summary>For <a href="https://corefork.telegram.org/api/wallpapers#image-wallpapers">image wallpapers »</a>: if set, the JPEG must be downscaled to fit in 450x450 square and then box-blurred with radius 12.</summary>
 			blur = 0x2,
-			/// <summary>If set, the background needs to be slightly moved when device is rotated</summary>
+			/// <summary>If set, the background needs to be slightly moved when the device is rotated.</summary>
 			motion = 0x4,
 			/// <summary>Field <see cref="intensity"/> has a value</summary>
 			has_intensity = 0x8,
@@ -11324,7 +11343,7 @@ namespace TL
 	[TLDef(0xF5890DF1)]
 	public class InputThemeSlug : InputThemeBase
 	{
-		/// <summary>Unique theme ID</summary>
+		/// <summary>Unique theme ID obtained from a <a href="https://corefork.telegram.org/api/links#theme-links">theme deep link »</a></summary>
 		public string slug;
 	}
 
@@ -11468,9 +11487,9 @@ namespace TL
 		[IfFlag(3)] public int outbox_accent_color;
 		/// <summary>The fill to be used as a background for outgoing messages, in RGB24 format. <br/>If just one or two equal colors are provided, describes a solid fill of a background. <br/>If two different colors are provided, describes the top and bottom colors of a 0-degree gradient.<br/>If three or four colors are provided, describes a freeform gradient fill of a background.</summary>
 		[IfFlag(0)] public int[] message_colors;
-		/// <summary>Wallpaper</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a></summary>
 		[IfFlag(1)] public InputWallPaperBase wallpaper;
-		/// <summary>Wallpaper settings</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a> settings.</summary>
 		[IfFlag(1)] public WallPaperSettings wallpaper_settings;
 
 		[Flags] public enum Flags : uint
@@ -11500,7 +11519,7 @@ namespace TL
 		[IfFlag(3)] public int outbox_accent_color;
 		/// <summary>The fill to be used as a background for outgoing messages, in RGB24 format. <br/>If just one or two equal colors are provided, describes a solid fill of a background. <br/>If two different colors are provided, describes the top and bottom colors of a 0-degree gradient.<br/>If three or four colors are provided, describes a freeform gradient fill of a background.</summary>
 		[IfFlag(0)] public int[] message_colors;
-		/// <summary>Wallpaper</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a></summary>
 		[IfFlag(1)] public WallPaperBase wallpaper;
 
 		[Flags] public enum Flags : uint
@@ -11678,7 +11697,7 @@ namespace TL
 			has_emoticon = 0x2000000,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/dialogFilterDefault"/></para></summary>
+	/// <summary>Used only when reordering folders to indicate the default (all chats) folder.		<para>See <a href="https://corefork.telegram.org/constructor/dialogFilterDefault"/></para></summary>
 	[TLDef(0x363293AE)]
 	public class DialogFilterDefault : DialogFilterBase { }
 
@@ -12686,6 +12705,7 @@ namespace TL
 			has_from_id = 0x8,
 			/// <summary>Field <see cref="chat_invite"/> has a value</summary>
 			has_chat_invite = 0x10,
+			/// <summary>Whether the message needs to be labeled as "recommended" instead of "sponsored"</summary>
 			recommended = 0x20,
 		}
 	}
@@ -13010,7 +13030,7 @@ namespace TL
 		public string key;
 	}
 
-	/// <summary>Represents an attachment menu icon color for <a href="https://corefork.telegram.org/bots/webapps#launching-web-apps-from-the-attachment-menu">bot web apps »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBotIconColor"/></para></summary>
+	/// <summary>Represents an attachment menu icon color for <a href="https://corefork.telegram.org/api/bots/attach">bot web apps »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBotIconColor"/></para></summary>
 	[TLDef(0x4576F3F0)]
 	public class AttachMenuBotIconColor : IObject
 	{
@@ -13020,7 +13040,7 @@ namespace TL
 		public int color;
 	}
 
-	/// <summary>Represents an attachment menu icon for <a href="https://corefork.telegram.org/bots/webapps#launching-web-apps-from-the-attachment-menu">bot web apps »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBotIcon"/></para></summary>
+	/// <summary>Represents an attachment menu icon for <a href="https://corefork.telegram.org/api/bots/attach">bot web apps »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBotIcon"/></para></summary>
 	[TLDef(0xB2A7386B)]
 	public class AttachMenuBotIcon : IObject
 	{
@@ -13040,7 +13060,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>Represents a <a href="https://corefork.telegram.org/bots/webapps#launching-web-apps-from-the-attachment-menu">bot web app that can be launched from the attachment menu »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBot"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/bots/attach">bot web app that can be launched from the attachment menu »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBot"/></para></summary>
 	[TLDef(0xC8AA2CD2)]
 	public class AttachMenuBot : IObject
 	{
@@ -13059,59 +13079,63 @@ namespace TL
 		{
 			/// <summary>Whether this bot attachment menu entry should be shown in the attachment menu (toggle using <a href="https://corefork.telegram.org/method/messages.toggleBotInAttachMenu">messages.toggleBotInAttachMenu</a>)</summary>
 			inactive = 0x1,
-			/// <summary>True, if the bot supports the "settings_button_pressed" event</summary>
+			/// <summary>True, if the bot supports the <a href="https://corefork.telegram.org/api/bots/webapps#settings_button_pressed">"settings_button_pressed" event »</a></summary>
 			has_settings = 0x2,
 		}
 	}
 
-	/// <summary>Represents a list of <a href="https://corefork.telegram.org/bots/webapps#launching-web-apps-from-the-attachment-menu">bot web apps that can be launched from the attachment menu »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBots"/></para></summary>
+	/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/bots/attach">bot web apps that can be launched from the attachment menu »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBots"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/attachMenuBotsNotModified">attachMenuBotsNotModified</a></remarks>
 	[TLDef(0x3C4301C0)]
 	public class AttachMenuBots : IObject
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public long hash;
-		/// <summary>List of <a href="https://corefork.telegram.org/bots/webapps#launching-web-apps-from-the-attachment-menu">bot web apps that can be launched from the attachment menu »</a></summary>
+		/// <summary>List of <a href="https://corefork.telegram.org/api/bots/attach">bot web apps that can be launched from the attachment menu »</a></summary>
 		public AttachMenuBot[] bots;
 		/// <summary>Info about related users/bots</summary>
 		public Dictionary<long, User> users;
 	}
 
-	/// <summary>Represents a <a href="https://corefork.telegram.org/bots/webapps#launching-web-apps-from-the-attachment-menu">bot web app that can be launched from the attachment menu »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBotsBot"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/bots/attach">bot web app that can be launched from the attachment menu »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBotsBot"/></para></summary>
 	[TLDef(0x93BF667F)]
 	public class AttachMenuBotsBot : IObject
 	{
-		/// <summary>Represents a <a href="https://corefork.telegram.org/bots/webapps#launching-web-apps-from-the-attachment-menu">bot web app that can be launched from the attachment menu »</a><br/></summary>
+		/// <summary>Represents a <a href="https://corefork.telegram.org/api/bots/attach">bot web app that can be launched from the attachment menu »</a><br/></summary>
 		public AttachMenuBot bot;
 		/// <summary>Info about related users and bots</summary>
 		public Dictionary<long, User> users;
 	}
 
-	/// <summary>Contains information about a <a href="https://core.telegram.org/bots/webapps">Web App</a>		<para>Derived classes: <see cref="WebViewResultUrl"/></para>		<para>See <a href="https://corefork.telegram.org/type/WebViewResult"/></para></summary>
+	/// <summary>Contains the webview URL with appropriate theme and user info parameters added		<para>Derived classes: <see cref="WebViewResultUrl"/></para>		<para>See <a href="https://corefork.telegram.org/type/WebViewResult"/></para></summary>
 	public abstract class WebViewResult : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/webViewResultUrl"/></para></summary>
+	/// <summary>Contains the webview URL with appropriate theme and user info parameters added		<para>See <a href="https://corefork.telegram.org/constructor/webViewResultUrl"/></para></summary>
 	[TLDef(0x0C14557C)]
 	public class WebViewResultUrl : WebViewResult
 	{
+		/// <summary>Webview session ID</summary>
 		public long query_id;
+		/// <summary>Webview URL to open</summary>
 		public string url;
 	}
 
-	/// <summary>Contains the webview URL with appropriate theme and user info parameters added		<para>Derived classes: <see cref="SimpleWebViewResultUrl"/></para>		<para>See <a href="https://corefork.telegram.org/type/SimpleWebViewResult"/></para></summary>
+	/// <summary>Contains the webview URL with appropriate theme parameters added		<para>Derived classes: <see cref="SimpleWebViewResultUrl"/></para>		<para>See <a href="https://corefork.telegram.org/type/SimpleWebViewResult"/></para></summary>
 	public abstract class SimpleWebViewResult : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/simpleWebViewResultUrl"/></para></summary>
+	/// <summary>Contains the webview URL with appropriate theme parameters added		<para>See <a href="https://corefork.telegram.org/constructor/simpleWebViewResultUrl"/></para></summary>
 	[TLDef(0x882F76BB)]
 	public class SimpleWebViewResultUrl : SimpleWebViewResult
 	{
+		/// <summary>URL</summary>
 		public string url;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/webViewMessageSent"/></para></summary>
+	/// <summary>Info about a sent inline webview message		<para>See <a href="https://corefork.telegram.org/constructor/webViewMessageSent"/></para></summary>
 	[TLDef(0x0C94511C)]
 	public class WebViewMessageSent : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Message ID</summary>
 		[IfFlag(0)] public InputBotInlineMessageIDBase msg_id;
 
 		[Flags] public enum Flags : uint
@@ -13123,19 +13147,19 @@ namespace TL
 
 	/// <summary>Indicates the action to execute when pressing the in-UI menu button for bots		<para>Derived classes: <see cref="BotMenuButtonDefault"/>, <see cref="BotMenuButtonCommands"/>, <see cref="BotMenuButton"/></para>		<para>See <a href="https://corefork.telegram.org/type/BotMenuButton"/></para></summary>
 	public abstract class BotMenuButtonBase : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/botMenuButtonDefault"/></para></summary>
+	/// <summary>Placeholder <a href="https://corefork.telegram.org/api/bots/menu">bot menu button</a> never returned to users: see <a href="https://corefork.telegram.org/api/bots/menu">the docs for more info</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botMenuButtonDefault"/></para></summary>
 	[TLDef(0x7533A588)]
 	public class BotMenuButtonDefault : BotMenuButtonBase { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/botMenuButtonCommands"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/bots/menu">Bot menu button</a> that opens the bot command list when clicked.		<para>See <a href="https://corefork.telegram.org/constructor/botMenuButtonCommands"/></para></summary>
 	[TLDef(0x4258C205)]
 	public class BotMenuButtonCommands : BotMenuButtonBase { }
-	/// <summary>Indicates the action to execute when pressing the in-UI menu button for bots		<para>See <a href="https://corefork.telegram.org/constructor/botMenuButton"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/bots/menu">Bot menu button</a> that opens a <a href="https://corefork.telegram.org/api/bots/webapps">web app</a> when clicked.		<para>See <a href="https://corefork.telegram.org/constructor/botMenuButton"/></para></summary>
 	[TLDef(0xC7B57CE6)]
 	public class BotMenuButton : BotMenuButtonBase
 	{
 		/// <summary>Title to be displayed on the menu button instead of 'Menu'</summary>
 		public string text;
-		/// <summary>URL of a <a href="https://corefork.telegram.org/bots/webapps#launching-web-apps-from-the-menu-button">web app</a> to open when the user clicks on the button</summary>
+		/// <summary>URL of a <a href="https://corefork.telegram.org/api/bots/webapps">web app</a> to open when the user clicks on the button</summary>
 		public string url;
 	}
 
@@ -13212,7 +13236,7 @@ namespace TL
 		/// <summary>Message ID</summary>
 		public int msg_id;
 	}
-	/// <summary>An invoice slug taken from a t.me/invoice/<slug> link or from the <a href="https://corefork.telegram.org/api/config#client-configuration"><c>premium_invoice_slug</c> app config parameter »</a></slug>		<para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceSlug"/></para></summary>
+	/// <summary>An invoice slug taken from an <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a> or from the <a href="https://corefork.telegram.org/api/config#client-configuration"><c>premium_invoice_slug</c> app config parameter »</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceSlug"/></para></summary>
 	[TLDef(0xC326CAEF)]
 	public class InputInvoiceSlug : InputInvoice
 	{
@@ -13220,15 +13244,15 @@ namespace TL
 		public string slug;
 	}
 
-	/// <summary>Exported invoice		<para>See <a href="https://corefork.telegram.org/constructor/payments.exportedInvoice"/></para></summary>
+	/// <summary>Exported <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a>		<para>See <a href="https://corefork.telegram.org/constructor/payments.exportedInvoice"/></para></summary>
 	[TLDef(0xAED0CBD9)]
 	public class Payments_ExportedInvoice : IObject
 	{
-		/// <summary>Exported invoice URL</summary>
+		/// <summary>Exported <a href="https://corefork.telegram.org/api/links#invoice-link">invoice deep link</a></summary>
 		public string url;
 	}
 
-	/// <summary>Transcribed text from a voice message		<para>See <a href="https://corefork.telegram.org/constructor/messages.transcribedAudio"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/transcribe">Transcribed text from a voice message »</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.transcribedAudio"/></para></summary>
 	[TLDef(0x93752C52)]
 	public class Messages_TranscribedAudio : IObject
 	{
@@ -13277,6 +13301,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Pass true if this is a restore of a Telegram Premium purchase; only for the App Store</summary>
 			restore = 0x1,
 		}
 	}
@@ -13304,7 +13329,9 @@ namespace TL
 		public string currency;
 		/// <summary>Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long amount;
+		/// <summary>An <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link »</a> to an invoice for in-app payment, using the official Premium bot; may be empty if direct payment isn't available.</summary>
 		public string bot_url;
+		/// <summary>An identifier for the App Store/Play Store product associated with the Premium gift.</summary>
 		[IfFlag(0)] public string store_product;
 
 		[Flags] public enum Flags : uint
@@ -13314,11 +13341,13 @@ namespace TL
 		}
 	}
 
-	/// <summary>Represents a payment method		<para>See <a href="https://corefork.telegram.org/constructor/paymentFormMethod"/></para></summary>
+	/// <summary>Represents an additional payment method		<para>See <a href="https://corefork.telegram.org/constructor/paymentFormMethod"/></para></summary>
 	[TLDef(0x88F8F21B)]
 	public class PaymentFormMethod : IObject
 	{
+		/// <summary>URL to open in a webview to process the payment</summary>
 		public string url;
+		/// <summary>Payment method description</summary>
 		public string title;
 	}
 }

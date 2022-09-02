@@ -137,7 +137,7 @@ namespace TL
 			public string file_name;
 			/// <summary>File MIME-type</summary>
 			public string mime_type;
-			/// <summary>Document size</summary>
+			/// <summary>Document size (<see cref="int"/> on layer &lt;143, <see cref="long"/> on layer &gt;=143)</summary>
 			public int size;
 			/// <summary>Key to decrypt the attached document file</summary>
 			public byte[] key;
@@ -439,7 +439,7 @@ namespace TL
 			public int thumb_h;
 			/// <summary>File MIME-type</summary>
 			public string mime_type;
-			/// <summary>Document size</summary>
+			/// <summary>Document size (<see cref="int"/> on layer &lt;143, <see cref="long"/> on layer &gt;=143)</summary>
 			public int size;
 			/// <summary>Key to decrypt the attached document file</summary>
 			public byte[] key;

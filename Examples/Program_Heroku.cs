@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TL;
 
-// This is an example userbot designed to run on a free Heroku account with a free PostgreSQL database for session storage
+// This is an example userbot designed to run on a Heroku account with a PostgreSQL database for session storage
 // This userbot simply answer "Pong" when someone sends him a "Ping" private message (or in Saved Messages)
 // To use/install/deploy this userbot, follow the steps at the end of this file
 // When run locally, close the window or type ALT-F4 to exit cleanly and save session (similar to Heroku SIGTERM)
@@ -126,8 +126,8 @@ namespace WTelegramClientTest
 
 /******************************************************************************************************************************
 HOW TO USE AND DEPLOY THIS EXAMPLE HEROKU USERBOT:
-- From your free Heroku.com account dashboard, create a new app (Free)
-- Navigate to the app Resources and add the add-on "Heroku Postgres" (Hobby Dev - Free)
+- From your Heroku.com account dashboard, create a new app
+- Navigate to the app Resources and add the add-on "Heroku Postgres"
 - Navigate to the app Settings, click Reveal Config Vars and save the Heroku git URL and the value of DATABASE_URL
 - Add a new var named "api_hash" with your api hash obtained from https://my.telegram.org/apps
 - Add a new var named "phone_number" with the phone_number of the user this userbot will manage
@@ -146,9 +146,7 @@ HOW TO USE AND DEPLOY THIS EXAMPLE HEROKU USERBOT:
 - Paste inside the line you copied, and replace the initial "web" with "worker:" (don't forget the colon)
 - Commit and push the Git changes to Heroku. Wait until the deployment is complete.
 - Verify that the Resources "web" line has changed to "worker" and is enabled (use the pencil icon if necessary)
-- Now your userbot should be running 24/7. Note however that a full month of usage is 31*24 = 744 dyno hours.
-  By default a free account gets 550 free dyno hours per month after which your app is stopped. If you register
-  a credit card with your account, 450 additional free dyno hours are offered at no charge, which should be enough for 24/7
+- Now your userbot should be running 24/7.
 - To prevent AUTH_KEY_DUPLICATED issues, set a SESSION_NAME env variable in your local VS project with a value like "PC"
 DISCLAIMER: I'm not affiliated nor expert with Heroku, so if you have any problem with the above I might not be able to help
 ******************************************************************************************************************************/
