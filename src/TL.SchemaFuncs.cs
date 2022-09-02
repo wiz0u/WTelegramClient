@@ -127,12 +127,14 @@ namespace TL
 		/// <param name="phone_code_hash">SMS-message ID, obtained from <a href="https://corefork.telegram.org/method/auth.sendCode">auth.sendCode</a></param>
 		/// <param name="phone_code">Valid numerical code from the SMS-message</param>
 		[Obsolete("Use LoginUserIfNeeded instead of this method. See https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#tlsharp")]
-		public static Task<Auth_AuthorizationBase> Auth_SignIn(this Client client, string phone_number, string phone_code_hash, string phone_code)
+		public static Task<Auth_AuthorizationBase> Auth_SignIn(this Client client, string phone_number, string phone_code_hash, string phone_code = null, EmailVerification email_verification = null)
 			=> client.Invoke(new Auth_SignIn
 			{
+				flags = (Auth_SignIn.Flags)((phone_code != null ? 0x1 : 0) | (email_verification != null ? 0x2 : 0)),
 				phone_number = phone_number,
 				phone_code_hash = phone_code_hash,
 				phone_code = phone_code,
+				email_verification = email_verification,
 			});
 
 		/// <summary>Logs out the user.		<para>See <a href="https://corefork.telegram.org/method/auth.logOut"/> [bots: ✓]</para></summary>
@@ -640,20 +642,19 @@ namespace TL
 
 		/// <summary>Send the verification email code for telegram <a href="https://corefork.telegram.org/passport">passport</a>.		<para>See <a href="https://corefork.telegram.org/method/account.sendVerifyEmailCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.sendVerifyEmailCode#possible-errors">details</a>)</para></summary>
 		/// <param name="email">The email where to send the code</param>
-		public static Task<Account_SentEmailCode> Account_SendVerifyEmailCode(this Client client, string email)
+		public static Task<Account_SentEmailCode> Account_SendVerifyEmailCode(this Client client, EmailVerifyPurpose purpose, string email)
 			=> client.Invoke(new Account_SendVerifyEmailCode
 			{
+				purpose = purpose,
 				email = email,
 			});
 
 		/// <summary>Verify an email address for telegram <a href="https://corefork.telegram.org/passport">passport</a>.		<para>See <a href="https://corefork.telegram.org/method/account.verifyEmail"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.verifyEmail#possible-errors">details</a>)</para></summary>
-		/// <param name="email">The email to verify</param>
-		/// <param name="code">The verification code that was received</param>
-		public static Task<bool> Account_VerifyEmail(this Client client, string email, string code)
+		public static Task<Account_EmailVerified> Account_VerifyEmail(this Client client, EmailVerifyPurpose purpose, EmailVerification verification)
 			=> client.Invoke(new Account_VerifyEmail
 			{
-				email = email,
-				code = code,
+				purpose = purpose,
+				verification = verification,
 			});
 
 		/// <summary>Initialize account takeout session		<para>See <a href="https://corefork.telegram.org/method/account.initTakeoutSession"/></para>		<para>Possible <see cref="RpcException"/> codes: 420 (<a href="https://corefork.telegram.org/method/account.initTakeoutSession#possible-errors">details</a>)</para></summary>
@@ -789,7 +790,7 @@ namespace TL
 			});
 
 		/// <summary>Upload theme		<para>See <a href="https://corefork.telegram.org/method/account.uploadTheme"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.uploadTheme#possible-errors">details</a>)</para></summary>
-		/// <param name="file">Theme file uploaded as described in <a href="https://corefork.telegram.org/api/files">files »</a></param>
+		/// <param name="file"><a href="https://corefork.telegram.org/api/themes#uploading-theme-files">Previously uploaded</a> theme file with platform-specific colors for UI components, can be left unset when creating themes that only modify the wallpaper or accent colors.</param>
 		/// <param name="thumb">Thumbnail</param>
 		/// <param name="file_name">File name</param>
 		/// <param name="mime_type">MIME type, must be <c>application/x-tgtheme-{format}</c>, where <c>format</c> depends on the client</param>
@@ -804,7 +805,7 @@ namespace TL
 			});
 
 		/// <summary>Create a theme		<para>See <a href="https://corefork.telegram.org/method/account.createTheme"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.createTheme#possible-errors">details</a>)</para></summary>
-		/// <param name="slug">Unique theme ID</param>
+		/// <param name="slug">Unique theme ID used to generate <a href="https://corefork.telegram.org/api/links#theme-links">theme deep links</a>, can be empty to autogenerate a random ID.</param>
 		/// <param name="title">Theme name</param>
 		/// <param name="document">Theme file</param>
 		/// <param name="settings">Theme settings</param>
@@ -1005,6 +1006,35 @@ namespace TL
 				file = file,
 				file_name = file_name,
 				mime_type = mime_type,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateEmojiStatus"/></para></summary>
+		public static Task<bool> Account_UpdateEmojiStatus(this Client client, EmojiStatus emoji_status)
+			=> client.Invoke(new Account_UpdateEmojiStatus
+			{
+				emoji_status = emoji_status,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getDefaultEmojiStatuses"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.emojiStatusesNotModified">account.emojiStatusesNotModified</a></returns>
+		public static Task<Account_EmojiStatuses> Account_GetDefaultEmojiStatuses(this Client client, long hash = default)
+			=> client.Invoke(new Account_GetDefaultEmojiStatuses
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getRecentEmojiStatuses"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.emojiStatusesNotModified">account.emojiStatusesNotModified</a></returns>
+		public static Task<Account_EmojiStatuses> Account_GetRecentEmojiStatuses(this Client client, long hash = default)
+			=> client.Invoke(new Account_GetRecentEmojiStatuses
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.clearRecentEmojiStatuses"/></para></summary>
+		public static Task<bool> Account_ClearRecentEmojiStatuses(this Client client)
+			=> client.Invoke(new Account_ClearRecentEmojiStatuses
+			{
 			});
 
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
@@ -1387,10 +1417,10 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_SendMessage
 			{
-				flags = (Messages_SendMessage.Flags)((no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_SendMessage.Flags)((no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
 				peer = peer,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				message = message,
@@ -1415,10 +1445,10 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_SendMedia
 			{
-				flags = (Messages_SendMedia.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_SendMedia.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
 				peer = peer,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				media = media,
@@ -2371,10 +2401,10 @@ namespace TL
 		/// <param name="multi_media">The medias to send</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, int? reply_to_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, int? reply_to_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
-				flags = (Messages_SendMultiMedia.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_SendMultiMedia.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
 				peer = peer,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				multi_media = multi_media,
@@ -3019,10 +3049,10 @@ namespace TL
 		/// <param name="peer">Peer</param>
 		/// <param name="msg_id">Message ID to react to</param>
 		/// <param name="reaction">Reaction (a UTF8 emoji)</param>
-		public static Task<UpdatesBase> Messages_SendReaction(this Client client, InputPeer peer, int msg_id, bool big = false, string reaction = null)
+		public static Task<UpdatesBase> Messages_SendReaction(this Client client, InputPeer peer, int msg_id, bool big = false, bool add_to_recent = false, Reaction[] reaction = null)
 			=> client.Invoke(new Messages_SendReaction
 			{
-				flags = (Messages_SendReaction.Flags)((big ? 0x2 : 0) | (reaction != null ? 0x1 : 0)),
+				flags = (Messages_SendReaction.Flags)((big ? 0x2 : 0) | (add_to_recent ? 0x4 : 0) | (reaction != null ? 0x1 : 0)),
 				peer = peer,
 				msg_id = msg_id,
 				reaction = reaction,
@@ -3044,7 +3074,7 @@ namespace TL
 		/// <param name="reaction">Get only reactions of this type (UTF8 emoji)</param>
 		/// <param name="offset">Offset (typically taken from the <c>next_offset</c> field of the returned <see cref="Messages_MessageReactionsList"/>)</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_MessageReactionsList> Messages_GetMessageReactionsList(this Client client, InputPeer peer, int id, int limit = int.MaxValue, string reaction = null, string offset = null)
+		public static Task<Messages_MessageReactionsList> Messages_GetMessageReactionsList(this Client client, InputPeer peer, int id, int limit = int.MaxValue, Reaction reaction = null, string offset = null)
 			=> client.Invoke(new Messages_GetMessageReactionsList
 			{
 				flags = (Messages_GetMessageReactionsList.Flags)((reaction != null ? 0x1 : 0) | (offset != null ? 0x2 : 0)),
@@ -3058,7 +3088,7 @@ namespace TL
 		/// <summary>Change the set of <a href="https://corefork.telegram.org/api/reactions">message reactions »</a> that can be used in a certain group, supergroup or channel		<para>See <a href="https://corefork.telegram.org/method/messages.setChatAvailableReactions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setChatAvailableReactions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Group where to apply changes</param>
 		/// <param name="available_reactions">Allowed reaction emojis</param>
-		public static Task<UpdatesBase> Messages_SetChatAvailableReactions(this Client client, InputPeer peer, string[] available_reactions)
+		public static Task<UpdatesBase> Messages_SetChatAvailableReactions(this Client client, InputPeer peer, ChatReactions available_reactions)
 			=> client.Invoke(new Messages_SetChatAvailableReactions
 			{
 				peer = peer,
@@ -3076,7 +3106,7 @@ namespace TL
 
 		/// <summary>Change default emoji reaction to use in the quick reaction menu: the value is synced across devices and can be fetched using <a href="https://corefork.telegram.org/api/config#client-configuration">help.getAppConfig, <c>reactions_default</c> field</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.setDefaultReaction"/></para></summary>
 		/// <param name="reaction">New emoji reaction</param>
-		public static Task<bool> Messages_SetDefaultReaction(this Client client, string reaction)
+		public static Task<bool> Messages_SetDefaultReaction(this Client client, Reaction reaction)
 			=> client.Invoke(new Messages_SetDefaultReaction
 			{
 				reaction = reaction,
@@ -3174,7 +3204,7 @@ namespace TL
 		/// <param name="theme_params">Theme parameters for the web app</param>
 		/// <param name="reply_to_msg_id">Whether the inline message that will be sent by the bot on behalf of the user once the web app interaction is <a href="https://corefork.telegram.org/method/messages.sendWebViewResultMessage">terminated</a> should be sent in reply to this message ID.</param>
 		/// <param name="send_as">Open the web app as the specified peer, sending the resulting the message as the specified peer.</param>
-		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, bool from_bot_menu = false, bool silent = false, string url = null, string start_param = null, DataJSON theme_params = null, int? reply_to_msg_id = null, InputPeer send_as = null)
+		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, string platform, bool from_bot_menu = false, bool silent = false, string url = null, string start_param = null, DataJSON theme_params = null, int? reply_to_msg_id = null, InputPeer send_as = null)
 			=> client.Invoke(new Messages_RequestWebView
 			{
 				flags = (Messages_RequestWebView.Flags)((from_bot_menu ? 0x10 : 0) | (silent ? 0x20 : 0) | (url != null ? 0x2 : 0) | (start_param != null ? 0x8 : 0) | (theme_params != null ? 0x4 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (send_as != null ? 0x2000 : 0)),
@@ -3183,6 +3213,7 @@ namespace TL
 				url = url,
 				start_param = start_param,
 				theme_params = theme_params,
+				platform = platform,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				send_as = send_as,
 			});
@@ -3209,13 +3240,14 @@ namespace TL
 		/// <param name="bot">Bot that owns the webapp</param>
 		/// <param name="url">Web app URL</param>
 		/// <param name="theme_params">Theme parameters</param>
-		public static Task<SimpleWebViewResult> Messages_RequestSimpleWebView(this Client client, InputUserBase bot, string url, DataJSON theme_params = null)
+		public static Task<SimpleWebViewResult> Messages_RequestSimpleWebView(this Client client, InputUserBase bot, string url, string platform, DataJSON theme_params = null)
 			=> client.Invoke(new Messages_RequestSimpleWebView
 			{
 				flags = (Messages_RequestSimpleWebView.Flags)(theme_params != null ? 0x1 : 0),
 				bot = bot,
 				url = url,
 				theme_params = theme_params,
+				platform = platform,
 			});
 
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Terminate webview interaction started with <a href="https://corefork.telegram.org/method/messages.requestWebView">messages.requestWebView</a>, sending the specified message to the chat on behalf of the user.		<para>See <a href="https://corefork.telegram.org/method/messages.sendWebViewResultMessage"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendWebViewResultMessage#possible-errors">details</a>)</para></summary>
@@ -3289,6 +3321,39 @@ namespace TL
 			=> client.Invoke(new Messages_GetFeaturedEmojiStickers
 			{
 				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.reportReaction"/></para></summary>
+		public static Task<bool> Messages_ReportReaction(this Client client, InputPeer peer, int id, InputPeer reaction_peer)
+			=> client.Invoke(new Messages_ReportReaction
+			{
+				peer = peer,
+				id = id,
+				reaction_peer = reaction_peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getTopReactions"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.reactionsNotModified">messages.reactionsNotModified</a></returns>
+		public static Task<Messages_Reactions> Messages_GetTopReactions(this Client client, int limit = int.MaxValue, long hash = default)
+			=> client.Invoke(new Messages_GetTopReactions
+			{
+				limit = limit,
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getRecentReactions"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.reactionsNotModified">messages.reactionsNotModified</a></returns>
+		public static Task<Messages_Reactions> Messages_GetRecentReactions(this Client client, int limit = int.MaxValue, long hash = default)
+			=> client.Invoke(new Messages_GetRecentReactions
+			{
+				limit = limit,
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.clearRecentReactions"/></para></summary>
+		public static Task<bool> Messages_ClearRecentReactions(this Client client)
+			=> client.Invoke(new Messages_ClearRecentReactions
+			{
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -4269,15 +4334,6 @@ namespace TL
 				purpose = purpose,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.requestRecurringPayment"/></para></summary>
-		public static Task<UpdatesBase> Payments_RequestRecurringPayment(this Client client, InputUserBase user_id, string recurring_init_charge, InputMedia invoice_media)
-			=> client.Invoke(new Payments_RequestRecurringPayment
-			{
-				user_id = user_id,
-				recurring_init_charge = recurring_init_charge,
-				invoice_media = invoice_media,
-			});
-
 		/// <summary>Create a stickerset, bots only.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
 		/// <param name="masks">Whether this is a mask stickerset</param>
 		/// <param name="animated">Whether this is an animated stickerset</param>
@@ -4928,12 +4984,20 @@ namespace TL.Methods
 		public string last_name;
 	}
 
-	[TLDef(0xBCD51581)]
+	[TLDef(0x8D52A951)]
 	public class Auth_SignIn : IMethod<Auth_AuthorizationBase>
 	{
+		public Flags flags;
 		public string phone_number;
 		public string phone_code_hash;
-		public string phone_code;
+		[IfFlag(0)] public string phone_code;
+		[IfFlag(1)] public EmailVerification email_verification;
+
+		[Flags] public enum Flags : uint
+		{
+			has_phone_code = 0x1,
+			has_email_verification = 0x2,
+		}
 	}
 
 	[TLDef(0x3E72BA19)]
@@ -5298,17 +5362,18 @@ namespace TL.Methods
 		public string phone_code;
 	}
 
-	[TLDef(0x7011509F)]
+	[TLDef(0x98E037BB)]
 	public class Account_SendVerifyEmailCode : IMethod<Account_SentEmailCode>
 	{
+		public EmailVerifyPurpose purpose;
 		public string email;
 	}
 
-	[TLDef(0xECBA39DB)]
-	public class Account_VerifyEmail : IMethod<bool>
+	[TLDef(0x032DA4CF)]
+	public class Account_VerifyEmail : IMethod<Account_EmailVerified>
 	{
-		public string email;
-		public string code;
+		public EmailVerifyPurpose purpose;
+		public EmailVerification verification;
 	}
 
 	[TLDef(0x8EF3EAB0)]
@@ -5602,6 +5667,27 @@ namespace TL.Methods
 		public string file_name;
 		public string mime_type;
 	}
+
+	[TLDef(0xFBD3DE6B)]
+	public class Account_UpdateEmojiStatus : IMethod<bool>
+	{
+		public EmojiStatus emoji_status;
+	}
+
+	[TLDef(0xD6753386)]
+	public class Account_GetDefaultEmojiStatuses : IMethod<Account_EmojiStatuses>
+	{
+		public long hash;
+	}
+
+	[TLDef(0x0F578105)]
+	public class Account_GetRecentEmojiStatuses : IMethod<Account_EmojiStatuses>
+	{
+		public long hash;
+	}
+
+	[TLDef(0x18201AAE)]
+	public class Account_ClearRecentEmojiStatuses : IMethod<bool> { }
 
 	[TLDef(0x0D91A548)]
 	public class Users_GetUsers : IMethod<UserBase[]>
@@ -5926,6 +6012,7 @@ namespace TL.Methods
 			has_schedule_date = 0x400,
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
+			update_stickersets_order = 0x8000,
 		}
 	}
 
@@ -5954,6 +6041,7 @@ namespace TL.Methods
 			has_schedule_date = 0x400,
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
+			update_stickersets_order = 0x8000,
 		}
 	}
 
@@ -6764,6 +6852,7 @@ namespace TL.Methods
 			has_schedule_date = 0x400,
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
+			update_stickersets_order = 0x8000,
 		}
 	}
 
@@ -7273,18 +7362,19 @@ namespace TL.Methods
 		public InputPeer send_as;
 	}
 
-	[TLDef(0x25690CE4)]
+	[TLDef(0xD30D78D4)]
 	public class Messages_SendReaction : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
 		public int msg_id;
-		[IfFlag(0)] public string reaction;
+		[IfFlag(0)] public Reaction[] reaction;
 
 		[Flags] public enum Flags : uint
 		{
 			has_reaction = 0x1,
 			big = 0x2,
+			add_to_recent = 0x4,
 		}
 	}
 
@@ -7295,13 +7385,13 @@ namespace TL.Methods
 		public int[] id;
 	}
 
-	[TLDef(0xE0EE6B77)]
+	[TLDef(0x461B3F48)]
 	public class Messages_GetMessageReactionsList : IMethod<Messages_MessageReactionsList>
 	{
 		public Flags flags;
 		public InputPeer peer;
 		public int id;
-		[IfFlag(0)] public string reaction;
+		[IfFlag(0)] public Reaction reaction;
 		[IfFlag(1)] public string offset;
 		public int limit;
 
@@ -7312,11 +7402,11 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x14050EA6)]
+	[TLDef(0xFEB16771)]
 	public class Messages_SetChatAvailableReactions : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
-		public string[] available_reactions;
+		public ChatReactions available_reactions;
 	}
 
 	[TLDef(0x18DEA0AC)]
@@ -7325,10 +7415,10 @@ namespace TL.Methods
 		public int hash;
 	}
 
-	[TLDef(0xD960C4D4)]
+	[TLDef(0x4F47A016)]
 	public class Messages_SetDefaultReaction : IMethod<bool>
 	{
-		public string reaction;
+		public Reaction reaction;
 	}
 
 	[TLDef(0x24CE6DEE)]
@@ -7393,7 +7483,7 @@ namespace TL.Methods
 		public bool enabled;
 	}
 
-	[TLDef(0x91B15831)]
+	[TLDef(0xFC87A53C)]
 	public class Messages_RequestWebView : IMethod<WebViewResult>
 	{
 		public Flags flags;
@@ -7402,6 +7492,7 @@ namespace TL.Methods
 		[IfFlag(1)] public string url;
 		[IfFlag(3)] public string start_param;
 		[IfFlag(2)] public DataJSON theme_params;
+		public string platform;
 		[IfFlag(0)] public int reply_to_msg_id;
 		[IfFlag(13)] public InputPeer send_as;
 
@@ -7435,13 +7526,14 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x6ABB2F73)]
+	[TLDef(0x299BEC8E)]
 	public class Messages_RequestSimpleWebView : IMethod<SimpleWebViewResult>
 	{
 		public Flags flags;
 		public InputUserBase bot;
 		public string url;
 		[IfFlag(0)] public DataJSON theme_params;
+		public string platform;
 
 		[Flags] public enum Flags : uint
 		{
@@ -7498,6 +7590,31 @@ namespace TL.Methods
 	{
 		public long hash;
 	}
+
+	[TLDef(0x3F64C076)]
+	public class Messages_ReportReaction : IMethod<bool>
+	{
+		public InputPeer peer;
+		public int id;
+		public InputPeer reaction_peer;
+	}
+
+	[TLDef(0xBB8125BA)]
+	public class Messages_GetTopReactions : IMethod<Messages_Reactions>
+	{
+		public int limit;
+		public long hash;
+	}
+
+	[TLDef(0x39461DB2)]
+	public class Messages_GetRecentReactions : IMethod<Messages_Reactions>
+	{
+		public int limit;
+		public long hash;
+	}
+
+	[TLDef(0x9DFEEFB4)]
+	public class Messages_ClearRecentReactions : IMethod<bool> { }
 
 	[TLDef(0xEDD4882A)]
 	public class Updates_GetState : IMethod<Updates_State> { }
@@ -8229,14 +8346,6 @@ namespace TL.Methods
 	public class Payments_CanPurchasePremium : IMethod<bool>
 	{
 		public InputStorePaymentPurpose purpose;
-	}
-
-	[TLDef(0x146E958D)]
-	public class Payments_RequestRecurringPayment : IMethod<UpdatesBase>
-	{
-		public InputUserBase user_id;
-		public string recurring_init_charge;
-		public InputMedia invoice_media;
 	}
 
 	[TLDef(0x9021AB67)]
