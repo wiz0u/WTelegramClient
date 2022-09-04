@@ -1673,10 +1673,10 @@ namespace TL
 
 	/// <summary>Media		<para>Derived classes: <see cref="MessageMediaPhoto"/>, <see cref="MessageMediaGeo"/>, <see cref="MessageMediaContact"/>, <see cref="MessageMediaUnsupported"/>, <see cref="MessageMediaDocument"/>, <see cref="MessageMediaWebPage"/>, <see cref="MessageMediaVenue"/>, <see cref="MessageMediaGame"/>, <see cref="MessageMediaInvoice"/>, <see cref="MessageMediaGeoLive"/>, <see cref="MessageMediaPoll"/>, <see cref="MessageMediaDice"/></para>		<para>See <a href="https://corefork.telegram.org/type/MessageMedia"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messageMediaEmpty">messageMediaEmpty</a></remarks>
-	public abstract class MessageMedia : IObject { }
+	public abstract partial class MessageMedia : IObject { }
 	/// <summary>Attached photo.		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaPhoto"/></para></summary>
 	[TLDef(0x695150D7)]
-	public class MessageMediaPhoto : MessageMedia
+	public partial class MessageMediaPhoto : MessageMedia
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -1695,14 +1695,14 @@ namespace TL
 	}
 	/// <summary>Attached map.		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaGeo"/></para></summary>
 	[TLDef(0x56E0D474)]
-	public class MessageMediaGeo : MessageMedia
+	public partial class MessageMediaGeo : MessageMedia
 	{
 		/// <summary>GeoPoint</summary>
 		public GeoPoint geo;
 	}
 	/// <summary>Attached contact.		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaContact"/></para></summary>
 	[TLDef(0x70322949)]
-	public class MessageMediaContact : MessageMedia
+	public partial class MessageMediaContact : MessageMedia
 	{
 		/// <summary>Phone number</summary>
 		public string phone_number;
@@ -1720,7 +1720,7 @@ namespace TL
 	public class MessageMediaUnsupported : MessageMedia { }
 	/// <summary>Document (video, audio, voice, sticker, any media type except photo)		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaDocument"/></para></summary>
 	[TLDef(0x9CB070D7)]
-	public class MessageMediaDocument : MessageMedia
+	public partial class MessageMediaDocument : MessageMedia
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -1748,7 +1748,7 @@ namespace TL
 	}
 	/// <summary>Venue		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaVenue"/></para></summary>
 	[TLDef(0x2EC0533F)]
-	public class MessageMediaVenue : MessageMedia
+	public partial class MessageMediaVenue : MessageMedia
 	{
 		/// <summary>Geolocation of venue</summary>
 		public GeoPoint geo;
@@ -1765,7 +1765,7 @@ namespace TL
 	}
 	/// <summary>Telegram game		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaGame"/></para></summary>
 	[TLDef(0xFDB19008)]
-	public class MessageMediaGame : MessageMedia
+	public partial class MessageMediaGame : MessageMedia
 	{
 		/// <summary>Game</summary>
 		public Game game;
@@ -1805,7 +1805,7 @@ namespace TL
 	}
 	/// <summary>Indicates a <a href="https://corefork.telegram.org/api/live-location">live geolocation</a>		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaGeoLive"/></para></summary>
 	[TLDef(0xB940C666)]
-	public class MessageMediaGeoLive : MessageMedia
+	public partial class MessageMediaGeoLive : MessageMedia
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -1828,7 +1828,7 @@ namespace TL
 	}
 	/// <summary>Poll		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaPoll"/></para></summary>
 	[TLDef(0x4BD6E798)]
-	public class MessageMediaPoll : MessageMedia
+	public partial class MessageMediaPoll : MessageMedia
 	{
 		/// <summary>The poll</summary>
 		public Poll poll;
@@ -1837,7 +1837,7 @@ namespace TL
 	}
 	/// <summary><a href="https://corefork.telegram.org/api/dice">Dice-based animated sticker</a>		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaDice"/></para></summary>
 	[TLDef(0x3F7EE58B)]
-	public class MessageMediaDice : MessageMedia
+	public partial class MessageMediaDice : MessageMedia
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/dice">Dice value</a></summary>
 		public int value;
@@ -2355,7 +2355,7 @@ namespace TL
 	/// <summary>GeoPoint.		<para>See <a href="https://corefork.telegram.org/constructor/geoPoint"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/geoPointEmpty">geoPointEmpty</a></remarks>
 	[TLDef(0xB2A2F663)]
-	public class GeoPoint : IObject
+	public partial class GeoPoint : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -8029,7 +8029,7 @@ namespace TL
 
 	/// <summary>Indicates an already sent game		<para>See <a href="https://corefork.telegram.org/constructor/game"/></para></summary>
 	[TLDef(0xBDF9653B)]
-	public class Game : IObject
+	public partial class Game : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;

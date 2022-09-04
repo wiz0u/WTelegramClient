@@ -208,6 +208,21 @@ namespace TL
 	partial class ChatParticipantsForbidden { public override ChatParticipantBase[] Participants => Array.Empty<ChatParticipantBase>(); }
 	partial class ChatParticipants			{ public override ChatParticipantBase[] Participants => participants; }
 
+	partial class MessageMedia				{ ///<summary>Use this helper method to send a copy of the media without downloading it</summary>
+											  ///<remarks>Quiz poll may need to be voted before obtaining the correct answers. Dice will not replicate same value.<br/>May return <see langword="null"/> for Invoice and other unsupported media types</remarks>
+											  public virtual  InputMedia ToInputMedia() => null; }
+	partial class MessageMediaPhoto			{ public override InputMedia ToInputMedia() => new InputMediaPhoto { id = photo }; }
+	partial class MessageMediaGeo			{ public override InputMedia ToInputMedia() => new InputMediaGeoPoint { geo_point = geo }; }
+	partial class MessageMediaContact		{ public override InputMedia ToInputMedia() => new InputMediaContact { first_name = first_name, last_name = last_name, phone_number = phone_number, vcard = vcard }; }
+	partial class MessageMediaDocument		{ public override InputMedia ToInputMedia() => new InputMediaDocument { id = document }; }
+	partial class MessageMediaVenue			{ public override InputMedia ToInputMedia() => new InputMediaVenue { geo_point = geo, title = title, address = address, provider = provider, venue_id = venue_id, venue_type = venue_type }; }
+	partial class MessageMediaGame			{ public override InputMedia ToInputMedia() => new InputMediaGame { id = game }; }
+	partial class MessageMediaGeoLive		{ public override InputMedia ToInputMedia() => new InputMediaGeoLive { geo_point = geo, heading = heading, period = period, proximity_notification_radius = proximity_notification_radius,
+		flags = (period != 0 ? InputMediaGeoLive.Flags.has_period : 0) | (flags.HasFlag(Flags.has_heading) ? InputMediaGeoLive.Flags.has_heading : 0) | (flags.HasFlag(Flags.has_proximity_notification_radius) ? InputMediaGeoLive.Flags.has_proximity_notification_radius : 0) }; }
+	partial class MessageMediaPoll			{ public override InputMedia ToInputMedia() => new InputMediaPoll { poll = poll, correct_answers = results.results?.Where(pav => pav.flags.HasFlag(PollAnswerVoters.Flags.correct)).Select(pav => pav.option).ToArray(), solution = results.solution, solution_entities = results.solution_entities,
+		flags = (results.results != null ? InputMediaPoll.Flags.has_correct_answers : 0) | (results.solution != null ? InputMediaPoll.Flags.has_solution : 0) }; }
+	partial class MessageMediaDice			{ public override InputMedia ToInputMedia() => new InputMediaDice { emoticon = emoticon }; }
+
 	partial class PhotoBase
 	{
 		public abstract long ID { get; }
@@ -287,7 +302,12 @@ namespace TL
 		}
 	}
 
-	public partial class InputMediaUploadedDocument
+	partial class GeoPoint
+	{
+		public static implicit operator InputGeoPoint(GeoPoint geo) => new() { lat = geo.lat, lon = geo.lon, accuracy_radius = geo.accuracy_radius, flags = (InputGeoPoint.Flags)geo.flags };
+	}
+
+	partial class InputMediaUploadedDocument
 	{
 		public InputMediaUploadedDocument() { }
 		public InputMediaUploadedDocument(InputFileBase inputFile, string mimeType)
@@ -495,7 +515,8 @@ namespace TL
 
 	partial class Messages_PeerDialogs { public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer?.UserOrChat(users, chats); }
 
-	partial class WebDocument { public static implicit operator InputWebFileLocation(WebDocument doc) => new() { url = doc.url, access_hash = doc.access_hash }; }
+	partial class Game			{ public static implicit operator InputGameID(Game game) => new() { id = game.id, access_hash = game.access_hash }; }
+	partial class WebDocument	{ public static implicit operator InputWebFileLocation(WebDocument doc) => new() { url = doc.url, access_hash = doc.access_hash }; }
 
 	partial class InputMessage
 	{
