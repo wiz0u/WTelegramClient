@@ -363,8 +363,8 @@ namespace TL
 				switch (sb[i])
 				{
 					case '&': sb.Insert(i + 1, "amp;"); i += 4; break;
-					case '<': sb.Remove(i, 1).Insert(i, "&lt;"); i += 3; break;
-					case '>': sb.Remove(i, 1).Insert(i, "&gt;"); i += 3; break;
+					case '<': sb.Insert(i, "&lt"); sb[i += 3] = ';'; break;
+					case '>': sb.Insert(i, "&gt"); sb[i += 3] = ';'; break;
 				}
 			}
 			return sb.ToString();

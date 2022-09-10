@@ -209,17 +209,18 @@ namespace TL
 	partial class ChatParticipants			{ public override ChatParticipantBase[] Participants => participants; }
 
 	partial class MessageMedia				{ ///<summary>Use this helper method to send a copy of the media without downloading it</summary>
-											  ///<remarks>Quiz poll may need to be voted before obtaining the correct answers. Dice will not replicate same value.<br/>May return <see langword="null"/> for Invoice and other unsupported media types</remarks>
+											  ///<remarks>Quiz poll may need to be voted before obtaining the correct answers. Dice will not replicate same value. TTL ignored<br/>May return <see langword="null"/> for Invoice and other unsupported media types</remarks>
 											  public virtual  InputMedia ToInputMedia() => null; }
 	partial class MessageMediaPhoto			{ public override InputMedia ToInputMedia() => new InputMediaPhoto { id = photo }; }
 	partial class MessageMediaGeo			{ public override InputMedia ToInputMedia() => new InputMediaGeoPoint { geo_point = geo }; }
-	partial class MessageMediaContact		{ public override InputMedia ToInputMedia() => new InputMediaContact { first_name = first_name, last_name = last_name, phone_number = phone_number, vcard = vcard }; }
+	partial class MessageMediaContact		{ public override InputMedia ToInputMedia() => new InputMediaContact { phone_number = phone_number, first_name = first_name, last_name = last_name, vcard = vcard }; }
 	partial class MessageMediaDocument		{ public override InputMedia ToInputMedia() => new InputMediaDocument { id = document }; }
 	partial class MessageMediaVenue			{ public override InputMedia ToInputMedia() => new InputMediaVenue { geo_point = geo, title = title, address = address, provider = provider, venue_id = venue_id, venue_type = venue_type }; }
 	partial class MessageMediaGame			{ public override InputMedia ToInputMedia() => new InputMediaGame { id = game }; }
 	partial class MessageMediaGeoLive		{ public override InputMedia ToInputMedia() => new InputMediaGeoLive { geo_point = geo, heading = heading, period = period, proximity_notification_radius = proximity_notification_radius,
 		flags = (period != 0 ? InputMediaGeoLive.Flags.has_period : 0) | (flags.HasFlag(Flags.has_heading) ? InputMediaGeoLive.Flags.has_heading : 0) | (flags.HasFlag(Flags.has_proximity_notification_radius) ? InputMediaGeoLive.Flags.has_proximity_notification_radius : 0) }; }
-	partial class MessageMediaPoll			{ public override InputMedia ToInputMedia() => new InputMediaPoll { poll = poll, correct_answers = results.results?.Where(pav => pav.flags.HasFlag(PollAnswerVoters.Flags.correct)).Select(pav => pav.option).ToArray(), solution = results.solution, solution_entities = results.solution_entities,
+	partial class MessageMediaPoll			{ public override InputMedia ToInputMedia() => new InputMediaPoll { poll = poll, solution = results.solution, solution_entities = results.solution_entities,
+		correct_answers = results.results?.Where(pav => pav.flags.HasFlag(PollAnswerVoters.Flags.correct)).Select(pav => pav.option).ToArray(), 
 		flags = (results.results != null ? InputMediaPoll.Flags.has_correct_answers : 0) | (results.solution != null ? InputMediaPoll.Flags.has_solution : 0) }; }
 	partial class MessageMediaDice			{ public override InputMedia ToInputMedia() => new InputMediaDice { emoticon = emoticon }; }
 

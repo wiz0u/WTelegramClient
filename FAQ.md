@@ -47,7 +47,7 @@ You can download such full example apps [for WinForms](https://github.com/wiz0u/
 <a name="access-hash"></a>
 #### 4. Where to get the access_hash? Why the error `CHANNEL_INVALID` or `USER_ID_INVALID`?
 
-An `access_hash` is required by Telegram when dealing with a channel, user, photo, document, etc...  
+Having only the ID is **not enough**: An `access_hash` is required by Telegram when dealing with a channel, user, photo, document, etc...  
 This serves as a proof that the logged-in user is entitled to access it (otherwise, anybody with the ID could access it)
 
 > A small private `Chat` don't need an access_hash and can be queried using their `chat_id` only.

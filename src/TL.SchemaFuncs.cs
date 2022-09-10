@@ -808,7 +808,7 @@ namespace TL
 		/// <param name="slug">Unique theme ID used to generate <a href="https://corefork.telegram.org/api/links#theme-links">theme deep links</a>, can be empty to autogenerate a random ID.</param>
 		/// <param name="title">Theme name</param>
 		/// <param name="document">Theme file</param>
-		/// <param name="settings">Theme settings</param>
+		/// <param name="settings">Theme settings, multiple values can be provided for the different base themes (day/night mode, etc).</param>
 		public static Task<Theme> Account_CreateTheme(this Client client, string slug, string title, InputDocument document = null, InputThemeSettings[] settings = null)
 			=> client.Invoke(new Account_CreateTheme
 			{
@@ -1882,7 +1882,7 @@ namespace TL
 
 		/// <summary>Reorder installed stickersets		<para>See <a href="https://corefork.telegram.org/method/messages.reorderStickerSets"/></para></summary>
 		/// <param name="masks">Reorder mask stickersets</param>
-		/// <param name="emojis">Reorder custom emoji stickersets</param>
+		/// <param name="emojis">Reorder <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickersets</a></param>
 		/// <param name="order">New stickerset order by stickerset IDs</param>
 		public static Task<bool> Messages_ReorderStickerSets(this Client client, long[] order, bool masks = false, bool emojis = false)
 			=> client.Invoke(new Messages_ReorderStickerSets
@@ -2143,8 +2143,8 @@ namespace TL
 			});
 
 		/// <summary>Get all archived stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getArchivedStickers"/></para></summary>
-		/// <param name="masks">Get mask stickers</param>
-		/// <param name="emojis">Get custom emoji stickers</param>
+		/// <param name="masks">Get <a href="https://corefork.telegram.org/api/stickers#mask-stickers">mask stickers</a></param>
+		/// <param name="emojis">Get <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickers</a></param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_ArchivedStickers> Messages_GetArchivedStickers(this Client client, long offset_id = default, int limit = int.MaxValue, bool masks = false, bool emojis = false)
@@ -2312,7 +2312,7 @@ namespace TL
 			});
 
 		/// <summary>Upload a file and associate it to a chat (without actually sending it to the chat)		<para>See <a href="https://corefork.telegram.org/method/messages.uploadMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.uploadMedia#possible-errors">details</a>)</para></summary>
-		/// <param name="peer">The chat, can be an <see langword="null"/> for bots</param>
+		/// <param name="peer">The chat, can be <see langword="null"/> for bots and <see cref="InputPeerSelf"/> for users.</param>
 		/// <param name="media">File uploaded in chunks as described in <a href="https://corefork.telegram.org/api/files">files »</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messageMediaEmpty">messageMediaEmpty</a></returns>
 		public static Task<MessageMedia> Messages_UploadMedia(this Client client, InputPeer peer, InputMedia media)
@@ -2962,7 +2962,7 @@ namespace TL
 				emoticon = emoticon,
 			});
 
-		/// <summary>Get which users read a specific message: only available for groups and supergroups with less than <c>chat_read_mark_size_threshold</c> members, read receipts will be stored for <c>chat_read_mark_expire_period</c> seconds after the message was sent, see <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageReadParticipants"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getMessageReadParticipants#possible-errors">details</a>)</para></summary>
+		/// <summary>Get which users read a specific message: only available for groups and supergroups with less than <a href="https://corefork.telegram.org/api/config#chat-read-mark-size-threshold"><c>chat_read_mark_size_threshold</c> members</a>, read receipts will be stored for <a href="https://corefork.telegram.org/api/config#chat-read-mark-expire-period"><c>chat_read_mark_expire_period</c> seconds after the message was sent</a>, see <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageReadParticipants"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getMessageReadParticipants#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Dialog</param>
 		/// <param name="msg_id">Message ID</param>
 		public static Task<long[]> Messages_GetMessageReadParticipants(this Client client, InputPeer peer, int msg_id)
@@ -3104,7 +3104,7 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary>Change default emoji reaction to use in the quick reaction menu: the value is synced across devices and can be fetched using <a href="https://corefork.telegram.org/api/config#client-configuration">help.getAppConfig, <c>reactions_default</c> field</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.setDefaultReaction"/></para></summary>
+		/// <summary>Change default emoji reaction to use in the quick reaction menu: the value is synced across devices and can be fetched using <a href="https://corefork.telegram.org/api/config#reactions-default">help.getAppConfig, <c>reactions_default</c> field</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.setDefaultReaction"/></para></summary>
 		/// <param name="reaction">New emoji reaction</param>
 		public static Task<bool> Messages_SetDefaultReaction(this Client client, Reaction reaction)
 			=> client.Invoke(new Messages_SetDefaultReaction
@@ -3298,15 +3298,15 @@ namespace TL
 				good = good,
 			});
 
-		/// <summary>Fetch info about custom emojis.		<para>See <a href="https://corefork.telegram.org/method/messages.getCustomEmojiDocuments"/> [bots: ✓]</para></summary>
-		/// <param name="document_id">Custom emoji IDs from a <see cref="MessageEntityCustomEmoji"/>.</param>
+		/// <summary>Fetch <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickers »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getCustomEmojiDocuments"/> [bots: ✓]</para></summary>
+		/// <param name="document_id"><a href="https://corefork.telegram.org/api/custom-emoji">Custom emoji</a> IDs from a <see cref="MessageEntityCustomEmoji"/>.</param>
 		public static Task<DocumentBase[]> Messages_GetCustomEmojiDocuments(this Client client, long[] document_id)
 			=> client.Invoke(new Messages_GetCustomEmojiDocuments
 			{
 				document_id = document_id,
 			});
 
-		/// <summary>Gets the list of currently installed custom emoji stickersets.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStickers"/></para></summary>
+		/// <summary>Gets the list of currently installed <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickersets</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStickers"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.allStickersNotModified">messages.allStickersNotModified</a></returns>
 		public static Task<Messages_AllStickers> Messages_GetEmojiStickers(this Client client, long hash = default)
@@ -3362,7 +3362,7 @@ namespace TL
 			{
 			});
 
-		/// <summary>Get new <a href="https://corefork.telegram.org/api/updates">updates</a>.		<para>See <a href="https://corefork.telegram.org/method/updates.getDifference"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/updates.getDifference#possible-errors">details</a>)</para></summary>
+		/// <summary>Get new <a href="https://corefork.telegram.org/api/updates">updates</a>.		<para>See <a href="https://corefork.telegram.org/method/updates.getDifference"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/updates.getDifference#possible-errors">details</a>)</para></summary>
 		/// <param name="pts">PTS, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</param>
 		/// <param name="pts_total_limit">For fast updating: if provided and <c>pts + pts_total_limit &lt; remote pts</c>, <see cref="Updates_DifferenceTooLong"/> will be returned.<br/>Simply tells the server to not return the difference if it is bigger than <c>pts_total_limit</c><br/>If the remote pts is too big (&gt; ~4000000), this field will default to 1000000</param>
 		/// <param name="date">date, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</param>
@@ -3588,8 +3588,8 @@ namespace TL
 			{
 			});
 
-		/// <summary>Get recently used <c>t.me</c> links		<para>See <a href="https://corefork.telegram.org/method/help.getRecentMeUrls"/></para></summary>
-		/// <param name="referer">Referer</param>
+		/// <summary>Get recently used <c>t.me</c> links.		<para>See <a href="https://corefork.telegram.org/method/help.getRecentMeUrls"/></para></summary>
+		/// <param name="referer">Referrer</param>
 		public static Task<Help_RecentMeUrls> Help_GetRecentMeUrls(this Client client, string referer)
 			=> client.Invoke(new Help_GetRecentMeUrls
 			{
@@ -4326,7 +4326,7 @@ namespace TL
 				purpose = purpose,
 			});
 
-		/// <summary>Checks whether Telegram Premium purchase is possible. Must be called before in-store Premium purchase.		<para>See <a href="https://corefork.telegram.org/method/payments.canPurchasePremium"/></para></summary>
+		/// <summary>Checks whether Telegram Premium purchase is possible. Must be called before in-store Premium purchase, official apps only.		<para>See <a href="https://corefork.telegram.org/method/payments.canPurchasePremium"/></para></summary>
 		/// <param name="purpose">Payment purpose</param>
 		public static Task<bool> Payments_CanPurchasePremium(this Client client, InputStorePaymentPurpose purpose)
 			=> client.Invoke(new Payments_CanPurchasePremium
@@ -4340,7 +4340,7 @@ namespace TL
 		/// <param name="videos">Whether this is a video stickerset</param>
 		/// <param name="user_id">Stickerset owner</param>
 		/// <param name="title">Stickerset name, <c>1-64</c> chars</param>
-		/// <param name="short_name">Short name of sticker set, to be used in <a href="https://corefork.telegram.org/api/links#stickerset-links">sticker deep links »</a>. Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in <c>"_by_&lt;bot_username&gt;"</c>. <c>&lt;bot_username&gt;</c> is case insensitive. 1-64 characters.</param>
+		/// <param name="short_name">Short name of sticker set, to be used in <a href="https://corefork.telegram.org/api/links#stickerset-links">sticker deep links »</a>. Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and, <strong>if called by a bot</strong>, must end in <c>"_by_&lt;bot_username&gt;"</c>. <c>&lt;bot_username&gt;</c> is case insensitive. 1-64 characters.</param>
 		/// <param name="thumb">Thumbnail</param>
 		/// <param name="stickers">Stickers</param>
 		/// <param name="software">Used when <a href="https://corefork.telegram.org/import-stickers">importing stickers using the sticker import SDKs</a>, specifies the name of the software that created the stickers</param>
@@ -4686,7 +4686,7 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary>Get an <a href="https://corefork.telegram.org/api/links#voice-chat-video-chat-livestream-links">invite link</a> for a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite"/></para></summary>
+		/// <summary>Get an <a href="https://corefork.telegram.org/api/links#voice-chat-video-chat-livestream-links">invite link</a> for a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite#possible-errors">details</a>)</para></summary>
 		/// <param name="can_self_unmute">For livestreams or muted group chats, if set, users that join using this link will be able to speak without explicitly requesting permission by (for example by raising their hand).</param>
 		/// <param name="call">The group call</param>
 		public static Task<Phone_ExportedGroupCallInvite> Phone_ExportGroupCallInvite(this Client client, InputGroupCall call, bool can_self_unmute = false)

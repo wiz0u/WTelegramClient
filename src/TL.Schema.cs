@@ -1974,7 +1974,7 @@ namespace TL
 		public string currency;
 		/// <summary>Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long total_amount;
-		/// <summary>An invoice slug taken from an <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a> or from the <a href="https://corefork.telegram.org/api/config#client-configuration"><c>premium_invoice_slug</c> app config parameter »</a></summary>
+		/// <summary>An invoice slug taken from an <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a> or from the <a href="https://corefork.telegram.org/api/config#premium-invoice-slug"><c>premium_invoice_slug</c> app config parameter »</a></summary>
 		[IfFlag(0)] public string invoice_slug;
 
 		[Flags] public enum Flags : uint
@@ -2501,9 +2501,9 @@ namespace TL
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
-		/// <summary>Display text in notifications</summary>
+		/// <summary>(Ternary value) If set, indicates whether or not to display previews of messages in notifications; otherwise the default behavior should be used.</summary>
 		[IfFlag(0)] public bool show_previews;
-		/// <summary>Mute peer?</summary>
+		/// <summary>(Ternary value) If set, indicates whether to mute or unmute the peer; otherwise the default behavior should be used.</summary>
 		[IfFlag(1)] public bool silent;
 		/// <summary>Mute all notifications until this date</summary>
 		[IfFlag(2)] public int mute_until;
@@ -4243,7 +4243,7 @@ namespace TL
 			pending = 0x1,
 		}
 	}
-	/// <summary>Some featured emoji stickers were marked as read		<para>See <a href="https://corefork.telegram.org/constructor/updateReadFeaturedEmojiStickers"/></para></summary>
+	/// <summary>Some featured <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickers</a> were marked as read		<para>See <a href="https://corefork.telegram.org/constructor/updateReadFeaturedEmojiStickers"/></para></summary>
 	[TLDef(0xFB4C496C)]
 	public class UpdateReadFeaturedEmojiStickers : Update { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateUserEmojiStatus"/></para></summary>
@@ -5581,7 +5581,7 @@ namespace TL
 		[IfFlag(0)] public string title;
 		/// <summary>Performer</summary>
 		[IfFlag(1)] public string performer;
-		/// <summary>Waveform</summary>
+		/// <summary>Waveform: consists in a series of bitpacked 5-bit values. <br/>Example implementation: <a href="https://github.com/DrKLO/Telegram/blob/96dce2c9aabc33b87db61d830aa087b6b03fe397/TMessagesProj/jni/audio.c#L546">android</a>.</summary>
 		[IfFlag(2)] public byte[] waveform;
 
 		[Flags] public enum Flags : uint
@@ -6554,7 +6554,7 @@ namespace TL
 	[TLDef(0xC8CF05F8, inheritBefore = true)]
 	public class MessageEntityCustomEmoji : MessageEntity
 	{
-		/// <summary>Document ID of the custom emoji, use <a href="https://corefork.telegram.org/method/messages.getCustomEmojiDocuments">messages.getCustomEmojiDocuments</a> to fetch the emoji animation and the actual emoji it represents.</summary>
+		/// <summary>Document ID of the <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a>, use <a href="https://corefork.telegram.org/method/messages.getCustomEmojiDocuments">messages.getCustomEmojiDocuments</a> to fetch the emoji animation and the actual emoji it represents.</summary>
 		public long document_id;
 	}
 
@@ -7981,7 +7981,7 @@ namespace TL
 		/// <summary>Stickerset</summary>
 		public override StickerSet Set => set;
 	}
-	/// <summary>Stickerset preview with all stickers of the stickerset included.<br/>Currently used only for custom emoji stickersets, to avoid a further call to <a href="https://corefork.telegram.org/method/messages.getStickerSet">messages.getStickerSet</a>.		<para>See <a href="https://corefork.telegram.org/constructor/stickerSetFullCovered"/></para></summary>
+	/// <summary>Stickerset preview with all stickers of the stickerset included.<br/>Currently used only for <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickersets</a>, to avoid a further call to <a href="https://corefork.telegram.org/method/messages.getStickerSet">messages.getStickerSet</a>.		<para>See <a href="https://corefork.telegram.org/constructor/stickerSetFullCovered"/></para></summary>
 	[TLDef(0x1AED5EE5)]
 	public class StickerSetFullCovered : StickerSetCoveredBase
 	{
@@ -7996,7 +7996,7 @@ namespace TL
 		public override StickerSet Set => set;
 	}
 
-	/// <summary>Position on a photo where a mask should be placed		<para>See <a href="https://corefork.telegram.org/constructor/maskCoords"/></para></summary>
+	/// <summary>Position on a photo where a mask should be placed when <a href="https://corefork.telegram.org/api/stickers#attached-stickers">attaching stickers to media »</a>		<para>See <a href="https://corefork.telegram.org/constructor/maskCoords"/></para></summary>
 	[TLDef(0xAED6DBB2)]
 	public class MaskCoords : IObject
 	{
@@ -8004,7 +8004,7 @@ namespace TL
 		public int n;
 		/// <summary>Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. (For example, -1.0 will place the mask just to the left of the default mask position)</summary>
 		public double x;
-		/// <summary>Shift by Y-axis measured in widths of the mask scaled to the face size, from left to right. (For example, -1.0 will place the mask just to the left of the default mask position)</summary>
+		/// <summary>Shift by Y-axis measured in widths of the mask scaled to the face size, from left to right. (For example, -1.0 will place the mask just below the default mask position)</summary>
 		public double y;
 		/// <summary>Mask scaling coefficient. (For example, 2.0 means a doubled size)</summary>
 		public double zoom;
@@ -10965,7 +10965,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Similar to <a href="https://corefork.telegram.org/api/min">min</a> objects, used for poll constructors that are the same for all users so they don't have option chosen by the current user (you can use <a href="https://corefork.telegram.org/method/messages.getPollResults">messages.getPollResults</a> to get the full poll results).</summary>
+			/// <summary>Similar to <a href="https://corefork.telegram.org/api/min">min</a> objects, used for poll constructors that are the same for all users so they don't have the option chosen by the current user (you can use <a href="https://corefork.telegram.org/method/messages.getPollResults">messages.getPollResults</a> to get the full poll results).</summary>
 			min = 0x1,
 			/// <summary>Field <see cref="results"/> has a value</summary>
 			has_results = 0x2,
@@ -13305,7 +13305,7 @@ namespace TL
 		/// <summary>Message ID</summary>
 		public int msg_id;
 	}
-	/// <summary>An invoice slug taken from an <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a> or from the <a href="https://corefork.telegram.org/api/config#client-configuration"><c>premium_invoice_slug</c> app config parameter »</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceSlug"/></para></summary>
+	/// <summary>An invoice slug taken from an <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a> or from the <a href="https://corefork.telegram.org/api/config#premium-invoice-slug"><c>premium_invoice_slug</c> app config parameter »</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceSlug"/></para></summary>
 	[TLDef(0xC326CAEF)]
 	public class InputInvoiceSlug : InputInvoice
 	{
