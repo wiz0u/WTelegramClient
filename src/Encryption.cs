@@ -56,6 +56,7 @@ namespace WTelegram
 				new_nonce = new Int256(RNG),
 				dc = session.DataCenter?.id ?? 0
 			};
+			if (client.TLConfig?.test_mode == true) pqInnerData.dc += 10000;
 			if (session.DataCenter?.flags.HasFlag(DcOption.Flags.media_only) == true) pqInnerData.dc = -pqInnerData.dc;
 			byte[] encrypted_data = null;
 			{

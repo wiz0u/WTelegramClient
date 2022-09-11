@@ -100,6 +100,7 @@ namespace WTelegram
 			TcpHandler = cloneOf.TcpHandler;
 			MTProxyUrl = cloneOf.MTProxyUrl;
 			PingInterval = cloneOf.PingInterval;
+			TLConfig = cloneOf.TLConfig;
 			_dcSession = dcSession;
 		}
 
@@ -706,6 +707,7 @@ namespace WTelegram
 			if (MTProxyUrl != null)
 			{
 #if OBFUSCATION
+				if (TLConfig?.test_mode == true) dcId += 10000;
 				if (_dcSession.DataCenter?.flags.HasFlag(DcOption.Flags.media_only) == true) dcId = -dcId;
 				var parms = HttpUtility.ParseQueryString(MTProxyUrl[MTProxyUrl.IndexOf('?')..]);
 				var server = parms["server"];
