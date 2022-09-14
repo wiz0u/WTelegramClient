@@ -3356,6 +3356,14 @@ namespace TL
 			{
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getExtendedMedia"/></para></summary>
+		public static Task<UpdatesBase> Messages_GetExtendedMedia(this Client client, InputPeer peer, params int[] id)
+			=> client.Invoke(new Messages_GetExtendedMedia
+			{
+				peer = peer,
+				id = id,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -7615,6 +7623,13 @@ namespace TL.Methods
 
 	[TLDef(0x9DFEEFB4)]
 	public class Messages_ClearRecentReactions : IMethod<bool> { }
+
+	[TLDef(0x84F80814)]
+	public class Messages_GetExtendedMedia : IMethod<UpdatesBase>
+	{
+		public InputPeer peer;
+		public int[] id;
+	}
 
 	[TLDef(0xEDD4882A)]
 	public class Updates_GetState : IMethod<Updates_State> { }

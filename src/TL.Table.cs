@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 145;					// fetched 02/09/2022 20:50:42
+		public const int Version = 146;					// fetched 14/09/2022 16:18:39
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -91,7 +91,7 @@ namespace TL
 			[0xE5BBFE1A] = typeof(InputMediaPhotoExternal),
 			[0xFB52DC99] = typeof(InputMediaDocumentExternal),
 			[0xD33F43F3] = typeof(InputMediaGame),
-			[0xD9799874] = typeof(InputMediaInvoice),
+			[0x8EB5A6D5] = typeof(InputMediaInvoice),
 			[0x971FA843] = typeof(InputMediaGeoLive),
 			[0x0F94E5F1] = typeof(InputMediaPoll),
 			[0xE66FBF7B] = typeof(InputMediaDice),
@@ -151,7 +151,7 @@ namespace TL
 			[0xA32DD600] = typeof(MessageMediaWebPage),
 			[0x2EC0533F] = typeof(MessageMediaVenue),
 			[0xFDB19008] = typeof(MessageMediaGame),
-			[0x84551347] = typeof(MessageMediaInvoice),
+			[0xF6A548D3] = typeof(MessageMediaInvoice),
 			[0xB940C666] = typeof(MessageMediaGeoLive),
 			[0x4BD6E798] = typeof(MessageMediaPoll),
 			[0x3F7EE58B] = typeof(MessageMediaDice),
@@ -356,6 +356,7 @@ namespace TL
 			[0x30F443DB] = typeof(UpdateRecentEmojiStatuses),
 			[0x6F7863F4] = typeof(UpdateRecentReactions),
 			[0x86FCCF85] = typeof(UpdateMoveStickerSetToTop),
+			[0x5A73A98C] = typeof(UpdateMessageExtendedMedia),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -1022,6 +1023,8 @@ namespace TL
 			[0xE1BB0D61] = typeof(Account_EmailVerifiedLogin),
 			[0xB6F11EBE] = typeof(PremiumSubscriptionOption),
 			[0xB81C7034] = typeof(SendAsPeer),
+			[0xAD628CC8] = typeof(MessageExtendedMediaPreview),
+			[0xEE479C64] = typeof(MessageExtendedMedia),
 			// from TL.Secret:
 			[0xBB718624] = typeof(Layer66.SendMessageUploadRoundAction),
 			[0xE50511D8] = typeof(Layer45.DecryptedMessageMediaWebPage),

@@ -351,7 +351,7 @@ namespace TL
 		public InputGame id;
 	}
 	/// <summary>Generated invoice of a <a href="https://corefork.telegram.org/bots/payments">bot payment</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputMediaInvoice"/></para></summary>
-	[TLDef(0xD9799874)]
+	[TLDef(0x8EB5A6D5)]
 	public class InputMediaInvoice : InputMedia
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -372,6 +372,7 @@ namespace TL
 		public DataJSON provider_data;
 		/// <summary>Unique <a href="https://corefork.telegram.org/api/links#bot-links">bot deep links start parameter</a>. If present, forwarded copies of the sent message will have a URL button with a <a href="https://corefork.telegram.org/api/links#bot-links">deep link</a> to the bot (instead of a Pay button), with the value used as the start parameter. If absent, forwarded copies of the sent message will have a Pay button, allowing multiple users to pay directly from the forwarded message, using the same invoice.</summary>
 		[IfFlag(1)] public string start_param;
+		[IfFlag(2)] public InputMedia extended_media;
 
 		[Flags] public enum Flags : uint
 		{
@@ -379,6 +380,8 @@ namespace TL
 			has_photo = 0x1,
 			/// <summary>Field <see cref="start_param"/> has a value</summary>
 			has_start_param = 0x2,
+			/// <summary>Field <see cref="extended_media"/> has a value</summary>
+			has_extended_media = 0x4,
 		}
 	}
 	/// <summary><a href="https://corefork.telegram.org/api/live-location">Live geolocation</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputMediaGeoLive"/></para></summary>
@@ -1771,7 +1774,7 @@ namespace TL
 		public Game game;
 	}
 	/// <summary>Invoice		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaInvoice"/></para></summary>
-	[TLDef(0x84551347)]
+	[TLDef(0xF6A548D3)]
 	public class MessageMediaInvoice : MessageMedia
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -1790,6 +1793,7 @@ namespace TL
 		public long total_amount;
 		/// <summary>Unique bot deep-linking parameter that can be used to generate this invoice</summary>
 		public string start_param;
+		[IfFlag(4)] public MessageExtendedMediaBase extended_media;
 
 		[Flags] public enum Flags : uint
 		{
@@ -1801,6 +1805,8 @@ namespace TL
 			has_receipt_msg_id = 0x4,
 			/// <summary>Whether this is an example invoice</summary>
 			test = 0x8,
+			/// <summary>Field <see cref="extended_media"/> has a value</summary>
+			has_extended_media = 0x10,
 		}
 	}
 	/// <summary>Indicates a <a href="https://corefork.telegram.org/api/live-location">live geolocation</a>		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaGeoLive"/></para></summary>
@@ -4271,6 +4277,14 @@ namespace TL
 			masks = 0x1,
 			emojis = 0x2,
 		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateMessageExtendedMedia"/></para></summary>
+	[TLDef(0x5A73A98C)]
+	public class UpdateMessageExtendedMedia : Update
+	{
+		public Peer peer;
+		public int msg_id;
+		public MessageExtendedMediaBase extended_media;
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -13568,5 +13582,31 @@ namespace TL
 		{
 			premium_required = 0x1,
 		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/MessageExtendedMedia"/></para></summary>
+	public abstract class MessageExtendedMediaBase : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageExtendedMediaPreview"/></para></summary>
+	[TLDef(0xAD628CC8)]
+	public class MessageExtendedMediaPreview : MessageExtendedMediaBase
+	{
+		public Flags flags;
+		[IfFlag(0)] public int w;
+		[IfFlag(0)] public int h;
+		[IfFlag(1)] public PhotoSizeBase thumb;
+		[IfFlag(2)] public int video_duration;
+
+		[Flags] public enum Flags : uint
+		{
+			has_w = 0x1,
+			has_thumb = 0x2,
+			has_video_duration = 0x4,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageExtendedMedia"/></para></summary>
+	[TLDef(0xEE479C64)]
+	public class MessageExtendedMedia : MessageExtendedMediaBase
+	{
+		public MessageMedia media;
 	}
 }
