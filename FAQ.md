@@ -220,6 +220,7 @@ In particular, it will detect and handle automatically and properly the various 
 * Login not necessary (when a session is resumed with an already logged-in user)
 * Logout required (if you want to change the logged-in user)
 * 2FA password required (your Config needs to provide "password")
+* Email registration procedure required (your Config needs to provide "email", "email_verification_code")
 * Account registration/sign-up required (your Config needs to provide "first_name", "last_name")
 * Request to resend the verification code through alternate ways like SMS (if your Config answer an empty "verification_code" initially)
 * Transient failures, slowness to respond, wrong code/password, checks for encryption key safety, etc..

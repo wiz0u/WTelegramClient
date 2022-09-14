@@ -126,7 +126,7 @@ namespace WTelegram
 			"lang_pack" => "",
 			"lang_code" => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
 			"user_id" => "-1",
-			"verification_code" or "password" => AskConfig(what),
+			"verification_code" or "email_verification_code" or "password" => AskConfig(what),
 			_ => null // api_id api_hash phone_number... it's up to you to reply to these correctly
 		};
 
@@ -940,10 +940,46 @@ namespace WTelegram
 			Auth_AuthorizationBase authorization = null;
 			try
 			{
+				if (sentCode.type is Auth_SentCodeTypeSetUpEmailRequired setupEmail)
+				{
+					Helpers.Log(3, "A login email is required");
+					var email = _config("email");
+					if (string.IsNullOrEmpty(email))
+						sentCode = await this.Auth_ResendCode(phone_number, sentCode.phone_code_hash);
+					else
+					{
+						var purpose = new EmailVerifyPurposeLoginSetup { phone_number = phone_number, phone_code_hash = sentCode.phone_code_hash };
+						if (email is not "Google" and not "Apple")
+						{
+							var sentEmail = await this.Account_SendVerifyEmailCode(purpose, email);
+							Helpers.Log(3, "An email verification code has been sent to " + sentEmail.email_pattern);
+							RaiseUpdate(sentEmail);
+						}
+						Account_EmailVerified verified = null;
+						for (int retry = 1; verified == null; retry++)
+							try
+							{
+								var code = await ConfigAsync("email_verification_code");
+								if (email is "Google")
+									verified = await this.Account_VerifyEmail(purpose, new EmailVerificationGoogle { token = code });
+								else if (email is "Apple")
+									verified = await this.Account_VerifyEmail(purpose, new EmailVerificationApple { token = code });
+								else
+									verified = await this.Account_VerifyEmail(purpose, new EmailVerificationCode { code = code });
+							}
+							catch (RpcException e) when (e.Code == 400 && e.Message is "CODE_INVALID" or "EMAIL_TOKEN_INVALID")
+							{
+								Helpers.Log(4, "Wrong email verification code!");
+								if (retry == MaxCodePwdAttempts) throw;
+							}
+						if (verified is Account_EmailVerifiedLogin verifiedLogin) // (it should always be)
+							sentCode = verifiedLogin.sent_code;
+					}
+				}
 			resent:
 				var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);
-				RaiseUpdate(sentCode);
 				Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
+				RaiseUpdate(sentCode);
 				for (int retry = 1; authorization == null; retry++)
 					try
 					{

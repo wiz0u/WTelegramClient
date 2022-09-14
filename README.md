@@ -36,6 +36,8 @@ that will be sent to this user (for example through SMS, Email, or another Teleg
 If the verification succeeds but the phone number is unknown to Telegram, the user might be prompted to sign-up
 *(register their account by accepting the Terms of Service)* and provide their **first_name** and **last_name**.  
 If the account already exists and has enabled two-step verification (2FA) a **password** might be required.  
+In some case, Telegram may request that you associate an **email** with your account for receiving login verification codes,
+you may skip this step by leaving **email** empty, otherwise the email address will first receive an **email_verification_code**.  
 All these login scenarios are handled automatically within the call to `LoginUserIfNeeded`.
 
 After login, you now have access to the **[full range of Telegram Client APIs](https://corefork.telegram.org/methods)**. 
@@ -149,7 +151,7 @@ See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
-The other configuration items that you can override include: **session_pathname, session_key, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
+The other configuration items that you can override include: **session_pathname, email, email_verification_code, session_key, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
 
 Optional API parameters have a default value of `null` when unset. Passing `null` for a required string/array is the same as *empty* (0-length).
 Required API parameters/fields can sometimes be set to 0 or `null` when unused (check API documentation or experiment).
