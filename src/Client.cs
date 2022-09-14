@@ -870,7 +870,7 @@ namespace WTelegram
 			{
 				try
 				{
-					var users = await this.Users_GetUsers(new[] { InputUser.Self }); // this calls also reenable incoming Updates
+					var users = await this.Users_GetUsers(InputUser.Self); // this calls also reenable incoming Updates
 					var self = users[0] as User;
 					if (self.id == long.Parse(botToken.Split(':')[0]))
 					{
@@ -905,7 +905,7 @@ namespace WTelegram
 			{
 				try
 				{
-					var users = await this.Users_GetUsers(new[] { InputUser.Self }); // this call also reenable incoming Updates
+					var users = await this.Users_GetUsers(InputUser.Self); // this call also reenable incoming Updates
 					var self = users[0] as User;
 					// check user_id or phone_number match currently logged-in user
 					if ((long.TryParse(_config("user_id"), out long id) && (id == -1 || self.id == id)) ||

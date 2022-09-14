@@ -26,10 +26,12 @@ static async Task Main(string[] _)
     Console.WriteLine($"We are logged-in as {my.username ?? my.first_name + " " + my.last_name} (id {my.id})");
 }
 ```
-When run, this will prompt you interactively for your App **api_hash** and **api_id** (that you obtain through Telegram's [API development tools](https://my.telegram.org/apps) page) and try to connect to Telegram servers.
+When run, this will prompt you interactively for your App **api_hash** and **api_id** (that you obtain through Telegram's
+[API development tools](https://my.telegram.org/apps) page) and try to connect to Telegram servers.
 Those api hash/id represent your application and one can be used for handling many user accounts.
 
-Then it will attempt to sign-in *(login)* as a user for which you must enter the **phone_number** and the **verification_code** that will be sent to this user (for example through SMS or another Telegram client app the user is connected to).
+Then it will attempt to sign-in *(login)* as a user for which you must enter the **phone_number** and the **verification_code**
+that will be sent to this user (for example through SMS, Email, or another Telegram client app the user is connected to).
 
 If the verification succeeds but the phone number is unknown to Telegram, the user might be prompted to sign-up
 *(register their account by accepting the Terms of Service)* and provide their **first_name** and **last_name**.  
@@ -42,9 +44,11 @@ All those API methods require `using TL;` namespace and are called with an under
 # Saved session
 If you run this program again, you will notice that only **api_hash** is requested, the other prompts are gone and you are automatically logged-on and ready to go.
 
-This is because WTelegramClient saves (typically in the encrypted file **bin\WTelegram.session**) its state and the authentication keys that were negotiated with Telegram so that you needn't sign-in again every time.
+This is because WTelegramClient saves (typically in the encrypted file **bin\WTelegram.session**) its state
+and the authentication keys that were negotiated with Telegram so that you needn't sign-in again every time.
 
-That file path is configurable (session_pathname), and under various circumstances (changing user or server address) you may want to change it or simply delete the existing session file in order to restart the authentification process.
+That file path is configurable (session_pathname), and under various circumstances (changing user or server address)
+you may want to change it or simply delete the existing session file in order to restart the authentification process.
 
 # Non-interactive configuration
 Your next step will probably be to provide a configuration to the client so that the required elements are not prompted through the Console but answered by your program.
@@ -83,13 +87,17 @@ Its `int` argument is the log severity, compatible with the [LogLevel enum](http
 
 # Example of API call
 
->ℹ️ The Telegram API makes extensive usage of base and derived classes, so be ready to use the various syntaxes C# offer to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
+>ℹ️ The Telegram API makes extensive usage of base and derived classes, so be ready to use the various C# syntaxes
+to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
 
-All the Telegram API classes/methods are fully documented through Intellisense: Place your mouse over a class/method name, or start typing the call arguments to see a tooltip displaying their description, the list of derived classes and a web link to the official API page.
+All the Telegram API classes/methods are fully documented through Intellisense: Place your mouse over a class/method name,
+or start typing the call arguments to see a tooltip displaying their description, the list of derived classes and a web link to the official API page.
 
-The Telegram [API object classes](https://corefork.telegram.org/schema) are defined in the `TL` namespace, and the [API functions](https://corefork.telegram.org/methods) are available as async methods of `Client`.
+The Telegram [API object classes](https://corefork.telegram.org/schema) are defined in the `TL` namespace,
+and the [API functions](https://corefork.telegram.org/methods) are available as async methods of `Client`.
 
-Below is an example of calling the [messages.getAllChats](https://corefork.telegram.org/method/messages.getAllChats) API function, enumerating the various groups/channels the user is in, and then using `client.SendMessageAsync` helper function to easily send a message:
+Below is an example of calling the [messages.getAllChats](https://corefork.telegram.org/method/messages.getAllChats) API function,
+enumerating the various groups/channels the user is in, and then using `client.SendMessageAsync` helper function to easily send a message:
 ```csharp
 using TL;
 ...
@@ -115,14 +123,17 @@ Console.WriteLine($"Sending a message in chat {chatId}: {target.Title}");
 await client.SendMessageAsync(target, "Hello, World");
 ```
 
-➡️ You can find lots of useful code snippets in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md) and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).
+➡️ You can find lots of useful code snippets in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md)
+and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).
 
 <a name="terminology"></a>
 # Terminology in Telegram Client API
 
 In the API, Telegram uses some terms/classnames that can be confusing as they differ from the terms shown to end-users:
-- `Channel` : A (large or public) chat group *(sometimes called [supergroup](https://corefork.telegram.org/api/channel#supergroups))* or a [broadcast channel](https://corefork.telegram.org/api/channel#channels) (the `broadcast` flag differentiate those)
-- `Chat` : A private [basic chat group](https://corefork.telegram.org/api/channel#basic-groups) with less than 200 members (it may be migrated to a supergroup `Channel` with a new ID when it gets bigger or public, in which case the old `Chat` will still exist but be `deactivated`)  
+- `Channel` : A (large or public) chat group *(sometimes called [supergroup](https://corefork.telegram.org/api/channel#supergroups))*
+or a [broadcast channel](https://corefork.telegram.org/api/channel#channels) (the `broadcast` flag differentiate those)
+- `Chat` : A private [basic chat group](https://corefork.telegram.org/api/channel#basic-groups) with less than 200 members
+(it may be migrated to a supergroup `Channel` with a new ID when it gets bigger or public, in which case the old `Chat` will still exist but be `deactivated`)  
 **⚠️ Most chat groups you see are really of type `Channel`, not `Chat`!**
 - chats : In plural or general meaning, it means either `Chat` or `Channel`
 - `Peer` : Either a `Chat`, a `Channel` or a `User`
@@ -133,13 +144,15 @@ See [FAQ #4](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-
 
 # Other things to know
 
-The Client class also offers an `OnUpdate` event that is triggered when Telegram servers sends Updates (like new messages or status), independently of your API requests. See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs)
+The Client class also offers an `OnUpdate` event that is triggered when Telegram servers sends Updates (like new messages or status), independently of your API requests.
+See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs)
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
 The other configuration items that you can override include: **session_pathname, session_key, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
 
-Optional API parameters have a default value of `null` when unset. Passing `null` for a required string/array is the same as *empty* (0-length). Required API parameters/fields can sometimes be set to 0 or `null` when unused (check API documentation or experiment).
+Optional API parameters have a default value of `null` when unset. Passing `null` for a required string/array is the same as *empty* (0-length).
+Required API parameters/fields can sometimes be set to 0 or `null` when unused (check API documentation or experiment).
 
 I've added several useful converters, implicit cast or helper properties to various API objects so that they are more easy to manipulate.
 
@@ -157,7 +170,8 @@ This library can be used for any Telegram scenarios including:
 It has been tested in a Console app, [in a WinForms app](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#gui),
 [in ASP.NET webservice](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#logging), and in Xamarin/Android.  
 
-Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos) as well as the [API Terms of Service](https://core.telegram.org/api/terms) or you might get banned from Telegram servers.
+Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos)
+as well as the [API Terms of Service](https://core.telegram.org/api/terms) or you might get banned from Telegram servers.
 
 Developers feedback is welcome in the Telegram support group [@WTelegramClient](https://t.me/WTelegramClient)  
 You can also check our [📖 Frequently Asked Questions](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) for more help and troubleshooting guide.

@@ -370,7 +370,7 @@ namespace TL
 		public string provider;
 		/// <summary>JSON-encoded data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.</summary>
 		public DataJSON provider_data;
-		/// <summary>Unique <a href="https://corefork.telegram.org/api/links#not-invoice">bot deep links start parameter</a>. If present, forwarded copies of the sent message will have a URL button with a <a href="https://corefork.telegram.org/api/links#bot-links">deep link</a> to the bot (instead of a Pay button), with the value used as the start parameter. If absent, forwarded copies of the sent message will have a Pay button, allowing multiple users to pay directly from the forwarded message, using the same invoice.</summary>
+		/// <summary>Unique <a href="https://corefork.telegram.org/api/links#bot-links">bot deep links start parameter</a>. If present, forwarded copies of the sent message will have a URL button with a <a href="https://corefork.telegram.org/api/links#bot-links">deep link</a> to the bot (instead of a Pay button), with the value used as the start parameter. If absent, forwarded copies of the sent message will have a Pay button, allowing multiple users to pay directly from the forwarded message, using the same invoice.</summary>
 		[IfFlag(1)] public string start_param;
 
 		[Flags] public enum Flags : uint
@@ -794,7 +794,7 @@ namespace TL
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
-		/// <summary>Identifier of the respective photo<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-2">Layer 2</a></summary>
+		/// <summary>Identifier of the respective photo</summary>
 		public long photo_id;
 		/// <summary><a href="https://corefork.telegram.org/api/files#stripped-thumbnails">Stripped thumbnail</a></summary>
 		[IfFlag(1)] public byte[] stripped_thumb;
@@ -2604,7 +2604,7 @@ namespace TL
 			default_ = 0x2,
 			/// <summary>Field <see cref="settings"/> has a value</summary>
 			has_settings = 0x4,
-			/// <summary>Whether this is a <a href="https://corefork.telegram.org/api/wallpapers#pattern-wallpaper">pattern wallpaper »</a></summary>
+			/// <summary>Whether this is a <a href="https://corefork.telegram.org/api/wallpapers#pattern-wallpapers">pattern wallpaper »</a></summary>
 			pattern = 0x8,
 			/// <summary>Whether this wallpaper should be used in dark mode.</summary>
 			dark = 0x10,
@@ -2796,7 +2796,7 @@ namespace TL
 		public ImportedContact[] imported;
 		/// <summary>Popular contacts</summary>
 		public PopularContact[] popular_invites;
-		/// <summary>List of contact ids that could not be imported due to system limitation and will need to be imported at a later date.<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-13">Layer 13</a></summary>
+		/// <summary>List of contact ids that could not be imported due to system limitation and will need to be imported at a later date.</summary>
 		public long[] retry_contacts;
 		/// <summary>List of users</summary>
 		public Dictionary<long, User> users;
@@ -3106,7 +3106,7 @@ namespace TL
 	{
 		/// <summary>User id</summary>
 		public long user_id;
-		/// <summary>Action type<br/>Param added in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
+		/// <summary>Action type</summary>
 		public SendMessageAction action;
 	}
 	/// <summary>The user is preparing a message in a group; typing, recording, uploading, etc. This update is valid for 6 seconds. If no further updates of this kind are received after 6 seconds, it should be considered that the user stopped doing whatever they were doing		<para>See <a href="https://corefork.telegram.org/constructor/updateChatUserTyping"/></para></summary>
@@ -3115,7 +3115,7 @@ namespace TL
 	{
 		/// <summary>Peer that started typing (can be the chat itself, in case of anonymous admins).</summary>
 		public Peer from_id;
-		/// <summary>Type of action<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
+		/// <summary>Type of action</summary>
 		public SendMessageAction action;
 	}
 	/// <summary>Composition of chat participants changed.		<para>See <a href="https://corefork.telegram.org/constructor/updateChatParticipants"/></para></summary>
@@ -3144,7 +3144,7 @@ namespace TL
 		public string first_name;
 		/// <summary>New last name. Corresponds to the new value of <strong>real_last_name</strong> field of the <see cref="UserFull"/>.</summary>
 		public string last_name;
-		/// <summary>New username.<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-18">Layer 18</a>.</summary>
+		/// <summary>New username.</summary>
 		public string username;
 	}
 	/// <summary>Change of contact's profile photo.		<para>See <a href="https://corefork.telegram.org/constructor/updateUserPhoto"/></para></summary>
@@ -4150,7 +4150,7 @@ namespace TL
 			presentation = 0x1,
 		}
 	}
-	/// <summary>The <a href="https://corefork.telegram.org/bots/api#june-25-2021">command set</a> of a certain bot in a certain chat has changed.		<para>See <a href="https://corefork.telegram.org/constructor/updateBotCommands"/></para></summary>
+	/// <summary>The <a href="https://corefork.telegram.org/api/bots/commands">command set</a> of a certain bot in a certain chat has changed.		<para>See <a href="https://corefork.telegram.org/constructor/updateBotCommands"/></para></summary>
 	[TLDef(0x4D712F2E)]
 	public class UpdateBotCommands : Update
 	{
@@ -13148,7 +13148,7 @@ namespace TL
 		{
 			/// <summary>Whether this bot attachment menu entry should be shown in the attachment menu (toggle using <a href="https://corefork.telegram.org/method/messages.toggleBotInAttachMenu">messages.toggleBotInAttachMenu</a>)</summary>
 			inactive = 0x1,
-			/// <summary>True, if the bot supports the <a href="https://corefork.telegram.org/api/bots/webapps#settings_button_pressed">"settings_button_pressed" event »</a></summary>
+			/// <summary>True, if the bot supports the <a href="https://corefork.telegram.org/api/bots/webapps#settings-button-pressed">"settings_button_pressed" event »</a></summary>
 			has_settings = 0x2,
 		}
 	}
@@ -13317,7 +13317,7 @@ namespace TL
 	[TLDef(0xAED0CBD9)]
 	public class Payments_ExportedInvoice : IObject
 	{
-		/// <summary>Exported <a href="https://corefork.telegram.org/api/links#invoice-link">invoice deep link</a></summary>
+		/// <summary>Exported <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a></summary>
 		public string url;
 	}
 

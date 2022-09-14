@@ -212,7 +212,7 @@ namespace TL
 		{
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public long random_id;
-			/// <summary>Message lifetime. Has higher priority than <see cref="Layer8.DecryptedMessageActionSetMessageTTL"/>.<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
+			/// <summary>Message lifetime. Has higher priority than <see cref="Layer8.DecryptedMessageActionSetMessageTTL"/>.<br/>Parameter added in Layer 17.</summary>
 			public int ttl;
 			/// <summary>Message text</summary>
 			public string message;
@@ -247,7 +247,7 @@ namespace TL
 			public int thumb_h;
 			/// <summary>Duration of video in seconds</summary>
 			public int duration;
-			/// <summary>MIME-type of the video file<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
+			/// <summary>MIME-type of the video file<br/>Parameter added in Layer 17.</summary>
 			public string mime_type;
 			/// <summary>Image width</summary>
 			public int w;
@@ -266,7 +266,7 @@ namespace TL
 		{
 			/// <summary>Audio duration in seconds</summary>
 			public int duration;
-			/// <summary>MIME-type of the audio file<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-13">Layer 13</a>.</summary>
+			/// <summary>MIME-type of the audio file<br/>Parameter added in Layer 13.</summary>
 			public string mime_type;
 			/// <summary>File size</summary>
 			public int size;
@@ -289,7 +289,7 @@ namespace TL
 		[TLDef(0xF3048883)]
 		public class DecryptedMessageActionNotifyLayer : DecryptedMessageAction
 		{
-			/// <summary>Layer number, must be <strong>17</strong> or higher (this constructor was introduced in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>).</summary>
+			/// <summary>Layer number, must be <strong>17</strong> or higher (this constructor was introduced in Layer 17.</summary>
 			public int layer;
 		}
 		/// <summary>User is preparing a message: typing, recording, uploading, etc.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionTyping"/></para></summary>
@@ -304,13 +304,13 @@ namespace TL
 		[TLDef(0x1BE31789)]
 		public class DecryptedMessageLayer : IObject
 		{
-			/// <summary>Set of random bytes to prevent content recognition in short encrypted messages.<br/>Clients are required to check that there are at least 15 random bytes included in each message. Messages with less than 15 random bytes must be ignored.<br/>Parameter moved here from <see cref="DecryptedMessage"/> in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
+			/// <summary>Set of random bytes to prevent content recognition in short encrypted messages.<br/>Clients are required to check that there are at least 15 random bytes included in each message. Messages with less than 15 random bytes must be ignored.<br/>Parameter moved here from <see cref="DecryptedMessage"/> in Layer 17.</summary>
 			public byte[] random_bytes;
 			/// <summary>Layer number. Mimimal value - <strong>17</strong> (the layer in which the constructor was added).</summary>
 			public int layer;
-			/// <summary>2x the number of messages in the sender's inbox (including deleted and service messages), incremented by 1 if current user was not the chat creator<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
+			/// <summary>2x the number of messages in the sender's inbox (including deleted and service messages), incremented by 1 if current user was not the chat creator<br/>Parameter added in Layer 17.</summary>
 			public int in_seq_no;
-			/// <summary>2x the number of messages in the recipient's inbox (including deleted and service messages), incremented by 1 if current user was the chat creator<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
+			/// <summary>2x the number of messages in the recipient's inbox (including deleted and service messages), incremented by 1 if current user was the chat creator<br/>Parameter added in Layer 17.</summary>
 			public int out_seq_no;
 			/// <summary>The content of message itself</summary>
 			public DecryptedMessageBase message;
@@ -348,7 +348,7 @@ namespace TL
 			public Flags flags;
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public long random_id;
-			/// <summary>Message lifetime. Has higher priority than <see cref="Layer8.DecryptedMessageActionSetMessageTTL"/>.<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
+			/// <summary>Message lifetime. Has higher priority than <see cref="Layer8.DecryptedMessageActionSetMessageTTL"/>.<br/>Parameter added in Layer 17.</summary>
 			public int ttl;
 			/// <summary>Message text</summary>
 			public string message;
@@ -412,7 +412,7 @@ namespace TL
 			public int thumb_h;
 			/// <summary>Duration of video in seconds</summary>
 			public int duration;
-			/// <summary>MIME-type of the video file<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
+			/// <summary>MIME-type of the video file<br/>Parameter added in Layer 17.</summary>
 			public string mime_type;
 			/// <summary>Image width</summary>
 			public int w;
@@ -486,7 +486,7 @@ namespace TL
 			public Flags flags;
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public long random_id;
-			/// <summary>Message lifetime. Has higher priority than <see cref="Layer8.DecryptedMessageActionSetMessageTTL"/>.<br/>Parameter added in <a href="https://corefork.telegram.org/api/layers#layer-17">Layer 17</a>.</summary>
+			/// <summary>Message lifetime. Has higher priority than <see cref="Layer8.DecryptedMessageActionSetMessageTTL"/>.<br/>Parameter added in Layer 17.</summary>
 			public int ttl;
 			/// <summary>Message text</summary>
 			public string message;
