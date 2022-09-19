@@ -115,7 +115,7 @@ namespace WTelegram
 				Path.GetDirectoryName(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar)))
 				?? AppDomain.CurrentDomain.BaseDirectory, "WTelegram.session"),
 #if DEBUG
-			"server_address" => "149.154.167.40:443",	// Test DC 2
+			"server_address" => "149.154.167.40:443",   // Test DC 2
 #else
 			"server_address" => "149.154.167.50:443",	// DC 2
 #endif
@@ -176,7 +176,7 @@ namespace WTelegram
 			}
 			catch { }
 			_cts?.Cancel();
-			_sendSemaphore = new(0);	// initially taken, first released during DoConnectAsync
+			_sendSemaphore = new(0);    // initially taken, first released during DoConnectAsync
 			try
 			{
 				_reactorTask?.Wait(1000);
@@ -394,7 +394,7 @@ namespace WTelegram
 				var msgId = reader.ReadInt64();         // int64 message_id
 				var seqno = reader.ReadInt32();         // int32 msg_seqno
 				var length = reader.ReadInt32();        // int32 message_data_length
-				
+
 				if (length < 0 || length % 4 != 0) throw new ApplicationException($"Invalid message_data_length: {length}");
 				if (decrypted_data.Length - 32 - length is < 12 or > 1024) throw new ApplicationException($"Invalid message padding length: {decrypted_data.Length - 32}-{length}");
 				if (sessionId != _dcSession.Id) throw new ApplicationException($"Unexpected session ID: {sessionId} != {_dcSession.Id}");
@@ -943,6 +943,7 @@ namespace WTelegram
 				if (sentCode.type is Auth_SentCodeTypeSetUpEmailRequired setupEmail)
 				{
 					Helpers.Log(3, "A login email is required");
+					RaiseUpdate(sentCode);
 					var email = _config("email");
 					if (string.IsNullOrEmpty(email))
 						sentCode = await this.Auth_ResendCode(phone_number, sentCode.phone_code_hash);
@@ -1104,11 +1105,11 @@ namespace WTelegram
 				if (_dcSession.AuthKeyID == 0) // send unencrypted message
 				{
 					if (_bareRpc == null) throw new ApplicationException($"Shouldn't send a {msg.GetType().Name} unencrypted");
-					writer.Write(0L);						// int64 auth_key_id = 0 (Unencrypted)
-					writer.Write(msgId);					// int64 message_id
-					writer.Write(0);						// int32 message_data_length (to be patched)
+					writer.Write(0L);                       // int64 auth_key_id = 0 (Unencrypted)
+					writer.Write(msgId);                    // int64 message_id
+					writer.Write(0);                        // int32 message_data_length (to be patched)
 					Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_')}...");
-					writer.WriteTLObject(msg);				// bytes message_data
+					writer.WriteTLObject(msg);              // bytes message_data
 					BinaryPrimitives.WriteInt32LittleEndian(memStream.GetBuffer().AsSpan(20), (int)memStream.Length - 24);    // patch message_data_length
 				}
 				else
@@ -1116,19 +1117,19 @@ namespace WTelegram
 					using var clearStream = new MemoryStream(1024);
 					using var clearWriter = new BinaryWriter(clearStream, Encoding.UTF8);
 					clearWriter.Write(_dcSession.AuthKey, 88, 32);
-					clearWriter.Write(_dcSession.Salt);		// int64 salt
-					clearWriter.Write(_dcSession.Id);		// int64 session_id
-					clearWriter.Write(msgId);				// int64 message_id
-					clearWriter.Write(seqno);				// int32 msg_seqno
-					clearWriter.Write(0);					// int32 message_data_length (to be patched)
+					clearWriter.Write(_dcSession.Salt);     // int64 salt
+					clearWriter.Write(_dcSession.Id);       // int64 session_id
+					clearWriter.Write(msgId);               // int64 message_id
+					clearWriter.Write(seqno);               // int32 msg_seqno
+					clearWriter.Write(0);                   // int32 message_data_length (to be patched)
 					if ((seqno & 1) != 0)
 						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_'),-40} #{(short)msgId.GetHashCode():X4}");
 					else
 						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_'),-40} {MsgIdToStamp(msgId):u} (svc)");
-					clearWriter.WriteTLObject(msg);			// bytes message_data
+					clearWriter.WriteTLObject(msg);         // bytes message_data
 					int clearLength = (int)clearStream.Length - 32;  // length before padding (= 32 + message_data_length)
 					int padding = (0x7FFFFFF0 - clearLength) % 16;
-					padding += _random.Next(1, 64) * 16;		// MTProto 2.0 padding must be between 12..1024 with total length divisible by 16
+					padding += _random.Next(1, 64) * 16;        // MTProto 2.0 padding must be between 12..1024 with total length divisible by 16
 					clearStream.SetLength(32 + clearLength + padding);
 					byte[] clearBuffer = clearStream.GetBuffer();
 					BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(60), clearLength - 32);    // patch message_data_length
@@ -1137,9 +1138,9 @@ namespace WTelegram
 					const int msgKeyOffset = 8; // msg_key = middle 128-bits of SHA256(authkey_part+plaintext+padding)
 					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(32, clearLength + padding), true, _dcSession.AuthKey, msgKeyLarge, msgKeyOffset, _sha256);
 
-					writer.Write(_dcSession.AuthKeyID);				// int64 auth_key_id
-					writer.Write(msgKeyLarge, msgKeyOffset, 16);	// int128 msg_key
-					writer.Write(encrypted_data);					// bytes encrypted_data
+					writer.Write(_dcSession.AuthKeyID);             // int64 auth_key_id
+					writer.Write(msgKeyLarge, msgKeyOffset, 16);    // int128 msg_key
+					writer.Write(encrypted_data);                   // bytes encrypted_data
 				}
 				if (_paddedMode) // Padded intermediate mode => append random padding
 				{

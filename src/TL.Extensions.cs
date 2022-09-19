@@ -41,8 +41,9 @@ namespace TL
 		/// <summary>Converts a <a href="https://core.telegram.org/bots/api/#markdownv2-style">Markdown text</a> into the (plain text + entities) format used by Telegram messages</summary>
 		/// <param name="client">Client, used for getting access_hash for <c>tg://user?id=</c> URLs</param>
 		/// <param name="text">[in] The Markdown text<br/>[out] The same (plain) text, stripped of all Markdown notation</param>
+		/// <param name="premium">Generate premium entities if any</param>
 		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="WTelegram.Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="WTelegram.Client.SendMediaAsync">SendMediaAsync</see></returns>
-		public static MessageEntity[] MarkdownToEntities(this WTelegram.Client client, ref string text)
+		public static MessageEntity[] MarkdownToEntities(this WTelegram.Client client, ref string text, bool premium = false)
 		{
 			var entities = new List<MessageEntity>();
 			var sb = new StringBuilder(text);
@@ -109,8 +110,11 @@ namespace TL
 									else if (c == ')') break;
 								}
 								textUrl.url = sb.ToString(offset + 2, offset2 - offset - 3);
-								if (textUrl.url.StartsWith("tg://user?id=") && long.TryParse(textUrl.url[13..], out var user_id) && client.GetAccessHashFor<User>(user_id) is long hash)
-									entities[lastIndex] = new InputMessageEntityMentionName { offset = textUrl.offset, length = textUrl.length, user_id = new InputUser(user_id, hash) };
+								if (textUrl.url.StartsWith("tg://user?id=") && long.TryParse(textUrl.url[13..], out var id) && client.GetAccessHashFor<User>(id) is long hash)
+									entities[lastIndex] = new InputMessageEntityMentionName { offset = textUrl.offset, length = textUrl.length, user_id = new InputUser(id, hash) };
+								else if (textUrl.url.StartsWith("emoji?id=") && long.TryParse(textUrl.url[9..], out id))
+									if (premium) entities[lastIndex] = new MessageEntityCustomEmoji { offset = textUrl.offset, length = textUrl.length, document_id = id };
+									else entities.RemoveAt(lastIndex);
 								sb.Remove(offset, offset2 - offset);
 								break;
 							}
@@ -137,8 +141,9 @@ namespace TL
 		/// <param name="client">Client, used only for getting current user ID in case of <c>InputMessageEntityMentionName+InputUserSelf</c></param>
 		/// <param name="message">The plain text, typically obtained from <see cref="TL.Message.message"/></param>
 		/// <param name="entities">The array of formatting entities, typically obtained from <see cref="TL.Message.entities"/></param>
+		/// <param name="premium">Convert premium entities (might lead to non-standard markdown)</param>
 		/// <returns>The message text with MarkdownV2 formattings</returns>
-		public static string EntitiesToMarkdown(this WTelegram.Client client, string message, MessageEntity[] entities)
+		public static string EntitiesToMarkdown(this WTelegram.Client client, string message, MessageEntity[] entities, bool premium = false)
 		{
 			if (entities == null || entities.Length == 0) return Escape(message);
 			var closings = new List<(int offset, string md)>();
@@ -155,7 +160,7 @@ namespace TL
 					closings.RemoveAt(0);
 				}
 				if (i == sb.Length) break;
-				while (offset == nextEntity?.offset)
+				for (; offset == nextEntity?.offset; nextEntity = ++entityIndex < entities.Length ? entities[entityIndex] : null)
 				{
 					if (entityToMD.TryGetValue(nextEntity.GetType(), out var md))
 					{
@@ -168,6 +173,9 @@ namespace TL
 								closing.md = $"](tg://user?id={memn.user_id})";
 							else if (nextEntity is InputMessageEntityMentionName imemn)
 								closing.md = $"](tg://user?id={imemn.user_id.UserId ?? client.UserId})";
+							else if (nextEntity is MessageEntityCustomEmoji mecu)
+								if (premium) closing.md = $"](emoji?id={mecu.document_id})";
+								else continue;
 						}
 						else if (nextEntity is MessageEntityPre mep)
 							md = $"```{mep.language}\n";
@@ -176,7 +184,6 @@ namespace TL
 						if (i > 0 && md[0] == '_' && sb[i - 1] == '_') md = '\r' + md;
 						sb.Insert(i, md); i += md.Length;
 					}
-					nextEntity = ++entityIndex < entities.Length ? entities[entityIndex] : null;
 				}
 				switch (sb[i])
 				{
@@ -201,6 +208,7 @@ namespace TL
 			[typeof(MessageEntityUnderline)] = "__",
 			[typeof(MessageEntityStrike)] = "~",
 			[typeof(MessageEntitySpoiler)] = "||",
+			[typeof(MessageEntityCustomEmoji)] = "[",
 		};
 
 		/// <summary>Insert backslashes in front of Markdown reserved characters</summary>
@@ -229,8 +237,9 @@ namespace TL
 		/// <summary>Converts an <a href="https://core.telegram.org/bots/api/#html-style">HTML-formatted text</a> into the (plain text + entities) format used by Telegram messages</summary>
 		/// <param name="client">Client, used for getting access_hash for <c>tg://user?id=</c> URLs</param>
 		/// <param name="text">[in] The HTML-formatted text<br/>[out] The same (plain) text, stripped of all HTML tags</param>
+		/// <param name="premium">Generate premium entities if any</param>
 		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="WTelegram.Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="WTelegram.Client.SendMediaAsync">SendMediaAsync</see></returns>
-		public static MessageEntity[] HtmlToEntities(this WTelegram.Client client, ref string text)
+		public static MessageEntity[] HtmlToEntities(this WTelegram.Client client, ref string text, bool premium = false)
 		{
 			var entities = new List<MessageEntity>();
 			var sb = new StringBuilder(text);
@@ -271,6 +280,7 @@ namespace TL
 						case "tg-spoiler": ProcessEntity<MessageEntitySpoiler>(); break;
 						case "code": ProcessEntity<MessageEntityCode>(); break;
 						case "pre": ProcessEntity<MessageEntityPre>(); break;
+						case "tg-emoji" when closing: ProcessEntity<MessageEntityCustomEmoji>(); break;
 						default:
 							if (closing)
 							{
@@ -294,6 +304,8 @@ namespace TL
 								if (entities.LastOrDefault(e => e.length == -1) is MessageEntityPre prevEntity)
 									prevEntity.language = tag[21..^1];
 							}
+							else if (premium && tag.StartsWith("tg-emoji id=\""))
+								entities.Add(new MessageEntityCustomEmoji { offset = offset, length = -1, document_id = long.Parse(tag[13..^1]) });
 							break;
 					}
 
@@ -316,8 +328,9 @@ namespace TL
 		/// <param name="client">Client, used only for getting current user ID in case of <c>InputMessageEntityMentionName+InputUserSelf</c></param>
 		/// <param name="message">The plain text, typically obtained from <see cref="TL.Message.message"/></param>
 		/// <param name="entities">The array of formatting entities, typically obtained from <see cref="TL.Message.entities"/></param>
+		/// <param name="premium">Convert premium entities</param>
 		/// <returns>The message text with HTML formatting tags</returns>
-		public static string EntitiesToHtml(this WTelegram.Client client, string message, MessageEntity[] entities)
+		public static string EntitiesToHtml(this WTelegram.Client client, string message, MessageEntity[] entities, bool premium = false)
 		{
 			if (entities == null || entities.Length == 0) return Escape(message);
 			var closings = new List<(int offset, string tag)>();
@@ -333,7 +346,7 @@ namespace TL
 					closings.RemoveAt(0);
 				}
 				if (i == sb.Length) break;
-				while (offset == nextEntity?.offset)
+				for (; offset == nextEntity?.offset; nextEntity = ++entityIndex < entities.Length ? entities[entityIndex] : null)
 				{
 					if (entityToTag.TryGetValue(nextEntity.GetType(), out var tag))
 					{
@@ -347,6 +360,9 @@ namespace TL
 							else if (nextEntity is InputMessageEntityMentionName imemn)
 								tag = $"<a href=\"tg://user?id={imemn.user_id.UserId ?? client.UserId}\">";
 						}
+						else if (nextEntity is MessageEntityCustomEmoji mecu)
+							if (premium) tag = $"<tg-emoji id=\"{mecu.document_id}\">";
+							else continue;
 						else if (nextEntity is MessageEntityPre mep && !string.IsNullOrEmpty(mep.language))
 						{
 							closing.Item2 = "</code></pre>";
@@ -358,7 +374,6 @@ namespace TL
 						closings.Insert(index, closing);
 						sb.Insert(i, tag); i += tag.Length;
 					}
-					nextEntity = ++entityIndex < entities.Length ? entities[entityIndex] : null;
 				}
 				switch (sb[i])
 				{
@@ -382,6 +397,7 @@ namespace TL
 			[typeof(MessageEntityUnderline)] = "u",
 			[typeof(MessageEntityStrike)] = "s",
 			[typeof(MessageEntitySpoiler)] = "tg-spoiler",
+			[typeof(MessageEntityCustomEmoji)] = "tg-emoji",
 		};
 
 		/// <summary>Replace special HTML characters with their &amp;xx; equivalent</summary>
