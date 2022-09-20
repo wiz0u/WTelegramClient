@@ -47,8 +47,10 @@ namespace WTelegram
 		public bool Disconnected => _tcpClient != null && !(_tcpClient.Client?.Connected ?? false);
 		/// <summary>ID of the current logged-in user or 0</summary>
 		public long UserId => _session.UserId;
+		/// <summary>Info about the current logged-in user</summary>
+		public User User { get; private set; }
 
-		private readonly Func<string, string> _config;
+		private Func<string, string> _config;
 		private readonly Session _session;
 		private string _apiHash;
 		private Session.DCSession _dcSession;
@@ -75,6 +77,16 @@ namespace WTelegram
 		private AesCtr _sendCtr, _recvCtr;
 #endif
 		private bool _paddedMode;
+
+		public Client(int apiID, string apiHash, string sessionPathname = null)
+			: this(what => what switch
+			{
+				"api_id" => apiID.ToString(),
+				"api_hash" => apiHash,
+				"session_pathname" => sessionPathname,
+				_ => null
+			})
+		{ }
 
 		/// <summary>Welcome to WTelegramClient! 🙂</summary>
 		/// <param name="configProvider">Config callback, is queried for: <b>api_id</b>, <b>api_hash</b>, <b>session_pathname</b></param>
@@ -202,7 +214,11 @@ namespace WTelegram
 					}
 			}
 			if (resetUser)
+			{
+				_loginCfg = default;
 				_session.UserId = 0;
+				User = null;
+			}
 		}
 
 		private Session.DCSession GetOrCreateDCSession(int dcId, DcOption.Flags flags)
@@ -858,14 +874,77 @@ namespace WTelegram
 			}
 		}
 
+		/// <summary>Login as a user with given phone number (or resume previous session)<br/>Call this method again to provide additional requested login information</summary>
+		/// <param name="loginInfo">First call should be with phone number<br/>Further calls should be with the requested configuration value</param>
+		/// <returns>Configuration item requested to continue login, or <see langword="null"/> when login is successful<br/>
+		/// Possible values: <b>verification_code</b>, <b>name</b> (signup), <b>password</b> (2FA)</returns>
+		/// <exception cref="ApplicationException"/><exception cref="RpcException"/>
+		public async Task<string> Login(string loginInfo)
+		{
+			if (_loginCfg.request == default) RunLoginAsync(loginInfo);
+			else
+			{
+				if (await _loginCfg.request.Task == null) return null;
+				loginInfo ??= AskConfig(await _loginCfg.request.Task);
+				_loginCfg.request = new();
+				_loginCfg.response.SetResult(loginInfo);
+			}
+			return await _loginCfg.request.Task;
+		}
+		private (TaskCompletionSource<string> request, TaskCompletionSource<string> response) _loginCfg;
+		private async void RunLoginAsync(string phone)
+		{
+			_loginCfg.request = new();
+			var prevConfig = _config;
+			_config = what =>
+			{
+				if (prevConfig(what) is string value) return value;
+				switch (what)
+				{
+					case "phone_number": return phone;
+					case "last_name": break;
+					case "first_name": what = "name"; goto case "email";
+					case "email": case "email_verification_code":
+					case "password": case "verification_code": _loginCfg.response = new(); _loginCfg.request.SetResult(what); break;
+					default: return null;
+				};
+				value = _loginCfg.response.Task.Result;
+				if (what == "name" && value != null)
+				{
+					var lf = value.IndexOf('\n');
+					if (lf < 0) lf = value.IndexOf(' ');
+					_loginCfg.response = new();
+					_loginCfg.response.SetResult(lf < 0 ? "" : value[(lf + 1)..]);
+					value = lf < 0 ? value : value[0..lf];
+					return value;
+				}
+				return value;
+			};
+			try
+			{
+				// Login logic is executed on TaskScheduler while request TCS are still received on current SynchronizationContext
+				await Task.Run(() => LoginUserIfNeeded());
+				_loginCfg.request.SetResult(null);
+			}
+			catch (Exception ex)
+			{
+				_loginCfg.request.SetException(ex);
+			}
+			finally
+			{
+				_config = prevConfig;
+			}
+		}
+
 		/// <summary>Login as a bot (if not already logged-in).</summary>
-		/// <remarks>Config callback is queried for: <b>bot_token</b>
+		/// <param name="bot_token">bot token, or <see langword="null"/> if token is provided by Config callback</param>
+		/// <remarks>Config callback may be queried for: <b>bot_token</b>
 		/// <br/>Bots can only call API methods marked with [bots: ✓] in their documentation. </remarks>
 		/// <returns>Detail about the logged-in bot</returns>
-		public async Task<User> LoginBotIfNeeded()
+		public async Task<User> LoginBotIfNeeded(string bot_token = null)
 		{
 			await ConnectAsync();
-			string botToken = Config("bot_token");
+			string botToken = bot_token ?? Config("bot_token");
 			if (_session.UserId != 0) // a user is already logged-in
 			{
 				try
@@ -875,7 +954,7 @@ namespace WTelegram
 					if (self.id == long.Parse(botToken.Split(':')[0]))
 					{
 						_session.UserId = _dcSession.UserId = self.id;
-						return self;
+						return User = self;
 					}
 					Helpers.Log(3, $"Current logged user {self.id} mismatched bot_token. Logging out and in...");
 				}
@@ -885,6 +964,7 @@ namespace WTelegram
 				}
 				await this.Auth_LogOut();
 				_session.UserId = _dcSession.UserId = 0;
+				User = null;
 			}
 			var authorization = await this.Auth_ImportBotAuthorization(0, _session.ApiId, _apiHash ??= Config("api_hash"), botToken);
 			return LoginAlreadyDone(authorization);
@@ -912,7 +992,7 @@ namespace WTelegram
 						self.phone == string.Concat((phone_number = Config("phone_number")).Where(char.IsDigit)))
 					{
 						_session.UserId = _dcSession.UserId = self.id;
-						return self;
+						return User = self;
 					}
 					var mismatch = $"Current logged user {self.id} mismatched user_id or phone_number";
 					Helpers.Log(3, mismatch);
@@ -925,6 +1005,7 @@ namespace WTelegram
 				Helpers.Log(3, $"Proceeding to logout and login...");
 				await this.Auth_LogOut();
 				_session.UserId = _dcSession.UserId = 0;
+				User = null;
 			}
 			phone_number ??= Config("phone_number");
 			Auth_SentCode sentCode;
@@ -1052,7 +1133,7 @@ namespace WTelegram
 				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
 			_session.UserId = _dcSession.UserId = user.id;
 			lock (_session) _session.Save();
-			return user;
+			return User = user;
 		}
 
 		private MsgsAck CheckMsgsToAck()
@@ -1233,6 +1314,7 @@ namespace WTelegram
 					else if (code == 500 && message == "AUTH_RESTART")
 					{
 						_session.UserId = 0; // force a full login authorization flow, next time
+						User = null;
 						lock (_session) _session.Save();
 					}
 					throw new RpcException(code, message, x);
