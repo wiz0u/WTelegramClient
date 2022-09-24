@@ -10033,7 +10033,7 @@ namespace TL
 	}
 
 	/// <summary>Peer, or all peers in a certain folder		<para>Derived classes: <see cref="InputDialogPeer"/>, <see cref="InputDialogPeerFolder"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputDialogPeer"/></para></summary>
-	public abstract class InputDialogPeerBase : IObject { }
+	public abstract partial class InputDialogPeerBase : IObject { }
 	/// <summary>A peer		<para>See <a href="https://corefork.telegram.org/constructor/inputDialogPeer"/></para></summary>
 	[TLDef(0xFCAAFEB7)]
 	public class InputDialogPeer : InputDialogPeerBase

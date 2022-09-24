@@ -574,25 +574,26 @@ namespace WTelegram
 			}
 		}
 
+		private const string OnlyChatChannel = "This method works on Chat & Channel only";
 		public Task<UpdatesBase> AddChatUser(InputPeer peer, InputUserBase user, int fwd_limit = int.MaxValue) => peer switch
 		{
 			InputPeerChat chat => this.Messages_AddChatUser(chat.chat_id, user, fwd_limit),
 			InputPeerChannel channel => this.Channels_InviteToChannel(channel, new[] { user }),
-			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
 		public Task<UpdatesBase> DeleteChatUser(InputPeer peer, InputUser user) => peer switch
 		{
 			InputPeerChat chat => this.Messages_DeleteChatUser(chat.chat_id, user, true),
 			InputPeerChannel channel => this.Channels_EditBanned(channel, user, new ChatBannedRights { flags = ChatBannedRights.Flags.view_messages }),
-			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
 		public Task<UpdatesBase> LeaveChat(InputPeer peer) => peer switch
 		{
 			InputPeerChat chat => this.Messages_DeleteChatUser(chat.chat_id, InputUser.Self, true),
 			InputPeerChannel channel => this.Channels_LeaveChannel(channel),
-			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
 		public async Task<UpdatesBase> EditChatAdmin(InputPeer peer, InputUserBase user, bool is_admin)
@@ -607,7 +608,7 @@ namespace WTelegram
 					return await this.Channels_EditAdmin(channel, user,
 						new ChatAdminRights { flags = is_admin ? (ChatAdminRights.Flags)0x8BF : 0 }, null);
 				default:
-					throw new ArgumentException("This method works on Chat & Channel only");
+					throw new ArgumentException(OnlyChatChannel);
 			}
 		}
 
@@ -615,21 +616,21 @@ namespace WTelegram
 		{
 			InputPeerChat chat => this.Messages_EditChatPhoto(chat.chat_id, photo),
 			InputPeerChannel channel => this.Channels_EditPhoto(channel, photo),
-			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
 		public Task<UpdatesBase> EditChatTitle(InputPeer peer, string title) => peer switch
 		{
 			InputPeerChat chat => this.Messages_EditChatTitle(chat.chat_id, title),
 			InputPeerChannel channel => this.Channels_EditTitle(channel, title),
-			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
 		public Task<Messages_ChatFull> GetFullChat(InputPeer peer) => peer switch
 		{
 			InputPeerChat chat => this.Messages_GetFullChat(chat.chat_id),
 			InputPeerChannel channel => this.Channels_GetFullChannel(channel),
-			_ => throw new ArgumentException("This method works on Chat & Channel only"),
+			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
 		public async Task<UpdatesBase> DeleteChat(InputPeer peer)
@@ -643,25 +644,15 @@ namespace WTelegram
 				case InputPeerChannel channel:
 					return await this.Channels_DeleteChannel(channel);
 				default:
-					throw new ArgumentException("This method works on Chat & Channel only");
+					throw new ArgumentException(OnlyChatChannel);
 			}
 		}
 
-		public async Task<Messages_MessagesBase> GetMessages(InputPeer peer, params InputMessage[] id)
-		{
-			if (peer is InputPeerChannel channel)
-				return await this.Channels_GetMessages(channel, id);
-			else
-				return await this.Messages_GetMessages(id);
-		}
+		public Task<Messages_MessagesBase> GetMessages(InputPeer peer, params InputMessage[] id)
+			=> peer is InputPeerChannel channel ? this.Channels_GetMessages(channel, id) : this.Messages_GetMessages(id);
 
-		public async Task<Messages_AffectedMessages> DeleteMessages(InputPeer peer, params int[] id)
-		{
-			if (peer is InputPeerChannel channel)
-				return await this.Channels_DeleteMessages(channel, id);
-			else
-				return await this.Messages_DeleteMessages(id);
-		}
+		public Task<Messages_AffectedMessages> DeleteMessages(InputPeer peer, params int[] id)
+			=> peer is InputPeerChannel channel ? this.Channels_DeleteMessages(channel, id) : this.Messages_DeleteMessages(id);
 		#endregion
 	}
 }

@@ -524,6 +524,11 @@ namespace TL
 		public static implicit operator InputMessage(int id) => new InputMessageID() { id = id };
 	}
 
+	partial class InputDialogPeerBase
+	{
+		public static implicit operator InputDialogPeerBase(InputPeer peer) => new InputDialogPeer() { peer = peer };
+	}
+
 	partial class SecureFile
 	{
 		public static implicit operator InputSecureFile(SecureFile file) => new() { id = file.id, access_hash = file.access_hash };
