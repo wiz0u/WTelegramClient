@@ -417,17 +417,34 @@ await client.Account_UpdatePasswordSettings(password, new Account_PasswordInputS
 
 <a name="reaction"></a>
 <a name="pinned"></a>
-### Send a message reaction on pinned messages
-This code fetches the available reactions in a given chat, and sends the first reaction emoji (usually 👍) on the last 2 pinned messages:
+<a name="custom_emoji"></a>
+### Fun with custom emojies and reactions on pinned messages
 ```csharp
+// • Fetch all available standard emoji reactions
+var all_emoji = await client.Messages_GetAvailableReactions();
+
 var chats = await client.Messages_GetAllChats();
 var chat = chats.chats[1234567890]; // the chat we want
+
+// • Check reactions available in this chat
 var full = await client.GetFullChat(chat);
-var reaction = full.full_chat.AvailableReactions[0]; // choose the first available reaction emoji
+Reaction reaction = full.full_chat.AvailableReactions switch
+{
+	ChatReactionsSome some => some.reactions[0],// only some reactions are allowed => pick the first
+	ChatReactionsAll all =>						// all reactions are allowed in this chat
+		all.flags.HasFlag(ChatReactionsAll.Flags.allow_custom) && client.User.flags.HasFlag(TL.User.Flags.premium)
+		? new ReactionCustomEmoji { document_id = 5190875290439525089 }		// we can use custom emoji reactions here
+		: new ReactionEmoji { emoticon = all_emoji.reactions[0].reaction },	// else, pick the first standard emoji reaction
+	_ => null									// reactions are not allowed in this chat
+};
+if (reaction == null) return;
+
+// • Send the selected reaction on the last 2 pinned messages
 var messages = await client.Messages_Search<InputMessagesFilterPinned>(chat, limit: 2);
 foreach (var msg in messages.Messages)
-    await client.Messages_SendReaction(chat, msg.ID, reaction);
+	await client.Messages_SendReaction(chat, msg.ID, reaction: new[] { reaction });
 ```
+*Note: you can find custom emojies document ID via API methods like [Messages_GetFeaturedEmojiStickers](https://corefork.telegram.org/method/messages.getFeaturedEmojiStickers). Access hash is not required*
 
 <a name="database"></a><a name="sessionStore"></a><a name="customStore"></a>
 ### Store session data to database or elsewhere, instead of files

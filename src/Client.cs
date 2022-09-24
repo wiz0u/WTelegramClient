@@ -428,8 +428,8 @@ namespace WTelegram
 				{
 					Helpers.Log(2, $"{_dcSession.DcID}>Server salt has changed: {_dcSession.Salt:X} -> {serverSalt:X}");
 					_dcSession.Salt = serverSalt;
-					_saltChangeCounter += 20; // counter is decreased by KeepAlive every minute (we have margin of 10)
-					if (_saltChangeCounter >= 30)
+					_saltChangeCounter += 1200; // counter is decreased by KeepAlive (we have margin of 10 min)
+					if (_saltChangeCounter >= 1800)
 						throw new ApplicationException("Server salt changed too often! Security issue?");
 				}
 				if ((seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msgId);
@@ -862,7 +862,7 @@ namespace WTelegram
 			while (!ct.IsCancellationRequested)
 			{
 				await Task.Delay(Math.Abs(PingInterval) * 1000, ct);
-				if (_saltChangeCounter > 0) --_saltChangeCounter;
+				if (_saltChangeCounter > 0) _saltChangeCounter -= Math.Abs(PingInterval);
 				if (PingInterval <= 0)
 					await this.Ping(ping_id++);
 				else // see https://core.telegram.org/api/optimisation#grouping-updates
