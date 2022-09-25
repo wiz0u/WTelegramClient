@@ -727,6 +727,7 @@ namespace TL
 		[IfFlag(19)] public string bot_inline_placeholder;
 		/// <summary>Language code of the user</summary>
 		[IfFlag(22)] public string lang_code;
+		/// <summary><a href="https://corefork.telegram.org/api/emoji-status">Emoji status</a></summary>
 		[IfFlag(30)] public EmojiStatus emoji_status;
 
 		[Flags] public enum Flags : uint
@@ -3073,7 +3074,7 @@ namespace TL
 	[TLDef(0x1BB00451)]
 	public class InputMessagesFilterPinned : MessagesFilter { }
 
-	/// <summary>Object contains info on events occurred.		<para>Derived classes: <see cref="UpdateNewMessage"/>, <see cref="UpdateMessageID"/>, <see cref="UpdateDeleteMessages"/>, <see cref="UpdateUserTyping"/>, <see cref="UpdateChatUserTyping"/>, <see cref="UpdateChatParticipants"/>, <see cref="UpdateUserStatus"/>, <see cref="UpdateUserName"/>, <see cref="UpdateUserPhoto"/>, <see cref="UpdateNewEncryptedMessage"/>, <see cref="UpdateEncryptedChatTyping"/>, <see cref="UpdateEncryption"/>, <see cref="UpdateEncryptedMessagesRead"/>, <see cref="UpdateChatParticipantAdd"/>, <see cref="UpdateChatParticipantDelete"/>, <see cref="UpdateDcOptions"/>, <see cref="UpdateNotifySettings"/>, <see cref="UpdateServiceNotification"/>, <see cref="UpdatePrivacy"/>, <see cref="UpdateUserPhone"/>, <see cref="UpdateReadHistoryInbox"/>, <see cref="UpdateReadHistoryOutbox"/>, <see cref="UpdateWebPage"/>, <see cref="UpdateReadMessagesContents"/>, <see cref="UpdateChannelTooLong"/>, <see cref="UpdateChannel"/>, <see cref="UpdateNewChannelMessage"/>, <see cref="UpdateReadChannelInbox"/>, <see cref="UpdateDeleteChannelMessages"/>, <see cref="UpdateChannelMessageViews"/>, <see cref="UpdateChatParticipantAdmin"/>, <see cref="UpdateNewStickerSet"/>, <see cref="UpdateStickerSetsOrder"/>, <see cref="UpdateStickerSets"/>, <see cref="UpdateSavedGifs"/>, <see cref="UpdateBotInlineQuery"/>, <see cref="UpdateBotInlineSend"/>, <see cref="UpdateEditChannelMessage"/>, <see cref="UpdateBotCallbackQuery"/>, <see cref="UpdateEditMessage"/>, <see cref="UpdateInlineBotCallbackQuery"/>, <see cref="UpdateReadChannelOutbox"/>, <see cref="UpdateDraftMessage"/>, <see cref="UpdateReadFeaturedStickers"/>, <see cref="UpdateRecentStickers"/>, <see cref="UpdateConfig"/>, <see cref="UpdatePtsChanged"/>, <see cref="UpdateChannelWebPage"/>, <see cref="UpdateDialogPinned"/>, <see cref="UpdatePinnedDialogs"/>, <see cref="UpdateBotWebhookJSON"/>, <see cref="UpdateBotWebhookJSONQuery"/>, <see cref="UpdateBotShippingQuery"/>, <see cref="UpdateBotPrecheckoutQuery"/>, <see cref="UpdatePhoneCall"/>, <see cref="UpdateLangPackTooLong"/>, <see cref="UpdateLangPack"/>, <see cref="UpdateFavedStickers"/>, <see cref="UpdateChannelReadMessagesContents"/>, <see cref="UpdateContactsReset"/>, <see cref="UpdateChannelAvailableMessages"/>, <see cref="UpdateDialogUnreadMark"/>, <see cref="UpdateMessagePoll"/>, <see cref="UpdateChatDefaultBannedRights"/>, <see cref="UpdateFolderPeers"/>, <see cref="UpdatePeerSettings"/>, <see cref="UpdatePeerLocated"/>, <see cref="UpdateNewScheduledMessage"/>, <see cref="UpdateDeleteScheduledMessages"/>, <see cref="UpdateTheme"/>, <see cref="UpdateGeoLiveViewed"/>, <see cref="UpdateLoginToken"/>, <see cref="UpdateMessagePollVote"/>, <see cref="UpdateDialogFilter"/>, <see cref="UpdateDialogFilterOrder"/>, <see cref="UpdateDialogFilters"/>, <see cref="UpdatePhoneCallSignalingData"/>, <see cref="UpdateChannelMessageForwards"/>, <see cref="UpdateReadChannelDiscussionInbox"/>, <see cref="UpdateReadChannelDiscussionOutbox"/>, <see cref="UpdatePeerBlocked"/>, <see cref="UpdateChannelUserTyping"/>, <see cref="UpdatePinnedMessages"/>, <see cref="UpdatePinnedChannelMessages"/>, <see cref="UpdateChat"/>, <see cref="UpdateGroupCallParticipants"/>, <see cref="UpdateGroupCall"/>, <see cref="UpdatePeerHistoryTTL"/>, <see cref="UpdateChatParticipant"/>, <see cref="UpdateChannelParticipant"/>, <see cref="UpdateBotStopped"/>, <see cref="UpdateGroupCallConnection"/>, <see cref="UpdateBotCommands"/>, <see cref="UpdatePendingJoinRequests"/>, <see cref="UpdateBotChatInviteRequester"/>, <see cref="UpdateMessageReactions"/>, <see cref="UpdateAttachMenuBots"/>, <see cref="UpdateWebViewResultSent"/>, <see cref="UpdateBotMenuButton"/>, <see cref="UpdateSavedRingtones"/>, <see cref="UpdateTranscribedAudio"/>, <see cref="UpdateReadFeaturedEmojiStickers"/></para>		<para>See <a href="https://corefork.telegram.org/type/Update"/></para></summary>
+	/// <summary>Object contains info on events occurred.		<para>Derived classes: <see cref="UpdateNewMessage"/>, <see cref="UpdateMessageID"/>, <see cref="UpdateDeleteMessages"/>, <see cref="UpdateUserTyping"/>, <see cref="UpdateChatUserTyping"/>, <see cref="UpdateChatParticipants"/>, <see cref="UpdateUserStatus"/>, <see cref="UpdateUserName"/>, <see cref="UpdateUserPhoto"/>, <see cref="UpdateNewEncryptedMessage"/>, <see cref="UpdateEncryptedChatTyping"/>, <see cref="UpdateEncryption"/>, <see cref="UpdateEncryptedMessagesRead"/>, <see cref="UpdateChatParticipantAdd"/>, <see cref="UpdateChatParticipantDelete"/>, <see cref="UpdateDcOptions"/>, <see cref="UpdateNotifySettings"/>, <see cref="UpdateServiceNotification"/>, <see cref="UpdatePrivacy"/>, <see cref="UpdateUserPhone"/>, <see cref="UpdateReadHistoryInbox"/>, <see cref="UpdateReadHistoryOutbox"/>, <see cref="UpdateWebPage"/>, <see cref="UpdateReadMessagesContents"/>, <see cref="UpdateChannelTooLong"/>, <see cref="UpdateChannel"/>, <see cref="UpdateNewChannelMessage"/>, <see cref="UpdateReadChannelInbox"/>, <see cref="UpdateDeleteChannelMessages"/>, <see cref="UpdateChannelMessageViews"/>, <see cref="UpdateChatParticipantAdmin"/>, <see cref="UpdateNewStickerSet"/>, <see cref="UpdateStickerSetsOrder"/>, <see cref="UpdateStickerSets"/>, <see cref="UpdateSavedGifs"/>, <see cref="UpdateBotInlineQuery"/>, <see cref="UpdateBotInlineSend"/>, <see cref="UpdateEditChannelMessage"/>, <see cref="UpdateBotCallbackQuery"/>, <see cref="UpdateEditMessage"/>, <see cref="UpdateInlineBotCallbackQuery"/>, <see cref="UpdateReadChannelOutbox"/>, <see cref="UpdateDraftMessage"/>, <see cref="UpdateReadFeaturedStickers"/>, <see cref="UpdateRecentStickers"/>, <see cref="UpdateConfig"/>, <see cref="UpdatePtsChanged"/>, <see cref="UpdateChannelWebPage"/>, <see cref="UpdateDialogPinned"/>, <see cref="UpdatePinnedDialogs"/>, <see cref="UpdateBotWebhookJSON"/>, <see cref="UpdateBotWebhookJSONQuery"/>, <see cref="UpdateBotShippingQuery"/>, <see cref="UpdateBotPrecheckoutQuery"/>, <see cref="UpdatePhoneCall"/>, <see cref="UpdateLangPackTooLong"/>, <see cref="UpdateLangPack"/>, <see cref="UpdateFavedStickers"/>, <see cref="UpdateChannelReadMessagesContents"/>, <see cref="UpdateContactsReset"/>, <see cref="UpdateChannelAvailableMessages"/>, <see cref="UpdateDialogUnreadMark"/>, <see cref="UpdateMessagePoll"/>, <see cref="UpdateChatDefaultBannedRights"/>, <see cref="UpdateFolderPeers"/>, <see cref="UpdatePeerSettings"/>, <see cref="UpdatePeerLocated"/>, <see cref="UpdateNewScheduledMessage"/>, <see cref="UpdateDeleteScheduledMessages"/>, <see cref="UpdateTheme"/>, <see cref="UpdateGeoLiveViewed"/>, <see cref="UpdateLoginToken"/>, <see cref="UpdateMessagePollVote"/>, <see cref="UpdateDialogFilter"/>, <see cref="UpdateDialogFilterOrder"/>, <see cref="UpdateDialogFilters"/>, <see cref="UpdatePhoneCallSignalingData"/>, <see cref="UpdateChannelMessageForwards"/>, <see cref="UpdateReadChannelDiscussionInbox"/>, <see cref="UpdateReadChannelDiscussionOutbox"/>, <see cref="UpdatePeerBlocked"/>, <see cref="UpdateChannelUserTyping"/>, <see cref="UpdatePinnedMessages"/>, <see cref="UpdatePinnedChannelMessages"/>, <see cref="UpdateChat"/>, <see cref="UpdateGroupCallParticipants"/>, <see cref="UpdateGroupCall"/>, <see cref="UpdatePeerHistoryTTL"/>, <see cref="UpdateChatParticipant"/>, <see cref="UpdateChannelParticipant"/>, <see cref="UpdateBotStopped"/>, <see cref="UpdateGroupCallConnection"/>, <see cref="UpdateBotCommands"/>, <see cref="UpdatePendingJoinRequests"/>, <see cref="UpdateBotChatInviteRequester"/>, <see cref="UpdateMessageReactions"/>, <see cref="UpdateAttachMenuBots"/>, <see cref="UpdateWebViewResultSent"/>, <see cref="UpdateBotMenuButton"/>, <see cref="UpdateSavedRingtones"/>, <see cref="UpdateTranscribedAudio"/>, <see cref="UpdateReadFeaturedEmojiStickers"/>, <see cref="UpdateUserEmojiStatus"/>, <see cref="UpdateRecentEmojiStatuses"/>, <see cref="UpdateRecentReactions"/>, <see cref="UpdateMoveStickerSetToTop"/></para>		<para>See <a href="https://corefork.telegram.org/type/Update"/></para></summary>
 	public abstract class Update : IObject { }
 	/// <summary>New message in a private chat or in a <a href="https://core.telegram.org/api/channel#basic-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateNewMessage"/></para></summary>
 	[TLDef(0x1F2B0AFD)]
@@ -3434,15 +3435,18 @@ namespace TL
 		/// <summary>New sticker order by sticker ID</summary>
 		public long[] order;
 	}
-	/// <summary>Installed stickersets have changed, the client should refetch them using <a href="https://core.telegram.org/method/messages.getAllStickers">messages.getAllStickers</a>		<para>See <a href="https://corefork.telegram.org/constructor/updateStickerSets"/></para></summary>
+	/// <summary>Installed stickersets have changed, the client should refetch them as <a href="https://corefork.telegram.org/api/stickers#installing-stickersets">described in the docs</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateStickerSets"/></para></summary>
 	[TLDef(0x31C24808)]
 	public class UpdateStickerSets : Update
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether mask stickersets have changed</summary>
 			masks = 0x1,
+			/// <summary>Whether the list of installed <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickersets</a> has changed</summary>
 			emojis = 0x2,
 		}
 	}
@@ -4252,23 +4256,26 @@ namespace TL
 	/// <summary>Some featured <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickers</a> were marked as read		<para>See <a href="https://corefork.telegram.org/constructor/updateReadFeaturedEmojiStickers"/></para></summary>
 	[TLDef(0xFB4C496C)]
 	public class UpdateReadFeaturedEmojiStickers : Update { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateUserEmojiStatus"/></para></summary>
+	/// <summary>The <a href="https://corefork.telegram.org/api/emoji-status">emoji status</a> of a certain user has changed		<para>See <a href="https://corefork.telegram.org/constructor/updateUserEmojiStatus"/></para></summary>
 	[TLDef(0x28373599)]
 	public class UpdateUserEmojiStatus : Update
 	{
+		/// <summary>User ID</summary>
 		public long user_id;
+		/// <summary>New <a href="https://corefork.telegram.org/api/emoji-status">emoji status</a></summary>
 		public EmojiStatus emoji_status;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateRecentEmojiStatuses"/></para></summary>
+	/// <summary>The list of recent <a href="https://corefork.telegram.org/api/emoji-status">emoji statuses</a> has changed		<para>See <a href="https://corefork.telegram.org/constructor/updateRecentEmojiStatuses"/></para></summary>
 	[TLDef(0x30F443DB)]
 	public class UpdateRecentEmojiStatuses : Update { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateRecentReactions"/></para></summary>
+	/// <summary>The list of recent <a href="https://corefork.telegram.org/api/reactions">message reactions</a> has changed		<para>See <a href="https://corefork.telegram.org/constructor/updateRecentReactions"/></para></summary>
 	[TLDef(0x6F7863F4)]
 	public class UpdateRecentReactions : Update { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateMoveStickerSetToTop"/></para></summary>
 	[TLDef(0x86FCCF85)]
 	public class UpdateMoveStickerSetToTop : Update
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		public long stickerset;
 
@@ -4804,6 +4811,7 @@ namespace TL
 		[IfFlag(2)] public int lang_pack_version;
 		/// <summary>Basic language pack version</summary>
 		[IfFlag(2)] public int base_lang_pack_version;
+		/// <summary>Default <a href="https://corefork.telegram.org/api/reactions">message reaction</a></summary>
 		[IfFlag(15)] public Reaction reactions_default;
 
 		[Flags] public enum Flags : uint
@@ -5880,6 +5888,7 @@ namespace TL
 		public byte[] secure_random;
 		/// <summary>The 2FA password will be automatically removed at this date, unless the user cancels the operation</summary>
 		[IfFlag(5)] public DateTime pending_reset_date;
+		/// <summary>A verified login email with the specified <a href="https://corefork.telegram.org/api/pattern">pattern</a> is configured</summary>
 		[IfFlag(6)] public string login_email_pattern;
 
 		[Flags] public enum Flags : uint
@@ -6074,7 +6083,7 @@ namespace TL
 		public DateTime expires;
 	}
 
-	/// <summary>Represents a stickerset		<para>Derived classes: <see cref="InputStickerSetID"/>, <see cref="InputStickerSetShortName"/>, <see cref="InputStickerSetAnimatedEmoji"/>, <see cref="InputStickerSetDice"/>, <see cref="InputStickerSetAnimatedEmojiAnimations"/>, <see cref="InputStickerSetPremiumGifts"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputStickerSet"/></para></summary>
+	/// <summary>Represents a stickerset		<para>Derived classes: <see cref="InputStickerSetID"/>, <see cref="InputStickerSetShortName"/>, <see cref="InputStickerSetAnimatedEmoji"/>, <see cref="InputStickerSetDice"/>, <see cref="InputStickerSetAnimatedEmojiAnimations"/>, <see cref="InputStickerSetPremiumGifts"/>, <see cref="InputStickerSetEmojiGenericAnimations"/>, <see cref="InputStickerSetEmojiDefaultStatuses"/></para>		<para>See <a href="https://corefork.telegram.org/type/InputStickerSet"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/inputStickerSetEmpty">inputStickerSetEmpty</a></remarks>
 	public abstract partial class InputStickerSet : IObject { }
 	/// <summary>Stickerset by ID		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetID"/></para></summary>
@@ -6109,10 +6118,10 @@ namespace TL
 	/// <summary>Stickers to show when receiving a gifted Telegram Premium subscription		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetPremiumGifts"/></para></summary>
 	[TLDef(0xC88B3B02)]
 	public class InputStickerSetPremiumGifts : InputStickerSet { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetEmojiGenericAnimations"/></para></summary>
+	/// <summary>Generic animation stickerset containing animations to play when <a href="https://corefork.telegram.org/api/reactions">reacting to messages using a normal emoji without a custom animation</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetEmojiGenericAnimations"/></para></summary>
 	[TLDef(0x04C4D4CE)]
 	public class InputStickerSetEmojiGenericAnimations : InputStickerSet { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetEmojiDefaultStatuses"/></para></summary>
+	/// <summary>Default <a href="https://corefork.telegram.org/api/emoji-status">custom emoji status</a> stickerset		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetEmojiDefaultStatuses"/></para></summary>
 	[TLDef(0x29D0F5EE)]
 	public class InputStickerSetEmojiDefaultStatuses : InputStickerSet { }
 
@@ -7611,7 +7620,7 @@ namespace TL
 		MissedCall = 0xD61AD6EE,
 	}
 
-	/// <summary>Type of the verification code that was sent		<para>Derived classes: <see cref="Auth_SentCodeTypeApp"/>, <see cref="Auth_SentCodeTypeSms"/>, <see cref="Auth_SentCodeTypeCall"/>, <see cref="Auth_SentCodeTypeFlashCall"/>, <see cref="Auth_SentCodeTypeMissedCall"/></para>		<para>See <a href="https://corefork.telegram.org/type/auth.SentCodeType"/></para></summary>
+	/// <summary>Type of the verification code that was sent		<para>Derived classes: <see cref="Auth_SentCodeTypeApp"/>, <see cref="Auth_SentCodeTypeSms"/>, <see cref="Auth_SentCodeTypeCall"/>, <see cref="Auth_SentCodeTypeFlashCall"/>, <see cref="Auth_SentCodeTypeMissedCall"/>, <see cref="Auth_SentCodeTypeEmailCode"/>, <see cref="Auth_SentCodeTypeSetUpEmailRequired"/></para>		<para>See <a href="https://corefork.telegram.org/type/auth.SentCodeType"/></para></summary>
 	public abstract class Auth_SentCodeType : IObject { }
 	/// <summary>The code was sent through the telegram app		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeApp"/></para></summary>
 	[TLDef(0x3DBB5986)]
@@ -7648,31 +7657,41 @@ namespace TL
 		/// <summary>Prefix of the phone number from which the call will be made</summary>
 		public string prefix;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeEmailCode"/></para></summary>
+	/// <summary>The code was sent via email		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeEmailCode"/></para></summary>
 	[TLDef(0x5A159841)]
 	public class Auth_SentCodeTypeEmailCode : Auth_SentCodeType
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary><a href="https://corefork.telegram.org/api/pattern">Pattern</a> of the email</summary>
 		public string email_pattern;
+		/// <summary>Length of the sent verification code</summary>
 		public int length;
+		/// <summary>If set, contains an absolute UNIX timestamp indicating when will the user be able to authorize with a code sent to the user's phone number</summary>
 		[IfFlag(2)] public DateTime next_phone_login_date;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether authorization through Apple ID is allowed</summary>
 			apple_signin_allowed = 0x1,
+			/// <summary>Whether authorization through Google ID is allowed</summary>
 			google_signin_allowed = 0x2,
+			/// <summary>Field <see cref="next_phone_login_date"/> has a value</summary>
 			has_next_phone_login_date = 0x4,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSetUpEmailRequired"/></para></summary>
+	/// <summary>The user should add and verify an email address in order to login		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSetUpEmailRequired"/></para></summary>
 	[TLDef(0xA5491DEA)]
 	public class Auth_SentCodeTypeSetUpEmailRequired : Auth_SentCodeType
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether authorization through Apple ID is allowed</summary>
 			apple_signin_allowed = 0x1,
+			/// <summary>Whether authorization through Google ID is allowed</summary>
 			google_signin_allowed = 0x2,
 		}
 	}
@@ -13365,6 +13384,7 @@ namespace TL
 		public string[] video_sections;
 		/// <summary>A list of videos</summary>
 		public DocumentBase[] videos;
+		/// <summary>Telegram Premium subscription options</summary>
 		public PremiumSubscriptionOption[] period_options;
 		/// <summary>Related user information</summary>
 		public Dictionary<long, User> users;
@@ -13431,155 +13451,181 @@ namespace TL
 		public string title;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emojiStatus"/></para></summary>
+	/// <summary>An <a href="https://corefork.telegram.org/api/emoji-status">emoji status</a>		<para>See <a href="https://corefork.telegram.org/constructor/emojiStatus"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiStatusEmpty">emojiStatusEmpty</a></remarks>
 	[TLDef(0x929B619D)]
 	public class EmojiStatus : IObject
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/custom-emoji">Custom emoji document ID</a></summary>
 		public long document_id;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emojiStatusUntil"/></para></summary>
+	/// <summary>An <a href="https://corefork.telegram.org/api/emoji-status">emoji status</a> valid until the specified date		<para>See <a href="https://corefork.telegram.org/constructor/emojiStatusUntil"/></para></summary>
 	[TLDef(0xFA30A8C7, inheritBefore = true)]
 	public class EmojiStatusUntil : EmojiStatus
 	{
+		/// <summary>This status is valid until this date</summary>
 		public int until;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.emojiStatuses"/></para></summary>
+	/// <summary>A list of <a href="https://corefork.telegram.org/api/emoji-status">emoji statuses</a>		<para>See <a href="https://corefork.telegram.org/constructor/account.emojiStatuses"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.emojiStatusesNotModified">account.emojiStatusesNotModified</a></remarks>
 	[TLDef(0x90C467D1)]
 	public class Account_EmojiStatuses : IObject
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public long hash;
+		/// <summary><a href="https://corefork.telegram.org/api/emoji-status">Emoji statuses</a></summary>
 		public EmojiStatus[] statuses;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/Reaction"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/reactions">Message reaction</a>		<para>Derived classes: <see cref="ReactionEmoji"/>, <see cref="ReactionCustomEmoji"/></para>		<para>See <a href="https://corefork.telegram.org/type/Reaction"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/reactionEmpty">reactionEmpty</a></remarks>
 	public abstract class Reaction : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/reactionEmoji"/></para></summary>
+	/// <summary>Normal emoji message reaction		<para>See <a href="https://corefork.telegram.org/constructor/reactionEmoji"/></para></summary>
 	[TLDef(0x1B2286B8)]
 	public class ReactionEmoji : Reaction
 	{
+		/// <summary>Emoji</summary>
 		public string emoticon;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/reactionCustomEmoji"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/custom-emoji">Custom emoji</a> message reaction		<para>See <a href="https://corefork.telegram.org/constructor/reactionCustomEmoji"/></para></summary>
 	[TLDef(0x8935FC73)]
 	public class ReactionCustomEmoji : Reaction
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/custom-emoji">Custom emoji document ID</a></summary>
 		public long document_id;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/ChatReactions"/></para></summary>
+	/// <summary>Available chat reactions		<para>Derived classes: <see cref="ChatReactionsNone"/>, <see cref="ChatReactionsAll"/>, <see cref="ChatReactionsSome"/></para>		<para>See <a href="https://corefork.telegram.org/type/ChatReactions"/></para></summary>
 	public abstract class ChatReactions : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/chatReactionsNone"/></para></summary>
+	/// <summary>No reactions are allowed		<para>See <a href="https://corefork.telegram.org/constructor/chatReactionsNone"/></para></summary>
 	[TLDef(0xEAFC32BC)]
 	public class ChatReactionsNone : ChatReactions { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/chatReactionsAll"/></para></summary>
+	/// <summary>All reactions or all non-custom reactions are allowed		<para>See <a href="https://corefork.telegram.org/constructor/chatReactionsAll"/></para></summary>
 	[TLDef(0x52928BCA)]
 	public class ChatReactionsAll : ChatReactions
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether to allow custom reactions</summary>
 			allow_custom = 0x1,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/chatReactionsSome"/></para></summary>
+	/// <summary>Some reactions are allowed		<para>See <a href="https://corefork.telegram.org/constructor/chatReactionsSome"/></para></summary>
 	[TLDef(0x661D4037)]
 	public class ChatReactionsSome : ChatReactions
 	{
+		/// <summary>Allowed reactions</summary>
 		public Reaction[] reactions;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.reactions"/></para></summary>
+	/// <summary>List of <a href="https://corefork.telegram.org/api/reactions">message reactions</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.reactions"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.reactionsNotModified">messages.reactionsNotModified</a></remarks>
 	[TLDef(0xEAFDF716)]
 	public class Messages_Reactions : IObject
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public long hash;
+		/// <summary>Reactions</summary>
 		public Reaction[] reactions;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/EmailVerifyPurpose"/></para></summary>
+	/// <summary>Email verification purpose		<para>Derived classes: <see cref="EmailVerifyPurposeLoginSetup"/>, <see cref="EmailVerifyPurposeLoginChange"/>, <see cref="EmailVerifyPurposePassport"/></para>		<para>See <a href="https://corefork.telegram.org/type/EmailVerifyPurpose"/></para></summary>
 	public abstract class EmailVerifyPurpose : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emailVerifyPurposeLoginSetup"/></para></summary>
+	/// <summary>Email verification purpose: setup login email		<para>See <a href="https://corefork.telegram.org/constructor/emailVerifyPurposeLoginSetup"/></para></summary>
 	[TLDef(0x4345BE73)]
 	public class EmailVerifyPurposeLoginSetup : EmailVerifyPurpose
 	{
 		public string phone_number;
 		public string phone_code_hash;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emailVerifyPurposeLoginChange"/></para></summary>
+	/// <summary>Email verification purpose: change login email		<para>See <a href="https://corefork.telegram.org/constructor/emailVerifyPurposeLoginChange"/></para></summary>
 	[TLDef(0x527D22EB)]
 	public class EmailVerifyPurposeLoginChange : EmailVerifyPurpose { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emailVerifyPurposePassport"/></para></summary>
+	/// <summary>Verify an email for use in <a href="https://corefork.telegram.org/api/passport">telegram passport</a>		<para>See <a href="https://corefork.telegram.org/constructor/emailVerifyPurposePassport"/></para></summary>
 	[TLDef(0xBBF51685)]
 	public class EmailVerifyPurposePassport : EmailVerifyPurpose { }
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/EmailVerification"/></para></summary>
+	/// <summary>Email verification code or token		<para>Derived classes: <see cref="EmailVerificationCode"/>, <see cref="EmailVerificationGoogle"/>, <see cref="EmailVerificationApple"/></para>		<para>See <a href="https://corefork.telegram.org/type/EmailVerification"/></para></summary>
 	public abstract class EmailVerification : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emailVerificationCode"/></para></summary>
+	/// <summary>Email verification code		<para>See <a href="https://corefork.telegram.org/constructor/emailVerificationCode"/></para></summary>
 	[TLDef(0x922E55A9)]
 	public class EmailVerificationCode : EmailVerification
 	{
+		/// <summary>Received verification code</summary>
 		public string code;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emailVerificationGoogle"/></para></summary>
+	/// <summary>Google ID email verification token		<para>See <a href="https://corefork.telegram.org/constructor/emailVerificationGoogle"/></para></summary>
 	[TLDef(0xDB909EC2)]
 	public class EmailVerificationGoogle : EmailVerification
 	{
+		/// <summary>Token</summary>
 		public string token;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emailVerificationApple"/></para></summary>
+	/// <summary>Apple ID email verification token		<para>See <a href="https://corefork.telegram.org/constructor/emailVerificationApple"/></para></summary>
 	[TLDef(0x96D074FD)]
 	public class EmailVerificationApple : EmailVerification
 	{
+		/// <summary>Token</summary>
 		public string token;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.emailVerified"/></para></summary>
+	/// <summary>The email was verified correctly.		<para>See <a href="https://corefork.telegram.org/constructor/account.emailVerified"/></para></summary>
 	[TLDef(0x2B96CD1B)]
 	public class Account_EmailVerified : IObject
 	{
+		/// <summary>The verified email address.</summary>
 		public string email;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.emailVerifiedLogin"/></para></summary>
+	/// <summary>The email was verified correctly, and a login code was just sent to it.		<para>See <a href="https://corefork.telegram.org/constructor/account.emailVerifiedLogin"/></para></summary>
 	[TLDef(0xE1BB0D61, inheritBefore = true)]
 	public class Account_EmailVerifiedLogin : Account_EmailVerified
 	{
+		/// <summary>Info about the sent <a href="https://corefork.telegram.org/api/auth">login code</a></summary>
 		public Auth_SentCode sent_code;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/premiumSubscriptionOption"/></para></summary>
+	/// <summary>Describes a Telegram Premium subscription option		<para>See <a href="https://corefork.telegram.org/constructor/premiumSubscriptionOption"/></para></summary>
 	[TLDef(0xB6F11EBE)]
 	public class PremiumSubscriptionOption : IObject
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Duration of subscription in months</summary>
 		public int months;
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
 		public string currency;
+		/// <summary>Total price in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long amount;
+		/// <summary><a href="https://corefork.telegram.org/api/links">Deep link</a> used to initiate payment</summary>
 		public string bot_url;
+		/// <summary>Store product ID, only for official apps</summary>
 		[IfFlag(0)] public string store_product;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="store_product"/> has a value</summary>
 			has_store_product = 0x1,
 			current = 0x2,
 			can_purchase_upgrade = 0x4,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/sendAsPeer"/></para></summary>
+	/// <summary>Indicates a peer that can be used to send messages		<para>See <a href="https://corefork.telegram.org/constructor/sendAsPeer"/></para></summary>
 	[TLDef(0xB81C7034)]
 	public class SendAsPeer : IObject
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Peer</summary>
 		public Peer peer;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether a Telegram Premium account is required to send messages as this peer</summary>
 			premium_required = 0x1,
 		}
 	}

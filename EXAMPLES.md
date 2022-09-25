@@ -15,7 +15,8 @@ go to your **Project Properties > Debug > Environment variables**
 and add at least these variables with adequate value: **api_id, api_hash, phone_number**
 
 Remember that these are just simple example codes that you should adjust to your needs.
-In real production code, you might want to properly test the success of each operation or handle exceptions.
+In real production code, you might want to properly test the success of each operation or handle exceptions,
+and avoid calling the same methods (like `Messages_GetAllChats`) repetitively.
 
 ℹ️ WTelegramClient covers 100% of Telegram Client API, much more than the examples below: check the [full API methods list](https://corefork.telegram.org/methods)!  
 More examples can also be found in the [Examples folder](Examples) and in answers to [StackOverflow questions](https://stackoverflow.com/questions/tagged/wtelegramclient).
@@ -44,7 +45,7 @@ if (contacts.imported.Length > 0)
 ```csharp
 // HTML-formatted text:
 var text = $"Hello <u>dear <b>{HtmlText.Escape(myself.first_name)}</b></u>\n" +
-            "Enjoy this <code>userbot</code> written with <a href=\"https://github.com/wiz0u/WTelegramClient\">WTelegramClient</a>";
+           "Enjoy this <code>userbot</code> written with <a href=\"https://github.com/wiz0u/WTelegramClient\">WTelegramClient</a>";
 var entities = client.HtmlToEntities(ref text);
 var sent = await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
 // if you need to convert a sent/received Message to HTML: (easier to store)
@@ -402,22 +403,31 @@ WTelegram.Helpers.Log = (lvl, str) => { };
 ```csharp
 const string old_password = "password";     // current password if any (unused otherwise)
 const string new_password = "new_password"; // or null to disable 2FA
-var accountPassword = await client.Account_GetPassword();
-var password = accountPassword.current_algo == null ? null : await WTelegram.Client.InputCheckPassword(accountPassword, old_password);
-accountPassword.current_algo = null; // makes InputCheckPassword generate a new password
-var new_password_hash = new_password == null ? null : await WTelegram.Client.InputCheckPassword(accountPassword, new_password);
+var accountPwd = await client.Account_GetPassword();
+var password = accountPwd.current_algo == null ? null : await WTelegram.Client.InputCheckPassword(accountPwd, old_password);
+accountPwd.current_algo = null; // makes InputCheckPassword generate a new password
+var new_password_hash = new_password == null ? null : await WTelegram.Client.InputCheckPassword(accountPwd, new_password);
 await client.Account_UpdatePasswordSettings(password, new Account_PasswordInputSettings
 {
     flags = Account_PasswordInputSettings.Flags.has_new_algo,
     new_password_hash = new_password_hash?.A,
-    new_algo = accountPassword.new_algo,
+    new_algo = accountPwd.new_algo,
     hint = "new password hint",
 });
 ```
 
-<a name="reaction"></a>
-<a name="pinned"></a>
-<a name="custom_emoji"></a>
+<a name="database"></a><a name="sessionStore"></a><a name="customStore"></a>
+### Store session data to database or elsewhere, instead of files
+
+If you don't want to store session data into files *(for example if your VPS Hosting doesn't allow that)*, or just for easier management,
+you can choose to store the session data somewhere else, like in a database.
+
+The WTelegram.Client constructor takes an optional `sessionStore` parameter to allow storing sessions in an alternate manner.  
+Use it to pass a custom Stream-derived class that will **read** (first initial call to Length & Read) and **store** (subsequent Writes) session data to database.
+
+You can find an example for such custom session store in [Examples/Program_Heroku.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_Heroku.cs#L61)
+
+<a name="reaction"></a><a name="pinned"></a><a name="custom_emoji"></a>
 ### Fun with custom emojies and reactions on pinned messages
 ```csharp
 // • Fetch all available standard emoji reactions
@@ -430,12 +440,12 @@ var chat = chats.chats[1234567890]; // the chat we want
 var full = await client.GetFullChat(chat);
 Reaction reaction = full.full_chat.AvailableReactions switch
 {
-	ChatReactionsSome some => some.reactions[0],// only some reactions are allowed => pick the first
-	ChatReactionsAll all =>						// all reactions are allowed in this chat
+	ChatReactionsSome some => some.reactions[0], // only some reactions are allowed => pick the first
+	ChatReactionsAll all =>                      // all reactions are allowed in this chat
 		all.flags.HasFlag(ChatReactionsAll.Flags.allow_custom) && client.User.flags.HasFlag(TL.User.Flags.premium)
-		? new ReactionCustomEmoji { document_id = 5190875290439525089 }		// we can use custom emoji reactions here
-		: new ReactionEmoji { emoticon = all_emoji.reactions[0].reaction },	// else, pick the first standard emoji reaction
-	_ => null									// reactions are not allowed in this chat
+		? new ReactionCustomEmoji { document_id = 5190875290439525089 }     // we can use custom emoji reactions here
+		: new ReactionEmoji { emoticon = all_emoji.reactions[0].reaction }, // else, pick the first standard emoji reaction
+	_ => null                                    // reactions are not allowed in this chat
 };
 if (reaction == null) return;
 
@@ -444,15 +454,21 @@ var messages = await client.Messages_Search<InputMessagesFilterPinned>(chat, lim
 foreach (var msg in messages.Messages)
 	await client.Messages_SendReaction(chat, msg.ID, reaction: new[] { reaction });
 ```
-*Note: you can find custom emojies document ID via API methods like [Messages_GetFeaturedEmojiStickers](https://corefork.telegram.org/method/messages.getFeaturedEmojiStickers). Access hash is not required*
+*Note: you can find custom emoji document IDs via API methods like [Messages_GetFeaturedEmojiStickers](https://corefork.telegram.org/method/messages.getFeaturedEmojiStickers). Access hash is not required*
 
-<a name="database"></a><a name="sessionStore"></a><a name="customStore"></a>
-### Store session data to database or elsewhere, instead of files
+<a name="forward"></a><a name="copy"></a>
+### Forward or copy a message to another chat
+```csharp
+// Determine which chats and message to forward/copy
+var chats = await client.Messages_GetAllChats();
+var from_chat = chats.chats[1234567890];  // source chat
+var to_chat = chats.chats[1234567891];    // destination chat
+var history = await client.Messages_GetHistory(from_chat, limit: 1);
+var msg = history.Messages[0] as Message; // last message of source chat
 
-If you don't want to store session data into files *(for example if your VPS Hosting doesn't allow that)*, or just for easier management,
-you can choose to store the session data somewhere else, like in a database.
+// • Forward the message (only the source message id is necessary)
+await client.Messages_ForwardMessages(from_chat, new[] { msg.ID }, new[] { WTelegram.Helpers.RandomLong() }, to_chat);
 
-The WTelegram.Client constructor takes an optional `sessionStore` parameter to allow storing sessions in an alternate manner.  
-Use it to pass a custom Stream-derived class that will **read** (first initial call to Length & Read) and **store** (subsequent Writes) session data to database.
-
-You can find an example for such custom session store in [Examples/Program_Heroku.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_Heroku.cs#L61)
+// • Copy the message (without the "Forwarded" header)
+await client.SendMessageAsync(to_chat, msg.message, msg.media?.ToInputMedia(), entities: msg.entities);
+```
