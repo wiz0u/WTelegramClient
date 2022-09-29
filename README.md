@@ -140,9 +140,10 @@ or a [broadcast channel](https://corefork.telegram.org/api/channel#channels) (th
 - chats : In plural or general meaning, it means either `Chat` or `Channel`
 - `Peer` : Either a `Chat`, a `Channel` or a `User`
 - Dialog : Status of chat with a `Peer` *(draft, last message, unread count, pinned...)*. It represents each line from your Telegram chat list.
-- DC (DataCenter) : There are a few datacenters depending on where in the world the user (or an uploaded media file) is from.
 - Access Hash : Telegram requires you to provide a specific `access_hash` for users, channels, and other resources before interacting with them.
 See [FAQ #4](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash) to learn more about it.
+- DC (DataCenter) : There are a few datacenters depending on where in the world the user (or an uploaded media file) is from.
+- Session or Authorization : Pairing between a device and a phone number. You can have several active sessions for the same phone number.
 
 # Other things to know
 
@@ -169,8 +170,8 @@ This library can be used for any Telegram scenarios including:
 - Download/upload of files/media
 - Building a full-featured interactive client
 
-It has been tested in a Console app, [in a WinForms app](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#gui),
-[in ASP.NET webservice](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#logging), and in Xamarin/Android.  
+It has been tested in a Console app, [in Windows Forms](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip),
+[in ASP.NET webservice](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/ASPnet_webapp.zip), and in Xamarin/Android.  
 
 Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos)
 as well as the [API Terms of Service](https://core.telegram.org/api/terms) or you might get banned from Telegram servers.

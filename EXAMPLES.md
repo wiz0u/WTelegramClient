@@ -206,7 +206,7 @@ for (int offset = 0; ;)
     foreach (var (id, user) in participants.users)
         Console.WriteLine(user);
     offset += participants.participants.Length;
-    if (offset >= participants.count) break;
+    if (offset >= participants.count || participants.participants.Length == 0) break;
 }
 ```
 

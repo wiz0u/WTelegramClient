@@ -1416,6 +1416,7 @@ namespace TL
 		/// <param name="background">Send this message as background message</param>
 		/// <param name="clear_draft">Clear the draft field</param>
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
+		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">The destination where the message will be sent</param>
 		/// <param name="reply_to_msg_id">The message ID to which this message will reply to</param>
 		/// <param name="message">The message</param>
@@ -1443,6 +1444,7 @@ namespace TL
 		/// <param name="background">Send message in background</param>
 		/// <param name="clear_draft">Clear the draft</param>
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
+		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">Destination</param>
 		/// <param name="reply_to_msg_id">Message ID to which this message should reply to</param>
 		/// <param name="media">Attached media</param>
@@ -1929,7 +1931,7 @@ namespace TL
 				unsave = unsave,
 			});
 
-		/// <summary>Query an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineBotResults"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,-503 (<a href="https://corefork.telegram.org/method/messages.getInlineBotResults#possible-errors">details</a>)</para></summary>
+		/// <summary>Query an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineBotResults"/></para>		<para>Possible <see cref="RpcException"/> codes: -503,400 (<a href="https://corefork.telegram.org/method/messages.getInlineBotResults#possible-errors">details</a>)</para></summary>
 		/// <param name="bot">The bot to query</param>
 		/// <param name="peer">The currently opened chat</param>
 		/// <param name="geo_point">The geolocation, if requested</param>
@@ -2040,7 +2042,7 @@ namespace TL
 				entities = entities,
 			});
 
-		/// <summary>Press an inline callback button and get a callback answer from the bot		<para>See <a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,-503 (<a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer#possible-errors">details</a>)</para></summary>
+		/// <summary>Press an inline callback button and get a callback answer from the bot		<para>See <a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer"/></para>		<para>Possible <see cref="RpcException"/> codes: -503,400 (<a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer#possible-errors">details</a>)</para></summary>
 		/// <param name="game">Whether this is a "play game" button</param>
 		/// <param name="peer">Where was the inline keyboard sent</param>
 		/// <param name="msg_id">ID of the Message with the inline keyboard</param>
@@ -2403,6 +2405,7 @@ namespace TL
 		/// <param name="background">Send in background?</param>
 		/// <param name="clear_draft">Whether to clear <a href="https://corefork.telegram.org/api/drafts">drafts</a></param>
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
+		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">The destination chat</param>
 		/// <param name="reply_to_msg_id">The message to reply to</param>
 		/// <param name="multi_media">The medias to send</param>
@@ -3112,7 +3115,7 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary>Change default emoji reaction to use in the quick reaction menu: the value is synced across devices and can be fetched using <a href="https://corefork.telegram.org/api/config#reactions-default">help.getAppConfig, <c>reactions_default</c> field</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.setDefaultReaction"/></para></summary>
+		/// <summary>Change default emoji reaction to use in the quick reaction menu: the value is synced across devices and can be fetched using <a href="https://corefork.telegram.org/api/config#reactions-default">help.getAppConfig, <c>reactions_default</c> field</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.setDefaultReaction"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setDefaultReaction#possible-errors">details</a>)</para></summary>
 		/// <param name="reaction">New emoji reaction</param>
 		public static Task<bool> Messages_SetDefaultReaction(this Client client, Reaction reaction)
 			=> client.Invoke(new Messages_SetDefaultReaction

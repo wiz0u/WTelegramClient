@@ -159,9 +159,9 @@ namespace TL
 
 	public abstract class MsgDetailedInfoBase : IObject
 	{
-		public abstract long AnswerMsgId { get; }
-		public abstract int Bytes { get; }
-		public abstract int Status { get; }
+		public virtual long AnswerMsgId { get; }
+		public virtual int Bytes { get; }
+		public virtual int Status { get; }
 	}
 	[TLDef(0x276D3EC6)] //msg_detailed_info#276d3ec6 msg_id:long answer_msg_id:long bytes:int status:int = MsgDetailedInfo
 	public class MsgDetailedInfo : MsgDetailedInfoBase

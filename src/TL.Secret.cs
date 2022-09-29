@@ -6,7 +6,7 @@ namespace TL
 	public abstract class DecryptedMessageBase : IObject
 	{
 		/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
-		public abstract long RandomId { get; }
+		public virtual long RandomId { get; }
 	}
 
 	/// <summary>Object describes media contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageMedia"/></para></summary>
@@ -20,11 +20,11 @@ namespace TL
 	public abstract class FileLocationBase : IObject
 	{
 		/// <summary>Server volume</summary>
-		public abstract long VolumeId { get; }
+		public virtual long VolumeId { get; }
 		/// <summary>File ID</summary>
-		public abstract int LocalId { get; }
+		public virtual int LocalId { get; }
 		/// <summary>Checksum to access the file</summary>
-		public abstract long Secret { get; }
+		public virtual long Secret { get; }
 	}
 
 	namespace Layer8
