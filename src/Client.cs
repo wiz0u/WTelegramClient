@@ -396,7 +396,7 @@ namespace WTelegram
 			}
 			else
 			{
-				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, (dataLen - 24) & ~0xF), false, _dcSession.AuthKey, data, 8, _sha256Recv);
+				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, (dataLen - 24) & ~0xF), false, 8, _dcSession.AuthKey, data, 8, _sha256Recv);
 				if (decrypted_data.Length < 36) // header below+ctorNb
 					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
 				_sha256Recv.TransformBlock(_dcSession.AuthKey, 96, 32, null, 0);
@@ -1217,7 +1217,7 @@ namespace WTelegram
 					RNG.GetBytes(clearBuffer, 32 + clearLength, padding);
 					var msgKeyLarge = _sha256.ComputeHash(clearBuffer, 0, 32 + clearLength + padding);
 					const int msgKeyOffset = 8; // msg_key = middle 128-bits of SHA256(authkey_part+plaintext+padding)
-					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(32, clearLength + padding), true, _dcSession.AuthKey, msgKeyLarge, msgKeyOffset, _sha256);
+					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(32, clearLength + padding), true, 0, _dcSession.AuthKey, msgKeyLarge, msgKeyOffset, _sha256);
 
 					writer.Write(_dcSession.AuthKeyID);             // int64 auth_key_id
 					writer.Write(msgKeyLarge, msgKeyOffset, 16);    // int128 msg_key
@@ -1302,6 +1302,7 @@ namespace WTelegram
 					{
 						if (x <= FloodRetryThreshold)
 						{
+							if (x == 0) x =1;
 							await Task.Delay(x * 1000);
 							goto retry;
 						}

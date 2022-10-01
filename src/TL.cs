@@ -45,7 +45,7 @@ namespace TL
 	internal class BinaryReader : System.IO.BinaryReader
 	{
 		public readonly WTelegram.Client Client;
-		public BinaryReader(Stream stream, WTelegram.Client client) : base(stream) => Client = client;
+		public BinaryReader(Stream stream, WTelegram.Client client, bool leaveOpen = false) : base(stream, Encoding.UTF8, leaveOpen) => Client = client;
 	}
 
 	internal static class Serialization
@@ -57,7 +57,7 @@ namespace TL
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var ctorNb = tlDef.CtorNb;
 			writer.Write(ctorNb);
-			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
 			if (tlDef.inheritBefore) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			uint flags = 0;
 			IfFlagAttribute ifFlag;
@@ -81,7 +81,7 @@ namespace TL
 			if (type == null) return null; // nullable ctor (class meaning is associated with null)
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var obj = Activator.CreateInstance(type, true);
-			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
 			if (tlDef.inheritBefore) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
 			uint flags = 0;
 			IfFlagAttribute ifFlag;
@@ -91,7 +91,7 @@ namespace TL
 				object value = reader.ReadTLValue(field.FieldType);
 				field.SetValue(obj, value);
 				if (field.FieldType.IsEnum && field.Name == "flags") flags = (uint)value;
-				if (reader.Client.CollectAccessHash) reader.Client.CollectField(field, obj, value);
+				if (reader.Client?.CollectAccessHash == true) reader.Client.CollectField(field, obj, value);
 			}
 			return (IObject)obj;
 		}

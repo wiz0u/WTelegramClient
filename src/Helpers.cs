@@ -18,8 +18,8 @@ namespace WTelegram
 		public static readonly JsonSerializerOptions JsonOptions = new() { IncludeFields = true, WriteIndented = true,
 			IgnoreReadOnlyProperties = true, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull };
 
-		private static readonly ConsoleColor[] LogLevelToColor = new[] { ConsoleColor.DarkGray, ConsoleColor.DarkCyan, ConsoleColor.Cyan,
-			ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.DarkBlue };
+		private static readonly ConsoleColor[] LogLevelToColor = new[] { ConsoleColor.DarkGray, ConsoleColor.DarkCyan,
+			ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.DarkBlue };
 		private static void DefaultLogger(int level, string message)
 		{
 			Console.ForegroundColor = LogLevelToColor[level];
@@ -34,9 +34,10 @@ namespace WTelegram
 		public static long RandomLong()
 		{
 #if NETCOREAPP2_1_OR_GREATER
-			Span<long> span = stackalloc long[1];
-			System.Security.Cryptography.RandomNumberGenerator.Fill(System.Runtime.InteropServices.MemoryMarshal.AsBytes(span));
-			return span[0];
+			long value = 0;
+			System.Security.Cryptography.RandomNumberGenerator.Fill(System.Runtime.InteropServices.MemoryMarshal.AsBytes(
+				System.Runtime.InteropServices.MemoryMarshal.CreateSpan(ref value, 1)));
+			return value;
 #else
 			var span = new byte[8];
 			Encryption.RNG.GetBytes(span);
@@ -168,14 +169,12 @@ namespace WTelegram
 		}
 
 		public static int MillerRabinIterations { get; set; } = 64; // 64 is OpenSSL default for 2048-bits numbers
-		private static readonly HashSet<BigInteger> GoodPrimes = new();
 		/// <summary>Miller–Rabin primality test</summary>
 		/// <param name="n">The number to check for primality</param>
 		public static bool IsProbablePrime(this BigInteger n)
 		{
 			var n_minus_one = n - BigInteger.One;
 			if (n_minus_one.Sign <= 0) return false;
-			if (GoodPrimes.Contains(n)) return true;
 
 			int s;
 			var d = n_minus_one;
@@ -210,7 +209,6 @@ namespace WTelegram
 				}
 				if (r == 0) return false;
 			}
-			GoodPrimes.Add(n);
 			return true;
 		}
 
