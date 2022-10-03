@@ -1180,7 +1180,7 @@ namespace WTelegram
 			try
 			{
 				using var memStream = new MemoryStream(1024);
-				using var writer = new BinaryWriter(memStream, Encoding.UTF8);
+				using var writer = new BinaryWriter(memStream);
 				writer.Write(0);                // int32 payload_len (to be patched with payload length)
 
 				if (_dcSession.AuthKeyID == 0) // send unencrypted message
@@ -1196,7 +1196,7 @@ namespace WTelegram
 				else
 				{
 					using var clearStream = new MemoryStream(1024);
-					using var clearWriter = new BinaryWriter(clearStream, Encoding.UTF8);
+					using var clearWriter = new BinaryWriter(clearStream);
 					clearWriter.Write(_dcSession.AuthKey, 88, 32);
 					clearWriter.Write(_dcSession.Salt);     // int64 salt
 					clearWriter.Write(_dcSession.Id);       // int64 session_id
@@ -1210,7 +1210,7 @@ namespace WTelegram
 					clearWriter.WriteTLObject(msg);         // bytes message_data
 					int clearLength = (int)clearStream.Length - 32;  // length before padding (= 32 + message_data_length)
 					int padding = (0x7FFFFFF0 - clearLength) % 16;
-					padding += _random.Next(1, 64) * 16;        // MTProto 2.0 padding must be between 12..1024 with total length divisible by 16
+					padding += _random.Next(2, 16) * 16;        // MTProto 2.0 padding must be between 12..1024 with total length divisible by 16
 					clearStream.SetLength(32 + clearLength + padding);
 					byte[] clearBuffer = clearStream.GetBuffer();
 					BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(60), clearLength - 32);    // patch message_data_length

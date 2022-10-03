@@ -62,7 +62,7 @@ namespace WTelegram
 			{
 				//4.1) RSA_PAD(data, server_public_key)
 				using var clearStream = new MemoryStream(256);
-				using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
+				using var writer = new BinaryWriter(clearStream);
 				byte[] aes_key = new byte[32], zero_iv = new byte[32];
 				var n = BigEndianInteger(publicKey.n);
 				do
@@ -108,16 +108,17 @@ namespace WTelegram
 			if (serverDHinnerData.server_nonce != resPQ.server_nonce) throw new ApplicationException("Server Nonce mismatch");
 			var g_a = BigEndianInteger(serverDHinnerData.g_a);
 			var dh_prime = BigEndianInteger(serverDHinnerData.dh_prime);
-			ValidityChecks(dh_prime, serverDHinnerData.g);
+			CheckGoodPrime(dh_prime, serverDHinnerData.g);
 			session.LastSentMsgId = 0;
 			session.ServerTicksOffset = (serverDHinnerData.server_time - localTime).Ticks;
 			Helpers.Log(1, $"Time offset: {session.ServerTicksOffset} | Server: {serverDHinnerData.server_time.TimeOfDay} UTC | Local: {localTime.TimeOfDay} UTC");
 			//6)
-			var bData = new byte[256];
-			RNG.GetBytes(bData);
-			var b = BigEndianInteger(bData);
+			var salt = new byte[256];
+			RNG.GetBytes(salt);
+			var b = BigEndianInteger(salt);
 			var g_b = BigInteger.ModPow(serverDHinnerData.g, b, dh_prime);
-			ValidityChecksDH(g_a, g_b, dh_prime);
+			CheckGoodGaAndGb(g_a, dh_prime);
+			CheckGoodGaAndGb(g_b, dh_prime);
 			var clientDHinnerData = new ClientDHInnerData
 			{
 				nonce = nonce,
@@ -128,7 +129,7 @@ namespace WTelegram
 			{
 				using var clearStream = new MemoryStream(384);
 				clearStream.Position = 20; // skip SHA1 area (to be patched)
-				using var writer = new BinaryWriter(clearStream, Encoding.UTF8);
+				using var writer = new BinaryWriter(clearStream);
 				writer.WriteTLObject(clientDHinnerData);
 				int clearLength = (int)clearStream.Length;  // length before padding (= 20 + message_data_length)
 				int paddingToAdd = (0x7FFFFFF0 - clearLength) % 16;
@@ -182,21 +183,20 @@ namespace WTelegram
 			}
 		}
 
-		internal static void ValidityChecks(BigInteger p, int g)
+		internal static void CheckGoodPrime(BigInteger p, int g)
 		{
 			Helpers.Log(2, "Verifying encryption key safety... (this should happen only once per DC)");
 			// check that 2^2047 <= p < 2^2048
 			if (p.GetBitLength() != 2048) throw new ApplicationException("p is not 2048-bit number");
 			// check that g generates a cyclic subgroup of prime order (p - 1) / 2, i.e. is a quadratic residue mod p.
-			BigInteger mod_r;
 			if (g switch
 			{
 				2 => p % 8 != 7,
 				3 => p % 3 != 2,
 				4 => false,
-				5 => (mod_r = p % 5) != 1 && mod_r != 4,
-				6 => (mod_r = p % 24) != 19 && mod_r != 23,
-				7 => (mod_r = p % 7) != 3 && mod_r != 5 && mod_r != 6,
+				5 => (int)(p % 5) is not 1 and not 4,
+				6 => (int)(p % 24) is not 19 and not 23,
+				7 => (int)(p % 7) is not 3 and not 5 and not 6,
 				_ => true,
 			})
 				throw new ApplicationException("Bad prime mod 4g");
@@ -227,13 +227,11 @@ namespace WTelegram
 			0x73, 0x3F, 0xF1, 0x70, 0x2F, 0x52, 0x6C, 0x8E, 0x04, 0xC9, 0xB1, 0xC6, 0xB9, 0xAE, 0x1C, 0xC7, 0x00
 		})};
 
-		internal static void ValidityChecksDH(BigInteger g_a, BigInteger g_b, BigInteger dh_prime)
+		internal static void CheckGoodGaAndGb(BigInteger g, BigInteger dh_prime)
 		{
 			// check that g, g_a and g_b are greater than 1 and less than dh_prime - 1.
 			// We recommend checking that g_a and g_b are between 2^{2048-64} and dh_prime - 2^{2048-64} as well.
-			var l = BigInteger.One << (2048 - 64);
-			var r = dh_prime - l;
-			if (g_a < l || g_a > r || g_b < l || g_b > r)
+			if (g.GetBitLength() < 2048 - 64 || (dh_prime - g).GetBitLength() < 2048 - 64)
 				throw new ApplicationException("g^a or g^b is not between 2^{2048-64} and dh_prime - 2^{2048-64}");
 		}
 
@@ -405,7 +403,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 
 			var g = new BigInteger(algo.g);
 			var p = BigEndianInteger(algo.p);
-			var validTask = Task.Run(() => ValidityChecks(p, algo.g));
+			var validTask = Task.Run(() => CheckGoodPrime(p, algo.g));
 
 			System.Threading.Thread.Sleep(100);
 			Helpers.Log(3, $"This account has enabled 2FA. A password is needed. {accountPassword.hint}");

@@ -469,6 +469,9 @@ var msg = history.Messages[0] as Message; // last message of source chat
 // • Forward the message (only the source message id is necessary)
 await client.Messages_ForwardMessages(from_chat, new[] { msg.ID }, new[] { WTelegram.Helpers.RandomLong() }, to_chat);
 
-// • Copy the message (without the "Forwarded" header)
+// • Copy the message without the "Forwarded" header (only the source message id is necessary)
+await client.Messages_ForwardMessages(from_chat, new[] { msg.ID }, new[] { WTelegram.Helpers.RandomLong() }, to_chat, drop_author: true);
+
+// • Alternative solution to copy the message (the full message is needed)
 await client.SendMessageAsync(to_chat, msg.message, msg.media?.ToInputMedia(), entities: msg.entities);
 ```

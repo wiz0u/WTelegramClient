@@ -4699,6 +4699,7 @@ namespace TL
 			cdn = 0x8,
 			/// <summary>If set, this IP should be used when connecting through a proxy</summary>
 			static_ = 0x10,
+			/// <summary>If set, clients must connect using only the specified port, without trying any other port.</summary>
 			this_port_only = 0x20,
 			/// <summary>Field <see cref="secret"/> has a value</summary>
 			has_secret = 0x400,
@@ -4832,7 +4833,7 @@ namespace TL
 			has_static_maps_provider = 0x1000,
 			/// <summary>Whether <a href="https://corefork.telegram.org/api/pfs">pfs</a> was used</summary>
 			pfs_enabled = 0x2000,
-			/// <summary>Whether to forcefully try connecting using IPv6 <see cref="DcOption"/></summary>
+			/// <summary>Whether to forcefully connect using IPv6 <see cref="DcOption"/>, even if the client knows that IPv4 is available.</summary>
 			force_try_ipv6 = 0x4000,
 			/// <summary>Field <see cref="reactions_default"/> has a value</summary>
 			has_reactions_default = 0x8000,
@@ -12215,7 +12216,6 @@ namespace TL
 			has_reply_to_peer_id = 0x1,
 			/// <summary>Field <see cref="reply_to_top_id"/> has a value</summary>
 			has_reply_to_top_id = 0x2,
-			/// <summary>Whether this message replies to a scheduled message</summary>
 			reply_to_scheduled = 0x4,
 		}
 	}
@@ -13505,7 +13505,7 @@ namespace TL
 	[TLDef(0x661D4037)]
 	public class ChatReactionsSome : ChatReactions
 	{
-		/// <summary>Allowed reactions</summary>
+		/// <summary>Allowed set of reactions: the <a href="https://corefork.telegram.org/api/config#reactions-in-chat-max">reactions_in_chat_max</a> configuration field indicates the maximum number of reactions that can be specified in this field.</summary>
 		public Reaction[] reactions;
 	}
 
