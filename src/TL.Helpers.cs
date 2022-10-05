@@ -384,6 +384,8 @@ namespace TL
 		}, pts = pts, pts_count = pts_count
 	} }; }
 
+	partial class InputEncryptedChat { public static implicit operator int(InputEncryptedChat chat) => chat.chat_id; }
+
 	partial class EncryptedFile
 	{
 		public static implicit operator InputEncryptedFile(EncryptedFile file) => file == null ? null : new InputEncryptedFile { id = file.id, access_hash = file.access_hash };

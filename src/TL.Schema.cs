@@ -5002,7 +5002,7 @@ namespace TL
 
 	/// <summary>Creates an encrypted chat.		<para>See <a href="https://corefork.telegram.org/constructor/inputEncryptedChat"/></para></summary>
 	[TLDef(0xF141B5E1)]
-	public class InputEncryptedChat : IObject
+	public partial class InputEncryptedChat : IObject
 	{
 		/// <summary>Chat ID</summary>
 		public int chat_id;
