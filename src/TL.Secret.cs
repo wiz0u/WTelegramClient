@@ -5,8 +5,26 @@ namespace TL
 	/// <summary>Object describes the contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessage"/></para></summary>
 	public abstract class DecryptedMessageBase : IObject
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a> (added in layer 45)</summary>
+		public virtual uint FFlags { get; }
 		/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 		public virtual long RandomId { get; }
+		/// <summary>Message lifetime. Has higher priority than <see cref="Layer8.DecryptedMessageActionSetMessageTTL"/>.<br/>Parameter added in Layer 17.</summary>
+		public virtual int Ttl { get; }
+		/// <summary>Message text</summary>
+		public virtual string Message { get; }
+		/// <summary>Media content</summary>
+		public virtual DecryptedMessageMedia Media { get; }
+		/// <summary>Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text (parameter added in layer 45)</summary>
+		public virtual MessageEntity[] Entities { get; }
+		/// <summary>Specifies the ID of the inline bot that generated the message (parameter added in layer 45)</summary>
+		public virtual string ViaBotName { get; }
+		/// <summary>Random message ID of the message this message replies to (parameter added in layer 45)</summary>
+		public virtual long ReplyToRandom { get; }
+		/// <summary>Random group ID, assigned by the author of message.<br/>Multiple encrypted messages with a photo attached and with the same group ID indicate an <a href="https://corefork.telegram.org/api/files#albums-grouped-media">album or grouped media</a> (parameter added in layer 45)</summary>
+		public virtual long Grouped { get; }
+		public virtual byte[] RandomBytes { get; }
+		public virtual DecryptedMessageAction Action { get; }
 	}
 
 	/// <summary>Object describes media contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageMedia"/></para></summary>
@@ -43,6 +61,11 @@ namespace TL
 
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public override long RandomId => random_id;
+			/// <summary>Message text</summary>
+			public override string Message => message;
+			/// <summary>Media content</summary>
+			public override DecryptedMessageMedia Media => media;
+			public override byte[] RandomBytes => random_bytes;
 		}
 		/// <summary>Contents of an encrypted service message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageService"/></para></summary>
 		[TLDef(0xAA48327D)]
@@ -56,6 +79,9 @@ namespace TL
 
 			/// <summary>Random message ID, assigned by the message author.<br/>Must be equal to the ID passed to the sending method.</summary>
 			public override long RandomId => random_id;
+			public override byte[] RandomBytes => random_bytes;
+			/// <summary>Action relevant to the service message</summary>
+			public override DecryptedMessageAction Action => action;
 		}
 
 		/// <summary>Photo attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaPhoto"/></para></summary>
@@ -221,6 +247,12 @@ namespace TL
 
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public override long RandomId => random_id;
+			/// <summary>Message lifetime. Has higher priority than <see cref="Layer8.DecryptedMessageActionSetMessageTTL"/>.<br/>Parameter added in Layer 17.</summary>
+			public override int Ttl => ttl;
+			/// <summary>Message text</summary>
+			public override string Message => message;
+			/// <summary>Media content</summary>
+			public override DecryptedMessageMedia Media => media;
 		}
 		/// <summary>Contents of an encrypted service message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageService"/></para></summary>
 		[TLDef(0x73164160)]
@@ -233,6 +265,8 @@ namespace TL
 
 			/// <summary>Random message ID, assigned by the message author.<br/>Must be equal to the ID passed to the sending method.</summary>
 			public override long RandomId => random_id;
+			/// <summary>Action relevant to the service message</summary>
+			public override DecryptedMessageAction Action => action;
 		}
 
 		/// <summary>Video attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVideo"/></para></summary>
@@ -373,8 +407,22 @@ namespace TL
 				has_via_bot_name = 0x800,
 			}
 
+			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a> (added in layer 45)</summary>
+			public override uint FFlags => (uint)flags;
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public override long RandomId => random_id;
+			/// <summary>Message lifetime. Has higher priority than <see cref="Layer8.DecryptedMessageActionSetMessageTTL"/>.<br/>Parameter added in Layer 17.</summary>
+			public override int Ttl => ttl;
+			/// <summary>Message text</summary>
+			public override string Message => message;
+			/// <summary>Media content</summary>
+			public override DecryptedMessageMedia Media => media;
+			/// <summary>Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text (parameter added in layer 45)</summary>
+			public override MessageEntity[] Entities => entities;
+			/// <summary>Specifies the ID of the inline bot that generated the message (parameter added in layer 45)</summary>
+			public override string ViaBotName => via_bot_name;
+			/// <summary>Random message ID of the message this message replies to (parameter added in layer 45)</summary>
+			public override long ReplyToRandom => reply_to_random_id;
 		}
 
 		/// <summary>Photo attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaPhoto"/></para></summary>
@@ -515,8 +563,24 @@ namespace TL
 				has_grouped_id = 0x20000,
 			}
 
+			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a> (added in layer 45)</summary>
+			public override uint FFlags => (uint)flags;
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public override long RandomId => random_id;
+			/// <summary>Message lifetime. Has higher priority than <see cref="Layer8.DecryptedMessageActionSetMessageTTL"/>.<br/>Parameter added in Layer 17.</summary>
+			public override int Ttl => ttl;
+			/// <summary>Message text</summary>
+			public override string Message => message;
+			/// <summary>Media content</summary>
+			public override DecryptedMessageMedia Media => media;
+			/// <summary>Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text (parameter added in layer 45)</summary>
+			public override MessageEntity[] Entities => entities;
+			/// <summary>Specifies the ID of the inline bot that generated the message (parameter added in layer 45)</summary>
+			public override string ViaBotName => via_bot_name;
+			/// <summary>Random message ID of the message this message replies to (parameter added in layer 45)</summary>
+			public override long ReplyToRandom => reply_to_random_id;
+			/// <summary>Random group ID, assigned by the author of message.<br/>Multiple encrypted messages with a photo attached and with the same group ID indicate an <a href="https://corefork.telegram.org/api/files#albums-grouped-media">album or grouped media</a> (parameter added in layer 45)</summary>
+			public override long Grouped => grouped_id;
 		}
 	}
 

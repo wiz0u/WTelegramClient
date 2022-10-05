@@ -7,6 +7,8 @@ namespace TL
 	public static class Layer
 	{
 		public const int Version = 146;					// fetched 14/09/2022 16:18:39
+		internal const int SecretChats = 101;
+		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
 		internal const uint NullCtor = 0x56730BCC;
 		internal const uint RpcResultCtor = 0xF35C6D01;
@@ -23,6 +25,7 @@ namespace TL
 			[0x73F1F8DC] = typeof(MsgContainer),
 			[0xE06046B2] = typeof(MsgCopy),
 			[0x3072CFA1] = typeof(GzipPacked),
+			[0xFEFEFEFE] = typeof(WTelegram.SecretChats.SecretChat),
 			// from TL.MTProto:
 			[0x05162463] = typeof(ResPQ),
 			[0x83C95AEC] = typeof(PQInnerData),
