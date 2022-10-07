@@ -440,19 +440,19 @@ var chat = chats.chats[1234567890]; // the chat we want
 var full = await client.GetFullChat(chat);
 Reaction reaction = full.full_chat.AvailableReactions switch
 {
-	ChatReactionsSome some => some.reactions[0], // only some reactions are allowed => pick the first
-	ChatReactionsAll all =>                      // all reactions are allowed in this chat
-		all.flags.HasFlag(ChatReactionsAll.Flags.allow_custom) && client.User.flags.HasFlag(TL.User.Flags.premium)
-		? new ReactionCustomEmoji { document_id = 5190875290439525089 }     // we can use custom emoji reactions here
-		: new ReactionEmoji { emoticon = all_emoji.reactions[0].reaction }, // else, pick the first standard emoji reaction
-	_ => null                                    // reactions are not allowed in this chat
+    ChatReactionsSome some => some.reactions[0], // only some reactions are allowed => pick the first
+    ChatReactionsAll all =>                      // all reactions are allowed in this chat
+        all.flags.HasFlag(ChatReactionsAll.Flags.allow_custom) && client.User.flags.HasFlag(TL.User.Flags.premium)
+        ? new ReactionCustomEmoji { document_id = 5190875290439525089 }     // we can use custom emoji reactions here
+        : new ReactionEmoji { emoticon = all_emoji.reactions[0].reaction }, // else, pick the first standard emoji reaction
+    _ => null                                    // reactions are not allowed in this chat
 };
 if (reaction == null) return;
 
 // • Send the selected reaction on the last 2 pinned messages
 var messages = await client.Messages_Search<InputMessagesFilterPinned>(chat, limit: 2);
 foreach (var msg in messages.Messages)
-	await client.Messages_SendReaction(chat, msg.ID, reaction: new[] { reaction });
+    await client.Messages_SendReaction(chat, msg.ID, reaction: new[] { reaction });
 ```
 *Note: you can find custom emoji document IDs via API methods like [Messages_GetFeaturedEmojiStickers](https://corefork.telegram.org/method/messages.getFeaturedEmojiStickers). Access hash is not required*
 

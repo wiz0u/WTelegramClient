@@ -568,7 +568,28 @@ namespace WTelegram
 				_ = Discard(chat.ChatId);
 			}
 		}
+
+		public async Task<InputEncryptedFileBase> UploadFile(Stream stream, DecryptedMessageMedia media)
+		{
+			byte[] aes_key = new byte[32], aes_iv = new byte[32];
+			RNG.GetBytes(aes_key);
+			RNG.GetBytes(aes_iv);
+			media.SizeKeyIV = (checked((int)stream.Length), aes_key, aes_iv);
+
+			using var md5 = MD5.Create();
+			md5.TransformBlock(aes_key, 0, 32, null, 0);
+			var res = md5.TransformFinalBlock(aes_iv, 0, 32);
+			var digest = md5.Hash;
+			long fingerprint = BinaryPrimitives.ReadInt64LittleEndian(digest);
+			fingerprint ^= fingerprint >> 32;
+
+			using var ige = new AES_IGE_Stream(stream, aes_key, aes_iv, true);
+			return await client.UploadFileAsync(ige, null) switch
+			{
+				InputFile ifl => new InputEncryptedFileUploaded { id = ifl.id, parts = ifl.parts, md5_checksum = ifl.md5_checksum, key_fingerprint = (int)fingerprint },
+				InputFileBig ifb => new InputEncryptedFileBigUploaded { id = ifb.id, parts = ifb.parts, key_fingerprint = (int)fingerprint },
+				_ => null
+			};
+		}
 	}
 }
-
-// TODO https://core.telegram.org/api/end-to-end#sending-encrypted-files

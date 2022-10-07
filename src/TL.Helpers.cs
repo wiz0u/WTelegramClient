@@ -389,6 +389,7 @@ namespace TL
 	partial class EncryptedFile
 	{
 		public static implicit operator InputEncryptedFile(EncryptedFile file) => file == null ? null : new InputEncryptedFile { id = file.id, access_hash = file.access_hash };
+		public static implicit operator InputEncryptedFileLocation(EncryptedFile file) => file == null ? null : new InputEncryptedFileLocation { id = file.id, access_hash = file.access_hash };
 		public InputEncryptedFileLocation ToFileLocation() => new() { id = id, access_hash = access_hash };
 	}
 

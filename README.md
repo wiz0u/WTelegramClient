@@ -22,8 +22,8 @@ After installing WTelegramClient through [Nuget](https://www.nuget.org/packages/
 static async Task Main(string[] _)
 {
     using var client = new WTelegram.Client();
-    var my = await client.LoginUserIfNeeded();
-    Console.WriteLine($"We are logged-in as {my.username ?? my.first_name + " " + my.last_name} (id {my.id})");
+    var myself = await client.LoginUserIfNeeded();
+    Console.WriteLine($"We are logged-in as {myself} (id {myself.id})");
 }
 ```
 When run, this will prompt you interactively for your App **api_hash** and **api_id** (that you obtain through Telegram's
@@ -152,7 +152,7 @@ See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
-The other configuration items that you can override include: **session_pathname, email, email_verification_code, session_key, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id**
+The other configuration items that you can override include: **session_pathname, email, email_verification_code, session_key, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, user_id, bot_token**
 
 Optional API parameters have a default value of `null` when unset. Passing `null` for a required string/array is the same as *empty* (0-length).
 Required API parameters/fields can sometimes be set to 0 or `null` when unused (check API documentation or experiment).

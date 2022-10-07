@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TL;
@@ -31,9 +32,10 @@ namespace WTelegramClientTest
 			var dialogs = await Client.Messages_GetAllDialogs(); // load the list of users/chats
 			dialogs.CollectUsersChats(Users, Chats);
 			Console.WriteLine(@"Available commands:
-/request <UserID>   Initiate Secret Chat with user
-/discard [delete]   Terminate active secret chat (and delete history)
+/request <UserID>   Initiate Secret Chat with user (see /users)
+/discard [delete]   Terminate active secret chat [and delete history]
 /select <ChatID>    Select another Secret Chat
+/photo filename.jpg Send a JPEG photo
 /read               Mark active discussion as read
 /users              List collected users and their IDs
 Type a command, or a message to send to the active secret chat:");
@@ -52,6 +54,13 @@ Type a command, or a message to send to the active secret chat:");
 							SelectActiveChat(await Secrets.Request(user));
 						else
 							Console.WriteLine("User not found");
+					else if (line.StartsWith("/photo "))
+					{
+						var media = new TL.Layer45.DecryptedMessageMediaPhoto { caption = line[7..] };
+						var file = await Secrets.UploadFile(File.OpenRead(line[7..]), media);
+						var sent = await Secrets.SendMessage(ActiveChat, new TL.Layer73.DecryptedMessage { random_id = WTelegram.Helpers.RandomLong(),
+							media = media, flags = TL.Layer73.DecryptedMessage.Flags.has_media }, file: file);
+					}
 					else Console.WriteLine("Unrecognized command");
 				}
 				else if (ActiveChat == null) Console.WriteLine("No active secret chat");
@@ -73,7 +82,14 @@ Type a command, or a message to send to the active secret chat:");
 						if (unem.message.ChatId != ActiveChat) SelectActiveChat(unem.message.ChatId);
 						foreach (var msg in Secrets.DecryptMessage(unem.message))
 						{
-							if (msg.Action == null) Console.WriteLine($"{unem.message.ChatId}> {msg.Message}");
+							if (msg.Media != null && unem.message is EncryptedMessage { file: EncryptedFile ef })
+							{
+								Console.WriteLine($"{unem.message.ChatId}> {msg.Message} [file being downloaded to media.jpg]");
+								using var output = File.OpenWrite("media.jpg"); // not necessarily a JPG, check the msg.Media mime_type
+								using var decryptStream = new WTelegram.AES_IGE_Stream(output, msg.Media);
+								await Client.DownloadFileAsync(ef, decryptStream, ef.dc_id, ef.size);
+							}
+							else if (msg.Action == null) Console.WriteLine($"{unem.message.ChatId}> {msg.Message}");
 							else Console.WriteLine($"{unem.message.ChatId}> Service Message {msg.Action.GetType().Name[22..]}");
 						}
 						break;

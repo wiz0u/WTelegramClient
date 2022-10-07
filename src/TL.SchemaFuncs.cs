@@ -170,9 +170,9 @@ namespace TL
 
 		/// <summary>Binds a temporary authorization key <c>temp_auth_key_id</c> to the permanent authorization key <c>perm_auth_key_id</c>. Each permanent key may only be bound to one temporary key at a time, binding a new temporary key overwrites the previous one.		<para>See <a href="https://corefork.telegram.org/method/auth.bindTempAuthKey"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.bindTempAuthKey#possible-errors">details</a>)</para></summary>
 		/// <param name="perm_auth_key_id">Permanent auth_key_id to bind to</param>
-		/// <param name="nonce">Random long from <a href="#binding-message-contents">Binding message contents</a></param>
-		/// <param name="expires_at">Unix timestamp to invalidate temporary key, see <a href="#binding-message-contents">Binding message contents</a></param>
-		/// <param name="encrypted_message">See <a href="#generating-encrypted-message">Generating encrypted_message</a></param>
+		/// <param name="nonce">Random long from <a href="https://corefork.telegram.org/method/auth.bindTempAuthKey#binding-message-contents">Binding message contents</a></param>
+		/// <param name="expires_at">Unix timestamp to invalidate temporary key, see <a href="https://corefork.telegram.org/method/auth.bindTempAuthKey#binding-message-contents">Binding message contents</a></param>
+		/// <param name="encrypted_message">See <a href="https://corefork.telegram.org/method/auth.bindTempAuthKey#generating-encrypted-message">Generating encrypted_message</a></param>
 		public static Task<bool> Auth_BindTempAuthKey(this Client client, long perm_auth_key_id, long nonce, DateTime expires_at, byte[] encrypted_message)
 			=> client.Invoke(new Auth_BindTempAuthKey
 			{
@@ -3955,7 +3955,7 @@ namespace TL
 
 		/// <summary>Get <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a> we're admin in. Usually called when the user exceeds the <see cref="Config"/> for owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, and the user is given the choice to remove one of his channels/supergroups/geogroups.		<para>See <a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels#possible-errors">details</a>)</para></summary>
 		/// <param name="by_location">Get geogroups</param>
-		/// <param name="check_limit">If set and the user has reached the limit of owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, instead of returning the channel list one of the specified <a href="#possible-errors">errors</a> will be returned.<br/>Useful to check if a new public channel can indeed be created, even before asking the user to enter a channel username to use in <a href="https://corefork.telegram.org/method/channels.checkUsername">channels.checkUsername</a>/<a href="https://corefork.telegram.org/method/channels.updateUsername">channels.updateUsername</a>.</param>
+		/// <param name="check_limit">If set and the user has reached the limit of owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, instead of returning the channel list one of the specified <a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels#possible-errors">errors</a> will be returned.<br/>Useful to check if a new public channel can indeed be created, even before asking the user to enter a channel username to use in <a href="https://corefork.telegram.org/method/channels.checkUsername">channels.checkUsername</a>/<a href="https://corefork.telegram.org/method/channels.updateUsername">channels.updateUsername</a>.</param>
 		public static Task<Messages_Chats> Channels_GetAdminedPublicChannels(this Client client, bool by_location = false, bool check_limit = false)
 			=> client.Invoke(new Channels_GetAdminedPublicChannels
 			{

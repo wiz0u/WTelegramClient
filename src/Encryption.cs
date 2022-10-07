@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,9 +15,9 @@ namespace WTelegram
 {
 	internal static class Encryption
 	{
-		internal static readonly RNGCryptoServiceProvider RNG = new();
 		private static readonly Dictionary<long, RSAPublicKey> PublicKeys = new();
-		private static readonly Aes AesECB = Aes.Create();
+		internal static readonly RNGCryptoServiceProvider RNG = new();
+		internal static readonly Aes AesECB = Aes.Create();
 
 		static Encryption()
 		{
@@ -295,25 +296,23 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			return AES_IGE_EncryptDecrypt(input, aes_key, aes_iv, encrypt);
 		}
 
-		private static byte[] AES_IGE_EncryptDecrypt(Span<byte> input, byte[] aes_key, byte[] aes_iv, bool encrypt)
+		internal static byte[] AES_IGE_EncryptDecrypt(Span<byte> input, byte[] aes_key, byte[] aes_iv, bool encrypt)
 		{
 			if (input.Length % 16 != 0) throw new ApplicationException("AES_IGE input size not divisible by 16");
 
-			// code adapted from PHP implementation found at https://mgp25.com/AESIGE/
-			var output = new byte[input.Length];
-			var xPrev = aes_iv.AsSpan(encrypt ? 16 : 0, 16);
-			var yPrev = aes_iv.AsSpan(encrypt ? 0 : 16, 16);
 			using var aesCrypto = encrypt ? AesECB.CreateEncryptor(aes_key, null) : AesECB.CreateDecryptor(aes_key, null);
-			byte[] yXOR = new byte[16];
-			for (int i = 0; i < input.Length; i += 16)
+			var output = new byte[input.Length];
+			var prevBytes = (byte[])aes_iv.Clone();
+			var span = MemoryMarshal.Cast<byte, long>(input);
+			var sout = MemoryMarshal.Cast<byte, long>(output);
+			var prev = MemoryMarshal.Cast<byte, long>(prevBytes);
+			if (!encrypt) { (prev[2], prev[0]) = (prev[0], prev[2]); (prev[3], prev[1]) = (prev[1], prev[3]); }
+			for (int i = 0, count = input.Length / 8; i < count;)
 			{
-				for (int j = 0; j < 16; j++)
-					yXOR[j] = (byte)(input[i + j] ^ yPrev[j]);
-				aesCrypto.TransformBlock(yXOR, 0, 16, output, i);
-				for (int j = 0; j < 16; j++)
-					output[i + j] ^= xPrev[j];
-				xPrev = input.Slice(i, 16);
-				yPrev = output.AsSpan(i, 16);
+				sout[i] = span[i] ^ prev[0]; sout[i + 1] = span[i + 1] ^ prev[1];
+				aesCrypto.TransformBlock(output, i * 8, 16, output, i * 8);
+				prev[0] = sout[i] ^= prev[2]; prev[1] = sout[i + 1] ^= prev[3];
+				prev[2] = span[i++]; prev[3] = span[i++];
 			}
 			return output;
 		}
@@ -525,5 +524,53 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			return retVal; // retVal := T_1 || T_2 || ... || T_n, where T_n may be truncated to meet the desired output length
 		}
 #endif
+	}
+
+	public class AES_IGE_Stream : Helpers.IndirectStream
+	{
+		private readonly ICryptoTransform aesCrypto;
+		private readonly byte[] prevBytes;
+
+		public AES_IGE_Stream(Stream stream, DecryptedMessageMedia media) : this(stream, media.SizeKeyIV) { }
+		public AES_IGE_Stream(Stream innerStream, (int size, byte[] key, byte[] iv) t) : this(innerStream, t.key, t.iv) { ContentLength = t.size; }
+		public AES_IGE_Stream(Stream stream, byte[] key, byte[] iv, bool encrypt = false) : base(stream)
+		{
+			aesCrypto = encrypt ? Encryption.AesECB.CreateEncryptor(key, null) : Encryption.AesECB.CreateDecryptor(key, null);
+			if (encrypt) prevBytes = (byte[])iv.Clone();
+			else { prevBytes = new byte[32]; Array.Copy(iv, 0, prevBytes, 16, 16); Array.Copy(iv, 16, prevBytes, 0, 16); }
+		}
+
+		public override int Read(byte[] buffer, int offset, int count)
+		{
+			count = _innerStream.Read(buffer, offset, count);
+			if (count == 0) return 0;
+			Process(buffer, offset, count);
+			if (ContentLength.HasValue && _innerStream.Position == _innerStream.Length)
+				return count - (int)(_innerStream.Position - ContentLength.Value);
+			return count;
+		}
+
+		public override void Write(byte[] buffer, int offset, int count)
+		{
+			Process(buffer, offset, count);
+			if (ContentLength.HasValue && _innerStream.Position + count > ContentLength)
+				count -= (int)(_innerStream.Position + count - ContentLength.Value);
+			_innerStream.Write(buffer, offset, count);
+		}
+
+		public void Process(byte[] buffer, int offset, int count)
+		{
+			count = (count + 15) & ~15;
+			var span = MemoryMarshal.Cast<byte, long>(buffer.AsSpan(offset, count));
+			var prev = MemoryMarshal.Cast<byte, long>(prevBytes);
+			for (offset = 0, count /= 8; offset < count;)
+			{
+				prev[0] ^= span[offset]; prev[1] ^= span[offset + 1];
+				aesCrypto.TransformBlock(prevBytes, 0, 16, prevBytes, 0);
+				prev[0] ^= prev[2]; prev[1] ^= prev[3];
+				prev[2] = span[offset]; prev[3] = span[offset + 1];
+				span[offset++] = prev[0]; span[offset++] = prev[1];
+			}
+		}
 	}
 }
