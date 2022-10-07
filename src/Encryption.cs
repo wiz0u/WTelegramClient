@@ -540,6 +540,9 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			else { prevBytes = new byte[32]; Array.Copy(iv, 0, prevBytes, 16, 16); Array.Copy(iv, 16, prevBytes, 0, 16); }
 		}
 
+		public override bool CanSeek => false;
+		public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
 		public override int Read(byte[] buffer, int offset, int count)
 		{
 			count = _innerStream.Read(buffer, offset, count);

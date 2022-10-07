@@ -350,6 +350,7 @@ namespace WTelegram
 			Storage_FileType fileType = Storage_FileType.unknown;
 			var client = dc_id == 0 ? this : await GetClientForDC(dc_id, true);
 			using var writeSem = new SemaphoreSlim(1);
+			bool canSeek = outputStream.CanSeek;
 			long streamStartPos = outputStream.Position;
 			long fileOffset = 0, maxOffsetSeen = 0;
 			long transmitted = 0;
@@ -362,6 +363,7 @@ namespace WTelegram
 				var task = LoadPart(fileOffset);
 				lock (tasks) tasks[fileOffset] = task;
 				if (dc_id == 0) { await task; dc_id = client._dcSession.DcID; }
+				if (!canSeek) await task;
 				fileOffset += FilePartSize;
 				if (fileSize != 0 && fileOffset >= fileSize)
 				{
@@ -433,7 +435,7 @@ namespace WTelegram
 			lock (tasks) remainingTasks = tasks.Values.ToArray();
 			await Task.WhenAll(remainingTasks); // wait completion and eventually propagate any task exception
 			await outputStream.FlushAsync();
-			outputStream.Seek(streamStartPos + maxOffsetSeen, SeekOrigin.Begin);
+			if (canSeek) outputStream.Seek(streamStartPos + maxOffsetSeen, SeekOrigin.Begin);
 			return fileType;
 		}
 

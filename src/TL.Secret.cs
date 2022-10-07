@@ -31,7 +31,7 @@ namespace TL
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaEmpty">decryptedMessageMediaEmpty</a></remarks>
 	public abstract class DecryptedMessageMedia : IObject
 	{
-		public virtual (int, byte[], byte[]) SizeKeyIV { get => default; set => throw new ApplicationException("Incompatible DecryptedMessageMedia"); }
+		public virtual (int size, byte[] key, byte[] iv) SizeKeyIV { get => default; set => throw new ApplicationException("Incompatible DecryptedMessageMedia"); }
 	}
 
 	/// <summary>Object describes the action to which a service message is linked.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageAction"/></para></summary>
