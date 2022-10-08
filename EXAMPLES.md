@@ -430,6 +430,12 @@ You can find an example for such custom session store in [Examples/Program_Herok
 <a name="reaction"></a><a name="pinned"></a><a name="custom_emoji"></a>
 ### Fun with custom emojies and reactions on pinned messages
 ```csharp
+// • Sending a message with custom emojies in Markdown to ourself:
+var text = "Vicksy says Hi! [👋](emoji?id=5190875290439525089)";
+var entities = client.MarkdownToEntities(ref text, premium: true);
+await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
+// also available in HTML: "<tg-emoji id=\"5190875290439525089\">👋</tg-emoji>"
+
 // • Fetch all available standard emoji reactions
 var all_emoji = await client.Messages_GetAvailableReactions();
 
@@ -475,3 +481,12 @@ await client.Messages_ForwardMessages(from_chat, new[] { msg.ID }, new[] { WTele
 // • Alternative solution to copy the message (the full message is needed)
 await client.SendMessageAsync(to_chat, msg.message, msg.media?.ToInputMedia(), entities: msg.entities);
 ```
+
+<a name="e2e"></a><a name="secrets"></a>
+### Send/receive end-to-end encrypted messages in Secret Chats
+
+This can be done easily using the helper class `WTelegram.SecretChats` offering methods to manage/encrypt/decrypt secret chats & encrypted messages.
+
+You can view a full working example at [Examples/Program_SecretChats.cs](Examples/Program_SecretChats.cs).
+
+Secret Chats have been tested successfully with Telegram Android & iOS official clients.

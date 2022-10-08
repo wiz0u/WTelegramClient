@@ -87,6 +87,31 @@ Another simple approach is to pass `Environment.GetEnvironmentVariable` as the c
 Finally, if you want to redirect the library logs to your logger instead of the Console, you can install a delegate in the `WTelegram.Helpers.Log` static property.
 Its `int` argument is the log severity, compatible with the [LogLevel enum](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel)
 
+# Alternative simplified configuration & login
+Since version 3.0.0, a new approach to login/configuration has been added. Some people might find it easier to deal with:
+
+```csharp
+WTelegram.Client client = new WTelegram.Client(YOUR_API_ID, "YOUR_API_HASH");
+await DoLogin("+12025550156");
+
+async Task DoLogin(string loginInfo) // add this method to your code
+{
+    while (client.User == null)
+	    switch (await client.Login(loginInfo)) // returns which configuration info is requested for the login to continue
+	    {
+		    case "verification_code": Console.Write("Code: "); loginInfo = Console.ReadLine(); break;
+		    case "name": loginInfo = "John Doe"; break;    // if sign-up is required (first_name + last_name)
+		    case "password": loginInfo = "secret!"; break; // if user has enabled 2FA
+			default: loginInfo = null; break;
+	    }
+    Console.WriteLine($"We are logged-in as {client.User} (id {client.User.id})");
+}
+```
+
+With this method, you can choose in some cases to interrupt the login loop via a `return` instead of `break`, and resume it later
+by calling `DoLogin(requestedCode)` again once you've obtained the requested code/password/etc...
+See [WinForms example](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip) and [ASP.NET example](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/ASPnet_webapp.zip)
+
 # Example of API call
 
 >ℹ️ The Telegram API makes extensive usage of base and derived classes, so be ready to use the various C# syntaxes
@@ -168,6 +193,7 @@ This library can be used for any Telegram scenarios including:
 - Sequential or parallel automated steps based on API requests/responses
 - Real-time [monitoring](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#updates) of incoming Updates/Messages
 - Download/upload of files/media
+- Exchange end-to-end encrypted messages in [Secret Chats](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#e2e)
 - Building a full-featured interactive client
 
 It has been tested in a Console app, [in Windows Forms](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip),

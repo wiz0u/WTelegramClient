@@ -42,6 +42,9 @@ This might require adding a reference *(and `using`)* to the Microsoft.VisualBas
 
 A more complex solution requires the use of a `ManualResetEventSlim` that you will wait for in Config callback,
 and when the user has provided the verification_code through your app, you "set" the event to release your Config callback so it can return the code.  
+
+Another solution is to use the [alternative login method](README.md#alternative-simplified-configuration-login),
+calling `client.Login(...)` as the user provides the requested configuration elements.
 You can download such full example apps [for WinForms](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip) and [for ASP.NET](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/ASPnet_webapp.zip)
 
 <a name="access-hash"></a>
@@ -236,6 +239,22 @@ Pure WebApp hosts might not be adequate as they will recycle (stop) your app if 
 
 There are many cheap VPS Hosting offers available, for example Heroku:  
 See [Examples/Program_Heroku.cs](Examples/Program_Heroku.cs) for such an implementation and the steps to host/deploy it.
+
+<a name="secrets"></a>
+#### 14. Secret Chats implementation details
+
+The following choices were made while implementing Secret Chats in WTelegramClient:
+- It may not support remote antique Telegram clients *(prior to 2018, still using insecure MTProto 1.0)*
+- It doesn't store outgoing messages *(so if remote client was offline for a week and ask us to resend old messages, we will send void data)*
+- It doesn't store incoming messages on disk *(it's up to you if you want to store them)*
+- If you pass `DecryptMessage` parameter `fillGaps: true` *(the default)*, incoming messages are ensured to be delivered to you in correct order.  
+If for some (weird) reason, we received them in incorrect order, messages are kept in memory until the requested missing messages are obtained.  
+If those missing messages are never obtained during the session, incoming messages might get stuck and lost.
+- SecretChats file data is only valid for the current user, so make sure to select the right file *(or a new file name)* if you change logged-in user.
+- If you want to accept Secret Chats request only from specific user, you must check it in OnUpdate before:  
+`await Secrets.HandleUpdate(ue, ue.chat is EncryptedChatRequested ecr && ecr.admin_id == EXPECTED_USER_ID);`
+- As recommended, new encryption keys are negotiated every 100 sent/received messages or after one week.  
+If remote client doesn't complete this negotiation before reaching 200 messages, the Secret Chat is aborted.
 
 <a name="troubleshoot"></a>
 ## Troubleshooting guide
