@@ -264,7 +264,7 @@ namespace WTelegram
 		/// <param name="chatId">Secret Chat ID</param>
 		/// <param name="msg">The pre-filled <see cref="TL.Layer73.DecryptedMessage">DecryptedMessage</see> or <see cref="TL.Layer17.DecryptedMessageService">DecryptedMessageService </see> to send</param>
 		/// <param name="silent">Send encrypted message without a notification</param>
-		/// <param name="file">Optional file attachment</param>
+		/// <param name="file">Optional file attachment. See method <see cref="UploadFile">UploadFile</see></param>
 		/// <returns>Confirmation of sent message</returns>
 		public async Task<Messages_SentEncryptedMessage> SendMessage(int chatId, DecryptedMessageBase msg, bool silent = false, InputEncryptedFileBase file = null)
 		{
@@ -569,7 +569,12 @@ namespace WTelegram
 			}
 		}
 
-		public async Task<InputEncryptedFileBase> UploadFile(Stream stream, DecryptedMessageMedia media)
+		/// <summary>Upload a file to Telegram in encrypted form</summary>
+		/// <param name="stream">Content of the file to upload. This method close/dispose the stream</param>
+		/// <param name="media">The associated media structure that will be updated with file size and the random AES key/iv</param>
+		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>
+		/// <returns>the uploaded file info that should be passed to method <see cref="SendMessage">SendMessage</see></returns>
+		public async Task<InputEncryptedFileBase> UploadFile(Stream stream, DecryptedMessageMedia media, Client.ProgressCallback progress = null)
 		{
 			byte[] aes_key = new byte[32], aes_iv = new byte[32];
 			RNG.GetBytes(aes_key);
@@ -579,12 +584,11 @@ namespace WTelegram
 			using var md5 = MD5.Create();
 			md5.TransformBlock(aes_key, 0, 32, null, 0);
 			var res = md5.TransformFinalBlock(aes_iv, 0, 32);
-			var digest = md5.Hash;
-			long fingerprint = BinaryPrimitives.ReadInt64LittleEndian(digest);
+			long fingerprint = BinaryPrimitives.ReadInt64LittleEndian(md5.Hash);
 			fingerprint ^= fingerprint >> 32;
 
 			using var ige = new AES_IGE_Stream(stream, aes_key, aes_iv, true);
-			return await client.UploadFileAsync(ige, null) switch
+			return await client.UploadFileAsync(ige, null, progress) switch
 			{
 				InputFile ifl => new InputEncryptedFileUploaded { id = ifl.id, parts = ifl.parts, md5_checksum = ifl.md5_checksum, key_fingerprint = (int)fingerprint },
 				InputFileBig ifb => new InputEncryptedFileBigUploaded { id = ifb.id, parts = ifb.parts, key_fingerprint = (int)fingerprint },

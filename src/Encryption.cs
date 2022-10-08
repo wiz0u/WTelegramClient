@@ -526,13 +526,15 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 #endif
 	}
 
+	/// <summary>Stream for encryption/decryption of AES-256 with infinite garble extension (IGE) </summary>
 	public class AES_IGE_Stream : Helpers.IndirectStream
 	{
 		private readonly ICryptoTransform aesCrypto;
 		private readonly byte[] prevBytes;
 
+		/// <summary>Decryption of AES-256 IGE file with key/iv obtained from media structure</summary>
 		public AES_IGE_Stream(Stream stream, DecryptedMessageMedia media) : this(stream, media.SizeKeyIV) { }
-		public AES_IGE_Stream(Stream innerStream, (int size, byte[] key, byte[] iv) t) : this(innerStream, t.key, t.iv) { ContentLength = t.size; }
+		public AES_IGE_Stream(Stream stream, (int size, byte[] key, byte[] iv) t) : this(stream, t.key, t.iv) { ContentLength = t.size; }
 		public AES_IGE_Stream(Stream stream, byte[] key, byte[] iv, bool encrypt = false) : base(stream)
 		{
 			aesCrypto = encrypt ? Encryption.AesECB.CreateEncryptor(key, null) : Encryption.AesECB.CreateDecryptor(key, null);

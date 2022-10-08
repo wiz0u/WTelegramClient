@@ -1247,9 +1247,12 @@ namespace WTelegram
 		internal async Task<T> InvokeBare<T>(IMethod<T> request)
 		{
 			if (_bareRpc != null) throw new ApplicationException("A bare request is already undergoing");
+		retry:
 			_bareRpc = new Rpc { type = typeof(T) };
 			await SendAsync(request, false, _bareRpc);
-			return (T)await _bareRpc.Task;
+			var result = await _bareRpc.Task;
+			if (result is ReactorError) goto retry;
+			return (T)result;
 		}
 
 		/// <summary>Call the given TL method <i>(You shouldn't need to use this method directly)</i></summary>

@@ -67,7 +67,6 @@ Type a command, or a message to send to the active secret chat:");
 					}
 					else if (ActiveChat == null) Console.WriteLine("No active secret chat");
 					else await Secrets.SendMessage(ActiveChat, new TL.Layer73.DecryptedMessage { message = line, random_id = WTelegram.Helpers.RandomLong() });
-
 				}
 				catch (Exception ex)
 				{
