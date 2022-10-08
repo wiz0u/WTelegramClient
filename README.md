@@ -97,13 +97,13 @@ await DoLogin("+12025550156");
 async Task DoLogin(string loginInfo) // add this method to your code
 {
     while (client.User == null)
-	    switch (await client.Login(loginInfo)) // returns which configuration info is requested for the login to continue
-	    {
-		    case "verification_code": Console.Write("Code: "); loginInfo = Console.ReadLine(); break;
-		    case "name": loginInfo = "John Doe"; break;    // if sign-up is required (first_name + last_name)
-		    case "password": loginInfo = "secret!"; break; // if user has enabled 2FA
-			default: loginInfo = null; break;
-	    }
+        switch (await client.Login(loginInfo)) // returns which configuration info is requested for the login to continue
+        {
+            case "verification_code": Console.Write("Code: "); loginInfo = Console.ReadLine(); break;
+            case "name": loginInfo = "John Doe"; break;    // if sign-up is required (first_name + last_name)
+            case "password": loginInfo = "secret!"; break; // if user has enabled 2FA
+            default: loginInfo = null; break;
+        }
     Console.WriteLine($"We are logged-in as {client.User} (id {client.User.id})");
 }
 ```

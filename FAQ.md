@@ -43,7 +43,7 @@ This might require adding a reference *(and `using`)* to the Microsoft.VisualBas
 A more complex solution requires the use of a `ManualResetEventSlim` that you will wait for in Config callback,
 and when the user has provided the verification_code through your app, you "set" the event to release your Config callback so it can return the code.  
 
-Another solution is to use the [alternative login method](README.md#alternative-simplified-configuration-login),
+Another solution is to use the [alternative login method](README.md#alternative-simplified-configuration--login),
 calling `client.Login(...)` as the user provides the requested configuration elements.
 You can download such full example apps [for WinForms](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip) and [for ASP.NET](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/ASPnet_webapp.zip)
 
