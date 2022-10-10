@@ -276,8 +276,13 @@ for (int offset_id = 0; ;)
     var messages = await client.Messages_GetHistory(peer, offset_id);
     if (messages.Messages.Length == 0) break;
     foreach (var msgBase in messages.Messages)
+    {
+        var from = messages.UserOrChat(msgBase.From ?? msgBase.Peer); // from can be User/Chat/Channel
         if (msgBase is Message msg)
-            Console.WriteLine(msg.message);
+            Console.WriteLine($"{from}> {msg.message} {msg.media}");
+        else if (msgBase is MessageService ms)
+            Console.WriteLine($"{from} [{ms.action.GetType().Name[13..]}]");
+    }
     offset_id = messages.Messages[^1].ID;
 }
 ```

@@ -1101,9 +1101,9 @@ namespace WTelegram
 							}
 					}
 			}
-			catch
+			catch (Exception ex) when (ex is not RpcException { Message: "FLOOD_WAIT_X" })
 			{
-				await this.Auth_CancelCode(phone_number, sentCode.phone_code_hash);
+				try { await this.Auth_CancelCode(phone_number, sentCode.phone_code_hash); } catch { }
 				throw;
 			}
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)

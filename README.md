@@ -160,7 +160,7 @@ In the API, Telegram uses some terms/classnames that can be confusing as they di
 - `Channel` : A (large or public) chat group *(sometimes called [supergroup](https://corefork.telegram.org/api/channel#supergroups))*
 or a [broadcast channel](https://corefork.telegram.org/api/channel#channels) (the `broadcast` flag differentiate those)
 - `Chat` : A private [basic chat group](https://corefork.telegram.org/api/channel#basic-groups) with less than 200 members
-(it may be migrated to a supergroup `Channel` with a new ID when it gets bigger or public, in which case the old `Chat` will still exist but be `deactivated`)  
+(it may be migrated to a supergroup `Channel` with a new ID when it gets bigger or public, in which case the old `Chat` will still exist but will be `deactivated`)  
 **⚠️ Most chat groups you see are really of type `Channel`, not `Chat`!**
 - chats : In plural or general meaning, it means either `Chat` or `Channel`
 - `Peer` : Either a `Chat`, a `Channel` or a `User`
