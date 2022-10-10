@@ -97,10 +97,10 @@ await DoLogin("+12025550156");
 async Task DoLogin(string loginInfo) // add this method to your code
 {
     while (client.User == null)
-        switch (await client.Login(loginInfo)) // returns which configuration info is requested for the login to continue
+        switch (await client.Login(loginInfo)) // returns which config info is needed to continue login
         {
             case "verification_code": Console.Write("Code: "); loginInfo = Console.ReadLine(); break;
-            case "name": loginInfo = "John Doe"; break;    // if sign-up is required (first_name + last_name)
+            case "name": loginInfo = "John Doe"; break;    // if sign-up is required (first_name last_name)
             case "password": loginInfo = "secret!"; break; // if user has enabled 2FA
             default: loginInfo = null; break;
         }
@@ -193,7 +193,7 @@ This library can be used for any Telegram scenarios including:
 - Sequential or parallel automated steps based on API requests/responses
 - Real-time [monitoring](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#updates) of incoming Updates/Messages
 - Download/upload of files/media
-- Exchange end-to-end encrypted messages in [Secret Chats](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#e2e)
+- Exchange end-to-end encrypted messages/files in [Secret Chats](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#e2e)
 - Building a full-featured interactive client
 
 It has been tested in a Console app, [in Windows Forms](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip),

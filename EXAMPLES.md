@@ -483,10 +483,11 @@ await client.SendMessageAsync(to_chat, msg.message, msg.media?.ToInputMedia(), e
 ```
 
 <a name="e2e"></a><a name="secrets"></a>
-### Send/receive end-to-end encrypted messages in Secret Chats
+### Send/receive end-to-end encrypted messages & files in Secret Chats
 
-This can be done easily using the helper class `WTelegram.SecretChats` offering methods to manage/encrypt/decrypt secret chats & encrypted messages.
+This can be done easily using the helper class `WTelegram.SecretChats` offering methods to manage/encrypt/decrypt secret chats & encrypted messages/files.
 
 You can view a full working example at [Examples/Program_SecretChats.cs](Examples/Program_SecretChats.cs).
 
-Secret Chats have been tested successfully with Telegram Android & iOS official clients.
+Secret Chats have been tested successfully with Telegram Android & iOS official clients.  
+You can also check our [FAQ for more implementation details](FAQ.md#14-secret-chats-implementation-details).
