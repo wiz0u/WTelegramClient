@@ -216,7 +216,7 @@ namespace WTelegram
 
 		/// <summary>Helper function to send an album (media group) of photos or documents more easily</summary>
 		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>
-		/// <param name="medias">An array of <see cref="InputMedia">InputMedia</see>-derived class</param>
+		/// <param name="medias">An array or List of <see cref="InputMedia">InputMedia</see>-derived class</param>
 		/// <param name="caption">Caption for the media <i>(in plain text)</i> or <see langword="null"/></param>
 		/// <param name="reply_to_msg_id">Your message is a reply to an existing message with this ID, in the same chat</param>
 		/// <param name="entities">Text formatting entities for the caption. You can use <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
@@ -228,14 +228,16 @@ namespace WTelegram
 		///   WTelegramClient proxy settings don't apply to HttpClient<br/>
 		/// * You may run into errors if you mix, in the same album, photos and file documents having no thumbnails/video attributes
 		/// </remarks>
-		public async Task<Message[]> SendAlbumAsync(InputPeer peer, InputMedia[] medias, string caption = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
+		public async Task<Message[]> SendAlbumAsync(InputPeer peer, ICollection<InputMedia> medias, string caption = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
 		{
 			System.Net.Http.HttpClient httpClient = null;
-			var multiMedia = new InputSingleMedia[medias.Length];
+			int i = 0, length = medias.Count;
+			var multiMedia = new InputSingleMedia[length];
 			var random_id = Helpers.RandomLong();
-			for (int i = 0; i < medias.Length; i++)
+			foreach (var media in medias)
 			{
-				var ism = multiMedia[i] = new InputSingleMedia { random_id = random_id + i, media = medias[i] };
+				var ism = multiMedia[i] = new InputSingleMedia { random_id = random_id + i, media = media };
+				i++;
 			retry:
 				switch (ism.media)
 				{
@@ -283,8 +285,8 @@ namespace WTelegram
 
 			var updates = await this.Messages_SendMultiMedia(peer, multiMedia, reply_to_msg_id: reply_to_msg_id, schedule_date: schedule_date);
 			RaiseUpdate(updates);
-			var msgIds = new int[medias.Length];
-			var result = new Message[medias.Length];
+			var msgIds = new int[length];
+			var result = new Message[length];
 			foreach (var update in updates.UpdateList)
 			{
 				switch (update)

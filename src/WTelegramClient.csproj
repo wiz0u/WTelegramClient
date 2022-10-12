@@ -23,7 +23,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>Telegram;Client;Api;UserBot;MTProto;TLSharp;OpenTl</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <NoWarn>IDE0079;0419;1573;1591</NoWarn>
+    <NoWarn>IDE0079;0419;1573;1591;NETSDK1138</NoWarn>
     <DefineConstants>TRACE;OBFUSCATION</DefineConstants>
   </PropertyGroup>
 

@@ -10,12 +10,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using TL;
 using static WTelegram.Encryption;
+
+// necessary for .NET Standard 2.0 compilation:
+#pragma warning disable CA1835 // Prefer the 'Memory'-based overloads for 'ReadAsync' and 'WriteAsync'
 
 namespace WTelegram
 {
@@ -877,7 +879,7 @@ namespace WTelegram
 		/// <summary>Login as a user with given phone number (or resume previous session)<br/>Call this method again to provide additional requested login information</summary>
 		/// <param name="loginInfo">First call should be with phone number<br/>Further calls should be with the requested configuration value</param>
 		/// <returns>Configuration item requested to continue login, or <see langword="null"/> when login is successful<br/>
-		/// Possible values: <b>verification_code</b>, <b>name</b> (signup), <b>password</b> (2FA)</returns>
+		/// Possible values: <b>verification_code</b>, <b>name</b> (signup), <b>password</b> (2FA), <b>email</b> &amp; <b>email_verification_code</b> (email registration)</returns>
 		/// <exception cref="ApplicationException"/><exception cref="RpcException"/>
 		public async Task<string> Login(string loginInfo)
 		{
@@ -972,7 +974,7 @@ namespace WTelegram
 
 		/// <summary>Login as a user (if not already logged-in).
 		/// <br/><i>(this method calls <see cref="ConnectAsync">ConnectAsync</see> if necessary)</i></summary>
-		/// <remarks>Config callback is queried for: <b>phone_number</b>, <b>verification_code</b> <br/>and eventually <b>first_name</b>, <b>last_name</b> (signup required), <b>password</b> (2FA auth), <b>user_id</b> (alt validation)</remarks>
+		/// <remarks>Config callback is queried for: <b>phone_number</b>, <b>verification_code</b> <br/>and eventually <b>first_name</b>, <b>last_name</b> (signup required), <b>password</b> (2FA auth), <b>email</b> &amp; <b>email_verification_code</b> (email registration), <b>user_id</b> (alt validation)</remarks>
 		/// <param name="settings">(optional) Preference for verification_code sending</param>
 		/// <param name="reloginOnFailedResume">Proceed to logout and login if active user session cannot be resumed successfully</param>
 		/// <returns>Detail about the logged-in user
