@@ -92,9 +92,9 @@ Since version 3.0.0, a new approach to login/configuration has been added. Some 
 
 ```csharp
 WTelegram.Client client = new WTelegram.Client(YOUR_API_ID, "YOUR_API_HASH");
-await DoLogin("+12025550156");
+await DoLogin("+12025550156"); // user's phone_number
 
-async Task DoLogin(string loginInfo) // add this method to your code
+async Task DoLogin(string loginInfo) // (add this method to your code)
 {
     while (client.User == null)
         switch (await client.Login(loginInfo)) // returns which config info is needed to continue login

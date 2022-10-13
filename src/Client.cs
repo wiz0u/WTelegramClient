@@ -1119,7 +1119,10 @@ namespace WTelegram
 				authorization = await this.Auth_SignUp(phone_number, sentCode.phone_code_hash, first_name, last_name);
 			}
 #pragma warning restore CS0618
-			return LoginAlreadyDone(authorization);
+			LoginAlreadyDone(authorization);
+			if (User.phone != string.Concat(phone_number.Where(char.IsDigit)))
+				Helpers.Log(3, $"Mismatched phone_number (+{User.phone} != {phone_number}). Fix this to avoid verification code each time");
+			return User;
 		}
 
 		/// <summary><b>[Not recommended]</b> You can use this if you have already obtained a login authorization manually</summary>
