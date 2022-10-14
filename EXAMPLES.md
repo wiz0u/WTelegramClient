@@ -287,6 +287,24 @@ for (int offset_id = 0; ;)
 }
 ```
 
+
+<a name="updates"></a>
+### Monitor all Telegram events happening for the user
+
+This is done through the `client.OnUpdate` callback event.  
+Your event handler implementation can either return `Task.CompletedTask` or be an `async Task` method.
+
+See [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
+
+<a name="monitor-msg"></a>
+### Monitor new messages being posted in chats in real-time
+
+You have to handle `client.OnUpdate` events containing an `UpdateNewMessage`.
+
+See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
+
+You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.
+
 <a name="contacts"></a>
 ### Retrieve the current user's contacts list
 There are two different methods. Here is the simpler one:
@@ -315,23 +333,6 @@ finally
     await client.InvokeWithTakeout(takeout.id, finishTakeout);
 }
 ```
-
-<a name="updates"></a>
-### Monitor all Telegram events happening for the user
-
-This is done through the `client.OnUpdate` callback event.  
-Your event handler implementation can either return `Task.CompletedTask` or be an `async Task` method.
-
-See [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
-
-<a name="monitor-msg"></a>
-### Monitor new messages being posted in chats in real-time
-
-You have to handle `client.OnUpdate` events containing an `UpdateNewMessage`.
-
-See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
-
-You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.
 
 <a name="download"></a>
 ### Downloading photos, medias, files
@@ -439,7 +440,7 @@ You can find an example for such custom session store in [Examples/Program_Herok
 var text = "Vicksy says Hi! [👋](emoji?id=5190875290439525089)";
 var entities = client.MarkdownToEntities(ref text, premium: true);
 await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
-// also available in HTML: "<tg-emoji id=\"5190875290439525089\">👋</tg-emoji>"
+// also available in HTML: <tg-emoji id="5190875290439525089">👋</tg-emoji>
 
 // • Fetch all available standard emoji reactions
 var all_emoji = await client.Messages_GetAvailableReactions();
@@ -465,7 +466,7 @@ var messages = await client.Messages_Search<InputMessagesFilterPinned>(chat, lim
 foreach (var msg in messages.Messages)
     await client.Messages_SendReaction(chat, msg.ID, reaction: new[] { reaction });
 ```
-*Note: you can find custom emoji document IDs via API methods like [Messages_GetFeaturedEmojiStickers](https://corefork.telegram.org/method/messages.getFeaturedEmojiStickers). Access hash is not required*
+*Note: you can find custom emoji document IDs via API methods like [Messages_GetFeaturedEmojiStickers](https://corefork.telegram.org/method/messages.getFeaturedEmojiStickers) or inspecting incoming messages. Access hash is not required*
 
 <a name="forward"></a><a name="copy"></a>
 ### Forward or copy a message to another chat

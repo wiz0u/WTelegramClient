@@ -117,7 +117,7 @@ namespace WTelegram
 			catch (Exception ex)
 			{
 				store.Dispose();
-				throw new ApplicationException($"Exception while reading session file: {ex.Message}\nDelete the file to start a new session", ex);
+				throw new ApplicationException($"Exception while reading session file: {ex.Message}\nUse the correct api_hash/id/key, or delete the file to start a new session", ex);
 			}
 			session ??= new Session();
 			session._store = store;
