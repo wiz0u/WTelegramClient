@@ -86,7 +86,7 @@ namespace WTelegram
 			return result;
 		}
 
-		internal static ulong PQFactorize(ulong pq) // ported from https://github.com/tdlib/td/blob/master/tdutils/td/utils/crypto.cpp#L90
+		internal static ulong PQFactorize(ulong pq) // ported from https://github.com/tdlib/td/blob/master/tdutils/td/utils/crypto.cpp#L103
 		{
 			if (pq < 2) return 1;
 			var random = new Random();
@@ -100,26 +100,16 @@ namespace WTelegram
 				for (int j = 1; j < lim; j++)
 				{
 					iter++;
-					ulong a = x;
-					ulong b = x;
-					ulong c = q;
-
-					// c += a * b
-					while (b != 0)
+					// x = (q + x * x) % pq
+					ulong res = q, a = x;
+					while (x != 0)
 					{
-						if ((b & 1) != 0)
-						{
-							c += a;
-							if (c >= pq)
-								c -= pq;
-						}
-						a += a;
-						if (a >= pq)
-							a -= pq;
-						b >>= 1;
+						if ((x & 1) != 0)
+							res = (res + a) % pq;
+						a = (a + a) % pq;
+						x >>= 1;
 					}
-
-					x = c;
+					x = res;
 					ulong z = x < y ? pq + x - y : x - y;
 					g = gcd(z, pq);
 					if (g != 1)
@@ -139,32 +129,15 @@ namespace WTelegram
 			}
 			return g;
 
-			static ulong gcd(ulong a, ulong b)
+			static ulong gcd(ulong left, ulong right)
 			{
-				if (a == 0) return b;
-				if (b == 0) return a;
-
-				int shift = 0;
-				while ((a & 1) == 0 && (b & 1) == 0)
+				while (right != 0)
 				{
-					a >>= 1;
-					b >>= 1;
-					shift++;
+					ulong num = left % right;
+					left = right;
+					right = num;
 				}
-
-				while (true)
-				{
-					while ((a & 1) == 0)
-						a >>= 1;
-					while ((b & 1) == 0)
-						b >>= 1;
-					if (a > b)
-						a -= b;
-					else if (b > a)
-						b -= a;
-					else
-						return a << shift;
-				}
+				return left;
 			}
 		}
 
