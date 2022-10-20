@@ -404,6 +404,8 @@ WTelegram.Helpers.Log = (lvl, str) => _logger.Log((LogLevel)lvl, str);
 WTelegram.Helpers.Log = (lvl, str) => { };
 ```
 
+The `lvl` argument correspond to standard [LogLevel values](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel#fields)
+
 <a name="2FA"></a>
 ### Change 2FA password
 ```csharp

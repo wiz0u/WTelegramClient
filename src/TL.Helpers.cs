@@ -78,7 +78,7 @@ namespace TL
 	partial class Peer
 	{
 		public abstract long ID { get; }
-		abstract internal IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats);
+		internal abstract IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats);
 	}
 	partial class PeerUser
 	{

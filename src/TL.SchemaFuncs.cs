@@ -288,8 +288,8 @@ namespace TL
 
 		/// <summary>Register device to receive <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>		<para>See <a href="https://corefork.telegram.org/method/account.registerDevice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.registerDevice#possible-errors">details</a>)</para></summary>
 		/// <param name="no_muted">Avoid receiving (silent and invisible background) notifications. Useful to save battery.</param>
-		/// <param name="token_type">Device token type.<br/><strong>Possible values</strong>:<br/><c>1</c> - APNS (device token for apple push)<br/><c>2</c> - FCM (firebase token for google firebase)<br/><c>3</c> - MPNS (channel URI for microsoft push)<br/><c>4</c> - Simple push (endpoint for firefox's simple push API)<br/><c>5</c> - Ubuntu phone (token for ubuntu push)<br/><c>6</c> - Blackberry (token for blackberry push)<br/><c>7</c> - Unused<br/><c>8</c> - WNS (windows push)<br/><c>9</c> - APNS VoIP (token for apple push VoIP)<br/><c>10</c> - Web push (web push, see below)<br/><c>11</c> - MPNS VoIP (token for microsoft push VoIP)<br/><c>12</c> - Tizen (token for tizen push)<br/><br/>For <c>10</c> web push, the token must be a JSON-encoded object containing the keys described in <a href="https://corefork.telegram.org/api/push-updates">PUSH updates</a></param>
-		/// <param name="token">Device token</param>
+		/// <param name="token_type">Device token type, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
+		/// <param name="token">Device token, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
 		/// <param name="app_sandbox">If <see cref="Bool.True"/> is transmitted, a sandbox-certificate will be used during transmission.</param>
 		/// <param name="secret">For FCM and APNS VoIP, optional encryption key used to encrypt push notifications</param>
 		/// <param name="other_uids">List of user identifiers of other users currently using the client</param>
@@ -305,8 +305,8 @@ namespace TL
 			});
 
 		/// <summary>Deletes a device by its token, stops sending PUSH-notifications to it.		<para>See <a href="https://corefork.telegram.org/method/account.unregisterDevice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.unregisterDevice#possible-errors">details</a>)</para></summary>
-		/// <param name="token_type">Device token type.<br/><strong>Possible values</strong>:<br/><c>1</c> - APNS (device token for apple push)<br/><c>2</c> - FCM (firebase token for google firebase)<br/><c>3</c> - MPNS (channel URI for microsoft push)<br/><c>4</c> - Simple push (endpoint for firefox's simple push API)<br/><c>5</c> - Ubuntu phone (token for ubuntu push)<br/><c>6</c> - Blackberry (token for blackberry push)<br/><c>7</c> - Unused<br/><c>8</c> - WNS (windows push)<br/><c>9</c> - APNS VoIP (token for apple push VoIP)<br/><c>10</c> - Web push (web push, see below)<br/><c>11</c> - MPNS VoIP (token for microsoft push VoIP)<br/><c>12</c> - Tizen (token for tizen push)<br/><br/>For <c>10</c> web push, the token must be a JSON-encoded object containing the keys described in <a href="https://corefork.telegram.org/api/push-updates">PUSH updates</a></param>
-		/// <param name="token">Device token</param>
+		/// <param name="token_type">Device token type, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
+		/// <param name="token">Device token, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
 		/// <param name="other_uids">List of user identifiers of other users currently using the client</param>
 		public static Task<bool> Account_UnregisterDevice(this Client client, int token_type, string token, params long[] other_uids)
 			=> client.Invoke(new Account_UnregisterDevice
@@ -4570,7 +4570,7 @@ namespace TL
 		/// <param name="video_stopped">If set, the user's video will be disabled by default upon joining.</param>
 		/// <param name="call">The group call</param>
 		/// <param name="join_as">Join the group call, presenting yourself as the specified user/channel</param>
-		/// <param name="invite_hash">The invitation hash from the <a href="https://corefork.telegram.org/api/links#voice-chatvideo-chatlivestream-links">invite link »</a>, if provided allows speaking in a livestream or muted group chat.</param>
+		/// <param name="invite_hash">The invitation hash from the <a href="https://corefork.telegram.org/api/links#video-chatlivestream-links">invite link »</a>, if provided allows speaking in a livestream or muted group chat.</param>
 		/// <param name="params_">WebRTC parameters</param>
 		public static Task<UpdatesBase> Phone_JoinGroupCall(this Client client, InputGroupCall call, InputPeer join_as, DataJSON params_, bool muted = false, bool video_stopped = false, string invite_hash = null)
 			=> client.Invoke(new Phone_JoinGroupCall
@@ -4714,7 +4714,7 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary>Get an <a href="https://corefork.telegram.org/api/links#voice-chatvideo-chatlivestream-links">invite link</a> for a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite#possible-errors">details</a>)</para></summary>
+		/// <summary>Get an <a href="https://corefork.telegram.org/api/links#video-chatlivestream-links">invite link</a> for a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite#possible-errors">details</a>)</para></summary>
 		/// <param name="can_self_unmute">For livestreams or muted group chats, if set, users that join using this link will be able to speak without explicitly requesting permission by (for example by raising their hand).</param>
 		/// <param name="call">The group call</param>
 		public static Task<Phone_ExportedGroupCallInvite> Phone_ExportGroupCallInvite(this Client client, InputGroupCall call, bool can_self_unmute = false)

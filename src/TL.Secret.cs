@@ -31,7 +31,8 @@ namespace TL
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaEmpty">decryptedMessageMediaEmpty</a></remarks>
 	public abstract class DecryptedMessageMedia : IObject
 	{
-		public virtual (int size, byte[] key, byte[] iv) SizeKeyIV { get => default; set => throw new ApplicationException("Incompatible DecryptedMessageMedia"); }
+		public virtual string MimeType { get; }
+		internal virtual (int size, byte[] key, byte[] iv) SizeKeyIV { get => default; set => throw new ApplicationException("Incompatible DecryptedMessageMedia"); }
 	}
 
 	/// <summary>Object describes the action to which a service message is linked.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageAction"/></para></summary>
@@ -108,7 +109,8 @@ namespace TL
 			/// <summary>Initialization vector</summary>
 			public byte[] iv;
 
-			public override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			public override string MimeType => "image/jpeg";
+			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
 		}
 		/// <summary>Video attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVideo"/></para></summary>
 		[TLDef(0x4CEE6EF3)]
@@ -133,7 +135,7 @@ namespace TL
 			/// <summary>Initialization vector</summary>
 			public byte[] iv;
 
-			public override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
 		}
 		/// <summary>GeoPoint attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaGeoPoint"/></para></summary>
 		[TLDef(0x35480A59)]
@@ -177,7 +179,10 @@ namespace TL
 			/// <summary>Initialization</summary>
 			public byte[] iv;
 
-			public override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			/// <summary>File MIME-type</summary>
+			public override string MimeType => mime_type;
+
+			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
 		}
 		/// <summary>Audio file attached to a secret chat message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaAudio"/></para></summary>
 		[TLDef(0x6080758F)]
@@ -192,7 +197,7 @@ namespace TL
 			/// <summary>Initialization vector</summary>
 			public byte[] iv;
 
-			public override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
 		}
 
 		/// <summary>Setting of a message lifetime after reading.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionSetMessageTTL"/></para></summary>
@@ -305,7 +310,10 @@ namespace TL
 			/// <summary>Initialization vector</summary>
 			public byte[] iv;
 
-			public override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			/// <summary>MIME-type of the video file<br/>Parameter added in Layer 17.</summary>
+			public override string MimeType => mime_type;
+
+			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
 		}
 		/// <summary>Audio file attached to a secret chat message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaAudio"/></para></summary>
 		[TLDef(0x57E0A9CB)]
@@ -322,7 +330,10 @@ namespace TL
 			/// <summary>Initialization vector</summary>
 			public byte[] iv;
 
-			public override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			/// <summary>MIME-type of the audio file<br/>Parameter added in Layer 13.</summary>
+			public override string MimeType => mime_type;
+
+			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
 		}
 
 		/// <summary>Request for the other party in a Secret Chat to automatically resend a contiguous range of previously sent messages, as explained in <a href="https://corefork.telegram.org/api/end-to-end/seq_no">Sequence number is Secret Chats</a>.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionResend"/></para></summary>
@@ -463,7 +474,8 @@ namespace TL
 			/// <summary>Caption</summary>
 			public string caption;
 
-			public override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			public override string MimeType => "image/jpeg";
+			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
 		}
 		/// <summary>Video attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVideo"/></para></summary>
 		[TLDef(0x970C8C0E)]
@@ -492,7 +504,10 @@ namespace TL
 			/// <summary>Caption</summary>
 			public string caption;
 
-			public override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			/// <summary>MIME-type of the video file<br/>Parameter added in Layer 17.</summary>
+			public override string MimeType => mime_type;
+
+			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
 		}
 		/// <summary>Document attached to a message in a secret chat.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaDocument"/></para></summary>
 		[TLDef(0x7AFE8AE2)]
@@ -517,7 +532,10 @@ namespace TL
 			/// <summary>Caption</summary>
 			public string caption;
 
-			public override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			/// <summary>File MIME-type</summary>
+			public override string MimeType => mime_type;
+
+			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
 		}
 		/// <summary>Venue		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVenue"/></para></summary>
 		[TLDef(0x8A0DF56F)]
@@ -727,6 +745,9 @@ namespace TL
 			public int dc_id;
 			/// <summary>Attributes for media types</summary>
 			public DocumentAttribute[] attributes;
+
+			/// <summary>Mime type</summary>
+			public override string MimeType => mime_type;
 		}
 
 		/// <summary>File is currently unavailable.		<para>See <a href="https://corefork.telegram.org/constructor/fileLocationUnavailable"/></para></summary>

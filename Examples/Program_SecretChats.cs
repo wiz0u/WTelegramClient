@@ -91,10 +91,11 @@ Type a command, or a message to send to the active secret chat:");
 						{
 							if (msg.Media != null && unem.message is EncryptedMessage { file: EncryptedFile ef })
 							{
-								Console.WriteLine($"{unem.message.ChatId}> {msg.Message} [file being downloaded to media.jpg]");
-								using var output = File.Create("media.jpg"); // not necessarily a JPG, check the msg.Media mime_type
-								using var decryptStream = new WTelegram.AES_IGE_Stream(output, msg.Media);
-								await Client.DownloadFileAsync(ef, decryptStream, ef.dc_id, ef.size);
+								int slash = msg.Media.MimeType?.IndexOf('/') ?? 0; // quick & dirty conversion from MIME type to file extension
+								var filename = slash > 0 ? $"media.{msg.Media.MimeType[(slash + 1)..]}" : "media.bin";
+								Console.WriteLine($"{unem.message.ChatId}> {msg.Message} [attached file downloaded to {filename}]");
+								using var output = File.Create(filename);
+								await Secrets.DownloadFile(ef, msg.Media, output);
 							}
 							else if (msg.Action == null) Console.WriteLine($"{unem.message.ChatId}> {msg.Message}");
 							else Console.WriteLine($"{unem.message.ChatId}> Service Message {msg.Action.GetType().Name[22..]}");

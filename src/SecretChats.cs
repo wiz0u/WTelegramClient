@@ -595,5 +595,28 @@ namespace WTelegram
 				_ => null
 			};
 		}
+
+		/// <summary>Download and decrypt an encrypted file from Telegram Secret Chat into the outputStream</summary>
+		/// <param name="encryptedFile">The encrypted file to download &amp; decrypt</param>
+		/// <param name="media">The associated message media structure</param>
+		/// <param name="outputStream">Stream to write the decrypted file content to. This method does not close/dispose the stream</param>
+		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>
+		/// <returns>The mime type of the decrypted file, <see langword="null"/> if unknown</returns>
+		public async Task<string> DownloadFile(EncryptedFile encryptedFile, DecryptedMessageMedia media, Stream outputStream, Client.ProgressCallback progress = null)
+		{
+			var (size, key, iv) = media.SizeKeyIV;
+			if (key == null || iv == null) throw new ArgumentException("Media has no information about encrypted file", nameof(media));
+			using var md5 = MD5.Create();
+			md5.TransformBlock(key, 0, 32, null, 0);
+			var res = md5.TransformFinalBlock(iv, 0, 32);
+			long fingerprint = BinaryPrimitives.ReadInt64LittleEndian(md5.Hash);
+			fingerprint ^= fingerprint >> 32;
+			if (encryptedFile.key_fingerprint != (int)fingerprint) throw new ApplicationException("Encrypted file fingerprint mismatch");
+			
+			using var decryptStream = new AES_IGE_Stream(outputStream, size, key, iv);
+			var fileLocation = encryptedFile.ToFileLocation();
+			await client.DownloadFileAsync(fileLocation, decryptStream, encryptedFile.dc_id, encryptedFile.size, progress);
+			return media.MimeType;
+		}
 	}
 }

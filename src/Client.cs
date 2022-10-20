@@ -1054,7 +1054,7 @@ namespace WTelegram
 							catch (RpcException e) when (e.Code == 400 && e.Message is "CODE_INVALID" or "EMAIL_TOKEN_INVALID")
 							{
 								Helpers.Log(4, "Wrong email verification code!");
-								if (retry == MaxCodePwdAttempts) throw;
+								if (retry >= MaxCodePwdAttempts) throw;
 							}
 						if (verified is Account_EmailVerifiedLogin verifiedLogin) // (it should always be)
 							sentCode = verifiedLogin.sent_code;
@@ -1084,7 +1084,7 @@ namespace WTelegram
 					catch (RpcException e) when (e.Code == 400 && e.Message == "PHONE_CODE_INVALID")
 					{
 						Helpers.Log(4, "Wrong verification code!");
-						if (retry == MaxCodePwdAttempts) throw;
+						if (retry >= MaxCodePwdAttempts) throw;
 					}
 					catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
 					{
@@ -1099,7 +1099,7 @@ namespace WTelegram
 							catch (RpcException pe) when (pe.Code == 400 && pe.Message == "PASSWORD_HASH_INVALID")
 							{
 								Helpers.Log(4, "Wrong password!");
-								if (pwdRetry == MaxCodePwdAttempts) throw;
+								if (pwdRetry >= MaxCodePwdAttempts) throw;
 							}
 					}
 			}
