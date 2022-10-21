@@ -92,7 +92,7 @@ Type a command, or a message to send to the active secret chat:");
 							if (msg.Media != null && unem.message is EncryptedMessage { file: EncryptedFile ef })
 							{
 								int slash = msg.Media.MimeType?.IndexOf('/') ?? 0; // quick & dirty conversion from MIME type to file extension
-								var filename = slash > 0 ? $"media.{msg.Media.MimeType[(slash + 1)..]}" : "media.bin";
+								var filename = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.{(slash > 0 ? msg.Media.MimeType[(slash + 1)..] : "bin")}";
 								Console.WriteLine($"{unem.message.ChatId}> {msg.Message} [attached file downloaded to {filename}]");
 								using var output = File.Create(filename);
 								await Secrets.DownloadFile(ef, msg.Media, output);
