@@ -140,12 +140,13 @@ Some additional advices from me:
 
 5. Avoid repetitive polling or repetitive sequence of actions/requests: Save the initial results of your queries, and update those results when you're informed of a change through `OnUpdate` events.
 6. If a phone number is brand new, it will be closely monitored by Telegram for abuse, and it can even already be considered a bad user due to bad behavior from the previous owner of that phone number (which may happens often with VoIP or other easy-to-buy-online numbers, so expect fast ban)
-7. You may want to use your new phone number account with an official Telegram client and act like a normal user for some time (some weeks/months), before using it for automation with WTelegramClient.
-8. When creating a new API ID/Hash, I recommend you use your own phone number with long history of normal Telegram usage, rather than a brand new phone number with short history.
+7. Don't buy fake users/session accounts from Internet and don't extract api_id/hash/authkey/sessions from official clients, this is [specifically forbidden by API TOS](https://core.telegram.org/api/terms#2-transparency).
+8. You may want to use your new phone number account with an official Telegram client and act like a normal user for some time (some weeks/months), before using it for automation with WTelegramClient.
+9. When creating a new API ID/Hash, I recommend you use your own phone number with long history of normal Telegram usage, rather than a brand new phone number with short history.
 In particular, DON'T create an API ID/Hash for every phone numbers you will control. One API ID/Hash represents your application, which can be used to control several user accounts.
-9. If you actually do use the library to spam, scam, or other stuff annoying to everybody, GTFO and don't cry that you got banned using WTelegramClient. Some people don't seem to realize by themselves that what they plan to do with the library is actually negative for the community and are surprised that they got caught.
+10. If you actually do use the library to spam, scam, or other stuff annoying to everybody, GTFO and don't cry that you got banned using WTelegramClient. Some people don't seem to realize by themselves that what they plan to do with the library is actually negative for the community and are surprised that they got caught.
 We don't support such use of the library, and will not help people asking for support if we suspect them of mass-user manipulation.
-10. If your client displays Telegram channels to your users, you have to support and display [official sponsored messages](https://core.telegram.org/api/sponsored-messages).
+11. If your client displays Telegram channels to your users, you have to support and display [official sponsored messages](https://core.telegram.org/api/sponsored-messages).
 
 <a name="chat-id"></a>
 #### 9. Why the error `CHAT_ID_INVALID`?
@@ -154,7 +155,7 @@ Most chat groups you see are likely of type `Channel`, not `Chat`.
 This difference is important to understand. Please [read about the Terminology in ReadMe](README.md#terminology).  
 
 You typically get the error `CHAT_ID_INVALID` when you try to call API methods designed specifically for a `Chat`, with the ID of a `Channel`.  
-All API methods taking a `long api_id` as a direct method parameter are for Chats and cannot be used with Channels.
+All API methods taking a `long chat_id` as a direct method parameter are for Chats and cannot be used with Channels.
 
 There is probably another method achieving the same result but specifically designed for Channels, and it will have a similar name, but beginning with `Channels_` ...
 
@@ -164,12 +165,12 @@ That object must be created with both fields `channel_id` and `access_hash` corr
 <a name="chats-chats"></a>
 #### 10. `chats.chats[id]` fails. My chats list is empty or does not contain the chat id.
 
-There can be several reasons why `chats.chats[id]` raise an error:
-- The user account you're currently logged-in as has not joined this particular chat.  
+There can be several reasons why `chats.chats` doesn't contain the chat you expect:
+- The currently logged-in user account has not joined this particular chat.  
 API method [Messages_GetAllChats](https://corefork.telegram.org/method/messages.getAllChats) will only return those chat groups/channels the user is in, not all Telegram chat groups.
 - You're trying to use a Bot API (or TDLib) numerical ID, like -1001234567890  
 Telegram Client API don't use these kind of IDs for chats. Remove the -100 prefix and try again with the rest (1234567890).
-- You're trying to use a user ID instead of a chat ID.  
+- You're searching for a user instead of a chat ID.  
 Private messages with a user are not called "chats". See [Terminology in ReadMe](README.md#terminology).  
 To obtain the list of users (as well as chats and channels) the logged-in user is currenly engaged in a discussion with, you should [use the API method Messages_GetAllDialogs](EXAMPLES.md#list-dialogs)
 - the `chats.chats` dictionary is empty.  
@@ -202,6 +203,8 @@ In this case, the recommended action would be to dispose the client and recreate
 4) In case of slow Internet connection or if you break in the debugger for some time,
 you might also get Connection shutdown because your client couldn't send Pings to Telegram in the allotted time.  
 In this case, you can use the `PingInterval` property to increase the delay between pings *(for example 300 seconds instead of 60)*.
+
+5) If you're using an MTProxy, some of them are known to be quite unstable. You may want to try switching to another MTProxy that is more stable.
 
 <a name="TLSharp"></a>
 #### 12. How to migrate from TLSharp? How to sign-in/sign-up/register account properly?

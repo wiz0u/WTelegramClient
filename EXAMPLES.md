@@ -28,7 +28,7 @@ var resolved = await client.Contacts_ResolveUsername("MyEch0_Bot"); // username 
 await client.SendMessageAsync(resolved, "/start");
 ```
 *Note: This also works if the @username points to a channel/group, but you must already have joined that channel before sending a message to it.
-If the username is invalid/unused, the API call raises an exception.*
+If the username is invalid/unused, the API call raises an RpcException.*
 
 <a name="msg-by-phone"></a>
 ### Send a message to someone by phone number
@@ -134,7 +134,7 @@ but the old `Chat` will be marked with flag [deactivated] and should not be used
 ### List all dialogs (chats/groups/channels/user chat) we are currently in
 ```csharp
 var dialogs = await client.Messages_GetAllDialogs();
-foreach (var dialog in dialogs.dialogs)
+foreach (Dialog dialog in dialogs.dialogs)
     switch (dialogs.UserOrChat(dialog))
     {
         case User     user when user.IsActive: Console.WriteLine("User " + user); break;
@@ -218,6 +218,18 @@ var channel = (Channel)chats.chats[1234567890]; // the channel we want
 var participants = await client.Channels_GetAllParticipants(channel);
 ```
 
+If you only need to list the channel owner/admins, you can use specific filter:
+```csharp
+var participants = await client.Channels_GetParticipants(channel, filter: new ChannelParticipantsAdmins());
+foreach (var participant in participants.participants) // This is the correct way to enumerate the result
+{
+    var user = participants.users[participant.UserID];
+    if (participant is ChannelParticipantCreator cpc) Console.WriteLine($"{user} is the owner '{cpc.rank}'");
+    else if (participant is ChannelParticipantAdmin cpa) Console.WriteLine($"{user} is admin '{cpa.rank}'");
+}
+```
+*Note: It is not possible to list only the Deleted Accounts. Those will be automatically removed by Telegram from your group after a while*
+
 <a name="join-channel"></a>
 ### Join a channel/group by their public name or invite link
 * For a public channel/group `@channelname`  
@@ -286,7 +298,7 @@ for (int offset_id = 0; ;)
     offset_id = messages.Messages[^1].ID;
 }
 ```
-
+*Note: If you want to stop at a specific msg ID, use Messages_GetHistory `min_id` argument. For example, `min_id: dialog.read_inbox_max_id`*
 
 <a name="updates"></a>
 ### Monitor all Telegram events happening for the user
