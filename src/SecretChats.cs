@@ -588,12 +588,8 @@ namespace WTelegram
 			fingerprint ^= fingerprint >> 32;
 
 			using var ige = new AES_IGE_Stream(stream, aes_key, aes_iv, true);
-			return await client.UploadFileAsync(ige, null, progress) switch
-			{
-				InputFile ifl => new InputEncryptedFileUploaded { id = ifl.id, parts = ifl.parts, md5_checksum = ifl.md5_checksum, key_fingerprint = (int)fingerprint },
-				InputFileBig ifb => new InputEncryptedFileBigUploaded { id = ifb.id, parts = ifb.parts, key_fingerprint = (int)fingerprint },
-				_ => null
-			};
+			var inputFile = await client.UploadFileAsync(ige, null, progress);
+			return inputFile.ToInputEncryptedFile((int)fingerprint);
 		}
 
 		/// <summary>Download and decrypt an encrypted file from Telegram Secret Chat into the outputStream</summary>

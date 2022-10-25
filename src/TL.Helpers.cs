@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -57,6 +58,14 @@ namespace TL
 	{
 		public abstract InputEncryptedFileBase ToInputEncryptedFile(int key_fingerprint);
 		public abstract InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret);
+		/// <param name="isSquareVideo10s"><see langword="false"/> for a profile photo. <see langword="null"/> for auto-detection<br/><see langword="true"/> for a profile video. The video <u>MUST</u> be square and 10 seconds max</param>
+		public InputChatUploadedPhoto ToInputChatPhoto(bool? isSquareVideo10s = null)
+		{
+			if (isSquareVideo10s ?? Path.GetExtension(Name)?.ToLowerInvariant() is ".mp4")
+				return new InputChatUploadedPhoto { video = this, flags = InputChatUploadedPhoto.Flags.has_video };
+			else
+				return new InputChatUploadedPhoto { file = this, flags = InputChatUploadedPhoto.Flags.has_file };
+		}
 	}
 	partial class InputFile
 	{

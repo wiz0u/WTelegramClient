@@ -292,6 +292,8 @@ Here are the recommended actions to fix your problem:
 	}
 	```
 
+Also, remember to add a `using TL;` at the top of your files to have access to all the Telegram API methods.
+
 <a name="troubleshoot"></a>
 ## Troubleshooting guide
 
