@@ -3056,7 +3056,7 @@ namespace TL
 
 		/// <summary>React to message		<para>See <a href="https://corefork.telegram.org/method/messages.sendReaction"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.sendReaction#possible-errors">details</a>)</para></summary>
 		/// <param name="big">Whether a bigger and longer reaction should be shown</param>
-		/// <param name="add_to_recent">Add this reaction to the recent reactions list</param>
+		/// <param name="add_to_recent">Add this reaction to the <a href="https://corefork.telegram.org/api/reactions#recent-reactions">recent reactions list »</a>.</param>
 		/// <param name="peer">Peer</param>
 		/// <param name="msg_id">Message ID to react to</param>
 		/// <param name="reaction">Reaction (a UTF8 emoji)</param>

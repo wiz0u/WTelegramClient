@@ -657,6 +657,15 @@ namespace WTelegram
 
 		public Task<Messages_AffectedMessages> DeleteMessages(InputPeer peer, params int[] id)
 			=> peer is InputPeerChannel channel ? this.Channels_DeleteMessages(channel, id) : this.Messages_DeleteMessages(id);
+
+		/// <summary>Marks message history as read.		<para>See <a href="https://corefork.telegram.org/method/messages.readHistory"/><br/> and <a href="https://corefork.telegram.org/method/channels.readHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readHistory#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Target user, channel or group</param>
+		/// <param name="max_id">If a positive value is passed, only messages with identifiers less or equal than the given one will be marked read</param>
+		public async Task<bool> ReadHistory(InputPeer peer, int max_id = default) => peer switch
+		{
+			InputPeerChannel channel => await this.Channels_ReadHistory(channel, max_id),
+			_ => (await this.Messages_ReadHistory(peer, max_id)) != null
+		};
 		#endregion
 	}
 }

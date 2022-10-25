@@ -163,6 +163,7 @@ However, note that those Channel-compatible methods will require an `InputChanne
 That object must be created with both fields `channel_id` and `access_hash` correctly filled. You can read more about this in [FAQ #4](#access-hash).
 
 <a name="chats-chats"></a>
+<a name="chat-not-found"></a>
 #### 10. `chats.chats[id]` fails. My chats list is empty or does not contain the chat id.
 
 There can be several reasons why `chats.chats` doesn't contain the chat you expect:
@@ -258,6 +259,38 @@ If those missing messages are never obtained during the session, incoming messag
 `await Secrets.HandleUpdate(ue, ue.chat is EncryptedChatRequested ecr && ecr.admin_id == EXPECTED_USER_ID);`
 - As recommended, new encryption keys are negotiated every 100 sent/received messages or after one week.  
 If remote client doesn't complete this negotiation before reaching 200 messages, the Secret Chat is aborted.
+
+<a name="compile"></a>
+#### 15. The example codes don't compile on my machine
+
+The snippets of example codes found in the [ReadMe](README.md) or [Examples](EXAMPLES.md) pages were written for .NET 5 / C# 9 minimum.  
+If you're having compiler problem on code constructs such as `using`, `foreach`, `[^1]` or about "Deconstruct",
+that typically means you're still using an obsolete version of .NET (Framework 4.x or Core)
+
+Here are the recommended actions to fix your problem:
+- Create a new project for .NET 6+ (in Visual Studio 2019 or more recent):
+  - Select File > New > Project
+  - Search for "C# Console"
+  - Select the **Console App**, but NOT Console App (.NET Framework) !  
+  - On the framework selection page, choose .NET 6.0 or more recent
+  - Now you can start developing for WTelegramClient 🙂
+- If you don't want to target a recent version of .NET, you can upgrade your existing project to use the latest version of the C# language:  
+  - Close Visual Studio
+  - Edit your *.csproj file **with Notepad**
+  - Within the first `<PropertyGroup>`, add the following line:  
+    `<LangVersion>latest</LangVersion>`
+  - Save, close Notepad and reopen your project in Visual Studio
+  - If you still have issues on some `foreach` constructs, add this class somewhere in your project:
+    ```csharp
+	static class Extensions
+	{
+		public static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> tuple, out T1 key, out T2 value)
+		{
+			key = tuple.Key;
+			value = tuple.Value;
+		}
+	}
+	```
 
 <a name="troubleshoot"></a>
 ## Troubleshooting guide

@@ -6560,7 +6560,7 @@ namespace TL
 	/// <summary>Message entity representing a spoiler		<para>See <a href="https://corefork.telegram.org/constructor/messageEntitySpoiler"/></para></summary>
 	[TLDef(0x32CA960F)]
 	public class MessageEntitySpoiler : MessageEntity { }
-	/// <summary>Represents a custom emoji		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityCustomEmoji"/></para></summary>
+	/// <summary>Represents a custom emoji.<br/>Note that this entity must wrap exactly one regular emoji (the one contained in <see cref="DocumentAttributeCustomEmoji"/>.<c>alt</c>) in the related text, otherwise the server will ignore it.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityCustomEmoji"/></para></summary>
 	[TLDef(0xC8CF05F8, inheritBefore = true)]
 	public class MessageEntityCustomEmoji : MessageEntity
 	{

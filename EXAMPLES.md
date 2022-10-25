@@ -298,7 +298,9 @@ for (int offset_id = 0; ;)
     offset_id = messages.Messages[^1].ID;
 }
 ```
-*Note: If you want to stop at a specific msg ID, use Messages_GetHistory `min_id` argument. For example, `min_id: dialog.read_inbox_max_id`*
+Notes:
+- To stop at a specific msg ID, use Messages_GetHistory `min_id` argument. For example, `min_id: dialog.read_inbox_max_id`
+- To mark the message history as read, use: `await client.ReadHistory(peer);`
 
 <a name="updates"></a>
 ### Monitor all Telegram events happening for the user

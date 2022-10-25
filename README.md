@@ -151,7 +151,8 @@ await client.SendMessageAsync(target, "Hello, World");
 ```
 
 ➡️ You can find lots of useful code snippets in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md)
-and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).
+and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).  
+➡️ Check [the FAQ](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#compile) if example codes doesn't compile correctly on your machine, or other troubleshooting.
 
 <a name="terminology"></a>
 # Terminology in Telegram Client API
