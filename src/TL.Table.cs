@@ -1078,7 +1078,6 @@ namespace TL
 			[0x36B091DE] = typeof(Layer45.DecryptedMessage),
 			[0x204D3878] = typeof(Layer17.DecryptedMessage),
 			[0x1F814F1F] = typeof(Layer8.DecryptedMessage),
-			// The End
 		};
 
 		internal readonly static Dictionary<Type, uint> Nullables = new()
@@ -1143,7 +1142,6 @@ namespace TL
 			[typeof(Messages_Reactions)]             = 0xB06FDBDF, //messages.reactionsNotModified
 			// from TL.Secret:
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
-			// The End
 		};
 	}
 }

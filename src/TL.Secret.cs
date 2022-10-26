@@ -28,7 +28,7 @@ namespace TL
 	}
 
 	/// <summary>Object describes media contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageMedia"/></para></summary>
-	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaEmpty">decryptedMessageMediaEmpty</a></remarks>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaEmpty">decryptedMessageMediaEmpty</a></remarks>
 	public abstract class DecryptedMessageMedia : IObject
 	{
 		public virtual string MimeType { get; }
