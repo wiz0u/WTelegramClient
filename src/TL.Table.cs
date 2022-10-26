@@ -865,7 +865,7 @@ namespace TL
 			[0xE844EBFF] = typeof(Messages_SearchCounter),
 			[0x92D33A0E] = typeof(UrlAuthResultRequest),
 			[0x8F8C0E4E] = typeof(UrlAuthResultAccepted),
-			[0xA9D6DB1F] = typeof(UrlAuthResultDefault),
+			[0xA9D6DB1F] = null,//UrlAuthResultDefault
 			[0xBFB5AD8B] = null,//ChannelLocationEmpty
 			[0x209B82DB] = typeof(ChannelLocation),
 			[0xCA461B5D] = typeof(PeerLocated),
@@ -891,7 +891,7 @@ namespace TL
 			[0xF568028A] = typeof(BankCardOpenUrl),
 			[0x3E24E573] = typeof(Payments_BankCardData),
 			[0x7438F7E8] = typeof(DialogFilter),
-			[0x363293AE] = typeof(DialogFilterDefault),
+			[0x363293AE] = null,//DialogFilterDefault
 			[0x77744D4A] = typeof(DialogFilterSuggested),
 			[0xB637EDAF] = typeof(StatsDateRangeDays),
 			[0xCB43ACDE] = typeof(StatsAbsValueAndPrev),
@@ -942,7 +942,7 @@ namespace TL
 			[0xDCB118B7] = typeof(GroupCallParticipantVideoSourceGroup),
 			[0x67753AC8] = typeof(GroupCallParticipantVideo),
 			[0x85FEA03F] = typeof(Stickers_SuggestedShortName),
-			[0x2F6CB2AB] = typeof(BotCommandScopeDefault),
+			[0x2F6CB2AB] = null,//BotCommandScopeDefault
 			[0x3C4F04D8] = typeof(BotCommandScopeUsers),
 			[0x6FE1A881] = typeof(BotCommandScopeChats),
 			[0xB9AA606A] = typeof(BotCommandScopeChatAdmins),
@@ -983,12 +983,12 @@ namespace TL
 			[0x0C14557C] = typeof(WebViewResultUrl),
 			[0x882F76BB] = typeof(SimpleWebViewResultUrl),
 			[0x0C94511C] = typeof(WebViewMessageSent),
-			[0x7533A588] = typeof(BotMenuButtonDefault),
+			[0x7533A588] = null,//BotMenuButtonDefault
 			[0x4258C205] = typeof(BotMenuButtonCommands),
 			[0xC7B57CE6] = typeof(BotMenuButton),
 			[0xFBF6E8B1] = null,//Account_SavedRingtonesNotModified
 			[0xC1E92CC5] = typeof(Account_SavedRingtones),
-			[0x97E8BEBE] = typeof(NotificationSoundDefault),
+			[0x97E8BEBE] = null,//NotificationSoundDefault
 			[0x6F0C34DF] = typeof(NotificationSoundNone),
 			[0x830B9AE4] = typeof(NotificationSoundLocal),
 			[0xFF6C8049] = typeof(NotificationSoundRingtone),
@@ -1011,7 +1011,7 @@ namespace TL
 			[0x79F5D419] = null,//ReactionEmpty
 			[0x1B2286B8] = typeof(ReactionEmoji),
 			[0x8935FC73] = typeof(ReactionCustomEmoji),
-			[0xEAFC32BC] = typeof(ChatReactionsNone),
+			[0xEAFC32BC] = null,//ChatReactionsNone
 			[0x52928BCA] = typeof(ChatReactionsAll),
 			[0x661D4037] = typeof(ChatReactionsSome),
 			[0xB06FDBDF] = null,//Messages_ReactionsNotModified
@@ -1125,15 +1125,21 @@ namespace TL
 			[typeof(Help_PassportConfig)]            = 0xBFB9F457, //help.passportConfigNotModified
 			[typeof(Help_UserInfo)]                  = 0xF3AE2EED, //help.userInfoEmpty
 			[typeof(Account_WallPapers)]             = 0x1C199183, //account.wallPapersNotModified
+			[typeof(UrlAuthResult)]                  = 0xA9D6DB1F, //urlAuthResultDefault
 			[typeof(ChannelLocation)]                = 0xBFB5AD8B, //channelLocationEmpty
 			[typeof(Account_Themes)]                 = 0xF41EB622, //account.themesNotModified
+			[typeof(DialogFilter)]                   = 0x363293AE, //dialogFilterDefault
 			[typeof(Help_CountriesList)]             = 0x93CC1F32, //help.countriesListNotModified
+			[typeof(BotCommandScope)]                = 0x2F6CB2AB, //botCommandScopeDefault
 			[typeof(Messages_AvailableReactions)]    = 0x9F071957, //messages.availableReactionsNotModified
 			[typeof(AttachMenuBots)]                 = 0xF1D88A5C, //attachMenuBotsNotModified
+			[typeof(BotMenuButtonBase)]              = 0x7533A588, //botMenuButtonDefault
 			[typeof(Account_SavedRingtones)]         = 0xFBF6E8B1, //account.savedRingtonesNotModified
+			[typeof(NotificationSound)]              = 0x97E8BEBE, //notificationSoundDefault
 			[typeof(EmojiStatus)]                    = 0x2DE11AAE, //emojiStatusEmpty
 			[typeof(Account_EmojiStatuses)]          = 0xD08CE645, //account.emojiStatusesNotModified
 			[typeof(Reaction)]                       = 0x79F5D419, //reactionEmpty
+			[typeof(ChatReactions)]                  = 0xEAFC32BC, //chatReactionsNone
 			[typeof(Messages_Reactions)]             = 0xB06FDBDF, //messages.reactionsNotModified
 			// from TL.Secret:
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty

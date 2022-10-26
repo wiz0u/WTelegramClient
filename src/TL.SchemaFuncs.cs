@@ -2587,6 +2587,7 @@ namespace TL
 		/// <param name="msg_id">The message</param>
 		/// <param name="button_id">The ID of the button with the authorization request</param>
 		/// <param name="url">URL used for <a href="https://corefork.telegram.org/api/url-authorization#link-url-authorization">link URL authorization, click here for more info »</a></param>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/urlAuthResultDefault">urlAuthResultDefault</a></returns>
 		public static Task<UrlAuthResult> Messages_RequestUrlAuth(this Client client, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null)
 			=> client.Invoke(new Messages_RequestUrlAuth
 			{
@@ -2603,6 +2604,7 @@ namespace TL
 		/// <param name="msg_id">Message ID of the message with the login button</param>
 		/// <param name="button_id">ID of the login button</param>
 		/// <param name="url">URL used for <a href="https://corefork.telegram.org/api/url-authorization#link-url-authorization">link URL authorization, click here for more info »</a></param>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/urlAuthResultDefault">urlAuthResultDefault</a></returns>
 		public static Task<UrlAuthResult> Messages_AcceptUrlAuth(this Client client, bool write_allowed = false, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null)
 			=> client.Invoke(new Messages_AcceptUrlAuth
 			{
@@ -2691,7 +2693,7 @@ namespace TL
 			});
 
 		/// <summary>Get <a href="https://corefork.telegram.org/api/folders">folders</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogFilters"/></para></summary>
-		public static Task<DialogFilterBase[]> Messages_GetDialogFilters(this Client client)
+		public static Task<DialogFilter[]> Messages_GetDialogFilters(this Client client)
 			=> client.Invoke(new Messages_GetDialogFilters
 			{
 			});
@@ -2705,7 +2707,7 @@ namespace TL
 		/// <summary>Update <a href="https://corefork.telegram.org/api/folders">folder</a>		<para>See <a href="https://corefork.telegram.org/method/messages.updateDialogFilter"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.updateDialogFilter#possible-errors">details</a>)</para></summary>
 		/// <param name="id"><a href="https://corefork.telegram.org/api/folders">Folder</a> ID</param>
 		/// <param name="filter"><a href="https://corefork.telegram.org/api/folders">Folder</a> info</param>
-		public static Task<bool> Messages_UpdateDialogFilter(this Client client, int id, DialogFilterBase filter = null)
+		public static Task<bool> Messages_UpdateDialogFilter(this Client client, int id, DialogFilter filter = null)
 			=> client.Invoke(new Messages_UpdateDialogFilter
 			{
 				flags = (Messages_UpdateDialogFilter.Flags)(filter != null ? 0x1 : 0),
@@ -4229,6 +4231,7 @@ namespace TL
 
 		/// <summary>Gets the menu button action for a given user or for all users, previously set using <a href="https://corefork.telegram.org/method/bots.setBotMenuButton">bots.setBotMenuButton</a>; users can see this information in the <see cref="BotInfo"/>.		<para>See <a href="https://corefork.telegram.org/method/bots.getBotMenuButton"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.getBotMenuButton#possible-errors">details</a>)</para></summary>
 		/// <param name="user_id">User ID or empty for the default menu button.</param>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/botMenuButtonDefault">botMenuButtonDefault</a></returns>
 		public static Task<BotMenuButtonBase> Bots_GetBotMenuButton(this Client client, InputUserBase user_id)
 			=> client.Invoke(new Bots_GetBotMenuButton
 			{
@@ -7106,7 +7109,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xF19ED96D)]
-	public class Messages_GetDialogFilters : IMethod<DialogFilterBase[]> { }
+	public class Messages_GetDialogFilters : IMethod<DialogFilter[]> { }
 
 	[TLDef(0xA29CD42C)]
 	public class Messages_GetSuggestedDialogFilters : IMethod<DialogFilterSuggested[]> { }
@@ -7116,7 +7119,7 @@ namespace TL.Methods
 	{
 		public Flags flags;
 		public int id;
-		[IfFlag(0)] public DialogFilterBase filter;
+		[IfFlag(0)] public DialogFilter filter;
 
 		[Flags] public enum Flags : uint
 		{

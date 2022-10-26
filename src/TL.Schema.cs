@@ -3870,7 +3870,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> ID</summary>
 		public int id;
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> info</summary>
-		[IfFlag(0)] public DialogFilterBase filter;
+		[IfFlag(0)] public DialogFilter filter;
 
 		[Flags] public enum Flags : uint
 		{
@@ -6306,7 +6306,7 @@ namespace TL
 	public class KeyboardButtonBuy : KeyboardButton
 	{
 	}
-	/// <summary>Button to request a user to authorize via URL using <a href="https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots">Seamless Telegram Login</a>. When the user clicks on such a button, <a href="https://corefork.telegram.org/method/messages.requestUrlAuth">messages.requestUrlAuth</a> should be called, providing the <c>button_id</c> and the ID of the container message. The returned <see cref="UrlAuthResultRequest"/> object will contain more details about the authorization request (<c>request_write_access</c> if the bot would like to send messages to the user along with the username of the bot which will be used for user authorization). Finally, the user can choose to call <a href="https://corefork.telegram.org/method/messages.acceptUrlAuth">messages.acceptUrlAuth</a> to get a <see cref="UrlAuthResultAccepted"/> with the URL to open instead of the <c>url</c> of this constructor, or a <see cref="UrlAuthResultDefault"/>, in which case the <c>url</c> of this constructor must be opened, instead. If the user refuses the authorization request but still wants to open the link, the <c>url</c> of this constructor must be used.		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonUrlAuth"/></para></summary>
+	/// <summary>Button to request a user to authorize via URL using <a href="https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots">Seamless Telegram Login</a>. When the user clicks on such a button, <a href="https://corefork.telegram.org/method/messages.requestUrlAuth">messages.requestUrlAuth</a> should be called, providing the <c>button_id</c> and the ID of the container message. The returned <see cref="UrlAuthResultRequest"/> object will contain more details about the authorization request (<c>request_write_access</c> if the bot would like to send messages to the user along with the username of the bot which will be used for user authorization). Finally, the user can choose to call <a href="https://corefork.telegram.org/method/messages.acceptUrlAuth">messages.acceptUrlAuth</a> to get a <see cref="UrlAuthResultAccepted"/> with the URL to open instead of the <c>url</c> of this constructor, or a <see langword="null"/>, in which case the <c>url</c> of this constructor must be opened, instead. If the user refuses the authorization request but still wants to open the link, the <c>url</c> of this constructor must be used.		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonUrlAuth"/></para></summary>
 	[TLDef(0x10B78D29)]
 	public class KeyboardButtonUrlAuth : KeyboardButtonBase
 	{
@@ -11332,7 +11332,8 @@ namespace TL
 		}
 	}
 
-	/// <summary>URL authorization result		<para>Derived classes: <see cref="UrlAuthResultRequest"/>, <see cref="UrlAuthResultAccepted"/>, <see cref="UrlAuthResultDefault"/></para>		<para>See <a href="https://corefork.telegram.org/type/UrlAuthResult"/></para></summary>
+	/// <summary>URL authorization result		<para>Derived classes: <see cref="UrlAuthResultRequest"/>, <see cref="UrlAuthResultAccepted"/></para>		<para>See <a href="https://corefork.telegram.org/type/UrlAuthResult"/></para></summary>
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/urlAuthResultDefault">urlAuthResultDefault</a></remarks>
 	public abstract class UrlAuthResult : IObject { }
 	/// <summary>Details about the authorization request, for more info <a href="https://corefork.telegram.org/api/url-authorization">click here »</a>		<para>See <a href="https://corefork.telegram.org/constructor/urlAuthResultRequest"/></para></summary>
 	[TLDef(0x92D33A0E)]
@@ -11358,9 +11359,6 @@ namespace TL
 		/// <summary>The URL name of the website on which the user has logged in.</summary>
 		public string url;
 	}
-	/// <summary>Details about an accepted authorization request, for more info <a href="https://corefork.telegram.org/api/url-authorization">click here »</a>		<para>See <a href="https://corefork.telegram.org/constructor/urlAuthResultDefault"/></para></summary>
-	[TLDef(0xA9D6DB1F)]
-	public class UrlAuthResultDefault : UrlAuthResult { }
 
 	/// <summary>Geographical location of supergroup (geogroups)		<para>See <a href="https://corefork.telegram.org/constructor/channelLocation"/></para></summary>
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/channelLocationEmpty">channelLocationEmpty</a></remarks>
@@ -11742,11 +11740,10 @@ namespace TL
 		public BankCardOpenUrl[] open_urls;
 	}
 
-	/// <summary>Dialog filter (<a href="https://corefork.telegram.org/api/folders">folder »</a>)		<para>Derived classes: <see cref="DialogFilter"/>, <see cref="DialogFilterDefault"/></para>		<para>See <a href="https://corefork.telegram.org/type/DialogFilter"/></para></summary>
-	public abstract class DialogFilterBase : IObject { }
 	/// <summary>Dialog filter AKA <a href="https://corefork.telegram.org/api/folders">folder</a>		<para>See <a href="https://corefork.telegram.org/constructor/dialogFilter"/></para></summary>
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/dialogFilterDefault">dialogFilterDefault</a></remarks>
 	[TLDef(0x7438F7E8)]
-	public class DialogFilter : DialogFilterBase
+	public class DialogFilter : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -11785,16 +11782,13 @@ namespace TL
 			has_emoticon = 0x2000000,
 		}
 	}
-	/// <summary>Used only when reordering folders to indicate the default (all chats) folder.		<para>See <a href="https://corefork.telegram.org/constructor/dialogFilterDefault"/></para></summary>
-	[TLDef(0x363293AE)]
-	public class DialogFilterDefault : DialogFilterBase { }
 
 	/// <summary>Suggested <a href="https://corefork.telegram.org/api/folders">folders</a>		<para>See <a href="https://corefork.telegram.org/constructor/dialogFilterSuggested"/></para></summary>
 	[TLDef(0x77744D4A)]
 	public class DialogFilterSuggested : IObject
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder info</a></summary>
-		public DialogFilterBase filter;
+		public DialogFilter filter;
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> description</summary>
 		public string description;
 	}
@@ -12705,11 +12699,9 @@ namespace TL
 		public string short_name;
 	}
 
-	/// <summary>Represents a scope where the bot commands, specified using <a href="https://corefork.telegram.org/method/bots.setBotCommands">bots.setBotCommands</a> will be valid.		<para>Derived classes: <see cref="BotCommandScopeDefault"/>, <see cref="BotCommandScopeUsers"/>, <see cref="BotCommandScopeChats"/>, <see cref="BotCommandScopeChatAdmins"/>, <see cref="BotCommandScopePeer"/>, <see cref="BotCommandScopePeerAdmins"/>, <see cref="BotCommandScopePeerUser"/></para>		<para>See <a href="https://corefork.telegram.org/type/BotCommandScope"/></para></summary>
+	/// <summary>Represents a scope where the bot commands, specified using <a href="https://corefork.telegram.org/method/bots.setBotCommands">bots.setBotCommands</a> will be valid.		<para>Derived classes: <see cref="BotCommandScopeUsers"/>, <see cref="BotCommandScopeChats"/>, <see cref="BotCommandScopeChatAdmins"/>, <see cref="BotCommandScopePeer"/>, <see cref="BotCommandScopePeerAdmins"/>, <see cref="BotCommandScopePeerUser"/></para>		<para>See <a href="https://corefork.telegram.org/type/BotCommandScope"/></para></summary>
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/botCommandScopeDefault">botCommandScopeDefault</a></remarks>
 	public abstract class BotCommandScope : IObject { }
-	/// <summary>The commands will be valid in all dialogs		<para>See <a href="https://corefork.telegram.org/constructor/botCommandScopeDefault"/></para></summary>
-	[TLDef(0x2F6CB2AB)]
-	public class BotCommandScopeDefault : BotCommandScope { }
 	/// <summary>The specified bot commands will only be valid in all private chats with users.		<para>See <a href="https://corefork.telegram.org/constructor/botCommandScopeUsers"/></para></summary>
 	[TLDef(0x3C4F04D8)]
 	public class BotCommandScopeUsers : BotCommandScope { }
@@ -13234,11 +13226,9 @@ namespace TL
 		}
 	}
 
-	/// <summary>Indicates the action to execute when pressing the in-UI menu button for bots		<para>Derived classes: <see cref="BotMenuButtonDefault"/>, <see cref="BotMenuButtonCommands"/>, <see cref="BotMenuButton"/></para>		<para>See <a href="https://corefork.telegram.org/type/BotMenuButton"/></para></summary>
+	/// <summary>Indicates the action to execute when pressing the in-UI menu button for bots		<para>Derived classes: <see cref="BotMenuButtonCommands"/>, <see cref="BotMenuButton"/></para>		<para>See <a href="https://corefork.telegram.org/type/BotMenuButton"/></para></summary>
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/botMenuButtonDefault">botMenuButtonDefault</a></remarks>
 	public abstract class BotMenuButtonBase : IObject { }
-	/// <summary>Placeholder <a href="https://corefork.telegram.org/api/bots/menu">bot menu button</a> never returned to users: see <a href="https://corefork.telegram.org/api/bots/menu">the docs for more info</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botMenuButtonDefault"/></para></summary>
-	[TLDef(0x7533A588)]
-	public class BotMenuButtonDefault : BotMenuButtonBase { }
 	/// <summary><a href="https://corefork.telegram.org/api/bots/menu">Bot menu button</a> that opens the bot command list when clicked.		<para>See <a href="https://corefork.telegram.org/constructor/botMenuButtonCommands"/></para></summary>
 	[TLDef(0x4258C205)]
 	public class BotMenuButtonCommands : BotMenuButtonBase { }
@@ -13263,11 +13253,9 @@ namespace TL
 		public DocumentBase[] ringtones;
 	}
 
-	/// <summary>Represents a notification sound		<para>Derived classes: <see cref="NotificationSoundDefault"/>, <see cref="NotificationSoundNone"/>, <see cref="NotificationSoundLocal"/>, <see cref="NotificationSoundRingtone"/></para>		<para>See <a href="https://corefork.telegram.org/type/NotificationSound"/></para></summary>
+	/// <summary>Represents a notification sound		<para>Derived classes: <see cref="NotificationSoundNone"/>, <see cref="NotificationSoundLocal"/>, <see cref="NotificationSoundRingtone"/></para>		<para>See <a href="https://corefork.telegram.org/type/NotificationSound"/></para></summary>
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/notificationSoundDefault">notificationSoundDefault</a></remarks>
 	public abstract class NotificationSound : IObject { }
-	/// <summary>Indicates the default notification sound should be used		<para>See <a href="https://corefork.telegram.org/constructor/notificationSoundDefault"/></para></summary>
-	[TLDef(0x97E8BEBE)]
-	public class NotificationSoundDefault : NotificationSound { }
 	/// <summary>No notification sound should be used		<para>See <a href="https://corefork.telegram.org/constructor/notificationSoundNone"/></para></summary>
 	[TLDef(0x6F0C34DF)]
 	public class NotificationSoundNone : NotificationSound { }
@@ -13483,11 +13471,9 @@ namespace TL
 		public long document_id;
 	}
 
-	/// <summary>Available chat reactions		<para>Derived classes: <see cref="ChatReactionsNone"/>, <see cref="ChatReactionsAll"/>, <see cref="ChatReactionsSome"/></para>		<para>See <a href="https://corefork.telegram.org/type/ChatReactions"/></para></summary>
+	/// <summary>Available chat reactions		<para>Derived classes: <see cref="ChatReactionsAll"/>, <see cref="ChatReactionsSome"/></para>		<para>See <a href="https://corefork.telegram.org/type/ChatReactions"/></para></summary>
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/chatReactionsNone">chatReactionsNone</a></remarks>
 	public abstract class ChatReactions : IObject { }
-	/// <summary>No reactions are allowed		<para>See <a href="https://corefork.telegram.org/constructor/chatReactionsNone"/></para></summary>
-	[TLDef(0xEAFC32BC)]
-	public class ChatReactionsNone : ChatReactions { }
 	/// <summary>All reactions or all non-custom reactions are allowed		<para>See <a href="https://corefork.telegram.org/constructor/chatReactionsAll"/></para></summary>
 	[TLDef(0x52928BCA)]
 	public class ChatReactionsAll : ChatReactions

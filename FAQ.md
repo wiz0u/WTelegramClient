@@ -139,8 +139,8 @@ Here are some advices from [another similar library](https://github.com/gotd/td/
 Some additional advices from me:
 
 5. Avoid repetitive polling or repetitive sequence of actions/requests: Save the initial results of your queries, and update those results when you're informed of a change through `OnUpdate` events.
-6. If a phone number is brand new, it will be closely monitored by Telegram for abuse, and it can even already be considered a bad user due to bad behavior from the previous owner of that phone number (which may happens often with VoIP or other easy-to-buy-online numbers, so expect fast ban)
-7. Don't buy fake users/session accounts from Internet and don't extract api_id/hash/authkey/sessions from official clients, this is [specifically forbidden by API TOS](https://core.telegram.org/api/terms#2-transparency).
+6. Don't buy fake user accounts/sessions and don't extract api_id/hash/authkey/sessions from official clients, this is [specifically forbidden by API TOS](https://core.telegram.org/api/terms#2-transparency). You must use your own api_id and create your own sessions associated with it.
+7. If a phone number is brand new, it will be closely monitored by Telegram for abuse, and it can even already be considered a bad user due to bad behavior from the previous owner of that phone number (which may happens often with VoIP or other easy-to-buy-online numbers, so expect fast ban)
 8. You may want to use your new phone number account with an official Telegram client and act like a normal user for some time (some weeks/months), before using it for automation with WTelegramClient.
 9. When creating a new API ID/Hash, I recommend you use your own phone number with long history of normal Telegram usage, rather than a brand new phone number with short history.
 In particular, DON'T create an API ID/Hash for every phone numbers you will control. One API ID/Hash represents your application, which can be used to control several user accounts.
@@ -164,23 +164,24 @@ That object must be created with both fields `channel_id` and `access_hash` corr
 
 <a name="chats-chats"></a>
 <a name="chat-not-found"></a>
-#### 10. `chats.chats[id]` fails. My chats list is empty or does not contain the chat id.
+#### 10. `chats.chats[id]` fails. My chats list is empty or does not contain the chat I'm looking for.
 
 There can be several reasons why `chats.chats` doesn't contain the chat you expect:
-- The currently logged-in user account has not joined this particular chat.  
-API method [Messages_GetAllChats](https://corefork.telegram.org/method/messages.getAllChats) will only return those chat groups/channels the user is in, not all Telegram chat groups.
-- You're trying to use a Bot API (or TDLib) numerical ID, like -1001234567890  
-Telegram Client API don't use these kind of IDs for chats. Remove the -100 prefix and try again with the rest (1234567890).
 - You're searching for a user instead of a chat ID.  
 Private messages with a user are not called "chats". See [Terminology in ReadMe](README.md#terminology).  
-To obtain the list of users (as well as chats and channels) the logged-in user is currenly engaged in a discussion with, you should [use the API method Messages_GetAllDialogs](EXAMPLES.md#list-dialogs)
+To obtain the list of users (as well as chats and channels) the logged-in user is currenly engaged in a discussion with, you should [use the API method `Messages_GetAllDialogs`](EXAMPLES.md#list-dialogs)
+- The currently logged-in user account has not joined this particular chat.  
+API method [`Messages_GetAllChats`](https://corefork.telegram.org/method/messages.getAllChats) will only return those chat groups/channels the user is in, not all Telegram chat groups.  
+If you're looking for other Telegram groups/channels/users, try API methods [`Contacts_ResolveUsername`](EXAMPLES.md#msg-by-name) or `Contacts_Search`
+- You're trying to use a Bot API (or TDLib) numerical ID, like -1001234567890  
+Telegram Client API don't use these kind of IDs for chats. Remove the -100 prefix and try again with the rest (1234567890).
 - the `chats.chats` dictionary is empty.  
 This is the case if you are logged-in as a brand new user account (that hasn't join any chat groups/channels)
 or if you are connected to a Test DC (a Telegram datacenter server for tests) instead of Production DC
 ([read FAQ #6](#wrong-server) for more)
 
 To help determine if `chats.chats` is empty or does not contain a certain chat, you should [dump the chat list to the screen](EXAMPLES.md#list-chats)
-or simply use a debugger: Place a breakpoint after the Messages_GetAllChats call, run the program up to there, and use a Watch pane to display the content of the chats.chats dictionary.
+or simply use a debugger: Place a breakpoint after the `Messages_GetAllChats` call, run the program up to there, and use a Watch pane to display the content of the chats.chats dictionary.
 
 <a name="shutdown"></a>
 #### 11. I get "Connection shut down" errors in my logs

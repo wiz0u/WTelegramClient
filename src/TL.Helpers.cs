@@ -58,7 +58,7 @@ namespace TL
 	{
 		public abstract InputEncryptedFileBase ToInputEncryptedFile(int key_fingerprint);
 		public abstract InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret);
-		/// <param name="isSquareVideo10s"><see langword="false"/> for a profile photo. <see langword="null"/> for auto-detection<br/><see langword="true"/> for a profile video. The video <u>MUST</u> be square and 10 seconds max</param>
+		/// <param name="isSquareVideo10s"><see langword="false"/> for a profile photo. <see langword="null"/> for auto-detection<br/><see langword="true"/> for a profile video. The video <u>MUST</u> be square, 10 seconds max, larger than 160x160</param>
 		public InputChatUploadedPhoto ToInputChatPhoto(bool? isSquareVideo10s = null)
 		{
 			if (isSquareVideo10s ?? Path.GetExtension(Name)?.ToLowerInvariant() is ".mp4")
