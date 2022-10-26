@@ -539,6 +539,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			else { prevBytes = new byte[32]; Array.Copy(iv, 0, prevBytes, 16, 16); Array.Copy(iv, 16, prevBytes, 0, 16); }
 		}
 
+		public override long Length => base.Length + 15 & ~15;
 		public override bool CanSeek => false;
 		public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
 
@@ -549,7 +550,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			Process(buffer, offset, count);
 			if (ContentLength.HasValue && _innerStream.Position == _innerStream.Length)
 				return count - (int)(_innerStream.Position - ContentLength.Value);
-			return count;
+			return count + 15 & ~15;
 		}
 
 		public override void Write(byte[] buffer, int offset, int count)
@@ -562,7 +563,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 
 		public void Process(byte[] buffer, int offset, int count)
 		{
-			count = (count + 15) & ~15;
+			count = count + 15 & ~15;
 			var span = MemoryMarshal.Cast<byte, long>(buffer.AsSpan(offset, count));
 			var prev = MemoryMarshal.Cast<byte, long>(prevBytes);
 			for (offset = 0, count /= 8; offset < count;)

@@ -177,7 +177,7 @@ var uploadedFile = await client.UploadFileAsync(@"C:\Pictures\flower.jpg");
 // Photo 3 specified by external url:
 const string photoUrl = "https://picsum.photos/310/200.jpg";
 
-var inputMedias = new InputMedia[]
+var inputMedias = new List<InputMedia>
 {
     photoFromTelegram, // PhotoBase has implicit conversion to InputMediaPhoto
     new InputMediaUploadedPhoto { file = uploadedFile },

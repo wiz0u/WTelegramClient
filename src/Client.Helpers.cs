@@ -86,7 +86,7 @@ namespace WTelegram
 				bool abort = false;
 				for (long bytesLeft = length; !abort && bytesLeft != 0; file_part++)
 				{
-					var bytes = new byte[(Math.Min(FilePartSize, bytesLeft) + 15) & ~15];
+					var bytes = new byte[Math.Min(FilePartSize, bytesLeft)];
 					read = await stream.FullReadAsync(bytes, bytes.Length, default);
 					await _parallelTransfers.WaitAsync();
 					bytesLeft -= read;
