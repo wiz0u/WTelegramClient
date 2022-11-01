@@ -59,14 +59,16 @@ namespace TL
 			writer.Write(ctorNb);
 			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
 			if (tlDef.inheritBefore) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
-			uint flags = 0;
+			ulong flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
 			{
-				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1U << ifFlag.Bit)) == 0) continue;
+				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1UL << ifFlag.Bit)) == 0) continue;
 				object value = field.GetValue(obj);
 				writer.WriteTLValue(value, field.FieldType);
-				if (field.FieldType.IsEnum && field.Name == "flags") flags = (uint)value;
+				if (field.FieldType.IsEnum)
+					if (field.Name == "flags") flags = (uint)value;
+					else if (field.Name == "flags2") flags |= (ulong)(uint)value << 32;
 			}
 		}
 
@@ -83,14 +85,16 @@ namespace TL
 			var obj = Activator.CreateInstance(type, true);
 			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
 			if (tlDef.inheritBefore) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
-			uint flags = 0;
+			ulong flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
 			{
-				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1U << ifFlag.Bit)) == 0) continue;
+				if (((ifFlag = field.GetCustomAttribute<IfFlagAttribute>()) != null) && (flags & (1UL << ifFlag.Bit)) == 0) continue;
 				object value = reader.ReadTLValue(field.FieldType);
 				field.SetValue(obj, value);
-				if (field.FieldType.IsEnum && field.Name == "flags") flags = (uint)value;
+				if (field.FieldType.IsEnum)
+					if (field.Name == "flags") flags = (uint)value;
+					else if (field.Name == "flags2") flags |= (ulong)(uint)value << 32;
 				if (reader.Client?.CollectAccessHash == true) reader.Client.CollectField(field, obj, value);
 			}
 			return (IObject)obj;
