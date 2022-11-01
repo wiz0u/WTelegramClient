@@ -2268,24 +2268,24 @@ namespace TL
 	/// <summary>Location of a certain size of a picture		<para>See <a href="https://corefork.telegram.org/type/PhotoSize"/></para>		<para>Derived classes: <see cref="PhotoSizeEmpty"/>, <see cref="PhotoSize"/>, <see cref="PhotoCachedSize"/>, <see cref="PhotoStrippedSize"/>, <see cref="PhotoSizeProgressive"/>, <see cref="PhotoPathSize"/></para></summary>
 	public abstract partial class PhotoSizeBase : IObject
 	{
-		/// <summary>Thumbnail type (see. <see cref="PhotoSize"/>)</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
 		public virtual string Type { get; }
 	}
 	/// <summary>Empty constructor. Image with this thumbnail is unavailable.		<para>See <a href="https://corefork.telegram.org/constructor/photoSizeEmpty"/></para></summary>
 	[TLDef(0x0E17E23C)]
 	public partial class PhotoSizeEmpty : PhotoSizeBase
 	{
-		/// <summary>Thumbnail type (see. <see cref="PhotoSize"/>)</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
 		public string type;
 
-		/// <summary>Thumbnail type (see. <see cref="PhotoSize"/>)</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
 		public override string Type => type;
 	}
 	/// <summary>Image description.		<para>See <a href="https://corefork.telegram.org/constructor/photoSize"/></para></summary>
 	[TLDef(0x75C78E60)]
 	public partial class PhotoSize : PhotoSizeBase
 	{
-		/// <summary>Thumbnail type</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
 		public string type;
 		/// <summary>Image width</summary>
 		public int w;
@@ -2294,7 +2294,7 @@ namespace TL
 		/// <summary>File size</summary>
 		public int size;
 
-		/// <summary>Thumbnail type</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
 		public override string Type => type;
 	}
 	/// <summary>Description of an image and its content.		<para>See <a href="https://corefork.telegram.org/constructor/photoCachedSize"/></para></summary>
@@ -2329,7 +2329,7 @@ namespace TL
 	[TLDef(0xFA3EFB95)]
 	public partial class PhotoSizeProgressive : PhotoSizeBase
 	{
-		/// <summary>Photosize type</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Photosize type »</a></summary>
 		public string type;
 		/// <summary>Photo width</summary>
 		public int w;
@@ -2338,7 +2338,7 @@ namespace TL
 		/// <summary>Sizes of progressive JPEG file prefixes, which can be used to preliminarily show the image.</summary>
 		public int[] sizes;
 
-		/// <summary>Photosize type</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Photosize type »</a></summary>
 		public override string Type => type;
 	}
 	/// <summary>Messages with animated stickers can have a compressed svg (&lt; 300 bytes) to show the outline of the sticker before fetching the actual lottie animation.		<para>See <a href="https://corefork.telegram.org/constructor/photoPathSize"/></para></summary>
@@ -13151,9 +13151,9 @@ namespace TL
 		public long bot_id;
 		/// <summary>Attachment menu item name</summary>
 		public string short_name;
-		/// <summary>List of peer types where this attachment should be shown</summary>
+		/// <summary>List of dialog types where this attachment menu entry should be shown</summary>
 		public AttachMenuPeerType[] peer_types;
-		/// <summary>Attachment menu icon</summary>
+		/// <summary>List of platform-specific static icons and animations to use for the attachment menu button</summary>
 		public AttachMenuBotIcon[] icons;
 
 		[Flags] public enum Flags : uint
@@ -13292,9 +13292,9 @@ namespace TL
 	{
 		///<summary>The bot attachment menu entry is available in the chat with the bot that offers it</summary>
 		SameBotPM = 0x7D6BE90E,
-		///<summary>The bot attachment menu entry is available in private chats with other bots</summary>
+		///<summary>The bot attachment menu entry is available in private chats with other bots (excluding the bot that offers the current attachment menu)</summary>
 		BotPM = 0xC32BFA1A,
-		///<summary>The bot attachment menu entry is available in private chats with other users</summary>
+		///<summary>The bot attachment menu entry is available in private chats with other users (not bots)</summary>
 		PM = 0xF146D31F,
 		///<summary>The bot attachment menu entry is available in <a href="https://corefork.telegram.org/api/channel">groups and supergroups</a></summary>
 		Chat = 0x0509113F,

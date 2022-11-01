@@ -163,7 +163,7 @@ or a [broadcast channel](https://corefork.telegram.org/api/channel#channels) (th
 - `Chat` : A private [basic chat group](https://corefork.telegram.org/api/channel#basic-groups) with less than 200 members
 (it may be migrated to a supergroup `Channel` with a new ID when it gets bigger or public, in which case the old `Chat` will still exist but will be `deactivated`)  
 **⚠️ Most chat groups you see are really of type `Channel`, not `Chat`!**
-- chats : In plural or general meaning, it means either `Chat` or `Channel`
+- chats : In plural or general meaning, it means either `Chat` or `Channel` *(therefore, no private user discussions)*
 - `Peer` : Either a `Chat`, a `Channel` or a `User`
 - Dialog : Status of chat with a `Peer` *(draft, last message, unread count, pinned...)*. It represents each line from your Telegram chat list.
 - Access Hash : Telegram requires you to provide a specific `access_hash` for users, channels, and other resources before interacting with them.

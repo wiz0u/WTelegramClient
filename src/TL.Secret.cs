@@ -672,7 +672,7 @@ namespace TL
 		[TLDef(0x77BFB61B)]
 		public partial class PhotoSize : PhotoSizeBase
 		{
-			/// <summary>Thumbnail type</summary>
+			/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
 			public string type;
 			public FileLocationBase location;
 			/// <summary>Image width</summary>
@@ -682,7 +682,7 @@ namespace TL
 			/// <summary>File size</summary>
 			public int size;
 
-			/// <summary>Thumbnail type</summary>
+			/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
 			public override string Type => type;
 		}
 		/// <summary>Description of an image and its content.		<para>See <a href="https://corefork.telegram.org/constructor/photoCachedSize"/></para></summary>

@@ -322,27 +322,24 @@ namespace WTelegram
 						if (!IsMainDC && _pendingRpcs.Count <= 1 && ex is ApplicationException { Message: ConnectionShutDown } or IOException { InnerException: SocketException })
 							if (_pendingRpcs.Values.FirstOrDefault() is not Rpc rpc || rpc.type == typeof(Pong))
 								_reactorReconnects = 0;
-						if (_reactorReconnects != 0)
-						{
-							await Task.Delay(5000);
-							if (_networkStream == null) return; // Dispose has been called in-between
-							await ConnectAsync(); // start a new reactor after 5 secs
-							lock (_pendingRpcs) // retry all pending requests
-							{
-								foreach (var rpc in _pendingRpcs.Values)
-									rpc.tcs.SetResult(reactorError); // this leads to a retry (see Invoke<T> method)
-								_pendingRpcs.Clear();
-								_bareRpc = null;
-							}
-							// TODO: implement an Updates gaps handling system? https://core.telegram.org/api/updates
-							if (IsMainDC)
-							{
-								var updatesState = await this.Updates_GetState(); // this call reenables incoming Updates
-								RaiseUpdate(updatesState);
-							}
-						}
-						else
+						if (_reactorReconnects == 0)
 							throw;
+						await Task.Delay(5000);
+						if (_networkStream == null) return; // Dispose has been called in-between
+						await ConnectAsync(); // start a new reactor after 5 secs
+						lock (_pendingRpcs) // retry all pending requests
+						{
+							foreach (var rpc in _pendingRpcs.Values)
+								rpc.tcs.SetResult(reactorError); // this leads to a retry (see Invoke<T> method)
+							_pendingRpcs.Clear();
+							_bareRpc = null;
+						}
+						// TODO: implement an Updates gaps handling system? https://core.telegram.org/api/updates
+						if (IsMainDC)
+						{
+							var updatesState = await this.Updates_GetState(); // this call reenables incoming Updates
+							RaiseUpdate(updatesState);
+						}
 					}
 					catch
 					{

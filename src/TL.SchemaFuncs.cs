@@ -3214,7 +3214,7 @@ namespace TL
 		/// <param name="bot">Bot that owns the <a href="https://corefork.telegram.org/api/bots/webapps">web app</a></param>
 		/// <param name="url"><a href="https://corefork.telegram.org/api/bots/webapps">Web app URL</a></param>
 		/// <param name="start_param">If the web app was opened from the attachment menu using a <a href="https://corefork.telegram.org/api/links#bot-attachment-menu-links">attachment menu deep link</a>, <c>start_param</c> should contain the <c>data</c> from the <c>startattach</c> parameter.</param>
-		/// <param name="theme_params">Theme parameters for the web app</param>
+		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
 		/// <param name="reply_to_msg_id">Whether the inline message that will be sent by the bot on behalf of the user once the web app interaction is <a href="https://corefork.telegram.org/method/messages.sendWebViewResultMessage">terminated</a> should be sent in reply to this message ID.</param>
 		/// <param name="send_as">Open the web app as the specified peer, sending the resulting the message as the specified peer.</param>
@@ -3253,7 +3253,7 @@ namespace TL
 		/// <summary>Open a <a href="https://corefork.telegram.org/api/bots/webapps">bot web app</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.requestSimpleWebView"/></para></summary>
 		/// <param name="bot">Bot that owns the webapp</param>
 		/// <param name="url">Web app URL</param>
-		/// <param name="theme_params">Theme parameters</param>
+		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
 		public static Task<SimpleWebViewResult> Messages_RequestSimpleWebView(this Client client, InputUserBase bot, string url, string platform, DataJSON theme_params = null)
 			=> client.Invoke(new Messages_RequestSimpleWebView
