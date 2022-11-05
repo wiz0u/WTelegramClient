@@ -7,7 +7,7 @@ using System.Linq;
 using TL;
 
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-var myself = await client.LoginUserIfNeeded();
+await client.LoginUserIfNeeded();
 ```
 
 In this case, environment variables are used for configuration so make sure to
@@ -58,7 +58,7 @@ If the username is invalid/unused, the API call raises an RpcException.*
 ### Convert message to/from HTML or Markdown, and send it to ourself (Saved Messages)
 ```csharp
 // HTML-formatted text:
-var text = $"Hello <u>dear <b>{HtmlText.Escape(myself.first_name)}</b></u>\n" +
+var text = $"Hello <u>dear <b>{HtmlText.Escape(client.User.first_name)}</b></u>\n" +
            "Enjoy this <code>userbot</code> written with <a href=\"https://github.com/wiz0u/WTelegramClient\">WTelegramClient</a>";
 var entities = client.HtmlToEntities(ref text);
 var sent = await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
@@ -67,7 +67,7 @@ text = client.EntitiesToHtml(sent.message, sent.entities);
 ```
 ```csharp
 // Markdown-style text:
-var text2 = $"Hello __dear *{Markdown.Escape(myself.first_name)}*__\n" +
+var text2 = $"Hello __dear *{Markdown.Escape(client.User.first_name)}*__\n" +
             "Enjoy this `userbot` written with [WTelegramClient](https://github.com/wiz0u/WTelegramClient)";
 var entities2 = client.MarkdownToEntities(ref text2);
 var sent2 = await client.SendMessageAsync(InputPeer.Self, text2, entities: entities2);
@@ -147,7 +147,7 @@ var participants = await client.Channels_GetAllParticipants(channel);
 You can use specific filters, for example to list only the channel owner/admins:
 ```csharp
 var participants = await client.Channels_GetParticipants(channel, filter: new ChannelParticipantsAdmins());
-foreach (var participant in participants.participants) // This is the correct way to enumerate the result
+foreach (var participant in participants.participants) // This is the better way to enumerate the result
 {
     var user = participants.users[participant.UserID];
     if (participant is ChannelParticipantCreator cpc) Console.WriteLine($"{user} is the owner '{cpc.rank}'");
@@ -232,7 +232,7 @@ var inputMedias = new List<InputMedia>
 {
     photoFromTelegram, // PhotoBase has implicit conversion to InputMediaPhoto
     new InputMediaUploadedPhoto { file = uploadedFile },
-    new InputMediaPhotoExternal() { url = photoUrl },
+    new InputMediaPhotoExternal { url = photoUrl },
 };
 await client.SendAlbumAsync(InputPeer.Self, inputMedias, "My first album");
 ```
@@ -349,7 +349,7 @@ var messages = await client.Messages_Search<InputMessagesFilterPinned>(chat, lim
 foreach (var msg in messages.Messages)
     await client.Messages_SendReaction(chat, msg.ID, reaction: new[] { reaction });
 ```
-*Note: you can find custom emoji document IDs via API methods like [Messages_GetFeaturedEmojiStickers](https://corefork.telegram.org/method/messages.getFeaturedEmojiStickers) or inspecting incoming messages. Access hash is not required*
+*Note: you can find custom emoji document IDs via API methods like [Messages_GetFeaturedEmojiStickers](https://corefork.telegram.org/methods#working-with-custom-animated-emojis) or inspecting incoming messages. Access hash is not required*
 
 
 <a name="join-channel"></a>
@@ -407,7 +407,7 @@ var contacts = await client.Contacts_ImportContacts(new[] { new InputPhoneContac
 if (contacts.imported.Length > 0)
     await client.SendMessageAsync(contacts.users[contacts.imported[0].user_id], "Hello!");
 ```
-*Note: Don't use this method too much. To prevent spam, Telegram may restrict your ability to add new phone numbers.*
+*Note: Don't use this method too much. To prevent spam, Telegram may restrict your ability to add new phone numbers or ban your account.*
 
 <a name="contacts"></a>
 ### Retrieve the current user's contacts list
@@ -457,7 +457,7 @@ client.TcpHandler = async (address, port) =>
     var proxy = new Socks5ProxyClient(ProxyHost, ProxyPort, ProxyUsername, ProxyPassword);
     return proxy.CreateConnection(address, port);
 };
-var myself = await client.LoginUserIfNeeded();
+await client.LoginUserIfNeeded();
 ```
 or with [xNetStandard](https://www.nuget.org/packages/xNetStandard/):
 ```csharp
@@ -472,7 +472,7 @@ MTProxy (MTProto proxy) can be used to prevent ISP blocking Telegram servers, th
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 client.MTProxyUrl = "http://t.me/proxy?server=...&port=...&secret=...";
-var myself = await client.LoginUserIfNeeded();
+await client.LoginUserIfNeeded();
 ```
 You can find a list of working MTProxies in channels like [@ProxyMTProto](https://t.me/ProxyMTProto) or [@MTProxyT](https://t.me/MTProxyT) *(right-click the "Connect" buttons)*  
 If your Telegram client is already connected to such MTPROTO proxy, you can also export its URL by clicking on the shield button ![🛡](https://raw.githubusercontent.com/telegramdesktop/tdesktop/dev/Telegram/Resources/icons/proxy_on.png) and then **⋮** > **Share**

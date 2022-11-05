@@ -290,7 +290,7 @@ namespace TL
 		/// <param name="no_muted">Avoid receiving (silent and invisible background) notifications. Useful to save battery.</param>
 		/// <param name="token_type">Device token type, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
 		/// <param name="token">Device token, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
-		/// <param name="app_sandbox">If <see cref="Bool.True"/> is transmitted, a sandbox-certificate will be used during transmission.</param>
+		/// <param name="app_sandbox">If <see langword="true"/> is transmitted, a sandbox-certificate will be used during transmission.</param>
 		/// <param name="secret">For FCM and APNS VoIP, optional encryption key used to encrypt push notifications</param>
 		/// <param name="other_uids">List of user identifiers of other users currently using the client</param>
 		public static Task<bool> Account_RegisterDevice(this Client client, int token_type, string token, bool app_sandbox, byte[] secret, long[] other_uids, bool no_muted = false)
@@ -354,7 +354,7 @@ namespace TL
 			});
 
 		/// <summary>Updates online user status.		<para>See <a href="https://corefork.telegram.org/method/account.updateStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/account.updateStatus#possible-errors">details</a>)</para></summary>
-		/// <param name="offline">If <see cref="Bool.True"/> is transmitted, user status will change to <see cref="UserStatusOffline"/>.</param>
+		/// <param name="offline">If <see langword="true"/> is transmitted, user status will change to <see cref="UserStatusOffline"/>.</param>
 		public static Task<bool> Account_UpdateStatus(this Client client, bool offline)
 			=> client.Invoke(new Account_UpdateStatus
 			{
@@ -1656,7 +1656,7 @@ namespace TL
 
 		/// <summary>Send typing event by the current user to a secret chat.		<para>See <a href="https://corefork.telegram.org/method/messages.setEncryptedTyping"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setEncryptedTyping#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Secret chat ID</param>
-		/// <param name="typing">Typing.<br/><strong>Possible values</strong>:<br/><see cref="Bool.True"/>, if the user started typing and more than <strong>5 seconds</strong> have passed since the last request<br/><see cref="Bool.False"/>, if the user stopped typing</param>
+		/// <param name="typing">Typing.<br/><strong>Possible values</strong>:<br/><see langword="true"/>, if the user started typing and more than <strong>5 seconds</strong> have passed since the last request<br/><see langword="false"/>, if the user stopped typing</param>
 		public static Task<bool> Messages_SetEncryptedTyping(this Client client, InputEncryptedChat peer, bool typing)
 			=> client.Invoke(new Messages_SetEncryptedTyping
 			{

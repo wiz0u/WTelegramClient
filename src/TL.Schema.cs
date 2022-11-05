@@ -3207,7 +3207,7 @@ namespace TL
 		public DateTime date;
 		/// <summary>New profile photo</summary>
 		public UserProfilePhoto photo;
-		/// <summary>(<see cref="Bool.True"/>), if one of the previously used photos is set a profile photo.</summary>
+		/// <summary>(<see langword="true"/>), if one of the previously used photos is set a profile photo.</summary>
 		public bool previous;
 	}
 	/// <summary>New encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/updateNewEncryptedMessage"/></para></summary>

@@ -129,6 +129,7 @@ namespace TL
 	{
 		public override long ID => id;
 		public override bool IsActive => (flags & Flags.deleted) == 0;
+		public string MainUsername => username ?? usernames?.FirstOrDefault(u => u.flags.HasFlag(Username.Flags.active))?.username;
 		public override string ToString() => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
 		public override InputPeer ToInputPeer() => new InputPeerUser(id, access_hash);
 		protected override InputUser ToInputUser() => new(id, access_hash);
