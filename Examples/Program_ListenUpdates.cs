@@ -52,7 +52,7 @@ namespace WTelegramClientTest
 					case UpdateUserStatus uus: Console.WriteLine($"{User(uus.user_id)} is now {uus.status.GetType().Name[10..]}"); break;
 					case UpdateUserName uun: Console.WriteLine($"{User(uun.user_id)} has changed profile name: {uun.first_name} {uun.last_name}"); break;
 					case UpdateUserPhoto uup: Console.WriteLine($"{User(uup.user_id)} has changed profile photo"); break;
-					default: Console.WriteLine(update.GetType().Name); break; // there are much more update types than the above cases
+					default: Console.WriteLine(update.GetType().Name); break; // there are much more update types than the above example cases
 				}
 		}
 

@@ -48,7 +48,7 @@ calling `client.Login(...)` as the user provides the requested configuration ele
 You can download such full example apps [for WinForms](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip) and [for ASP.NET](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/ASPnet_webapp.zip)
 
 <a name="access-hash"></a>
-#### 4. Where to get the access_hash? Why the error `CHANNEL_INVALID` or `USER_ID_INVALID`?
+#### 4. How to use IDs? Where to get the access_hash? Why the error `CHANNEL_INVALID` or `USER_ID_INVALID`?
 
 Having only the ID is **not enough**: An `access_hash` is required by Telegram when dealing with a channel, user, photo, document, etc...  
 This serves as a proof that the logged-in user is entitled to access it (otherwise, anybody with the ID could access it)
@@ -206,7 +206,7 @@ In this case, the recommended action would be to dispose the client and recreate
 you might also get Connection shutdown because your client couldn't send Pings to Telegram in the allotted time.  
 In this case, you can use the `PingInterval` property to increase the delay between pings *(for example 300 seconds instead of 60)*.
 
-5) If you're using an MTProxy, some of them are known to be quite unstable. You may want to try switching to another MTProxy that is more stable.
+5) If you're using an [MTProxy](EXAMPLES.md#proxy), some of them are known to be quite unstable. You may want to try switching to another MTProxy that is more stable.
 
 <a name="TLSharp"></a>
 #### 12. How to migrate from TLSharp? How to sign-in/sign-up/register account properly?
@@ -233,7 +233,7 @@ In particular, it will detect and handle automatically and properly the various 
 * Request to resend the verification code through alternate ways like SMS (if your Config answer an empty "verification_code" initially)
 * Transient failures, slowness to respond, wrong code/password, checks for encryption key safety, etc..
 
-Contrary to TLSharp, WTelegramClient supports MTProto v2.0 (more secured), transport obfuscation, protocol security checks, MTProto Proxy, real-time updates, multiple DC connections, API documentation in Intellisense...
+Contrary to TLSharp, WTelegramClient supports MTProto v2.0 (more secured), transport obfuscation, protocol security checks, MTProto [Proxy](EXAMPLES.md#proxy), real-time updates, multiple DC connections, API documentation in Intellisense...
 
 <a name="heroku"></a><a name="vps"></a><a name="host"></a>
 #### 13. How to host my userbot online?

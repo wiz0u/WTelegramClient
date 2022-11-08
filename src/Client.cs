@@ -578,11 +578,16 @@ namespace WTelegram
 			if (_bareRpc != null)
 			{
 				var rpc = PullPendingRequest(_bareRpc.msgId);
-				if ((rpc?.type.IsAssignableFrom(obj.GetType())) != true)
+				if ((rpc?.type.IsAssignableFrom(obj.GetType())) == true)
+				{
+					_bareRpc = null;
+					rpc.tcs.SetResult(obj);
+					return;
+				}
+				else if (_dcSession.AuthKeyID == 0)
 					throw new ApplicationException($"Received a {obj.GetType()} incompatible with expected bare {rpc?.type}");
-				_bareRpc = null;
-				rpc.tcs.SetResult(obj);
-				return;
+				lock (_pendingRpcs)
+					_pendingRpcs[_bareRpc.msgId] = _bareRpc;
 			}
 			switch (obj)
 			{

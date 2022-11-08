@@ -448,7 +448,7 @@ This is done by activating the experimental `client.CollectAccessHash` system.
 See [Examples/Program_CollectAccessHash.cs](Examples/Program_CollectAccessHash.cs) for how to enable it, and save/restore them for later use.
 
 <a name="proxy"></a>
-### Use a proxy to connect to Telegram
+### Use a proxy or MTProxy to connect to Telegram
 SOCKS/HTTPS proxies can be used through the `client.TcpHandler` delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/):
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
