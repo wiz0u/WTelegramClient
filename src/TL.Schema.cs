@@ -13179,7 +13179,7 @@ namespace TL
 		public DocumentBase static_icon;
 		/// <summary>The animated sticker to show when the user opens the reaction dropdown</summary>
 		public DocumentBase appear_animation;
-		/// <summary>The animated sticker to show when the user selects this reaction</summary>
+		/// <summary>The animated sticker to show when the user hovers over the reaction</summary>
 		public DocumentBase select_animation;
 		/// <summary>The animated sticker to show when the reaction is chosen and activated</summary>
 		public DocumentBase activate_animation;

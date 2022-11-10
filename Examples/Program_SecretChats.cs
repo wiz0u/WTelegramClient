@@ -4,23 +4,24 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TL;
+using WTelegram;
 
 namespace WTelegramClientTest
 {
 	static class Program_SecretChats
 	{
-		static WTelegram.Client Client;
-		static WTelegram.SecretChats Secrets;
-		static InputEncryptedChat ActiveChat; // the secret chat currently selected
+		static Client Client;
+		static SecretChats Secrets;
+		static ISecretChat ActiveChat; // the secret chat currently selected
 		static readonly Dictionary<long, User> Users = new();
 		static readonly Dictionary<long, ChatBase> Chats = new();
 
 		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main()
 		{
-			WTelegram.Helpers.Log = (l, s) => System.Diagnostics.Debug.WriteLine(s);
-			Client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-			Secrets = new WTelegram.SecretChats(Client, "Secrets.bin");
+			Helpers.Log = (l, s) => System.Diagnostics.Debug.WriteLine(s);
+			Client = new Client(Environment.GetEnvironmentVariable);
+			Secrets = new SecretChats(Client, "Secrets.bin");
 			AppDomain.CurrentDomain.ProcessExit += (s, e) => { Secrets.Dispose(); Client.Dispose(); };
 			SelectActiveChat();
 
@@ -46,9 +47,9 @@ Type a command, or a message to send to the active secret chat:");
 					var line = Console.ReadLine();
 					if (line.StartsWith('/'))
 					{
-						if (line == "/discard delete") { await Secrets.Discard(ActiveChat, true); SelectActiveChat(); }
-						else if (line == "/discard") { await Secrets.Discard(ActiveChat, false); SelectActiveChat(); }
-						else if (line == "/read") await Client.Messages_ReadEncryptedHistory(ActiveChat, DateTime.UtcNow);
+						if (line == "/discard delete") { await Secrets.Discard(ActiveChat.ChatId, true); SelectActiveChat(); }
+						else if (line == "/discard") { await Secrets.Discard(ActiveChat.ChatId, false); SelectActiveChat(); }
+						else if (line == "/read") await Client.Messages_ReadEncryptedHistory(ActiveChat.Peer, DateTime.UtcNow);
 						else if (line == "/users") foreach (var user in Users.Values) Console.WriteLine($"{user.id,-10} {user}");
 						else if (line.StartsWith("/select ")) SelectActiveChat(int.Parse(line[8..]));
 						else if (line.StartsWith("/request "))
@@ -58,15 +59,15 @@ Type a command, or a message to send to the active secret chat:");
 								Console.WriteLine("User not found");
 						else if (line.StartsWith("/photo "))
 						{
-							var media = new TL.Layer45.DecryptedMessageMediaPhoto { caption = line[7..] };
+							var media = new TL.Layer46.DecryptedMessageMediaPhoto { caption = line[7..] };
 							var file = await Secrets.UploadFile(File.OpenRead(line[7..]), media);
-							var sent = await Secrets.SendMessage(ActiveChat, new TL.Layer73.DecryptedMessage { random_id = WTelegram.Helpers.RandomLong(),
+							var sent = await Secrets.SendMessage(ActiveChat.ChatId, new TL.Layer73.DecryptedMessage { random_id = Helpers.RandomLong(),
 								media = media, flags = TL.Layer73.DecryptedMessage.Flags.has_media }, file: file);
 						}
 						else Console.WriteLine("Unrecognized command");
 					}
 					else if (ActiveChat == null) Console.WriteLine("No active secret chat");
-					else await Secrets.SendMessage(ActiveChat, new TL.Layer73.DecryptedMessage { message = line, random_id = WTelegram.Helpers.RandomLong() });
+					else await Secrets.SendMessage(ActiveChat.ChatId, new TL.Layer73.DecryptedMessage { message = line, random_id = Helpers.RandomLong() });
 				}
 				catch (Exception ex)
 				{
@@ -86,7 +87,7 @@ Type a command, or a message to send to the active secret chat:");
 						await Secrets.HandleUpdate(ue);
 						break;
 					case UpdateNewEncryptedMessage unem: // Encrypted message or service message:
-						if (unem.message.ChatId != ActiveChat?.chat_id) SelectActiveChat(unem.message.ChatId);
+						if (unem.message.ChatId != ActiveChat?.ChatId) SelectActiveChat(unem.message.ChatId);
 						foreach (var msg in Secrets.DecryptMessage(unem.message))
 						{
 							if (msg.Media != null && unem.message is EncryptedMessage { file: EncryptedFile ef })
@@ -110,8 +111,8 @@ Type a command, or a message to send to the active secret chat:");
 
 		private static void SelectActiveChat(int newActiveChat = 0)
 		{
-			ActiveChat = Secrets.Peers.FirstOrDefault(sc => newActiveChat == 0 || sc.chat_id == newActiveChat);
-			Console.WriteLine("Active secret chat ID: " + ActiveChat?.chat_id);
+			ActiveChat = Secrets.Chats.FirstOrDefault(sc => newActiveChat == 0 || sc.ChatId == newActiveChat);
+			Console.WriteLine("Active secret chat ID: " + ActiveChat?.ChatId);
 		}
 	}
 }

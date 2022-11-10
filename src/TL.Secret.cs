@@ -32,7 +32,7 @@ namespace TL
 	public abstract class DecryptedMessageMedia : IObject
 	{
 		public virtual string MimeType { get; }
-		internal virtual (int size, byte[] key, byte[] iv) SizeKeyIV { get => default; set => throw new ApplicationException("Incompatible DecryptedMessageMedia"); }
+		internal virtual (long size, byte[] key, byte[] iv) SizeKeyIV { get => default; set => throw new ApplicationException("Incompatible DecryptedMessageMedia"); }
 	}
 
 	/// <summary>Object describes the action to which a service message is linked.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageAction"/></para></summary>
@@ -110,7 +110,7 @@ namespace TL
 			public byte[] iv;
 
 			public override string MimeType => "image/jpeg";
-			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			internal override (long size, byte[] key, byte[] iv) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = (checked((int)value.size), value.key, value.iv); }
 		}
 		/// <summary>Video attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVideo"/></para></summary>
 		[TLDef(0x4CEE6EF3)]
@@ -135,7 +135,7 @@ namespace TL
 			/// <summary>Initialization vector</summary>
 			public byte[] iv;
 
-			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			internal override (long size, byte[] key, byte[] iv) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = (checked((int)value.size), value.key, value.iv); }
 		}
 		/// <summary>GeoPoint attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaGeoPoint"/></para></summary>
 		[TLDef(0x35480A59)]
@@ -182,7 +182,7 @@ namespace TL
 			/// <summary>File MIME-type</summary>
 			public override string MimeType => mime_type;
 
-			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			internal override (long size, byte[] key, byte[] iv) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = (checked((int)value.size), value.key, value.iv); }
 		}
 		/// <summary>Audio file attached to a secret chat message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaAudio"/></para></summary>
 		[TLDef(0x6080758F)]
@@ -197,7 +197,7 @@ namespace TL
 			/// <summary>Initialization vector</summary>
 			public byte[] iv;
 
-			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			internal override (long size, byte[] key, byte[] iv) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = (checked((int)value.size), value.key, value.iv); }
 		}
 
 		/// <summary>Setting of a message lifetime after reading.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionSetMessageTTL"/></para></summary>
@@ -233,8 +233,43 @@ namespace TL
 		public class DecryptedMessageActionFlushHistory : DecryptedMessageAction { }
 	}
 
-	namespace Layer17
+	namespace Layer23
 	{
+		/// <summary>Image description.		<para>See <a href="https://corefork.telegram.org/constructor/photoSize"/></para></summary>
+		[TLDef(0x77BFB61B)]
+		public partial class PhotoSize : PhotoSizeBase
+		{
+			/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
+			public string type;
+			public FileLocationBase location;
+			/// <summary>Image width</summary>
+			public int w;
+			/// <summary>Image height</summary>
+			public int h;
+			/// <summary>File size</summary>
+			public int size;
+
+			/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
+			public override string Type => type;
+		}
+		/// <summary>Description of an image and its content.		<para>See <a href="https://corefork.telegram.org/constructor/photoCachedSize"/></para></summary>
+		[TLDef(0xE9A734FA)]
+		public partial class PhotoCachedSize : PhotoSizeBase
+		{
+			/// <summary>Thumbnail type</summary>
+			public string type;
+			public FileLocationBase location;
+			/// <summary>Image width</summary>
+			public int w;
+			/// <summary>Image height</summary>
+			public int h;
+			/// <summary>Binary data, file content</summary>
+			public byte[] bytes;
+
+			/// <summary>Thumbnail type</summary>
+			public override string Type => type;
+		}
+
 		/// <summary>User is uploading a video.		<para>See <a href="https://corefork.telegram.org/constructor/sendMessageUploadVideoAction"/></para></summary>
 		[TLDef(0x92042FF7)]
 		public class SendMessageUploadVideoAction : SendMessageAction { }
@@ -247,6 +282,28 @@ namespace TL
 		/// <summary>User is uploading a file.		<para>See <a href="https://corefork.telegram.org/constructor/sendMessageUploadDocumentAction"/></para></summary>
 		[TLDef(0x8FAEE98E)]
 		public class SendMessageUploadDocumentAction : SendMessageAction { }
+
+		/// <summary>Defines a sticker		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeSticker"/></para></summary>
+		[TLDef(0xFB0A5727)]
+		public class DocumentAttributeSticker : DocumentAttribute { }
+		/// <summary>Defines a video		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeVideo"/></para></summary>
+		[TLDef(0x5910CCCB)]
+		public class DocumentAttributeVideo : DocumentAttribute
+		{
+			/// <summary>Duration in seconds</summary>
+			public int duration;
+			/// <summary>Video width</summary>
+			public int w;
+			/// <summary>Video height</summary>
+			public int h;
+		}
+		/// <summary>Represents an audio file		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeAudio"/></para></summary>
+		[TLDef(0x051448E5)]
+		public class DocumentAttributeAudio : DocumentAttribute
+		{
+			/// <summary>Duration in seconds</summary>
+			public int duration;
+		}
 
 		/// <summary>Contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessage"/></para></summary>
 		[TLDef(0x204D3878)]
@@ -313,7 +370,7 @@ namespace TL
 			/// <summary>MIME-type of the video file<br/>Parameter added in Layer 17.</summary>
 			public override string MimeType => mime_type;
 
-			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			internal override (long size, byte[] key, byte[] iv) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = (checked((int)value.size), value.key, value.iv); }
 		}
 		/// <summary>Audio file attached to a secret chat message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaAudio"/></para></summary>
 		[TLDef(0x57E0A9CB)]
@@ -333,7 +390,31 @@ namespace TL
 			/// <summary>MIME-type of the audio file<br/>Parameter added in Layer 13.</summary>
 			public override string MimeType => mime_type;
 
-			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			internal override (long size, byte[] key, byte[] iv) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = (checked((int)value.size), value.key, value.iv); }
+		}
+		/// <summary>Non-e2e documented forwarded from non-secret chat		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaExternalDocument"/></para></summary>
+		[TLDef(0xFA95B0DD)]
+		public class DecryptedMessageMediaExternalDocument : DecryptedMessageMedia
+		{
+			/// <summary>Document ID</summary>
+			public long id;
+			/// <summary>access hash</summary>
+			public long access_hash;
+			/// <summary>Date</summary>
+			public DateTime date;
+			/// <summary>Mime type</summary>
+			public string mime_type;
+			/// <summary>Size</summary>
+			public int size;
+			/// <summary>Thumbnail</summary>
+			public PhotoSizeBase thumb;
+			/// <summary>DC ID</summary>
+			public int dc_id;
+			/// <summary>Attributes for media types</summary>
+			public DocumentAttribute[] attributes;
+
+			/// <summary>Mime type</summary>
+			public override string MimeType => mime_type;
 		}
 
 		/// <summary>Request for the other party in a Secret Chat to automatically resend a contiguous range of previously sent messages, as explained in <a href="https://corefork.telegram.org/api/end-to-end/seq_no">Sequence number is Secret Chats</a>.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionResend"/></para></summary>
@@ -359,6 +440,45 @@ namespace TL
 			/// <summary>Type of action</summary>
 			public SendMessageAction action;
 		}
+		/// <summary>Request rekeying, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a>		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionRequestKey"/></para></summary>
+		[TLDef(0xF3C9611B)]
+		public class DecryptedMessageActionRequestKey : DecryptedMessageAction
+		{
+			/// <summary>Exchange ID</summary>
+			public long exchange_id;
+			/// <summary>g_a, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a></summary>
+			public byte[] g_a;
+		}
+		/// <summary>Accept new key		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionAcceptKey"/></para></summary>
+		[TLDef(0x6FE1735B)]
+		public class DecryptedMessageActionAcceptKey : DecryptedMessageAction
+		{
+			/// <summary>Exchange ID</summary>
+			public long exchange_id;
+			/// <summary>B parameter, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a></summary>
+			public byte[] g_b;
+			/// <summary>Key fingerprint, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a></summary>
+			public long key_fingerprint;
+		}
+		/// <summary>Abort rekeying		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionAbortKey"/></para></summary>
+		[TLDef(0xDD05EC6B)]
+		public class DecryptedMessageActionAbortKey : DecryptedMessageAction
+		{
+			/// <summary>Exchange ID</summary>
+			public long exchange_id;
+		}
+		/// <summary>Commit new key, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a>		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionCommitKey"/></para></summary>
+		[TLDef(0xEC2E0B9B)]
+		public class DecryptedMessageActionCommitKey : DecryptedMessageAction
+		{
+			/// <summary>Exchange ID, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a></summary>
+			public long exchange_id;
+			/// <summary>Key fingerprint, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a></summary>
+			public long key_fingerprint;
+		}
+		/// <summary>NOOP action		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionNoop"/></para></summary>
+		[TLDef(0xA82FDD63)]
+		public class DecryptedMessageActionNoop : DecryptedMessageAction { }
 
 		/// <summary>Sets the layer number for the contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageLayer"/></para></summary>
 		[TLDef(0x1BE31789)]
@@ -375,19 +495,49 @@ namespace TL
 			/// <summary>The content of message itself</summary>
 			public DecryptedMessageBase message;
 		}
+
+		/// <summary>File is currently unavailable.		<para>See <a href="https://corefork.telegram.org/constructor/fileLocationUnavailable"/></para></summary>
+		[TLDef(0x7C596B46)]
+		public class FileLocationUnavailable : FileLocationBase
+		{
+			/// <summary>Server volume</summary>
+			public long volume_id;
+			/// <summary>File ID</summary>
+			public int local_id;
+			/// <summary>Checksum to access the file</summary>
+			public long secret;
+
+			/// <summary>Server volume</summary>
+			public override long VolumeId => volume_id;
+			/// <summary>File ID</summary>
+			public override int LocalId => local_id;
+			/// <summary>Checksum to access the file</summary>
+			public override long Secret => secret;
+		}
+		/// <summary>File location.		<para>See <a href="https://corefork.telegram.org/constructor/fileLocation"/></para></summary>
+		[TLDef(0x53D69076)]
+		public class FileLocation : FileLocationBase
+		{
+			/// <summary>Number of the data center holding the file</summary>
+			public int dc_id;
+			/// <summary>Server volume</summary>
+			public long volume_id;
+			/// <summary>File ID</summary>
+			public int local_id;
+			/// <summary>Checksum to access the file</summary>
+			public long secret;
+
+			/// <summary>Server volume</summary>
+			public override long VolumeId => volume_id;
+			/// <summary>File ID</summary>
+			public override int LocalId => local_id;
+			/// <summary>Checksum to access the file</summary>
+			public override long Secret => secret;
+		}
 	}
 
 	namespace Layer45
 	{
-		/// <summary>Defines a sticker		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeSticker"/></para></summary>
-		[TLDef(0x3A556302)]
-		public class DocumentAttributeSticker : DocumentAttribute
-		{
-			/// <summary>Alternative emoji representation of sticker</summary>
-			public string alt;
-			/// <summary>Associated stickerset</summary>
-			public InputStickerSet stickerset;
-		}
 		/// <summary>Represents an audio file		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeAudio"/></para></summary>
 		[TLDef(0xDED218E0)]
 		public class DocumentAttributeAudio : DocumentAttribute
@@ -398,6 +548,27 @@ namespace TL
 			public string title;
 			/// <summary>Performer</summary>
 			public string performer;
+		}
+	}
+
+	namespace Layer46
+	{
+		/// <summary>Defines a sticker		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeSticker"/></para></summary>
+		[TLDef(0x3A556302)]
+		public class DocumentAttributeSticker : DocumentAttribute
+		{
+			/// <summary>Alternative emoji representation of sticker</summary>
+			public string alt;
+			/// <summary>Associated stickerset</summary>
+			public InputStickerSet stickerset;
+		}
+
+		/// <summary>Message entity representing a <a href="https://corefork.telegram.org/api/mentions">user mention</a>: for <em>creating</em> a mention use <see cref="InputMessageEntityMentionName"/>.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityMentionName"/></para></summary>
+		[TLDef(0x352DCA58, inheritBefore = true)]
+		public class MessageEntityMentionName : MessageEntityMention
+		{
+			/// <summary>Identifier of the user that was mentioned</summary>
+			public int user_id;
 		}
 
 		/// <summary>Contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessage"/></para></summary>
@@ -475,7 +646,7 @@ namespace TL
 			public string caption;
 
 			public override string MimeType => "image/jpeg";
-			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			internal override (long size, byte[] key, byte[] iv) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = (checked((int)value.size), value.key, value.iv); }
 		}
 		/// <summary>Video attached to an encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVideo"/></para></summary>
 		[TLDef(0x970C8C0E)]
@@ -507,7 +678,7 @@ namespace TL
 			/// <summary>MIME-type of the video file<br/>Parameter added in Layer 17.</summary>
 			public override string MimeType => mime_type;
 
-			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			internal override (long size, byte[] key, byte[] iv) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = (checked((int)value.size), value.key, value.iv); }
 		}
 		/// <summary>Document attached to a message in a secret chat.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaDocument"/></para></summary>
 		[TLDef(0x7AFE8AE2)]
@@ -535,7 +706,7 @@ namespace TL
 			/// <summary>File MIME-type</summary>
 			public override string MimeType => mime_type;
 
-			internal override (int, byte[], byte[]) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
+			internal override (long size, byte[] key, byte[] iv) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = (checked((int)value.size), value.key, value.iv); }
 		}
 		/// <summary>Venue		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaVenue"/></para></summary>
 		[TLDef(0x8A0DF56F)]
@@ -561,6 +732,13 @@ namespace TL
 			/// <summary>URL of webpage</summary>
 			public string url;
 		}
+	}
+
+	namespace Layer66
+	{
+		/// <summary>User is uploading a round video		<para>See <a href="https://corefork.telegram.org/constructor/sendMessageUploadRoundAction"/></para></summary>
+		[TLDef(0xBB718624)]
+		public class SendMessageUploadRoundAction : SendMessageAction { }
 	}
 
 	namespace Layer73
@@ -592,6 +770,8 @@ namespace TL
 			{
 				/// <summary>Field <see cref="reply_to_random_id"/> has a value</summary>
 				has_reply_to_random_id = 0x8,
+				/// <summary>Whether this is a silent message (no notification triggered)</summary>
+				silent = 0x20,
 				/// <summary>Field <see cref="entities"/> has a value</summary>
 				has_entities = 0x80,
 				/// <summary>Field <see cref="media"/> has a value</summary>
@@ -623,180 +803,41 @@ namespace TL
 		}
 	}
 
-	namespace Layer20
+	namespace Layer101
+	{	}
+
+	namespace Layer143
 	{
-		/// <summary>Request rekeying, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a>		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionRequestKey"/></para></summary>
-		[TLDef(0xF3C9611B)]
-		public class DecryptedMessageActionRequestKey : DecryptedMessageAction
+		/// <summary>Document attached to a message in a secret chat.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaDocument"/></para></summary>
+		[TLDef(0x6ABD9782)]
+		public class DecryptedMessageMediaDocument : DecryptedMessageMedia
 		{
-			/// <summary>Exchange ID</summary>
-			public long exchange_id;
-			/// <summary>g_a, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a></summary>
-			public byte[] g_a;
-		}
-		/// <summary>Accept new key		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionAcceptKey"/></para></summary>
-		[TLDef(0x6FE1735B)]
-		public class DecryptedMessageActionAcceptKey : DecryptedMessageAction
-		{
-			/// <summary>Exchange ID</summary>
-			public long exchange_id;
-			/// <summary>B parameter, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a></summary>
-			public byte[] g_b;
-			/// <summary>Key fingerprint, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a></summary>
-			public long key_fingerprint;
-		}
-		/// <summary>Abort rekeying		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionAbortKey"/></para></summary>
-		[TLDef(0xDD05EC6B)]
-		public class DecryptedMessageActionAbortKey : DecryptedMessageAction
-		{
-			/// <summary>Exchange ID</summary>
-			public long exchange_id;
-		}
-		/// <summary>Commit new key, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a>		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionCommitKey"/></para></summary>
-		[TLDef(0xEC2E0B9B)]
-		public class DecryptedMessageActionCommitKey : DecryptedMessageAction
-		{
-			/// <summary>Exchange ID, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a></summary>
-			public long exchange_id;
-			/// <summary>Key fingerprint, see <a href="https://corefork.telegram.org/api/end-to-end/pfs">rekeying process</a></summary>
-			public long key_fingerprint;
-		}
-		/// <summary>NOOP action		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageActionNoop"/></para></summary>
-		[TLDef(0xA82FDD63)]
-		public class DecryptedMessageActionNoop : DecryptedMessageAction { }
-	}
-
-	namespace Layer23
-	{
-		/// <summary>Image description.		<para>See <a href="https://corefork.telegram.org/constructor/photoSize"/></para></summary>
-		[TLDef(0x77BFB61B)]
-		public partial class PhotoSize : PhotoSizeBase
-		{
-			/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
-			public string type;
-			public FileLocationBase location;
-			/// <summary>Image width</summary>
-			public int w;
-			/// <summary>Image height</summary>
-			public int h;
-			/// <summary>File size</summary>
-			public int size;
-
-			/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
-			public override string Type => type;
-		}
-		/// <summary>Description of an image and its content.		<para>See <a href="https://corefork.telegram.org/constructor/photoCachedSize"/></para></summary>
-		[TLDef(0xE9A734FA)]
-		public partial class PhotoCachedSize : PhotoSizeBase
-		{
-			/// <summary>Thumbnail type</summary>
-			public string type;
-			public FileLocationBase location;
-			/// <summary>Image width</summary>
-			public int w;
-			/// <summary>Image height</summary>
-			public int h;
-			/// <summary>Binary data, file content</summary>
-			public byte[] bytes;
-
-			/// <summary>Thumbnail type</summary>
-			public override string Type => type;
-		}
-
-		/// <summary>Defines a sticker		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeSticker"/></para></summary>
-		[TLDef(0xFB0A5727)]
-		public class DocumentAttributeSticker : DocumentAttribute { }
-		/// <summary>Defines a video		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeVideo"/></para></summary>
-		[TLDef(0x5910CCCB)]
-		public class DocumentAttributeVideo : DocumentAttribute
-		{
-			/// <summary>Duration in seconds</summary>
-			public int duration;
-			/// <summary>Video width</summary>
-			public int w;
-			/// <summary>Video height</summary>
-			public int h;
-		}
-		/// <summary>Represents an audio file		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeAudio"/></para></summary>
-		[TLDef(0x051448E5)]
-		public class DocumentAttributeAudio : DocumentAttribute
-		{
-			/// <summary>Duration in seconds</summary>
-			public int duration;
-		}
-
-		/// <summary>Non-e2e documented forwarded from non-secret chat		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaExternalDocument"/></para></summary>
-		[TLDef(0xFA95B0DD)]
-		public class DecryptedMessageMediaExternalDocument : DecryptedMessageMedia
-		{
-			/// <summary>Document ID</summary>
-			public long id;
-			/// <summary>access hash</summary>
-			public long access_hash;
-			/// <summary>Date</summary>
-			public DateTime date;
-			/// <summary>Mime type</summary>
+			/// <summary>Thumbnail-file contents (JPEG-file, quality 55, set in a 90x90 square)</summary>
+			public byte[] thumb;
+			/// <summary>Thumbnail width</summary>
+			public int thumb_w;
+			/// <summary>Thumbnail height</summary>
+			public int thumb_h;
+			/// <summary>File MIME-type</summary>
 			public string mime_type;
-			/// <summary>Size</summary>
-			public int size;
-			/// <summary>Thumbnail</summary>
-			public PhotoSizeBase thumb;
-			/// <summary>DC ID</summary>
-			public int dc_id;
-			/// <summary>Attributes for media types</summary>
+			/// <summary>Document size (<see cref="int"/> on layer &lt;143, <see cref="long"/> on layer &gt;=143)</summary>
+			public long size;
+			/// <summary>Key to decrypt the attached document file</summary>
+			public byte[] key;
+			/// <summary>Initialization</summary>
+			public byte[] iv;
+			/// <summary>Document attributes for media types</summary>
 			public DocumentAttribute[] attributes;
+			/// <summary>Caption</summary>
+			public string caption;
 
-			/// <summary>Mime type</summary>
+			/// <summary>File MIME-type</summary>
 			public override string MimeType => mime_type;
-		}
 
-		/// <summary>File is currently unavailable.		<para>See <a href="https://corefork.telegram.org/constructor/fileLocationUnavailable"/></para></summary>
-		[TLDef(0x7C596B46)]
-		public class FileLocationUnavailable : FileLocationBase
-		{
-			/// <summary>Server volume</summary>
-			public long volume_id;
-			/// <summary>File ID</summary>
-			public int local_id;
-			/// <summary>Checksum to access the file</summary>
-			public long secret;
-
-			/// <summary>Server volume</summary>
-			public override long VolumeId => volume_id;
-			/// <summary>File ID</summary>
-			public override int LocalId => local_id;
-			/// <summary>Checksum to access the file</summary>
-			public override long Secret => secret;
-		}
-		/// <summary>File location.		<para>See <a href="https://corefork.telegram.org/constructor/fileLocation"/></para></summary>
-		[TLDef(0x53D69076)]
-		public class FileLocation : FileLocationBase
-		{
-			/// <summary>Number of the data center holding the file</summary>
-			public int dc_id;
-			/// <summary>Server volume</summary>
-			public long volume_id;
-			/// <summary>File ID</summary>
-			public int local_id;
-			/// <summary>Checksum to access the file</summary>
-			public long secret;
-
-			/// <summary>Server volume</summary>
-			public override long VolumeId => volume_id;
-			/// <summary>File ID</summary>
-			public override int LocalId => local_id;
-			/// <summary>Checksum to access the file</summary>
-			public override long Secret => secret;
+			internal override (long size, byte[] key, byte[] iv) SizeKeyIV { get => (size, key, iv); set => (size, key, iv) = value; }
 		}
 	}
 
-	namespace Layer66
-	{
-		/// <summary>User is uploading a round video		<para>See <a href="https://corefork.telegram.org/constructor/sendMessageUploadRoundAction"/></para></summary>
-		[TLDef(0xBB718624)]
-		public class SendMessageUploadRoundAction : SendMessageAction { }
-	}
-
-	namespace Layer46
+	namespace Layer144
 	{	}
 }

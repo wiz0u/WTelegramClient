@@ -140,7 +140,7 @@ Some additional advices from me:
 
 5. Avoid repetitive polling or repetitive sequence of actions/requests: Save the initial results of your queries, and update those results when you're informed of a change through `OnUpdate` events.
 6. Don't buy fake user accounts/sessions and don't extract api_id/hash/authkey/sessions from official clients, this is [specifically forbidden by API TOS](https://core.telegram.org/api/terms#2-transparency). You must use your own api_id and create your own sessions associated with it.
-7. If a phone number is brand new, it will be closely monitored by Telegram for abuse, and it can even already be considered a bad user due to bad behavior from the previous owner of that phone number (which may happens often with VoIP or other easy-to-buy-online numbers, so expect fast ban)
+7. If a phone number is brand new, it will be closely monitored by Telegram for abuse, and it can even already be considered a bad user due to bad behavior from the previous owner of that phone number (which may happen often with VoIP or other easy-to-buy-online numbers, so expect fast ban)
 8. You may want to use your new phone number account with an official Telegram client and act like a normal user for some time (some weeks/months), before using it for automation with WTelegramClient.
 9. When creating a new API ID/Hash, I recommend you use your own phone number with long history of normal Telegram usage, rather than a brand new phone number with short history.
 In particular, DON'T create an API ID/Hash for every phone numbers you will control. One API ID/Hash represents your application, which can be used to control several user accounts.

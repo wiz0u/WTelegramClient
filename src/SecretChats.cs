@@ -13,6 +13,14 @@ using static WTelegram.Encryption;
 
 namespace WTelegram
 {
+	public interface ISecretChat
+	{
+		int ChatId { get; }
+		long RemoteUserId { get; }
+		InputEncryptedChat Peer { get; }
+		int RemoteLayer { get; }
+	}
+
 	public sealed class SecretChats : IDisposable
 	{
 		public event Action OnChanged;
@@ -28,7 +36,7 @@ namespace WTelegram
 		private const int ThresholdPFS = 100;
 		
 		[TLDef(0xFEFEFEFE)]
-		internal class SecretChat : IObject
+		internal class SecretChat : IObject, ISecretChat
 		{
 			[Flags] public enum Flags : uint { requestChat = 1, renewKey = 2, acceptKey = 4, originator = 8, commitKey = 16 }
 			public Flags flags;
@@ -43,8 +51,12 @@ namespace WTelegram
 			public long exchange_id;
 
 			public int ChatId => peer.chat_id;
+			public long RemoteUserId => participant_id;
+			public InputEncryptedChat Peer => peer;
+			public int RemoteLayer => remoteLayer;
+
 			internal long key_fingerprint;
-			internal SortedList<int, TL.Layer17.DecryptedMessageLayer> pendingMsgs = new();
+			internal SortedList<int, TL.Layer23.DecryptedMessageLayer> pendingMsgs = new();
 			internal void Discarded() // clear out fields for more security
 			{
 				Array.Clear(authKey, 0, authKey.Length);
@@ -67,13 +79,7 @@ namespace WTelegram
 		}
 		public void Dispose() { OnChanged?.Invoke(); storage?.Dispose(); sha256.Dispose(); sha1.Dispose(); }
 
-		public List<InputEncryptedChat> Peers => chats.Values.Select(sc => sc.peer).ToList();
-
-		/// <summary>Return secret chats with the given remote user ID</summary>
-		/// <param name="participant_id">remote user ID</param>
-		/// <returns>List of matching secret chat ids/access_hash</returns>
-		public List<InputEncryptedChat> FindChatsByParticipant(long participant_id)
-			=> chats.Where(kvp => kvp.Value.participant_id == participant_id).Select(kvp => kvp.Value.peer).ToList();
+		public List<ISecretChat> Chats => chats.Values.ToList<ISecretChat>();
 
 		public bool IsChatActive(int chat_id) => !(chats.GetValueOrDefault(chat_id)?.flags.HasFlag(SecretChat.Flags.requestChat) ?? true);
 
@@ -253,16 +259,16 @@ namespace WTelegram
 
 		private async Task SendNotifyLayer(SecretChat chat)
 		{
-			await SendMessage(chat.ChatId, new TL.Layer17.DecryptedMessageService { random_id = Helpers.RandomLong(),
-				action = new TL.Layer17.DecryptedMessageActionNotifyLayer { layer = Layer.SecretChats } });
+			await SendMessage(chat.ChatId, new TL.Layer23.DecryptedMessageService { random_id = Helpers.RandomLong(),
+				action = new TL.Layer23.DecryptedMessageActionNotifyLayer { layer = Layer.SecretChats } });
 			if (chat.remoteLayer < Layer.MTProto2) chat.remoteLayer = Layer.MTProto2;
 		}
 
 		/// <summary>Encrypt and send a message on a secret chat</summary>
-		/// <remarks>You would typically pass an instance of <see cref="TL.Layer73.DecryptedMessage"/> or <see cref="TL.Layer17.DecryptedMessageService"/> that you created and filled
+		/// <remarks>You would typically pass an instance of <see cref="TL.Layer73.DecryptedMessage"/> or <see cref="TL.Layer23.DecryptedMessageService"/> that you created and filled
 		/// <br/>Remember to fill <c>random_id</c> with <see cref="WTelegram.Helpers.RandomLong"/>, and the <c>flags</c> field if necessary</remarks>
 		/// <param name="chatId">Secret Chat ID</param>
-		/// <param name="msg">The pre-filled <see cref="TL.Layer73.DecryptedMessage">DecryptedMessage</see> or <see cref="TL.Layer17.DecryptedMessageService">DecryptedMessageService </see> to send</param>
+		/// <param name="msg">The pre-filled <see cref="TL.Layer73.DecryptedMessage">DecryptedMessage</see> or <see cref="TL.Layer23.DecryptedMessageService">DecryptedMessageService </see> to send</param>
 		/// <param name="silent">Send encrypted message without a notification</param>
 		/// <param name="file">Optional file attachment. See method <see cref="UploadFile">UploadFile</see></param>
 		/// <returns>Confirmation of sent message</returns>
@@ -271,7 +277,7 @@ namespace WTelegram
 			if (!chats.TryGetValue(chatId, out var chat)) throw new ApplicationException("Secret chat not found");
 			try
 			{
-				var dml = new TL.Layer17.DecryptedMessageLayer
+				var dml = new TL.Layer23.DecryptedMessageLayer
 				{
 					layer = Math.Min(chat.remoteLayer, Layer.SecretChats),
 					random_bytes = new byte[15],
@@ -290,7 +296,7 @@ namespace WTelegram
 			}
 		}
 
-		private async Task<Messages_SentEncryptedMessage> SendMessage(SecretChat chat, TL.Layer17.DecryptedMessageLayer dml, bool silent = false, InputEncryptedFileBase file = null)
+		private async Task<Messages_SentEncryptedMessage> SendMessage(SecretChat chat, TL.Layer23.DecryptedMessageLayer dml, bool silent = false, InputEncryptedFileBase file = null)
 		{
 			RNG.GetBytes(dml.random_bytes);
 			int x = 8 - (int)(chat.flags & SecretChat.Flags.originator);
@@ -321,7 +327,7 @@ namespace WTelegram
 			CheckPFS(chat);
 			if (file != null)
 				return await client.Messages_SendEncryptedFile(chat.peer, dml.message.RandomId, data, file, silent);
-			else if (dml.message is TL.Layer17.DecryptedMessageService or TL.Layer8.DecryptedMessageService)
+			else if (dml.message is TL.Layer23.DecryptedMessageService or TL.Layer8.DecryptedMessageService)
 				return await client.Messages_SendEncryptedService(chat.peer, dml.message.RandomId, data);
 			else
 				return await client.Messages_SendEncrypted(chat.peer, dml.message.RandomId, data, silent);
@@ -360,7 +366,7 @@ namespace WTelegram
 		/// <summary>Decrypt an encrypted message obtained in <see cref="UpdateNewEncryptedMessage"/></summary>
 		/// <param name="msg">Encrypted <see cref="UpdateNewEncryptedMessage.message"/></param>
 		/// <param name="fillGaps">If messages are missing or received in wrong order, automatically request to resend missing messages</param>
-		/// <returns>An array of <see cref="TL.Layer73.DecryptedMessage">DecryptedMessage</see> or <see cref="TL.Layer17.DecryptedMessageService">DecryptedMessageService </see> from various TL.LayerXX namespaces.<br/>
+		/// <returns>An array of <see cref="TL.Layer73.DecryptedMessage">DecryptedMessage</see> or <see cref="TL.Layer23.DecryptedMessageService">DecryptedMessageService </see> from various TL.LayerXX namespaces.<br/>
 		/// You can use the generic properties to access their fields
 		/// <para>May return an empty array if msg was already previously received or is not the next message in sequence.
 		/// <br/>May return multiple messages if missing messages are finally received (using <paramref name="fillGaps"/> = true)</para></returns>
@@ -371,7 +377,7 @@ namespace WTelegram
 			try
 			{
 				var obj = Decrypt(chat, msg.Bytes, msg.Bytes.Length);
-				if (obj is not TL.Layer17.DecryptedMessageLayer dml) throw new ApplicationException("Decrypted object is not DecryptedMessageLayer");
+				if (obj is not TL.Layer23.DecryptedMessageLayer dml) throw new ApplicationException("Decrypted object is not DecryptedMessageLayer");
 				if (dml.random_bytes.Length < 15) throw new ApplicationException("Not enough random_bytes");
 				if (((dml.out_seq_no ^ dml.in_seq_no) & 1) != 1 || ((dml.out_seq_no ^ chat.in_seq_no) & 1) != 0) throw new ApplicationException("Invalid seq_no parities");
 				if (dml.layer > chat.remoteLayer) chat.remoteLayer = dml.layer;
@@ -384,8 +390,8 @@ namespace WTelegram
 					if (lastPending == 0) lastPending = chat.in_seq_no;
 					chat.pendingMsgs[dml.out_seq_no] = dml;
 					if (dml.out_seq_no > lastPending + 2) // send request to resend missing gap asynchronously
-						_ = SendMessage(chat.ChatId, new TL.Layer17.DecryptedMessageService { random_id = Helpers.RandomLong(),
-							action = new TL.Layer17.DecryptedMessageActionResend { start_seq_no = lastPending + 2, end_seq_no = dml.out_seq_no - 2 } });
+						_ = SendMessage(chat.ChatId, new TL.Layer23.DecryptedMessageService { random_id = Helpers.RandomLong(),
+							action = new TL.Layer23.DecryptedMessageActionResend { start_seq_no = lastPending + 2, end_seq_no = dml.out_seq_no - 2 } });
 					return Array.Empty<DecryptedMessageBase>(); 
 				}
 				chat.in_seq_no = dml.out_seq_no;
@@ -423,13 +429,13 @@ namespace WTelegram
 		{
 			switch (action)
 			{
-				case TL.Layer17.DecryptedMessageActionNotifyLayer dmanl:
+				case TL.Layer23.DecryptedMessageActionNotifyLayer dmanl:
 					chat.remoteLayer = dmanl.layer;
 					return true;
-				case TL.Layer17.DecryptedMessageActionResend resend:
+				case TL.Layer23.DecryptedMessageActionResend resend:
 					Helpers.Log(1, $"SC{(short)chat.ChatId:X4}> Resend {resend.start_seq_no}-{resend.end_seq_no}");
-					var msgSvc = new TL.Layer17.DecryptedMessageService { action = new TL.Layer20.DecryptedMessageActionNoop() };
-					var dml = new TL.Layer17.DecryptedMessageLayer
+					var msgSvc = new TL.Layer23.DecryptedMessageService { action = new TL.Layer23.DecryptedMessageActionNoop() };
+					var dml = new TL.Layer23.DecryptedMessageLayer
 					{
 						layer = Math.Min(chat.remoteLayer, Layer.SecretChats),
 						random_bytes = new byte[15],
@@ -442,13 +448,13 @@ namespace WTelegram
 						_ = SendMessage(chat, dml);
 					}
 					return true;
-				case TL.Layer20.DecryptedMessageActionNoop:
+				case TL.Layer23.DecryptedMessageActionNoop:
 					Helpers.Log(1, $"SC{(short)chat.ChatId:X4}> Noop");
 					return true;
-				case TL.Layer20.DecryptedMessageActionRequestKey:
-				case TL.Layer20.DecryptedMessageActionAcceptKey:
-				case TL.Layer20.DecryptedMessageActionCommitKey:
-				case TL.Layer20.DecryptedMessageActionAbortKey:
+				case TL.Layer23.DecryptedMessageActionRequestKey:
+				case TL.Layer23.DecryptedMessageActionAcceptKey:
+				case TL.Layer23.DecryptedMessageActionCommitKey:
+				case TL.Layer23.DecryptedMessageActionAbortKey:
 					Helpers.Log(1, $"SC{(short)chat.ChatId:X4}> PFS {action.GetType().Name[22..]}");
 					HandlePFS(chat, action);
 					return true;
@@ -465,16 +471,17 @@ namespace WTelegram
 				else { Helpers.Log(4, "SC{(short)chat.ChatId:X4}> PFS Failure"); _ = Discard(chat.ChatId); return; }
 			try
 			{
+				chat.flags |= SecretChat.Flags.renewKey;
 				Helpers.Log(1, $"SC{(short)chat.ChatId:X4}> PFS RenewKey");
+				await Task.Delay(100);
 				chat.salt = new byte[256];
 				RNG.GetBytes(chat.salt);
 				var a = BigEndianInteger(chat.salt);
 				var g_a = BigInteger.ModPow(dh.g, a, dh_prime);
 				CheckGoodGaAndGb(g_a, dh_prime);
-				chat.flags |= SecretChat.Flags.renewKey;
 				chat.exchange_id = Helpers.RandomLong();
-				await SendMessage(chat.ChatId, new TL.Layer17.DecryptedMessageService { random_id = Helpers.RandomLong(),
-					action = new TL.Layer20.DecryptedMessageActionRequestKey { exchange_id = chat.exchange_id, g_a = g_a.To256Bytes() } });
+				await SendMessage(chat.ChatId, new TL.Layer23.DecryptedMessageService { random_id = Helpers.RandomLong(),
+					action = new TL.Layer23.DecryptedMessageActionRequestKey { exchange_id = chat.exchange_id, g_a = g_a.To256Bytes() } });
 			}
 			catch (Exception ex)
 			{
@@ -489,7 +496,7 @@ namespace WTelegram
 			{
 				switch (action)
 				{
-					case TL.Layer20.DecryptedMessageActionRequestKey request:
+					case TL.Layer23.DecryptedMessageActionRequestKey request:
 						switch (chat.flags & (SecretChat.Flags.requestChat | SecretChat.Flags.renewKey | SecretChat.Flags.acceptKey))
 						{
 							case SecretChat.Flags.renewKey: // Concurrent Re-Keying
@@ -517,10 +524,10 @@ namespace WTelegram
 						chat.salt = gab.To256Bytes();
 						chat.exchange_id = request.exchange_id;
 						var key_fingerprint = BinaryPrimitives.ReadInt64LittleEndian(sha1.ComputeHash(chat.salt).AsSpan(12));
-						await SendMessage(chat.ChatId, new TL.Layer17.DecryptedMessageService { random_id = Helpers.RandomLong(),
-							action = new TL.Layer20.DecryptedMessageActionAcceptKey { exchange_id = request.exchange_id, g_b = g_b.To256Bytes(), key_fingerprint = key_fingerprint } });
+						await SendMessage(chat.ChatId, new TL.Layer23.DecryptedMessageService { random_id = Helpers.RandomLong(),
+							action = new TL.Layer23.DecryptedMessageActionAcceptKey { exchange_id = request.exchange_id, g_b = g_b.To256Bytes(), key_fingerprint = key_fingerprint } });
 						break;
-					case TL.Layer20.DecryptedMessageActionAcceptKey accept: 
+					case TL.Layer23.DecryptedMessageActionAcceptKey accept: 
 						if ((chat.flags & (SecretChat.Flags.requestChat | SecretChat.Flags.renewKey | SecretChat.Flags.acceptKey)) != SecretChat.Flags.renewKey)
 							throw new ApplicationException("Invalid AcceptKey");
 						if (accept.exchange_id != chat.exchange_id)
@@ -533,13 +540,13 @@ namespace WTelegram
 						key_fingerprint = BinaryPrimitives.ReadInt64LittleEndian(sha1.ComputeHash(authKey).AsSpan(12));
 						if (accept.key_fingerprint != key_fingerprint)
 							throw new ApplicationException("AcceptKey: key_fingerprint mismatch");
-						_ = SendMessage(chat.ChatId, new TL.Layer17.DecryptedMessageService { random_id = Helpers.RandomLong(),
-							action = new TL.Layer20.DecryptedMessageActionCommitKey { exchange_id = accept.exchange_id, key_fingerprint = accept.key_fingerprint } });
+						_ = SendMessage(chat.ChatId, new TL.Layer23.DecryptedMessageService { random_id = Helpers.RandomLong(),
+							action = new TL.Layer23.DecryptedMessageActionCommitKey { exchange_id = accept.exchange_id, key_fingerprint = accept.key_fingerprint } });
 						chat.salt = chat.authKey; // A may only discard the previous key after a message encrypted with the new key has been received.
 						SetAuthKey(chat, authKey);
 						chat.flags = chat.flags & ~SecretChat.Flags.renewKey | SecretChat.Flags.commitKey;
 						break;
-					case TL.Layer20.DecryptedMessageActionCommitKey commit: 
+					case TL.Layer23.DecryptedMessageActionCommitKey commit: 
 						if ((chat.flags & (SecretChat.Flags.requestChat | SecretChat.Flags.renewKey | SecretChat.Flags.acceptKey)) != SecretChat.Flags.acceptKey)
 							throw new ApplicationException("Invalid RequestKey");
 						key_fingerprint = BinaryPrimitives.ReadInt64LittleEndian(sha1.ComputeHash(chat.salt).AsSpan(12));
@@ -549,10 +556,10 @@ namespace WTelegram
 						authKey = chat.authKey;
 						SetAuthKey(chat, chat.salt);
 						Array.Clear(authKey, 0, authKey.Length); // the old key must be securely discarded
-						await SendMessage(chat.ChatId, new TL.Layer17.DecryptedMessageService { random_id = Helpers.RandomLong(),
-							action = new TL.Layer20.DecryptedMessageActionNoop() });
+						await SendMessage(chat.ChatId, new TL.Layer23.DecryptedMessageService { random_id = Helpers.RandomLong(),
+							action = new TL.Layer23.DecryptedMessageActionNoop() });
 						break;
-					case TL.Layer20.DecryptedMessageActionAbortKey abort:
+					case TL.Layer23.DecryptedMessageActionAbortKey abort:
 						if ((chat.flags & (SecretChat.Flags.renewKey | SecretChat.Flags.acceptKey)) == 0 ||
 							chat.flags.HasFlag(SecretChat.Flags.commitKey) || abort.exchange_id != chat.exchange_id)
 							return;
@@ -579,7 +586,7 @@ namespace WTelegram
 			byte[] aes_key = new byte[32], aes_iv = new byte[32];
 			RNG.GetBytes(aes_key);
 			RNG.GetBytes(aes_iv);
-			media.SizeKeyIV = (checked((int)stream.Length), aes_key, aes_iv);
+			media.SizeKeyIV = (stream.Length, aes_key, aes_iv);
 
 			using var md5 = MD5.Create();
 			md5.TransformBlock(aes_key, 0, 32, null, 0);

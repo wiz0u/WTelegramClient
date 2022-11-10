@@ -531,7 +531,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 		private readonly ICryptoTransform aesCrypto;
 		private readonly byte[] prevBytes;
 
-		public AES_IGE_Stream(Stream stream, int size, byte[] key, byte[] iv) : this(stream, key, iv, false) { ContentLength = size; }
+		public AES_IGE_Stream(Stream stream, long size, byte[] key, byte[] iv) : this(stream, key, iv, false) { ContentLength = size; }
 		public AES_IGE_Stream(Stream stream, byte[] key, byte[] iv, bool encrypt) : base(stream)
 		{
 			aesCrypto = encrypt ? Encryption.AesECB.CreateEncryptor(key, null) : Encryption.AesECB.CreateDecryptor(key, null);
