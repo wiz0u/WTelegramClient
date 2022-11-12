@@ -96,15 +96,15 @@ await DoLogin("+12025550156"); // user's phone_number
 
 async Task DoLogin(string loginInfo) // (add this method to your code)
 {
-    while (client.User == null)
-        switch (await client.Login(loginInfo)) // returns which config info is needed to continue login
-        {
-            case "verification_code": Console.Write("Code: "); loginInfo = Console.ReadLine(); break;
-            case "name": loginInfo = "John Doe"; break;    // if sign-up is required (first_name last_name)
-            case "password": loginInfo = "secret!"; break; // if user has enabled 2FA
-            default: loginInfo = null; break;
-        }
-    Console.WriteLine($"We are logged-in as {client.User} (id {client.User.id})");
+   while (client.User == null)
+      switch (await client.Login(loginInfo)) // returns which config is needed to continue login
+      {
+         case "verification_code": Console.Write("Code: "); loginInfo = Console.ReadLine(); break;
+         case "name": loginInfo = "John Doe"; break;    // if sign-up is required (first/last_name)
+         case "password": loginInfo = "secret!"; break; // if user has enabled 2FA
+         default: loginInfo = null; break;
+      }
+   Console.WriteLine($"We are logged-in as {client.User} (id {client.User.id})");
 }
 ```
 
@@ -134,7 +134,7 @@ foreach (var (id, chat) in chats.chats)
     switch (chat) // example of downcasting to their real classes:
     {
         case Chat basicChat when basicChat.IsActive:
-            Console.WriteLine($"{id}:  Basic chat: {basicChat.title} with {basicChat.participants_count} members");
+            Console.WriteLine($"{id}:  Basic chat: {basicChat.title}");
             break;
         case Channel group when group.IsGroup:
             Console.WriteLine($"{id}: Group {group.username}: {group.title}");

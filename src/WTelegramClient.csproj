@@ -23,7 +23,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>Telegram;Client;Api;UserBot;MTProto;TLSharp;OpenTl</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>$(ReleaseNotes.Replace('|',$([System.Environment]::NewLine)))</PackageReleaseNotes>
+    <PackageReleaseNotes>$(ReleaseNotes.Replace("|", "%0D%0A").Replace(" - ","%0D%0A- ").Replace("  ", "%0D%0A%0D%0A"))</PackageReleaseNotes>
     <NoWarn>IDE0079;0419;1573;1591;NETSDK1138</NoWarn>
     <DefineConstants>TRACE;OBFUSCATION</DefineConstants>
   </PropertyGroup>
@@ -42,9 +42,9 @@
     <None Include="..\logo.png" Link="Data\logo.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-  </ItemGroup>
+  </ItemGroup>-->
   
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="IndexRange" Version="1.0.2" />
