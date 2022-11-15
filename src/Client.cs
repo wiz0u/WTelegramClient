@@ -49,7 +49,7 @@ namespace WTelegram
 		public bool Disconnected => _tcpClient != null && !(_tcpClient.Client?.Connected ?? false);
 		/// <summary>ID of the current logged-in user or 0</summary>
 		public long UserId => _session.UserId;
-		/// <summary>Info about the current logged-in user</summary>
+		/// <summary>Info about the current logged-in user. This is filled after a successful (re)login</summary>
 		public User User { get; private set; }
 
 		private Func<string, string> _config;

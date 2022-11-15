@@ -16,7 +16,7 @@ namespace WTelegram
 	partial class Client
 	{
 		#region Collect Access Hash system
-		/// <summary>Enable the collection of id/access_hash pairs (experimental)</summary>
+		/// <summary>Enable the collection of id/access_hash pairs (experimental)<br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash"/></summary>
 		public bool CollectAccessHash { get; set; }
 		public IEnumerable<KeyValuePair<long, long>> AllAccessHashesFor<T>() where T : IObject => _accessHashes.GetValueOrDefault(typeof(T));
 		private readonly Dictionary<Type, Dictionary<long, long>> _accessHashes = new();
@@ -25,10 +25,11 @@ namespace WTelegram
 
 		/// <summary>Retrieve the access_hash associated with this id (for a TL class) if it was collected</summary>
 		/// <remarks>This requires <see cref="CollectAccessHash"/> to be set to <see langword="true"/> first.
-		/// <br/>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_CollectAccessHash.cs">Examples/Program_CollectAccessHash.cs</see> for how to use this</remarks>
+		/// <para>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_CollectAccessHash.cs">Examples/Program_CollectAccessHash.cs</see> for how to use this</para></remarks>
 		/// <typeparam name="T">a TL object class. For example User, Channel or Photo</typeparam>
 		public long GetAccessHashFor<T>(long id) where T : IObject
 		{
+			if (!CollectAccessHash) Helpers.Log(4, "GetAccessHashFor doesn't do what you think. See https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash");
 			lock (_accessHashes)
 				return _accessHashes.GetOrCreate(typeof(T)).TryGetValue(id, out var access_hash) ? access_hash : 0;
 		}
