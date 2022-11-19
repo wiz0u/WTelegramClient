@@ -580,13 +580,19 @@ namespace WTelegram
 		}
 
 		private const string OnlyChatChannel = "This method works on Chat & Channel only";
-		public Task<UpdatesBase> AddChatUser(InputPeer peer, InputUserBase user, int fwd_limit = int.MaxValue) => peer switch
+		/// <summary>Generic helper: Adds a single user to a Chat or Channel		<para>See <a href="https://corefork.telegram.org/method/messages.addChatUser"/><br/> and <a href="https://corefork.telegram.org/method/channels.inviteToChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403</para></summary>
+		/// <param name="peer">Chat/Channel</param>
+		/// <param name="user">User to be added</param>
+		public Task<UpdatesBase> AddChatUser(InputPeer peer, InputUserBase user) => peer switch
 		{
-			InputPeerChat chat => this.Messages_AddChatUser(chat.chat_id, user, fwd_limit),
+			InputPeerChat chat => this.Messages_AddChatUser(chat.chat_id, user, int.MaxValue),
 			InputPeerChannel channel => this.Channels_InviteToChannel(channel, new[] { user }),
 			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
+		/// <summary>Generic helper: Kick a user from a Chat or Channel [bots: ✓]		<para>See <a href="https://corefork.telegram.org/method/channels.editBanned"/><br/> and <a href="https://corefork.telegram.org/method/messages.deleteChatUser"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403</para></summary>
+		/// <param name="peer">Chat/Channel</param>
+		/// <param name="user">User to be removed</param>
 		public Task<UpdatesBase> DeleteChatUser(InputPeer peer, InputUser user) => peer switch
 		{
 			InputPeerChat chat => this.Messages_DeleteChatUser(chat.chat_id, user, true),
@@ -594,6 +600,8 @@ namespace WTelegram
 			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
+		/// <summary>Generic helper: Leave a Chat or Channel [bots: ✓]		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChatUser"/><br/> and <a href="https://corefork.telegram.org/method/channels.leaveChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403</para></summary>
+		/// <param name="peer">Chat/Channel to leave</param>
 		public Task<UpdatesBase> LeaveChat(InputPeer peer) => peer switch
 		{
 			InputPeerChat chat => this.Messages_DeleteChatUser(chat.chat_id, InputUser.Self, true),
@@ -601,6 +609,10 @@ namespace WTelegram
 			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
+		/// <summary>Generic helper: Make a user admin in a Chat or Channel		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAdmin"/><br/> and <a href="https://corefork.telegram.org/method/channels.editAdmin"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406</para></summary>
+		/// <param name="peer">Chat/Channel</param>
+		/// <param name="user">The user to make admin</param>
+		/// <param name="is_admin">Whether to make them admin</param>
 		public async Task<UpdatesBase> EditChatAdmin(InputPeer peer, InputUserBase user, bool is_admin)
 		{
 			switch (peer)
@@ -617,6 +629,9 @@ namespace WTelegram
 			}
 		}
 
+		/// <summary>Generic helper: Change the photo of a Chat or Channel [bots: ✓]		<para>See <a href="https://corefork.telegram.org/method/messages.editChatPhoto"/><br/> and <a href="https://corefork.telegram.org/method/channels.editPhoto"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403</para></summary>
+		/// <param name="peer">Chat/Channel</param>
+		/// <param name="photo">New photo</param>
 		public Task<UpdatesBase> EditChatPhoto(InputPeer peer, InputChatPhotoBase photo) => peer switch
 		{
 			InputPeerChat chat => this.Messages_EditChatPhoto(chat.chat_id, photo),
@@ -624,6 +639,9 @@ namespace WTelegram
 			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
+		/// <summary>Generic helper: Edit the name of a Chat or Channel [bots: ✓]		<para>See <a href="https://corefork.telegram.org/method/messages.editChatTitle"/><br/> and <a href="https://corefork.telegram.org/method/channels.editTitle"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403</para></summary>
+		/// <param name="peer">Chat/Channel</param>
+		/// <param name="title">New name</param>
 		public Task<UpdatesBase> EditChatTitle(InputPeer peer, string title) => peer switch
 		{
 			InputPeerChat chat => this.Messages_EditChatTitle(chat.chat_id, title),
@@ -631,6 +649,8 @@ namespace WTelegram
 			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
+		/// <summary>Get full info about a Chat or Channel [bots: ✓]		<para>See <a href="https://corefork.telegram.org/method/messages.getFullChat"/><br/> and <a href="https://corefork.telegram.org/method/channels.getFullChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406</para></summary>
+		/// <param name="peer">Chat/Channel</param>
 		public Task<Messages_ChatFull> GetFullChat(InputPeer peer) => peer switch
 		{
 			InputPeerChat chat => this.Messages_GetFullChat(chat.chat_id),
@@ -638,6 +658,8 @@ namespace WTelegram
 			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
+		/// <summary>Generic helper: Delete a Chat or Channel		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChat"/><br/> and <a href="https://corefork.telegram.org/method/channels.deleteChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406</para></summary>
+		/// <param name="peer">Chat/Channel to delete</param>
 		public async Task<UpdatesBase> DeleteChat(InputPeer peer)
 		{
 			switch (peer)
@@ -653,20 +675,23 @@ namespace WTelegram
 			}
 		}
 
+		/// <summary>Generic helper: Get individual messages by IDs [bots: ✓]		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/><br/> and <a href="https://corefork.telegram.org/method/channels.getMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400</para></summary>
+		/// <param name="peer">User/Chat/Channel</param>
+		/// <param name="id">IDs of messages to get</param>
 		public Task<Messages_MessagesBase> GetMessages(InputPeer peer, params InputMessage[] id)
 			=> peer is InputPeerChannel channel ? this.Channels_GetMessages(channel, id) : this.Messages_GetMessages(id);
 
+		/// <summary>Generic helper: Delete messages by IDs [bots: ✓]<br/>Messages are deleted for all participants		<para>See <a href="https://corefork.telegram.org/method/messages.deleteMessages"/><br/> and <a href="https://corefork.telegram.org/method/channels.deleteMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403</para></summary>
+		/// <param name="peer">User/Chat/Channel</param>
+		/// <param name="id">IDs of messages to delete</param>
 		public Task<Messages_AffectedMessages> DeleteMessages(InputPeer peer, params int[] id)
-			=> peer is InputPeerChannel channel ? this.Channels_DeleteMessages(channel, id) : this.Messages_DeleteMessages(id);
+			=> peer is InputPeerChannel channel ? this.Channels_DeleteMessages(channel, id) : this.Messages_DeleteMessages(id, true);
 
-		/// <summary>Marks message history as read.		<para>See <a href="https://corefork.telegram.org/method/messages.readHistory"/><br/> and <a href="https://corefork.telegram.org/method/channels.readHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readHistory#possible-errors">details</a>)</para></summary>
-		/// <param name="peer">Target user, channel or group</param>
+		/// <summary>Generic helper: Marks message history as read.		<para>See <a href="https://corefork.telegram.org/method/messages.readHistory"/><br/> and <a href="https://corefork.telegram.org/method/channels.readHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400</para></summary>
+		/// <param name="peer">User/Chat/Channel</param>
 		/// <param name="max_id">If a positive value is passed, only messages with identifiers less or equal than the given one will be marked read</param>
-		public async Task<bool> ReadHistory(InputPeer peer, int max_id = default) => peer switch
-		{
-			InputPeerChannel channel => await this.Channels_ReadHistory(channel, max_id),
-			_ => (await this.Messages_ReadHistory(peer, max_id)) != null
-		};
+		public async Task<bool> ReadHistory(InputPeer peer, int max_id = default)
+			=> peer is InputPeerChannel channel ? await this.Channels_ReadHistory(channel, max_id) : (await this.Messages_ReadHistory(peer, max_id)) != null;
 		#endregion
 	}
 }

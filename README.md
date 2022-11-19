@@ -12,7 +12,7 @@ All the Telegram Client APIs (MTProto) are supported so you can do everything th
 
 This ReadMe is a **quick but important tutorial** to learn the fundamentals about this library. Please read it all.
 
->⚠️ This library relies on asynchronous C# programming (`async/await`) so make sure you are familiar with this advanced topic before proceeding.  
+>⚠️ This library requires understanding advanced C# techniques such as **asynchronous programming** or **subclass pattern matching**...  
 >If you are a beginner in C#, starting a project based on this library might not be a great idea.
 
 # How to use
@@ -85,7 +85,7 @@ Another simple approach is to pass `Environment.GetEnvironmentVariable` as the c
 *(undefined variables get the default `null` behavior)*.
 
 Finally, if you want to redirect the library logs to your logger instead of the Console, you can install a delegate in the `WTelegram.Helpers.Log` static property.
-Its `int` argument is the log severity, compatible with the [LogLevel enum](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel)
+Its `int` argument is the log severity, compatible with the [LogLevel enum](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel).
 
 # Alternative simplified configuration & login
 Since version 3.0.0, a new approach to login/configuration has been added. Some people might find it easier to deal with:
@@ -185,7 +185,8 @@ Required API parameters/fields can sometimes be set to 0 or `null` when unused (
 
 I've added several useful converters, implicit cast or helper properties to various API objects so that they are more easy to manipulate.
 
-Beyond the TL async methods, the Client class offers a few other methods to simplify the sending/receiving of files, medias or messages.
+Beyond the TL async methods, the Client class offers a few other methods to simplify the sending/receiving of files, medias or messages,
+as well as generic handling of chats/channels.
 
 This library works best with **.NET 5.0+** (faster, no dependencies) and is also available for **.NET Standard 2.0** (.NET Framework 4.6.1+ & .NET Core 2.0+) and **Xamarin/Mono.Android**
 
@@ -200,10 +201,10 @@ This library can be used for any Telegram scenarios including:
 It has been tested in a Console app, [in Windows Forms](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip),
 [in ASP.NET webservice](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/ASPnet_webapp.zip), and in Xamarin/Android.  
 
-Please don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos)
+Don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos)
 as well as the [API Terms of Service](https://core.telegram.org/api/terms) or you might get banned from Telegram servers.
 
 Developers feedback is welcome in the Telegram support group [@WTelegramClient](https://t.me/WTelegramClient)  
 You can also check our [📖 Frequently Asked Questions](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) for more help and troubleshooting guide.
 
-If you like this library, please [consider a donation](http://t.me/WTelegramBot?start=donate).❤ This will help the project keep going.
+If you like this library, please [consider a donation](http://t.me/WTelegramBot?start=donate) ❤ This will help the project keep going.
