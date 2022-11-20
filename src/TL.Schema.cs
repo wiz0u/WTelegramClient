@@ -36,7 +36,7 @@ namespace TL
 	public abstract partial class InputPeer : IObject { }
 	/// <summary>Defines the current user.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerSelf"/></para></summary>
 	[TLDef(0x7DA07EC9)]
-	public class InputPeerSelf : InputPeer { }
+	public partial class InputPeerSelf : InputPeer { }
 	/// <summary>Defines a chat for further interaction.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerChat"/></para></summary>
 	[TLDef(0x35A95CB9)]
 	public partial class InputPeerChat : InputPeer
@@ -64,7 +64,7 @@ namespace TL
 	}
 	/// <summary>Defines a <a href="https://corefork.telegram.org/api/min">min</a> user that was seen in a certain message of a certain chat.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerUserFromMessage"/></para></summary>
 	[TLDef(0xA87B0A1C)]
-	public class InputPeerUserFromMessage : InputPeer
+	public partial class InputPeerUserFromMessage : InputPeer
 	{
 		/// <summary>The chat where the user was seen</summary>
 		public InputPeer peer;
@@ -75,7 +75,7 @@ namespace TL
 	}
 	/// <summary>Defines a <a href="https://corefork.telegram.org/api/min">min</a> channel that was seen in a certain message of a certain chat.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerChannelFromMessage"/></para></summary>
 	[TLDef(0xBD2A0840)]
-	public class InputPeerChannelFromMessage : InputPeer
+	public partial class InputPeerChannelFromMessage : InputPeer
 	{
 		/// <summary>The chat where the channel's message was seen</summary>
 		public InputPeer peer;
@@ -1496,7 +1496,7 @@ namespace TL
 	}
 	/// <summary>Empty constructor, non-existent message.		<para>See <a href="https://corefork.telegram.org/constructor/messageEmpty"/></para></summary>
 	[TLDef(0x90A6CA84)]
-	public class MessageEmpty : MessageBase
+	public partial class MessageEmpty : MessageBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -1518,7 +1518,7 @@ namespace TL
 	}
 	/// <summary>A message		<para>See <a href="https://corefork.telegram.org/constructor/message"/></para></summary>
 	[TLDef(0x38116EE0)]
-	public class Message : MessageBase
+	public partial class Message : MessageBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -1632,7 +1632,7 @@ namespace TL
 	}
 	/// <summary>Indicates a service message		<para>See <a href="https://corefork.telegram.org/constructor/messageService"/></para></summary>
 	[TLDef(0x2B085862)]
-	public class MessageService : MessageBase
+	public partial class MessageService : MessageBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;

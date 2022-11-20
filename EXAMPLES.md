@@ -88,12 +88,14 @@ foreach (Dialog dialog in dialogs.dialogs)
         case User     user when user.IsActive: Console.WriteLine("User " + user); break;
         case ChatBase chat when chat.IsActive: Console.WriteLine(chat); break;
     }
-	//var latestMsg = dialogs.messages.FirstOrDefault(m => m.Peer.ID == dialog.Peer.ID && m.ID == dialog.TopMessage);
+    //var latestMsg = dialogs.messages.FirstOrDefault(m => m.Peer.ID == dialog.Peer.ID && m.ID == dialog.TopMessage);
 }
 ```
 
-*Note: the lists returned by Messages_GetAllDialogs contains the `access_hash` for those chats and users.*  
-See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
+Notes:
+- The lists returned by Messages_GetAllDialogs contains the `access_hash` for those chats and users.
+- See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).  
+- To retrieve the dialog information about a specific [peer](README.md#terminology), use `client.Messages_GetPeerDialogs(inputPeer)`
 
 <a name="list-chats"></a>
 ### List all chats (groups/channels NOT users) that we joined and send a message to one

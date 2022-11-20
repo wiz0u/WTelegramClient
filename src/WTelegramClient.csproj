@@ -42,7 +42,8 @@
     <None Include="..\logo.png" Link="Data\logo.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <!--<ItemGroup>
+  <!-- Disabled because SourceLink navigation prevents a clear display of the API
+  <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>-->
   

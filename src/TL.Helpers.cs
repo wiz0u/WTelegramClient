@@ -15,29 +15,48 @@ namespace TL
 		InputPeer ToInputPeer();
 	}
 
-	partial class InputPeer				{ public static InputPeerSelf Self => new(); }
+	partial class InputPeer
+	{
+		public static readonly InputPeerSelf Self = new();
+		public abstract long ID { get; }
+	}
+	partial class InputPeerSelf
+	{
+		public override long ID => 0;
+	}
 	partial class InputPeerChat
 	{
 		/// <summary>⚠ Only for small private Chat. Chat groups of type Channel must use InputPeerChannel. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> in README</summary>
 		/// <param name="chat_id">Chat identifier</param>
 		public InputPeerChat(long chat_id) => this.chat_id = chat_id;
 		internal InputPeerChat() { }
+		public override long ID => chat_id;
 	}
 	partial class InputPeerUser
 	{
 		/// <param name="user_id">User identifier</param>
-		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="User"/> constructor</param>
+		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="User"/> structure</param>
 		public InputPeerUser(long user_id, long access_hash) { this.user_id = user_id; this.access_hash = access_hash; }
 		internal InputPeerUser() { }
 		public static implicit operator InputUser(InputPeerUser user) => new(user.user_id, user.access_hash);
+		public override long ID => user_id;
 	}
 	partial class InputPeerChannel
 	{
 		/// <param name="channel_id">Channel identifier</param>
-		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="Channel"/> constructor</param>
+		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="Channel"/> structure</param>
 		public InputPeerChannel(long channel_id, long access_hash) { this.channel_id = channel_id; this.access_hash = access_hash; }
 		internal InputPeerChannel() { }
 		public static implicit operator InputChannel(InputPeerChannel channel) => new(channel.channel_id, channel.access_hash);
+		public override long ID => channel_id;
+	}
+	partial class InputPeerUserFromMessage
+	{
+		public override long ID => user_id;
+	}
+	partial class InputPeerChannelFromMessage
+	{
+		public override long ID => channel_id;
 	}
 
 	partial class InputUserBase			{ public abstract long? UserId { get; } }
@@ -48,7 +67,7 @@ namespace TL
 		public override long? UserId => user_id;
 		public static InputUserSelf Self => new();
 		/// <param name="user_id">User identifier</param>
-		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="User"/> constructor</param>
+		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="User"/> structure</param>
 		public InputUser(long user_id, long access_hash) { this.user_id = user_id; this.access_hash = access_hash; }
 		internal InputUser() { }
 		public static implicit operator InputPeerUser(InputUser user) => new(user.user_id, user.access_hash);
@@ -138,8 +157,8 @@ namespace TL
 	}
 
 
-	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/userStatusEmpty">userStatusEmpty</a> = last seen a long time ago, more than a month (this is also always shown to blocked users)</remarks>
-	partial class UserStatus			{ /// <summary>An estimation of the number of days ago the user was last seen (online=0, recently=1, lastWeek=5, lastMonth=20)<br/><see cref="UserStatus"/> = <c>null</c> means a long time ago, more than a month (this is also always shown to blocked users)</summary>
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/userStatusEmpty">userStatusEmpty</a> = last seen a long time ago, more than a month (this is also always shown for blocked/deleted users)</remarks>
+	partial class UserStatus			{ /// <summary>An estimation of the number of days ago the user was last seen (online=0, recently=1, lastWeek=5, lastMonth=20)<br/><see cref="UserStatus"/> = <c>null</c> means a long time ago, more than a month (this is also always shown for blocked/deleted users)</summary>
 										  public abstract TimeSpan LastSeenAgo { get; } }
 	partial class UserStatusOnline		{ public override TimeSpan LastSeenAgo => TimeSpan.Zero; }
 	partial class UserStatusOffline		{ public override TimeSpan LastSeenAgo => DateTime.UtcNow - new DateTime((was_online + 62135596800L) * 10000000, DateTimeKind.Utc); }
@@ -218,6 +237,10 @@ namespace TL
 	partial class ChatParticipantsForbidden { public override ChatParticipantBase[] Participants => Array.Empty<ChatParticipantBase>(); }
 	partial class ChatParticipants			{ public override ChatParticipantBase[] Participants => participants; }
 
+	partial class MessageEmpty				{ public override string ToString() => "(no message)"; }
+	partial class Message					{ public override string ToString() => $"{(from_id ?? peer_id)?.ID}> {message} {media}"; }
+	partial class MessageService			{ public override string ToString() => $"{(from_id ?? peer_id)?.ID} [{action.GetType().Name[13..]}]"; }
+	
 	partial class MessageMedia				{ ///<summary>Use this helper method to send a copy of the media without downloading it</summary>
 											  ///<remarks>Quiz poll may need to be voted before obtaining the correct answers. Dice will not replicate same value. TTL ignored<br/>May return <see langword="null"/> for Invoice and other unsupported media types</remarks>
 											  public virtual  InputMedia ToInputMedia() => null; }
@@ -463,7 +486,7 @@ namespace TL
 	partial class InputChannel
 	{
 		/// <param name="channel_id">Channel identifier</param>
-		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="Channel"/> constructor</param>
+		/// <param name="access_hash">⚠ <b>REQUIRED FIELD</b>. See FAQ for how to obtain it<br/><strong>access_hash</strong> value from the <see cref="Channel"/> structure</param>
 		public InputChannel(long channel_id, long access_hash) { this.channel_id = channel_id; this.access_hash = access_hash; }
 		internal InputChannel() { }
 		public static implicit operator InputPeerChannel(InputChannel channel) => new(channel.channel_id, channel.access_hash);

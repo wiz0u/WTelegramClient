@@ -25,14 +25,14 @@ steps:
     includesymbols: true
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'Build.BuildNumber'
-    buildProperties: 'NoWarn="0419;1573;1591";Version=$(Build.BuildNumber);ContinuousIntegrationBuild=true;ReleaseNotes="$(ReleaseNotes)"'
+    buildProperties: 'NoWarn="0419;1573;1591";Version=$(Build.BuildNumber);ContinuousIntegrationBuild=true;ReleaseNotes="$(Build.SourceVersionMessage)"'
 #   buildProperties: 'NoWarn="0419;1573;1591";AllowedOutputExtensionsInPackageBuildOutputFolder=".dll;.xml;.pdb"'
 
 - task: NuGetCommand@2
   inputs:
     command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.*upkg'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
     publishPackageMetadata: true
-    nuGetFeedType: 'internal'
-    publishVstsFeed: 'WTelegramClient/WTelegramClient'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'nuget.org'
 

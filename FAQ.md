@@ -283,15 +283,15 @@ Here are the recommended actions to fix your problem:
   - Save, close Notepad and reopen your project in Visual Studio
   - If you still have issues on some `foreach` constructs, add this class somewhere in your project:
     ```csharp
-	static class Extensions
-	{
-		public static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> tuple, out T1 key, out T2 value)
-		{
-			key = tuple.Key;
-			value = tuple.Value;
-		}
-	}
-	```
+    static class Extensions
+    {
+        public static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> tuple, out T1 key, out T2 value)
+        {
+            key = tuple.Key;
+            value = tuple.Value;
+        }
+    }
+    ```
 
 Also, remember to add a `using TL;` at the top of your files to have access to all the Telegram API methods.
 
