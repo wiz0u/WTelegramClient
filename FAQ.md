@@ -72,13 +72,11 @@ You can then retrieve it with `client.GetAccessHashFor<User/Channel/Photo/Docume
 ⚠️ *An `access_hash` obtained from a User/Channel structure with flag `min` may not be usable for most requests. See [Min constructors](https://core.telegram.org/api/min).*
 
 <a name="dev-versions"></a>
-#### 5. I need to test a feature that has been developed but not yet released in WTelegramClient nuget
+#### 5. I need to test a feature that has been recently developed but seems not available in my program
 
-The developmental versions of the library are available through Azure DevOps as part of the Continuous Integration builds after each Github commit.
+The developmental versions of the library are now available as **pre-release** on Nuget (with `-dev` in the version number)
 
-You can access these versions for testing in your program by going to our [private nuget feeds](https://dev.azure.com/wiz0u/WTelegramClient/_artifacts/feed/WTelegramClient/NuGet/WTelegramClient),
-click on button "Connect to feed" and follow the steps to setup your dev environment.
-After that, you should be able to see/install the pre-release versions in your Nuget package manager and install them in your application. *(make sure you enable the **pre-release** checkbox)*
+So make sure you tick the checkbox "Include prerelease" in Nuget manager and/or navigate to the Versions list then select the highest `x.x.x-dev.x` version to install in your program.
 
 <a name="wrong-server"></a>
 #### 6. Telegram asks me to signup (firstname, lastname) even for an existing account
@@ -307,14 +305,19 @@ So you can either:
     - Build your code in RELEASE mode
     - Modify your config callback to reply to "server_address" with the IP address of Telegram production servers (as found on your API development tools)
 
-2) Did you call `LoginUserIfNeeded()`?  
-If you don't authenticate as a user (or bot), you have access to a very limited subset of Telegram APIs
+2) Did you call `Login` or `LoginUserIfNeeded` succesfully?  
+If you don't complete authentication as a user (or bot), you have access to a very limited subset of Telegram APIs.  
+Make sure your calls succeed and don't throw an exception.
 
 3) Did you use `await` with every Client methods?  
-This library is completely Task-based. You should learn, understand and use the [asynchronous model of C# programming](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/) before proceeding further.
+This library is completely Task-based. You should learn, understand and use the [asynchronous model of C# programming](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/) before proceeding further.  
+Using `.Result` or `.Wait()` can lead to deadlocks.
 
 4) Is your program ending immediately instead of waiting for Updates?  
-Your program must be running/waiting continuously in order for the background Task to receive and process the Updates. So make sure your main program doesn't end immediately. For a console program, this is typical done by waiting for a key or some close event.
+Your program must be running/waiting continuously in order for the background Task to receive and process the Updates.
+So make sure your main program doesn't end immediately or dispose the client too soon (via `using`?).
+For a console program, this is typical done by waiting for a key or some close event.
 
 5) Is every Telegram API call rejected? (typically with an exception message like `AUTH_RESTART`)  
-The user authentification might have failed at some point (or the user revoked the authorization). It is therefore necessary to go through the authentification again. This can be done by deleting the WTelegram.session file, or at runtime by calling `client.Reset()`
+The user authentification might have failed at some point (or the user revoked the authorization).
+It is therefore necessary to go through the authentification again. This can be done by deleting the WTelegram.session file, or at runtime by calling `client.Reset()`

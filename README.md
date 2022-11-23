@@ -1,8 +1,6 @@
 [![NuGet version](https://img.shields.io/nuget/v/WTelegramClient?color=00508F)](https://www.nuget.org/packages/WTelegramClient/)
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
-[![API Layer](https://img.shields.io/badge/API_Layer-148-blueviolet)](https://corefork.telegram.org/methods)
-[![dev nuget](https://img.shields.io/nuget/vpre/WTelegramClient?color=ffc040&label=dev%20nuget)](https://dev.azure.com/wiz0u/WTelegramClient/_artifacts/feed/WTelegramClient/NuGet/WTelegramClient)
-[![Support Chat](https://img.shields.io/badge/Contact_us-on_Telegram-238EC2)](https://t.me/WTelegramClient)
+[![API Layer](https://img.shields.io/badge/API_Layer-149-blueviolet)](https://corefork.telegram.org/methods)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://t.me/WTelegramBot?start=donate)
 
 ## _Telegram Client API library written 100% in C# and .NET Standard_
@@ -204,7 +202,7 @@ It has been tested in a Console app, [in Windows Forms](https://github.com/wiz0u
 Don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos)
 as well as the [API Terms of Service](https://core.telegram.org/api/terms) or you might get banned from Telegram servers.
 
-Developers feedback is welcome in the Telegram support group [@WTelegramClient](https://t.me/WTelegramClient)  
-You can also check our [📖 Frequently Asked Questions](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) for more help and troubleshooting guide.
+If you read all this ReadMe, the [Frequently Asked Questions](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md),
+the [Examples codes](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) and still have questions, feedback is welcome in our Telegram group [@WTelegramClient](https://t.me/WTelegramClient)
 
 If you like this library, please [consider a donation](http://t.me/WTelegramBot?start=donate) ❤ This will help the project keep going.

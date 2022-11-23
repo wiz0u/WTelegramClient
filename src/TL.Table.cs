@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 148;					// fetched 01/11/2022 17:33:23
+		public const int Version = 149;					// fetched 23/11/2022 13:15:45
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -233,7 +233,7 @@ namespace TL
 			[0xF0E3E596] = typeof(Messages_DialogsNotModified),
 			[0x8C718E87] = typeof(Messages_Messages),
 			[0x3A54685E] = typeof(Messages_MessagesSlice),
-			[0x64479808] = typeof(Messages_ChannelMessages),
+			[0xC776BA4E] = typeof(Messages_ChannelMessages),
 			[0x74535F21] = typeof(Messages_MessagesNotModified),
 			[0x64FF9FD5] = typeof(Messages_Chats),
 			[0x9CD81144] = typeof(Messages_ChatsSlice),
@@ -363,7 +363,8 @@ namespace TL
 			[0x6F7863F4] = typeof(UpdateRecentReactions),
 			[0x86FCCF85] = typeof(UpdateMoveStickerSetToTop),
 			[0x5A73A98C] = typeof(UpdateMessageExtendedMedia),
-			[0xF694B0AE] = typeof(UpdateChannelPinnedTopic),
+			[0x192EFBE3] = typeof(UpdateChannelPinnedTopic),
+			[0xFE198602] = typeof(UpdateChannelPinnedTopics),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),

@@ -4296,6 +4296,15 @@ namespace TL
 				top_msg_id = top_msg_id,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.reorderPinnedForumTopics"/></para></summary>
+		public static Task<UpdatesBase> Channels_ReorderPinnedForumTopics(this Client client, InputChannelBase channel, int[] order, bool force = false)
+			=> client.Invoke(new Channels_ReorderPinnedForumTopics
+			{
+				flags = (Channels_ReorderPinnedForumTopics.Flags)(force ? 0x1 : 0),
+				channel = channel,
+				order = order,
+			});
+
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
 		/// <param name="custom_method">The method name</param>
 		/// <param name="params_">JSON-serialized method parameters</param>
@@ -8527,6 +8536,19 @@ namespace TL.Methods
 	{
 		public InputChannelBase channel;
 		public int top_msg_id;
+	}
+
+	[TLDef(0x2950A18F)]
+	public class Channels_ReorderPinnedForumTopics : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputChannelBase channel;
+		public int[] order;
+
+		[Flags] public enum Flags : uint
+		{
+			force = 0x1,
+		}
 	}
 
 	[TLDef(0xAA2769ED)]

@@ -2974,7 +2974,7 @@ namespace TL
 		}
 	}
 	/// <summary>Channel messages		<para>See <a href="https://corefork.telegram.org/constructor/messages.channelMessages"/></para></summary>
-	[TLDef(0x64479808)]
+	[TLDef(0xC776BA4E)]
 	public partial class Messages_ChannelMessages : Messages_MessagesBase, IPeerResolver
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -2987,6 +2987,7 @@ namespace TL
 		[IfFlag(2)] public int offset_id_offset;
 		/// <summary>Found messages</summary>
 		public MessageBase[] messages;
+		public ForumTopicBase[] topics;
 		/// <summary>Chats</summary>
 		public Dictionary<long, ChatBase> chats;
 		/// <summary>Users</summary>
@@ -4366,16 +4367,29 @@ namespace TL
 		public MessageExtendedMediaBase extended_media;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateChannelPinnedTopic"/></para></summary>
-	[TLDef(0xF694B0AE)]
+	[TLDef(0x192EFBE3)]
 	public class UpdateChannelPinnedTopic : Update
 	{
 		public Flags flags;
 		public long channel_id;
-		[IfFlag(0)] public int topic_id;
+		public int topic_id;
 
 		[Flags] public enum Flags : uint
 		{
-			has_topic_id = 0x1,
+			pinned = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateChannelPinnedTopics"/></para></summary>
+	[TLDef(0xFE198602)]
+	public class UpdateChannelPinnedTopics : Update
+	{
+		public Flags flags;
+		public long channel_id;
+		[IfFlag(0)] public int[] order;
+
+		[Flags] public enum Flags : uint
+		{
+			has_order = 0x1,
 		}
 	}
 
@@ -13857,6 +13871,7 @@ namespace TL
 			closed = 0x4,
 			pinned = 0x8,
 			has_draft = 0x10,
+			short = 0x20,
 		}
 
 		public override int ID => id;

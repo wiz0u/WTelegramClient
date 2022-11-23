@@ -47,7 +47,7 @@ The `lvl` argument correspond to standard [LogLevel values](https://learn.micros
 <a name="msg-by-name"></a>
 ### Send a message to someone by @username
 ```csharp
-var resolved = await client.Contacts_ResolveUsername("MyEch0_Bot"); // username without the @
+var resolved = await client.Contacts_ResolveUsername("JsonDumpBot"); // username without the @
 await client.SendMessageAsync(resolved, "/start");
 ```
 *Note: This also works if the @username points to a channel/group, but you must already have joined that channel before sending a message to it.
