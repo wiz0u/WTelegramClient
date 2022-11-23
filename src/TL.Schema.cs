@@ -13871,7 +13871,7 @@ namespace TL
 			closed = 0x4,
 			pinned = 0x8,
 			has_draft = 0x10,
-			short = 0x20,
+			short_ = 0x20,
 		}
 
 		public override int ID => id;
