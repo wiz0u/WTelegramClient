@@ -379,7 +379,7 @@ await client.Messages_ImportChatInvite("HASH"); // join the channel/group
 var chats = await client.Messages_GetAllChats();
 var chat = chats.chats[1234567890]; // the target chat
 ```
-After the above code, once you [have obtained](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash) an `InputUser` or `User`, you can:
+After the above code, once you [have obtained](FAQ.md#access-hash) an `InputUser` or `User`, you can:
 ```csharp
 // • Directly add the user to a Chat/Channel/group:
 await client.AddChatUser(chat, user);

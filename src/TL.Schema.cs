@@ -50,7 +50,7 @@ namespace TL
 	{
 		/// <summary>User identifier</summary>
 		public long user_id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="User"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="User"/></summary>
 		public long access_hash;
 	}
 	/// <summary>Defines a channel for further interaction.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerChannel"/></para></summary>
@@ -59,7 +59,7 @@ namespace TL
 	{
 		/// <summary>Channel identifier</summary>
 		public long channel_id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="Channel"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="Channel"/></summary>
 		public long access_hash;
 	}
 	/// <summary>Defines a <a href="https://corefork.telegram.org/api/min">min</a> user that was seen in a certain message of a certain chat.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerUserFromMessage"/></para></summary>
@@ -97,7 +97,7 @@ namespace TL
 	{
 		/// <summary>User identifier</summary>
 		public long user_id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="User"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="User"/></summary>
 		public long access_hash;
 	}
 	/// <summary>Defines a <a href="https://corefork.telegram.org/api/min">min</a> user that was seen in a certain message of a certain chat.		<para>See <a href="https://corefork.telegram.org/constructor/inputUserFromMessage"/></para></summary>
@@ -504,7 +504,7 @@ namespace TL
 	{
 		/// <summary>Photo identifier</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="Photo"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/><strong>access_hash</strong> value from the <see cref="Photo"/></summary>
 		public long access_hash;
 		/// <summary><a href="https://corefork.telegram.org/api/file_reference">File reference</a></summary>
 		public byte[] file_reference;
@@ -531,7 +531,7 @@ namespace TL
 	{
 		/// <summary>File ID, <strong>id</strong> parameter value from <see cref="EncryptedFile"/></summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Checksum, <strong>access_hash</strong> parameter value from <see cref="EncryptedFile"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Checksum, <strong>access_hash</strong> parameter value from <see cref="EncryptedFile"/></summary>
 		public long access_hash;
 	}
 	/// <summary>Document location (video, voice, audio, basically every type except photo)		<para>See <a href="https://corefork.telegram.org/constructor/inputDocumentFileLocation"/></para></summary>
@@ -540,7 +540,7 @@ namespace TL
 	{
 		/// <summary>Document ID</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> parameter from the <see cref="Document"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/><strong>access_hash</strong> parameter from the <see cref="Document"/></summary>
 		public long access_hash;
 		/// <summary><a href="https://corefork.telegram.org/api/file_reference">File reference</a></summary>
 		public byte[] file_reference;
@@ -553,7 +553,7 @@ namespace TL
 	{
 		/// <summary>File ID, <strong>id</strong> parameter value from <see cref="SecureFile"/></summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Checksum, <strong>access_hash</strong> parameter value from <see cref="SecureFile"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Checksum, <strong>access_hash</strong> parameter value from <see cref="SecureFile"/></summary>
 		public long access_hash;
 	}
 	/// <summary>Empty constructor for takeout		<para>See <a href="https://corefork.telegram.org/constructor/inputTakeoutFileLocation"/></para></summary>
@@ -565,7 +565,7 @@ namespace TL
 	{
 		/// <summary>Photo ID, obtained from the <see cref="Photo"/> object</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Photo's access hash, obtained from the <see cref="Photo"/> object</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Photo's access hash, obtained from the <see cref="Photo"/> object</summary>
 		public long access_hash;
 		/// <summary><a href="https://corefork.telegram.org/api/file_reference">File reference</a></summary>
 		public byte[] file_reference;
@@ -578,7 +578,7 @@ namespace TL
 	{
 		/// <summary>Photo ID</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 		/// <summary>File reference</summary>
 		public byte[] file_reference;
@@ -5112,7 +5112,7 @@ namespace TL
 	{
 		/// <summary>Chat ID</summary>
 		public int chat_id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Checking sum from constructor <see cref="EncryptedChat"/>, <see cref="EncryptedChatWaiting"/> or <see cref="EncryptedChatRequested"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Checking sum from constructor <see cref="EncryptedChat"/>, <see cref="EncryptedChatWaiting"/> or <see cref="EncryptedChatRequested"/></summary>
 		public long access_hash;
 	}
 
@@ -5162,7 +5162,7 @@ namespace TL
 	{
 		/// <summary>File ID, value of <strong>id</strong> parameter from <see cref="EncryptedFile"/></summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Checking sum, value of <strong>access_hash</strong> parameter from <see cref="EncryptedFile"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Checking sum, value of <strong>access_hash</strong> parameter from <see cref="EncryptedFile"/></summary>
 		public long access_hash;
 
 		/// <summary>File ID, value of <strong>id</strong> parameter from <see cref="EncryptedFile"/></summary>
@@ -5287,7 +5287,7 @@ namespace TL
 	{
 		/// <summary>Document ID</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/><strong>access_hash</strong> parameter from the <see cref="Document"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/><strong>access_hash</strong> parameter from the <see cref="Document"/></summary>
 		public long access_hash;
 		/// <summary><a href="https://corefork.telegram.org/api/file_reference">File reference</a></summary>
 		public byte[] file_reference;
@@ -6192,7 +6192,7 @@ namespace TL
 	{
 		/// <summary>ID</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
 	/// <summary>Stickerset by short name, from a <a href="https://corefork.telegram.org/api/links#stickerset-links">stickerset deep link »</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetShortName"/></para></summary>
@@ -6698,7 +6698,7 @@ namespace TL
 	{
 		/// <summary>Channel ID</summary>
 		public long channel_id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash taken from the <see cref="Channel"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash taken from the <see cref="Channel"/></summary>
 		public long access_hash;
 
 		/// <summary>Channel ID</summary>
@@ -7858,7 +7858,7 @@ namespace TL
 		public int dc_id;
 		/// <summary>ID of message, contains both the (32-bit, legacy) owner ID and the message ID, used only for Bot API backwards compatibility with 32-bit user ID.</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash of message</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash of message</summary>
 		public long access_hash;
 
 		/// <summary>DC ID to use when working with this inline message</summary>
@@ -7876,7 +7876,7 @@ namespace TL
 		public long owner_id;
 		/// <summary>ID of message</summary>
 		public int id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash of message</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash of message</summary>
 		public long access_hash;
 
 		/// <summary>DC ID to use when working with this inline message</summary>
@@ -8201,7 +8201,7 @@ namespace TL
 	{
 		/// <summary>game ID from <see cref="Game"/> constructor</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>access hash from <see cref="Game"/> constructor</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>access hash from <see cref="Game"/> constructor</summary>
 		public long access_hash;
 	}
 	/// <summary>Game by short name		<para>See <a href="https://corefork.telegram.org/constructor/inputGameShortName"/></para></summary>
@@ -8891,7 +8891,7 @@ namespace TL
 	{
 		/// <summary>HTTP URL of file</summary>
 		public string url;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
 	/// <summary>Used to download a server-generated image with the map preview from a <see cref="GeoPoint"/>, see the <a href="https://corefork.telegram.org/api/files#downloading-webfiles">webfile docs for more info »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/inputWebFileGeoPointLocation"/></para></summary>
@@ -8900,7 +8900,7 @@ namespace TL
 	{
 		/// <summary>Generated from the <c>lat</c>, <c>long</c> and <c>accuracy_radius</c> parameters of the <see cref="GeoPoint"/></summary>
 		public InputGeoPoint geo_point;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash of the <see cref="GeoPoint"/></summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash of the <see cref="GeoPoint"/></summary>
 		public long access_hash;
 		/// <summary>Map width in pixels before applying scale; 16-1024</summary>
 		public int w;
@@ -9197,7 +9197,7 @@ namespace TL
 	{
 		/// <summary>Call ID</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
 
@@ -10319,7 +10319,7 @@ namespace TL
 	{
 		/// <summary>Secure file ID</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Secure file access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Secure file access hash</summary>
 		public long access_hash;
 
 		/// <summary>Secure file ID</summary>
@@ -11261,7 +11261,7 @@ namespace TL
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a> ID</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
 	/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a> by slug (a unique ID, obtained from a <a href="https://corefork.telegram.org/api/links#wallpaper-links">wallpaper link »</a>)		<para>See <a href="https://corefork.telegram.org/constructor/inputWallPaperSlug"/></para></summary>
@@ -11589,7 +11589,7 @@ namespace TL
 	{
 		/// <summary>ID</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash</summary>
 		public long access_hash;
 	}
 	/// <summary>Theme by theme ID		<para>See <a href="https://corefork.telegram.org/constructor/inputThemeSlug"/></para></summary>
@@ -12525,7 +12525,7 @@ namespace TL
 	{
 		/// <summary>Group call ID</summary>
 		public long id;
-		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash">how to obtain it</see><br/>Group call access hash</summary>
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Group call access hash</summary>
 		public long access_hash;
 	}
 

@@ -45,7 +45,7 @@ and when the user has provided the verification_code through your app, you "set"
 
 Another solution is to use the [alternative login method](README.md#alternative-simplified-configuration--login),
 calling `client.Login(...)` as the user provides the requested configuration elements.
-You can download such full example apps [for WinForms](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip) and [for ASP.NET](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/ASPnet_webapp.zip)
+You can download such full example apps [for WinForms](Examples/WinForms_app.zip) and [for ASP.NET](Examples/ASPnet_webapp.zip)
 
 <a name="access-hash"></a>
 #### 4. How to use IDs? Where to get the access_hash? Why the error `CHANNEL_INVALID` or `USER_ID_INVALID`?
@@ -301,7 +301,7 @@ Here is a list of common issues and how to fix them so that your program work co
 It is not recommended to copy/compile the source code of the library for a normal usage.
 When built in DEBUG mode, the source code connects to Telegram test servers (see also [FAQ #6](#wrong-server)).  
 So you can either:
-    - **Recommended:** Use the [official Nuget package](https://www.nuget.org/packages/WTelegramClient) or the [private nuget feed of development builds](https://dev.azure.com/wiz0u/WTelegramClient/_artifacts/feed/WTelegramClient/NuGet/WTelegramClient)
+    - **Recommended:** Use the [official Nuget package](https://www.nuget.org/packages/WTelegramClient)
     - Build your code in RELEASE mode
     - Modify your config callback to reply to "server_address" with the IP address of Telegram production servers (as found on your API development tools)
 

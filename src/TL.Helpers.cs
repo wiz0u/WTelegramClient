@@ -148,6 +148,7 @@ namespace TL
 	{
 		public override long ID => id;
 		public override bool IsActive => (flags & Flags.deleted) == 0;
+		public bool IsBot => (flags & Flags.bot) != 0;
 		public string MainUsername => username ?? usernames?.FirstOrDefault(u => u.flags.HasFlag(Username.Flags.active))?.username;
 		public override string ToString() => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
 		public override InputPeer ToInputPeer() => new InputPeerUser(id, access_hash);
@@ -156,18 +157,16 @@ namespace TL
 		public TimeSpan LastSeenAgo => status?.LastSeenAgo ?? TimeSpan.FromDays(150);
 	}
 
-
-	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/userStatusEmpty">userStatusEmpty</a> = last seen a long time ago, more than a month (this is also always shown for blocked/deleted users)</remarks>
-	partial class UserStatus			{ /// <summary>An estimation of the number of days ago the user was last seen (online=0, recently=1, lastWeek=5, lastMonth=20)<br/><see cref="UserStatus"/> = <c>null</c> means a long time ago, more than a month (this is also always shown for blocked/deleted users)</summary>
-										  public abstract TimeSpan LastSeenAgo { get; } }
-	partial class UserStatusOnline		{ public override TimeSpan LastSeenAgo => TimeSpan.Zero; }
-	partial class UserStatusOffline		{ public override TimeSpan LastSeenAgo => DateTime.UtcNow - new DateTime((was_online + 62135596800L) * 10000000, DateTimeKind.Utc); }
+	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/userStatusEmpty">userStatusEmpty</a> = last seen a long time ago, more than a month (or blocked/deleted users)</remarks>
+	partial class UserStatus			{ internal abstract TimeSpan LastSeenAgo { get; } }
+	partial class UserStatusOnline		{ internal override TimeSpan LastSeenAgo => TimeSpan.Zero; }
+	partial class UserStatusOffline		{ internal override TimeSpan LastSeenAgo => DateTime.UtcNow - new DateTime((was_online + 62135596800L) * 10000000, DateTimeKind.Utc); }
 	/// <remarks>covers anything between 1 second and 2-3 days</remarks>
-	partial class UserStatusRecently	{ public override TimeSpan LastSeenAgo => TimeSpan.FromDays(1); }
+	partial class UserStatusRecently	{ internal override TimeSpan LastSeenAgo => TimeSpan.FromDays(1); }
 	/// <remarks>between 2-3 and seven days</remarks>
-	partial class UserStatusLastWeek	{ public override TimeSpan LastSeenAgo => TimeSpan.FromDays(5); }
+	partial class UserStatusLastWeek	{ internal override TimeSpan LastSeenAgo => TimeSpan.FromDays(5); }
 	/// <remarks>between 6-7 days and a month</remarks>
-	partial class UserStatusLastMonth	{ public override TimeSpan LastSeenAgo => TimeSpan.FromDays(20); }
+	partial class UserStatusLastMonth	{ internal override TimeSpan LastSeenAgo => TimeSpan.FromDays(20); }
 
 	partial class ChatBase : IPeerInfo
 	{

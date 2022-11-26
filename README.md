@@ -1,6 +1,6 @@
+[![API Layer](https://img.shields.io/badge/API_Layer-149-blueviolet)](https://corefork.telegram.org/methods)
 [![NuGet version](https://img.shields.io/nuget/v/WTelegramClient?color=00508F)](https://www.nuget.org/packages/WTelegramClient/)
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
-[![API Layer](https://img.shields.io/badge/API_Layer-149-blueviolet)](https://corefork.telegram.org/methods)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://t.me/WTelegramBot?start=donate)
 
 ## _Telegram Client API library written 100% in C# and .NET Standard_
@@ -76,7 +76,7 @@ There are other configuration items that are queried to your method but returnin
 Those shown above are the only ones that have no default values and should be provided by your method.
 
 Returning `null` for verification_code or password will show a prompt for console apps, or an error otherwise
-*(see [FAQ #3](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#GUI) for WinForms)*  
+*(see [FAQ #3](https://wiz0u.github.io/WTelegramClient/FAQ#GUI) for WinForms)*  
 Returning `""` for verification_code requests the resending of the code through another system (SMS or Call).
 
 Another simple approach is to pass `Environment.GetEnvironmentVariable` as the config callback and define the configuration items as environment variables
@@ -108,7 +108,7 @@ async Task DoLogin(string loginInfo) // (add this method to your code)
 
 With this method, you can choose in some cases to interrupt the login loop via a `return` instead of `break`, and resume it later
 by calling `DoLogin(requestedCode)` again once you've obtained the requested code/password/etc...
-See [WinForms example](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip) and [ASP.NET example](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/ASPnet_webapp.zip)
+See [WinForms example](https://wiz0u.github.io/WTelegramClient/Examples/WinForms_app.zip) and [ASP.NET example](https://wiz0u.github.io/WTelegramClient/Examples/ASPnet_webapp.zip)
 
 # Example of API call
 
@@ -148,9 +148,9 @@ Console.WriteLine($"Sending a message in chat {chatId}: {target.Title}");
 await client.SendMessageAsync(target, "Hello, World");
 ```
 
-➡️ You can find lots of useful code snippets in [EXAMPLES.md](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md)
+➡️ You can find lots of useful code snippets in [EXAMPLES](https://wiz0u.github.io/WTelegramClient/EXAMPLES)
 and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).  
-➡️ Check [the FAQ](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#compile) if example codes doesn't compile correctly on your machine, or other troubleshooting.
+➡️ Check [the FAQ](https://wiz0u.github.io/WTelegramClient/FAQ#compile) if example codes doesn't compile correctly on your machine, or other troubleshooting.
 
 <a name="terminology"></a>
 # Terminology in Telegram Client API
@@ -165,14 +165,14 @@ or a [broadcast channel](https://corefork.telegram.org/api/channel#channels) (th
 - `Peer` : Either a `Chat`, a `Channel` or a `User`
 - Dialog : Status of chat with a `Peer` *(draft, last message, unread count, pinned...)*. It represents each line from your Telegram chat list.
 - Access Hash : Telegram requires you to provide a specific `access_hash` for users, channels, and other resources before interacting with them.
-See [FAQ #4](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash) to learn more about it.
+See [FAQ #4](https://wiz0u.github.io/WTelegramClient/FAQ#access-hash) to learn more about it.
 - DC (DataCenter) : There are a few datacenters depending on where in the world the user (or an uploaded media file) is from.
 - Session or Authorization : Pairing between a device and a phone number. You can have several active sessions for the same phone number.
 
 # Other things to know
 
 The Client class also offers an `OnUpdate` event that is triggered when Telegram servers sends Updates (like new messages or status), independently of your API requests.
-See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs)
+See [Examples/Program_ListenUpdates.cs](https://wiz0u.github.io/WTelegramClient/Examples/Program_ListenUpdates.cs)
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
@@ -191,18 +191,18 @@ This library works best with **.NET 5.0+** (faster, no dependencies) and is also
 # Library uses and limitations
 This library can be used for any Telegram scenarios including:
 - Sequential or parallel automated steps based on API requests/responses
-- Real-time [monitoring](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#updates) of incoming Updates/Messages
+- Real-time [monitoring](https://wiz0u.github.io/WTelegramClient/EXAMPLES#updates) of incoming Updates/Messages
 - Download/upload of files/media
-- Exchange end-to-end encrypted messages/files in [Secret Chats](https://github.com/wiz0u/WTelegramClient/blob/master/EXAMPLES.md#e2e)
+- Exchange end-to-end encrypted messages/files in [Secret Chats](https://wiz0u.github.io/WTelegramClient/EXAMPLES#e2e)
 - Building a full-featured interactive client
 
-It has been tested in a Console app, [in Windows Forms](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/WinForms_app.zip),
-[in ASP.NET webservice](https://github.com/wiz0u/WTelegramClient/raw/master/Examples/ASPnet_webapp.zip), and in Xamarin/Android.  
+It has been tested in a Console app, [in Windows Forms](https://wiz0u.github.io/WTelegramClient/Examples/WinForms_app.zip),
+[in ASP.NET webservice](https://wiz0u.github.io/WTelegramClient/Examples/ASPnet_webapp.zip), and in Xamarin/Android.  
 
 Don't use this library for Spam or Scam. Respect Telegram [Terms of Service](https://telegram.org/tos)
 as well as the [API Terms of Service](https://core.telegram.org/api/terms) or you might get banned from Telegram servers.
 
-If you read all this ReadMe, the [Frequently Asked Questions](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md),
-the [Examples codes](https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md) and still have questions, feedback is welcome in our Telegram group [@WTelegramClient](https://t.me/WTelegramClient)
+If you read all this ReadMe, the [Frequently Asked Questions](https://wiz0u.github.io/WTelegramClient/FAQ),
+the [Examples codes](https://wiz0u.github.io/WTelegramClient/EXAMPLES) and still have questions, feedback is welcome in our Telegram group [@WTelegramClient](https://t.me/WTelegramClient)
 
 If you like this library, please [consider a donation](http://t.me/WTelegramBot?start=donate) ❤ This will help the project keep going.
