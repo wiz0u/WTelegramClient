@@ -1,4 +1,4 @@
-﻿## Example programs using WTelegramClient
+﻿# Example programs using WTelegramClient
 
 For these examples to work as a fully-functional Program.cs, be sure to start with these lines:
 ```csharp
@@ -18,11 +18,12 @@ Remember that these are just simple example codes that you should adjust to your
 In real production code, you might want to properly test the success of each operation or handle exceptions,
 and avoid calling the same methods (like `Messages_GetAllChats`) repetitively.
 
-ℹ️ WTelegramClient covers 100% of Telegram Client API, much more than the examples below: check the [full API methods list](https://corefork.telegram.org/methods)!  
-More examples can also be found in the [Examples folder](Examples) and in answers to [StackOverflow questions](https://stackoverflow.com/questions/tagged/wtelegramclient).
+➡️ Use Ctrl-F to search this page for the example matching your needs  
+WTelegramClient covers 100% of Telegram Client API, much more than the examples below: check the [full API methods list](https://corefork.telegram.org/methods)!  
+More examples can also be found in the [Examples folder](https://github.com/wiz0u/WTelegramClient/tree/master/Examples) and in answers to [StackOverflow questions](https://stackoverflow.com/questions/tagged/wtelegramclient).
 
 <a name="logging"></a>
-### Change logging settings
+## Change logging settings
 By default, WTelegramClient logs are displayed on the Console screen.  
 If you are not in a Console app or don't want the logs on screen, you can redirect them as you prefer:
 
@@ -45,7 +46,7 @@ WTelegram.Helpers.Log = (lvl, str) => { };
 The `lvl` argument correspond to standard [LogLevel values](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel#fields)
 
 <a name="msg-by-name"></a>
-### Send a message to someone by @username
+## Send a message to someone by @username
 ```csharp
 var resolved = await client.Contacts_ResolveUsername("JsonDumpBot"); // username without the @
 await client.SendMessageAsync(resolved, "/start");
@@ -55,7 +56,7 @@ If the username is invalid/unused, the API call raises an RpcException.*
 
 <a name="markdown"></a>
 <a name="html"></a>
-### Convert message to/from HTML or Markdown, and send it to ourself (Saved Messages)
+## Convert message to/from HTML or Markdown, and send it to ourself (Saved Messages)
 ```csharp
 // HTML-formatted text:
 var text = $"Hello <u>dear <b>{HtmlText.Escape(client.User.first_name)}</b></u>\n" +
@@ -78,7 +79,7 @@ See [HTML formatting style](https://core.telegram.org/bots/api/#html-style) and 
 *Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#collect-access-hash))*
 
 <a name="list-dialogs"></a>
-### List all dialogs (chats/groups/channels/user chat) we are currently in
+## List all dialogs (chats/groups/channels/user chat) we are currently in
 ```csharp
 var dialogs = await client.Messages_GetAllDialogs();
 foreach (Dialog dialog in dialogs.dialogs)
@@ -98,7 +99,7 @@ Notes:
 - To retrieve the dialog information about a specific [peer](README.md#terminology), use `client.Messages_GetPeerDialogs(inputPeer)`
 
 <a name="list-chats"></a>
-### List all chats (groups/channels NOT users) that we joined and send a message to one
+## List all chats (groups/channels NOT users) that we joined and send a message to one
 ```csharp
 var chats = await client.Messages_GetAllChats();
 foreach (var (id, chat) in chats.chats)
@@ -116,7 +117,7 @@ but the old `Chat` will be marked with flag [deactivated] and should not be used
 - You can find a longer version of this method call in [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
 
 <a name="list-members"></a>
-### List the members from a chat
+## List the members from a chat
 For a basic Chat: *(see Terminology in [ReadMe](README.md#terminology))*
 ```csharp
 var chatFull = await client.Messages_GetFullChat(1234567890); // the chat we want
@@ -159,7 +160,7 @@ foreach (var participant in participants.participants) // This is the better way
 *Note: It is not possible to list only the Deleted Accounts. Those will be automatically removed by Telegram from your group after a while*
 
 <a name="history"></a>
-### Fetch all messages (history) from a chat
+## Fetch all messages (history) from a chat
 ```csharp
 var chats = await client.Messages_GetAllChats();
 InputPeer peer = chats.chats[1234567890]; // the chat we want
@@ -183,7 +184,7 @@ Notes:
 - To mark the message history as read, use: `await client.ReadHistory(peer);`
 
 <a name="updates"></a>
-### Monitor all Telegram events happening for the user
+## Monitor all Telegram events happening for the user
 
 This is done through the `client.OnUpdate` callback event.  
 Your event handler implementation can either return `Task.CompletedTask` or be an `async Task` method.
@@ -191,7 +192,7 @@ Your event handler implementation can either return `Task.CompletedTask` or be a
 See [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
 
 <a name="monitor-msg"></a>
-### Monitor new messages being posted in chats in real-time
+## Monitor new messages being posted in chats in real-time
 
 You have to handle `client.OnUpdate` events containing an `UpdateNewMessage`.
 
@@ -200,7 +201,7 @@ See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](Examples/
 You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.
 
 <a name="download"></a>
-### Downloading photos, medias, files
+## Downloading photos, medias, files
 
 This is done using the helper method `client.DownloadFileAsync(file, outputStream)`
 that simplifies the download of a photo/document/file once you get a reference to its location *(through updates or API calls)*.
@@ -208,7 +209,7 @@ that simplifies the download of a photo/document/file once you get a reference t
 See [Examples/Program_DownloadSavedMedia.cs](Examples/Program_DownloadSavedMedia.cs) that download all media files you forward to yourself (Saved Messages)
 
 <a name="upload"></a>
-### Upload a media file and post it with caption to a chat
+## Upload a media file and post it with caption to a chat
 ```csharp
 const int ChatId = 1234567890; // the chat we want
 const string Filepath = @"C:\...\photo.jpg";
@@ -220,7 +221,7 @@ await client.SendMediaAsync(peer, "Here is the photo", inputFile);
 ```
 
 <a name="album"></a>
-### Send a grouped media album using photos from various sources
+## Send a grouped media album using photos from various sources
 ```csharp
 // Photo 1 already on Telegram: latest photo found in the user's Saved Messages
 var history = await client.Messages_GetHistory(InputPeer.Self);
@@ -241,7 +242,7 @@ await client.SendAlbumAsync(InputPeer.Self, inputMedias, "My first album");
 *Note: Don't mix Photos and file Documents in your album, it doesn't work well*
 
 <a name="forward"></a><a name="copy"></a>
-### Forward or copy a message to another chat
+## Forward or copy a message to another chat
 ```csharp
 // Determine which chats and message to forward/copy
 var chats = await client.Messages_GetAllChats();
@@ -261,7 +262,7 @@ await client.SendMessageAsync(to_chat, msg.message, msg.media?.ToInputMedia(), e
 ```
 
 <a name="schedule-msg"></a>
-### Schedule a message to be sent to a chat
+## Schedule a message to be sent to a chat
 ```csharp
 var chats = await client.Messages_GetAllChats();
 InputPeer peer = chats.chats[1234567890]; // the chat we want
@@ -270,7 +271,7 @@ await client.SendMessageAsync(peer, "This will be posted in 3 minutes", schedule
 ```
 
 <a name="fun"></a>
-### Fun with stickers, GIFs, dice, and animated emojies
+## Fun with stickers, GIFs, dice, and animated emojies
 ```csharp
 // • List all stickerSets the user has added to his account
 var allStickers = await client.Messages_GetAllStickers();
@@ -319,7 +320,7 @@ await Task.Delay(5000);
 ```
 
 <a name="reaction"></a><a name="pinned"></a><a name="custom_emoji"></a>
-### Fun with custom emojies and reactions on pinned messages
+## Fun with custom emojies and reactions on pinned messages
 ```csharp
 // • Sending a message with custom emojies in Markdown to ourself:
 var text = "Vicksy says Hi! [👋](emoji?id=5190875290439525089)";
@@ -355,7 +356,7 @@ foreach (var msg in messages.Messages)
 
 
 <a name="join-channel"></a>
-### Join a channel/group by their public name or invite link
+## Join a channel/group by their public name or invite link
 * For a public channel/group `@channelname`  
 If you have a link of the form `https://t.me/channelname`, you need to extract the `channelname` from the URL.  
 You can resolve the channel/group username and join it like this:
@@ -374,7 +375,7 @@ await client.Messages_ImportChatInvite("HASH"); // join the channel/group
 ```
 
 <a name="add-members"></a>
-### Add/Invite/Remove someone in a chat
+## Add/Invite/Remove someone in a chat
 ```csharp
 var chats = await client.Messages_GetAllChats();
 var chat = chats.chats[1234567890]; // the target chat
@@ -403,7 +404,7 @@ await client.DeleteChatUser(chat, user);
 ```
 
 <a name="msg-by-phone"></a>
-### Send a message to someone by phone number
+## Send a message to someone by phone number
 ```csharp
 var contacts = await client.Contacts_ImportContacts(new[] { new InputPhoneContact { phone = "+PHONENUMBER" } });
 if (contacts.imported.Length > 0)
@@ -412,7 +413,7 @@ if (contacts.imported.Length > 0)
 *Note: Don't use this method too much. To prevent spam, Telegram may restrict your ability to add new phone numbers or ban your account.*
 
 <a name="contacts"></a>
-### Retrieve the current user's contacts list
+## Retrieve the current user's contacts list
 There are two different methods. Here is the simpler one:
 ```csharp
 var contacts = await client.Contacts_GetContacts();
@@ -441,7 +442,7 @@ finally
 ```
 
 <a name="collect-access-hash"></a>
-### Collect Access Hash and save them for later use
+## Collect Access Hash and save them for later use
 
 You can automate the collection of `access_hash` for the various resources obtained in response to API calls or Updates,
 so that you don't have to remember them by yourself or ask the API about them each time.
@@ -450,7 +451,7 @@ This is done by activating the experimental `client.CollectAccessHash` system.
 See [Examples/Program_CollectAccessHash.cs](Examples/Program_CollectAccessHash.cs) for how to enable it, and save/restore them for later use.
 
 <a name="proxy"></a>
-### Use a proxy or MTProxy to connect to Telegram
+## Use a proxy or MTProxy to connect to Telegram
 SOCKS/HTTPS proxies can be used through the `client.TcpHandler` delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/):
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -482,7 +483,7 @@ If your Telegram client is already connected to such MTPROTO proxy, you can also
 *Note: WTelegramClient always uses transport obfuscation when connecting to Telegram servers, even without MTProxy*
 
 <a name="2FA"></a>
-### Change 2FA password
+## Change 2FA password
 ```csharp
 const string old_password = "password";     // current password if any (unused otherwise)
 const string new_password = "new_password"; // or null to disable 2FA
@@ -500,7 +501,7 @@ await client.Account_UpdatePasswordSettings(password, new Account_PasswordInputS
 ```
 
 <a name="database"></a><a name="sessionStore"></a><a name="customStore"></a>
-### Store session data to database or elsewhere, instead of files
+## Store session data to database or elsewhere, instead of files
 
 If you don't want to store session data into files *(for example if your VPS Hosting doesn't allow that)*, or just for easier management,
 you can choose to store the session data somewhere else, like in a database.
@@ -511,7 +512,7 @@ Use it to pass a custom Stream-derived class that will **read** (first initial c
 You can find an example for such custom session store in [Examples/Program_Heroku.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_Heroku.cs#L61)
 
 <a name="e2e"></a><a name="secrets"></a>
-### Send/receive end-to-end encrypted messages & files in Secret Chats
+## Send/receive end-to-end encrypted messages & files in Secret Chats
 
 This can be done easily using the helper class `WTelegram.SecretChats` offering methods to manage/encrypt/decrypt secret chats & encrypted messages/files.
 
