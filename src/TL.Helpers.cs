@@ -97,6 +97,17 @@ namespace TL
 		public override InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret) => new InputSecureFileUploaded { id = id, parts = parts, file_hash = file_hash, secret = secret };
 	}
 
+	partial class InputMediaUploadedDocument
+	{
+		public InputMediaUploadedDocument() { }
+		public InputMediaUploadedDocument(InputFileBase inputFile, string mimeType)
+		{
+			file = inputFile;
+			mime_type = mimeType;
+			if (inputFile.Name is string filename) attributes = new[] { new DocumentAttributeFilename { file_name = filename } };
+		}
+	}
+
 	partial class InputPhoto
 	{
 		public static implicit operator InputMediaPhoto(InputPhoto photo) => new() { id = photo };
@@ -340,17 +351,19 @@ namespace TL
 		public static implicit operator InputGeoPoint(GeoPoint geo) => new() { lat = geo.lat, lon = geo.lon, accuracy_radius = geo.accuracy_radius, flags = (InputGeoPoint.Flags)geo.flags };
 	}
 
-	partial class InputMediaUploadedDocument
+	partial class WallPaperBase
 	{
-		public InputMediaUploadedDocument() { }
-		public InputMediaUploadedDocument(InputFileBase inputFile, string mimeType)
-		{
-			file = inputFile;
-			mime_type = mimeType;
-			if (inputFile.Name is string filename) attributes = new[] { new DocumentAttributeFilename { file_name = filename } };
-		}
+		protected abstract InputWallPaperBase ToInputWallPaper();
+		public static implicit operator InputWallPaperBase(WallPaperBase wp) => wp.ToInputWallPaper();
 	}
-
+	partial class WallPaper
+	{
+		protected override InputWallPaperBase ToInputWallPaper() => new InputWallPaper { id = id, access_hash = access_hash };
+	}
+	partial class WallPaperNoFile
+	{
+		protected override InputWallPaperBase ToInputWallPaper() => new InputWallPaperNoFile { id = id };
+	}
 	partial class Contacts_Blocked				{ public IPeerInfo UserOrChat(PeerBlocked peer) => peer.peer_id?.UserOrChat(users, chats); }
 	partial class Messages_DialogsBase			{ public IPeerInfo UserOrChat(DialogBase dialog) => UserOrChat(dialog.Peer);
 												  public abstract int TotalCount { get; } }
@@ -416,7 +429,8 @@ namespace TL
 		}, pts = pts, pts_count = pts_count
 	} }; }
 
-	partial class InputEncryptedChat { public static implicit operator int(InputEncryptedChat chat) => chat.chat_id; }
+	partial class InputEncryptedChat { public static implicit operator int(InputEncryptedChat chat) => chat.chat_id;
+									   public static implicit operator InputEncryptedChat(EncryptedChatBase chat) => new() { chat_id = chat.ID, access_hash = chat.AccessHash }; }
 
 	partial class EncryptedFile
 	{
@@ -554,14 +568,16 @@ namespace TL
 	partial class Game			{ public static implicit operator InputGameID(Game game) => new() { id = game.id, access_hash = game.access_hash }; }
 	partial class WebDocument	{ public static implicit operator InputWebFileLocation(WebDocument doc) => new() { url = doc.url, access_hash = doc.access_hash }; }
 
+	partial class PhoneCallBase { public static implicit operator InputPhoneCall(PhoneCallBase call) => new() { id = call.ID, access_hash = call.AccessHash }; }
+
 	partial class InputMessage
 	{
-		public static implicit operator InputMessage(int id) => new InputMessageID() { id = id };
+		public static implicit operator InputMessage(int id) => new InputMessageID { id = id };
 	}
 
 	partial class InputDialogPeerBase
 	{
-		public static implicit operator InputDialogPeerBase(InputPeer peer) => new InputDialogPeer() { peer = peer };
+		public static implicit operator InputDialogPeerBase(InputPeer peer) => new InputDialogPeer { peer = peer };
 	}
 
 	partial class SecureFile
@@ -631,5 +647,15 @@ namespace TL
 			}
 			return dic;
 		}
+	}
+
+	partial class Theme
+	{
+		public static implicit operator InputTheme(Theme theme) => new() { id = theme.id, access_hash = theme.access_hash };
+	}
+
+	partial class GroupCallBase
+	{
+		public static implicit operator InputGroupCall(GroupCallBase call) => new() { id = call.ID, access_hash = call.AccessHash };
 	}
 }

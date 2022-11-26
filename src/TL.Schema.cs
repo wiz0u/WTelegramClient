@@ -2628,7 +2628,7 @@ namespace TL
 	}
 
 	/// <summary>Object contains info on a <a href="https://corefork.telegram.org/api/wallpapers">wallpaper</a>.		<para>See <a href="https://corefork.telegram.org/type/WallPaper"/></para>		<para>Derived classes: <see cref="WallPaper"/>, <see cref="WallPaperNoFile"/></para></summary>
-	public abstract class WallPaperBase : IObject
+	public abstract partial class WallPaperBase : IObject
 	{
 		/// <summary>Identifier</summary>
 		public virtual long ID { get; }
@@ -2637,7 +2637,7 @@ namespace TL
 	}
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/wallpapers">wallpaper</a> based on an image.		<para>See <a href="https://corefork.telegram.org/constructor/wallPaper"/></para></summary>
 	[TLDef(0xA437C3ED)]
-	public class WallPaper : WallPaperBase
+	public partial class WallPaper : WallPaperBase
 	{
 		/// <summary>Identifier</summary>
 		public long id;
@@ -2673,7 +2673,7 @@ namespace TL
 	}
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/wallpapers">wallpaper</a> only based on colors/gradients.		<para>See <a href="https://corefork.telegram.org/constructor/wallPaperNoFile"/></para></summary>
 	[TLDef(0xE0804116)]
-	public class WallPaperNoFile : WallPaperBase
+	public partial class WallPaperNoFile : WallPaperBase
 	{
 		/// <summary>Wallpaper ID</summary>
 		public long id;
@@ -5006,6 +5006,14 @@ namespace TL
 	{
 		/// <summary>Chat ID</summary>
 		public virtual int ID { get; }
+		/// <summary>Checking sum depending on user ID</summary>
+		public virtual long AccessHash { get; }
+		/// <summary>Date of chat creation</summary>
+		public virtual DateTime Date { get; }
+		/// <summary>Chat creator ID</summary>
+		public virtual long AdminId { get; }
+		/// <summary>ID of second chat participant</summary>
+		public virtual long ParticipantId { get; }
 	}
 	/// <summary>Empty constructor.		<para>See <a href="https://corefork.telegram.org/constructor/encryptedChatEmpty"/></para></summary>
 	[TLDef(0xAB7EC0A0)]
@@ -5034,6 +5042,14 @@ namespace TL
 
 		/// <summary>Chat ID</summary>
 		public override int ID => id;
+		/// <summary>Checking sum depending on user ID</summary>
+		public override long AccessHash => access_hash;
+		/// <summary>Date of chat creation</summary>
+		public override DateTime Date => date;
+		/// <summary>Chat creator ID</summary>
+		public override long AdminId => admin_id;
+		/// <summary>ID of second chat participant</summary>
+		public override long ParticipantId => participant_id;
 	}
 	/// <summary>Request to create an encrypted chat.		<para>See <a href="https://corefork.telegram.org/constructor/encryptedChatRequested"/></para></summary>
 	[TLDef(0x48F1D94C)]
@@ -5064,6 +5080,14 @@ namespace TL
 
 		/// <summary>Chat ID</summary>
 		public override int ID => id;
+		/// <summary>Check sum depending on user ID</summary>
+		public override long AccessHash => access_hash;
+		/// <summary>Chat creation date</summary>
+		public override DateTime Date => date;
+		/// <summary>Chat creator ID</summary>
+		public override long AdminId => admin_id;
+		/// <summary>ID of second chat participant</summary>
+		public override long ParticipantId => participant_id;
 	}
 	/// <summary>Encrypted chat		<para>See <a href="https://corefork.telegram.org/constructor/encryptedChat"/></para></summary>
 	[TLDef(0x61F0D4C7)]
@@ -5086,6 +5110,14 @@ namespace TL
 
 		/// <summary>Chat ID</summary>
 		public override int ID => id;
+		/// <summary>Check sum dependent on the user ID</summary>
+		public override long AccessHash => access_hash;
+		/// <summary>Date chat was created</summary>
+		public override DateTime Date => date;
+		/// <summary>Chat creator ID</summary>
+		public override long AdminId => admin_id;
+		/// <summary>ID of the second chat participant</summary>
+		public override long ParticipantId => participant_id;
 	}
 	/// <summary>Discarded or deleted chat.		<para>See <a href="https://corefork.telegram.org/constructor/encryptedChatDiscarded"/></para></summary>
 	[TLDef(0x1E1C7C45)]
@@ -9202,10 +9234,20 @@ namespace TL
 	}
 
 	/// <summary>Phone call		<para>See <a href="https://corefork.telegram.org/type/PhoneCall"/></para>		<para>Derived classes: <see cref="PhoneCallEmpty"/>, <see cref="PhoneCallWaiting"/>, <see cref="PhoneCallRequested"/>, <see cref="PhoneCallAccepted"/>, <see cref="PhoneCall"/>, <see cref="PhoneCallDiscarded"/></para></summary>
-	public abstract class PhoneCallBase : IObject
+	public abstract partial class PhoneCallBase : IObject
 	{
 		/// <summary>Call ID</summary>
 		public virtual long ID { get; }
+		/// <summary>Access hash</summary>
+		public virtual long AccessHash { get; }
+		/// <summary>Date</summary>
+		public virtual DateTime Date { get; }
+		/// <summary>Admin ID</summary>
+		public virtual long AdminId { get; }
+		/// <summary>Participant ID</summary>
+		public virtual long ParticipantId { get; }
+		/// <summary>Phone call protocol info</summary>
+		public virtual PhoneCallProtocol Protocol { get; }
 	}
 	/// <summary>Empty constructor		<para>See <a href="https://corefork.telegram.org/constructor/phoneCallEmpty"/></para></summary>
 	[TLDef(0x5366C915)]
@@ -9248,6 +9290,16 @@ namespace TL
 
 		/// <summary>Call ID</summary>
 		public override long ID => id;
+		/// <summary>Access hash</summary>
+		public override long AccessHash => access_hash;
+		/// <summary>Date</summary>
+		public override DateTime Date => date;
+		/// <summary>Admin ID</summary>
+		public override long AdminId => admin_id;
+		/// <summary>Participant ID</summary>
+		public override long ParticipantId => participant_id;
+		/// <summary>Phone call protocol info</summary>
+		public override PhoneCallProtocol Protocol => protocol;
 	}
 	/// <summary>Requested phone call		<para>See <a href="https://corefork.telegram.org/constructor/phoneCallRequested"/></para></summary>
 	[TLDef(0x14B0ED0C)]
@@ -9278,6 +9330,16 @@ namespace TL
 
 		/// <summary>Phone call ID</summary>
 		public override long ID => id;
+		/// <summary>Access hash</summary>
+		public override long AccessHash => access_hash;
+		/// <summary>When was the phone call created</summary>
+		public override DateTime Date => date;
+		/// <summary>ID of the creator of the phone call</summary>
+		public override long AdminId => admin_id;
+		/// <summary>ID of the other participant of the phone call</summary>
+		public override long ParticipantId => participant_id;
+		/// <summary>Call protocol info to be passed to libtgvoip</summary>
+		public override PhoneCallProtocol Protocol => protocol;
 	}
 	/// <summary>An accepted phone call		<para>See <a href="https://corefork.telegram.org/constructor/phoneCallAccepted"/></para></summary>
 	[TLDef(0x3660C311)]
@@ -9308,6 +9370,16 @@ namespace TL
 
 		/// <summary>ID of accepted phone call</summary>
 		public override long ID => id;
+		/// <summary>Access hash of phone call</summary>
+		public override long AccessHash => access_hash;
+		/// <summary>When was the call accepted</summary>
+		public override DateTime Date => date;
+		/// <summary>ID of the call creator</summary>
+		public override long AdminId => admin_id;
+		/// <summary>ID of the other user in the call</summary>
+		public override long ParticipantId => participant_id;
+		/// <summary>Protocol to use for phone call</summary>
+		public override PhoneCallProtocol Protocol => protocol;
 	}
 	/// <summary>Phone call		<para>See <a href="https://corefork.telegram.org/constructor/phoneCall"/></para></summary>
 	[TLDef(0x967F7C67)]
@@ -9346,6 +9418,16 @@ namespace TL
 
 		/// <summary>Call ID</summary>
 		public override long ID => id;
+		/// <summary>Access hash</summary>
+		public override long AccessHash => access_hash;
+		/// <summary>Date of creation of the call</summary>
+		public override DateTime Date => date;
+		/// <summary>User ID of the creator of the call</summary>
+		public override long AdminId => admin_id;
+		/// <summary>User ID of the other participant in the call</summary>
+		public override long ParticipantId => participant_id;
+		/// <summary>Call protocol info to be passed to libtgvoip</summary>
+		public override PhoneCallProtocol Protocol => protocol;
 	}
 	/// <summary>Indicates a discarded phone call		<para>See <a href="https://corefork.telegram.org/constructor/phoneCallDiscarded"/></para></summary>
 	[TLDef(0x50CA4DE1)]
@@ -11602,7 +11684,7 @@ namespace TL
 
 	/// <summary>Theme		<para>See <a href="https://corefork.telegram.org/constructor/theme"/></para></summary>
 	[TLDef(0xA00E67D6)]
-	public class Theme : IObject
+	public partial class Theme : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -12433,7 +12515,7 @@ namespace TL
 	}
 
 	/// <summary>A group call		<para>See <a href="https://corefork.telegram.org/type/GroupCall"/></para>		<para>Derived classes: <see cref="GroupCallDiscarded"/>, <see cref="GroupCall"/></para></summary>
-	public abstract class GroupCallBase : IObject
+	public abstract partial class GroupCallBase : IObject
 	{
 		/// <summary>Group call ID</summary>
 		public virtual long ID { get; }
