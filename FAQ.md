@@ -243,7 +243,7 @@ and hosted online on any [VPS Hosting](https://www.google.com/search?q=vps+hosti
 Pure WebApp hosts might not be adequate as they will recycle (stop) your app if there is no incoming HTTP requests.
 
 There are many cheap VPS Hosting offers available, for example Heroku:  
-See [Examples/Program_Heroku.cs](Examples/Program_Heroku.cs) for such an implementation and the steps to host/deploy it.
+See [Examples/Program_Heroku.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_Heroku.cs#L9) for such an implementation and the steps to host/deploy it.
 
 <a name="secrets"></a>
 ## 14. Secret Chats implementation details

@@ -95,7 +95,7 @@ foreach (Dialog dialog in dialogs.dialogs)
 
 Notes:
 - The lists returned by Messages_GetAllDialogs contains the `access_hash` for those chats and users.
-- See also the `Main` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).  
+- See also the `Main` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs#L20).  
 - To retrieve the dialog information about a specific [peer](README.md#terminology), use `client.Messages_GetPeerDialogs(inputPeer)`
 
 <a name="list-chats"></a>
@@ -114,7 +114,7 @@ Notes:
 - The list returned by Messages_GetAllChats contains the `access_hash` for those chats. Read [FAQ #4](FAQ.md#access-hash) about this.
 - If a basic chat group has been migrated to a supergroup, you may find both the old `Chat` and a `Channel` with different IDs in the `chats.chats` result,
 but the old `Chat` will be marked with flag [deactivated] and should not be used anymore. See [Terminology in ReadMe](README.md#terminology).
-- You can find a longer version of this method call in [Examples/Program_GetAllChats.cs](Examples/Program_GetAllChats.cs)
+- You can find a longer version of this method call in [Examples/Program_GetAllChats.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_GetAllChats.cs#L32)
 
 <a name="list-members"></a>
 ## List the members from a chat
@@ -189,14 +189,14 @@ Notes:
 This is done through the `client.OnUpdate` callback event.  
 Your event handler implementation can either return `Task.CompletedTask` or be an `async Task` method.
 
-See [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
+See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs#L23).
 
 <a name="monitor-msg"></a>
 ## Monitor new messages being posted in chats in real-time
 
 You have to handle `client.OnUpdate` events containing an `UpdateNewMessage`.
 
-See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](Examples/Program_ListenUpdates.cs).
+See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs#L23).
 
 You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.
 
@@ -206,7 +206,7 @@ You can filter specific chats the message are posted in, by looking at the `Mess
 This is done using the helper method `client.DownloadFileAsync(file, outputStream)`
 that simplifies the download of a photo/document/file once you get a reference to its location *(through updates or API calls)*.
 
-See [Examples/Program_DownloadSavedMedia.cs](Examples/Program_DownloadSavedMedia.cs) that download all media files you forward to yourself (Saved Messages)
+See [Examples/Program_DownloadSavedMedia.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_DownloadSavedMedia.cs#L31) that download all media files you forward to yourself (Saved Messages)
 
 <a name="upload"></a>
 ## Upload a media file and post it with caption to a chat
@@ -448,7 +448,7 @@ You can automate the collection of `access_hash` for the various resources obtai
 so that you don't have to remember them by yourself or ask the API about them each time.
 
 This is done by activating the experimental `client.CollectAccessHash` system.  
-See [Examples/Program_CollectAccessHash.cs](Examples/Program_CollectAccessHash.cs) for how to enable it, and save/restore them for later use.
+See [Examples/Program_CollectAccessHash.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_CollectAccessHash.cs#L22) for how to enable it, and save/restore them for later use.
 
 <a name="proxy"></a>
 ## Use a proxy or MTProxy to connect to Telegram
@@ -516,7 +516,7 @@ You can find an example for such custom session store in [Examples/Program_Herok
 
 This can be done easily using the helper class `WTelegram.SecretChats` offering methods to manage/encrypt/decrypt secret chats & encrypted messages/files.
 
-You can view a full working example at [Examples/Program_SecretChats.cs](Examples/Program_SecretChats.cs).
+You can view a full working example at [Examples/Program_SecretChats.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_SecretChats.cs#L11).
 
 Secret Chats have been tested successfully with Telegram Android & iOS official clients.  
 You can also check our [FAQ for more implementation details](FAQ.md#14-secret-chats-implementation-details).

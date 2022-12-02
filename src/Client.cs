@@ -310,7 +310,11 @@ namespace WTelegram
 				catch (Exception ex) // an exception in RecvAsync is always fatal
 				{
 					if (cts.IsCancellationRequested) return;
-					Helpers.Log(5, $"{_dcSession.DcID}>An exception occured in the reactor: {ex}");
+					bool disconnectedAltDC = !IsMainDC && ex is ApplicationException { Message: ConnectionShutDown } or IOException { InnerException: SocketException };
+					if (disconnectedAltDC)
+						Helpers.Log(3, $"{_dcSession.DcID}>Alt DC disconnected: {ex.Message}");
+					else
+						Helpers.Log(5, $"{_dcSession.DcID}>An exception occured in the reactor: {ex}");
 					var oldSemaphore = _sendSemaphore;
 					await oldSemaphore.WaitAsync(cts.Token); // prevent any sending while we reconnect
 					var reactorError = new ReactorError { Exception = ex };
@@ -319,7 +323,7 @@ namespace WTelegram
 						lock (_msgsToAck) _msgsToAck.Clear();
 						Reset(false, false);
 						_reactorReconnects = (_reactorReconnects + 1) % MaxAutoReconnects;
-						if (!IsMainDC && _pendingRpcs.Count <= 1 && ex is ApplicationException { Message: ConnectionShutDown } or IOException { InnerException: SocketException })
+						if (disconnectedAltDC && _pendingRpcs.Count <= 1)
 							if (_pendingRpcs.Values.FirstOrDefault() is not Rpc rpc || rpc.type == typeof(Pong))
 								_reactorReconnects = 0;
 						if (_reactorReconnects == 0)

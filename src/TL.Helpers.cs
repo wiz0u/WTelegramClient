@@ -351,19 +351,11 @@ namespace TL
 		public static implicit operator InputGeoPoint(GeoPoint geo) => new() { lat = geo.lat, lon = geo.lon, accuracy_radius = geo.accuracy_radius, flags = (InputGeoPoint.Flags)geo.flags };
 	}
 
-	partial class WallPaperBase
-	{
-		protected abstract InputWallPaperBase ToInputWallPaper();
-		public static implicit operator InputWallPaperBase(WallPaperBase wp) => wp.ToInputWallPaper();
-	}
-	partial class WallPaper
-	{
-		protected override InputWallPaperBase ToInputWallPaper() => new InputWallPaper { id = id, access_hash = access_hash };
-	}
-	partial class WallPaperNoFile
-	{
-		protected override InputWallPaperBase ToInputWallPaper() => new InputWallPaperNoFile { id = id };
-	}
+	partial class WallPaperBase					{ public static implicit operator InputWallPaperBase(WallPaperBase wp) => wp.ToInputWallPaper();
+												  protected abstract InputWallPaperBase ToInputWallPaper(); }
+	partial class WallPaper						{ protected override InputWallPaperBase ToInputWallPaper() => new InputWallPaper { id = id, access_hash = access_hash }; }
+	partial class WallPaperNoFile				{ protected override InputWallPaperBase ToInputWallPaper() => new InputWallPaperNoFile { id = id }; }
+
 	partial class Contacts_Blocked				{ public IPeerInfo UserOrChat(PeerBlocked peer) => peer.peer_id?.UserOrChat(users, chats); }
 	partial class Messages_DialogsBase			{ public IPeerInfo UserOrChat(DialogBase dialog) => UserOrChat(dialog.Peer);
 												  public abstract int TotalCount { get; } }
@@ -429,8 +421,8 @@ namespace TL
 		}, pts = pts, pts_count = pts_count
 	} }; }
 
-	partial class InputEncryptedChat { public static implicit operator int(InputEncryptedChat chat) => chat.chat_id;
-									   public static implicit operator InputEncryptedChat(EncryptedChatBase chat) => new() { chat_id = chat.ID, access_hash = chat.AccessHash }; }
+	partial class InputEncryptedChat	{ public static implicit operator int(InputEncryptedChat chat) => chat.chat_id;
+										  public static implicit operator InputEncryptedChat(EncryptedChatBase chat) => new() { chat_id = chat.ID, access_hash = chat.AccessHash }; }
 
 	partial class EncryptedFile
 	{
@@ -568,7 +560,7 @@ namespace TL
 	partial class Game			{ public static implicit operator InputGameID(Game game) => new() { id = game.id, access_hash = game.access_hash }; }
 	partial class WebDocument	{ public static implicit operator InputWebFileLocation(WebDocument doc) => new() { url = doc.url, access_hash = doc.access_hash }; }
 
-	partial class PhoneCallBase { public static implicit operator InputPhoneCall(PhoneCallBase call) => new() { id = call.ID, access_hash = call.AccessHash }; }
+	partial class PhoneCallBase	{ public static implicit operator InputPhoneCall(PhoneCallBase call) => new() { id = call.ID, access_hash = call.AccessHash }; }
 
 	partial class InputMessage
 	{
@@ -587,11 +579,11 @@ namespace TL
 	}
 
 	partial class JsonObjectValue { public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }
-	partial class JSONValue  { public abstract object ToNative(); }
-	partial class JsonNull   { public override object ToNative() => null;  public override string ToString() => "null"; }
-	partial class JsonBool   { public override object ToNative() => value; public override string ToString() => value ? "true" : "false"; }
-	partial class JsonNumber { public override object ToNative() => value; public override string ToString() => value.ToString(CultureInfo.InvariantCulture); }
-	partial class JsonString { public override object ToNative() => value; public override string ToString() => HttpUtility.JavaScriptStringEncode(value, true); }
+	partial class JSONValue		{ public abstract object ToNative(); }
+	partial class JsonNull		{ public override object ToNative() => null;  public override string ToString() => "null"; }
+	partial class JsonBool		{ public override object ToNative() => value; public override string ToString() => value ? "true" : "false"; }
+	partial class JsonNumber	{ public override object ToNative() => value; public override string ToString() => value.ToString(CultureInfo.InvariantCulture); }
+	partial class JsonString	{ public override object ToNative() => value; public override string ToString() => HttpUtility.JavaScriptStringEncode(value, true); }
 	partial class JsonArray
 	{
 		public override string ToString()
@@ -649,13 +641,6 @@ namespace TL
 		}
 	}
 
-	partial class Theme
-	{
-		public static implicit operator InputTheme(Theme theme) => new() { id = theme.id, access_hash = theme.access_hash };
-	}
-
-	partial class GroupCallBase
-	{
-		public static implicit operator InputGroupCall(GroupCallBase call) => new() { id = call.ID, access_hash = call.AccessHash };
-	}
+	partial class Theme				{ public static implicit operator InputTheme(Theme theme) => new() { id = theme.id, access_hash = theme.access_hash }; }
+	partial class GroupCallBase		{ public static implicit operator InputGroupCall(GroupCallBase call) => new() { id = call.ID, access_hash = call.AccessHash }; }
 }

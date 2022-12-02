@@ -1,9 +1,9 @@
-[![API Layer](https://img.shields.io/badge/API_Layer-149-blueviolet)](https://corefork.telegram.org/methods)
+﻿[![API Layer](https://img.shields.io/badge/API_Layer-149-blueviolet)](https://corefork.telegram.org/methods)
 [![NuGet version](https://img.shields.io/nuget/v/WTelegramClient?color=00508F)](https://www.nuget.org/packages/WTelegramClient/)
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://t.me/WTelegramBot?start=donate)
 
-## _Telegram Client API library written 100% in C# and .NET Standard_
+## _Telegram Client API library written 100% in C# and .NET_
 
 This library allows you to connect to Telegram and control a user programmatically (or a bot, but [Telegram.Bot](https://github.com/TelegramBots/Telegram.Bot) is much easier for that).
 All the Telegram Client APIs (MTProto) are supported so you can do everything the user could do with a full Telegram GUI client.
@@ -90,7 +90,7 @@ Since version 3.0.0, a new approach to login/configuration has been added. Some 
 
 ```csharp
 WTelegram.Client client = new WTelegram.Client(YOUR_API_ID, "YOUR_API_HASH");
-await DoLogin("+12025550156"); // user's phone_number
+await DoLogin("+12025550156"); // initial call with user's phone_number
 
 async Task DoLogin(string loginInfo) // (add this method to your code)
 {
@@ -150,7 +150,7 @@ await client.SendMessageAsync(target, "Hello, World");
 
 ➡️ You can find lots of useful code snippets in [EXAMPLES](https://wiz0u.github.io/WTelegramClient/EXAMPLES)
 and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).  
-➡️ Check [the FAQ](https://wiz0u.github.io/WTelegramClient/FAQ#compile) if example codes doesn't compile correctly on your machine, or other troubleshooting.
+➡️ Check [the FAQ](https://wiz0u.github.io/WTelegramClient/FAQ#compile) if example codes don't compile correctly on your machine, or other troubleshooting.
 
 <a name="terminology"></a>
 # Terminology in Telegram Client API
@@ -189,7 +189,7 @@ as well as generic handling of chats/channels.
 This library works best with **.NET 5.0+** (faster, no dependencies) and is also available for **.NET Standard 2.0** (.NET Framework 4.6.1+ & .NET Core 2.0+) and **Xamarin/Mono.Android**
 
 # Library uses and limitations
-This library can be used for any Telegram scenarios including:
+This library can be used for any Telegram scenario including:
 - Sequential or parallel automated steps based on API requests/responses
 - Real-time [monitoring](https://wiz0u.github.io/WTelegramClient/EXAMPLES#updates) of incoming Updates/Messages
 - Download/upload of files/media

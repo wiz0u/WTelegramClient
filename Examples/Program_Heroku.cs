@@ -8,7 +8,7 @@ using TL;
 
 // This is an example userbot designed to run on a Heroku account with a PostgreSQL database for session storage
 // This userbot simply answer "Pong" when someone sends him a "Ping" private message (or in Saved Messages)
-// To use/install/deploy this userbot, follow the steps at the end of this file
+// To use/install/deploy this userbot ➡️ follow the steps at the end of this file
 // When run locally, close the window or type ALT-F4 to exit cleanly and save session (similar to Heroku SIGTERM)
 
 namespace WTelegramClientTest

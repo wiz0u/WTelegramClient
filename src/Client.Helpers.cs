@@ -586,7 +586,7 @@ namespace WTelegram
 		public Task<UpdatesBase> AddChatUser(InputPeer peer, InputUserBase user) => peer switch
 		{
 			InputPeerChat chat => this.Messages_AddChatUser(chat.chat_id, user, int.MaxValue),
-			InputPeerChannel channel => this.Channels_InviteToChannel(channel, new[] { user }),
+			InputPeerChannel channel => this.Channels_InviteToChannel(channel, user),
 			_ => throw new ArgumentException(OnlyChatChannel),
 		};
 
@@ -620,7 +620,7 @@ namespace WTelegram
 				case InputPeerChat chat:
 					await this.Messages_EditChatAdmin(chat.chat_id, user, is_admin);
 					return new Updates { date = DateTime.UtcNow, users = new(), updates = Array.Empty<Update>(),
-						chats = (await this.Messages_GetChats(new[] { chat.chat_id })).chats };
+						chats = (await this.Messages_GetChats(chat.chat_id)).chats };
 				case InputPeerChannel channel:
 					return await this.Channels_EditAdmin(channel, user,
 						new ChatAdminRights { flags = is_admin ? (ChatAdminRights.Flags)0x8BF : 0 }, null);
@@ -667,7 +667,7 @@ namespace WTelegram
 				case InputPeerChat chat:
 					await this.Messages_DeleteChat(chat.chat_id);
 					return new Updates { date = DateTime.UtcNow, users = new(), updates = Array.Empty<Update>(),
-						chats = (await this.Messages_GetChats(new[] { chat.chat_id })).chats };
+						chats = (await this.Messages_GetChats(chat.chat_id)).chats };
 				case InputPeerChannel channel:
 					return await this.Channels_DeleteChannel(channel);
 				default:
