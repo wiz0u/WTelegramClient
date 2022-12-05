@@ -25,7 +25,7 @@ namespace WTelegram
 
 		/// <summary>Retrieve the access_hash associated with this id (for a TL class) if it was collected</summary>
 		/// <remarks>This requires <see cref="CollectAccessHash"/> to be set to <see langword="true"/> first.
-		/// <para>See <see href="https://github.com/wiz0u/WTelegramClient/tree/master/Examples/Program_CollectAccessHash.cs">Examples/Program_CollectAccessHash.cs</see> for how to use this</para></remarks>
+		/// <para>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_CollectAccessHash.cs?ts=4#L22">Examples/Program_CollectAccessHash.cs</see> for how to use this</para></remarks>
 		/// <typeparam name="T">a TL object class. For example User, Channel or Photo</typeparam>
 		public long GetAccessHashFor<T>(long id) where T : IObject
 		{

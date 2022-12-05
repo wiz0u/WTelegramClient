@@ -24,7 +24,7 @@ namespace WTelegram
 	public partial class Client : IDisposable
 	{
 		/// <summary>This event will be called when unsollicited updates/messages are sent by Telegram servers</summary>
-		/// <remarks>Make your handler <see langword="async"/>, or return <see cref="Task.CompletedTask"/> or <see langword="null"/><br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
+		/// <remarks>Make your handler <see langword="async"/>, or return <see cref="Task.CompletedTask"/> or <see langword="null"/><br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
 		public event Func<IObject, Task> OnUpdate;
 		/// <summary>Used to create a TcpClient connected to the given address/port, or throw an exception on failure</summary>
 		public TcpFactory TcpHandler { get; set; } = DefaultTcpHandler;

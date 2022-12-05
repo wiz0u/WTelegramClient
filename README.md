@@ -156,23 +156,23 @@ and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree
 # Terminology in Telegram Client API
 
 In the API, Telegram uses some terms/classnames that can be confusing as they differ from the terms shown to end-users:
-- `Channel` : A (large or public) chat group *(sometimes called [supergroup](https://corefork.telegram.org/api/channel#supergroups))*
+- `Channel`: A (large or public) chat group *(sometimes called [supergroup](https://corefork.telegram.org/api/channel#supergroups))*,
 or a [broadcast channel](https://corefork.telegram.org/api/channel#channels) (the `broadcast` flag differentiate those)
-- `Chat` : A private [basic chat group](https://corefork.telegram.org/api/channel#basic-groups) with less than 200 members
+- `Chat`: A private [basic chat group](https://corefork.telegram.org/api/channel#basic-groups) with less than 200 members
 (it may be migrated to a supergroup `Channel` with a new ID when it gets bigger or public, in which case the old `Chat` will still exist but will be `deactivated`)  
 **⚠️ Most chat groups you see are really of type `Channel`, not `Chat`!**
-- chats : In plural or general meaning, it means either `Chat` or `Channel` *(therefore, no private user discussions)*
-- `Peer` : Either a `Chat`, a `Channel` or a `User`
-- Dialog : Status of chat with a `Peer` *(draft, last message, unread count, pinned...)*. It represents each line from your Telegram chat list.
-- Access Hash : Telegram requires you to provide a specific `access_hash` for users, channels, and other resources before interacting with them.
+- **chats**: In plural or general meaning, it means either `Chat` or `Channel` *(therefore, no private user discussions)*
+- `Peer`: Either a `Chat`, a `Channel` or a `User`
+- **Dialog**: Status of chat with a `Peer` *(draft, last message, unread count, pinned...)*. It represents each line from your Telegram chat list.
+- **Access Hash**: Telegram requires you to provide a specific `access_hash` for users, channels, and other resources before interacting with them.
 See [FAQ #4](https://wiz0u.github.io/WTelegramClient/FAQ#access-hash) to learn more about it.
-- DC (DataCenter) : There are a few datacenters depending on where in the world the user (or an uploaded media file) is from.
-- Session or Authorization : Pairing between a device and a phone number. You can have several active sessions for the same phone number.
+- **DC** (DataCenter): There are a few datacenters depending on where in the world the user (or an uploaded media file) is from.
+- **Session** or **Authorization**: Pairing between a device and a phone number. You can have several active sessions for the same phone number.
 
 # Other things to know
 
 The Client class also offers an `OnUpdate` event that is triggered when Telegram servers sends Updates (like new messages or status), independently of your API requests.
-See [Examples/Program_ListenUpdates.cs](https://wiz0u.github.io/WTelegramClient/Examples/Program_ListenUpdates.cs)
+See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23)
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 

@@ -95,7 +95,7 @@ foreach (Dialog dialog in dialogs.dialogs)
 
 Notes:
 - The lists returned by Messages_GetAllDialogs contains the `access_hash` for those chats and users.
-- See also the `Main` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs#L20).  
+- See also the `Main` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L20).  
 - To retrieve the dialog information about a specific [peer](README.md#terminology), use `client.Messages_GetPeerDialogs(inputPeer)`
 
 <a name="list-chats"></a>
@@ -114,7 +114,7 @@ Notes:
 - The list returned by Messages_GetAllChats contains the `access_hash` for those chats. Read [FAQ #4](FAQ.md#access-hash) about this.
 - If a basic chat group has been migrated to a supergroup, you may find both the old `Chat` and a `Channel` with different IDs in the `chats.chats` result,
 but the old `Chat` will be marked with flag [deactivated] and should not be used anymore. See [Terminology in ReadMe](README.md#terminology).
-- You can find a longer version of this method call in [Examples/Program_GetAllChats.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_GetAllChats.cs#L32)
+- You can find a longer version of this method call in [Examples/Program_GetAllChats.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_GetAllChats.cs?ts=4#L32)
 
 <a name="list-members"></a>
 ## List the members from a chat
@@ -189,14 +189,14 @@ Notes:
 This is done through the `client.OnUpdate` callback event.  
 Your event handler implementation can either return `Task.CompletedTask` or be an `async Task` method.
 
-See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs#L23).
+See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23).
 
 <a name="monitor-msg"></a>
 ## Monitor new messages being posted in chats in real-time
 
 You have to handle `client.OnUpdate` events containing an `UpdateNewMessage`.
 
-See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs#L23).
+See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23).
 
 You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.
 
@@ -206,7 +206,7 @@ You can filter specific chats the message are posted in, by looking at the `Mess
 This is done using the helper method `client.DownloadFileAsync(file, outputStream)`
 that simplifies the download of a photo/document/file once you get a reference to its location *(through updates or API calls)*.
 
-See [Examples/Program_DownloadSavedMedia.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_DownloadSavedMedia.cs#L31) that download all media files you forward to yourself (Saved Messages)
+See [Examples/Program_DownloadSavedMedia.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_DownloadSavedMedia.cs?ts=4#L31) that download all media files you forward to yourself (Saved Messages)
 
 <a name="upload"></a>
 ## Upload a media file and post it with caption to a chat
@@ -323,10 +323,10 @@ await Task.Delay(5000);
 ## Fun with custom emojies and reactions on pinned messages
 ```csharp
 // • Sending a message with custom emojies in Markdown to ourself:
-var text = "Vicksy says Hi! [👋](emoji?id=5190875290439525089)";
+var text = "Vicksy says Hi! ![👋](tg://emoji?id=5190875290439525089)";
 var entities = client.MarkdownToEntities(ref text, premium: true);
 await client.SendMessageAsync(InputPeer.Self, text, entities: entities);
-// also available in HTML: <tg-emoji id="5190875290439525089">👋</tg-emoji>
+// also available in HTML: <tg-emoji emoji-id="5190875290439525089">👋</tg-emoji>
 
 // • Fetch all available standard emoji reactions
 var all_emoji = await client.Messages_GetAvailableReactions();
@@ -448,7 +448,7 @@ You can automate the collection of `access_hash` for the various resources obtai
 so that you don't have to remember them by yourself or ask the API about them each time.
 
 This is done by activating the experimental `client.CollectAccessHash` system.  
-See [Examples/Program_CollectAccessHash.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_CollectAccessHash.cs#L22) for how to enable it, and save/restore them for later use.
+See [Examples/Program_CollectAccessHash.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_CollectAccessHash.cs?ts=4#L22) for how to enable it, and save/restore them for later use.
 
 <a name="proxy"></a>
 ## Use a proxy or MTProxy to connect to Telegram
@@ -509,14 +509,14 @@ you can choose to store the session data somewhere else, like in a database.
 The WTelegram.Client constructor takes an optional `sessionStore` parameter to allow storing sessions in an alternate manner.  
 Use it to pass a custom Stream-derived class that will **read** (first initial call to Length & Read) and **store** (subsequent Writes) session data to database.
 
-You can find an example for such custom session store in [Examples/Program_Heroku.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_Heroku.cs#L61)
+You can find an example for such custom session store in [Examples/Program_Heroku.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_Heroku.cs?ts=4#L61)
 
 <a name="e2e"></a><a name="secrets"></a>
 ## Send/receive end-to-end encrypted messages & files in Secret Chats
 
 This can be done easily using the helper class `WTelegram.SecretChats` offering methods to manage/encrypt/decrypt secret chats & encrypted messages/files.
 
-You can view a full working example at [Examples/Program_SecretChats.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_SecretChats.cs#L11).
+You can view a full working example at [Examples/Program_SecretChats.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_SecretChats.cs?ts=4#L11).
 
 Secret Chats have been tested successfully with Telegram Android & iOS official clients.  
 You can also check our [FAQ for more implementation details](FAQ.md#14-secret-chats-implementation-details).

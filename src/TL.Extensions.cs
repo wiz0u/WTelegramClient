@@ -91,6 +91,9 @@ namespace TL
 						else
 							ProcessEntity<MessageEntityCode>();
 						break;
+					case '!' when offset + 1 < sb.Length && sb[offset + 1] == '[':
+						sb.Remove(offset, 1);
+						goto case '[';
 					case '[':
 						entities.Add(new MessageEntityTextUrl { offset = offset, length = -1 });
 						sb.Remove(offset, 1);
@@ -112,7 +115,7 @@ namespace TL
 								textUrl.url = sb.ToString(offset + 2, offset2 - offset - 3);
 								if (textUrl.url.StartsWith("tg://user?id=") && long.TryParse(textUrl.url[13..], out var id) && client.GetAccessHashFor<User>(id) is long hash)
 									entities[lastIndex] = new InputMessageEntityMentionName { offset = textUrl.offset, length = textUrl.length, user_id = new InputUser(id, hash) };
-								else if (textUrl.url.StartsWith("emoji?id=") && long.TryParse(textUrl.url[9..], out id))
+								else if ((textUrl.url.StartsWith("tg://emoji?id=") || textUrl.url.StartsWith("emoji?id=")) && long.TryParse(textUrl.url[(textUrl.url.IndexOf('=') + 1)..], out id))
 									if (premium) entities[lastIndex] = new MessageEntityCustomEmoji { offset = textUrl.offset, length = textUrl.length, document_id = id };
 									else entities.RemoveAt(lastIndex);
 								sb.Remove(offset, offset2 - offset);
@@ -165,7 +168,7 @@ namespace TL
 					if (entityToMD.TryGetValue(nextEntity.GetType(), out var md))
 					{
 						var closing = (nextEntity.offset + nextEntity.length, md);
-						if (md[0] == '[')
+						if (md[0] is '[' or '!')
 						{
 							if (nextEntity is MessageEntityTextUrl metu)
 								closing.md = $"]({metu.url.Replace("\\", "\\\\").Replace(")", "\\)").Replace(">", "%3E")})";
@@ -174,7 +177,7 @@ namespace TL
 							else if (nextEntity is InputMessageEntityMentionName imemn)
 								closing.md = $"](tg://user?id={imemn.user_id.UserId ?? client.UserId})";
 							else if (nextEntity is MessageEntityCustomEmoji mecu)
-								if (premium) closing.md = $"](emoji?id={mecu.document_id})";
+								if (premium) closing.md = $"](tg://emoji?id={mecu.document_id})";
 								else continue;
 						}
 						else if (nextEntity is MessageEntityPre mep)
@@ -208,7 +211,7 @@ namespace TL
 			[typeof(MessageEntityUnderline)] = "__",
 			[typeof(MessageEntityStrike)] = "~",
 			[typeof(MessageEntitySpoiler)] = "||",
-			[typeof(MessageEntityCustomEmoji)] = "[",
+			[typeof(MessageEntityCustomEmoji)] = "![",
 		};
 
 		/// <summary>Insert backslashes in front of Markdown reserved characters</summary>
@@ -304,8 +307,8 @@ namespace TL
 								if (entities.LastOrDefault(e => e.length == -1) is MessageEntityPre prevEntity)
 									prevEntity.language = tag[21..^1];
 							}
-							else if (premium && tag.StartsWith("tg-emoji id=\""))
-								entities.Add(new MessageEntityCustomEmoji { offset = offset, length = -1, document_id = long.Parse(tag[13..^1]) });
+							else if (premium && (tag.StartsWith("tg-emoji emoji-id=\"") || tag.StartsWith("tg-emoji id=\"")))
+								entities.Add(new MessageEntityCustomEmoji { offset = offset, length = -1, document_id = long.Parse(tag[(tag.IndexOf('=') + 2)..^1]) });
 							break;
 					}
 
@@ -361,7 +364,7 @@ namespace TL
 								tag = $"<a href=\"tg://user?id={imemn.user_id.UserId ?? client.UserId}\">";
 						}
 						else if (nextEntity is MessageEntityCustomEmoji mecu)
-							if (premium) tag = $"<tg-emoji id=\"{mecu.document_id}\">";
+							if (premium) tag = $"<tg-emoji emoji-id=\"{mecu.document_id}\">";
 							else continue;
 						else if (nextEntity is MessageEntityPre mep && !string.IsNullOrEmpty(mep.language))
 						{
