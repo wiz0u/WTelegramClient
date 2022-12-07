@@ -1344,6 +1344,7 @@ namespace TL
 		{
 			/// <summary>Can we delete this channel?</summary>
 			can_delete_channel = 0x1,
+			antispam = 0x2,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -2103,11 +2104,19 @@ namespace TL
 		public long[] users;
 	}
 	/// <summary>The Time-To-Live of messages in this chat was changed.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionSetMessagesTTL"/></para></summary>
-	[TLDef(0xAA1AFBFD)]
+	[TLDef(0x3C134D7B)]
 	public class MessageActionSetMessagesTTL : MessageAction
 	{
+		public Flags flags;
 		/// <summary>New Time-To-Live</summary>
 		public int period;
+		[IfFlag(0)] public long auto_setting_from;
+
+		[Flags] public enum Flags : uint
+		{
+			/// <summary>Field <see cref="auto_setting_from"/> has a value</summary>
+			has_auto_setting_from = 0x1,
+		}
 	}
 	/// <summary>A group call was scheduled		<para>See <a href="https://corefork.telegram.org/constructor/messageActionGroupCallScheduled"/></para></summary>
 	[TLDef(0xB3A07661)]
@@ -2168,19 +2177,21 @@ namespace TL
 		}
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionTopicEdit"/></para></summary>
-	[TLDef(0xB18A431C)]
+	[TLDef(0xC0944820)]
 	public class MessageActionTopicEdit : MessageAction
 	{
 		public Flags flags;
 		[IfFlag(0)] public string title;
 		[IfFlag(1)] public long icon_emoji_id;
 		[IfFlag(2)] public bool closed;
+		[IfFlag(3)] public bool hidden;
 
 		[Flags] public enum Flags : uint
 		{
 			has_title = 0x1,
 			has_icon_emoji_id = 0x2,
 			has_closed = 0x4,
+			has_hidden = 0x8,
 		}
 	}
 
@@ -2193,7 +2204,7 @@ namespace TL
 		public virtual int TopMessage { get; }
 	}
 	/// <summary>Chat		<para>See <a href="https://corefork.telegram.org/constructor/dialog"/></para></summary>
-	[TLDef(0xA8EDD0F5)]
+	[TLDef(0xD58A08C6)]
 	public class Dialog : DialogBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -2220,6 +2231,7 @@ namespace TL
 		[IfFlag(1)] public DraftMessageBase draft;
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		[IfFlag(4)] public int folder_id;
+		[IfFlag(5)] public int ttl_period;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2233,6 +2245,8 @@ namespace TL
 			unread_mark = 0x8,
 			/// <summary>Field <see cref="folder_id"/> has a value</summary>
 			has_folder_id = 0x10,
+			/// <summary>Field <see cref="ttl_period"/> has a value</summary>
+			has_ttl_period = 0x20,
 		}
 
 		/// <summary>The chat</summary>
@@ -7754,6 +7768,8 @@ namespace TL
 		FlashCall = 0x226CCEFB,
 		///<summary>The next time, the authentication code will be delivered via an immediately canceled incoming call, handled manually by the user.</summary>
 		MissedCall = 0xD61AD6EE,
+		///<summary>See <a href="https://corefork.telegram.org/constructor/auth.codeTypeFragmentSms"/></summary>
+		FragmentSms = 0x06ED998C,
 	}
 
 	/// <summary>Type of the verification code that was sent		<para>See <a href="https://corefork.telegram.org/type/auth.SentCodeType"/></para>		<para>Derived classes: <see cref="Auth_SentCodeTypeApp"/>, <see cref="Auth_SentCodeTypeSms"/>, <see cref="Auth_SentCodeTypeCall"/>, <see cref="Auth_SentCodeTypeFlashCall"/>, <see cref="Auth_SentCodeTypeMissedCall"/>, <see cref="Auth_SentCodeTypeEmailCode"/>, <see cref="Auth_SentCodeTypeSetUpEmailRequired"/></para></summary>
@@ -7830,6 +7846,12 @@ namespace TL
 			/// <summary>Whether authorization through Google ID is allowed</summary>
 			google_signin_allowed = 0x2,
 		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeFragmentSms"/></para></summary>
+	[TLDef(0xD9565C39)]
+	public class Auth_SentCodeTypeFragmentSms : Auth_SentCodeTypeSms
+	{
+		public string url;
 	}
 
 	/// <summary>Callback answer sent by the bot in response to a button press		<para>See <a href="https://corefork.telegram.org/constructor/messages.botCallbackAnswer"/></para></summary>
@@ -10048,6 +10070,12 @@ namespace TL
 			has_prev_topic = 0x1,
 			has_new_topic = 0x2,
 		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionToggleAntiSpam"/></para></summary>
+	[TLDef(0x64F36DFC)]
+	public class ChannelAdminLogEventActionToggleAntiSpam : ChannelAdminLogEventAction
+	{
+		public bool new_value;
 	}
 
 	/// <summary>Admin log event		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEvent"/></para></summary>
@@ -13954,6 +13982,7 @@ namespace TL
 			pinned = 0x8,
 			has_draft = 0x10,
 			short_ = 0x20,
+			hidden = 0x40,
 		}
 
 		public override int ID => id;
@@ -13977,5 +14006,20 @@ namespace TL
 		}
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/defaultHistoryTTL"/></para></summary>
+	[TLDef(0x43B46B20)]
+	public class DefaultHistoryTTL : IObject
+	{
+		public int period;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/exportedContactToken"/></para></summary>
+	[TLDef(0x41BF109B)]
+	public class ExportedContactToken : IObject
+	{
+		public string url;
+		public DateTime expires;
 	}
 }

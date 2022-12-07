@@ -286,6 +286,15 @@ namespace TL
 				code = code,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.importWebTokenAuthorization"/></para></summary>
+		public static Task<Auth_AuthorizationBase> Auth_ImportWebTokenAuthorization(this Client client, int api_id, string api_hash, string web_auth_token)
+			=> client.Invoke(new Auth_ImportWebTokenAuthorization
+			{
+				api_id = api_id,
+				api_hash = api_hash,
+				web_auth_token = web_auth_token,
+			});
+
 		/// <summary>Register device to receive <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>		<para>See <a href="https://corefork.telegram.org/method/account.registerDevice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.registerDevice#possible-errors">details</a>)</para></summary>
 		/// <param name="no_muted">Avoid receiving (silent and invisible background) notifications. Useful to save battery.</param>
 		/// <param name="token_type">Device token type, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
@@ -1282,6 +1291,19 @@ namespace TL
 				phone = phone,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.exportContactToken"/></para></summary>
+		public static Task<ExportedContactToken> Contacts_ExportContactToken(this Client client)
+			=> client.Invoke(new Contacts_ExportContactToken
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.importContactToken"/></para></summary>
+		public static Task<UserBase> Contacts_ImportContactToken(this Client client, string token)
+			=> client.Invoke(new Contacts_ImportContactToken
+			{
+				token = token,
+			});
+
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para></summary>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client client, params InputMessage[] id)
@@ -1603,11 +1625,13 @@ namespace TL
 		/// <summary>Creates a new chat.		<para>See <a href="https://corefork.telegram.org/method/messages.createChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/messages.createChat#possible-errors">details</a>)</para></summary>
 		/// <param name="users">List of user IDs to be invited</param>
 		/// <param name="title">Chat name</param>
-		public static Task<UpdatesBase> Messages_CreateChat(this Client client, InputUserBase[] users, string title)
+		public static Task<UpdatesBase> Messages_CreateChat(this Client client, InputUserBase[] users, string title, int? ttl_period = null)
 			=> client.Invoke(new Messages_CreateChat
 			{
+				flags = (Messages_CreateChat.Flags)(ttl_period != null ? 0x1 : 0),
 				users = users,
 				title = title,
+				ttl_period = ttl_period.GetValueOrDefault(),
 			});
 
 		/// <summary>Returns configuration parameters for Diffie-Hellman key generation. Can also return a random sequence of bytes of required length.		<para>See <a href="https://corefork.telegram.org/method/messages.getDhConfig"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getDhConfig#possible-errors">details</a>)</para></summary>
@@ -3419,6 +3443,19 @@ namespace TL
 				id = id,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setDefaultHistoryTTL"/></para></summary>
+		public static Task<bool> Messages_SetDefaultHistoryTTL(this Client client, int period)
+			=> client.Invoke(new Messages_SetDefaultHistoryTTL
+			{
+				period = period,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getDefaultHistoryTTL"/></para></summary>
+		public static Task<DefaultHistoryTTL> Messages_GetDefaultHistoryTTL(this Client client)
+			=> client.Invoke(new Messages_GetDefaultHistoryTTL
+			{
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -3867,14 +3904,15 @@ namespace TL
 		/// <param name="about">Channel description</param>
 		/// <param name="geo_point">Geogroup location</param>
 		/// <param name="address">Geogroup address</param>
-		public static Task<UpdatesBase> Channels_CreateChannel(this Client client, string title, string about, bool broadcast = false, bool megagroup = false, bool for_import = false, InputGeoPoint geo_point = null, string address = null)
+		public static Task<UpdatesBase> Channels_CreateChannel(this Client client, string title, string about, bool broadcast = false, bool megagroup = false, bool for_import = false, InputGeoPoint geo_point = null, string address = null, int? ttl_period = null)
 			=> client.Invoke(new Channels_CreateChannel
 			{
-				flags = (Channels_CreateChannel.Flags)((broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0) | (geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0)),
+				flags = (Channels_CreateChannel.Flags)((broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0) | (geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0) | (ttl_period != null ? 0x10 : 0)),
 				title = title,
 				about = about,
 				geo_point = geo_point,
 				address = address,
+				ttl_period = ttl_period.GetValueOrDefault(),
 			});
 
 		/// <summary>Modify the admin rights of a user in a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.editAdmin"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/channels.editAdmin#possible-errors">details</a>)</para></summary>
@@ -4268,15 +4306,16 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.editForumTopic"/></para></summary>
-		public static Task<UpdatesBase> Channels_EditForumTopic(this Client client, InputChannelBase channel, int topic_id, string title = null, long? icon_emoji_id = null, bool? closed = default)
+		public static Task<UpdatesBase> Channels_EditForumTopic(this Client client, InputChannelBase channel, int topic_id, string title = null, long? icon_emoji_id = null, bool? closed = default, bool? hidden = default)
 			=> client.Invoke(new Channels_EditForumTopic
 			{
-				flags = (Channels_EditForumTopic.Flags)((title != null ? 0x1 : 0) | (icon_emoji_id != null ? 0x2 : 0) | (closed != default ? 0x4 : 0)),
+				flags = (Channels_EditForumTopic.Flags)((title != null ? 0x1 : 0) | (icon_emoji_id != null ? 0x2 : 0) | (closed != default ? 0x4 : 0) | (hidden != default ? 0x8 : 0)),
 				channel = channel,
 				topic_id = topic_id,
 				title = title,
 				icon_emoji_id = icon_emoji_id.GetValueOrDefault(),
 				closed = closed.GetValueOrDefault(),
+				hidden = hidden.GetValueOrDefault(),
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.updatePinnedForumTopic"/></para></summary>
@@ -4303,6 +4342,22 @@ namespace TL
 				flags = (Channels_ReorderPinnedForumTopics.Flags)(force ? 0x1 : 0),
 				channel = channel,
 				order = order,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.toggleAntiSpam"/></para></summary>
+		public static Task<UpdatesBase> Channels_ToggleAntiSpam(this Client client, InputChannelBase channel, bool enabled)
+			=> client.Invoke(new Channels_ToggleAntiSpam
+			{
+				channel = channel,
+				enabled = enabled,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.reportAntiSpamFalsePositive"/></para></summary>
+		public static Task<bool> Channels_ReportAntiSpamFalsePositive(this Client client, InputChannelBase channel, int msg_id)
+			=> client.Invoke(new Channels_ReportAntiSpamFalsePositive
+			{
+				channel = channel,
+				msg_id = msg_id,
 			});
 
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
@@ -5274,6 +5329,14 @@ namespace TL.Methods
 		public string code;
 	}
 
+	[TLDef(0x2DB873A9)]
+	public class Auth_ImportWebTokenAuthorization : IMethod<Auth_AuthorizationBase>
+	{
+		public int api_id;
+		public string api_hash;
+		public string web_auth_token;
+	}
+
 	[TLDef(0xEC86017A)]
 	public class Account_RegisterDevice : IMethod<bool>
 	{
@@ -6049,6 +6112,15 @@ namespace TL.Methods
 		public string phone;
 	}
 
+	[TLDef(0xF8654027)]
+	public class Contacts_ExportContactToken : IMethod<ExportedContactToken> { }
+
+	[TLDef(0x13005788)]
+	public class Contacts_ImportContactToken : IMethod<UserBase>
+	{
+		public string token;
+	}
+
 	[TLDef(0x63C66506)]
 	public class Messages_GetMessages : IMethod<Messages_MessagesBase>
 	{
@@ -6324,11 +6396,18 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x09CB126E)]
+	[TLDef(0x0034A818)]
 	public class Messages_CreateChat : IMethod<UpdatesBase>
 	{
+		public Flags flags;
 		public InputUserBase[] users;
 		public string title;
+		[IfFlag(0)] public int ttl_period;
+
+		[Flags] public enum Flags : uint
+		{
+			has_ttl_period = 0x1,
+		}
 	}
 
 	[TLDef(0x26CF8950)]
@@ -7862,6 +7941,15 @@ namespace TL.Methods
 		public int[] id;
 	}
 
+	[TLDef(0x9EB51445)]
+	public class Messages_SetDefaultHistoryTTL : IMethod<bool>
+	{
+		public int period;
+	}
+
+	[TLDef(0x658B7188)]
+	public class Messages_GetDefaultHistoryTTL : IMethod<DefaultHistoryTTL> { }
+
 	[TLDef(0xEDD4882A)]
 	public class Updates_GetState : IMethod<Updates_State> { }
 
@@ -8172,7 +8260,7 @@ namespace TL.Methods
 		public InputChannelBase channel;
 	}
 
-	[TLDef(0x3D5FB10F)]
+	[TLDef(0x91006707)]
 	public class Channels_CreateChannel : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -8180,6 +8268,7 @@ namespace TL.Methods
 		public string about;
 		[IfFlag(2)] public InputGeoPoint geo_point;
 		[IfFlag(2)] public string address;
+		[IfFlag(4)] public int ttl_period;
 
 		[Flags] public enum Flags : uint
 		{
@@ -8187,6 +8276,7 @@ namespace TL.Methods
 			megagroup = 0x2,
 			has_geo_point = 0x4,
 			for_import = 0x8,
+			has_ttl_period = 0x10,
 		}
 	}
 
@@ -8505,7 +8595,7 @@ namespace TL.Methods
 		public int[] topics;
 	}
 
-	[TLDef(0x6C883E2D)]
+	[TLDef(0xF4DFA185)]
 	public class Channels_EditForumTopic : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -8514,12 +8604,14 @@ namespace TL.Methods
 		[IfFlag(0)] public string title;
 		[IfFlag(1)] public long icon_emoji_id;
 		[IfFlag(2)] public bool closed;
+		[IfFlag(3)] public bool hidden;
 
 		[Flags] public enum Flags : uint
 		{
 			has_title = 0x1,
 			has_icon_emoji_id = 0x2,
 			has_closed = 0x4,
+			has_hidden = 0x8,
 		}
 	}
 
@@ -8549,6 +8641,20 @@ namespace TL.Methods
 		{
 			force = 0x1,
 		}
+	}
+
+	[TLDef(0x68F3E4EB)]
+	public class Channels_ToggleAntiSpam : IMethod<UpdatesBase>
+	{
+		public InputChannelBase channel;
+		public bool enabled;
+	}
+
+	[TLDef(0xA850A693)]
+	public class Channels_ReportAntiSpamFalsePositive : IMethod<bool>
+	{
+		public InputChannelBase channel;
+		public int msg_id;
 	}
 
 	[TLDef(0xAA2769ED)]

@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 149;					// fetched 23/11/2022 13:15:45
+		public const int Version = 150;					// fetched 07/12/2022 12:23:35
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -184,7 +184,7 @@ namespace TL
 			[0x98E0D697] = typeof(MessageActionGeoProximityReached),
 			[0x7A0D7F42] = typeof(MessageActionGroupCall),
 			[0x502F92F7] = typeof(MessageActionInviteToGroupCall),
-			[0xAA1AFBFD] = typeof(MessageActionSetMessagesTTL),
+			[0x3C134D7B] = typeof(MessageActionSetMessagesTTL),
 			[0xB3A07661] = typeof(MessageActionGroupCallScheduled),
 			[0xAA786345] = typeof(MessageActionSetChatTheme),
 			[0xEBBCA3CB] = typeof(MessageActionChatJoinedByRequest),
@@ -192,8 +192,8 @@ namespace TL
 			[0xB4C38CB5] = typeof(MessageActionWebViewDataSent),
 			[0xABA0F5C6] = typeof(MessageActionGiftPremium),
 			[0x0D999256] = typeof(MessageActionTopicCreate),
-			[0xB18A431C] = typeof(MessageActionTopicEdit),
-			[0xA8EDD0F5] = typeof(Dialog),
+			[0xC0944820] = typeof(MessageActionTopicEdit),
+			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
 			[0xFB197A65] = typeof(Photo),
@@ -598,6 +598,7 @@ namespace TL
 			[0x82006484] = typeof(Auth_SentCodeTypeMissedCall),
 			[0x5A159841] = typeof(Auth_SentCodeTypeEmailCode),
 			[0xA5491DEA] = typeof(Auth_SentCodeTypeSetUpEmailRequired),
+			[0xD9565C39] = typeof(Auth_SentCodeTypeFragmentSms),
 			[0x36585EA4] = typeof(Messages_BotCallbackAnswer),
 			[0x26B5DDE6] = typeof(Messages_MessageEditData),
 			[0x890C3D89] = typeof(InputBotInlineMessageID),
@@ -763,6 +764,7 @@ namespace TL
 			[0xF06FE208] = typeof(ChannelAdminLogEventActionEditTopic),
 			[0xAE168909] = typeof(ChannelAdminLogEventActionDeleteTopic),
 			[0x5D8D353B] = typeof(ChannelAdminLogEventActionPinTopic),
+			[0x64F36DFC] = typeof(ChannelAdminLogEventActionToggleAntiSpam),
 			[0x1FAD68CD] = typeof(ChannelAdminLogEvent),
 			[0xED8AF74D] = typeof(Channels_AdminLogResults),
 			[0xEA107AE4] = typeof(ChannelAdminLogEventsFilter),
@@ -1047,6 +1049,8 @@ namespace TL
 			[0x023F109B] = typeof(ForumTopicDeleted),
 			[0x71701DA9] = typeof(ForumTopic),
 			[0x367617D3] = typeof(Messages_ForumTopics),
+			[0x43B46B20] = typeof(DefaultHistoryTTL),
+			[0x41BF109B] = typeof(ExportedContactToken),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),
