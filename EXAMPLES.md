@@ -352,7 +352,7 @@ var messages = await client.Messages_Search<InputMessagesFilterPinned>(chat, lim
 foreach (var msg in messages.Messages)
     await client.Messages_SendReaction(chat, msg.ID, reaction: new[] { reaction });
 ```
-*Note: you can find custom emoji document IDs via API methods like [Messages_GetFeaturedEmojiStickers](https://corefork.telegram.org/methods#working-with-custom-animated-emojis) or inspecting incoming messages. Access hash is not required*
+*Note: you can find custom emoji document IDs via API methods like [Messages_GetFeaturedEmojiStickers](https://corefork.telegram.org/methods#working-with-custom-animated-emojis) or inspecting messages entities. Access hash is not required*
 
 
 <a name="join-channel"></a>
@@ -371,7 +371,7 @@ To use them, you need to extract the `HASH` part from the URL and then you can u
 ```csharp
 var chatInvite = await client.Messages_CheckChatInvite("HASH"); // optional: get information before joining  
 await client.Messages_ImportChatInvite("HASH"); // join the channel/group  
-// Note: This works also with hash invite links of public channel/group
+// Note: This works also with HASH invite links from public channel/group
 ```
 
 <a name="add-members"></a>
@@ -452,29 +452,22 @@ See [Examples/Program_CollectAccessHash.cs](https://github.com/wiz0u/WTelegramCl
 
 <a name="proxy"></a>
 ## Use a proxy or MTProxy to connect to Telegram
-SOCKS/HTTPS proxies can be used through the `client.TcpHandler` delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/):
+SOCKS/HTTPS proxies can be used through the `client.TcpHandler` delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/) or [xNetStandard](https://www.nuget.org/packages/xNetStandard/):
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 client.TcpHandler = async (address, port) =>
 {
     var proxy = new Socks5ProxyClient(ProxyHost, ProxyPort, ProxyUsername, ProxyPassword);
+    //var proxy = xNet.Socks5ProxyClient.Parse("host:port:username:password");
     return proxy.CreateConnection(address, port);
 };
 await client.LoginUserIfNeeded();
-```
-or with [xNetStandard](https://www.nuget.org/packages/xNetStandard/):
-```csharp
-client.TcpHandler = async (address, port) =>
-{
-    var proxy = xNet.Socks5ProxyClient.Parse("host:port:username:password");
-    return proxy.CreateConnection(address, port);
-};
 ```
 <a name="mtproxy"></a>
 MTProxy (MTProto proxy) can be used to prevent ISP blocking Telegram servers, through the `client.MTProxyUrl` property:
 ```csharp
 using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-client.MTProxyUrl = "http://t.me/proxy?server=...&port=...&secret=...";
+client.MTProxyUrl = "https://t.me/proxy?server=...&port=...&secret=...";
 await client.LoginUserIfNeeded();
 ```
 You can find a list of working MTProxies in channels like [@ProxyMTProto](https://t.me/ProxyMTProto) or [@MTProxyT](https://t.me/MTProxyT) *(right-click the "Connect" buttons)*  

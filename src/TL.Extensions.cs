@@ -142,8 +142,8 @@ namespace TL
 
 		/// <summary>Converts the (plain text + entities) format used by Telegram messages into a <a href="https://core.telegram.org/bots/api/#markdownv2-style">Markdown text</a></summary>
 		/// <param name="client">Client, used only for getting current user ID in case of <c>InputMessageEntityMentionName+InputUserSelf</c></param>
-		/// <param name="message">The plain text, typically obtained from <see cref="TL.Message.message"/></param>
-		/// <param name="entities">The array of formatting entities, typically obtained from <see cref="TL.Message.entities"/></param>
+		/// <param name="message">The plain text, typically obtained from <see cref="Message.message"/></param>
+		/// <param name="entities">The array of formatting entities, typically obtained from <see cref="Message.entities"/></param>
 		/// <param name="premium">Convert premium entities (might lead to non-standard markdown)</param>
 		/// <returns>The message text with MarkdownV2 formattings</returns>
 		public static string EntitiesToMarkdown(this WTelegram.Client client, string message, MessageEntity[] entities, bool premium = false)
@@ -329,8 +329,8 @@ namespace TL
 
 		/// <summary>Converts the (plain text + entities) format used by Telegram messages into an <a href="https://core.telegram.org/bots/api/#html-style">HTML-formatted text</a></summary>
 		/// <param name="client">Client, used only for getting current user ID in case of <c>InputMessageEntityMentionName+InputUserSelf</c></param>
-		/// <param name="message">The plain text, typically obtained from <see cref="TL.Message.message"/></param>
-		/// <param name="entities">The array of formatting entities, typically obtained from <see cref="TL.Message.entities"/></param>
+		/// <param name="message">The plain text, typically obtained from <see cref="Message.message"/></param>
+		/// <param name="entities">The array of formatting entities, typically obtained from <see cref="Message.entities"/></param>
 		/// <param name="premium">Convert premium entities</param>
 		/// <returns>The message text with HTML formatting tags</returns>
 		public static string EntitiesToHtml(this WTelegram.Client client, string message, MessageEntity[] entities, bool premium = false)

@@ -47,7 +47,7 @@ If you run this program again, you will notice that only **api_hash** is request
 This is because WTelegramClient saves (typically in the encrypted file **bin\WTelegram.session**) its state
 and the authentication keys that were negotiated with Telegram so that you needn't sign-in again every time.
 
-That file path is configurable (session_pathname), and under various circumstances (changing user or server address)
+That file path is configurable (**session_pathname**), and under various circumstances (changing user or server address)
 you may want to change it or simply delete the existing session file in order to restart the authentification process.
 
 # Non-interactive configuration
