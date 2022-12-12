@@ -388,14 +388,12 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 
 		internal static async Task<InputCheckPasswordSRP> Check2FA(Account_Password accountPassword, Func<Task<string>> getPassword)
 		{
-			bool newPassword = false;
 			if (accountPassword.current_algo is not PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow algo)
 				if (accountPassword.current_algo == null && (algo = accountPassword.new_algo as PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow) != null)
 				{
 					int salt1len = algo.salt1.Length;
 					Array.Resize(ref algo.salt1, salt1len + 32);
 					RNG.GetBytes(algo.salt1, salt1len, 32);
-					newPassword = true;
 				}
 				else
 					throw new ApplicationException("2FA authentication uses an unsupported algo: " + accountPassword.current_algo?.GetType().Name);
@@ -431,7 +429,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			var x = BigEndianInteger(sha256.Hash);
 
 			var v = BigInteger.ModPow(g, x, p);
-			if (newPassword)
+			if (accountPassword.current_algo == null) // we're computing a new password
 			{
 				await validTask;
 				return new InputCheckPasswordSRP { A = v.To256Bytes() };

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace TL
@@ -34,6 +35,11 @@ namespace TL
 		/// <param name="structure">The structure having a <c>users</c></param>
 		public static void CollectUsersChats(this IPeerResolver structure, Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
 			=>  structure.UserOrChat(new CollectorPeer { _users = users, _chats = chats });
+
+		public static Task<Messages_Chats> Messages_GetChats(this WTelegram.Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllChats");
+		public static Task<Messages_Chats> Channels_GetChannels(this WTelegram.Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllChats");
+		public static Task<UserBase[]> Users_GetUsers(this WTelegram.Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllDialogs");
+		public static Task<Messages_MessagesBase> Messages_GetMessages(this WTelegram.Client _) => throw new ApplicationException("If you want to get the messages from a chat, use Messages_GetHistory");
 	}
 
 	public static class Markdown
