@@ -579,6 +579,29 @@ namespace WTelegram
 			}
 		}
 
+		/// <summary>Helper simplified method: Get the admin log of a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getAdminLog"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.getAdminLog#possible-errors">details</a>)</para></summary>
+		/// <param name="channel">Channel</param>
+		/// <param name="q">Search query, can be empty</param>
+		/// <param name="events_filter">Event filter</param>
+		/// <param name="admin">Only show events from this admin</param>
+		public async Task<Channels_AdminLogResults> Channels_GetAdminLog(InputChannelBase channel, ChannelAdminLogEventsFilter.Flags events_filter = 0, string q = null, InputUserBase admin = null)
+		{
+			var admins = admin == null ? null : new[] { admin };
+			var result = await this.Channels_GetAdminLog(channel, q, events_filter: events_filter, admins: admins);
+			if (result.events.Length < 100) return result;
+			var resultFull = result;
+			List<ChannelAdminLogEvent> events = new(result.events);
+			do
+			{
+				result = await this.Channels_GetAdminLog(channel, q, max_id: result.events[^1].id, events_filter: events_filter, admins: admins);
+				events.AddRange(result.events);
+				foreach (var kvp in result.chats) resultFull.chats[kvp.Key] = kvp.Value;
+				foreach (var kvp in result.users) resultFull.users[kvp.Key] = kvp.Value;
+			} while (result.events.Length >= 100);
+			resultFull.events = events.ToArray();
+			return resultFull;
+		}
+
 		private const string OnlyChatChannel = "This method works on Chat & Channel only";
 		/// <summary>Generic helper: Adds a single user to a Chat or Channel		<para>See <a href="https://corefork.telegram.org/method/messages.addChatUser"/><br/> and <a href="https://corefork.telegram.org/method/channels.inviteToChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403</para></summary>
 		/// <param name="peer">Chat/Channel</param>

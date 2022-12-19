@@ -562,6 +562,11 @@ namespace TL
 
 	partial class PhoneCallBase	{ public static implicit operator InputPhoneCall(PhoneCallBase call) => new() { id = call.ID, access_hash = call.AccessHash }; }
 
+	partial class ChannelAdminLogEventsFilter
+	{
+		public static implicit operator ChannelAdminLogEventsFilter(Flags flags) => new() { flags = flags };
+	}
+
 	partial class InputMessage
 	{
 		public static implicit operator InputMessage(int id) => new InputMessageID { id = id };

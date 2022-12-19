@@ -10108,7 +10108,7 @@ namespace TL
 
 	/// <summary>Filter only certain admin log events		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventsFilter"/></para></summary>
 	[TLDef(0xEA107AE4)]
-	public class ChannelAdminLogEventsFilter : IObject
+	public partial class ChannelAdminLogEventsFilter : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
