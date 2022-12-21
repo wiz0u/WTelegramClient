@@ -26,7 +26,7 @@ namespace WTelegram
 			if (AesECB.BlockSize != 128) throw new ApplicationException("AES Blocksize is not 16 bytes");
 		}
 
-		internal static async Task CreateAuthorizationKey(Client client, Session.DCSession session)
+		internal static async Task CreateAuthorizationKey(Client client, Session.DCSession session, bool temp = false)
 		{
 			if (PublicKeys.Count == 0) LoadDefaultPublicKeys();
 			var sha1 = SHA1.Create();
@@ -47,18 +47,39 @@ namespace WTelegram
 			ulong p = Helpers.PQFactorize(pq);
 			ulong q = pq / p;
 			//4)
-			var pqInnerData = new PQInnerDataDc
+			var dc = session.DataCenter?.id ?? 0;
+			if (client.TLConfig?.test_mode == true) dc += 10000;
+			if (session.DataCenter?.flags.HasFlag(DcOption.Flags.media_only) == true) dc = -dc;
+			int tempKeyExpiresAt = 0;
+			PQInnerData pqInnerData;
+			if (!temp)
 			{
-				pq = resPQ.pq,
-				p = Helpers.ToBigEndian(p),
-				q = Helpers.ToBigEndian(q),
-				nonce = nonce,
-				server_nonce = resPQ.server_nonce,
-				new_nonce = new Int256(RNG),
-				dc = session.DataCenter?.id ?? 0
-			};
-			if (client.TLConfig?.test_mode == true) pqInnerData.dc += 10000;
-			if (session.DataCenter?.flags.HasFlag(DcOption.Flags.media_only) == true) pqInnerData.dc = -pqInnerData.dc;
+				pqInnerData = new PQInnerDataDc
+				{
+					pq = resPQ.pq,
+					p = Helpers.ToBigEndian(p),
+					q = Helpers.ToBigEndian(q),
+					nonce = nonce,
+					server_nonce = resPQ.server_nonce,
+					new_nonce = new Int256(RNG),
+					dc = dc
+				};
+			}
+			else
+			{
+				pqInnerData= new PQInnerDataTempDc
+				{
+					pq = resPQ.pq,
+					p = Helpers.ToBigEndian(p),
+					q = Helpers.ToBigEndian(q),
+					nonce = nonce,
+					server_nonce = resPQ.server_nonce,
+					new_nonce = new Int256(RNG),
+					dc = dc,
+					expires_in = 3600
+				};
+				tempKeyExpiresAt = (int)(DateTimeOffset.Now.ToUnixTimeSeconds() + 3600);
+			}
 			byte[] encrypted_data = null;
 			{
 				//4.1) RSA_PAD(data, server_public_key)
@@ -159,10 +180,19 @@ namespace WTelegram
 			if (!Enumerable.SequenceEqual(dhGenOk.new_nonce_hash1.raw, sha1.ComputeHash(expected_new_nonceN).Skip(4)))
 				throw new ApplicationException("setClientDHparamsAnswer.new_nonce_hashN mismatch");
 
-			session.AuthKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
-			session.AuthKey = authKey;
+			if (!temp)
+			{
+				session.AuthKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
+				session.AuthKey = authKey;
+			}
+			else
+			{
+				session.TempAuthKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
+				session.TempAuthKey = authKey;
+				session.TempKeyExpiresAt = tempKeyExpiresAt;
+			}
 			session.Salt = BinaryPrimitives.ReadInt64LittleEndian(pqInnerData.new_nonce.raw) ^ BinaryPrimitives.ReadInt64LittleEndian(resPQ.server_nonce.raw);
-
+			
 			(byte[] key, byte[] iv) ConstructTmpAESKeyIV(Int128 server_nonce, Int256 new_nonce)
 			{
 				byte[] tmp_aes_key = new byte[32], tmp_aes_iv = new byte[32];
@@ -184,6 +214,40 @@ namespace WTelegram
 			}
 		}
 
+		internal static byte[] EncryptBindingMessage(Span<byte> input, 
+			byte[] authKey, byte[] msgKey, int msgKeyOffset, SHA1 sha1)
+		{
+			// first, construct AES key & IV
+			bool encrypt = true;
+			byte[] aes_key = new byte[32], aes_iv = new byte[32];
+			int x = encrypt ? 0 : 8;
+			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
+			sha1.TransformFinalBlock(authKey, x, 32);                   // authKey[x:32]
+			var sha1_a = sha1.Hash;
+			sha1.Initialize();
+			sha1.TransformBlock(authKey, 32 + x, 16, null, 0);          // authKey[32+x:16]
+			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
+			sha1.TransformFinalBlock(authKey, 48 + x, 16);              // authKey[48+x:16]
+			var sha1_b = sha1.Hash;
+			sha1.Initialize();
+			sha1.TransformBlock(authKey, 64 + x, 32, null, 0);          // authKey[64+x:32]
+			sha1.TransformFinalBlock(msgKey, msgKeyOffset, 16);         // msgKey
+			var sha1_c = sha1.Hash;
+			sha1.Initialize();
+			sha1.TransformBlock(msgKey, msgKeyOffset, 16, null, 0);     // msgKey
+			sha1.TransformFinalBlock(authKey, 96 + x, 32);              // authKey[96+x:32]
+			var sha1_d = sha1.Hash;
+			sha1.Initialize();
+			Array.Copy(sha1_a, 0, aes_key, 0, 8);
+			Array.Copy(sha1_b, 8, aes_key, 8, 12);
+			Array.Copy(sha1_c, 4, aes_key, 20, 12);
+			Array.Copy(sha1_a, 8, aes_iv, 0, 12);
+			Array.Copy(sha1_b, 0, aes_iv, 12, 8);
+			Array.Copy(sha1_c, 16, aes_iv, 20, 4);
+			Array.Copy(sha1_d, 0, aes_iv, 24, 8);
+			return AES_IGE_EncryptDecrypt(input, aes_key, aes_iv, encrypt);
+		}
+		
 		internal static void CheckGoodPrime(BigInteger p, int g)
 		{
 			Helpers.Log(2, "Verifying encryption key safety... (this should happen only once per DC)");

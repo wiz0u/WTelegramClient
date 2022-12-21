@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using TL;
+using TL.Methods;
 using static WTelegram.Encryption;
 
 // necessary for .NET Standard 2.0 compilation:
@@ -75,6 +76,7 @@ namespace WTelegram
 		private readonly SemaphoreSlim _parallelTransfers = new(10); // max parallel part uploads/downloads
 		private readonly SHA256 _sha256 = SHA256.Create();
 		private readonly SHA256 _sha256Recv = SHA256.Create();
+		private readonly SHA1 _sha1 = SHA1.Create();
 #if OBFUSCATION
 		private AesCtr _sendCtr, _recvCtr;
 #endif
@@ -103,6 +105,7 @@ namespace WTelegram
 			if (_session.MainDC != 0) _session.DCSessions.TryGetValue(_session.MainDC, out _dcSession);
 			_dcSession ??= new() { Id = Helpers.RandomLong() };
 			_dcSession.Client = this;
+			_dcSession.PfsEnabled = _config("pfs_enabled") == "yes";
 			var version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 			Helpers.Log(1, $"WTelegramClient {version} running under {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
 		}
@@ -369,7 +372,8 @@ namespace WTelegram
 		internal DateTime MsgIdToStamp(long serverMsgId)
 			=> new((serverMsgId >> 32) * 10000000 - _dcSession.ServerTicksOffset + 621355968000000000L, DateTimeKind.Utc);
 
-		internal IObject ReadFrame(byte[] data, int dataLen)
+		internal IObject 
+			ReadFrame(byte[] data, int dataLen)
 		{
 			if (dataLen < 8 && data[3] == 0xFF)
 			{
@@ -380,7 +384,7 @@ namespace WTelegram
 				throw new ApplicationException($"Packet payload too small: {dataLen}");
 
 			long authKeyId = BinaryPrimitives.ReadInt64LittleEndian(data);
-			if (authKeyId != _dcSession.AuthKeyID)
+			if (authKeyId != _dcSession.AuthKeyID && authKeyId != _dcSession.TempAuthKeyID)
 				throw new ApplicationException($"Received a packet encrypted with unexpected key {authKeyId:X}");
 			if (authKeyId == 0) // Unencrypted message
 			{
@@ -399,10 +403,11 @@ namespace WTelegram
 			}
 			else
 			{
-				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, (dataLen - 24) & ~0xF), false, 8, _dcSession.AuthKey, data, 8, _sha256Recv);
+				var authKey = _dcSession.PfsEnabled ? _dcSession.TempAuthKey : _dcSession.AuthKey;
+				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, (dataLen - 24) & ~0xF), false, 8, authKey, data, 8, _sha256Recv);
 				if (decrypted_data.Length < 36) // header below+ctorNb
 					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
-				_sha256Recv.TransformBlock(_dcSession.AuthKey, 96, 32, null, 0);
+				_sha256Recv.TransformBlock(authKey, 96, 32, null, 0);
 				_sha256Recv.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
 				if (!data.AsSpan(8, 16).SequenceEqual(_sha256Recv.Hash.AsSpan(8, 16)))
 					throw new ApplicationException("Mismatch between MsgKey & decrypted SHA256");
@@ -830,6 +835,9 @@ namespace WTelegram
 			{
 				if (_dcSession.AuthKeyID == 0)
 					await CreateAuthorizationKey(this, _dcSession);
+				
+				if (_dcSession.PfsEnabled && _dcSession.TempAuthKeyID == 0)
+					await CreateAuthorizationKey(this, _dcSession, true);
 
 				var keepAliveTask = KeepAlive(_cts.Token);
 				TLConfig = await this.InvokeWithLayer(Layer.Version,
@@ -862,6 +870,52 @@ namespace WTelegram
 				lock (_session) _session.Save();
 			}
 			Helpers.Log(2, $"Connected to {(TLConfig.test_mode ? "Test DC" : "DC")} {TLConfig.this_dc}... {TLConfig.flags & (Config.Flags)~0xE00U}");
+		}
+		
+		private async Task<bool> BindTempAuthKey()
+		{
+			var nonce = Helpers.RandomLong();
+			var bindAuthKeyInner = new BindAuthKeyInner()
+			{
+				perm_auth_key_id = _dcSession.AuthKeyID,
+				temp_auth_key_id = _dcSession.TempAuthKeyID,
+				expires_at = DateTimeOffset.FromUnixTimeSeconds(_dcSession.TempKeyExpiresAt).DateTime,
+				nonce = nonce,
+				temp_session_id = _dcSession.Id
+			};
+			(long msgId, int seqno) = NewMsgId(true);
+			using var memStream = new MemoryStream(1024);
+			using var writer = new BinaryWriter(memStream);
+			using var clearStream = new MemoryStream(1024);
+			using var clearWriter = new BinaryWriter(clearStream);
+			clearWriter.Write(Helpers.RandomLong());
+			clearWriter.Write(Helpers.RandomLong());
+			clearWriter.Write(msgId);
+			clearWriter.Write(0);
+			clearWriter.Write(40);
+			clearWriter.WriteTLObject(bindAuthKeyInner);
+			int clearLength = (int)clearStream.Length;  // length before padding (= 32 + message_data_length)
+			int padding = (0x7FFFFFF0 - clearLength) % 16;
+			clearStream.SetLength(clearLength + padding);
+			byte[] clearBuffer = clearStream.GetBuffer();
+			var msgKeyLarge = _sha1.ComputeHash(clearBuffer, 0, clearLength); // padding excluded from computation!
+			const int msgKeyOffset = 4;	// msg_key = low 128-bits of SHA1(plaintext)
+			var encrypted = EncryptBindingMessage(clearBuffer.AsSpan(0,clearLength + padding),
+				_dcSession.AuthKey, msgKeyLarge, msgKeyOffset, _sha1);
+			writer.Write(_dcSession.AuthKeyID);
+			writer.Write(msgKeyLarge.AsSpan(4).ToArray());
+			writer.Write(encrypted);
+			var bindingMessageInner = memStream.ToArray();
+			var bindTempAuthKey = new Auth_BindTempAuthKey()
+			{
+				nonce = nonce,
+				encrypted_message = bindingMessageInner,
+				perm_auth_key_id = _dcSession.AuthKeyID,
+				expires_at = DateTimeOffset.FromUnixTimeSeconds(_dcSession.TempKeyExpiresAt).DateTime,
+			};
+			var rpc = new Rpc { type = typeof(bool) };
+			await SendAsyncInternal(bindTempAuthKey, true, rpc, msgId, seqno);
+			return (bool)await rpc.Task;
 		}
 
 		private async Task KeepAlive(CancellationToken ct)
@@ -1175,71 +1229,113 @@ namespace WTelegram
 		private async Task SendAsync(IObject msg, bool isContent, Rpc rpc = null)
 		{
 			if (_reactorTask == null) throw new ApplicationException("You must connect to Telegram first");
+			if (_dcSession.PfsEnabled && _dcSession.TempAuthKeyID != 0 && 
+			    _dcSession.TempKeyExpiresAt < DateTimeOffset.Now.ToUnixTimeSeconds())
+			{
+				_dcSession.TempAuthKeyBound = false;
+				await CreateAuthorizationKey(this, _dcSession, true);
+			}
+			if (_dcSession.PfsEnabled && _dcSession.TempAuthKeyID != 0 && !_dcSession.TempAuthKeyBound)
+			{
+				_dcSession.TempAuthKeyBound = await BindTempAuthKey();
+			}
 			isContent &= _dcSession.AuthKeyID != 0;
 			(long msgId, int seqno) = NewMsgId(isContent);
+			await SendAsyncInternal(msg, isContent, rpc, msgId, seqno);
+		}
+
+		private async Task SendAsyncInternal(IObject msg, bool isContent, Rpc rpc, long msgId, int seqno)
+		{
 			if (rpc != null)
 				lock (_pendingRpcs)
 					_pendingRpcs[rpc.msgId = msgId] = rpc;
 			if (isContent && CheckMsgsToAck() is MsgsAck msgsAck)
 			{
 				var (ackId, ackSeqno) = NewMsgId(false);
-				var container = new MsgContainer { messages = new _Message[] { new(msgId, seqno, msg), new(ackId, ackSeqno, msgsAck) } };
+				var container = new MsgContainer
+					{ messages = new _Message[] { new(msgId, seqno, msg), new(ackId, ackSeqno, msgsAck) } };
 				await SendAsync(container, false);
 				return;
 			}
+
 			await _sendSemaphore.WaitAsync();
 			try
 			{
 				using var memStream = new MemoryStream(1024);
 				using var writer = new BinaryWriter(memStream);
-				writer.Write(0);                // int32 payload_len (to be patched with payload length)
+				writer.Write(0); // int32 payload_len (to be patched with payload length)
 
-				if (_dcSession.AuthKeyID == 0) // send unencrypted message
+				if (_dcSession.AuthKeyID == 0 || 
+				    (_dcSession.PfsEnabled && _dcSession.TempAuthKeyID == 0)) // send unencrypted message
 				{
 					if (_bareRpc == null) throw new ApplicationException($"Shouldn't send a {msg.GetType().Name} unencrypted");
-					writer.Write(0L);                       // int64 auth_key_id = 0 (Unencrypted)
-					writer.Write(msgId);                    // int64 message_id
-					writer.Write(0);                        // int32 message_data_length (to be patched)
+					writer.Write(0L); // int64 auth_key_id = 0 (Unencrypted)
+					writer.Write(msgId); // int64 message_id
+					writer.Write(0); // int32 message_data_length (to be patched)
 					Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_')}...");
-					writer.WriteTLObject(msg);              // bytes message_data
-					BinaryPrimitives.WriteInt32LittleEndian(memStream.GetBuffer().AsSpan(20), (int)memStream.Length - 24);    // patch message_data_length
+					writer.WriteTLObject(msg); // bytes message_data
+					BinaryPrimitives.WriteInt32LittleEndian(memStream.GetBuffer().AsSpan(20),
+						(int)memStream.Length - 24); // patch message_data_length
 				}
 				else
 				{
 					using var clearStream = new MemoryStream(1024);
 					using var clearWriter = new BinaryWriter(clearStream);
-					clearWriter.Write(_dcSession.AuthKey, 88, 32);
-					clearWriter.Write(_dcSession.Salt);     // int64 salt
-					clearWriter.Write(_dcSession.Id);       // int64 session_id
-					clearWriter.Write(msgId);               // int64 message_id
-					clearWriter.Write(seqno);               // int32 msg_seqno
-					clearWriter.Write(0);                   // int32 message_data_length (to be patched)
-					if ((seqno & 1) != 0)
-						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_'),-40} #{(short)msgId.GetHashCode():X4}");
+					if (_dcSession.PfsEnabled)
+					{
+						clearWriter.Write(_dcSession.TempAuthKey, 88, 32);
+					}
 					else
-						Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_'),-40} {MsgIdToStamp(msgId):u} (svc)");
-					clearWriter.WriteTLObject(msg);         // bytes message_data
-					int clearLength = (int)clearStream.Length - 32;  // length before padding (= 32 + message_data_length)
+					{
+						clearWriter.Write(_dcSession.AuthKey, 88, 32);
+					}
+					clearWriter.Write(_dcSession.Salt); // int64 salt
+					clearWriter.Write(_dcSession.Id); // int64 session_id
+					clearWriter.Write(msgId); // int64 message_id
+					clearWriter.Write(seqno); // int32 msg_seqno
+					clearWriter.Write(0); // int32 message_data_length (to be patched)
+					if ((seqno & 1) != 0)
+						Helpers.Log(1,
+							$"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_'),-40} #{(short)msgId.GetHashCode():X4}");
+					else
+						Helpers.Log(1,
+							$"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_'),-40} {MsgIdToStamp(msgId):u} (svc)");
+					clearWriter.WriteTLObject(msg); // bytes message_data
+					int clearLength = (int)clearStream.Length - 32; // length before padding (= 32 + message_data_length)
 					int padding = (0x7FFFFFF0 - clearLength) % 16;
-					padding += _random.Next(2, 16) * 16;        // MTProto 2.0 padding must be between 12..1024 with total length divisible by 16
+					padding += _random.Next(2, 16) *
+					           16; // MTProto 2.0 padding must be between 12..1024 with total length divisible by 16
 					clearStream.SetLength(32 + clearLength + padding);
 					byte[] clearBuffer = clearStream.GetBuffer();
-					BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(60), clearLength - 32);    // patch message_data_length
+					BinaryPrimitives.WriteInt32LittleEndian(clearBuffer.AsSpan(60),
+						clearLength - 32); // patch message_data_length
 					RNG.GetBytes(clearBuffer, 32 + clearLength, padding);
 					var msgKeyLarge = _sha256.ComputeHash(clearBuffer, 0, 32 + clearLength + padding);
 					const int msgKeyOffset = 8; // msg_key = middle 128-bits of SHA256(authkey_part+plaintext+padding)
-					byte[] encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(32, clearLength + padding), true, 0, _dcSession.AuthKey, msgKeyLarge, msgKeyOffset, _sha256);
-
-					writer.Write(_dcSession.AuthKeyID);             // int64 auth_key_id
-					writer.Write(msgKeyLarge, msgKeyOffset, 16);    // int128 msg_key
-					writer.Write(encrypted_data);                   // bytes encrypted_data
+					byte[] encrypted_data;
+					if (_dcSession.PfsEnabled)
+					{
+						encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(32, clearLength + padding), true, 0,
+							_dcSession.TempAuthKey, msgKeyLarge, msgKeyOffset, _sha256);
+						writer.Write(_dcSession.TempAuthKeyID); // int64 auth_key_id
+					}
+					else
+					{
+						encrypted_data = EncryptDecryptMessage(clearBuffer.AsSpan(32, clearLength + padding), true, 0,
+							_dcSession.AuthKey, msgKeyLarge, msgKeyOffset, _sha256);
+						writer.Write(_dcSession.AuthKeyID); // int64 auth_key_id
+					}
+					writer.Write(msgKeyLarge, msgKeyOffset, 16); // int128 msg_key
+					writer.Write(encrypted_data); // bytes encrypted_data
 				}
+
 				if (_paddedMode) // Padded intermediate mode => append random padding
 				{
 					var padding = new byte[_random.Next(16)];
 					RNG.GetBytes(padding);
 					writer.Write(padding);
 				}
+
 				var buffer = memStream.GetBuffer();
 				int frameLength = (int)memStream.Length;
 				BinaryPrimitives.WriteInt32LittleEndian(buffer, frameLength - 4); // patch payload_len with correct value
@@ -1260,7 +1356,8 @@ namespace WTelegram
 			if (_bareRpc != null) throw new ApplicationException("A bare request is already undergoing");
 		retry:
 			_bareRpc = new Rpc { type = typeof(T) };
-			await SendAsync(request, false, _bareRpc);
+			(long msgId, int seqno) = NewMsgId(false);
+			await SendAsyncInternal(request, false, _bareRpc, msgId, seqno);
 			var result = await _bareRpc.Task;
 			if (result is ReactorError) goto retry;
 			return (T)result;
@@ -1331,6 +1428,16 @@ namespace WTelegram
 						_session.UserId = 0; // force a full login authorization flow, next time
 						User = null;
 						lock (_session) _session.Save();
+					}
+					else if (code == 401 && message == "AUTH_KEY_PERM_EMPTY")
+					{
+						_dcSession.TempAuthKeyBound = false;
+						_dcSession.TempAuthKeyID = 0;
+						_dcSession.TempAuthKey = null;
+						_dcSession.TempKeyExpiresAt = 0;
+						await CreateAuthorizationKey(this, _dcSession, true);
+						_dcSession.TempAuthKeyBound = await BindTempAuthKey();
+						goto retry;
 					}
 					throw new RpcException(code, message, x);
 				case ReactorError:

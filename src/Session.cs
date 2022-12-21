@@ -22,6 +22,11 @@ namespace WTelegram
 			public long Id;
 			public long AuthKeyID;
 			public byte[] AuthKey;      // 2048-bit = 256 bytes
+			public bool PfsEnabled;
+			internal long TempAuthKeyID;
+			internal byte[] TempAuthKey;      // 2048-bit = 256 bytes
+			internal int TempKeyExpiresAt;
+			internal bool TempAuthKeyBound;
 			public long UserId;
 			public long Salt;
 			public int Seqno;
