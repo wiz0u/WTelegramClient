@@ -678,10 +678,10 @@ namespace TL
 		/// <param name="message_channels">Whether to export messages in <a href="https://corefork.telegram.org/api/channel#channels">channels</a></param>
 		/// <param name="files">Whether to export files</param>
 		/// <param name="file_max_size">Maximum size of files to export</param>
-		public static Task<Account_Takeout> Account_InitTakeoutSession(this Client client, bool contacts = false, bool message_users = false, bool message_chats = false, bool message_megagroups = false, bool message_channels = false, bool files = false, long? file_max_size = null)
+		public static Task<Account_Takeout> Account_InitTakeoutSession(this Client client, long? file_max_size = null, bool contacts = false, bool message_users = false, bool message_chats = false, bool message_megagroups = false, bool message_channels = false, bool files = false)
 			=> client.Invoke(new Account_InitTakeoutSession
 			{
-				flags = (Account_InitTakeoutSession.Flags)((contacts ? 0x1 : 0) | (message_users ? 0x2 : 0) | (message_chats ? 0x4 : 0) | (message_megagroups ? 0x8 : 0) | (message_channels ? 0x10 : 0) | (files ? 0x20 : 0) | (file_max_size != null ? 0x20 : 0)),
+				flags = (Account_InitTakeoutSession.Flags)((file_max_size != null ? 0x20 : 0) | (contacts ? 0x1 : 0) | (message_users ? 0x2 : 0) | (message_chats ? 0x4 : 0) | (message_megagroups ? 0x8 : 0) | (message_channels ? 0x10 : 0) | (files ? 0x20 : 0)),
 				file_max_size = file_max_size.GetValueOrDefault(),
 			});
 
@@ -730,10 +730,10 @@ namespace TL
 		/// <summary>Returns list of chats with non-default notification settings		<para>See <a href="https://corefork.telegram.org/method/account.getNotifyExceptions"/></para></summary>
 		/// <param name="compare_sound">If true, chats with non-default sound will also be returned</param>
 		/// <param name="peer">If specified, only chats of the specified category will be returned</param>
-		public static Task<UpdatesBase> Account_GetNotifyExceptions(this Client client, bool compare_sound = false, InputNotifyPeerBase peer = null)
+		public static Task<UpdatesBase> Account_GetNotifyExceptions(this Client client, InputNotifyPeerBase peer = null, bool compare_sound = false)
 			=> client.Invoke(new Account_GetNotifyExceptions
 			{
-				flags = (Account_GetNotifyExceptions.Flags)((compare_sound ? 0x2 : 0) | (peer != null ? 0x1 : 0)),
+				flags = (Account_GetNotifyExceptions.Flags)((peer != null ? 0x1 : 0) | (compare_sound ? 0x2 : 0)),
 				peer = peer,
 			});
 
@@ -866,10 +866,10 @@ namespace TL
 		/// <param name="theme">Theme to install</param>
 		/// <param name="format">Theme format, a string that identifies the theming engines supported by the client</param>
 		/// <param name="base_theme">Indicates a basic theme provided by all clients</param>
-		public static Task<bool> Account_InstallTheme(this Client client, bool dark = false, InputThemeBase theme = null, string format = null, BaseTheme base_theme = default)
+		public static Task<bool> Account_InstallTheme(this Client client, InputThemeBase theme = null, string format = null, BaseTheme base_theme = default, bool dark = false)
 			=> client.Invoke(new Account_InstallTheme
 			{
-				flags = (Account_InstallTheme.Flags)((dark ? 0x1 : 0) | (theme != null ? 0x2 : 0) | (format != null ? 0x4 : 0) | (base_theme != default ? 0x8 : 0)),
+				flags = (Account_InstallTheme.Flags)((theme != null ? 0x2 : 0) | (format != null ? 0x4 : 0) | (base_theme != default ? 0x8 : 0) | (dark ? 0x1 : 0)),
 				theme = theme,
 				format = format,
 				base_theme = base_theme,
@@ -1263,10 +1263,10 @@ namespace TL
 		/// <param name="background">While the geolocation of the current user is public, clients should update it in the background every half-an-hour or so, while setting this flag. <br/>Do this only if the new location is more than 1 KM away from the previous one, or if the previous location is unknown.</param>
 		/// <param name="geo_point">Geolocation</param>
 		/// <param name="self_expires">If set, the geolocation of the current user will be public for the specified number of seconds; pass 0x7fffffff to disable expiry, 0 to make the current geolocation private; if the flag isn't set, no changes will be applied.</param>
-		public static Task<UpdatesBase> Contacts_GetLocated(this Client client, InputGeoPoint geo_point, bool background = false, int? self_expires = null)
+		public static Task<UpdatesBase> Contacts_GetLocated(this Client client, InputGeoPoint geo_point, int? self_expires = null, bool background = false)
 			=> client.Invoke(new Contacts_GetLocated
 			{
-				flags = (Contacts_GetLocated.Flags)((background ? 0x2 : 0) | (self_expires != null ? 0x1 : 0)),
+				flags = (Contacts_GetLocated.Flags)((self_expires != null ? 0x1 : 0) | (background ? 0x2 : 0)),
 				geo_point = geo_point,
 				self_expires = self_expires.GetValueOrDefault(),
 			});
@@ -1320,10 +1320,10 @@ namespace TL
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offset peer for pagination</a></param>
 		/// <param name="limit">Number of list elements to be returned</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
-		public static Task<Messages_DialogsBase> Messages_GetDialogs(this Client client, DateTime offset_date = default, int offset_id = default, InputPeer offset_peer = null, int limit = int.MaxValue, long hash = default, bool exclude_pinned = false, int? folder_id = null)
+		public static Task<Messages_DialogsBase> Messages_GetDialogs(this Client client, DateTime offset_date = default, int offset_id = default, InputPeer offset_peer = null, int limit = int.MaxValue, long hash = default, int? folder_id = null, bool exclude_pinned = false)
 			=> client.Invoke(new Messages_GetDialogs
 			{
-				flags = (Messages_GetDialogs.Flags)((exclude_pinned ? 0x1 : 0) | (folder_id != null ? 0x2 : 0)),
+				flags = (Messages_GetDialogs.Flags)((folder_id != null ? 0x2 : 0) | (exclude_pinned ? 0x1 : 0)),
 				folder_id = folder_id.GetValueOrDefault(),
 				offset_date = offset_date,
 				offset_id = offset_id,
@@ -1404,10 +1404,10 @@ namespace TL
 		/// <param name="max_id">Maximum ID of message to delete</param>
 		/// <param name="min_date">Delete all messages newer than this UNIX timestamp</param>
 		/// <param name="max_date">Delete all messages older than this UNIX timestamp</param>
-		public static Task<Messages_AffectedHistory> Messages_DeleteHistory(this Client client, InputPeer peer, int max_id = default, bool just_clear = false, bool revoke = false, DateTime? min_date = null, DateTime? max_date = null)
+		public static Task<Messages_AffectedHistory> Messages_DeleteHistory(this Client client, InputPeer peer, int max_id = default, DateTime? min_date = null, DateTime? max_date = null, bool just_clear = false, bool revoke = false)
 			=> client.Invoke(new Messages_DeleteHistory
 			{
-				flags = (Messages_DeleteHistory.Flags)((just_clear ? 0x1 : 0) | (revoke ? 0x2 : 0) | (min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0)),
+				flags = (Messages_DeleteHistory.Flags)((min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0) | (just_clear ? 0x1 : 0) | (revoke ? 0x2 : 0)),
 				peer = peer,
 				max_id = max_id,
 				min_date = min_date.GetValueOrDefault(),
@@ -1460,10 +1460,10 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, int? reply_to_msg_id = null, int? top_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, int? reply_to_msg_id = null, int? top_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
 			=> client.Invoke(new Messages_SendMessage
 			{
-				flags = (Messages_SendMessage.Flags)((no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_SendMessage.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
 				peer = peer,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				top_msg_id = top_msg_id.GetValueOrDefault(),
@@ -1490,10 +1490,10 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, int? reply_to_msg_id = null, int? top_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, int? reply_to_msg_id = null, int? top_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
 			=> client.Invoke(new Messages_SendMedia
 			{
-				flags = (Messages_SendMedia.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_SendMedia.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
 				peer = peer,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				top_msg_id = top_msg_id.GetValueOrDefault(),
@@ -1519,10 +1519,10 @@ namespace TL
 		/// <param name="to_peer">Destination peer</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Forward the messages as the specified peer</param>
-		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false)
 			=> client.Invoke(new Messages_ForwardMessages
 			{
-				flags = (Messages_ForwardMessages.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0)),
 				from_peer = from_peer,
 				id = id,
 				random_id = random_id,
@@ -1803,10 +1803,10 @@ namespace TL
 		/// <param name="expire_date">Expiration date</param>
 		/// <param name="usage_limit">Maximum number of users that can join using this link</param>
 		/// <param name="title">Description of the invite link, visible only to administrators</param>
-		public static Task<ExportedChatInvite> Messages_ExportChatInvite(this Client client, InputPeer peer, bool legacy_revoke_permanent = false, bool request_needed = false, DateTime? expire_date = null, int? usage_limit = null, string title = null)
+		public static Task<ExportedChatInvite> Messages_ExportChatInvite(this Client client, InputPeer peer, DateTime? expire_date = null, int? usage_limit = null, string title = null, bool legacy_revoke_permanent = false, bool request_needed = false)
 			=> client.Invoke(new Messages_ExportChatInvite
 			{
-				flags = (Messages_ExportChatInvite.Flags)((legacy_revoke_permanent ? 0x4 : 0) | (request_needed ? 0x8 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (title != null ? 0x10 : 0)),
+				flags = (Messages_ExportChatInvite.Flags)((expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (title != null ? 0x10 : 0) | (legacy_revoke_permanent ? 0x4 : 0) | (request_needed ? 0x8 : 0)),
 				peer = peer,
 				expire_date = expire_date.GetValueOrDefault(),
 				usage_limit = usage_limit.GetValueOrDefault(),
@@ -1996,10 +1996,10 @@ namespace TL
 		/// <param name="cache_time">The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300.</param>
 		/// <param name="next_offset">Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.</param>
 		/// <param name="switch_pm">If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with a certain parameter.</param>
-		public static Task<bool> Messages_SetInlineBotResults(this Client client, long query_id, InputBotInlineResultBase[] results, DateTime cache_time, bool gallery = false, bool private_ = false, string next_offset = null, InlineBotSwitchPM switch_pm = null)
+		public static Task<bool> Messages_SetInlineBotResults(this Client client, long query_id, InputBotInlineResultBase[] results, DateTime cache_time, string next_offset = null, InlineBotSwitchPM switch_pm = null, bool gallery = false, bool private_ = false)
 			=> client.Invoke(new Messages_SetInlineBotResults
 			{
-				flags = (Messages_SetInlineBotResults.Flags)((gallery ? 0x1 : 0) | (private_ ? 0x2 : 0) | (next_offset != null ? 0x4 : 0) | (switch_pm != null ? 0x8 : 0)),
+				flags = (Messages_SetInlineBotResults.Flags)((next_offset != null ? 0x4 : 0) | (switch_pm != null ? 0x8 : 0) | (gallery ? 0x1 : 0) | (private_ ? 0x2 : 0)),
 				query_id = query_id,
 				results = results,
 				cache_time = cache_time,
@@ -2019,10 +2019,10 @@ namespace TL
 		/// <param name="id">Result ID from <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see></param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false, int? reply_to_msg_id = null, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, int? reply_to_msg_id = null, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false)
 			=> client.Invoke(new Messages_SendInlineBotResult
 			{
-				flags = (Messages_SendInlineBotResult.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_SendInlineBotResult.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0)),
 				peer = peer,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				top_msg_id = top_msg_id.GetValueOrDefault(),
@@ -2052,10 +2052,10 @@ namespace TL
 		/// <param name="reply_markup">Reply markup for inline keyboards</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
-		public static Task<UpdatesBase> Messages_EditMessage(this Client client, InputPeer peer, int id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null)
+		public static Task<UpdatesBase> Messages_EditMessage(this Client client, InputPeer peer, int id, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, bool no_webpage = false)
 			=> client.Invoke(new Messages_EditMessage
 			{
-				flags = (Messages_EditMessage.Flags)((no_webpage ? 0x2 : 0) | (message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x8000 : 0)),
+				flags = (Messages_EditMessage.Flags)((message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x8000 : 0) | (no_webpage ? 0x2 : 0)),
 				peer = peer,
 				id = id,
 				message = message,
@@ -2072,10 +2072,10 @@ namespace TL
 		/// <param name="media">Media</param>
 		/// <param name="reply_markup">Reply markup for inline keyboards</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
-		public static Task<bool> Messages_EditInlineBotMessage(this Client client, InputBotInlineMessageIDBase id, bool no_webpage = false, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null)
+		public static Task<bool> Messages_EditInlineBotMessage(this Client client, InputBotInlineMessageIDBase id, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, bool no_webpage = false)
 			=> client.Invoke(new Messages_EditInlineBotMessage
 			{
-				flags = (Messages_EditInlineBotMessage.Flags)((no_webpage ? 0x2 : 0) | (message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0)),
+				flags = (Messages_EditInlineBotMessage.Flags)((message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (no_webpage ? 0x2 : 0)),
 				id = id,
 				message = message,
 				media = media,
@@ -2089,10 +2089,10 @@ namespace TL
 		/// <param name="msg_id">ID of the Message with the inline keyboard</param>
 		/// <param name="data">Callback data</param>
 		/// <param name="password">For buttons <see cref="KeyboardButtonCallback">requiring you to verify your identity with your 2FA password</see>, the SRP payload generated using <a href="https://corefork.telegram.org/api/srp">SRP</a>.</param>
-		public static Task<Messages_BotCallbackAnswer> Messages_GetBotCallbackAnswer(this Client client, InputPeer peer, int msg_id, bool game = false, byte[] data = null, InputCheckPasswordSRP password = null)
+		public static Task<Messages_BotCallbackAnswer> Messages_GetBotCallbackAnswer(this Client client, InputPeer peer, int msg_id, byte[] data = null, InputCheckPasswordSRP password = null, bool game = false)
 			=> client.Invoke(new Messages_GetBotCallbackAnswer
 			{
-				flags = (Messages_GetBotCallbackAnswer.Flags)((game ? 0x2 : 0) | (data != null ? 0x1 : 0) | (password != null ? 0x4 : 0)),
+				flags = (Messages_GetBotCallbackAnswer.Flags)((data != null ? 0x1 : 0) | (password != null ? 0x4 : 0) | (game ? 0x2 : 0)),
 				peer = peer,
 				msg_id = msg_id,
 				data = data,
@@ -2105,10 +2105,10 @@ namespace TL
 		/// <param name="message">Popup to show</param>
 		/// <param name="url">URL to open</param>
 		/// <param name="cache_time">Cache validity</param>
-		public static Task<bool> Messages_SetBotCallbackAnswer(this Client client, long query_id, DateTime cache_time, bool alert = false, string message = null, string url = null)
+		public static Task<bool> Messages_SetBotCallbackAnswer(this Client client, long query_id, DateTime cache_time, string message = null, string url = null, bool alert = false)
 			=> client.Invoke(new Messages_SetBotCallbackAnswer
 			{
-				flags = (Messages_SetBotCallbackAnswer.Flags)((alert ? 0x2 : 0) | (message != null ? 0x1 : 0) | (url != null ? 0x4 : 0)),
+				flags = (Messages_SetBotCallbackAnswer.Flags)((message != null ? 0x1 : 0) | (url != null ? 0x4 : 0) | (alert ? 0x2 : 0)),
 				query_id = query_id,
 				message = message,
 				url = url,
@@ -2129,10 +2129,10 @@ namespace TL
 		/// <param name="peer">Destination of the message that should be sent</param>
 		/// <param name="message">The draft</param>
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
-		public static Task<bool> Messages_SaveDraft(this Client client, InputPeer peer, string message, bool no_webpage = false, int? reply_to_msg_id = null, int? top_msg_id = null, MessageEntity[] entities = null)
+		public static Task<bool> Messages_SaveDraft(this Client client, InputPeer peer, string message, int? reply_to_msg_id = null, int? top_msg_id = null, MessageEntity[] entities = null, bool no_webpage = false)
 			=> client.Invoke(new Messages_SaveDraft
 			{
-				flags = (Messages_SaveDraft.Flags)((no_webpage ? 0x2 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x4 : 0) | (entities != null ? 0x8 : 0)),
+				flags = (Messages_SaveDraft.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (no_webpage ? 0x2 : 0)),
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				top_msg_id = top_msg_id.GetValueOrDefault(),
 				peer = peer,
@@ -2354,10 +2354,10 @@ namespace TL
 		/// <param name="success">Set this flag if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order, otherwise do not set it, and set the <c>error</c> field, instead</param>
 		/// <param name="query_id">Unique identifier for the query to be answered</param>
 		/// <param name="error">Required if the <c>success</c> isn't set. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.</param>
-		public static Task<bool> Messages_SetBotPrecheckoutResults(this Client client, long query_id, bool success = false, string error = null)
+		public static Task<bool> Messages_SetBotPrecheckoutResults(this Client client, long query_id, string error = null, bool success = false)
 			=> client.Invoke(new Messages_SetBotPrecheckoutResults
 			{
-				flags = (Messages_SetBotPrecheckoutResults.Flags)((success ? 0x2 : 0) | (error != null ? 0x1 : 0)),
+				flags = (Messages_SetBotPrecheckoutResults.Flags)((error != null ? 0x1 : 0) | (success ? 0x2 : 0)),
 				query_id = query_id,
 				error = error,
 			});
@@ -2457,10 +2457,10 @@ namespace TL
 		/// <param name="multi_media">The medias to send: note that they must be separately uploaded using <see cref="Messages_UploadMedia">Messages_UploadMedia</see> first, using raw <c>inputMediaUploaded*</c> constructors is not supported.</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, int? reply_to_msg_id = null, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null)
+		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, int? reply_to_msg_id = null, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
-				flags = (Messages_SendMultiMedia.Flags)((silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_SendMultiMedia.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
 				peer = peer,
 				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
 				top_msg_id = top_msg_id.GetValueOrDefault(),
@@ -2654,10 +2654,10 @@ namespace TL
 		/// <param name="button_id">ID of the login button</param>
 		/// <param name="url">URL used for <a href="https://corefork.telegram.org/api/url-authorization#link-url-authorization">link URL authorization, click here for more info »</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/urlAuthResultDefault">urlAuthResultDefault</a></returns>
-		public static Task<UrlAuthResult> Messages_AcceptUrlAuth(this Client client, bool write_allowed = false, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null)
+		public static Task<UrlAuthResult> Messages_AcceptUrlAuth(this Client client, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null, bool write_allowed = false)
 			=> client.Invoke(new Messages_AcceptUrlAuth
 			{
-				flags = (Messages_AcceptUrlAuth.Flags)((write_allowed ? 0x1 : 0) | (peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0)),
+				flags = (Messages_AcceptUrlAuth.Flags)((peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0) | (write_allowed ? 0x1 : 0)),
 				peer = peer,
 				msg_id = msg_id.GetValueOrDefault(),
 				button_id = button_id.GetValueOrDefault(),
@@ -2908,10 +2908,10 @@ namespace TL
 		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_link"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_ExportedChatInvites> Messages_GetExportedChatInvites(this Client client, InputPeer peer, InputUserBase admin_id, int limit = int.MaxValue, bool revoked = false, DateTime? offset_date = null, string offset_link = null)
+		public static Task<Messages_ExportedChatInvites> Messages_GetExportedChatInvites(this Client client, InputPeer peer, InputUserBase admin_id, int limit = int.MaxValue, DateTime? offset_date = null, string offset_link = null, bool revoked = false)
 			=> client.Invoke(new Messages_GetExportedChatInvites
 			{
-				flags = (Messages_GetExportedChatInvites.Flags)((revoked ? 0x8 : 0) | (offset_date != null ? 0x4 : 0) | (offset_link != null ? 0x4 : 0)),
+				flags = (Messages_GetExportedChatInvites.Flags)((offset_date != null ? 0x4 : 0) | (offset_link != null ? 0x4 : 0) | (revoked ? 0x8 : 0)),
 				peer = peer,
 				admin_id = admin_id,
 				offset_date = offset_date.GetValueOrDefault(),
@@ -2937,10 +2937,10 @@ namespace TL
 		/// <param name="usage_limit">Maximum number of users that can join using this link</param>
 		/// <param name="request_needed">Whether admin confirmation is required before admitting each separate user into the chat</param>
 		/// <param name="title">Description of the invite link, visible only to administrators</param>
-		public static Task<Messages_ExportedChatInviteBase> Messages_EditExportedChatInvite(this Client client, InputPeer peer, string link, bool revoked = false, DateTime? expire_date = null, int? usage_limit = null, bool? request_needed = default, string title = null)
+		public static Task<Messages_ExportedChatInviteBase> Messages_EditExportedChatInvite(this Client client, InputPeer peer, string link, DateTime? expire_date = null, int? usage_limit = null, bool? request_needed = default, string title = null, bool revoked = false)
 			=> client.Invoke(new Messages_EditExportedChatInvite
 			{
-				flags = (Messages_EditExportedChatInvite.Flags)((revoked ? 0x4 : 0) | (expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (request_needed != default ? 0x8 : 0) | (title != null ? 0x10 : 0)),
+				flags = (Messages_EditExportedChatInvite.Flags)((expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (request_needed != default ? 0x8 : 0) | (title != null ? 0x10 : 0) | (revoked ? 0x4 : 0)),
 				peer = peer,
 				link = link,
 				expire_date = expire_date.GetValueOrDefault(),
@@ -2985,10 +2985,10 @@ namespace TL
 		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_user">User ID for <a href="https://corefork.telegram.org/api/offsets">pagination</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(this Client client, InputPeer peer, DateTime offset_date = default, InputUserBase offset_user = null, int limit = int.MaxValue, bool requested = false, string link = null, string q = null)
+		public static Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(this Client client, InputPeer peer, DateTime offset_date = default, InputUserBase offset_user = null, int limit = int.MaxValue, string link = null, string q = null, bool requested = false)
 			=> client.Invoke(new Messages_GetChatInviteImporters
 			{
-				flags = (Messages_GetChatInviteImporters.Flags)((requested ? 0x1 : 0) | (link != null ? 0x2 : 0) | (q != null ? 0x4 : 0)),
+				flags = (Messages_GetChatInviteImporters.Flags)((link != null ? 0x2 : 0) | (q != null ? 0x4 : 0) | (requested ? 0x1 : 0)),
 				peer = peer,
 				link = link,
 				q = q,
@@ -3079,10 +3079,10 @@ namespace TL
 		/// <param name="approved">Whether to dismiss or approve all chat <a href="https://corefork.telegram.org/api/invites#join-requests">join requests »</a></param>
 		/// <param name="peer">The chat or channel</param>
 		/// <param name="link">Only dismiss or approve <a href="https://corefork.telegram.org/api/invites#join-requests">join requests »</a> initiated using this invite link</param>
-		public static Task<UpdatesBase> Messages_HideAllChatJoinRequests(this Client client, InputPeer peer, bool approved = false, string link = null)
+		public static Task<UpdatesBase> Messages_HideAllChatJoinRequests(this Client client, InputPeer peer, string link = null, bool approved = false)
 			=> client.Invoke(new Messages_HideAllChatJoinRequests
 			{
-				flags = (Messages_HideAllChatJoinRequests.Flags)((approved ? 0x1 : 0) | (link != null ? 0x2 : 0)),
+				flags = (Messages_HideAllChatJoinRequests.Flags)((link != null ? 0x2 : 0) | (approved ? 0x1 : 0)),
 				peer = peer,
 				link = link,
 			});
@@ -3113,10 +3113,10 @@ namespace TL
 		/// <param name="peer">Peer</param>
 		/// <param name="msg_id">Message ID to react to</param>
 		/// <param name="reaction">Reaction (a UTF8 emoji)</param>
-		public static Task<UpdatesBase> Messages_SendReaction(this Client client, InputPeer peer, int msg_id, bool big = false, bool add_to_recent = false, Reaction[] reaction = null)
+		public static Task<UpdatesBase> Messages_SendReaction(this Client client, InputPeer peer, int msg_id, Reaction[] reaction = null, bool big = false, bool add_to_recent = false)
 			=> client.Invoke(new Messages_SendReaction
 			{
-				flags = (Messages_SendReaction.Flags)((big ? 0x2 : 0) | (add_to_recent ? 0x4 : 0) | (reaction != null ? 0x1 : 0)),
+				flags = (Messages_SendReaction.Flags)((reaction != null ? 0x1 : 0) | (big ? 0x2 : 0) | (add_to_recent ? 0x4 : 0)),
 				peer = peer,
 				msg_id = msg_id,
 				reaction = reaction,
@@ -3273,10 +3273,10 @@ namespace TL
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
 		/// <param name="reply_to_msg_id">Whether the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> should be sent in reply to this message ID.</param>
 		/// <param name="send_as">Open the web app as the specified peer, sending the resulting the message as the specified peer.</param>
-		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, string platform, bool from_bot_menu = false, bool silent = false, string url = null, string start_param = null, DataJSON theme_params = null, int? reply_to_msg_id = null, int? top_msg_id = null, InputPeer send_as = null)
+		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, string platform, string url = null, string start_param = null, DataJSON theme_params = null, int? reply_to_msg_id = null, int? top_msg_id = null, InputPeer send_as = null, bool from_bot_menu = false, bool silent = false)
 			=> client.Invoke(new Messages_RequestWebView
 			{
-				flags = (Messages_RequestWebView.Flags)((from_bot_menu ? 0x10 : 0) | (silent ? 0x20 : 0) | (url != null ? 0x2 : 0) | (start_param != null ? 0x8 : 0) | (theme_params != null ? 0x4 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_RequestWebView.Flags)((url != null ? 0x2 : 0) | (start_param != null ? 0x8 : 0) | (theme_params != null ? 0x4 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (send_as != null ? 0x2000 : 0) | (from_bot_menu ? 0x10 : 0) | (silent ? 0x20 : 0)),
 				peer = peer,
 				bot = bot,
 				url = url,
@@ -3295,10 +3295,10 @@ namespace TL
 		/// <param name="query_id">Web app interaction ID obtained from <see cref="Messages_RequestWebView">Messages_RequestWebView</see></param>
 		/// <param name="reply_to_msg_id">Whether the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> should be sent in reply to this message ID.</param>
 		/// <param name="send_as">Open the web app as the specified peer</param>
-		public static Task<bool> Messages_ProlongWebView(this Client client, InputPeer peer, InputUserBase bot, long query_id, bool silent = false, int? reply_to_msg_id = null, int? top_msg_id = null, InputPeer send_as = null)
+		public static Task<bool> Messages_ProlongWebView(this Client client, InputPeer peer, InputUserBase bot, long query_id, int? reply_to_msg_id = null, int? top_msg_id = null, InputPeer send_as = null, bool silent = false)
 			=> client.Invoke(new Messages_ProlongWebView
 			{
-				flags = (Messages_ProlongWebView.Flags)((silent ? 0x20 : 0) | (reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (send_as != null ? 0x2000 : 0)),
+				flags = (Messages_ProlongWebView.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0)),
 				peer = peer,
 				bot = bot,
 				query_id = query_id,
@@ -3904,10 +3904,10 @@ namespace TL
 		/// <param name="about">Channel description</param>
 		/// <param name="geo_point">Geogroup location</param>
 		/// <param name="address">Geogroup address</param>
-		public static Task<UpdatesBase> Channels_CreateChannel(this Client client, string title, string about, bool broadcast = false, bool megagroup = false, bool for_import = false, InputGeoPoint geo_point = null, string address = null, int? ttl_period = null)
+		public static Task<UpdatesBase> Channels_CreateChannel(this Client client, string title, string about, InputGeoPoint geo_point = null, string address = null, int? ttl_period = null, bool broadcast = false, bool megagroup = false, bool for_import = false)
 			=> client.Invoke(new Channels_CreateChannel
 			{
-				flags = (Channels_CreateChannel.Flags)((broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0) | (geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0) | (ttl_period != null ? 0x10 : 0)),
+				flags = (Channels_CreateChannel.Flags)((geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0) | (ttl_period != null ? 0x10 : 0) | (broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0)),
 				title = title,
 				about = about,
 				geo_point = geo_point,
@@ -4569,10 +4569,10 @@ namespace TL
 		/// <param name="stickers">Stickers</param>
 		/// <param name="software">Used when <a href="https://corefork.telegram.org/import-stickers">importing stickers using the sticker import SDKs</a>, specifies the name of the software that created the stickers</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
-		public static Task<Messages_StickerSet> Stickers_CreateStickerSet(this Client client, InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, bool masks = false, bool animated = false, bool videos = false, InputDocument thumb = null, string software = null)
+		public static Task<Messages_StickerSet> Stickers_CreateStickerSet(this Client client, InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, InputDocument thumb = null, string software = null, bool masks = false, bool animated = false, bool videos = false)
 			=> client.Invoke(new Stickers_CreateStickerSet
 			{
-				flags = (Stickers_CreateStickerSet.Flags)((masks ? 0x1 : 0) | (animated ? 0x2 : 0) | (videos ? 0x10 : 0) | (thumb != null ? 0x4 : 0) | (software != null ? 0x8 : 0)),
+				flags = (Stickers_CreateStickerSet.Flags)((thumb != null ? 0x4 : 0) | (software != null ? 0x8 : 0) | (masks ? 0x1 : 0) | (animated ? 0x2 : 0) | (videos ? 0x10 : 0)),
 				user_id = user_id,
 				title = title,
 				short_name = short_name,
@@ -4751,10 +4751,10 @@ namespace TL
 		/// <param name="random_id">Unique client message ID required to prevent creation of duplicate group calls</param>
 		/// <param name="title">Call title</param>
 		/// <param name="schedule_date">For scheduled group call or livestreams, the absolute date when the group call will start</param>
-		public static Task<UpdatesBase> Phone_CreateGroupCall(this Client client, InputPeer peer, int random_id, bool rtmp_stream = false, string title = null, DateTime? schedule_date = null)
+		public static Task<UpdatesBase> Phone_CreateGroupCall(this Client client, InputPeer peer, int random_id, string title = null, DateTime? schedule_date = null, bool rtmp_stream = false)
 			=> client.Invoke(new Phone_CreateGroupCall
 			{
-				flags = (Phone_CreateGroupCall.Flags)((rtmp_stream ? 0x4 : 0) | (title != null ? 0x1 : 0) | (schedule_date != null ? 0x2 : 0)),
+				flags = (Phone_CreateGroupCall.Flags)((title != null ? 0x1 : 0) | (schedule_date != null ? 0x2 : 0) | (rtmp_stream ? 0x4 : 0)),
 				peer = peer,
 				random_id = random_id,
 				title = title,
@@ -4768,10 +4768,10 @@ namespace TL
 		/// <param name="join_as">Join the group call, presenting yourself as the specified user/channel</param>
 		/// <param name="invite_hash">The invitation hash from the <a href="https://corefork.telegram.org/api/links#video-chatlivestream-links">invite link »</a>, if provided allows speaking in a livestream or muted group chat.</param>
 		/// <param name="params_">WebRTC parameters</param>
-		public static Task<UpdatesBase> Phone_JoinGroupCall(this Client client, InputGroupCall call, InputPeer join_as, DataJSON params_, bool muted = false, bool video_stopped = false, string invite_hash = null)
+		public static Task<UpdatesBase> Phone_JoinGroupCall(this Client client, InputGroupCall call, InputPeer join_as, DataJSON params_, string invite_hash = null, bool muted = false, bool video_stopped = false)
 			=> client.Invoke(new Phone_JoinGroupCall
 			{
-				flags = (Phone_JoinGroupCall.Flags)((muted ? 0x1 : 0) | (video_stopped ? 0x4 : 0) | (invite_hash != null ? 0x2 : 0)),
+				flags = (Phone_JoinGroupCall.Flags)((invite_hash != null ? 0x2 : 0) | (muted ? 0x1 : 0) | (video_stopped ? 0x4 : 0)),
 				call = call,
 				join_as = join_as,
 				invite_hash = invite_hash,
@@ -4810,10 +4810,10 @@ namespace TL
 		/// <param name="reset_invite_hash">Invalidate existing invite links</param>
 		/// <param name="call">Group call</param>
 		/// <param name="join_muted">Whether all users will that join this group call are muted by default upon joining the group call</param>
-		public static Task<UpdatesBase> Phone_ToggleGroupCallSettings(this Client client, InputGroupCall call, bool reset_invite_hash = false, bool? join_muted = default)
+		public static Task<UpdatesBase> Phone_ToggleGroupCallSettings(this Client client, InputGroupCall call, bool? join_muted = default, bool reset_invite_hash = false)
 			=> client.Invoke(new Phone_ToggleGroupCallSettings
 			{
-				flags = (Phone_ToggleGroupCallSettings.Flags)((reset_invite_hash ? 0x2 : 0) | (join_muted != default ? 0x1 : 0)),
+				flags = (Phone_ToggleGroupCallSettings.Flags)((join_muted != default ? 0x1 : 0) | (reset_invite_hash ? 0x2 : 0)),
 				call = call,
 				join_muted = join_muted.GetValueOrDefault(),
 			});
@@ -4860,10 +4860,10 @@ namespace TL
 		/// <param name="call">The group call or livestream</param>
 		/// <param name="title">Recording title</param>
 		/// <param name="video_portrait">If video stream recording is enabled, whether to record in portrait or landscape mode</param>
-		public static Task<UpdatesBase> Phone_ToggleGroupCallRecord(this Client client, InputGroupCall call, bool start = false, bool video = false, string title = null, bool? video_portrait = default)
+		public static Task<UpdatesBase> Phone_ToggleGroupCallRecord(this Client client, InputGroupCall call, string title = null, bool? video_portrait = default, bool start = false, bool video = false)
 			=> client.Invoke(new Phone_ToggleGroupCallRecord
 			{
-				flags = (Phone_ToggleGroupCallRecord.Flags)((start ? 0x1 : 0) | (video ? 0x4 : 0) | (title != null ? 0x2 : 0) | (video_portrait != default ? 0x4 : 0)),
+				flags = (Phone_ToggleGroupCallRecord.Flags)((title != null ? 0x2 : 0) | (video_portrait != default ? 0x4 : 0) | (start ? 0x1 : 0) | (video ? 0x4 : 0)),
 				call = call,
 				title = title,
 				video_portrait = video_portrait.GetValueOrDefault(),
