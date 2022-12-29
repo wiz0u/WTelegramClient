@@ -199,6 +199,7 @@ namespace TL
 			has_stickers = 0x1,
 			/// <summary>Field <see cref="ttl_seconds"/> has a value</summary>
 			has_ttl_seconds = 0x2,
+			spoiler = 0x4,
 		}
 	}
 	/// <summary>Forwarded photo		<para>See <a href="https://corefork.telegram.org/constructor/inputMediaPhoto"/></para></summary>
@@ -216,6 +217,7 @@ namespace TL
 		{
 			/// <summary>Field <see cref="ttl_seconds"/> has a value</summary>
 			has_ttl_seconds = 0x1,
+			spoiler = 0x2,
 		}
 	}
 	/// <summary>Map.		<para>See <a href="https://corefork.telegram.org/constructor/inputMediaGeoPoint"/></para></summary>
@@ -269,6 +271,7 @@ namespace TL
 			nosound_video = 0x8,
 			/// <summary>Force the media file to be uploaded as document</summary>
 			force_file = 0x10,
+			spoiler = 0x20,
 		}
 	}
 	/// <summary>Forwarded document		<para>See <a href="https://corefork.telegram.org/constructor/inputMediaDocument"/></para></summary>
@@ -290,6 +293,7 @@ namespace TL
 			has_ttl_seconds = 0x1,
 			/// <summary>Field <see cref="query"/> has a value</summary>
 			has_query = 0x2,
+			spoiler = 0x4,
 		}
 	}
 	/// <summary>Can be used to send a venue geolocation.		<para>See <a href="https://corefork.telegram.org/constructor/inputMediaVenue"/></para></summary>
@@ -324,6 +328,7 @@ namespace TL
 		{
 			/// <summary>Field <see cref="ttl_seconds"/> has a value</summary>
 			has_ttl_seconds = 0x1,
+			spoiler = 0x2,
 		}
 	}
 	/// <summary>Document that will be downloaded by the telegram servers		<para>See <a href="https://corefork.telegram.org/constructor/inputMediaDocumentExternal"/></para></summary>
@@ -341,6 +346,7 @@ namespace TL
 		{
 			/// <summary>Field <see cref="ttl_seconds"/> has a value</summary>
 			has_ttl_seconds = 0x1,
+			spoiler = 0x2,
 		}
 	}
 	/// <summary>A game		<para>See <a href="https://corefork.telegram.org/constructor/inputMediaGame"/></para></summary>
@@ -819,6 +825,7 @@ namespace TL
 			has_video = 0x1,
 			/// <summary>Field <see cref="stripped_thumb"/> has a value</summary>
 			has_stripped_thumb = 0x2,
+			personal = 0x4,
 		}
 	}
 
@@ -1345,6 +1352,7 @@ namespace TL
 			/// <summary>Can we delete this channel?</summary>
 			can_delete_channel = 0x1,
 			antispam = 0x2,
+			participants_hidden = 0x4,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -1708,6 +1716,7 @@ namespace TL
 			has_photo = 0x1,
 			/// <summary>Field <see cref="ttl_seconds"/> has a value</summary>
 			has_ttl_seconds = 0x4,
+			spoiler = 0x8,
 		}
 	}
 	/// <summary>Attached map.		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaGeo"/></para></summary>
@@ -1754,6 +1763,7 @@ namespace TL
 			has_ttl_seconds = 0x4,
 			/// <summary>Whether this is a normal sticker, if not set this is a premium sticker and a premium sticker animation must be played.</summary>
 			nopremium = 0x8,
+			spoiler = 0x10,
 		}
 	}
 	/// <summary>Preview of webpage		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaWebPage"/></para></summary>
@@ -2194,6 +2204,15 @@ namespace TL
 			has_hidden = 0x8,
 		}
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionSuggestProfilePhoto"/></para></summary>
+	[TLDef(0x57DE635E)]
+	public class MessageActionSuggestProfilePhoto : MessageAction
+	{
+		public PhotoBase photo;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionAttachMenuBotAllowed"/></para></summary>
+	[TLDef(0xE7E75F97)]
+	public class MessageActionAttachMenuBotAllowed : MessageAction { }
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
 	public abstract class DialogBase : IObject
@@ -2738,7 +2757,7 @@ namespace TL
 	}
 
 	/// <summary>Extended user info		<para>See <a href="https://corefork.telegram.org/constructor/userFull"/></para></summary>
-	[TLDef(0xC4B1FC3F)]
+	[TLDef(0xF8D32AED)]
 	public class UserFull : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -2749,8 +2768,10 @@ namespace TL
 		[IfFlag(1)] public string about;
 		/// <summary>Peer settings</summary>
 		public PeerSettings settings;
+		[IfFlag(21)] public PhotoBase personal_photo;
 		/// <summary>Profile photo</summary>
 		[IfFlag(2)] public PhotoBase profile_photo;
+		[IfFlag(22)] public PhotoBase fallback_photo;
 		/// <summary>Notification settings</summary>
 		public PeerNotifySettings notify_settings;
 		/// <summary>For bots, info about the bot (bot commands, etc)</summary>
@@ -2812,6 +2833,10 @@ namespace TL
 			has_premium_gifts = 0x80000,
 			/// <summary>Whether this user doesn't allow sending voice messages in a private chat with them</summary>
 			voice_messages_forbidden = 0x100000,
+			/// <summary>Field <see cref="personal_photo"/> has a value</summary>
+			has_personal_photo = 0x200000,
+			/// <summary>Field <see cref="fallback_photo"/> has a value</summary>
+			has_fallback_photo = 0x400000,
 		}
 	}
 
@@ -3167,11 +3192,9 @@ namespace TL
 		public int pts_count;
 	}
 	/// <summary>The user is preparing a message; typing, recording, uploading, etc. This update is valid for 6 seconds. If no further updates of this kind are received after 6 seconds, it should be considered that the user stopped doing whatever they were doing		<para>See <a href="https://corefork.telegram.org/constructor/updateUserTyping"/></para></summary>
-	[TLDef(0xC01E857F)]
-	public class UpdateUserTyping : Update
+	[TLDef(0xC01E857F, inheritBefore = true)]
+	public class UpdateUserTyping : UpdateUser
 	{
-		/// <summary>User id</summary>
-		public long user_id;
 		/// <summary>Action type</summary>
 		public SendMessageAction action;
 	}
@@ -3192,38 +3215,21 @@ namespace TL
 		public ChatParticipantsBase participants;
 	}
 	/// <summary>Contact status update.		<para>See <a href="https://corefork.telegram.org/constructor/updateUserStatus"/></para></summary>
-	[TLDef(0xE5BDF8DE)]
-	public class UpdateUserStatus : Update
+	[TLDef(0xE5BDF8DE, inheritBefore = true)]
+	public class UpdateUserStatus : UpdateUser
 	{
-		/// <summary>User identifier</summary>
-		public long user_id;
 		/// <summary>New status</summary>
 		public UserStatus status;
 	}
 	/// <summary>Changes the user's first name, last name and username.		<para>See <a href="https://corefork.telegram.org/constructor/updateUserName"/></para></summary>
-	[TLDef(0xA7848924)]
-	public class UpdateUserName : Update
+	[TLDef(0xA7848924, inheritBefore = true)]
+	public class UpdateUserName : UpdateUser
 	{
-		/// <summary>User identifier</summary>
-		public long user_id;
 		/// <summary>New first name. Corresponds to the new value of <strong>real_first_name</strong> field of the <see cref="UserFull"/>.</summary>
 		public string first_name;
 		/// <summary>New last name. Corresponds to the new value of <strong>real_last_name</strong> field of the <see cref="UserFull"/>.</summary>
 		public string last_name;
 		public Username[] usernames;
-	}
-	/// <summary>Change of contact's profile photo.		<para>See <a href="https://corefork.telegram.org/constructor/updateUserPhoto"/></para></summary>
-	[TLDef(0xF227868C)]
-	public class UpdateUserPhoto : Update
-	{
-		/// <summary>User identifier</summary>
-		public long user_id;
-		/// <summary>Date of photo update.</summary>
-		public DateTime date;
-		/// <summary>New profile photo</summary>
-		public UserProfilePhoto photo;
-		/// <summary>(<see langword="true"/>), if one of the previously used photos is set a profile photo.</summary>
-		public bool previous;
 	}
 	/// <summary>New encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/updateNewEncryptedMessage"/></para></summary>
 	[TLDef(0x12BCBD9A)]
@@ -3334,11 +3340,9 @@ namespace TL
 		public PrivacyRule[] rules;
 	}
 	/// <summary>A user's phone number was changed		<para>See <a href="https://corefork.telegram.org/constructor/updateUserPhone"/></para></summary>
-	[TLDef(0x05492A13)]
-	public class UpdateUserPhone : Update
+	[TLDef(0x05492A13, inheritBefore = true)]
+	public class UpdateUserPhone : UpdateUser
 	{
-		/// <summary>User ID</summary>
-		public long user_id;
 		/// <summary>New phone number</summary>
 		public string phone;
 	}
@@ -4341,11 +4345,9 @@ namespace TL
 	[TLDef(0xFB4C496C)]
 	public class UpdateReadFeaturedEmojiStickers : Update { }
 	/// <summary>The <a href="https://corefork.telegram.org/api/emoji-status">emoji status</a> of a certain user has changed		<para>See <a href="https://corefork.telegram.org/constructor/updateUserEmojiStatus"/></para></summary>
-	[TLDef(0x28373599)]
-	public class UpdateUserEmojiStatus : Update
+	[TLDef(0x28373599, inheritBefore = true)]
+	public class UpdateUserEmojiStatus : UpdateUser
 	{
-		/// <summary>User ID</summary>
-		public long user_id;
 		/// <summary>New <a href="https://corefork.telegram.org/api/emoji-status">emoji status</a></summary>
 		public EmojiStatus emoji_status;
 	}
@@ -4405,6 +4407,12 @@ namespace TL
 		{
 			has_order = 0x1,
 		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateUser"/></para></summary>
+	[TLDef(0x20529438)]
+	public class UpdateUser : Update
+	{
+		public long user_id;
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -5791,6 +5799,7 @@ namespace TL
 		{
 			/// <summary>Whether this custom emoji can be sent by non-Premium users</summary>
 			free = 0x1,
+			text_color = 0x2,
 		}
 	}
 
@@ -6629,6 +6638,7 @@ namespace TL
 			selective = 0x4,
 			/// <summary>Field <see cref="placeholder"/> has a value</summary>
 			has_placeholder = 0x8,
+			persistent = 0x10,
 		}
 	}
 	/// <summary>Bot or inline keyboard		<para>See <a href="https://corefork.telegram.org/constructor/replyInlineMarkup"/></para></summary>
@@ -8185,6 +8195,14 @@ namespace TL
 		public DocumentBase[] documents;
 
 		/// <summary>Stickerset</summary>
+		public override StickerSet Set => set;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stickerSetNoCovered"/></para></summary>
+	[TLDef(0x77B15D1C)]
+	public class StickerSetNoCovered : StickerSetCoveredBase
+	{
+		public StickerSet set;
+
 		public override StickerSet Set => set;
 	}
 
@@ -13450,6 +13468,7 @@ namespace TL
 			inactive = 0x1,
 			/// <summary>True, if the bot supports the <a href="https://corefork.telegram.org/api/bots/webapps#settings-button-pressed">"settings_button_pressed" event »</a></summary>
 			has_settings = 0x2,
+			request_write_access = 0x4,
 		}
 	}
 

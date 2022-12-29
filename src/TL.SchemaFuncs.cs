@@ -3255,9 +3255,10 @@ namespace TL
 		/// <summary>Enable or disable <a href="https://corefork.telegram.org/api/bots/attach">web bot attachment menu »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.toggleBotInAttachMenu"/></para></summary>
 		/// <param name="bot">Bot ID</param>
 		/// <param name="enabled">Toggle</param>
-		public static Task<bool> Messages_ToggleBotInAttachMenu(this Client client, InputUserBase bot, bool enabled)
+		public static Task<bool> Messages_ToggleBotInAttachMenu(this Client client, InputUserBase bot, bool enabled, bool write_allowed = false)
 			=> client.Invoke(new Messages_ToggleBotInAttachMenu
 			{
+				flags = (Messages_ToggleBotInAttachMenu.Flags)(write_allowed ? 0x1 : 0),
 				bot = bot,
 				enabled = enabled,
 			});
@@ -3495,9 +3496,10 @@ namespace TL
 
 		/// <summary>Installs a previously uploaded photo as a profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.updateProfilePhoto"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.updateProfilePhoto#possible-errors">details</a>)</para></summary>
 		/// <param name="id">Input photo</param>
-		public static Task<Photos_Photo> Photos_UpdateProfilePhoto(this Client client, InputPhoto id)
+		public static Task<Photos_Photo> Photos_UpdateProfilePhoto(this Client client, InputPhoto id, bool fallback = false)
 			=> client.Invoke(new Photos_UpdateProfilePhoto
 			{
+				flags = (Photos_UpdateProfilePhoto.Flags)(fallback ? 0x1 : 0),
 				id = id,
 			});
 
@@ -3505,10 +3507,10 @@ namespace TL
 		/// <param name="file">File saved in parts by means of <see cref="Upload_SaveFilePart">Upload_SaveFilePart</see> method</param>
 		/// <param name="video"><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> video</param>
 		/// <param name="video_start_ts">Floating point UNIX timestamp in seconds, indicating the frame of the video that should be used as static preview.</param>
-		public static Task<Photos_Photo> Photos_UploadProfilePhoto(this Client client, InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null)
+		public static Task<Photos_Photo> Photos_UploadProfilePhoto(this Client client, InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null, bool fallback = false)
 			=> client.Invoke(new Photos_UploadProfilePhoto
 			{
-				flags = (Photos_UploadProfilePhoto.Flags)((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0)),
+				flags = (Photos_UploadProfilePhoto.Flags)((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0) | (fallback ? 0x8 : 0)),
 				file = file,
 				video = video,
 				video_start_ts = video_start_ts.GetValueOrDefault(),
@@ -3534,6 +3536,17 @@ namespace TL
 				offset = offset,
 				max_id = max_id,
 				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/photos.uploadContactProfilePhoto"/></para></summary>
+		public static Task<Photos_Photo> Photos_UploadContactProfilePhoto(this Client client, InputUserBase user_id, InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null, bool suggest = false, bool save = false)
+			=> client.Invoke(new Photos_UploadContactProfilePhoto
+			{
+				flags = (Photos_UploadContactProfilePhoto.Flags)((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0) | (suggest ? 0x8 : 0) | (save ? 0x10 : 0)),
+				user_id = user_id,
+				file = file,
+				video = video,
+				video_start_ts = video_start_ts.GetValueOrDefault(),
 			});
 
 		/// <summary>Saves a part of file for further sending to one of the methods.		<para>See <a href="https://corefork.telegram.org/method/upload.saveFilePart"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.saveFilePart#possible-errors">details</a>)</para></summary>
@@ -4358,6 +4371,14 @@ namespace TL
 			{
 				channel = channel,
 				msg_id = msg_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.toggleParticipantsHidden"/></para></summary>
+		public static Task<UpdatesBase> Channels_ToggleParticipantsHidden(this Client client, InputChannelBase channel, bool enabled)
+			=> client.Invoke(new Channels_ToggleParticipantsHidden
+			{
+				channel = channel,
+				enabled = enabled,
 			});
 
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
@@ -7790,11 +7811,17 @@ namespace TL.Methods
 		public InputUserBase bot;
 	}
 
-	[TLDef(0x1AEE33AF)]
+	[TLDef(0x69F59D69)]
 	public class Messages_ToggleBotInAttachMenu : IMethod<bool>
 	{
+		public Flags flags;
 		public InputUserBase bot;
 		public bool enabled;
+
+		[Flags] public enum Flags : uint
+		{
+			write_allowed = 0x1,
+		}
 	}
 
 	[TLDef(0x178B480B)]
@@ -7983,10 +8010,16 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x72D4742C)]
+	[TLDef(0x1C3D5956)]
 	public class Photos_UpdateProfilePhoto : IMethod<Photos_Photo>
 	{
+		public Flags flags;
 		public InputPhoto id;
+
+		[Flags] public enum Flags : uint
+		{
+			fallback = 0x1,
+		}
 	}
 
 	[TLDef(0x89F30F69)]
@@ -8002,6 +8035,7 @@ namespace TL.Methods
 			has_file = 0x1,
 			has_video = 0x2,
 			has_video_start_ts = 0x4,
+			fallback = 0x8,
 		}
 	}
 
@@ -8018,6 +8052,25 @@ namespace TL.Methods
 		public int offset;
 		public long max_id;
 		public int limit;
+	}
+
+	[TLDef(0xB91A83BF)]
+	public class Photos_UploadContactProfilePhoto : IMethod<Photos_Photo>
+	{
+		public Flags flags;
+		public InputUserBase user_id;
+		[IfFlag(0)] public InputFileBase file;
+		[IfFlag(1)] public InputFileBase video;
+		[IfFlag(2)] public double video_start_ts;
+
+		[Flags] public enum Flags : uint
+		{
+			has_file = 0x1,
+			has_video = 0x2,
+			has_video_start_ts = 0x4,
+			suggest = 0x8,
+			save = 0x10,
+		}
 	}
 
 	[TLDef(0xB304A621)]
@@ -8655,6 +8708,13 @@ namespace TL.Methods
 	{
 		public InputChannelBase channel;
 		public int msg_id;
+	}
+
+	[TLDef(0x6A6E7854)]
+	public class Channels_ToggleParticipantsHidden : IMethod<UpdatesBase>
+	{
+		public InputChannelBase channel;
+		public bool enabled;
 	}
 
 	[TLDef(0xAA2769ED)]

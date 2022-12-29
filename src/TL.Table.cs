@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 150;					// fetched 07/12/2022 12:23:35
+		public const int Version = 151;					// fetched 29/12/2022 21:30:31
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -65,7 +65,7 @@ namespace TL
 			[0x37982646] = typeof(IpPortSecret),
 			[0x4679B65F] = typeof(AccessPointRule),
 			[0x5A592A6C] = typeof(Help_ConfigSimple),
-			// from TL.Schema:
+			// from TL.SchemaExtensions:
 			[0x3FEDD339] = typeof(True),
 			[0xC4B9F9BB] = typeof(Error),
 			[0x56730BCC] = null,//Null
@@ -193,6 +193,8 @@ namespace TL
 			[0xABA0F5C6] = typeof(MessageActionGiftPremium),
 			[0x0D999256] = typeof(MessageActionTopicCreate),
 			[0xC0944820] = typeof(MessageActionTopicEdit),
+			[0x57DE635E] = typeof(MessageActionSuggestProfilePhoto),
+			[0xE7E75F97] = typeof(MessageActionAttachMenuBotAllowed),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -219,7 +221,7 @@ namespace TL
 			[0xA518110D] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0xC4B1FC3F] = typeof(UserFull),
+			[0xF8D32AED] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -264,7 +266,6 @@ namespace TL
 			[0x07761198] = typeof(UpdateChatParticipants),
 			[0xE5BDF8DE] = typeof(UpdateUserStatus),
 			[0xA7848924] = typeof(UpdateUserName),
-			[0xF227868C] = typeof(UpdateUserPhoto),
 			[0x12BCBD9A] = typeof(UpdateNewEncryptedMessage),
 			[0x1710F156] = typeof(UpdateEncryptedChatTyping),
 			[0xB4A2E88D] = typeof(UpdateEncryption),
@@ -365,6 +366,7 @@ namespace TL
 			[0x5A73A98C] = typeof(UpdateMessageExtendedMedia),
 			[0x192EFBE3] = typeof(UpdateChannelPinnedTopic),
 			[0xFE198602] = typeof(UpdateChannelPinnedTopics),
+			[0x20529438] = typeof(UpdateUser),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -622,6 +624,7 @@ namespace TL
 			[0x6410A5D2] = typeof(StickerSetCovered),
 			[0x3407E51B] = typeof(StickerSetMultiCovered),
 			[0x40D13C0E] = typeof(StickerSetFullCovered),
+			[0x77B15D1C] = typeof(StickerSetNoCovered),
 			[0xAED6DBB2] = typeof(MaskCoords),
 			[0x4A992157] = typeof(InputStickeredMediaPhoto),
 			[0x0438865B] = typeof(InputStickeredMediaDocument),

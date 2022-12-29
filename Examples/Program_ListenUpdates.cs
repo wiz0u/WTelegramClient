@@ -51,7 +51,7 @@ namespace WTelegramClientTest
 					case UpdateChatParticipants { participants: ChatParticipants cp }: Console.WriteLine($"{cp.participants.Length} participants in {Chat(cp.chat_id)}"); break;
 					case UpdateUserStatus uus: Console.WriteLine($"{User(uus.user_id)} is now {uus.status.GetType().Name[10..]}"); break;
 					case UpdateUserName uun: Console.WriteLine($"{User(uun.user_id)} has changed profile name: {uun.first_name} {uun.last_name}"); break;
-					case UpdateUserPhoto uup: Console.WriteLine($"{User(uup.user_id)} has changed profile photo"); break;
+					case UpdateUser uu: Console.WriteLine($"{User(uu.user_id)} has changed infos/photo"); break;
 					default: Console.WriteLine(update.GetType().Name); break; // there are much more update types than the above example cases
 				}
 		}
