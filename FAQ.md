@@ -299,6 +299,7 @@ Also, remember to add a `using TL;` at the top of your files to have access to a
 # Troubleshooting guide
 
 Here is a list of common issues and how to fix them so that your program work correctly:
+
 1) Are you using the Nuget package or the library source code?  
 It is not recommended to copy/compile the source code of the library for a normal usage.
 When built in DEBUG mode, the source code connects to Telegram test servers (see also [FAQ #6](#wrong-server)).  

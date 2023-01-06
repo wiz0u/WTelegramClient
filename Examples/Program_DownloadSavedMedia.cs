@@ -10,7 +10,7 @@ namespace WTelegramClientTest
 	static class Program_DownloadSavedMedia
 	{
 		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
-		static async Task Main(string[] args)
+		static async Task Main(string[] _)
 		{
 			Console.WriteLine("The program will download photos/medias from messages you send/forward to yourself (Saved Messages)");
 			using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
@@ -30,8 +30,8 @@ namespace WTelegramClientTest
 
 					if (message.media is MessageMediaDocument { document: Document document })
 					{
-						int slash = document.mime_type.IndexOf('/'); // quick & dirty conversion from MIME type to file extension
-						var filename = slash > 0 ? $"{document.id}.{document.mime_type[(slash + 1)..]}" : $"{document.id}.bin";
+						var filename = document.Filename; // use document original filename, or build a name from document ID & MIME type:
+						filename ??= $"{document.id}.{document.mime_type[(document.mime_type.IndexOf('/') + 1)..]}";
 						Console.WriteLine("Downloading " + filename);
 						using var fileStream = File.Create(filename);
 						await client.DownloadFileAsync(document, fileStream);
