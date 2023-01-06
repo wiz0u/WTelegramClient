@@ -11,7 +11,7 @@ namespace TL
 {
 	public interface IObject { }
 	public interface IMethod<ReturnType> : IObject { }
-	public interface IPeerResolver { IPeerInfo UserOrChat(Peer peer); }
+	public interface IPeerResolver { IPeerInfo UserOrChat(Peer peer); (Dictionary<long, User>, Dictionary<long, ChatBase>) GetUsersChats(); }
 
 	[AttributeUsage(AttributeTargets.Class)]
 	public class TLDefAttribute : Attribute
