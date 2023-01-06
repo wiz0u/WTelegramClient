@@ -4298,7 +4298,7 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.getForumTopics"/></para></summary>
-		public static Task<Messages_ForumTopics> Channels_GetForumTopics(this Client client, InputChannelBase channel, int offset_topic, DateTime offset_date = default, int offset_id = default, int limit = int.MaxValue, string q = null)
+		public static Task<Messages_ForumTopics> Channels_GetForumTopics(this Client client, InputChannelBase channel, DateTime offset_date = default, int offset_id = default, int offset_topic = default, int limit = int.MaxValue, string q = null)
 			=> client.Invoke(new Channels_GetForumTopics
 			{
 				flags = (Channels_GetForumTopics.Flags)(q != null ? 0x1 : 0),
