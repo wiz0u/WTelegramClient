@@ -216,6 +216,7 @@ namespace TL
 	partial class Channel
 	{
 		public override bool IsActive => (flags & Flags.left) == 0;
+		public string MainUsername => username ?? usernames?.FirstOrDefault(u => u.flags.HasFlag(Username.Flags.active))?.username;
 		public override ChatPhoto Photo => photo;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((banned_rights?.flags ?? 0) & flags) != 0 || ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		public override InputPeer ToInputPeer() => new InputPeerChannel(id, access_hash);

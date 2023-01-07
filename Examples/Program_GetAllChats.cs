@@ -34,10 +34,10 @@ namespace WTelegramClientTest
 			foreach (var (id, chat) in chats.chats)
 				switch (chat)
 				{
-					case Chat smallgroup when (smallgroup.flags & Chat.Flags.deactivated) == 0:
+					case Chat smallgroup when smallgroup.IsActive:
 						Console.WriteLine($"{id}:  Small group: {smallgroup.title} with {smallgroup.participants_count} members");
 						break;
-					case Channel channel when (channel.flags & Channel.Flags.broadcast) != 0:
+					case Channel channel when channel.IsChannel:
 						Console.WriteLine($"{id}: Channel {channel.username}: {channel.title}");
 						//Console.WriteLine($"              → access_hash = {channel.access_hash:X}");
 						break;

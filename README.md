@@ -129,18 +129,8 @@ using TL;
 var chats = await client.Messages_GetAllChats();
 Console.WriteLine("This user has joined the following:");
 foreach (var (id, chat) in chats.chats)
-    switch (chat) // example of downcasting to their real classes:
-    {
-        case Chat basicChat when basicChat.IsActive:
-            Console.WriteLine($"{id}:  Basic chat: {basicChat.title}");
-            break;
-        case Channel group when group.IsGroup:
-            Console.WriteLine($"{id}: Group {group.username}: {group.title}");
-            break;
-        case Channel channel:
-            Console.WriteLine($"{id}: Channel {channel.username}: {channel.title}");
-            break;
-    }
+    if (chat.IsActive)
+        Console.WriteLine($"{id,10}: {chat}");
 Console.Write("Type a chat ID to send a message: ");
 long chatId = long.Parse(Console.ReadLine());
 var target = chats.chats[chatId];
@@ -149,7 +139,7 @@ await client.SendMessageAsync(target, "Hello, World");
 ```
 
 ➡️ You can find lots of useful code snippets in [EXAMPLES](https://wiz0u.github.io/WTelegramClient/EXAMPLES)
-and in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).  
+and more detailed programs in the [Examples subdirectory](https://github.com/wiz0u/WTelegramClient/tree/master/Examples).  
 ➡️ Check [the FAQ](https://wiz0u.github.io/WTelegramClient/FAQ#compile) if example codes don't compile correctly on your machine, or other troubleshooting.
 
 <a name="terminology"></a>
