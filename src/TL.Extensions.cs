@@ -14,7 +14,7 @@ namespace TL
 			public override long ID => 0;
 			internal Dictionary<long, User> _users;
 			internal Dictionary<long, ChatBase> _chats;
-			internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
+			protected internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
 			{
 				lock (_users)
 					foreach (var user in users.Values)

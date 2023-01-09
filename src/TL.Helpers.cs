@@ -117,25 +117,25 @@ namespace TL
 	partial class Peer
 	{
 		public abstract long ID { get; }
-		internal abstract IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats);
+		protected internal abstract IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats);
 	}
 	partial class PeerUser
 	{
 		public override string ToString() => "user " + user_id;
 		public override long ID => user_id;
-		internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => users.TryGetValue(user_id, out var user) ? user : null;
+		protected internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => users.TryGetValue(user_id, out var user) ? user : null;
 	}
 	partial class PeerChat
 	{
 		public override string ToString() => "chat " + chat_id;
 		public override long ID => chat_id;
-		internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => chats.TryGetValue(chat_id, out var chat) ? chat : null;
+		protected internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => chats.TryGetValue(chat_id, out var chat) ? chat : null;
 	}
 	partial class PeerChannel
 	{
 		public override string ToString() => "channel " + channel_id;
 		public override long ID => channel_id;
-		internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => chats.TryGetValue(channel_id, out var chat) ? chat : null;
+		protected internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => chats.TryGetValue(channel_id, out var chat) ? chat : null;
 	}
 
 	partial class UserBase : IPeerInfo
