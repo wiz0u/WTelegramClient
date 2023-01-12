@@ -76,7 +76,7 @@ var sent2 = await client.SendMessageAsync(InputPeer.Self, text2, entities: entit
 text2 = client.EntitiesToMarkdown(sent2.message, sent2.entities);
 ```
 See [HTML formatting style](https://core.telegram.org/bots/api/#html-style) and [MarkdownV2 formatting style](https://core.telegram.org/bots/api/#markdownv2-style) for details.  
-*Note: For the `tg://user?id=` notation to work, that user's access hash must have been collected first ([see below](#collect-access-hash))*
+*Note: For the `tg://user?id=` notation to work, you need to pass the _users dictionary in arguments ([see below](#collect-users-chats))*
 
 <a name="list-dialogs"></a>
 ## List all dialogs (chats/groups/channels/user chat) we are currently in
@@ -442,13 +442,39 @@ finally
 ```
 
 <a name="collect-access-hash"></a>
-## Collect Access Hash and save them for later use
+<a name="collect-users-chats"></a>
+<a name="user-or-chat"></a>
+## Collect Users/Chats description structures and access hash
 
-You can automate the collection of `access_hash` for the various resources obtained in response to API calls or Updates,
-so that you don't have to remember them by yourself or ask the API about them each time.
+Many API calls return a structure with a `users` and a `chats` field at the root of the structure.
+This is also the case for updates passed to `client.OnUpdate`.
 
-This is done by activating the experimental `client.CollectAccessHash` system.  
-See [Examples/Program_CollectAccessHash.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_CollectAccessHash.cs?ts=4#L22) for how to enable it, and save/restore them for later use.
+These two dictionaries give details about the various users/chats that will be typically referenced in subobjects deeper in the structure,
+typically in the form of a `Peer` object or a `user_id` field.
+
+In such case, the root structure inherits the `IPeerResolver` interface, and you can use the `UserOrChat(peer)` method to resolve a `Peer`
+into either a `User` or `ChatBase` (`Chat`,`Channel`...) description structure *(depending what kind of peer it was describing)*
+
+You can also use the `CollectUsersChats` helper method to collect these 2 fields into 2 aggregate dictionaries to remember details
+*(including access hashes)* about all the users/chats you've encountered so far.
+
+Example of usage for `CollectUsersChats`:
+```csharp
+static Dictionary<long, User> _users = new();
+static Dictionary<long, ChatBase> _chats = new();
+...
+var dialogs = await client.Messages_GetAllDialogs();
+dialogs.CollectUsersChats(_users, _chats);
+...
+private static async Task OnUpdate(IObject arg)
+{
+	if (arg is not UpdatesBase updates) return;
+	updates.CollectUsersChats(_users, _chats);
+    ...
+}
+```
+
+*Note: If you need to save/restore those dictionaries between runs of your program, it's up to you to serialize their content to disk*
 
 <a name="proxy"></a>
 ## Use a proxy or MTProxy to connect to Telegram

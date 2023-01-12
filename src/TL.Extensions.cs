@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using WTelegram; // for GetValueOrDefault
 
 namespace TL
 {
@@ -48,8 +49,9 @@ namespace TL
 		/// <param name="client">Client, used for getting access_hash for <c>tg://user?id=</c> URLs</param>
 		/// <param name="text">[in] The Markdown text<br/>[out] The same (plain) text, stripped of all Markdown notation</param>
 		/// <param name="premium">Generate premium entities if any</param>
+		/// <param name="users">Dictionary used for <c>tg://user?id=</c> notation</param>
 		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="WTelegram.Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="WTelegram.Client.SendMediaAsync">SendMediaAsync</see></returns>
-		public static MessageEntity[] MarkdownToEntities(this WTelegram.Client client, ref string text, bool premium = false)
+		public static MessageEntity[] MarkdownToEntities(this WTelegram.Client client, ref string text, bool premium = false, Dictionary<long, User> users = null)
 		{
 			var entities = new List<MessageEntity>();
 			var sb = new StringBuilder(text);
@@ -119,7 +121,7 @@ namespace TL
 									else if (c == ')') break;
 								}
 								textUrl.url = sb.ToString(offset + 2, offset2 - offset - 3);
-								if (textUrl.url.StartsWith("tg://user?id=") && long.TryParse(textUrl.url[13..], out var id) && client.GetAccessHashFor<User>(id) is long hash)
+								if (textUrl.url.StartsWith("tg://user?id=") && long.TryParse(textUrl.url[13..], out var id) && (users?.GetValueOrDefault(id)?.access_hash ?? client.GetAccessHashFor<User>(id)) is long hash)
 									entities[lastIndex] = new InputMessageEntityMentionName { offset = textUrl.offset, length = textUrl.length, user_id = new InputUser(id, hash) };
 								else if ((textUrl.url.StartsWith("tg://emoji?id=") || textUrl.url.StartsWith("emoji?id=")) && long.TryParse(textUrl.url[(textUrl.url.IndexOf('=') + 1)..], out id))
 									if (premium) entities[lastIndex] = new MessageEntityCustomEmoji { offset = textUrl.offset, length = textUrl.length, document_id = id };
@@ -247,8 +249,9 @@ namespace TL
 		/// <param name="client">Client, used for getting access_hash for <c>tg://user?id=</c> URLs</param>
 		/// <param name="text">[in] The HTML-formatted text<br/>[out] The same (plain) text, stripped of all HTML tags</param>
 		/// <param name="premium">Generate premium entities if any</param>
+		/// <param name="users">Dictionary used for <c>tg://user?id=</c> notation</param>
 		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="WTelegram.Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="WTelegram.Client.SendMediaAsync">SendMediaAsync</see></returns>
-		public static MessageEntity[] HtmlToEntities(this WTelegram.Client client, ref string text, bool premium = false)
+		public static MessageEntity[] HtmlToEntities(this WTelegram.Client client, ref string text, bool premium = false, Dictionary<long, User> users = null)
 		{
 			var entities = new List<MessageEntity>();
 			var sb = new StringBuilder(text);
@@ -303,7 +306,7 @@ namespace TL
 							else if (tag.StartsWith("a href=\"") && tag.EndsWith("\""))
 							{
 								tag = tag[8..^1];
-								if (tag.StartsWith("tg://user?id=") && long.TryParse(tag[13..], out var user_id) && client.GetAccessHashFor<User>(user_id) is long hash)
+								if (tag.StartsWith("tg://user?id=") && long.TryParse(tag[13..], out var user_id) && (users?.GetValueOrDefault(user_id)?.access_hash ?? client.GetAccessHashFor<User>(user_id)) is long hash)
 									entities.Add(new InputMessageEntityMentionName { offset = offset, length = -1, user_id = new InputUser(user_id, hash) });
 								else
 									entities.Add(new MessageEntityTextUrl { offset = offset, length = -1, url = tag });

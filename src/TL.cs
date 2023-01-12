@@ -95,7 +95,9 @@ namespace TL
 				if (field.FieldType.IsEnum)
 					if (field.Name == "flags") flags = (uint)value;
 					else if (field.Name == "flags2") flags |= (ulong)(uint)value << 32;
+#pragma warning disable CS0618 // Type or member is obsolete
 				if (reader.Client?.CollectAccessHash == true) reader.Client.CollectField(field, obj, value);
+#pragma warning restore CS0618 // Type or member is obsolete
 			}
 			return (IObject)obj;
 		}

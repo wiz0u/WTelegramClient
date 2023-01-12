@@ -16,7 +16,9 @@ namespace WTelegram
 	partial class Client
 	{
 		#region Collect Access Hash system
-		/// <summary>Enable the collection of id/access_hash pairs (experimental)<br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash"/></summary>
+		#pragma warning disable CS0618 // Type or member is obsolete
+		/// <summary>Enable the collection of id/access_hash pairs (deprecated)</summary>
+		[Obsolete("This system will be removed in a future version. You should use CollectUsersChats helper on API results or updates instead. See https://wiz0u.github.io/WTelegramClient/EXAMPLES#collect-users-chats")]
 		public bool CollectAccessHash { get; set; }
 		public IEnumerable<KeyValuePair<long, long>> AllAccessHashesFor<T>() where T : IObject => _accessHashes.GetValueOrDefault(typeof(T));
 		private readonly Dictionary<Type, Dictionary<long, long>> _accessHashes = new();
@@ -53,6 +55,7 @@ namespace WTelegram
 			lock (_accessHashes)
 				_accessHashes.GetOrCreate(type)[id] = accessHash;
 		}
+		#pragma warning restore CS0618 // Type or member is obsolete
 		#endregion
 
 		#region Client TL Helpers
