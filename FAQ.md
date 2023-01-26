@@ -50,28 +50,32 @@ calling `client.Login(...)` as the user provides the requested configuration ele
 You can download such full example apps [for WinForms](Examples/WinForms_app.zip) and [for ASP.NET](Examples/ASPnet_webapp.zip)
 
 <a name="access-hash"></a>
-## 4. How to use IDs? Where to get the access_hash? Why the error `CHANNEL_INVALID` or `USER_ID_INVALID`?
+## 4. How to use IDs and access_hash? Why the error `CHANNEL_INVALID` or `USER_ID_INVALID`?
 
-Having only the ID is **not enough**: An `access_hash` is required by Telegram when dealing with a channel, user, photo, document, etc...  
-This serves as a proof that the logged-in user is entitled to access it (otherwise, anybody with the ID could access it)
+⚠️ In Telegram Client API *(contrary to Bot API)*, you **cannot** interact with channels/users/etc. with only their IDs.
+
+You also need to obtain their `access_hash` which is specific to the resource you want to access AND to the currently logged-in user.  
+This serves as a proof that the logged-in user is entitled to access that channel/user/photo/document/...
+(otherwise, anybody with the ID could access it)
 
 > A small private `Chat` don't need an access_hash and can be queried using their `chat_id` only.
 However most common chat groups are not `Chat` but a `Channel` supergroup (without the `broadcast` flag). See [Terminology in ReadMe](README.md#terminology).  
 Some TL methods only applies to private `Chat`, some only applies to `Channel` and some to both.
 
 The `access_hash` must usually be provided within the `Input...` structure you pass in argument to an API method (`InputPeer`, `InputChannel`, `InputUser`, etc...).  
-You obtain the `access_hash` through **description structures** like `Channel`, `User`, `Photo`, `Document` that you receive through updates or when you query them through API methods like `Messages_GetAllChats`, `Messages_GetAllDialogs`, `Contacts_ResolveUsername`, etc...  
-*(if you have a `Peer` object, you can convert it to a `User`/`Channel`/`Chat` via the `UserOrChat` helper from the root class that contained the peer)*
 
-Once you obtained the description structure, there are 3 methods for building your `Input...` request structure:
-* **Recommended:** If you take a look at the **description structure** base class `ChatBase/UserBase`, 
-you will see that they have conversion implicit operators or methods that can create the `Input...` structure for you automatically.  
-So you can just pass that structure you already have, in place of the `Input...` argument, it will work!
-* Alternatively, you can manually create the `Input...` structure yourself by extracting the `access_hash` from the **description structure**
-* If you have enabled the [CollectAccessHash system](EXAMPLES.md#collect-access-hash) at the start of your session, it will have collected the `access_hash` automatically when you obtained the description structure.
-You can then retrieve it with `client.GetAccessHashFor<User/Channel/Photo/Document>(id)`
+You obtain the `access_hash` through TL **description structures** like `Channel`, `User`, `Photo`, `Document` that you receive through updates
+or when you query them through API methods like `Messages_GetAllChats`, `Messages_GetAllDialogs`, `Contacts_ResolveUsername`, etc...  
 
-⚠️ *An `access_hash` obtained from a User/Channel structure with flag `min` may not be usable for most requests. See [Min constructors](https://core.telegram.org/api/min).*
+You can use the [`UserOrChat` and `CollectUsersChats` methods](EXAMPLES.md#collect-users-chats) to help you in obtaining/collecting
+the description structures you receive via API calls or updates.
+
+Once you obtained the description structure, there are 2 methods for building your `Input...` request structure:
+* **Recommended:** Just pass that description structure you already have, in place of the `Input...` argument, it will work!  
+*The implicit conversion operators on base classes like `ChatBase/UserBase` will create the `Input...` structure for you automatically.*
+* Alternatively, you can manually create the `Input...` structure yourself by extracting the `access_hash` from the description structure
+
+*Note: An `access_hash` obtained from a User/Channel structure with flag `min` may not be usable for most requests. See [Min constructors](https://core.telegram.org/api/min).*
 
 <a name="dev-versions"></a>
 ## 5. I need to test a feature that has been recently developed but seems not available in my program

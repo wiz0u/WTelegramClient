@@ -89,7 +89,7 @@ Its `int` argument is the log severity, compatible with the [LogLevel enum](http
 Since version 3.0.0, a new approach to login/configuration has been added. Some people might find it easier to deal with:
 
 ```csharp
-WTelegram.Client client = new WTelegram.Client(YOUR_API_ID, "YOUR_API_HASH");
+WTelegram.Client client = new WTelegram.Client(YOUR_API_ID, "YOUR_API_HASH"); // this constructor doesn't need a Config method
 await DoLogin("+12025550156"); // initial call with user's phone_number
 
 async Task DoLogin(string loginInfo) // (add this method to your code)

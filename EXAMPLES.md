@@ -12,7 +12,7 @@ await client.LoginUserIfNeeded();
 
 In this case, environment variables are used for configuration so make sure to
 go to your **Project Properties > Debug > Environment variables**
-and add at least these variables with adequate value: **api_id, api_hash, phone_number**
+and add at least these variables with adequate values: **api_id, api_hash, phone_number**
 
 Remember that these are just simple example codes that you should adjust to your needs.
 In real production code, you might want to properly test the success of each operation or handle exceptions,
@@ -453,25 +453,30 @@ These two dictionaries give details about the various users/chats that will be t
 typically in the form of a `Peer` object or a `user_id` field.
 
 In such case, the root structure inherits the `IPeerResolver` interface, and you can use the `UserOrChat(peer)` method to resolve a `Peer`
-into either a `User` or `ChatBase` (`Chat`,`Channel`...) description structure *(depending what kind of peer it was describing)*
+into either a `User` or `ChatBase` (`Chat`,`Channel`...) description structure *(depending on the kind of peer it was describing)*
 
 You can also use the `CollectUsersChats` helper method to collect these 2 fields into 2 aggregate dictionaries to remember details
 *(including access hashes)* about all the users/chats you've encountered so far.
 
-Example of usage for `CollectUsersChats`:
+Example of usage:
 ```csharp
-static Dictionary<long, User> _users = new();
-static Dictionary<long, ChatBase> _chats = new();
+private Dictionary<long, User> _users = new();
+private Dictionary<long, ChatBase> _chats = new();
 ...
 var dialogs = await client.Messages_GetAllDialogs();
 dialogs.CollectUsersChats(_users, _chats);
-...
-private static async Task OnUpdate(IObject arg)
+
+private async Task OnUpdate(IObject arg)
 {
 	if (arg is not UpdatesBase updates) return;
 	updates.CollectUsersChats(_users, _chats);
     ...
 }
+
+// example of UserOrChat usage:
+var firstPeer = dialogs.UserOrChat(dialogs.dialogs[0].Peer);
+if (firstPeer is User firstUser) Console.WriteLine($"First dialog is with user {firstUser}");
+else if (firstPeer is ChatBase firstChat) Console.WriteLine($"First dialog is {firstChat}");
 ```
 
 *Note: If you need to save/restore those dictionaries between runs of your program, it's up to you to serialize their content to disk*
