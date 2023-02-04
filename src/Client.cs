@@ -1016,29 +1016,31 @@ namespace WTelegram
 				User = null;
 			}
 			phone_number ??= Config("phone_number");
-			Auth_SentCode sentCode;
+			Auth_SentCodeBase sentCodeBase;
 #pragma warning disable CS0618 // Auth_* methods are marked as obsolete
 			try
 			{
-				sentCode = await this.Auth_SendCode(phone_number, _session.ApiId, _apiHash ??= Config("api_hash"), settings ??= new());
+				sentCodeBase = await this.Auth_SendCode(phone_number, _session.ApiId, _apiHash ??= Config("api_hash"), settings ??= new());
 			}
 			catch (RpcException ex) when (ex.Code == 500 && ex.Message == "AUTH_RESTART")
 			{
-				sentCode = await this.Auth_SendCode(phone_number, _session.ApiId, _apiHash, settings);
+				sentCodeBase = await this.Auth_SendCode(phone_number, _session.ApiId, _apiHash, settings);
 			}
 			Auth_AuthorizationBase authorization = null;
+			string phone_code_hash = null;
 			try
 			{
-				if (sentCode.type is Auth_SentCodeTypeSetUpEmailRequired setupEmail)
+				if (sentCodeBase is Auth_SentCode { type: Auth_SentCodeTypeSetUpEmailRequired setupEmail } setupSentCode)
 				{
+					phone_code_hash = setupSentCode.phone_code_hash;
 					Helpers.Log(3, "A login email is required");
-					RaiseUpdate(sentCode);
+					RaiseUpdate(sentCodeBase);
 					var email = _config("email");
 					if (string.IsNullOrEmpty(email))
-						sentCode = await this.Auth_ResendCode(phone_number, sentCode.phone_code_hash);
+						sentCodeBase = await this.Auth_ResendCode(phone_number, phone_code_hash);
 					else
 					{
-						var purpose = new EmailVerifyPurposeLoginSetup { phone_number = phone_number, phone_code_hash = sentCode.phone_code_hash };
+						var purpose = new EmailVerifyPurposeLoginSetup { phone_number = phone_number, phone_code_hash = phone_code_hash };
 						if (email is not "Google" and not "Apple")
 						{
 							var sentEmail = await this.Account_SendVerifyEmailCode(purpose, email);
@@ -1063,55 +1065,61 @@ namespace WTelegram
 								if (retry >= MaxCodePwdAttempts) throw;
 							}
 						if (verified is Account_EmailVerifiedLogin verifiedLogin) // (it should always be)
-							sentCode = verifiedLogin.sent_code;
+							sentCodeBase = verifiedLogin.sent_code;
 					}
 				}
 			resent:
-				var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);
-				Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
-				RaiseUpdate(sentCode);
-				for (int retry = 1; authorization == null; retry++)
-					try
-					{
-						var verification_code = await ConfigAsync("verification_code");
-						if (verification_code == "" && sentCode.next_type != 0)
+				if (sentCodeBase is Auth_SentCodeSuccess success)
+					authorization = success.authorization;
+				else if (sentCodeBase is Auth_SentCode sentCode)
+				{
+					phone_code_hash = sentCode.phone_code_hash;
+					var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);
+					Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
+					RaiseUpdate(sentCode);
+					for (int retry = 1; authorization == null; retry++)
+						try
 						{
-							var mustWait = timeout - DateTime.UtcNow;
-							if (mustWait.Ticks > 0)
+							var verification_code = await ConfigAsync("verification_code");
+							if (verification_code == "" && sentCode.next_type != 0)
 							{
-								Helpers.Log(3, $"You must wait {(int)(mustWait.TotalSeconds + 0.5)} more seconds before requesting the code to be sent via {sentCode.next_type}");
-								continue;
+								var mustWait = timeout - DateTime.UtcNow;
+								if (mustWait.Ticks > 0)
+								{
+									Helpers.Log(3, $"You must wait {(int)(mustWait.TotalSeconds + 0.5)} more seconds before requesting the code to be sent via {sentCode.next_type}");
+									continue;
+								}
+								sentCodeBase = await this.Auth_ResendCode(phone_number, phone_code_hash);
+								goto resent;
 							}
-							sentCode = await this.Auth_ResendCode(phone_number, sentCode.phone_code_hash);
-							goto resent;
+							authorization = await this.Auth_SignIn(phone_number, phone_code_hash, verification_code);
 						}
-						authorization = await this.Auth_SignIn(phone_number, sentCode.phone_code_hash, verification_code);
-					}
-					catch (RpcException e) when (e.Code == 400 && e.Message == "PHONE_CODE_INVALID")
-					{
-						Helpers.Log(4, "Wrong verification code!");
-						if (retry >= MaxCodePwdAttempts) throw;
-					}
-					catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
-					{
-						for (int pwdRetry = 1; authorization == null; pwdRetry++)
-							try
-							{
-								var accountPassword = await this.Account_GetPassword();
-								RaiseUpdate(accountPassword);
-								var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
-								authorization = await this.Auth_CheckPassword(checkPasswordSRP);
-							}
-							catch (RpcException pe) when (pe.Code == 400 && pe.Message == "PASSWORD_HASH_INVALID")
-							{
-								Helpers.Log(4, "Wrong password!");
-								if (pwdRetry >= MaxCodePwdAttempts) throw;
-							}
-					}
+						catch (RpcException e) when (e.Code == 400 && e.Message == "PHONE_CODE_INVALID")
+						{
+							Helpers.Log(4, "Wrong verification code!");
+							if (retry >= MaxCodePwdAttempts) throw;
+						}
+						catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
+						{
+							for (int pwdRetry = 1; authorization == null; pwdRetry++)
+								try
+								{
+									var accountPassword = await this.Account_GetPassword();
+									RaiseUpdate(accountPassword);
+									var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
+									authorization = await this.Auth_CheckPassword(checkPasswordSRP);
+								}
+								catch (RpcException pe) when (pe.Code == 400 && pe.Message == "PASSWORD_HASH_INVALID")
+								{
+									Helpers.Log(4, "Wrong password!");
+									if (pwdRetry >= MaxCodePwdAttempts) throw;
+								}
+						}
+				}
 			}
 			catch (Exception ex) when (ex is not RpcException { Message: "FLOOD_WAIT_X" })
 			{
-				try { await this.Auth_CancelCode(phone_number, sentCode.phone_code_hash); } catch { }
+				try { await this.Auth_CancelCode(phone_number, phone_code_hash); } catch { }
 				throw;
 			}
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
@@ -1122,7 +1130,7 @@ namespace WTelegram
 				var last_name = Config("last_name");
 				var wait = waitUntil - DateTime.UtcNow;
 				if (wait > TimeSpan.Zero) await Task.Delay(wait); // we get a FLOOD_WAIT_3 if we SignUp too fast
-				authorization = await this.Auth_SignUp(phone_number, sentCode.phone_code_hash, first_name, last_name);
+				authorization = await this.Auth_SignUp(phone_number, phone_code_hash, first_name, last_name);
 			}
 #pragma warning restore CS0618
 			LoginAlreadyDone(authorization);

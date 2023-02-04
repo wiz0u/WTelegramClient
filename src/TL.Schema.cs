@@ -452,7 +452,7 @@ namespace TL
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/inputChatPhotoEmpty">inputChatPhotoEmpty</a></remarks>
 	public abstract class InputChatPhotoBase : IObject { }
 	/// <summary>New photo to be set as group profile photo.		<para>See <a href="https://corefork.telegram.org/constructor/inputChatUploadedPhoto"/></para></summary>
-	[TLDef(0xC642724E)]
+	[TLDef(0xBDCDAEC0)]
 	public class InputChatUploadedPhoto : InputChatPhotoBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -463,6 +463,7 @@ namespace TL
 		[IfFlag(1)] public InputFileBase video;
 		/// <summary>Timestamp that should be shown as static preview to the user (seconds)</summary>
 		[IfFlag(2)] public double video_start_ts;
+		[IfFlag(3)] public VideoSizeBase video_emoji_markup;
 
 		[Flags] public enum Flags : uint
 		{
@@ -472,6 +473,8 @@ namespace TL
 			has_video = 0x2,
 			/// <summary>Field <see cref="video_start_ts"/> has a value</summary>
 			has_video_start_ts = 0x4,
+			/// <summary>Field <see cref="video_emoji_markup"/> has a value</summary>
+			has_video_emoji_markup = 0x8,
 		}
 	}
 	/// <summary>Existing photo to be set as a chat profile photo.		<para>See <a href="https://corefork.telegram.org/constructor/inputChatPhoto"/></para></summary>
@@ -1169,6 +1172,7 @@ namespace TL
 			has_requests_pending = 0x20000,
 			/// <summary>Field <see cref="available_reactions"/> has a value</summary>
 			has_available_reactions = 0x40000,
+			translations_disabled = 0x80000,
 		}
 
 		/// <summary>ID of the chat</summary>
@@ -1353,6 +1357,7 @@ namespace TL
 			can_delete_channel = 0x1,
 			antispam = 0x2,
 			participants_hidden = 0x4,
+			translations_disabled = 0x8,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -2213,6 +2218,13 @@ namespace TL
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionAttachMenuBotAllowed"/></para></summary>
 	[TLDef(0xE7E75F97)]
 	public class MessageActionAttachMenuBotAllowed : MessageAction { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionRequestedPeer"/></para></summary>
+	[TLDef(0xFE77345D)]
+	public class MessageActionRequestedPeer : MessageAction
+	{
+		public int button_id;
+		public Peer peer;
+	}
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
 	public abstract class DialogBase : IObject
@@ -2332,7 +2344,7 @@ namespace TL
 		/// <summary>Available sizes for download</summary>
 		public PhotoSizeBase[] sizes;
 		/// <summary><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">For animated profiles</a>, the MPEG4 videos</summary>
-		[IfFlag(1)] public VideoSize[] video_sizes;
+		[IfFlag(1)] public VideoSizeBase[] video_sizes;
 		/// <summary>DC ID to use for download</summary>
 		public int dc_id;
 
@@ -2457,9 +2469,11 @@ namespace TL
 		}
 	}
 
+	/// <summary>Contains info on a confirmation code message sent via SMS, phone call or Telegram.		<para>See <a href="https://corefork.telegram.org/type/auth.SentCode"/></para>		<para>Derived classes: <see cref="Auth_SentCode"/></para></summary>
+	public abstract class Auth_SentCodeBase : IObject { }
 	/// <summary>Contains info about a sent verification code.		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCode"/></para></summary>
 	[TLDef(0x5E002502)]
-	public class Auth_SentCode : IObject
+	public class Auth_SentCode : Auth_SentCodeBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -2480,11 +2494,17 @@ namespace TL
 			has_timeout = 0x4,
 		}
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeSuccess"/></para></summary>
+	[TLDef(0x2390FE44)]
+	public class Auth_SentCodeSuccess : Auth_SentCodeBase
+	{
+		public Auth_AuthorizationBase authorization;
+	}
 
 	/// <summary>Object contains info on user authorization.		<para>See <a href="https://corefork.telegram.org/type/auth.Authorization"/></para>		<para>Derived classes: <see cref="Auth_Authorization"/>, <see cref="Auth_AuthorizationSignUpRequired"/></para></summary>
 	public abstract class Auth_AuthorizationBase : IObject { }
 	/// <summary>Contains user authorization info.		<para>See <a href="https://corefork.telegram.org/constructor/auth.authorization"/></para></summary>
-	[TLDef(0x33FB7BB8)]
+	[TLDef(0x2EA2C0D4)]
 	public class Auth_Authorization : Auth_AuthorizationBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -2493,6 +2513,7 @@ namespace TL
 		[IfFlag(1)] public int otherwise_relogin_days;
 		/// <summary>Temporary <a href="https://corefork.telegram.org/passport">passport</a> sessions</summary>
 		[IfFlag(0)] public int tmp_sessions;
+		[IfFlag(2)] public byte[] future_auth_token;
 		/// <summary>Info on authorized user</summary>
 		public UserBase user;
 
@@ -2502,6 +2523,8 @@ namespace TL
 			has_tmp_sessions = 0x1,
 			/// <summary>Suggests the user to set up a 2-step verification password to be able to log in again</summary>
 			setup_password_required = 0x2,
+			/// <summary>Field <see cref="future_auth_token"/> has a value</summary>
+			has_future_auth_token = 0x4,
 		}
 	}
 	/// <summary>An account with this phone number doesn't exist on telegram: the user has to <a href="https://corefork.telegram.org/api/auth">enter basic information and sign up</a>		<para>See <a href="https://corefork.telegram.org/constructor/auth.authorizationSignUpRequired"/></para></summary>
@@ -2837,6 +2860,7 @@ namespace TL
 			has_personal_photo = 0x200000,
 			/// <summary>Field <see cref="fallback_photo"/> has a value</summary>
 			has_fallback_photo = 0x400000,
+			translations_disabled = 0x800000,
 		}
 	}
 
@@ -4414,6 +4438,9 @@ namespace TL
 	{
 		public long user_id;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateAutoSaveSettings"/></para></summary>
+	[TLDef(0xEC05B097)]
+	public class UpdateAutoSaveSettings : Update { }
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]
@@ -5377,7 +5404,7 @@ namespace TL
 		/// <summary>Thumbnails</summary>
 		[IfFlag(0)] public PhotoSizeBase[] thumbs;
 		/// <summary>Video thumbnails</summary>
-		[IfFlag(1)] public VideoSize[] video_thumbs;
+		[IfFlag(1)] public VideoSizeBase[] video_thumbs;
 		/// <summary>DC ID</summary>
 		public int dc_id;
 		/// <summary>Attributes</summary>
@@ -6573,6 +6600,13 @@ namespace TL
 	[TLDef(0xA0C0505C)]
 	public class KeyboardButtonSimpleWebView : KeyboardButtonWebView
 	{
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRequestPeer"/></para></summary>
+	[TLDef(0x0D0B468C, inheritBefore = true)]
+	public class KeyboardButtonRequestPeer : KeyboardButton
+	{
+		public int button_id;
+		public RequestPeerType peer_type;
 	}
 
 	/// <summary>Inline keyboard row		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRow"/></para></summary>
@@ -7862,6 +7896,21 @@ namespace TL
 	public class Auth_SentCodeTypeFragmentSms : Auth_SentCodeTypeSms
 	{
 		public string url;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeFirebaseSms"/></para></summary>
+	[TLDef(0xE57B1432)]
+	public class Auth_SentCodeTypeFirebaseSms : Auth_SentCodeTypeSms
+	{
+		public Flags flags;
+		[IfFlag(0)] public byte[] nonce;
+		[IfFlag(1)] public string receipt;
+		[IfFlag(1)] public int push_timeout;
+
+		[Flags] public enum Flags : uint
+		{
+			has_nonce = 0x1,
+			has_receipt = 0x2,
+		}
 	}
 
 	/// <summary>Callback answer sent by the bot in response to a button press		<para>See <a href="https://corefork.telegram.org/constructor/messages.botCallbackAnswer"/></para></summary>
@@ -11378,6 +11427,13 @@ namespace TL
 			/// <summary>If set, does not allow any user to pin messages in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a></summary>
 			pin_messages = 0x20000,
 			manage_topics = 0x40000,
+			send_photos = 0x80000,
+			send_videos = 0x100000,
+			send_roundvideos = 0x200000,
+			send_audios = 0x400000,
+			send_voices = 0x800000,
+			send_docs = 0x1000000,
+			send_plain = 0x2000000,
 		}
 	}
 
@@ -11419,13 +11475,15 @@ namespace TL
 	}
 
 	/// <summary>Settings used by telegram servers for sending the confirm code.		<para>See <a href="https://corefork.telegram.org/constructor/codeSettings"/></para></summary>
-	[TLDef(0x8A6469C2)]
+	[TLDef(0xAD253D78)]
 	public class CodeSettings : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		/// <summary>Previously stored logout tokens, see <a href="https://corefork.telegram.org/api/auth#logout-tokens">the documentation for more info »</a></summary>
 		[IfFlag(6)] public byte[][] logout_tokens;
+		[IfFlag(8)] public string token;
+		[IfFlag(8)] public bool app_sandbox;
 
 		[Flags] public enum Flags : uint
 		{
@@ -11439,6 +11497,9 @@ namespace TL
 			allow_missed_call = 0x20,
 			/// <summary>Field <see cref="logout_tokens"/> has a value</summary>
 			has_logout_tokens = 0x40,
+			allow_firebase = 0x80,
+			/// <summary>Field <see cref="token"/> has a value</summary>
+			has_token = 0x100,
 		}
 	}
 
@@ -12241,9 +12302,11 @@ namespace TL
 		public IPeerInfo UserOrChat => peer?.UserOrChat(users, chats);
 	}
 
+	/// <summary>Represents an animated video thumbnail		<para>See <a href="https://corefork.telegram.org/type/VideoSize"/></para>		<para>Derived classes: <see cref="VideoSize"/></para></summary>
+	public abstract class VideoSizeBase : IObject { }
 	/// <summary><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> in MPEG4 format		<para>See <a href="https://corefork.telegram.org/constructor/videoSize"/></para></summary>
 	[TLDef(0xDE33B094)]
-	public class VideoSize : IObject
+	public class VideoSize : VideoSizeBase
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
@@ -12263,6 +12326,21 @@ namespace TL
 			/// <summary>Field <see cref="video_start_ts"/> has a value</summary>
 			has_video_start_ts = 0x1,
 		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/videoSizeEmojiMarkup"/></para></summary>
+	[TLDef(0xF85C413C)]
+	public class VideoSizeEmojiMarkup : VideoSizeBase
+	{
+		public long emoji_id;
+		public int[] background_colors;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/videoSizeStickerMarkup"/></para></summary>
+	[TLDef(0x0DA082FE)]
+	public class VideoSizeStickerMarkup : VideoSizeBase
+	{
+		public InputStickerSet stickerset;
+		public long sticker_id;
+		public int[] background_colors;
 	}
 
 	/// <summary>Information about an active user in a supergroup		<para>See <a href="https://corefork.telegram.org/constructor/statsGroupTopPoster"/></para></summary>
@@ -13354,19 +13432,6 @@ namespace TL
 		public AvailableReaction[] reactions;
 	}
 
-	/// <summary>Translated text, or no result		<para>See <a href="https://corefork.telegram.org/type/messages.TranslatedText"/></para>		<para>Derived classes: <see cref="Messages_TranslateNoResult"/>, <see cref="Messages_TranslateResultText"/></para></summary>
-	public abstract class Messages_TranslatedText : IObject { }
-	/// <summary>No translation is available		<para>See <a href="https://corefork.telegram.org/constructor/messages.translateNoResult"/></para></summary>
-	[TLDef(0x67CA4737)]
-	public class Messages_TranslateNoResult : Messages_TranslatedText { }
-	/// <summary>Translated text		<para>See <a href="https://corefork.telegram.org/constructor/messages.translateResultText"/></para></summary>
-	[TLDef(0xA214F7D0)]
-	public class Messages_TranslateResultText : Messages_TranslatedText
-	{
-		/// <summary>Translated text</summary>
-		public string text;
-	}
-
 	/// <summary>How a certain peer reacted to the message		<para>See <a href="https://corefork.telegram.org/constructor/messagePeerReaction"/></para></summary>
 	[TLDef(0xB156FE9C)]
 	public class MessagePeerReaction : IObject
@@ -13685,6 +13750,7 @@ namespace TL
 		{
 			/// <summary>Pass true if this is a restore of a Telegram Premium purchase; only for the App Store</summary>
 			restore = 0x1,
+			upgrade = 0x2,
 		}
 	}
 	/// <summary>Info about a gifted Telegram Premium purchase		<para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentGiftPremium"/></para></summary>
@@ -13867,15 +13933,16 @@ namespace TL
 	public class Account_EmailVerifiedLogin : Account_EmailVerified
 	{
 		/// <summary>Info about the sent <a href="https://corefork.telegram.org/api/auth">login code</a></summary>
-		public Auth_SentCode sent_code;
+		public Auth_SentCodeBase sent_code;
 	}
 
 	/// <summary>Describes a Telegram Premium subscription option		<para>See <a href="https://corefork.telegram.org/constructor/premiumSubscriptionOption"/></para></summary>
-	[TLDef(0xB6F11EBE)]
+	[TLDef(0x5F2D1DF2)]
 	public class PremiumSubscriptionOption : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		[IfFlag(3)] public string transaction;
 		/// <summary>Duration of subscription in months</summary>
 		public int months;
 		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
@@ -13893,6 +13960,8 @@ namespace TL
 			has_store_product = 0x1,
 			current = 0x2,
 			can_purchase_upgrade = 0x4,
+			/// <summary>Field <see cref="transaction"/> has a value</summary>
+			has_transaction = 0x8,
 		}
 	}
 
@@ -14040,5 +14109,140 @@ namespace TL
 	{
 		public string url;
 		public DateTime expires;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/RequestPeerType"/></para></summary>
+	public abstract class RequestPeerType : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/requestPeerTypeUser"/></para></summary>
+	[TLDef(0x5F3B8A00)]
+	public class RequestPeerTypeUser : RequestPeerType
+	{
+		public Flags flags;
+		[IfFlag(0)] public bool bot;
+		[IfFlag(1)] public bool premium;
+
+		[Flags] public enum Flags : uint
+		{
+			has_bot = 0x1,
+			has_premium = 0x2,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/requestPeerTypeChat"/></para></summary>
+	[TLDef(0xC9F06E1B)]
+	public class RequestPeerTypeChat : RequestPeerType
+	{
+		public Flags flags;
+		[IfFlag(3)] public bool has_username;
+		[IfFlag(4)] public bool forum;
+		[IfFlag(1)] public ChatAdminRights user_admin_rights;
+		[IfFlag(2)] public ChatAdminRights bot_admin_rights;
+
+		[Flags] public enum Flags : uint
+		{
+			creator = 0x1,
+			has_user_admin_rights = 0x2,
+			has_bot_admin_rights = 0x4,
+			has_has_username = 0x8,
+			has_forum = 0x10,
+			bot_participant = 0x20,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/requestPeerTypeBroadcast"/></para></summary>
+	[TLDef(0x339BEF6C)]
+	public class RequestPeerTypeBroadcast : RequestPeerType
+	{
+		public Flags flags;
+		[IfFlag(3)] public bool has_username;
+		[IfFlag(1)] public ChatAdminRights user_admin_rights;
+		[IfFlag(2)] public ChatAdminRights bot_admin_rights;
+
+		[Flags] public enum Flags : uint
+		{
+			creator = 0x1,
+			has_user_admin_rights = 0x2,
+			has_bot_admin_rights = 0x4,
+			has_has_username = 0x8,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emojiList"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></remarks>
+	[TLDef(0x7A1E11D1)]
+	public class EmojiList : IObject
+	{
+		public long hash;
+		public long[] document_id;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emojiGroup"/></para></summary>
+	[TLDef(0x7A9ABDA9)]
+	public class EmojiGroup : IObject
+	{
+		public string title;
+		public long icon_emoji_id;
+		public string[] emoticons;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.emojiGroups"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></remarks>
+	[TLDef(0x881FB94B)]
+	public class Messages_EmojiGroups : IObject
+	{
+		public int hash;
+		public EmojiGroup[] groups;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/textWithEntities"/></para></summary>
+	[TLDef(0x751F3146)]
+	public class TextWithEntities : IObject
+	{
+		public string text;
+		public MessageEntity[] entities;
+	}
+
+	/// <summary>Translated text, or no result		<para>See <a href="https://corefork.telegram.org/type/messages.TranslatedText"/></para>		<para>Derived classes: <see cref="Messages_TranslateNoResult"/>, <see cref="Messages_TranslateResultText"/></para></summary>
+	public abstract class Messages_TranslatedText : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.translateResult"/></para></summary>
+	[TLDef(0x33DB32F8)]
+	public class Messages_TranslateResult : Messages_TranslatedText
+	{
+		public TextWithEntities[] result;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/autoSaveSettings"/></para></summary>
+	[TLDef(0xC84834CE)]
+	public class AutoSaveSettings : IObject
+	{
+		public Flags flags;
+		[IfFlag(2)] public long video_max_size;
+
+		[Flags] public enum Flags : uint
+		{
+			photos = 0x1,
+			videos = 0x2,
+			has_video_max_size = 0x4,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/autoSaveException"/></para></summary>
+	[TLDef(0x81602D47)]
+	public class AutoSaveException : IObject
+	{
+		public Peer peer;
+		public AutoSaveSettings settings;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.autoSaveSettings"/></para></summary>
+	[TLDef(0x4C3E069D)]
+	public class Account_AutoSaveSettings : IObject, IPeerResolver
+	{
+		public AutoSaveSettings users_settings;
+		public AutoSaveSettings chats_settings;
+		public AutoSaveSettings broadcasts_settings;
+		public AutoSaveException[] exceptions;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 }

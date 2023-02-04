@@ -1,4 +1,4 @@
-﻿[![API Layer](https://img.shields.io/badge/API_Layer-151-blueviolet)](https://corefork.telegram.org/methods)
+﻿[![API Layer](https://img.shields.io/badge/API_Layer-152-blueviolet)](https://corefork.telegram.org/methods)
 [![NuGet version](https://img.shields.io/nuget/v/WTelegramClient?color=00508F)](https://www.nuget.org/packages/WTelegramClient/)
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://t.me/WTelegramBot?start=donate)

@@ -98,7 +98,7 @@ namespace TL
 		/// <param name="api_hash">Application secret hash (see <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="settings">Settings for the code type to send</param>
 		[Obsolete("Use LoginUserIfNeeded instead of this method. See https://wiz0u.github.io/WTelegramClient/FAQ#tlsharp")]
-		public static Task<Auth_SentCode> Auth_SendCode(this Client client, string phone_number, int api_id, string api_hash, CodeSettings settings)
+		public static Task<Auth_SentCodeBase> Auth_SendCode(this Client client, string phone_number, int api_id, string api_hash, CodeSettings settings)
 			=> client.Invoke(new Auth_SendCode
 			{
 				phone_number = phone_number,
@@ -224,7 +224,7 @@ namespace TL
 		/// <param name="phone_number">The phone number</param>
 		/// <param name="phone_code_hash">The phone code hash obtained from <see cref="Auth_SendCode">Auth_SendCode</see></param>
 		[Obsolete("Use LoginUserIfNeeded instead of this method. See https://wiz0u.github.io/WTelegramClient/FAQ#tlsharp")]
-		public static Task<Auth_SentCode> Auth_ResendCode(this Client client, string phone_number, string phone_code_hash)
+		public static Task<Auth_SentCodeBase> Auth_ResendCode(this Client client, string phone_number, string phone_code_hash)
 			=> client.Invoke(new Auth_ResendCode
 			{
 				phone_number = phone_number,
@@ -293,6 +293,17 @@ namespace TL
 				api_id = api_id,
 				api_hash = api_hash,
 				web_auth_token = web_auth_token,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.requestFirebaseSms"/></para></summary>
+		public static Task<bool> Auth_RequestFirebaseSms(this Client client, string phone_number, string phone_code_hash, string safety_net_token = null, string ios_push_secret = null)
+			=> client.Invoke(new Auth_RequestFirebaseSms
+			{
+				flags = (Auth_RequestFirebaseSms.Flags)((safety_net_token != null ? 0x1 : 0) | (ios_push_secret != null ? 0x2 : 0)),
+				phone_number = phone_number,
+				phone_code_hash = phone_code_hash,
+				safety_net_token = safety_net_token,
+				ios_push_secret = ios_push_secret,
 			});
 
 		/// <summary>Register device to receive <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>		<para>See <a href="https://corefork.telegram.org/method/account.registerDevice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.registerDevice#possible-errors">details</a>)</para></summary>
@@ -453,7 +464,7 @@ namespace TL
 		/// <summary>Verify a new phone number to associate to the current account		<para>See <a href="https://corefork.telegram.org/method/account.sendChangePhoneCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/account.sendChangePhoneCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">New phone number</param>
 		/// <param name="settings">Phone code settings</param>
-		public static Task<Auth_SentCode> Account_SendChangePhoneCode(this Client client, string phone_number, CodeSettings settings)
+		public static Task<Auth_SentCodeBase> Account_SendChangePhoneCode(this Client client, string phone_number, CodeSettings settings)
 			=> client.Invoke(new Account_SendChangePhoneCode
 			{
 				phone_number = phone_number,
@@ -521,7 +532,7 @@ namespace TL
 		/// <summary>Send confirmation code to cancel account deletion, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a>		<para>See <a href="https://corefork.telegram.org/method/account.sendConfirmPhoneCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.sendConfirmPhoneCode#possible-errors">details</a>)</para></summary>
 		/// <param name="hash">The hash from the service notification, for more info <a href="https://corefork.telegram.org/api/account-deletion">click here »</a></param>
 		/// <param name="settings">Phone code settings</param>
-		public static Task<Auth_SentCode> Account_SendConfirmPhoneCode(this Client client, string hash, CodeSettings settings)
+		public static Task<Auth_SentCodeBase> Account_SendConfirmPhoneCode(this Client client, string hash, CodeSettings settings)
 			=> client.Invoke(new Account_SendConfirmPhoneCode
 			{
 				hash = hash,
@@ -631,7 +642,7 @@ namespace TL
 		/// <summary>Send the verification phone code for telegram <a href="https://corefork.telegram.org/passport">passport</a>.		<para>See <a href="https://corefork.telegram.org/method/account.sendVerifyPhoneCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.sendVerifyPhoneCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">The phone number to verify</param>
 		/// <param name="settings">Phone code settings</param>
-		public static Task<Auth_SentCode> Account_SendVerifyPhoneCode(this Client client, string phone_number, CodeSettings settings)
+		public static Task<Auth_SentCodeBase> Account_SendVerifyPhoneCode(this Client client, string phone_number, CodeSettings settings)
 			=> client.Invoke(new Account_SendVerifyPhoneCode
 			{
 				phone_number = phone_number,
@@ -1066,6 +1077,43 @@ namespace TL
 				active = active,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getDefaultProfilePhotoEmojis"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
+		public static Task<EmojiList> Account_GetDefaultProfilePhotoEmojis(this Client client, long hash = default)
+			=> client.Invoke(new Account_GetDefaultProfilePhotoEmojis
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getDefaultGroupPhotoEmojis"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
+		public static Task<EmojiList> Account_GetDefaultGroupPhotoEmojis(this Client client, long hash = default)
+			=> client.Invoke(new Account_GetDefaultGroupPhotoEmojis
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getAutoSaveSettings"/></para></summary>
+		public static Task<Account_AutoSaveSettings> Account_GetAutoSaveSettings(this Client client)
+			=> client.Invoke(new Account_GetAutoSaveSettings
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.saveAutoSaveSettings"/></para></summary>
+		public static Task<bool> Account_SaveAutoSaveSettings(this Client client, AutoSaveSettings settings, InputPeer peer = null, bool users = false, bool chats = false, bool broadcasts = false)
+			=> client.Invoke(new Account_SaveAutoSaveSettings
+			{
+				flags = (Account_SaveAutoSaveSettings.Flags)((peer != null ? 0x8 : 0) | (users ? 0x1 : 0) | (chats ? 0x2 : 0) | (broadcasts ? 0x4 : 0)),
+				peer = peer,
+				settings = settings,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.deleteAutoSaveExceptions"/></para></summary>
+		public static Task<bool> Account_DeleteAutoSaveExceptions(this Client client)
+			=> client.Invoke(new Account_DeleteAutoSaveExceptions
+			{
+			});
+
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, params InputUserBase[] id)
@@ -1455,7 +1503,7 @@ namespace TL
 		/// <param name="peer">The destination where the message will be sent</param>
 		/// <param name="reply_to_msg_id">The message ID to which this message will reply to</param>
 		/// <param name="message">The message</param>
-		/// <param name="random_id">Unique client message ID required to prevent message resending</param>
+		/// <param name="random_id">Unique client message ID required to prevent message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="reply_markup">Reply markup for sending bot buttons</param>
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
@@ -1485,7 +1533,7 @@ namespace TL
 		/// <param name="reply_to_msg_id">Message ID to which this message should reply to</param>
 		/// <param name="media">Attached media</param>
 		/// <param name="message">Caption</param>
-		/// <param name="random_id">Random ID to avoid resending the same message</param>
+		/// <param name="random_id">Random ID to avoid resending the same message <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="reply_markup">Reply markup for bot keyboards</param>
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
@@ -1515,7 +1563,7 @@ namespace TL
 		/// <param name="noforwards">Only for bots, disallows further re-forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="from_peer">Source of messages</param>
 		/// <param name="id">IDs of messages</param>
-		/// <param name="random_id">Random ID to prevent resending of messages</param>
+		/// <param name="random_id">Random ID to prevent resending of messages <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="to_peer">Destination peer</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Forward the messages as the specified peer</param>
@@ -1701,7 +1749,7 @@ namespace TL
 		/// <summary>Sends a text message to a secret chat.		<para>See <a href="https://corefork.telegram.org/method/messages.sendEncrypted"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.sendEncrypted#possible-errors">details</a>)</para></summary>
 		/// <param name="silent">Send encrypted message without a notification</param>
 		/// <param name="peer">Secret chat ID</param>
-		/// <param name="random_id">Unique client message ID, necessary to avoid message resending</param>
+		/// <param name="random_id">Unique client message ID, necessary to avoid message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="data">TL-serialization of <see cref="DecryptedMessageBase"/> type, encrypted with a key that was created during chat initialization</param>
 		public static Task<Messages_SentEncryptedMessage> Messages_SendEncrypted(this Client client, InputEncryptedChat peer, long random_id, byte[] data, bool silent = false)
 			=> client.Invoke(new Messages_SendEncrypted
@@ -1715,7 +1763,7 @@ namespace TL
 		/// <summary>Sends a message with a file attachment to a secret chat		<para>See <a href="https://corefork.telegram.org/method/messages.sendEncryptedFile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendEncryptedFile#possible-errors">details</a>)</para></summary>
 		/// <param name="silent">Whether to send the file without triggering a notification</param>
 		/// <param name="peer">Secret chat ID</param>
-		/// <param name="random_id">Unique client message ID necessary to prevent message resending</param>
+		/// <param name="random_id">Unique client message ID necessary to prevent message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="data">TL-serialization of <see cref="DecryptedMessageBase"/> type, encrypted with a key generated during chat initialization</param>
 		/// <param name="file">File attachment for the secret chat</param>
 		public static Task<Messages_SentEncryptedMessage> Messages_SendEncryptedFile(this Client client, InputEncryptedChat peer, long random_id, byte[] data, InputEncryptedFileBase file, bool silent = false)
@@ -1730,7 +1778,7 @@ namespace TL
 
 		/// <summary>Sends a service message to a secret chat.		<para>See <a href="https://corefork.telegram.org/method/messages.sendEncryptedService"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.sendEncryptedService#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Secret chat ID</param>
-		/// <param name="random_id">Unique client message ID required to prevent message resending</param>
+		/// <param name="random_id">Unique client message ID required to prevent message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="data">TL-serialization of  <see cref="DecryptedMessageBase"/> type, encrypted with a key generated during chat initialization</param>
 		public static Task<Messages_SentEncryptedMessage> Messages_SendEncryptedService(this Client client, InputEncryptedChat peer, long random_id, byte[] data)
 			=> client.Invoke(new Messages_SendEncryptedService
@@ -1861,7 +1909,7 @@ namespace TL
 		/// <summary>Start a conversation with a bot using a <a href="https://corefork.telegram.org/api/links#bot-links">deep linking parameter</a>		<para>See <a href="https://corefork.telegram.org/method/messages.startBot"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/messages.startBot#possible-errors">details</a>)</para></summary>
 		/// <param name="bot">The bot</param>
 		/// <param name="peer">The chat where to start the bot, can be the bot's private chat or a group</param>
-		/// <param name="random_id">Random ID to avoid resending the same message</param>
+		/// <param name="random_id">Random ID to avoid resending the same message <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="start_param"><a href="https://corefork.telegram.org/api/links#bot-links">Deep linking parameter</a></param>
 		public static Task<UpdatesBase> Messages_StartBot(this Client client, InputUserBase bot, InputPeer peer, long random_id, string start_param)
 			=> client.Invoke(new Messages_StartBot
@@ -2014,7 +2062,7 @@ namespace TL
 		/// <param name="hide_via">Whether to hide the <c>via @botname</c> in the resulting message (only for bot usernames encountered in the <see cref="Config"/>)</param>
 		/// <param name="peer">Destination</param>
 		/// <param name="reply_to_msg_id">ID of the message this message should reply to</param>
-		/// <param name="random_id">Random ID to avoid resending the same query</param>
+		/// <param name="random_id">Random ID to avoid resending the same query <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="query_id">Query ID from <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see></param>
 		/// <param name="id">Result ID from <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see></param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
@@ -2376,7 +2424,7 @@ namespace TL
 		/// <summary>Notify the other user in a private chat that a screenshot of the chat was taken		<para>See <a href="https://corefork.telegram.org/method/messages.sendScreenshotNotification"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendScreenshotNotification#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Other user</param>
 		/// <param name="reply_to_msg_id">ID of message that was screenshotted, can be 0</param>
-		/// <param name="random_id">Random ID to avoid message resending</param>
+		/// <param name="random_id">Random ID to avoid message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		public static Task<UpdatesBase> Messages_SendScreenshotNotification(this Client client, InputPeer peer, int reply_to_msg_id, long random_id)
 			=> client.Invoke(new Messages_SendScreenshotNotification
 			{
@@ -3178,18 +3226,15 @@ namespace TL
 
 		/// <summary>Translate a given text		<para>See <a href="https://corefork.telegram.org/method/messages.translateText"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.translateText#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">If the text is a chat message, the peer ID</param>
-		/// <param name="msg_id">If the text is a chat message, the message ID</param>
 		/// <param name="text">The text to translate</param>
-		/// <param name="from_lang">Two-letter ISO 639-1 language code of the language from which the message is translated, if not set will be autodetected</param>
 		/// <param name="to_lang">Two-letter ISO 639-1 language code of the language to which the message is translated</param>
-		public static Task<Messages_TranslatedText> Messages_TranslateText(this Client client, string to_lang, InputPeer peer = null, int? msg_id = null, string text = null, string from_lang = null)
+		public static Task<Messages_TranslatedText> Messages_TranslateText(this Client client, string to_lang, InputPeer peer = null, int[] id = null, TextWithEntities[] text = null)
 			=> client.Invoke(new Messages_TranslateText
 			{
-				flags = (Messages_TranslateText.Flags)((peer != null ? 0x1 : 0) | (msg_id != null ? 0x1 : 0) | (text != null ? 0x2 : 0) | (from_lang != null ? 0x4 : 0)),
+				flags = (Messages_TranslateText.Flags)((peer != null ? 0x1 : 0) | (id != null ? 0x1 : 0) | (text != null ? 0x2 : 0)),
 				peer = peer,
-				msg_id = msg_id.GetValueOrDefault(),
+				id = id,
 				text = text,
-				from_lang = from_lang,
 				to_lang = to_lang,
 			});
 
@@ -3335,7 +3380,7 @@ namespace TL
 
 		/// <summary>Used by the user to relay data from an opened <a href="https://corefork.telegram.org/api/bots/webapps">reply keyboard bot web app</a> to the bot that owns it.		<para>See <a href="https://corefork.telegram.org/method/messages.sendWebViewData"/></para></summary>
 		/// <param name="bot">Bot that owns the web app</param>
-		/// <param name="random_id">Unique client message ID to prevent duplicate sending of the same event</param>
+		/// <param name="random_id">Unique client message ID to prevent duplicate sending of the same event <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="button_text">Text of the <see cref="KeyboardButtonSimpleWebView"/> that was pressed to open the web app.</param>
 		/// <param name="data">Data to relay to the bot, obtained from a <a href="https://corefork.telegram.org/api/web-events#web-app-data-send"><c>web_app_data_send</c> JS event</a>.</param>
 		public static Task<UpdatesBase> Messages_SendWebViewData(this Client client, InputUserBase bot, long random_id, string button_text, string data)
@@ -3457,6 +3502,57 @@ namespace TL
 			{
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.sendBotRequestedPeer"/></para></summary>
+		public static Task<UpdatesBase> Messages_SendBotRequestedPeer(this Client client, InputPeer peer, int msg_id, int button_id, InputPeer requested_peer)
+			=> client.Invoke(new Messages_SendBotRequestedPeer
+			{
+				peer = peer,
+				msg_id = msg_id,
+				button_id = button_id,
+				requested_peer = requested_peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getEmojiGroups"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></returns>
+		public static Task<Messages_EmojiGroups> Messages_GetEmojiGroups(this Client client, int hash = default)
+			=> client.Invoke(new Messages_GetEmojiGroups
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStatusGroups"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></returns>
+		public static Task<Messages_EmojiGroups> Messages_GetEmojiStatusGroups(this Client client, int hash = default)
+			=> client.Invoke(new Messages_GetEmojiStatusGroups
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getEmojiProfilePhotoGroups"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></returns>
+		public static Task<Messages_EmojiGroups> Messages_GetEmojiProfilePhotoGroups(this Client client, int hash = default)
+			=> client.Invoke(new Messages_GetEmojiProfilePhotoGroups
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.searchCustomEmoji"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
+		public static Task<EmojiList> Messages_SearchCustomEmoji(this Client client, string emoticon, long hash = default)
+			=> client.Invoke(new Messages_SearchCustomEmoji
+			{
+				emoticon = emoticon,
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.togglePeerTranslations"/></para></summary>
+		public static Task<bool> Messages_TogglePeerTranslations(this Client client, InputPeer peer, bool disabled = false)
+			=> client.Invoke(new Messages_TogglePeerTranslations
+			{
+				flags = (Messages_TogglePeerTranslations.Flags)(disabled ? 0x1 : 0),
+				peer = peer,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -3507,13 +3603,14 @@ namespace TL
 		/// <param name="file">File saved in parts by means of <see cref="Upload_SaveFilePart">Upload_SaveFilePart</see> method</param>
 		/// <param name="video"><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> video</param>
 		/// <param name="video_start_ts">Floating point UNIX timestamp in seconds, indicating the frame of the video that should be used as static preview.</param>
-		public static Task<Photos_Photo> Photos_UploadProfilePhoto(this Client client, InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null, bool fallback = false)
+		public static Task<Photos_Photo> Photos_UploadProfilePhoto(this Client client, InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null, VideoSizeBase video_emoji_markup = null, bool fallback = false)
 			=> client.Invoke(new Photos_UploadProfilePhoto
 			{
-				flags = (Photos_UploadProfilePhoto.Flags)((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0) | (fallback ? 0x8 : 0)),
+				flags = (Photos_UploadProfilePhoto.Flags)((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0) | (video_emoji_markup != null ? 0x10 : 0) | (fallback ? 0x8 : 0)),
 				file = file,
 				video = video,
 				video_start_ts = video_start_ts.GetValueOrDefault(),
+				video_emoji_markup = video_emoji_markup,
 			});
 
 		/// <summary>Deletes profile photos. The method returns a list of successfully deleted photo IDs.		<para>See <a href="https://corefork.telegram.org/method/photos.deletePhotos"/></para></summary>
@@ -3539,14 +3636,15 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/photos.uploadContactProfilePhoto"/></para></summary>
-		public static Task<Photos_Photo> Photos_UploadContactProfilePhoto(this Client client, InputUserBase user_id, InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null, bool suggest = false, bool save = false)
+		public static Task<Photos_Photo> Photos_UploadContactProfilePhoto(this Client client, InputUserBase user_id, InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null, VideoSizeBase video_emoji_markup = null, bool suggest = false, bool save = false)
 			=> client.Invoke(new Photos_UploadContactProfilePhoto
 			{
-				flags = (Photos_UploadContactProfilePhoto.Flags)((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0) | (suggest ? 0x8 : 0) | (save ? 0x10 : 0)),
+				flags = (Photos_UploadContactProfilePhoto.Flags)((file != null ? 0x1 : 0) | (video != null ? 0x2 : 0) | (video_start_ts != null ? 0x4 : 0) | (video_emoji_markup != null ? 0x20 : 0) | (suggest ? 0x8 : 0) | (save ? 0x10 : 0)),
 				user_id = user_id,
 				file = file,
 				video = video,
 				video_start_ts = video_start_ts.GetValueOrDefault(),
+				video_emoji_markup = video_emoji_markup,
 			});
 
 		/// <summary>Saves a part of file for further sending to one of the methods.		<para>See <a href="https://corefork.telegram.org/method/upload.saveFilePart"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.saveFilePart#possible-errors">details</a>)</para></summary>
@@ -3917,10 +4015,10 @@ namespace TL
 		/// <param name="about">Channel description</param>
 		/// <param name="geo_point">Geogroup location</param>
 		/// <param name="address">Geogroup address</param>
-		public static Task<UpdatesBase> Channels_CreateChannel(this Client client, string title, string about, InputGeoPoint geo_point = null, string address = null, int? ttl_period = null, bool broadcast = false, bool megagroup = false, bool for_import = false)
+		public static Task<UpdatesBase> Channels_CreateChannel(this Client client, string title, string about, InputGeoPoint geo_point = null, string address = null, int? ttl_period = null, bool broadcast = false, bool megagroup = false, bool for_import = false, bool forum = false)
 			=> client.Invoke(new Channels_CreateChannel
 			{
-				flags = (Channels_CreateChannel.Flags)((geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0) | (ttl_period != null ? 0x10 : 0) | (broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0)),
+				flags = (Channels_CreateChannel.Flags)((geo_point != null ? 0x4 : 0) | (address != null ? 0x4 : 0) | (ttl_period != null ? 0x10 : 0) | (broadcast ? 0x1 : 0) | (megagroup ? 0x2 : 0) | (for_import ? 0x8 : 0) | (forum ? 0x20 : 0)),
 				title = title,
 				about = about,
 				geo_point = geo_point,
@@ -5212,7 +5310,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA677244F)]
-	public class Auth_SendCode : IMethod<Auth_SentCode>
+	public class Auth_SendCode : IMethod<Auth_SentCodeBase>
 	{
 		public string phone_number;
 		public int api_id;
@@ -5305,7 +5403,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3EF1A9BF)]
-	public class Auth_ResendCode : IMethod<Auth_SentCode>
+	public class Auth_ResendCode : IMethod<Auth_SentCodeBase>
 	{
 		public string phone_number;
 		public string phone_code_hash;
@@ -5356,6 +5454,22 @@ namespace TL.Methods
 		public int api_id;
 		public string api_hash;
 		public string web_auth_token;
+	}
+
+	[TLDef(0x89464B50)]
+	public class Auth_RequestFirebaseSms : IMethod<bool>
+	{
+		public Flags flags;
+		public string phone_number;
+		public string phone_code_hash;
+		[IfFlag(0)] public string safety_net_token;
+		[IfFlag(1)] public string ios_push_secret;
+
+		[Flags] public enum Flags : uint
+		{
+			has_safety_net_token = 0x1,
+			has_ios_push_secret = 0x2,
+		}
 	}
 
 	[TLDef(0xEC86017A)]
@@ -5482,7 +5596,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x82574AE5)]
-	public class Account_SendChangePhoneCode : IMethod<Auth_SentCode>
+	public class Account_SendChangePhoneCode : IMethod<Auth_SentCodeBase>
 	{
 		public string phone_number;
 		public CodeSettings settings;
@@ -5528,7 +5642,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x1B3FAA88)]
-	public class Account_SendConfirmPhoneCode : IMethod<Auth_SentCode>
+	public class Account_SendConfirmPhoneCode : IMethod<Auth_SentCodeBase>
 	{
 		public string hash;
 		public CodeSettings settings;
@@ -5601,7 +5715,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA5A356F9)]
-	public class Account_SendVerifyPhoneCode : IMethod<Auth_SentCode>
+	public class Account_SendVerifyPhoneCode : IMethod<Auth_SentCodeBase>
 	{
 		public string phone_number;
 		public CodeSettings settings;
@@ -5953,6 +6067,40 @@ namespace TL.Methods
 		public string username;
 		public bool active;
 	}
+
+	[TLDef(0xE2750328)]
+	public class Account_GetDefaultProfilePhotoEmojis : IMethod<EmojiList>
+	{
+		public long hash;
+	}
+
+	[TLDef(0x915860AE)]
+	public class Account_GetDefaultGroupPhotoEmojis : IMethod<EmojiList>
+	{
+		public long hash;
+	}
+
+	[TLDef(0xADCBBCDA)]
+	public class Account_GetAutoSaveSettings : IMethod<Account_AutoSaveSettings> { }
+
+	[TLDef(0xD69B8361)]
+	public class Account_SaveAutoSaveSettings : IMethod<bool>
+	{
+		public Flags flags;
+		[IfFlag(3)] public InputPeer peer;
+		public AutoSaveSettings settings;
+
+		[Flags] public enum Flags : uint
+		{
+			users = 0x1,
+			chats = 0x2,
+			broadcasts = 0x4,
+			has_peer = 0x8,
+		}
+	}
+
+	[TLDef(0x53BC0020)]
+	public class Account_DeleteAutoSaveExceptions : IMethod<bool> { }
 
 	[TLDef(0x0D91A548)]
 	public class Users_GetUsers : IMethod<UserBase[]>
@@ -7742,21 +7890,19 @@ namespace TL.Methods
 		public Reaction reaction;
 	}
 
-	[TLDef(0x24CE6DEE)]
+	[TLDef(0x63183030)]
 	public class Messages_TranslateText : IMethod<Messages_TranslatedText>
 	{
 		public Flags flags;
 		[IfFlag(0)] public InputPeer peer;
-		[IfFlag(0)] public int msg_id;
-		[IfFlag(1)] public string text;
-		[IfFlag(2)] public string from_lang;
+		[IfFlag(0)] public int[] id;
+		[IfFlag(1)] public TextWithEntities[] text;
 		public string to_lang;
 
 		[Flags] public enum Flags : uint
 		{
 			has_peer = 0x1,
 			has_text = 0x2,
-			has_from_lang = 0x4,
 		}
 	}
 
@@ -7977,6 +8123,52 @@ namespace TL.Methods
 	[TLDef(0x658B7188)]
 	public class Messages_GetDefaultHistoryTTL : IMethod<DefaultHistoryTTL> { }
 
+	[TLDef(0xFE38D01B)]
+	public class Messages_SendBotRequestedPeer : IMethod<UpdatesBase>
+	{
+		public InputPeer peer;
+		public int msg_id;
+		public int button_id;
+		public InputPeer requested_peer;
+	}
+
+	[TLDef(0x7488CE5B)]
+	public class Messages_GetEmojiGroups : IMethod<Messages_EmojiGroups>
+	{
+		public int hash;
+	}
+
+	[TLDef(0x2ECD56CD)]
+	public class Messages_GetEmojiStatusGroups : IMethod<Messages_EmojiGroups>
+	{
+		public int hash;
+	}
+
+	[TLDef(0x21A548F3)]
+	public class Messages_GetEmojiProfilePhotoGroups : IMethod<Messages_EmojiGroups>
+	{
+		public int hash;
+	}
+
+	[TLDef(0x2C11C0D7)]
+	public class Messages_SearchCustomEmoji : IMethod<EmojiList>
+	{
+		public string emoticon;
+		public long hash;
+	}
+
+	[TLDef(0xE47CB579)]
+	public class Messages_TogglePeerTranslations : IMethod<bool>
+	{
+		public Flags flags;
+		public InputPeer peer;
+
+		[Flags] public enum Flags : uint
+		{
+			disabled = 0x1,
+		}
+	}
+
 	[TLDef(0xEDD4882A)]
 	public class Updates_GetState : IMethod<Updates_State> { }
 
@@ -8022,13 +8214,14 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x89F30F69)]
+	[TLDef(0x093C9A51)]
 	public class Photos_UploadProfilePhoto : IMethod<Photos_Photo>
 	{
 		public Flags flags;
 		[IfFlag(0)] public InputFileBase file;
 		[IfFlag(1)] public InputFileBase video;
 		[IfFlag(2)] public double video_start_ts;
+		[IfFlag(4)] public VideoSizeBase video_emoji_markup;
 
 		[Flags] public enum Flags : uint
 		{
@@ -8036,6 +8229,7 @@ namespace TL.Methods
 			has_video = 0x2,
 			has_video_start_ts = 0x4,
 			fallback = 0x8,
+			has_video_emoji_markup = 0x10,
 		}
 	}
 
@@ -8054,7 +8248,7 @@ namespace TL.Methods
 		public int limit;
 	}
 
-	[TLDef(0xB91A83BF)]
+	[TLDef(0xE14C4A71)]
 	public class Photos_UploadContactProfilePhoto : IMethod<Photos_Photo>
 	{
 		public Flags flags;
@@ -8062,6 +8256,7 @@ namespace TL.Methods
 		[IfFlag(0)] public InputFileBase file;
 		[IfFlag(1)] public InputFileBase video;
 		[IfFlag(2)] public double video_start_ts;
+		[IfFlag(5)] public VideoSizeBase video_emoji_markup;
 
 		[Flags] public enum Flags : uint
 		{
@@ -8070,6 +8265,7 @@ namespace TL.Methods
 			has_video_start_ts = 0x4,
 			suggest = 0x8,
 			save = 0x10,
+			has_video_emoji_markup = 0x20,
 		}
 	}
 
@@ -8330,6 +8526,7 @@ namespace TL.Methods
 			has_geo_point = 0x4,
 			for_import = 0x8,
 			has_ttl_period = 0x10,
+			forum = 0x20,
 		}
 	}
 
