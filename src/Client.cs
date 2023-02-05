@@ -1074,6 +1074,21 @@ namespace WTelegram
 				else if (sentCodeBase is Auth_SentCode sentCode)
 				{
 					phone_code_hash = sentCode.phone_code_hash;
+					if (sentCode.type is Auth_SentCodeTypeFirebaseSms firebaseSms)
+					{
+						var token = await ConfigAsync("firebase:" + Convert.ToHexString(firebaseSms.nonce));
+						int index = token?.IndexOf(':') ?? -1;
+						if (!(index > 0 && token[..index] switch
+						{
+							"safety_net_token" => await this.Auth_RequestFirebaseSms(phone_number, phone_code_hash, safety_net_token: token[(index + 1)..]),
+							"ios_push_secret" => await this.Auth_RequestFirebaseSms(phone_number, phone_code_hash, ios_push_secret: token[(index + 1)..]),
+							_ => false
+						}))
+						{
+							sentCodeBase = await this.Auth_ResendCode(phone_number, phone_code_hash);
+							goto resent;
+						}
+					}
 					var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);
 					Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
 					RaiseUpdate(sentCode);
