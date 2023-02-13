@@ -1074,9 +1074,12 @@ namespace WTelegram
 				else if (sentCodeBase is Auth_SentCode sentCode)
 				{
 					phone_code_hash = sentCode.phone_code_hash;
+					var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);
+					Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
+					RaiseUpdate(sentCode);
 					if (sentCode.type is Auth_SentCodeTypeFirebaseSms firebaseSms)
 					{
-						var token = await ConfigAsync("firebase:" + Convert.ToHexString(firebaseSms.nonce));
+						var token = await ConfigAsync("firebase");
 						int index = token?.IndexOf(':') ?? -1;
 						if (!(index > 0 && token[..index] switch
 						{
@@ -1089,9 +1092,6 @@ namespace WTelegram
 							goto resent;
 						}
 					}
-					var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);
-					Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
-					RaiseUpdate(sentCode);
 					for (int retry = 1; authorization == null; retry++)
 						try
 						{
