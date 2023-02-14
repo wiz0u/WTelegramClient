@@ -15,49 +15,6 @@ namespace WTelegram
 {
 	partial class Client
 	{
-		#region Collect Access Hash system
-		#pragma warning disable CS0618 // Type or member is obsolete
-		/// <summary>Enable the collection of id/access_hash pairs (deprecated)</summary>
-		[Obsolete("This system will be removed in a future version. You should use CollectUsersChats helper on API results or updates instead. See https://wiz0u.github.io/WTelegramClient/EXAMPLES#collect-users-chats")]
-		public bool CollectAccessHash { get; set; }
-		public IEnumerable<KeyValuePair<long, long>> AllAccessHashesFor<T>() where T : IObject => _accessHashes.GetValueOrDefault(typeof(T));
-		private readonly Dictionary<Type, Dictionary<long, long>> _accessHashes = new();
-		private static readonly FieldInfo userFlagsField = typeof(User).GetField("flags");
-		private static readonly FieldInfo channelFlagsField = typeof(Channel).GetField("flags");
-
-		/// <summary>Retrieve the access_hash associated with this id (for a TL class) if it was collected</summary>
-		/// <remarks>This requires <see cref="CollectAccessHash"/> to be set to <see langword="true"/> first.
-		/// <para>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_CollectAccessHash.cs?ts=4#L22">Examples/Program_CollectAccessHash.cs</see> for how to use this</para></remarks>
-		/// <typeparam name="T">a TL object class. For example User, Channel or Photo</typeparam>
-		public long GetAccessHashFor<T>(long id) where T : IObject
-		{
-			if (!CollectAccessHash) Helpers.Log(4, "GetAccessHashFor doesn't do what you think. See https://github.com/wiz0u/WTelegramClient/blob/master/FAQ.md#access-hash");
-			lock (_accessHashes)
-				return _accessHashes.GetOrCreate(typeof(T)).TryGetValue(id, out var access_hash) ? access_hash : 0;
-		}
-		public void SetAccessHashFor<T>(long id, long access_hash) where T : IObject
-		{
-			lock (_accessHashes)
-				_accessHashes.GetOrCreate(typeof(T))[id] = access_hash;
-		}
-		internal void CollectField(FieldInfo fieldInfo, object obj, object access_hash)
-		{
-			if (fieldInfo.Name != "access_hash") return;
-			if (access_hash is not long accessHash) return;
-			var type = fieldInfo.ReflectedType;
-			if ((type == typeof(User) && ((User.Flags)userFlagsField.GetValue(obj)).HasFlag(User.Flags.min)) ||
-				(type == typeof(Channel) && ((Channel.Flags)channelFlagsField.GetValue(obj)).HasFlag(Channel.Flags.min)))
-				return; // access_hash from Min constructors are mostly useless. see https://core.telegram.org/api/min
-			if (type.GetField("id") is not FieldInfo idField) return;
-			if (idField.GetValue(obj) is not long id)
-				if (idField.GetValue(obj) is not int idInt) return;
-				else id = idInt;
-			lock (_accessHashes)
-				_accessHashes.GetOrCreate(type)[id] = accessHash;
-		}
-		#pragma warning restore CS0618 // Type or member is obsolete
-		#endregion
-
 		#region Client TL Helpers
 		/// <summary>Used to indicate progression of file download/upload</summary>
 		/// <param name="transmitted">transmitted bytes</param>

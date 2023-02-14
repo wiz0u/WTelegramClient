@@ -42,12 +42,6 @@ namespace TL
 		public Exception Exception;
 	}
 
-	internal class BinaryReader : System.IO.BinaryReader
-	{
-		public readonly WTelegram.Client Client;
-		public BinaryReader(Stream stream, WTelegram.Client client, bool leaveOpen = false) : base(stream, Encoding.UTF8, leaveOpen) => Client = client;
-	}
-
 	internal static class Serialization
 	{
 		internal static void WriteTLObject<T>(this BinaryWriter writer, T obj) where T : IObject
@@ -76,7 +70,7 @@ namespace TL
 		{
 			if (ctorNb == 0) ctorNb = reader.ReadUInt32();
 			if (ctorNb == Layer.GZipedCtor)
-				using (var gzipReader = new BinaryReader(new GZipStream(new MemoryStream(reader.ReadTLBytes()), CompressionMode.Decompress), reader.Client))
+				using (var gzipReader = new BinaryReader(new GZipStream(new MemoryStream(reader.ReadTLBytes()), CompressionMode.Decompress)))
 					return ReadTLObject(gzipReader);
 			if (!Layer.Table.TryGetValue(ctorNb, out var type))
 				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
@@ -95,9 +89,6 @@ namespace TL
 				if (field.FieldType.IsEnum)
 					if (field.Name == "flags") flags = (uint)value;
 					else if (field.Name == "flags2") flags |= (ulong)(uint)value << 32;
-#pragma warning disable CS0618 // Type or member is obsolete
-				if (reader.Client?.CollectAccessHash == true) reader.Client.CollectField(field, obj, value);
-#pragma warning restore CS0618 // Type or member is obsolete
 			}
 			return (IObject)obj;
 		}

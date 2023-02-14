@@ -37,21 +37,21 @@ namespace TL
 		public static void CollectUsersChats(this IPeerResolver structure, Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
 			=>  structure.UserOrChat(new CollectorPeer { _users = users, _chats = chats });
 
-		public static Task<Messages_Chats> Messages_GetChats(this WTelegram.Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllChats");
-		public static Task<Messages_Chats> Channels_GetChannels(this WTelegram.Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllChats");
-		public static Task<UserBase[]> Users_GetUsers(this WTelegram.Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllDialogs");
-		public static Task<Messages_MessagesBase> Messages_GetMessages(this WTelegram.Client _) => throw new ApplicationException("If you want to get the messages from a chat, use Messages_GetHistory");
+		public static Task<Messages_Chats> Messages_GetChats(this Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllChats");
+		public static Task<Messages_Chats> Channels_GetChannels(this Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllChats");
+		public static Task<UserBase[]> Users_GetUsers(this Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllDialogs");
+		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client _) => throw new ApplicationException("If you want to get the messages from a chat, use Messages_GetHistory");
 	}
 
 	public static class Markdown
 	{
 		/// <summary>Converts a <a href="https://core.telegram.org/bots/api/#markdownv2-style">Markdown text</a> into the (plain text + entities) format used by Telegram messages</summary>
-		/// <param name="client">Client, used for getting access_hash for <c>tg://user?id=</c> URLs</param>
+		/// <param name="_">not used anymore, you can pass null</param>
 		/// <param name="text">[in] The Markdown text<br/>[out] The same (plain) text, stripped of all Markdown notation</param>
 		/// <param name="premium">Generate premium entities if any</param>
 		/// <param name="users">Dictionary used for <c>tg://user?id=</c> notation</param>
-		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="WTelegram.Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="WTelegram.Client.SendMediaAsync">SendMediaAsync</see></returns>
-		public static MessageEntity[] MarkdownToEntities(this WTelegram.Client client, ref string text, bool premium = false, Dictionary<long, User> users = null)
+		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="Client.SendMediaAsync">SendMediaAsync</see></returns>
+		public static MessageEntity[] MarkdownToEntities(this Client _, ref string text, bool premium = false, Dictionary<long, User> users = null)
 		{
 			var entities = new List<MessageEntity>();
 			var sb = new StringBuilder(text);
@@ -121,7 +121,7 @@ namespace TL
 									else if (c == ')') break;
 								}
 								textUrl.url = sb.ToString(offset + 2, offset2 - offset - 3);
-								if (textUrl.url.StartsWith("tg://user?id=") && long.TryParse(textUrl.url[13..], out var id) && (users?.GetValueOrDefault(id)?.access_hash ?? client.GetAccessHashFor<User>(id)) is long hash)
+								if (textUrl.url.StartsWith("tg://user?id=") && long.TryParse(textUrl.url[13..], out var id) && users?.GetValueOrDefault(id)?.access_hash is long hash)
 									entities[lastIndex] = new InputMessageEntityMentionName { offset = textUrl.offset, length = textUrl.length, user_id = new InputUser(id, hash) };
 								else if ((textUrl.url.StartsWith("tg://emoji?id=") || textUrl.url.StartsWith("emoji?id=")) && long.TryParse(textUrl.url[(textUrl.url.IndexOf('=') + 1)..], out id))
 									if (premium) entities[lastIndex] = new MessageEntityCustomEmoji { offset = textUrl.offset, length = textUrl.length, document_id = id };
@@ -154,7 +154,7 @@ namespace TL
 		/// <param name="entities">The array of formatting entities, typically obtained from <see cref="Message.entities"/></param>
 		/// <param name="premium">Convert premium entities (might lead to non-standard markdown)</param>
 		/// <returns>The message text with MarkdownV2 formattings</returns>
-		public static string EntitiesToMarkdown(this WTelegram.Client client, string message, MessageEntity[] entities, bool premium = false)
+		public static string EntitiesToMarkdown(this Client client, string message, MessageEntity[] entities, bool premium = false)
 		{
 			if (entities == null || entities.Length == 0) return Escape(message);
 			var closings = new List<(int offset, string md)>();
@@ -246,12 +246,12 @@ namespace TL
 	public static class HtmlText
 	{
 		/// <summary>Converts an <a href="https://core.telegram.org/bots/api/#html-style">HTML-formatted text</a> into the (plain text + entities) format used by Telegram messages</summary>
-		/// <param name="client">Client, used for getting access_hash for <c>tg://user?id=</c> URLs</param>
+		/// <param name="_">not used anymore, you can pass null</param>
 		/// <param name="text">[in] The HTML-formatted text<br/>[out] The same (plain) text, stripped of all HTML tags</param>
 		/// <param name="premium">Generate premium entities if any</param>
 		/// <param name="users">Dictionary used for <c>tg://user?id=</c> notation</param>
-		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="WTelegram.Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="WTelegram.Client.SendMediaAsync">SendMediaAsync</see></returns>
-		public static MessageEntity[] HtmlToEntities(this WTelegram.Client client, ref string text, bool premium = false, Dictionary<long, User> users = null)
+		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="Client.SendMediaAsync">SendMediaAsync</see></returns>
+		public static MessageEntity[] HtmlToEntities(this Client _, ref string text, bool premium = false, Dictionary<long, User> users = null)
 		{
 			var entities = new List<MessageEntity>();
 			var sb = new StringBuilder(text);
@@ -306,7 +306,7 @@ namespace TL
 							else if (tag.StartsWith("a href=\"") && tag.EndsWith("\""))
 							{
 								tag = tag[8..^1];
-								if (tag.StartsWith("tg://user?id=") && long.TryParse(tag[13..], out var user_id) && (users?.GetValueOrDefault(user_id)?.access_hash ?? client.GetAccessHashFor<User>(user_id)) is long hash)
+								if (tag.StartsWith("tg://user?id=") && long.TryParse(tag[13..], out var user_id) && users?.GetValueOrDefault(user_id)?.access_hash is long hash)
 									entities.Add(new InputMessageEntityMentionName { offset = offset, length = -1, user_id = new InputUser(user_id, hash) });
 								else
 									entities.Add(new MessageEntityTextUrl { offset = offset, length = -1, url = tag });
@@ -342,7 +342,7 @@ namespace TL
 		/// <param name="entities">The array of formatting entities, typically obtained from <see cref="Message.entities"/></param>
 		/// <param name="premium">Convert premium entities</param>
 		/// <returns>The message text with HTML formatting tags</returns>
-		public static string EntitiesToHtml(this WTelegram.Client client, string message, MessageEntity[] entities, bool premium = false)
+		public static string EntitiesToHtml(this Client client, string message, MessageEntity[] entities, bool premium = false)
 		{
 			if (entities == null || entities.Length == 0) return Escape(message);
 			var closings = new List<(int offset, string tag)>();

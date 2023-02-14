@@ -384,7 +384,7 @@ namespace WTelegram
 				throw new ApplicationException($"Received a packet encrypted with unexpected key {authKeyId:X}");
 			if (authKeyId == 0) // Unencrypted message
 			{
-				using var reader = new TL.BinaryReader(new MemoryStream(data, 8, dataLen - 8), this);
+				using var reader = new BinaryReader(new MemoryStream(data, 8, dataLen - 8));
 				long msgId = _lastRecvMsgId = reader.ReadInt64();
 				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
 				int length = reader.ReadInt32();
@@ -407,7 +407,7 @@ namespace WTelegram
 				if (!data.AsSpan(8, 16).SequenceEqual(_sha256Recv.Hash.AsSpan(8, 16)))
 					throw new ApplicationException("Mismatch between MsgKey & decrypted SHA256");
 				_sha256Recv.Initialize();
-				using var reader = new TL.BinaryReader(new MemoryStream(decrypted_data), this);
+				using var reader = new BinaryReader(new MemoryStream(decrypted_data));
 				var serverSalt = reader.ReadInt64();    // int64 salt
 				var sessionId = reader.ReadInt64();     // int64 session_id
 				var msgId = reader.ReadInt64();         // int64 message_id
@@ -470,7 +470,7 @@ namespace WTelegram
 			};
 		}
 
-		internal MsgContainer ReadMsgContainer(TL.BinaryReader reader)
+		internal MsgContainer ReadMsgContainer(BinaryReader reader)
 		{
 			int count = reader.ReadInt32();
 			var array = new _Message[count];
@@ -502,7 +502,7 @@ namespace WTelegram
 			return new MsgContainer { messages = array };
 		}
 
-		private RpcResult ReadRpcResult(TL.BinaryReader reader)
+		private RpcResult ReadRpcResult(BinaryReader reader)
 		{
 			long msgId = reader.ReadInt64();
 			var rpc = PullPendingRequest(msgId);
@@ -519,7 +519,7 @@ namespace WTelegram
 						if (peek == Layer.RpcErrorCtor)
 							result = reader.ReadTLObject(Layer.RpcErrorCtor);
 						else if (peek == Layer.GZipedCtor)
-							using (var gzipReader = new TL.BinaryReader(new GZipStream(new MemoryStream(reader.ReadTLBytes()), CompressionMode.Decompress), reader.Client))
+							using (var gzipReader = new BinaryReader(new GZipStream(new MemoryStream(reader.ReadTLBytes()), CompressionMode.Decompress)))
 								result = gzipReader.ReadTLValue(rpc.type);
 						else
 						{

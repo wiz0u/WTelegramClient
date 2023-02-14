@@ -94,7 +94,7 @@ namespace WTelegram
 		}
 		public void Load(Stream input)
 		{
-			using var reader = new TL.BinaryReader(input, null, true);
+			using var reader = new BinaryReader(input, Encoding.UTF8, true);
 			if (reader.ReadInt32() != 0) throw new ApplicationException("Unrecognized Secrets format");
 			dh = (Messages_DhConfig)reader.ReadTLObject();
 			if (dh?.p != null) dh_prime = BigEndianInteger(dh.p);
@@ -359,7 +359,7 @@ namespace WTelegram
 			}
 			if (!success) throw new ApplicationException("Could not decrypt message");
 			if (length % 4 != 0) throw new ApplicationException($"Invalid message_data_length: {length}");
-			using var reader = new TL.BinaryReader(new MemoryStream(decrypted_data, 4, length), null);
+			using var reader = new BinaryReader(new MemoryStream(decrypted_data, 4, length));
 			return reader.ReadTLObject();
 		}
 
