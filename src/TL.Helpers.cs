@@ -161,7 +161,7 @@ namespace TL
 		public override bool IsActive => (flags & Flags.deleted) == 0;
 		public bool IsBot => (flags & Flags.bot) != 0;
 		public string MainUsername => username ?? usernames?.FirstOrDefault(u => u.flags.HasFlag(Username.Flags.active))?.username;
-		public override string ToString() => username != null ? '@' + username : last_name == null ? first_name : $"{first_name} {last_name}";
+		public override string ToString() => MainUsername is string uname ? '@' + uname : last_name == null ? first_name : $"{first_name} {last_name}";
 		public override InputPeer ToInputPeer() => new InputPeerUser(id, access_hash);
 		protected override InputUser ToInputUser() => new(id, access_hash);
 		/// <summary>An estimation of the number of days ago the user was last seen (Online=0, Recently=1, LastWeek=5, LastMonth=20, LongTimeAgo=150)</summary>
@@ -221,8 +221,7 @@ namespace TL
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((banned_rights?.flags ?? 0) & flags) != 0 || ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		public override InputPeer ToInputPeer() => new InputPeerChannel(id, access_hash);
 		public static implicit operator InputChannel(Channel channel) => new(channel.id, channel.access_hash);
-		public override string ToString() =>
-			(flags.HasFlag(Flags.broadcast) ? "Channel " : "Group ") + (username != null ? '@' + username : $"\"{title}\"");
+		public override string ToString() => (flags.HasFlag(Flags.broadcast) ? "Channel " : "Group ") + (MainUsername is string uname ? '@' + uname : $"\"{title}\"");
 		public bool IsChannel => (flags & Flags.broadcast) != 0;
 		public bool IsGroup => (flags & Flags.broadcast) == 0;
 	}
