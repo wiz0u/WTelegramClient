@@ -675,6 +675,104 @@ namespace WTelegram
 		/// <param name="max_id">If a positive value is passed, only messages with identifiers less or equal than the given one will be marked read</param>
 		public async Task<bool> ReadHistory(InputPeer peer, int max_id = default)
 			=> peer is InputPeerChannel channel ? await this.Channels_ReadHistory(channel, max_id) : (await this.Messages_ReadHistory(peer, max_id)) != null;
+
+		private static readonly char[] QueryOrFragment = new[] { '?', '#' };
+
+		/// <summary>Return information about a chat/channel based on Invite Link</summary>
+		/// <param name="url">Channel or Invite Link, like https://t.me/+InviteHash, https://t.me/joinchat/InviteHash or https://t.me/channelname</param>
+		/// <param name="join"><see langword="true"/> to also join the chat/channel</param>
+		/// <returns>a Chat or Channel, possibly partial Channel information only (with flag <see cref="Channel.Flags.min"/>)</returns>
+		public async Task<ChatBase> AnalyzeInviteLink(string url, bool join = false)
+		{
+			int start = url.IndexOf("//");
+			start = url.IndexOf('/', start + 2) + 1;
+			int end = url.IndexOfAny(QueryOrFragment, start);
+			if (end == -1) end = url.Length;
+			if (start == 0 || end == start) throw new ArgumentException("Invalid URI");
+			string hash;
+			if (url[start] == '+')
+				hash = url[(start + 1)..end]; 
+			else if (string.Compare(url, start, "joinchat/", 0, 9, StringComparison.OrdinalIgnoreCase) == 0)
+				hash = url[(start + 9)..end];
+			else
+			{
+				var resolved = await this.Contacts_ResolveUsername(url[start..end]);
+				var chat = resolved.Chat;
+				if (join && chat != null)
+				{
+					var res = await this.Channels_JoinChannel((Channel)chat); 
+					chat = res.Chats[chat.ID];
+				}
+				return chat;
+			}
+			var chatInvite = await this.Messages_CheckChatInvite(hash);
+			if (join)
+				try
+				{
+					var res = await this.Messages_ImportChatInvite(hash);
+					if (res.Chats.Values.FirstOrDefault() is ChatBase chat) return chat;
+				}
+				catch (RpcException ex) when (ex.Code == 400 && ex.Message == "INVITE_REQUEST_SENT") { }
+			switch (chatInvite)
+			{
+				case ChatInviteAlready cia: return cia.chat;
+				case ChatInvitePeek cip: return cip.chat;
+				case ChatInvite ci:
+					ChatPhoto chatPhoto = null;
+					if (ci.photo is Photo photo)
+					{
+						var stripped_thumb = photo.sizes.OfType<PhotoStrippedSize>().FirstOrDefault()?.bytes;
+						chatPhoto = new ChatPhoto
+						{
+							dc_id = photo.dc_id,
+							photo_id = photo.id,
+							stripped_thumb = stripped_thumb,
+							flags = (stripped_thumb != null ? ChatPhoto.Flags.has_stripped_thumb : 0) |
+									(photo.flags.HasFlag(Photo.Flags.has_video_sizes) ? ChatPhoto.Flags.has_video : 0),
+						};
+					}
+					var rrAbout = ci.about == null ? null : new RestrictionReason[] { new() { text = ci.about } };
+					return !ci.flags.HasFlag(ChatInvite.Flags.channel)
+						? new Chat { title = ci.title, photo = chatPhoto, participants_count = ci.participants_count }
+						: new Channel { title = ci.title, photo = chatPhoto, participants_count = ci.participants_count,
+							restriction_reason = rrAbout,
+							flags = (ci.flags.HasFlag(ChatInvite.Flags.broadcast) ? Channel.Flags.broadcast | Channel.Flags.min : Channel.Flags.min) |
+									(ci.flags.HasFlag(ChatInvite.Flags.public_) ? Channel.Flags.has_username : 0) |
+									(ci.flags.HasFlag(ChatInvite.Flags.megagroup) ? Channel.Flags.megagroup : 0) |
+									(ci.flags.HasFlag(ChatInvite.Flags.request_needed) ? Channel.Flags.join_request : 0) };
+			}
+			return null;
+		}
+
+		/// <summary>Return chat and message details based on a message URL</summary>
+		/// <param name="url">Message Link, like https://t.me/c/1234567890/1234 or https://t.me/channelname/1234</param>
+		/// <returns>Structure containing the message, chat and user details</returns>
+		/// <remarks>If link is for private group (<c>t.me/c/..</c>), user must have joined the group</remarks>
+		public async Task<Messages_ChannelMessages> GetMessageByLink(string url)
+		{
+			int start = url.IndexOf("//");
+			start = url.IndexOf('/', start + 2) + 1;
+			int slash = url.IndexOf('/', start + 2);
+			if (start == 0 || slash == -1) throw new ArgumentException("Invalid URI");
+			int end = url.IndexOfAny(QueryOrFragment, slash + 1);
+			if (end == -1) end = url.Length;
+			ChatBase chat;
+			if (url[start] is 'c' or 'C' && url[start + 1] == '/')
+			{
+				long chatId = long.Parse(url[(start + 2)..slash]);
+				var chats = await this.Channels_GetChannels(new InputChannel(chatId, 0));
+				if (!chats.chats.TryGetValue(chatId, out chat))
+					throw new ApplicationException($"Channel {chatId} not found");
+			}
+			else
+			{
+				var resolved = await this.Contacts_ResolveUsername(url[start..slash]);
+				chat = resolved.Chat;
+				if (chat is null) throw new ApplicationException($"@{url[start..slash]} is not a Chat/Channel");
+			}
+			int msgId = int.Parse(url[(slash + 1)..end]);
+			return await this.Channels_GetMessages((Channel)chat, msgId) as Messages_ChannelMessages;
+		}
 		#endregion
 	}
 }
