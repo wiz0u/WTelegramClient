@@ -113,19 +113,19 @@ namespace WTelegram
 					session = JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), Helpers.JsonOptions);
 					Helpers.Log(2, "Loaded previous session");
 				}
+				session ??= new Session();
+				session._store = store;
+				Encryption.RNG.GetBytes(session._encrypted, 0, 16);
+				session._encryptor = aes.CreateEncryptor(rgbKey, session._encrypted);
+				if (!session._encryptor.CanReuseTransform) session._reuseKey = rgbKey;
+				session._jsonWriter = new Utf8JsonWriter(session._jsonStream, default);
+				return session;
 			}
 			catch (Exception ex)
 			{
 				store.Dispose();
 				throw new ApplicationException($"Exception while reading session file: {ex.Message}\nUse the correct api_hash/id/key, or delete the file to start a new session", ex);
 			}
-			session ??= new Session();
-			session._store = store;
-			Encryption.RNG.GetBytes(session._encrypted, 0, 16);
-			session._encryptor = aes.CreateEncryptor(rgbKey, session._encrypted);
-			if (!session._encryptor.CanReuseTransform) session._reuseKey = rgbKey;
-			session._jsonWriter = new Utf8JsonWriter(session._jsonStream, default);
-			return session;
 		}
 
 		internal void Save() // must be called with lock(session)

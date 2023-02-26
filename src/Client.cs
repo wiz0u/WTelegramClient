@@ -96,8 +96,8 @@ namespace WTelegram
 		public Client(Func<string, string> configProvider = null, Stream sessionStore = null)
 		{
 			_config = configProvider ?? DefaultConfigOrAsk;
-			sessionStore ??= new SessionStore(Config("session_pathname"));
 			var session_key = _config("session_key") ?? (_apiHash = Config("api_hash"));
+			sessionStore ??= new SessionStore(Config("session_pathname"));
 			_session = Session.LoadOrCreate(sessionStore, Convert.FromHexString(session_key));
 			if (_session.ApiId == 0) _session.ApiId = int.Parse(Config("api_id"));
 			if (_session.MainDC != 0) _session.DCSessions.TryGetValue(_session.MainDC, out _dcSession);
@@ -699,15 +699,7 @@ namespace WTelegram
 		static async Task<TcpClient> DefaultTcpHandler(string host, int port)
 		{
 			var tcpClient = new TcpClient();
-			try
-			{
-				await tcpClient.ConnectAsync(host, port);
-			}
-			catch
-			{
-				tcpClient.Dispose();
-				throw;
-			}
+			await tcpClient.ConnectAsync(host, port);
 			return tcpClient;
 		}
 
