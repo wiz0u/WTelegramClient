@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 152;					// fetched 03/02/2023 21:46:20
+		public const int Version = 154;					// fetched 08/03/2023 19:08:02
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -177,7 +177,7 @@ namespace TL
 			[0x80E11A7F] = typeof(MessageActionPhoneCall),
 			[0x4792929B] = typeof(MessageActionScreenshotTaken),
 			[0xFAE69F56] = typeof(MessageActionCustomAction),
-			[0xABE9AFFE] = typeof(MessageActionBotAllowed),
+			[0xC516D679] = typeof(MessageActionBotAllowed),
 			[0x1B287353] = typeof(MessageActionSecureValuesSentMe),
 			[0xD95C6154] = typeof(MessageActionSecureValuesSent),
 			[0xF3F25F76] = typeof(MessageActionContactSignUp),
@@ -194,7 +194,6 @@ namespace TL
 			[0x0D999256] = typeof(MessageActionTopicCreate),
 			[0xC0944820] = typeof(MessageActionTopicEdit),
 			[0x57DE635E] = typeof(MessageActionSuggestProfilePhoto),
-			[0xE7E75F97] = typeof(MessageActionAttachMenuBotAllowed),
 			[0xFE77345D] = typeof(MessageActionRequestedPeer),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
@@ -388,7 +387,7 @@ namespace TL
 			[0x096A18D5] = typeof(Upload_File),
 			[0xF18CDA44] = typeof(Upload_FileCdnRedirect),
 			[0x18B7A10D] = typeof(DcOption),
-			[0x232566AC] = typeof(Config),
+			[0xCC1A241E] = typeof(Config),
 			[0x8E1A1775] = typeof(NearestDc),
 			[0xCCBBCE30] = typeof(Help_AppUpdate),
 			[0xC45A6536] = null,//Help_NoAppUpdate
@@ -594,7 +593,7 @@ namespace TL
 			[0x354A9B09] = typeof(BotInlineMessageMediaInvoice),
 			[0x11965F3A] = typeof(BotInlineResult),
 			[0x17DB940B] = typeof(BotInlineMediaResult),
-			[0x947CA848] = typeof(Messages_BotResults),
+			[0xE021F2F6] = typeof(Messages_BotResults),
 			[0x5DAB1AF4] = typeof(ExportedMessageLink),
 			[0x5F777DCE] = typeof(MessageFwdHeader),
 			[0x3DBB5986] = typeof(Auth_SentCodeTypeApp),
@@ -709,7 +708,7 @@ namespace TL
 			[0x8AC32801] = typeof(InputPaymentCredentialsGooglePay),
 			[0xDB64FD34] = typeof(Account_TmpPassword),
 			[0xB6213CDF] = typeof(ShippingOption),
-			[0xFFA0A496] = typeof(InputStickerSetItem),
+			[0x32DA9E9C] = typeof(InputStickerSetItem),
 			[0x1E36FDED] = typeof(InputPhoneCall),
 			[0x5366C915] = typeof(PhoneCallEmpty),
 			[0xC5226F17] = typeof(PhoneCallWaiting),
@@ -977,7 +976,7 @@ namespace TL
 			[0xE3779861] = typeof(Account_ResetPasswordFailedWait),
 			[0xE9EFFC7D] = typeof(Account_ResetPasswordRequestedWait),
 			[0xE926D63E] = typeof(Account_ResetPasswordOk),
-			[0x3A836DF8] = typeof(SponsoredMessage),
+			[0xFC25B828] = typeof(SponsoredMessage),
 			[0xC9EE1D87] = typeof(Messages_SponsoredMessages),
 			[0x1839490F] = null,//Messages_SponsoredMessagesEmpty
 			[0xC9B0539F] = typeof(SearchResultsCalendarPeriod),
@@ -1072,6 +1071,16 @@ namespace TL
 			[0xC84834CE] = typeof(AutoSaveSettings),
 			[0x81602D47] = typeof(AutoSaveException),
 			[0x4C3E069D] = typeof(Account_AutoSaveSettings),
+			[0x7CDE641D] = null,//Help_AppConfigNotModified
+			[0xDD18782E] = typeof(Help_AppConfig),
+			[0xA920BD7A] = typeof(InputBotAppID),
+			[0x908C0407] = typeof(InputBotAppShortName),
+			[0x5DA674B7] = null,//BotAppNotModified
+			[0x95FCD1D6] = typeof(BotApp),
+			[0xEB50ADF5] = typeof(Messages_BotApp),
+			[0x3C1B4F0D] = typeof(AppWebViewResultUrl),
+			[0xB57295D5] = typeof(InlineBotWebView),
+			[0x4A4FF172] = typeof(ReadParticipantDate),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),
@@ -1190,6 +1199,8 @@ namespace TL
 			// from TL.Secret:
 			[typeof(EmojiList)]                      = 0x481EADFA, //emojiListNotModified
 			[typeof(Messages_EmojiGroups)]           = 0x6FB4AD87, //messages.emojiGroupsNotModified
+			[typeof(Help_AppConfig)]                 = 0x7CDE641D, //help.appConfigNotModified
+			[typeof(BotApp)]                         = 0x5DA674B7, //botAppNotModified
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}

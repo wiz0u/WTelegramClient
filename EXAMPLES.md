@@ -301,7 +301,7 @@ await client.SendMediaAsync(InputPeer.Self, null, inputFile);
 
 // • Send a random dice/game-of-chance effect from the list of available "dices", see https://core.telegram.org/api/dice
 var appConfig = await client.Help_GetAppConfig();
-var emojies_send_dice = appConfig["emojies_send_dice"] as string[];
+var emojies_send_dice = appConfig.config["emojies_send_dice"] as string[];
 var dice_emoji = emojies_send_dice[new Random().Next(emojies_send_dice.Length)];
 var diceMsg = await client.SendMessageAsync(InputPeer.Self, null, new InputMediaDice { emoticon = dice_emoji });
 Console.WriteLine("Dice result:" + ((MessageMediaDice)diceMsg.media).value);

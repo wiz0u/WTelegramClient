@@ -2044,15 +2044,16 @@ namespace TL
 		/// <param name="cache_time">The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300.</param>
 		/// <param name="next_offset">Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.</param>
 		/// <param name="switch_pm">If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with a certain parameter.</param>
-		public static Task<bool> Messages_SetInlineBotResults(this Client client, long query_id, InputBotInlineResultBase[] results, DateTime cache_time, string next_offset = null, InlineBotSwitchPM switch_pm = null, bool gallery = false, bool private_ = false)
+		public static Task<bool> Messages_SetInlineBotResults(this Client client, long query_id, InputBotInlineResultBase[] results, DateTime cache_time, string next_offset = null, InlineBotSwitchPM switch_pm = null, InlineBotWebView switch_webview = null, bool gallery = false, bool private_ = false)
 			=> client.Invoke(new Messages_SetInlineBotResults
 			{
-				flags = (Messages_SetInlineBotResults.Flags)((next_offset != null ? 0x4 : 0) | (switch_pm != null ? 0x8 : 0) | (gallery ? 0x1 : 0) | (private_ ? 0x2 : 0)),
+				flags = (Messages_SetInlineBotResults.Flags)((next_offset != null ? 0x4 : 0) | (switch_pm != null ? 0x8 : 0) | (switch_webview != null ? 0x10 : 0) | (gallery ? 0x1 : 0) | (private_ ? 0x2 : 0)),
 				query_id = query_id,
 				results = results,
 				cache_time = cache_time,
 				next_offset = next_offset,
 				switch_pm = switch_pm,
+				switch_webview = switch_webview,
 			});
 
 		/// <summary>Send a result obtained using <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see>.		<para>See <a href="https://corefork.telegram.org/method/messages.sendInlineBotResult"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,420,500 (<a href="https://corefork.telegram.org/method/messages.sendInlineBotResult#possible-errors">details</a>)</para></summary>
@@ -3076,7 +3077,7 @@ namespace TL
 		/// <summary>Get which users read a specific message: only available for groups and supergroups with less than <a href="https://corefork.telegram.org/api/config#chat-read-mark-size-threshold"><c>chat_read_mark_size_threshold</c> members</a>, read receipts will be stored for <a href="https://corefork.telegram.org/api/config#chat-read-mark-expire-period"><c>chat_read_mark_expire_period</c> seconds after the message was sent</a>, see <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageReadParticipants"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getMessageReadParticipants#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Dialog</param>
 		/// <param name="msg_id">Message ID</param>
-		public static Task<long[]> Messages_GetMessageReadParticipants(this Client client, InputPeer peer, int msg_id)
+		public static Task<ReadParticipantDate[]> Messages_GetMessageReadParticipants(this Client client, InputPeer peer, int msg_id)
 			=> client.Invoke(new Messages_GetMessageReadParticipants
 			{
 				peer = peer,
@@ -3358,10 +3359,10 @@ namespace TL
 		/// <param name="url">Web app URL</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
-		public static Task<SimpleWebViewResult> Messages_RequestSimpleWebView(this Client client, InputUserBase bot, string url, string platform, DataJSON theme_params = null)
+		public static Task<SimpleWebViewResult> Messages_RequestSimpleWebView(this Client client, InputUserBase bot, string url, string platform, DataJSON theme_params = null, bool from_switch_webview = false)
 			=> client.Invoke(new Messages_RequestSimpleWebView
 			{
-				flags = (Messages_RequestSimpleWebView.Flags)(theme_params != null ? 0x1 : 0),
+				flags = (Messages_RequestSimpleWebView.Flags)((theme_params != null ? 0x1 : 0) | (from_switch_webview ? 0x2 : 0)),
 				bot = bot,
 				url = url,
 				theme_params = theme_params,
@@ -3551,6 +3552,26 @@ namespace TL
 			{
 				flags = (Messages_TogglePeerTranslations.Flags)(disabled ? 0x1 : 0),
 				peer = peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getBotApp"/></para></summary>
+		public static Task<Messages_BotApp> Messages_GetBotApp(this Client client, InputBotApp app, long hash = default)
+			=> client.Invoke(new Messages_GetBotApp
+			{
+				app = app,
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.requestAppWebView"/></para></summary>
+		public static Task<AppWebViewResult> Messages_RequestAppWebView(this Client client, InputPeer peer, InputBotApp app, string platform, string start_param = null, DataJSON theme_params = null, bool write_allowed = false)
+			=> client.Invoke(new Messages_RequestAppWebView
+			{
+				flags = (Messages_RequestAppWebView.Flags)((start_param != null ? 0x2 : 0) | (theme_params != null ? 0x4 : 0) | (write_allowed ? 0x1 : 0)),
+				peer = peer,
+				app = app,
+				start_param = start_param,
+				theme_params = theme_params,
+				platform = platform,
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -3831,9 +3852,11 @@ namespace TL
 			});
 
 		/// <summary>Get app-specific configuration, see <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration</a> for more info on the result.		<para>See <a href="https://corefork.telegram.org/method/help.getAppConfig"/></para></summary>
-		public static Task<JsonObject> Help_GetAppConfig(this Client client)
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.appConfigNotModified">help.appConfigNotModified</a></returns>
+		public static Task<Help_AppConfig> Help_GetAppConfig(this Client client, int hash = default)
 			=> client.Invoke(new Help_GetAppConfig
 			{
+				hash = hash,
 			});
 
 		/// <summary>Saves logs of application on the server.		<para>See <a href="https://corefork.telegram.org/method/help.saveAppLog"/></para></summary>
@@ -4566,6 +4589,23 @@ namespace TL
 				admin_rights = admin_rights,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.setBotInfo"/></para></summary>
+		public static Task<bool> Bots_SetBotInfo(this Client client, string lang_code, string about = null, string description = null)
+			=> client.Invoke(new Bots_SetBotInfo
+			{
+				flags = (Bots_SetBotInfo.Flags)((about != null ? 0x1 : 0) | (description != null ? 0x2 : 0)),
+				lang_code = lang_code,
+				about = about,
+				description = description,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.getBotInfo"/></para></summary>
+		public static Task<string[]> Bots_GetBotInfo(this Client client, string lang_code)
+			=> client.Invoke(new Bots_GetBotInfo
+			{
+				lang_code = lang_code,
+			});
+
 		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
 		/// <param name="invoice">Invoice</param>
 		/// <param name="theme_params">A JSON object with the following keys, containing color theme information (integers, RGB24) to pass to the payment provider, to apply in eventual verification pages: <br/><c>bg_color</c> - Background color <br/><c>text_color</c> - Text color <br/><c>hint_color</c> - Hint text color <br/><c>link_color</c> - Link color <br/><c>button_color</c> - Button color <br/><c>button_text_color</c> - Button text color</param>
@@ -4688,10 +4728,10 @@ namespace TL
 		/// <param name="stickers">Stickers</param>
 		/// <param name="software">Used when <a href="https://corefork.telegram.org/import-stickers">importing stickers using the sticker import SDKs</a>, specifies the name of the software that created the stickers</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
-		public static Task<Messages_StickerSet> Stickers_CreateStickerSet(this Client client, InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, InputDocument thumb = null, string software = null, bool masks = false, bool animated = false, bool videos = false)
+		public static Task<Messages_StickerSet> Stickers_CreateStickerSet(this Client client, InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, InputDocument thumb = null, string software = null, bool masks = false, bool animated = false, bool videos = false, bool emojis = false, bool text_color = false)
 			=> client.Invoke(new Stickers_CreateStickerSet
 			{
-				flags = (Stickers_CreateStickerSet.Flags)((thumb != null ? 0x4 : 0) | (software != null ? 0x8 : 0) | (masks ? 0x1 : 0) | (animated ? 0x2 : 0) | (videos ? 0x10 : 0)),
+				flags = (Stickers_CreateStickerSet.Flags)((thumb != null ? 0x4 : 0) | (software != null ? 0x8 : 0) | (masks ? 0x1 : 0) | (animated ? 0x2 : 0) | (videos ? 0x10 : 0) | (emojis ? 0x20 : 0) | (text_color ? 0x40 : 0)),
 				user_id = user_id,
 				title = title,
 				short_name = short_name,
@@ -4735,11 +4775,13 @@ namespace TL
 		/// <param name="stickerset">Stickerset</param>
 		/// <param name="thumb">Thumbnail</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
-		public static Task<Messages_StickerSet> Stickers_SetStickerSetThumb(this Client client, InputStickerSet stickerset, InputDocument thumb)
+		public static Task<Messages_StickerSet> Stickers_SetStickerSetThumb(this Client client, InputStickerSet stickerset, InputDocument thumb = null, long? thumb_document_id = null)
 			=> client.Invoke(new Stickers_SetStickerSetThumb
 			{
+				flags = (Stickers_SetStickerSetThumb.Flags)((thumb != null ? 0x1 : 0) | (thumb_document_id != null ? 0x2 : 0)),
 				stickerset = stickerset,
 				thumb = thumb,
+				thumb_document_id = thumb_document_id.GetValueOrDefault(),
 			});
 
 		/// <summary>Check whether the given short name is available		<para>See <a href="https://corefork.telegram.org/method/stickers.checkShortName"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.checkShortName#possible-errors">details</a>)</para></summary>
@@ -4756,6 +4798,34 @@ namespace TL
 			=> client.Invoke(new Stickers_SuggestShortName
 			{
 				title = title,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stickers.changeSticker"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
+		public static Task<Messages_StickerSet> Stickers_ChangeSticker(this Client client, InputDocument sticker, string emoji = null, MaskCoords mask_coords = null, string keywords = null)
+			=> client.Invoke(new Stickers_ChangeSticker
+			{
+				flags = (Stickers_ChangeSticker.Flags)((emoji != null ? 0x1 : 0) | (mask_coords != null ? 0x2 : 0) | (keywords != null ? 0x4 : 0)),
+				sticker = sticker,
+				emoji = emoji,
+				mask_coords = mask_coords,
+				keywords = keywords,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stickers.renameStickerSet"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
+		public static Task<Messages_StickerSet> Stickers_RenameStickerSet(this Client client, InputStickerSet stickerset, string title)
+			=> client.Invoke(new Stickers_RenameStickerSet
+			{
+				stickerset = stickerset,
+				title = title,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stickers.deleteStickerSet"/></para></summary>
+		public static Task<bool> Stickers_DeleteStickerSet(this Client client, InputStickerSet stickerset)
+			=> client.Invoke(new Stickers_DeleteStickerSet
+			{
+				stickerset = stickerset,
 			});
 
 		/// <summary>Get phone call configuration to be passed to libtgvoip's shared config		<para>See <a href="https://corefork.telegram.org/method/phone.getCallConfig"/></para></summary>
@@ -6861,7 +6931,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xEB5EA206)]
+	[TLDef(0xBB12A419)]
 	public class Messages_SetInlineBotResults : IMethod<bool>
 	{
 		public Flags flags;
@@ -6870,6 +6940,7 @@ namespace TL.Methods
 		public DateTime cache_time;
 		[IfFlag(2)] public string next_offset;
 		[IfFlag(3)] public InlineBotSwitchPM switch_pm;
+		[IfFlag(4)] public InlineBotWebView switch_webview;
 
 		[Flags] public enum Flags : uint
 		{
@@ -6877,6 +6948,7 @@ namespace TL.Methods
 			private_ = 0x2,
 			has_next_offset = 0x4,
 			has_switch_pm = 0x8,
+			has_switch_webview = 0x10,
 		}
 	}
 
@@ -7765,8 +7837,8 @@ namespace TL.Methods
 		public string emoticon;
 	}
 
-	[TLDef(0x2C6F97B7)]
-	public class Messages_GetMessageReadParticipants : IMethod<long[]>
+	[TLDef(0x31C1C44F)]
+	public class Messages_GetMessageReadParticipants : IMethod<ReadParticipantDate[]>
 	{
 		public InputPeer peer;
 		public int msg_id;
@@ -8029,6 +8101,7 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			has_theme_params = 0x1,
+			from_switch_webview = 0x2,
 		}
 	}
 
@@ -8166,6 +8239,31 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			disabled = 0x1,
+		}
+	}
+
+	[TLDef(0x34FDC5C3)]
+	public class Messages_GetBotApp : IMethod<Messages_BotApp>
+	{
+		public InputBotApp app;
+		public long hash;
+	}
+
+	[TLDef(0x8C5A3B3C)]
+	public class Messages_RequestAppWebView : IMethod<AppWebViewResult>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public InputBotApp app;
+		[IfFlag(1)] public string start_param;
+		[IfFlag(2)] public DataJSON theme_params;
+		public string platform;
+
+		[Flags] public enum Flags : uint
+		{
+			write_allowed = 0x1,
+			has_start_param = 0x2,
+			has_theme_params = 0x4,
 		}
 	}
 
@@ -8393,8 +8491,11 @@ namespace TL.Methods
 		public string path;
 	}
 
-	[TLDef(0x98914110)]
-	public class Help_GetAppConfig : IMethod<JsonObject> { }
+	[TLDef(0x61E3F854)]
+	public class Help_GetAppConfig : IMethod<Help_AppConfig>
+	{
+		public int hash;
+	}
 
 	[TLDef(0x6F02F748)]
 	public class Help_SaveAppLog : IMethod<bool>
@@ -8975,6 +9076,27 @@ namespace TL.Methods
 		public ChatAdminRights admin_rights;
 	}
 
+	[TLDef(0xA365DF7A)]
+	public class Bots_SetBotInfo : IMethod<bool>
+	{
+		public Flags flags;
+		public string lang_code;
+		[IfFlag(0)] public string about;
+		[IfFlag(1)] public string description;
+
+		[Flags] public enum Flags : uint
+		{
+			has_about = 0x1,
+			has_description = 0x2,
+		}
+	}
+
+	[TLDef(0x75EC12E6)]
+	public class Bots_GetBotInfo : IMethod<string[]>
+	{
+		public string lang_code;
+	}
+
 	[TLDef(0x37148DBB)]
 	public class Payments_GetPaymentForm : IMethod<Payments_PaymentForm>
 	{
@@ -9092,6 +9214,8 @@ namespace TL.Methods
 			has_thumb = 0x4,
 			has_software = 0x8,
 			videos = 0x10,
+			emojis = 0x20,
+			text_color = 0x40,
 		}
 	}
 
@@ -9115,11 +9239,19 @@ namespace TL.Methods
 		public InputStickerSetItem sticker;
 	}
 
-	[TLDef(0x9A364E30)]
+	[TLDef(0xA76A5392)]
 	public class Stickers_SetStickerSetThumb : IMethod<Messages_StickerSet>
 	{
+		public Flags flags;
 		public InputStickerSet stickerset;
-		public InputDocument thumb;
+		[IfFlag(0)] public InputDocument thumb;
+		[IfFlag(1)] public long thumb_document_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_thumb = 0x1,
+			has_thumb_document_id = 0x2,
+		}
 	}
 
 	[TLDef(0x284B3639)]
@@ -9132,6 +9264,36 @@ namespace TL.Methods
 	public class Stickers_SuggestShortName : IMethod<Stickers_SuggestedShortName>
 	{
 		public string title;
+	}
+
+	[TLDef(0xF5537EBC)]
+	public class Stickers_ChangeSticker : IMethod<Messages_StickerSet>
+	{
+		public Flags flags;
+		public InputDocument sticker;
+		[IfFlag(0)] public string emoji;
+		[IfFlag(1)] public MaskCoords mask_coords;
+		[IfFlag(2)] public string keywords;
+
+		[Flags] public enum Flags : uint
+		{
+			has_emoji = 0x1,
+			has_mask_coords = 0x2,
+			has_keywords = 0x4,
+		}
+	}
+
+	[TLDef(0x124B1C00)]
+	public class Stickers_RenameStickerSet : IMethod<Messages_StickerSet>
+	{
+		public InputStickerSet stickerset;
+		public string title;
+	}
+
+	[TLDef(0x87704394)]
+	public class Stickers_DeleteStickerSet : IMethod<bool>
+	{
+		public InputStickerSet stickerset;
 	}
 
 	[TLDef(0x55451FA9)]
