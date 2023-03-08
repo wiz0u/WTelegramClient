@@ -160,10 +160,10 @@ foreach (var participant in participants.participants) // This is the better way
 *Note: It is not possible to list only the Deleted Accounts. Those will be automatically removed by Telegram from your group after a while*
 
 <a name="history"></a>
-## Fetch all messages (history) from a chat
+## Fetch all messages (history) from a chat/user
 ```csharp
 var chats = await client.Messages_GetAllChats();
-InputPeer peer = chats.chats[1234567890]; // the chat we want
+InputPeer peer = chats.chats[1234567890]; // the chat (or User) we want
 for (int offset_id = 0; ;)
 {
     var messages = await client.Messages_GetHistory(peer, offset_id);
@@ -180,6 +180,7 @@ for (int offset_id = 0; ;)
 }
 ```
 Notes:
+- `peer` can also be a User, obtained through methods like [`Messages_GetAllDialogs`](#list-dialogs)
 - To stop at a specific msg ID, use Messages_GetHistory `min_id` argument. For example, `min_id: dialog.read_inbox_max_id`
 - To mark the message history as read, use: `await client.ReadHistory(peer);`
 

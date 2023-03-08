@@ -114,17 +114,17 @@ namespace TL
 
 	/// <summary>Object defines a contact from the user's phone book.		<para>See <a href="https://corefork.telegram.org/type/InputContact"/></para>		<para>Derived classes: <see cref="InputPhoneContact"/></para></summary>
 	public abstract class InputContact : IObject { }
-	/// <summary>Phone contact. The <c>client_id</c> is just an arbitrary contact ID: it should be set, for example, to an incremental number when using <see cref="SchemaExtensions.Contacts_ImportContacts">Contacts_ImportContacts</see>, in order to retry importing only the contacts that weren't imported successfully.		<para>See <a href="https://corefork.telegram.org/constructor/inputPhoneContact"/></para></summary>
+	/// <summary>Phone contact.		<para>See <a href="https://corefork.telegram.org/constructor/inputPhoneContact"/></para></summary>
 	[TLDef(0xF392B7F4)]
 	public class InputPhoneContact : InputContact
 	{
-		/// <summary>User identifier on the client</summary>
+		/// <summary>An arbitrary 64-bit integer: it should be set, for example, to an incremental number when using <see cref="SchemaExtensions.Contacts_ImportContacts">Contacts_ImportContacts</see>, in order to retry importing only the contacts that weren&#39;t imported successfully, according to the client_ids returned in <see cref="Contacts_ImportedContacts"/>.<c>retry_contacts</c>.</summary>
 		public long client_id;
 		/// <summary>Phone number</summary>
 		public string phone;
-		/// <summary>Contact's first name</summary>
+		/// <summary>Contact&#39;s first name</summary>
 		public string first_name;
-		/// <summary>Contact's last name</summary>
+		/// <summary>Contact&#39;s last name</summary>
 		public string last_name;
 	}
 
