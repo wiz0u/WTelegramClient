@@ -347,7 +347,8 @@ namespace WTelegram
 					}
 					catch
 					{
-						RaiseUpdate(reactorError);
+						if (IsMainDC)
+							RaiseUpdate(reactorError);
 						lock (_pendingRpcs) // abort all pending requests
 						{
 							foreach (var rpc in _pendingRpcs.Values)
