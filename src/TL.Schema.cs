@@ -4449,6 +4449,12 @@ namespace TL
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateAutoSaveSettings"/></para></summary>
 	[TLDef(0xEC05B097)]
 	public class UpdateAutoSaveSettings : Update { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateGroupInvitePrivacyForbidden"/></para></summary>
+	[TLDef(0xCCF08AD6)]
+	public class UpdateGroupInvitePrivacyForbidden : Update
+	{
+		public long user_id;
+	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]
@@ -13442,13 +13448,14 @@ namespace TL
 	}
 
 	/// <summary>How a certain peer reacted to the message		<para>See <a href="https://corefork.telegram.org/constructor/messagePeerReaction"/></para></summary>
-	[TLDef(0xB156FE9C)]
+	[TLDef(0x8C79B63C)]
 	public class MessagePeerReaction : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		/// <summary>Peer that reacted to the message</summary>
 		public Peer peer_id;
+		public DateTime date;
 		/// <summary>Reaction emoji</summary>
 		public Reaction reaction;
 

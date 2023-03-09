@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 154;					// fetched 08/03/2023 19:08:02
+		public const int Version = 155;					// fetched 09/03/2023 20:45:49
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -369,6 +369,7 @@ namespace TL
 			[0xFE198602] = typeof(UpdateChannelPinnedTopics),
 			[0x20529438] = typeof(UpdateUser),
 			[0xEC05B097] = typeof(UpdateAutoSaveSettings),
+			[0xCCF08AD6] = typeof(UpdateGroupInvitePrivacyForbidden),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -993,7 +994,7 @@ namespace TL
 			[0xC077EC01] = typeof(AvailableReaction),
 			[0x9F071957] = null,//Messages_AvailableReactionsNotModified
 			[0x768E3AAD] = typeof(Messages_AvailableReactions),
-			[0xB156FE9C] = typeof(MessagePeerReaction),
+			[0x8C79B63C] = typeof(MessagePeerReaction),
 			[0x80EB48AF] = typeof(GroupCallStreamChannel),
 			[0xD0E482B2] = typeof(Phone_GroupCallStreamChannels),
 			[0x2DBF3432] = typeof(Phone_GroupCallStreamRtmpUrl),
