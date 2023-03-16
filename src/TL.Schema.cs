@@ -118,13 +118,13 @@ namespace TL
 	[TLDef(0xF392B7F4)]
 	public class InputPhoneContact : InputContact
 	{
-		/// <summary>An arbitrary 64-bit integer: it should be set, for example, to an incremental number when using <see cref="SchemaExtensions.Contacts_ImportContacts">Contacts_ImportContacts</see>, in order to retry importing only the contacts that weren&#39;t imported successfully, according to the client_ids returned in <see cref="Contacts_ImportedContacts"/>.<c>retry_contacts</c>.</summary>
+		/// <summary>An arbitrary 64-bit integer: it should be set, for example, to an incremental number when using <see cref="SchemaExtensions.Contacts_ImportContacts">Contacts_ImportContacts</see>, in order to retry importing only the contacts that weren't imported successfully, according to the client_ids returned in <see cref="Contacts_ImportedContacts"/>.<c>retry_contacts</c>.</summary>
 		public long client_id;
 		/// <summary>Phone number</summary>
 		public string phone;
-		/// <summary>Contact&#39;s first name</summary>
+		/// <summary>Contact's first name</summary>
 		public string first_name;
-		/// <summary>Contact&#39;s last name</summary>
+		/// <summary>Contact's last name</summary>
 		public string last_name;
 	}
 
@@ -2059,6 +2059,7 @@ namespace TL
 	[TLDef(0xC516D679)]
 	public class MessageActionBotAllowed : MessageAction
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		/// <summary>The domain name of the website on which the user has logged in.</summary>
 		[IfFlag(0)] public string domain;
@@ -2133,6 +2134,7 @@ namespace TL
 	[TLDef(0x3C134D7B)]
 	public class MessageActionSetMessagesTTL : MessageAction
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		/// <summary>New Time-To-Live</summary>
 		public int period;
@@ -2192,6 +2194,7 @@ namespace TL
 	[TLDef(0x0D999256)]
 	public class MessageActionTopicCreate : MessageAction
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		public string title;
 		public int icon_color;
@@ -2199,6 +2202,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="icon_emoji_id"/> has a value</summary>
 			has_icon_emoji_id = 0x1,
 		}
 	}
@@ -2206,6 +2210,7 @@ namespace TL
 	[TLDef(0xC0944820)]
 	public class MessageActionTopicEdit : MessageAction
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		[IfFlag(0)] public string title;
 		[IfFlag(1)] public long icon_emoji_id;
@@ -2214,9 +2219,13 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x1,
+			/// <summary>Field <see cref="icon_emoji_id"/> has a value</summary>
 			has_icon_emoji_id = 0x2,
+			/// <summary>Field <see cref="closed"/> has a value</summary>
 			has_closed = 0x4,
+			/// <summary>Field <see cref="hidden"/> has a value</summary>
 			has_hidden = 0x8,
 		}
 	}
@@ -3190,7 +3199,7 @@ namespace TL
 	[TLDef(0x1BB00451)]
 	public class InputMessagesFilterPinned : MessagesFilter { }
 
-	/// <summary>Object contains info on events occurred.		<para>See <a href="https://corefork.telegram.org/type/Update"/></para>		<para>Derived classes: <see cref="UpdateNewMessage"/>, <see cref="UpdateMessageID"/>, <see cref="UpdateDeleteMessages"/>, <see cref="UpdateUserTyping"/>, <see cref="UpdateChatUserTyping"/>, <see cref="UpdateChatParticipants"/>, <see cref="UpdateUserStatus"/>, <see cref="UpdateUserName"/>, <see cref="UpdateUserPhoto"/>, <see cref="UpdateNewEncryptedMessage"/>, <see cref="UpdateEncryptedChatTyping"/>, <see cref="UpdateEncryption"/>, <see cref="UpdateEncryptedMessagesRead"/>, <see cref="UpdateChatParticipantAdd"/>, <see cref="UpdateChatParticipantDelete"/>, <see cref="UpdateDcOptions"/>, <see cref="UpdateNotifySettings"/>, <see cref="UpdateServiceNotification"/>, <see cref="UpdatePrivacy"/>, <see cref="UpdateUserPhone"/>, <see cref="UpdateReadHistoryInbox"/>, <see cref="UpdateReadHistoryOutbox"/>, <see cref="UpdateWebPage"/>, <see cref="UpdateReadMessagesContents"/>, <see cref="UpdateChannelTooLong"/>, <see cref="UpdateChannel"/>, <see cref="UpdateNewChannelMessage"/>, <see cref="UpdateReadChannelInbox"/>, <see cref="UpdateDeleteChannelMessages"/>, <see cref="UpdateChannelMessageViews"/>, <see cref="UpdateChatParticipantAdmin"/>, <see cref="UpdateNewStickerSet"/>, <see cref="UpdateStickerSetsOrder"/>, <see cref="UpdateStickerSets"/>, <see cref="UpdateSavedGifs"/>, <see cref="UpdateBotInlineQuery"/>, <see cref="UpdateBotInlineSend"/>, <see cref="UpdateEditChannelMessage"/>, <see cref="UpdateBotCallbackQuery"/>, <see cref="UpdateEditMessage"/>, <see cref="UpdateInlineBotCallbackQuery"/>, <see cref="UpdateReadChannelOutbox"/>, <see cref="UpdateDraftMessage"/>, <see cref="UpdateReadFeaturedStickers"/>, <see cref="UpdateRecentStickers"/>, <see cref="UpdateConfig"/>, <see cref="UpdatePtsChanged"/>, <see cref="UpdateChannelWebPage"/>, <see cref="UpdateDialogPinned"/>, <see cref="UpdatePinnedDialogs"/>, <see cref="UpdateBotWebhookJSON"/>, <see cref="UpdateBotWebhookJSONQuery"/>, <see cref="UpdateBotShippingQuery"/>, <see cref="UpdateBotPrecheckoutQuery"/>, <see cref="UpdatePhoneCall"/>, <see cref="UpdateLangPackTooLong"/>, <see cref="UpdateLangPack"/>, <see cref="UpdateFavedStickers"/>, <see cref="UpdateChannelReadMessagesContents"/>, <see cref="UpdateContactsReset"/>, <see cref="UpdateChannelAvailableMessages"/>, <see cref="UpdateDialogUnreadMark"/>, <see cref="UpdateMessagePoll"/>, <see cref="UpdateChatDefaultBannedRights"/>, <see cref="UpdateFolderPeers"/>, <see cref="UpdatePeerSettings"/>, <see cref="UpdatePeerLocated"/>, <see cref="UpdateNewScheduledMessage"/>, <see cref="UpdateDeleteScheduledMessages"/>, <see cref="UpdateTheme"/>, <see cref="UpdateGeoLiveViewed"/>, <see cref="UpdateLoginToken"/>, <see cref="UpdateMessagePollVote"/>, <see cref="UpdateDialogFilter"/>, <see cref="UpdateDialogFilterOrder"/>, <see cref="UpdateDialogFilters"/>, <see cref="UpdatePhoneCallSignalingData"/>, <see cref="UpdateChannelMessageForwards"/>, <see cref="UpdateReadChannelDiscussionInbox"/>, <see cref="UpdateReadChannelDiscussionOutbox"/>, <see cref="UpdatePeerBlocked"/>, <see cref="UpdateChannelUserTyping"/>, <see cref="UpdatePinnedMessages"/>, <see cref="UpdatePinnedChannelMessages"/>, <see cref="UpdateChat"/>, <see cref="UpdateGroupCallParticipants"/>, <see cref="UpdateGroupCall"/>, <see cref="UpdatePeerHistoryTTL"/>, <see cref="UpdateChatParticipant"/>, <see cref="UpdateChannelParticipant"/>, <see cref="UpdateBotStopped"/>, <see cref="UpdateGroupCallConnection"/>, <see cref="UpdateBotCommands"/>, <see cref="UpdatePendingJoinRequests"/>, <see cref="UpdateBotChatInviteRequester"/>, <see cref="UpdateMessageReactions"/>, <see cref="UpdateAttachMenuBots"/>, <see cref="UpdateWebViewResultSent"/>, <see cref="UpdateBotMenuButton"/>, <see cref="UpdateSavedRingtones"/>, <see cref="UpdateTranscribedAudio"/>, <see cref="UpdateReadFeaturedEmojiStickers"/>, <see cref="UpdateUserEmojiStatus"/>, <see cref="UpdateRecentEmojiStatuses"/>, <see cref="UpdateRecentReactions"/>, <see cref="UpdateMoveStickerSetToTop"/></para></summary>
+	/// <summary>Object contains info on events occurred.		<para>See <a href="https://corefork.telegram.org/type/Update"/></para>		<para>Derived classes: <see cref="UpdateNewMessage"/>, <see cref="UpdateMessageID"/>, <see cref="UpdateDeleteMessages"/>, <see cref="UpdateUserTyping"/>, <see cref="UpdateChatUserTyping"/>, <see cref="UpdateChatParticipants"/>, <see cref="UpdateUserStatus"/>, <see cref="UpdateUserName"/>, <see cref="UpdateNewEncryptedMessage"/>, <see cref="UpdateEncryptedChatTyping"/>, <see cref="UpdateEncryption"/>, <see cref="UpdateEncryptedMessagesRead"/>, <see cref="UpdateChatParticipantAdd"/>, <see cref="UpdateChatParticipantDelete"/>, <see cref="UpdateDcOptions"/>, <see cref="UpdateNotifySettings"/>, <see cref="UpdateServiceNotification"/>, <see cref="UpdatePrivacy"/>, <see cref="UpdateUserPhone"/>, <see cref="UpdateReadHistoryInbox"/>, <see cref="UpdateReadHistoryOutbox"/>, <see cref="UpdateWebPage"/>, <see cref="UpdateReadMessagesContents"/>, <see cref="UpdateChannelTooLong"/>, <see cref="UpdateChannel"/>, <see cref="UpdateNewChannelMessage"/>, <see cref="UpdateReadChannelInbox"/>, <see cref="UpdateDeleteChannelMessages"/>, <see cref="UpdateChannelMessageViews"/>, <see cref="UpdateChatParticipantAdmin"/>, <see cref="UpdateNewStickerSet"/>, <see cref="UpdateStickerSetsOrder"/>, <see cref="UpdateStickerSets"/>, <see cref="UpdateSavedGifs"/>, <see cref="UpdateBotInlineQuery"/>, <see cref="UpdateBotInlineSend"/>, <see cref="UpdateEditChannelMessage"/>, <see cref="UpdateBotCallbackQuery"/>, <see cref="UpdateEditMessage"/>, <see cref="UpdateInlineBotCallbackQuery"/>, <see cref="UpdateReadChannelOutbox"/>, <see cref="UpdateDraftMessage"/>, <see cref="UpdateReadFeaturedStickers"/>, <see cref="UpdateRecentStickers"/>, <see cref="UpdateConfig"/>, <see cref="UpdatePtsChanged"/>, <see cref="UpdateChannelWebPage"/>, <see cref="UpdateDialogPinned"/>, <see cref="UpdatePinnedDialogs"/>, <see cref="UpdateBotWebhookJSON"/>, <see cref="UpdateBotWebhookJSONQuery"/>, <see cref="UpdateBotShippingQuery"/>, <see cref="UpdateBotPrecheckoutQuery"/>, <see cref="UpdatePhoneCall"/>, <see cref="UpdateLangPackTooLong"/>, <see cref="UpdateLangPack"/>, <see cref="UpdateFavedStickers"/>, <see cref="UpdateChannelReadMessagesContents"/>, <see cref="UpdateContactsReset"/>, <see cref="UpdateChannelAvailableMessages"/>, <see cref="UpdateDialogUnreadMark"/>, <see cref="UpdateMessagePoll"/>, <see cref="UpdateChatDefaultBannedRights"/>, <see cref="UpdateFolderPeers"/>, <see cref="UpdatePeerSettings"/>, <see cref="UpdatePeerLocated"/>, <see cref="UpdateNewScheduledMessage"/>, <see cref="UpdateDeleteScheduledMessages"/>, <see cref="UpdateTheme"/>, <see cref="UpdateGeoLiveViewed"/>, <see cref="UpdateLoginToken"/>, <see cref="UpdateMessagePollVote"/>, <see cref="UpdateDialogFilter"/>, <see cref="UpdateDialogFilterOrder"/>, <see cref="UpdateDialogFilters"/>, <see cref="UpdatePhoneCallSignalingData"/>, <see cref="UpdateChannelMessageForwards"/>, <see cref="UpdateReadChannelDiscussionInbox"/>, <see cref="UpdateReadChannelDiscussionOutbox"/>, <see cref="UpdatePeerBlocked"/>, <see cref="UpdateChannelUserTyping"/>, <see cref="UpdatePinnedMessages"/>, <see cref="UpdatePinnedChannelMessages"/>, <see cref="UpdateChat"/>, <see cref="UpdateGroupCallParticipants"/>, <see cref="UpdateGroupCall"/>, <see cref="UpdatePeerHistoryTTL"/>, <see cref="UpdateChatParticipant"/>, <see cref="UpdateChannelParticipant"/>, <see cref="UpdateBotStopped"/>, <see cref="UpdateGroupCallConnection"/>, <see cref="UpdateBotCommands"/>, <see cref="UpdatePendingJoinRequests"/>, <see cref="UpdateBotChatInviteRequester"/>, <see cref="UpdateMessageReactions"/>, <see cref="UpdateAttachMenuBots"/>, <see cref="UpdateWebViewResultSent"/>, <see cref="UpdateBotMenuButton"/>, <see cref="UpdateSavedRingtones"/>, <see cref="UpdateTranscribedAudio"/>, <see cref="UpdateReadFeaturedEmojiStickers"/>, <see cref="UpdateUserEmojiStatus"/>, <see cref="UpdateRecentEmojiStatuses"/>, <see cref="UpdateRecentReactions"/>, <see cref="UpdateMoveStickerSetToTop"/></para></summary>
 	public abstract class Update : IObject { }
 	/// <summary>New message in a private chat or in a <a href="https://corefork.telegram.org/api/channel#basic-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateNewMessage"/></para></summary>
 	[TLDef(0x1F2B0AFD)]
@@ -3682,6 +3691,7 @@ namespace TL
 	[TLDef(0x1B49EC6D)]
 	public class UpdateDraftMessage : Update
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		/// <summary>The peer to which the draft is associated</summary>
 		public Peer peer;
@@ -3840,6 +3850,7 @@ namespace TL
 	[TLDef(0xEA29055D)]
 	public class UpdateChannelReadMessagesContents : Update
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a> ID</summary>
 		public long channel_id;
@@ -4315,6 +4326,7 @@ namespace TL
 	[TLDef(0x5E1B3CB8)]
 	public class UpdateMessageReactions : Update
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		/// <summary>Peer</summary>
 		public Peer peer;
@@ -4418,6 +4430,7 @@ namespace TL
 	[TLDef(0x192EFBE3)]
 	public class UpdateChannelPinnedTopic : Update
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		public long channel_id;
 		public int topic_id;
@@ -4431,12 +4444,14 @@ namespace TL
 	[TLDef(0xFE198602)]
 	public class UpdateChannelPinnedTopics : Update
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		public long channel_id;
 		[IfFlag(0)] public int[] order;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="order"/> has a value</summary>
 			has_order = 0x1,
 		}
 	}
@@ -7907,6 +7922,7 @@ namespace TL
 	[TLDef(0xE57B1432)]
 	public class Auth_SentCodeTypeFirebaseSms : Auth_SentCodeTypeSms
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		[IfFlag(0)] public byte[] nonce;
 		[IfFlag(1)] public string receipt;
@@ -7914,7 +7930,9 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="nonce"/> has a value</summary>
 			has_nonce = 0x1,
+			/// <summary>Field <see cref="receipt"/> has a value</summary>
 			has_receipt = 0x2,
 		}
 	}
@@ -10137,13 +10155,16 @@ namespace TL
 	[TLDef(0x5D8D353B)]
 	public class ChannelAdminLogEventActionPinTopic : ChannelAdminLogEventAction
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		[IfFlag(0)] public ForumTopicBase prev_topic;
 		[IfFlag(1)] public ForumTopicBase new_topic;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="prev_topic"/> has a value</summary>
 			has_prev_topic = 0x1,
+			/// <summary>Field <see cref="new_topic"/> has a value</summary>
 			has_new_topic = 0x2,
 		}
 	}
@@ -13184,6 +13205,7 @@ namespace TL
 	[TLDef(0xC9EE1D87)]
 	public class Messages_SponsoredMessages : IObject, IPeerResolver
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		[IfFlag(0)] public int posts_between;
 		/// <summary>Sponsored messages</summary>
@@ -13997,12 +14019,13 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/MessageExtendedMedia"/></para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/MessageExtendedMedia"/></para>		<para>Derived classes: </para></summary>
 	public abstract class MessageExtendedMediaBase : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageExtendedMediaPreview"/></para></summary>
 	[TLDef(0xAD628CC8)]
 	public class MessageExtendedMediaPreview : MessageExtendedMediaBase
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		[IfFlag(0)] public int w;
 		[IfFlag(0)] public int h;
@@ -14011,8 +14034,11 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="w"/> has a value</summary>
 			has_w = 0x1,
+			/// <summary>Field <see cref="thumb"/> has a value</summary>
 			has_thumb = 0x2,
+			/// <summary>Field <see cref="video_duration"/> has a value</summary>
 			has_video_duration = 0x4,
 		}
 	}
@@ -14035,6 +14061,7 @@ namespace TL
 	[TLDef(0xB4073647)]
 	public class Username : IObject
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		public string username;
 
@@ -14045,7 +14072,7 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/ForumTopic"/></para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/ForumTopic"/></para>		<para>Derived classes: </para></summary>
 	public abstract class ForumTopicBase : IObject
 	{
 		public virtual int ID { get; }
@@ -14062,6 +14089,7 @@ namespace TL
 	[TLDef(0x71701DA9)]
 	public class ForumTopic : ForumTopicBase
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		public int id;
 		public DateTime date;
@@ -14080,10 +14108,12 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="icon_emoji_id"/> has a value</summary>
 			has_icon_emoji_id = 0x1,
 			my = 0x2,
 			closed = 0x4,
 			pinned = 0x8,
+			/// <summary>Field <see cref="draft"/> has a value</summary>
 			has_draft = 0x10,
 			short_ = 0x20,
 			hidden = 0x40,
@@ -14096,6 +14126,7 @@ namespace TL
 	[TLDef(0x367617D3)]
 	public class Messages_ForumTopics : IObject, IPeerResolver
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		public int count;
 		public ForumTopicBase[] topics;
@@ -14127,19 +14158,22 @@ namespace TL
 		public DateTime expires;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/RequestPeerType"/></para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/RequestPeerType"/></para>		<para>Derived classes: </para></summary>
 	public abstract class RequestPeerType : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/requestPeerTypeUser"/></para></summary>
 	[TLDef(0x5F3B8A00)]
 	public class RequestPeerTypeUser : RequestPeerType
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		[IfFlag(0)] public bool bot;
 		[IfFlag(1)] public bool premium;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="bot"/> has a value</summary>
 			has_bot = 0x1,
+			/// <summary>Field <see cref="premium"/> has a value</summary>
 			has_premium = 0x2,
 		}
 	}
@@ -14147,6 +14181,7 @@ namespace TL
 	[TLDef(0xC9F06E1B)]
 	public class RequestPeerTypeChat : RequestPeerType
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		[IfFlag(3)] public bool has_username;
 		[IfFlag(4)] public bool forum;
@@ -14156,9 +14191,13 @@ namespace TL
 		[Flags] public enum Flags : uint
 		{
 			creator = 0x1,
+			/// <summary>Field <see cref="user_admin_rights"/> has a value</summary>
 			has_user_admin_rights = 0x2,
+			/// <summary>Field <see cref="bot_admin_rights"/> has a value</summary>
 			has_bot_admin_rights = 0x4,
+			/// <summary>Field <see cref="has_username"/> has a value</summary>
 			has_has_username = 0x8,
+			/// <summary>Field <see cref="forum"/> has a value</summary>
 			has_forum = 0x10,
 			bot_participant = 0x20,
 		}
@@ -14167,6 +14206,7 @@ namespace TL
 	[TLDef(0x339BEF6C)]
 	public class RequestPeerTypeBroadcast : RequestPeerType
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		[IfFlag(3)] public bool has_username;
 		[IfFlag(1)] public ChatAdminRights user_admin_rights;
@@ -14175,8 +14215,11 @@ namespace TL
 		[Flags] public enum Flags : uint
 		{
 			creator = 0x1,
+			/// <summary>Field <see cref="user_admin_rights"/> has a value</summary>
 			has_user_admin_rights = 0x2,
+			/// <summary>Field <see cref="bot_admin_rights"/> has a value</summary>
 			has_bot_admin_rights = 0x4,
+			/// <summary>Field <see cref="has_username"/> has a value</summary>
 			has_has_username = 0x8,
 		}
 	}
@@ -14216,7 +14259,7 @@ namespace TL
 		public MessageEntity[] entities;
 	}
 
-	/// <summary>Translated text, or no result		<para>See <a href="https://corefork.telegram.org/type/messages.TranslatedText"/></para>		<para>Derived classes: <see cref="Messages_TranslateNoResult"/>, <see cref="Messages_TranslateResultText"/></para></summary>
+	/// <summary>Translated text, or no result		<para>See <a href="https://corefork.telegram.org/type/messages.TranslatedText"/></para>		<para>Derived classes: </para></summary>
 	public abstract class Messages_TranslatedText : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.translateResult"/></para></summary>
 	[TLDef(0x33DB32F8)]
@@ -14229,6 +14272,7 @@ namespace TL
 	[TLDef(0xC84834CE)]
 	public class AutoSaveSettings : IObject
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		[IfFlag(2)] public long video_max_size;
 
@@ -14236,6 +14280,7 @@ namespace TL
 		{
 			photos = 0x1,
 			videos = 0x2,
+			/// <summary>Field <see cref="video_max_size"/> has a value</summary>
 			has_video_max_size = 0x4,
 		}
 	}
@@ -14271,7 +14316,7 @@ namespace TL
 		public JsonObject config;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputBotApp"/></para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputBotApp"/></para>		<para>Derived classes: </para></summary>
 	public abstract class InputBotApp : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputBotAppID"/></para></summary>
 	[TLDef(0xA920BD7A)]
@@ -14293,6 +14338,7 @@ namespace TL
 	[TLDef(0x95FCD1D6)]
 	public class BotApp : IObject
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		public long id;
 		public long access_hash;
@@ -14305,6 +14351,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="document"/> has a value</summary>
 			has_document = 0x1,
 		}
 	}
@@ -14313,6 +14360,7 @@ namespace TL
 	[TLDef(0xEB50ADF5)]
 	public class Messages_BotApp : IObject
 	{
+		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
 		public BotApp app;
 
@@ -14323,7 +14371,7 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/AppWebViewResult"/></para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/AppWebViewResult"/></para>		<para>Derived classes: </para></summary>
 	public abstract class AppWebViewResult : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/appWebViewResultUrl"/></para></summary>
 	[TLDef(0x3C1B4F0D)]

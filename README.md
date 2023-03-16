@@ -1,7 +1,7 @@
 ﻿[![API Layer](https://img.shields.io/badge/API_Layer-155-blueviolet)](https://corefork.telegram.org/methods)
 [![NuGet version](https://img.shields.io/nuget/v/WTelegramClient?color=00508F)](https://www.nuget.org/packages/WTelegramClient/)
 [![Build Status](https://img.shields.io/azure-devops/build/wiz0u/WTelegramClient/7)](https://dev.azure.com/wiz0u/WTelegramClient/_build?definitionId=7)
-[![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](http://t.me/WTelegramBot?start=donate)
+[![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](https://www.buymeacoffee.com/wizou)
 
 ## _Telegram Client API library written 100% in C# and .NET_
 
@@ -195,4 +195,4 @@ as well as the [API Terms of Service](https://core.telegram.org/api/terms) or yo
 If you read all this ReadMe, the [Frequently Asked Questions](https://wiz0u.github.io/WTelegramClient/FAQ),
 the [Examples codes](https://wiz0u.github.io/WTelegramClient/EXAMPLES) and still have questions, feedback is welcome in our Telegram group [@WTelegramClient](https://t.me/WTelegramClient)
 
-If you like this library, please [consider a donation](http://t.me/WTelegramBot?start=donate) ❤ This will help the project keep going.
+If you like this library, you can [buy me a coffee](https://www.buymeacoffee.com/wizou) ❤ This will help the project keep going.

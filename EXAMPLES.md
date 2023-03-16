@@ -374,8 +374,9 @@ var chatInvite = await client.Messages_CheckChatInvite("HASH"); // optional: get
 await client.Messages_ImportChatInvite("HASH"); // join the channel/group  
 // Note: This works also with HASH invite links from public channel/group
 ```
-Note: `CheckChatInvite` can return [3 different types of invitation object](https://corefork.telegram.org/type/ChatInvite)
+`CheckChatInvite` can return [3 different types of invitation object](https://corefork.telegram.org/type/ChatInvite)
 
+You can also use helper methods `AnalyzeInviteLink` and `GetMessageByLink` to more easily fetch information from links.
 <a name="add-members"></a>
 ## Add/Invite/Remove someone in a chat
 ```csharp

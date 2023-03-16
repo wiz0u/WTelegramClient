@@ -12,6 +12,7 @@ namespace TL
 	{
 		long ID { get; }
 		bool IsActive { get; }
+		string MainUsername { get; }
 		InputPeer ToInputPeer();
 	}
 
@@ -142,6 +143,7 @@ namespace TL
 	{
 		public abstract long ID { get; }
 		public abstract bool IsActive { get; }
+		public abstract string MainUsername { get; }
 		public abstract InputPeer ToInputPeer();
 		protected abstract InputUser ToInputUser();
 		public static implicit operator InputPeer(UserBase user) => user?.ToInputPeer();
@@ -151,6 +153,7 @@ namespace TL
 	{
 		public override long ID => id;
 		public override bool IsActive => false;
+		public override string MainUsername => null;
 		public override string ToString() => null;
 		public override InputPeer ToInputPeer() => null;
 		protected override InputUser ToInputUser() => null;
@@ -159,13 +162,13 @@ namespace TL
 	{
 		public override long ID => id;
 		public override bool IsActive => (flags & Flags.deleted) == 0;
-		public bool IsBot => (flags & Flags.bot) != 0;
-		public string MainUsername => username ?? usernames?.FirstOrDefault(u => u.flags.HasFlag(Username.Flags.active))?.username;
+		public override string MainUsername => username ?? usernames?.FirstOrDefault(u => u.flags.HasFlag(Username.Flags.active))?.username;
 		public override string ToString() => MainUsername is string uname ? '@' + uname : last_name == null ? first_name : $"{first_name} {last_name}";
 		public override InputPeer ToInputPeer() => new InputPeerUser(id, access_hash);
 		protected override InputUser ToInputUser() => new(id, access_hash);
 		/// <summary>An estimation of the number of days ago the user was last seen (Online=0, Recently=1, LastWeek=5, LastMonth=20, LongTimeAgo=150)</summary>
 		public TimeSpan LastSeenAgo => status?.LastSeenAgo ?? TimeSpan.FromDays(150);
+		public bool IsBot => (flags & Flags.bot) != 0;
 	}
 
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/userStatusEmpty">userStatusEmpty</a> = last seen a long time ago, more than a month (or blocked/deleted users)</remarks>
@@ -183,6 +186,7 @@ namespace TL
 	{
 		/// <summary>Is this chat among current user active chats?</summary>
 		public abstract bool IsActive { get; }
+		public virtual string MainUsername => null;
 		public abstract ChatPhoto Photo { get; }
 		/// <summary>returns true if you're banned of any of these rights</summary>
 		public abstract bool IsBanned(ChatBannedRights.Flags flags = 0);
@@ -216,7 +220,7 @@ namespace TL
 	partial class Channel
 	{
 		public override bool IsActive => (flags & Flags.left) == 0;
-		public string MainUsername => username ?? usernames?.FirstOrDefault(u => u.flags.HasFlag(Username.Flags.active))?.username;
+		public override string MainUsername => username ?? usernames?.FirstOrDefault(u => u.flags.HasFlag(Username.Flags.active))?.username;
 		public override ChatPhoto Photo => photo;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((banned_rights?.flags ?? 0) & flags) != 0 || ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		public override InputPeer ToInputPeer() => new InputPeerChannel(id, access_hash);
