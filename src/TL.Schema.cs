@@ -1880,7 +1880,7 @@ namespace TL
 		public string emoticon;
 	}
 
-	/// <summary>Object describing actions connected to a service message.		<para>See <a href="https://corefork.telegram.org/type/MessageAction"/></para>		<para>Derived classes: <see cref="MessageActionChatCreate"/>, <see cref="MessageActionChatEditTitle"/>, <see cref="MessageActionChatEditPhoto"/>, <see cref="MessageActionChatDeletePhoto"/>, <see cref="MessageActionChatAddUser"/>, <see cref="MessageActionChatDeleteUser"/>, <see cref="MessageActionChatJoinedByLink"/>, <see cref="MessageActionChannelCreate"/>, <see cref="MessageActionChatMigrateTo"/>, <see cref="MessageActionChannelMigrateFrom"/>, <see cref="MessageActionPinMessage"/>, <see cref="MessageActionHistoryClear"/>, <see cref="MessageActionGameScore"/>, <see cref="MessageActionPaymentSentMe"/>, <see cref="MessageActionPaymentSent"/>, <see cref="MessageActionPhoneCall"/>, <see cref="MessageActionScreenshotTaken"/>, <see cref="MessageActionCustomAction"/>, <see cref="MessageActionBotAllowed"/>, <see cref="MessageActionSecureValuesSentMe"/>, <see cref="MessageActionSecureValuesSent"/>, <see cref="MessageActionContactSignUp"/>, <see cref="MessageActionGeoProximityReached"/>, <see cref="MessageActionGroupCall"/>, <see cref="MessageActionInviteToGroupCall"/>, <see cref="MessageActionSetMessagesTTL"/>, <see cref="MessageActionGroupCallScheduled"/>, <see cref="MessageActionSetChatTheme"/>, <see cref="MessageActionChatJoinedByRequest"/>, <see cref="MessageActionWebViewDataSentMe"/>, <see cref="MessageActionWebViewDataSent"/>, <see cref="MessageActionGiftPremium"/></para></summary>
+	/// <summary>Object describing actions connected to a service message.		<para>See <a href="https://corefork.telegram.org/type/MessageAction"/></para>		<para>Derived classes: <see cref="MessageActionChatCreate"/>, <see cref="MessageActionChatEditTitle"/>, <see cref="MessageActionChatEditPhoto"/>, <see cref="MessageActionChatDeletePhoto"/>, <see cref="MessageActionChatAddUser"/>, <see cref="MessageActionChatDeleteUser"/>, <see cref="MessageActionChatJoinedByLink"/>, <see cref="MessageActionChannelCreate"/>, <see cref="MessageActionChatMigrateTo"/>, <see cref="MessageActionChannelMigrateFrom"/>, <see cref="MessageActionPinMessage"/>, <see cref="MessageActionHistoryClear"/>, <see cref="MessageActionGameScore"/>, <see cref="MessageActionPaymentSentMe"/>, <see cref="MessageActionPaymentSent"/>, <see cref="MessageActionPhoneCall"/>, <see cref="MessageActionScreenshotTaken"/>, <see cref="MessageActionCustomAction"/>, <see cref="MessageActionBotAllowed"/>, <see cref="MessageActionSecureValuesSentMe"/>, <see cref="MessageActionSecureValuesSent"/>, <see cref="MessageActionContactSignUp"/>, <see cref="MessageActionGeoProximityReached"/>, <see cref="MessageActionGroupCall"/>, <see cref="MessageActionInviteToGroupCall"/>, <see cref="MessageActionSetMessagesTTL"/>, <see cref="MessageActionGroupCallScheduled"/>, <see cref="MessageActionSetChatTheme"/>, <see cref="MessageActionChatJoinedByRequest"/>, <see cref="MessageActionWebViewDataSentMe"/>, <see cref="MessageActionWebViewDataSent"/>, <see cref="MessageActionGiftPremium"/>, <see cref="MessageActionTopicCreate"/>, <see cref="MessageActionTopicEdit"/>, <see cref="MessageActionSuggestProfilePhoto"/>, <see cref="MessageActionRequestedPeer"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/messageActionEmpty">messageActionEmpty</a></remarks>
 	public abstract class MessageAction : IObject { }
 	/// <summary>Group created		<para>See <a href="https://corefork.telegram.org/constructor/messageActionChatCreate"/></para></summary>
@@ -2196,8 +2196,11 @@ namespace TL
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Topic name.</summary>
 		public string title;
+		/// <summary>If no custom emoji icon is specified, specifies the color of the fallback topic icon (RGB), one of <c>0x6FB9F0</c>, <c>0xFFD67E</c>, <c>0xCB86DB</c>, <c>0x8EEE98</c>, <c>0xFF93B2</c>, or <c>0xFB6F5F</c>.</summary>
 		public int icon_color;
+		/// <summary>ID of the <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> used as topic icon.</summary>
 		[IfFlag(0)] public long icon_emoji_id;
 
 		[Flags] public enum Flags : uint
@@ -2486,7 +2489,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>Contains info on a confirmation code message sent via SMS, phone call or Telegram.		<para>See <a href="https://corefork.telegram.org/type/auth.SentCode"/></para>		<para>Derived classes: <see cref="Auth_SentCode"/></para></summary>
+	/// <summary>Contains info on a confirmation code message sent via SMS, phone call or Telegram.		<para>See <a href="https://corefork.telegram.org/type/auth.SentCode"/></para>		<para>Derived classes: <see cref="Auth_SentCode"/>, <see cref="Auth_SentCodeSuccess"/></para></summary>
 	public abstract class Auth_SentCodeBase : IObject { }
 	/// <summary>Contains info about a sent verification code.		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCode"/></para></summary>
 	[TLDef(0x5E002502)]
@@ -2570,7 +2573,7 @@ namespace TL
 		public byte[] bytes;
 	}
 
-	/// <summary>Object defines the set of users and/or groups that generate notifications.		<para>See <a href="https://corefork.telegram.org/type/InputNotifyPeer"/></para>		<para>Derived classes: <see cref="InputNotifyPeer"/>, <see cref="InputNotifyUsers"/>, <see cref="InputNotifyChats"/>, <see cref="InputNotifyBroadcasts"/></para></summary>
+	/// <summary>Object defines the set of users and/or groups that generate notifications.		<para>See <a href="https://corefork.telegram.org/type/InputNotifyPeer"/></para>		<para>Derived classes: <see cref="InputNotifyPeer"/>, <see cref="InputNotifyUsers"/>, <see cref="InputNotifyChats"/>, <see cref="InputNotifyBroadcasts"/>, <see cref="InputNotifyForumTopic"/></para></summary>
 	public abstract class InputNotifyPeerBase : IObject { }
 	/// <summary>Notifications generated by a certain user or group.		<para>See <a href="https://corefork.telegram.org/constructor/inputNotifyPeer"/></para></summary>
 	[TLDef(0xB8BC5B0C)]
@@ -3199,7 +3202,7 @@ namespace TL
 	[TLDef(0x1BB00451)]
 	public class InputMessagesFilterPinned : MessagesFilter { }
 
-	/// <summary>Object contains info on events occurred.		<para>See <a href="https://corefork.telegram.org/type/Update"/></para>		<para>Derived classes: <see cref="UpdateNewMessage"/>, <see cref="UpdateMessageID"/>, <see cref="UpdateDeleteMessages"/>, <see cref="UpdateUserTyping"/>, <see cref="UpdateChatUserTyping"/>, <see cref="UpdateChatParticipants"/>, <see cref="UpdateUserStatus"/>, <see cref="UpdateUserName"/>, <see cref="UpdateNewEncryptedMessage"/>, <see cref="UpdateEncryptedChatTyping"/>, <see cref="UpdateEncryption"/>, <see cref="UpdateEncryptedMessagesRead"/>, <see cref="UpdateChatParticipantAdd"/>, <see cref="UpdateChatParticipantDelete"/>, <see cref="UpdateDcOptions"/>, <see cref="UpdateNotifySettings"/>, <see cref="UpdateServiceNotification"/>, <see cref="UpdatePrivacy"/>, <see cref="UpdateUserPhone"/>, <see cref="UpdateReadHistoryInbox"/>, <see cref="UpdateReadHistoryOutbox"/>, <see cref="UpdateWebPage"/>, <see cref="UpdateReadMessagesContents"/>, <see cref="UpdateChannelTooLong"/>, <see cref="UpdateChannel"/>, <see cref="UpdateNewChannelMessage"/>, <see cref="UpdateReadChannelInbox"/>, <see cref="UpdateDeleteChannelMessages"/>, <see cref="UpdateChannelMessageViews"/>, <see cref="UpdateChatParticipantAdmin"/>, <see cref="UpdateNewStickerSet"/>, <see cref="UpdateStickerSetsOrder"/>, <see cref="UpdateStickerSets"/>, <see cref="UpdateSavedGifs"/>, <see cref="UpdateBotInlineQuery"/>, <see cref="UpdateBotInlineSend"/>, <see cref="UpdateEditChannelMessage"/>, <see cref="UpdateBotCallbackQuery"/>, <see cref="UpdateEditMessage"/>, <see cref="UpdateInlineBotCallbackQuery"/>, <see cref="UpdateReadChannelOutbox"/>, <see cref="UpdateDraftMessage"/>, <see cref="UpdateReadFeaturedStickers"/>, <see cref="UpdateRecentStickers"/>, <see cref="UpdateConfig"/>, <see cref="UpdatePtsChanged"/>, <see cref="UpdateChannelWebPage"/>, <see cref="UpdateDialogPinned"/>, <see cref="UpdatePinnedDialogs"/>, <see cref="UpdateBotWebhookJSON"/>, <see cref="UpdateBotWebhookJSONQuery"/>, <see cref="UpdateBotShippingQuery"/>, <see cref="UpdateBotPrecheckoutQuery"/>, <see cref="UpdatePhoneCall"/>, <see cref="UpdateLangPackTooLong"/>, <see cref="UpdateLangPack"/>, <see cref="UpdateFavedStickers"/>, <see cref="UpdateChannelReadMessagesContents"/>, <see cref="UpdateContactsReset"/>, <see cref="UpdateChannelAvailableMessages"/>, <see cref="UpdateDialogUnreadMark"/>, <see cref="UpdateMessagePoll"/>, <see cref="UpdateChatDefaultBannedRights"/>, <see cref="UpdateFolderPeers"/>, <see cref="UpdatePeerSettings"/>, <see cref="UpdatePeerLocated"/>, <see cref="UpdateNewScheduledMessage"/>, <see cref="UpdateDeleteScheduledMessages"/>, <see cref="UpdateTheme"/>, <see cref="UpdateGeoLiveViewed"/>, <see cref="UpdateLoginToken"/>, <see cref="UpdateMessagePollVote"/>, <see cref="UpdateDialogFilter"/>, <see cref="UpdateDialogFilterOrder"/>, <see cref="UpdateDialogFilters"/>, <see cref="UpdatePhoneCallSignalingData"/>, <see cref="UpdateChannelMessageForwards"/>, <see cref="UpdateReadChannelDiscussionInbox"/>, <see cref="UpdateReadChannelDiscussionOutbox"/>, <see cref="UpdatePeerBlocked"/>, <see cref="UpdateChannelUserTyping"/>, <see cref="UpdatePinnedMessages"/>, <see cref="UpdatePinnedChannelMessages"/>, <see cref="UpdateChat"/>, <see cref="UpdateGroupCallParticipants"/>, <see cref="UpdateGroupCall"/>, <see cref="UpdatePeerHistoryTTL"/>, <see cref="UpdateChatParticipant"/>, <see cref="UpdateChannelParticipant"/>, <see cref="UpdateBotStopped"/>, <see cref="UpdateGroupCallConnection"/>, <see cref="UpdateBotCommands"/>, <see cref="UpdatePendingJoinRequests"/>, <see cref="UpdateBotChatInviteRequester"/>, <see cref="UpdateMessageReactions"/>, <see cref="UpdateAttachMenuBots"/>, <see cref="UpdateWebViewResultSent"/>, <see cref="UpdateBotMenuButton"/>, <see cref="UpdateSavedRingtones"/>, <see cref="UpdateTranscribedAudio"/>, <see cref="UpdateReadFeaturedEmojiStickers"/>, <see cref="UpdateUserEmojiStatus"/>, <see cref="UpdateRecentEmojiStatuses"/>, <see cref="UpdateRecentReactions"/>, <see cref="UpdateMoveStickerSetToTop"/></para></summary>
+	/// <summary>Object contains info on events occurred.		<para>See <a href="https://corefork.telegram.org/type/Update"/></para>		<para>Derived classes: <see cref="UpdateNewMessage"/>, <see cref="UpdateMessageID"/>, <see cref="UpdateDeleteMessages"/>, <see cref="UpdateUserTyping"/>, <see cref="UpdateChatUserTyping"/>, <see cref="UpdateChatParticipants"/>, <see cref="UpdateUserStatus"/>, <see cref="UpdateUserName"/>, <see cref="UpdateNewEncryptedMessage"/>, <see cref="UpdateEncryptedChatTyping"/>, <see cref="UpdateEncryption"/>, <see cref="UpdateEncryptedMessagesRead"/>, <see cref="UpdateChatParticipantAdd"/>, <see cref="UpdateChatParticipantDelete"/>, <see cref="UpdateDcOptions"/>, <see cref="UpdateNotifySettings"/>, <see cref="UpdateServiceNotification"/>, <see cref="UpdatePrivacy"/>, <see cref="UpdateUserPhone"/>, <see cref="UpdateReadHistoryInbox"/>, <see cref="UpdateReadHistoryOutbox"/>, <see cref="UpdateWebPage"/>, <see cref="UpdateReadMessagesContents"/>, <see cref="UpdateChannelTooLong"/>, <see cref="UpdateChannel"/>, <see cref="UpdateNewChannelMessage"/>, <see cref="UpdateReadChannelInbox"/>, <see cref="UpdateDeleteChannelMessages"/>, <see cref="UpdateChannelMessageViews"/>, <see cref="UpdateChatParticipantAdmin"/>, <see cref="UpdateNewStickerSet"/>, <see cref="UpdateStickerSetsOrder"/>, <see cref="UpdateStickerSets"/>, <see cref="UpdateSavedGifs"/>, <see cref="UpdateBotInlineQuery"/>, <see cref="UpdateBotInlineSend"/>, <see cref="UpdateEditChannelMessage"/>, <see cref="UpdateBotCallbackQuery"/>, <see cref="UpdateEditMessage"/>, <see cref="UpdateInlineBotCallbackQuery"/>, <see cref="UpdateReadChannelOutbox"/>, <see cref="UpdateDraftMessage"/>, <see cref="UpdateReadFeaturedStickers"/>, <see cref="UpdateRecentStickers"/>, <see cref="UpdateConfig"/>, <see cref="UpdatePtsChanged"/>, <see cref="UpdateChannelWebPage"/>, <see cref="UpdateDialogPinned"/>, <see cref="UpdatePinnedDialogs"/>, <see cref="UpdateBotWebhookJSON"/>, <see cref="UpdateBotWebhookJSONQuery"/>, <see cref="UpdateBotShippingQuery"/>, <see cref="UpdateBotPrecheckoutQuery"/>, <see cref="UpdatePhoneCall"/>, <see cref="UpdateLangPackTooLong"/>, <see cref="UpdateLangPack"/>, <see cref="UpdateFavedStickers"/>, <see cref="UpdateChannelReadMessagesContents"/>, <see cref="UpdateContactsReset"/>, <see cref="UpdateChannelAvailableMessages"/>, <see cref="UpdateDialogUnreadMark"/>, <see cref="UpdateMessagePoll"/>, <see cref="UpdateChatDefaultBannedRights"/>, <see cref="UpdateFolderPeers"/>, <see cref="UpdatePeerSettings"/>, <see cref="UpdatePeerLocated"/>, <see cref="UpdateNewScheduledMessage"/>, <see cref="UpdateDeleteScheduledMessages"/>, <see cref="UpdateTheme"/>, <see cref="UpdateGeoLiveViewed"/>, <see cref="UpdateLoginToken"/>, <see cref="UpdateMessagePollVote"/>, <see cref="UpdateDialogFilter"/>, <see cref="UpdateDialogFilterOrder"/>, <see cref="UpdateDialogFilters"/>, <see cref="UpdatePhoneCallSignalingData"/>, <see cref="UpdateChannelMessageForwards"/>, <see cref="UpdateReadChannelDiscussionInbox"/>, <see cref="UpdateReadChannelDiscussionOutbox"/>, <see cref="UpdatePeerBlocked"/>, <see cref="UpdateChannelUserTyping"/>, <see cref="UpdatePinnedMessages"/>, <see cref="UpdatePinnedChannelMessages"/>, <see cref="UpdateChat"/>, <see cref="UpdateGroupCallParticipants"/>, <see cref="UpdateGroupCall"/>, <see cref="UpdatePeerHistoryTTL"/>, <see cref="UpdateChatParticipant"/>, <see cref="UpdateChannelParticipant"/>, <see cref="UpdateBotStopped"/>, <see cref="UpdateGroupCallConnection"/>, <see cref="UpdateBotCommands"/>, <see cref="UpdatePendingJoinRequests"/>, <see cref="UpdateBotChatInviteRequester"/>, <see cref="UpdateMessageReactions"/>, <see cref="UpdateAttachMenuBots"/>, <see cref="UpdateWebViewResultSent"/>, <see cref="UpdateBotMenuButton"/>, <see cref="UpdateSavedRingtones"/>, <see cref="UpdateTranscribedAudio"/>, <see cref="UpdateReadFeaturedEmojiStickers"/>, <see cref="UpdateUserEmojiStatus"/>, <see cref="UpdateRecentEmojiStatuses"/>, <see cref="UpdateRecentReactions"/>, <see cref="UpdateMoveStickerSetToTop"/>, <see cref="UpdateMessageExtendedMedia"/>, <see cref="UpdateChannelPinnedTopic"/>, <see cref="UpdateChannelPinnedTopics"/>, <see cref="UpdateUser"/>, <see cref="UpdateAutoSaveSettings"/>, <see cref="UpdateGroupInvitePrivacyForbidden"/></para></summary>
 	public abstract class Update : IObject { }
 	/// <summary>New message in a private chat or in a <a href="https://corefork.telegram.org/api/channel#basic-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateNewMessage"/></para></summary>
 	[TLDef(0x1F2B0AFD)]
@@ -4978,6 +4981,7 @@ namespace TL
 		[IfFlag(2)] public int base_lang_pack_version;
 		/// <summary>Default <a href="https://corefork.telegram.org/api/reactions">message reaction</a></summary>
 		[IfFlag(15)] public Reaction reactions_default;
+		/// <summary>Autologin token, <a href="https://corefork.telegram.org/api/url-authorization#link-url-authorization">click here for more info on URL authorization »</a>.</summary>
 		[IfFlag(16)] public string autologin_token;
 
 		[Flags] public enum Flags : uint
@@ -5447,7 +5451,7 @@ namespace TL
 		public UserBase user;
 	}
 
-	/// <summary>Object defines the set of users and/or groups that generate notifications.		<para>See <a href="https://corefork.telegram.org/type/NotifyPeer"/></para>		<para>Derived classes: <see cref="NotifyPeer"/>, <see cref="NotifyUsers"/>, <see cref="NotifyChats"/>, <see cref="NotifyBroadcasts"/></para></summary>
+	/// <summary>Object defines the set of users and/or groups that generate notifications.		<para>See <a href="https://corefork.telegram.org/type/NotifyPeer"/></para>		<para>Derived classes: <see cref="NotifyPeer"/>, <see cref="NotifyUsers"/>, <see cref="NotifyChats"/>, <see cref="NotifyBroadcasts"/>, <see cref="NotifyForumTopic"/></para></summary>
 	public abstract class NotifyPeerBase : IObject { }
 	/// <summary>Notifications generated by a certain user or group.		<para>See <a href="https://corefork.telegram.org/constructor/notifyPeer"/></para></summary>
 	[TLDef(0x9FD40BD8)]
@@ -6283,7 +6287,7 @@ namespace TL
 		public DateTime expires;
 	}
 
-	/// <summary>Represents a stickerset		<para>See <a href="https://corefork.telegram.org/type/InputStickerSet"/></para>		<para>Derived classes: <see cref="InputStickerSetID"/>, <see cref="InputStickerSetShortName"/>, <see cref="InputStickerSetAnimatedEmoji"/>, <see cref="InputStickerSetDice"/>, <see cref="InputStickerSetAnimatedEmojiAnimations"/>, <see cref="InputStickerSetPremiumGifts"/>, <see cref="InputStickerSetEmojiGenericAnimations"/>, <see cref="InputStickerSetEmojiDefaultStatuses"/></para></summary>
+	/// <summary>Represents a stickerset		<para>See <a href="https://corefork.telegram.org/type/InputStickerSet"/></para>		<para>Derived classes: <see cref="InputStickerSetID"/>, <see cref="InputStickerSetShortName"/>, <see cref="InputStickerSetAnimatedEmoji"/>, <see cref="InputStickerSetDice"/>, <see cref="InputStickerSetAnimatedEmojiAnimations"/>, <see cref="InputStickerSetPremiumGifts"/>, <see cref="InputStickerSetEmojiGenericAnimations"/>, <see cref="InputStickerSetEmojiDefaultStatuses"/>, <see cref="InputStickerSetEmojiDefaultTopicIcons"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/inputStickerSetEmpty">inputStickerSetEmpty</a></remarks>
 	public abstract partial class InputStickerSet : IObject { }
 	/// <summary>Stickerset by ID		<para>See <a href="https://corefork.telegram.org/constructor/inputStickerSetID"/></para></summary>
@@ -6440,7 +6444,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>Bot or inline keyboard buttons		<para>See <a href="https://corefork.telegram.org/type/KeyboardButton"/></para>		<para>Derived classes: <see cref="KeyboardButton"/>, <see cref="KeyboardButtonUrl"/>, <see cref="KeyboardButtonCallback"/>, <see cref="KeyboardButtonRequestPhone"/>, <see cref="KeyboardButtonRequestGeoLocation"/>, <see cref="KeyboardButtonSwitchInline"/>, <see cref="KeyboardButtonGame"/>, <see cref="KeyboardButtonBuy"/>, <see cref="KeyboardButtonUrlAuth"/>, <see cref="InputKeyboardButtonUrlAuth"/>, <see cref="KeyboardButtonRequestPoll"/>, <see cref="InputKeyboardButtonUserProfile"/>, <see cref="KeyboardButtonUserProfile"/>, <see cref="KeyboardButtonWebView"/>, <see cref="KeyboardButtonSimpleWebView"/></para></summary>
+	/// <summary>Bot or inline keyboard buttons		<para>See <a href="https://corefork.telegram.org/type/KeyboardButton"/></para>		<para>Derived classes: <see cref="KeyboardButton"/>, <see cref="KeyboardButtonUrl"/>, <see cref="KeyboardButtonCallback"/>, <see cref="KeyboardButtonRequestPhone"/>, <see cref="KeyboardButtonRequestGeoLocation"/>, <see cref="KeyboardButtonSwitchInline"/>, <see cref="KeyboardButtonGame"/>, <see cref="KeyboardButtonBuy"/>, <see cref="KeyboardButtonUrlAuth"/>, <see cref="InputKeyboardButtonUrlAuth"/>, <see cref="KeyboardButtonRequestPoll"/>, <see cref="InputKeyboardButtonUserProfile"/>, <see cref="KeyboardButtonUserProfile"/>, <see cref="KeyboardButtonWebView"/>, <see cref="KeyboardButtonSimpleWebView"/>, <see cref="KeyboardButtonRequestPeer"/></para></summary>
 	public abstract class KeyboardButtonBase : IObject
 	{
 		/// <summary>Button text</summary>
@@ -7837,7 +7841,7 @@ namespace TL
 		FragmentSms = 0x06ED998C,
 	}
 
-	/// <summary>Type of the verification code that was sent		<para>See <a href="https://corefork.telegram.org/type/auth.SentCodeType"/></para>		<para>Derived classes: <see cref="Auth_SentCodeTypeApp"/>, <see cref="Auth_SentCodeTypeSms"/>, <see cref="Auth_SentCodeTypeCall"/>, <see cref="Auth_SentCodeTypeFlashCall"/>, <see cref="Auth_SentCodeTypeMissedCall"/>, <see cref="Auth_SentCodeTypeEmailCode"/>, <see cref="Auth_SentCodeTypeSetUpEmailRequired"/></para></summary>
+	/// <summary>Type of the verification code that was sent		<para>See <a href="https://corefork.telegram.org/type/auth.SentCodeType"/></para>		<para>Derived classes: <see cref="Auth_SentCodeTypeApp"/>, <see cref="Auth_SentCodeTypeSms"/>, <see cref="Auth_SentCodeTypeCall"/>, <see cref="Auth_SentCodeTypeFlashCall"/>, <see cref="Auth_SentCodeTypeMissedCall"/>, <see cref="Auth_SentCodeTypeEmailCode"/>, <see cref="Auth_SentCodeTypeSetUpEmailRequired"/>, <see cref="Auth_SentCodeTypeFragmentSms"/>, <see cref="Auth_SentCodeTypeFirebaseSms"/></para></summary>
 	public abstract class Auth_SentCodeType : IObject { }
 	/// <summary>The code was sent through the telegram app		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeApp"/></para></summary>
 	[TLDef(0x3DBB5986)]
@@ -8225,7 +8229,7 @@ namespace TL
 		public StickerSetCoveredBase[] sets;
 	}
 
-	/// <summary>Stickerset preview		<para>See <a href="https://corefork.telegram.org/type/StickerSetCovered"/></para>		<para>Derived classes: <see cref="StickerSetCovered"/>, <see cref="StickerSetMultiCovered"/>, <see cref="StickerSetFullCovered"/></para></summary>
+	/// <summary>Stickerset preview		<para>See <a href="https://corefork.telegram.org/type/StickerSetCovered"/></para>		<para>Derived classes: <see cref="StickerSetCovered"/>, <see cref="StickerSetMultiCovered"/>, <see cref="StickerSetFullCovered"/>, <see cref="StickerSetNoCovered"/></para></summary>
 	public abstract class StickerSetCoveredBase : IObject
 	{
 		/// <summary>Stickerset</summary>
@@ -9841,7 +9845,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>Channel admin log event		<para>See <a href="https://corefork.telegram.org/type/ChannelAdminLogEventAction"/></para>		<para>Derived classes: <see cref="ChannelAdminLogEventActionChangeTitle"/>, <see cref="ChannelAdminLogEventActionChangeAbout"/>, <see cref="ChannelAdminLogEventActionChangeUsername"/>, <see cref="ChannelAdminLogEventActionChangePhoto"/>, <see cref="ChannelAdminLogEventActionToggleInvites"/>, <see cref="ChannelAdminLogEventActionToggleSignatures"/>, <see cref="ChannelAdminLogEventActionUpdatePinned"/>, <see cref="ChannelAdminLogEventActionEditMessage"/>, <see cref="ChannelAdminLogEventActionDeleteMessage"/>, <see cref="ChannelAdminLogEventActionParticipantJoin"/>, <see cref="ChannelAdminLogEventActionParticipantLeave"/>, <see cref="ChannelAdminLogEventActionParticipantInvite"/>, <see cref="ChannelAdminLogEventActionParticipantToggleBan"/>, <see cref="ChannelAdminLogEventActionParticipantToggleAdmin"/>, <see cref="ChannelAdminLogEventActionChangeStickerSet"/>, <see cref="ChannelAdminLogEventActionTogglePreHistoryHidden"/>, <see cref="ChannelAdminLogEventActionDefaultBannedRights"/>, <see cref="ChannelAdminLogEventActionStopPoll"/>, <see cref="ChannelAdminLogEventActionChangeLinkedChat"/>, <see cref="ChannelAdminLogEventActionChangeLocation"/>, <see cref="ChannelAdminLogEventActionToggleSlowMode"/>, <see cref="ChannelAdminLogEventActionStartGroupCall"/>, <see cref="ChannelAdminLogEventActionDiscardGroupCall"/>, <see cref="ChannelAdminLogEventActionParticipantMute"/>, <see cref="ChannelAdminLogEventActionParticipantUnmute"/>, <see cref="ChannelAdminLogEventActionToggleGroupCallSetting"/>, <see cref="ChannelAdminLogEventActionParticipantJoinByInvite"/>, <see cref="ChannelAdminLogEventActionExportedInviteDelete"/>, <see cref="ChannelAdminLogEventActionExportedInviteRevoke"/>, <see cref="ChannelAdminLogEventActionExportedInviteEdit"/>, <see cref="ChannelAdminLogEventActionParticipantVolume"/>, <see cref="ChannelAdminLogEventActionChangeHistoryTTL"/>, <see cref="ChannelAdminLogEventActionParticipantJoinByRequest"/>, <see cref="ChannelAdminLogEventActionToggleNoForwards"/>, <see cref="ChannelAdminLogEventActionSendMessage"/>, <see cref="ChannelAdminLogEventActionChangeAvailableReactions"/></para></summary>
+	/// <summary>Channel admin log event		<para>See <a href="https://corefork.telegram.org/type/ChannelAdminLogEventAction"/></para>		<para>Derived classes: <see cref="ChannelAdminLogEventActionChangeTitle"/>, <see cref="ChannelAdminLogEventActionChangeAbout"/>, <see cref="ChannelAdminLogEventActionChangeUsername"/>, <see cref="ChannelAdminLogEventActionChangePhoto"/>, <see cref="ChannelAdminLogEventActionToggleInvites"/>, <see cref="ChannelAdminLogEventActionToggleSignatures"/>, <see cref="ChannelAdminLogEventActionUpdatePinned"/>, <see cref="ChannelAdminLogEventActionEditMessage"/>, <see cref="ChannelAdminLogEventActionDeleteMessage"/>, <see cref="ChannelAdminLogEventActionParticipantJoin"/>, <see cref="ChannelAdminLogEventActionParticipantLeave"/>, <see cref="ChannelAdminLogEventActionParticipantInvite"/>, <see cref="ChannelAdminLogEventActionParticipantToggleBan"/>, <see cref="ChannelAdminLogEventActionParticipantToggleAdmin"/>, <see cref="ChannelAdminLogEventActionChangeStickerSet"/>, <see cref="ChannelAdminLogEventActionTogglePreHistoryHidden"/>, <see cref="ChannelAdminLogEventActionDefaultBannedRights"/>, <see cref="ChannelAdminLogEventActionStopPoll"/>, <see cref="ChannelAdminLogEventActionChangeLinkedChat"/>, <see cref="ChannelAdminLogEventActionChangeLocation"/>, <see cref="ChannelAdminLogEventActionToggleSlowMode"/>, <see cref="ChannelAdminLogEventActionStartGroupCall"/>, <see cref="ChannelAdminLogEventActionDiscardGroupCall"/>, <see cref="ChannelAdminLogEventActionParticipantMute"/>, <see cref="ChannelAdminLogEventActionParticipantUnmute"/>, <see cref="ChannelAdminLogEventActionToggleGroupCallSetting"/>, <see cref="ChannelAdminLogEventActionParticipantJoinByInvite"/>, <see cref="ChannelAdminLogEventActionExportedInviteDelete"/>, <see cref="ChannelAdminLogEventActionExportedInviteRevoke"/>, <see cref="ChannelAdminLogEventActionExportedInviteEdit"/>, <see cref="ChannelAdminLogEventActionParticipantVolume"/>, <see cref="ChannelAdminLogEventActionChangeHistoryTTL"/>, <see cref="ChannelAdminLogEventActionParticipantJoinByRequest"/>, <see cref="ChannelAdminLogEventActionToggleNoForwards"/>, <see cref="ChannelAdminLogEventActionSendMessage"/>, <see cref="ChannelAdminLogEventActionChangeAvailableReactions"/>, <see cref="ChannelAdminLogEventActionChangeUsernames"/>, <see cref="ChannelAdminLogEventActionToggleForum"/>, <see cref="ChannelAdminLogEventActionCreateTopic"/>, <see cref="ChannelAdminLogEventActionEditTopic"/>, <see cref="ChannelAdminLogEventActionDeleteTopic"/>, <see cref="ChannelAdminLogEventActionPinTopic"/>, <see cref="ChannelAdminLogEventActionToggleAntiSpam"/></para></summary>
 	public abstract class ChannelAdminLogEventAction : IObject { }
 	/// <summary>Channel/supergroup title was changed		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionChangeTitle"/></para></summary>
 	[TLDef(0xE6DFB825)]
@@ -12332,7 +12336,7 @@ namespace TL
 		public IPeerInfo UserOrChat => peer?.UserOrChat(users, chats);
 	}
 
-	/// <summary>Represents an animated video thumbnail		<para>See <a href="https://corefork.telegram.org/type/VideoSize"/></para>		<para>Derived classes: <see cref="VideoSize"/></para></summary>
+	/// <summary>Represents an animated video thumbnail		<para>See <a href="https://corefork.telegram.org/type/VideoSize"/></para>		<para>Derived classes: <see cref="VideoSize"/>, <see cref="VideoSizeEmojiMarkup"/>, <see cref="VideoSizeStickerMarkup"/></para></summary>
 	public abstract class VideoSizeBase : IObject { }
 	/// <summary><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> in MPEG4 format		<para>See <a href="https://corefork.telegram.org/constructor/videoSize"/></para></summary>
 	[TLDef(0xDE33B094)]
@@ -14019,7 +14023,7 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/MessageExtendedMedia"/></para>		<para>Derived classes: </para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/MessageExtendedMedia"/></para>		<para>Derived classes: <see cref="MessageExtendedMediaPreview"/>, <see cref="MessageExtendedMedia"/></para></summary>
 	public abstract class MessageExtendedMediaBase : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageExtendedMediaPreview"/></para></summary>
 	[TLDef(0xAD628CC8)]
@@ -14072,7 +14076,7 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/ForumTopic"/></para>		<para>Derived classes: </para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/ForumTopic"/></para>		<para>Derived classes: <see cref="ForumTopicDeleted"/>, <see cref="ForumTopic"/></para></summary>
 	public abstract class ForumTopicBase : IObject
 	{
 		public virtual int ID { get; }
@@ -14094,7 +14098,9 @@ namespace TL
 		public int id;
 		public DateTime date;
 		public string title;
+		/// <summary>If no custom emoji icon is specified, specifies the color of the fallback topic icon (RGB), one of <c>0x6FB9F0</c>, <c>0xFFD67E</c>, <c>0xCB86DB</c>, <c>0x8EEE98</c>, <c>0xFF93B2</c>, or <c>0xFB6F5F</c>.</summary>
 		public int icon_color;
+		/// <summary>ID of the <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> used as topic icon.</summary>
 		[IfFlag(0)] public long icon_emoji_id;
 		public int top_message;
 		public int read_inbox_max_id;
@@ -14150,15 +14156,17 @@ namespace TL
 		public int period;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/exportedContactToken"/></para></summary>
+	/// <summary>Describes a <a href="https://corefork.telegram.org/api/links#temporary-profile-links">temporary profile link</a>.		<para>See <a href="https://corefork.telegram.org/constructor/exportedContactToken"/></para></summary>
 	[TLDef(0x41BF109B)]
 	public class ExportedContactToken : IObject
 	{
+		/// <summary>The <a href="https://corefork.telegram.org/api/links#temporary-profile-links">temporary profile link</a>.</summary>
 		public string url;
+		/// <summary>Its expiry date</summary>
 		public DateTime expires;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/RequestPeerType"/></para>		<para>Derived classes: </para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/RequestPeerType"/></para>		<para>Derived classes: <see cref="RequestPeerTypeUser"/>, <see cref="RequestPeerTypeChat"/>, <see cref="RequestPeerTypeBroadcast"/></para></summary>
 	public abstract class RequestPeerType : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/requestPeerTypeUser"/></para></summary>
 	[TLDef(0x5F3B8A00)]
@@ -14259,7 +14267,7 @@ namespace TL
 		public MessageEntity[] entities;
 	}
 
-	/// <summary>Translated text, or no result		<para>See <a href="https://corefork.telegram.org/type/messages.TranslatedText"/></para>		<para>Derived classes: </para></summary>
+	/// <summary>Translated text, or no result		<para>See <a href="https://corefork.telegram.org/type/messages.TranslatedText"/></para>		<para>Derived classes: <see cref="Messages_TranslateResult"/></para></summary>
 	public abstract class Messages_TranslatedText : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.translateResult"/></para></summary>
 	[TLDef(0x33DB32F8)]
@@ -14316,13 +14324,14 @@ namespace TL
 		public JsonObject config;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputBotApp"/></para>		<para>Derived classes: </para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputBotApp"/></para>		<para>Derived classes: <see cref="InputBotAppID"/>, <see cref="InputBotAppShortName"/></para></summary>
 	public abstract class InputBotApp : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputBotAppID"/></para></summary>
 	[TLDef(0xA920BD7A)]
 	public class InputBotAppID : InputBotApp
 	{
 		public long id;
+		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/></summary>
 		public long access_hash;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputBotAppShortName"/></para></summary>
@@ -14371,7 +14380,7 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/AppWebViewResult"/></para>		<para>Derived classes: </para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/AppWebViewResult"/></para>		<para>Derived classes: <see cref="AppWebViewResultUrl"/></para></summary>
 	public abstract class AppWebViewResult : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/appWebViewResultUrl"/></para></summary>
 	[TLDef(0x3C1B4F0D)]

@@ -22,7 +22,8 @@ The WTelegram.session file contains the authentication keys negociated for the c
 
 You could switch the current user via an `Auth_Logout` followed by a `LoginUserIfNeeded` but that would require the user to sign in with a verification_code each time.
 
-Instead, if you want to deal with multiple users from the same machine, the recommended solution is to have a different session file for each user. This can be done by having your Config callback reply with a different filename (or folder) for "**session_pathname**" for each user.
+Instead, if you want to deal with multiple users from the same machine, the recommended solution is to have a different session file for each user.
+This can be done by having your Config callback reply with a different filename (or folder) for "**session_pathname**" for each user.
 This way, you can keep separate session files (each with their authentication keys) for each user.
 
 If you need to manage these user accounts in parallel, you can create multiple instances of WTelegram.Client,
