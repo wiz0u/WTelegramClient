@@ -306,6 +306,14 @@ namespace TL
 				ios_push_secret = ios_push_secret,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.resetLoginEmail"/></para></summary>
+		public static Task<Auth_SentCodeBase> Auth_ResetLoginEmail(this Client client, string phone_number, string phone_code_hash)
+			=> client.Invoke(new Auth_ResetLoginEmail
+			{
+				phone_number = phone_number,
+				phone_code_hash = phone_code_hash,
+			});
+
 		/// <summary>Register device to receive <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>		<para>See <a href="https://corefork.telegram.org/method/account.registerDevice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.registerDevice#possible-errors">details</a>)</para></summary>
 		/// <param name="no_muted">Avoid receiving (silent and invisible background) notifications. Useful to save battery.</param>
 		/// <param name="token_type">Device token type, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
@@ -1511,7 +1519,7 @@ namespace TL
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">The destination where the message will be sent</param>
 		/// <param name="reply_to_msg_id">The message ID to which this message will reply to</param>
-		/// <param name="top_msg_id">If set, sends the message to the specified <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a></param>
+		/// <param name="top_msg_id">If set, sends the message to the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="message">The message</param>
 		/// <param name="random_id">Unique client message ID required to prevent message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="reply_markup">Reply markup for sending bot buttons</param>
@@ -1541,7 +1549,7 @@ namespace TL
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">Destination</param>
 		/// <param name="reply_to_msg_id">Message ID to which this message should reply to</param>
-		/// <param name="top_msg_id">If set, sends the media to the specified <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a></param>
+		/// <param name="top_msg_id">If set, sends the media to the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="media">Attached media</param>
 		/// <param name="message">Caption</param>
 		/// <param name="random_id">Random ID to avoid resending the same message <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
@@ -1576,7 +1584,7 @@ namespace TL
 		/// <param name="id">IDs of messages</param>
 		/// <param name="random_id">Random ID to prevent resending of messages <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="to_peer">Destination peer</param>
-		/// <param name="top_msg_id">Destination <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a></param>
+		/// <param name="top_msg_id">Destination <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Forward the messages as the specified peer</param>
 		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false)
@@ -2076,7 +2084,7 @@ namespace TL
 		/// <param name="hide_via">Whether to hide the <c>via @botname</c> in the resulting message (only for bot usernames encountered in the <see cref="Config"/>)</param>
 		/// <param name="peer">Destination</param>
 		/// <param name="reply_to_msg_id">ID of the message this message should reply to</param>
-		/// <param name="top_msg_id">If set, sends the message to the specified <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a></param>
+		/// <param name="top_msg_id">If set, sends the message to the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="random_id">Random ID to avoid resending the same query <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="query_id">Query ID from <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see></param>
 		/// <param name="id">Result ID from <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see></param>
@@ -2189,7 +2197,7 @@ namespace TL
 		/// <summary>Save a message <a href="https://corefork.telegram.org/api/drafts">draft</a> associated to a chat.		<para>See <a href="https://corefork.telegram.org/method/messages.saveDraft"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.saveDraft#possible-errors">details</a>)</para></summary>
 		/// <param name="no_webpage">Disable generation of the webpage preview</param>
 		/// <param name="reply_to_msg_id">Message ID the message should reply to</param>
-		/// <param name="top_msg_id"><a href="https://corefork.telegram.org/api/threads#message-threads">Message thread/forum topic</a> where the message will be sent</param>
+		/// <param name="top_msg_id"><a href="https://corefork.telegram.org/api/forum#forum-topics">Forum topic</a> where the message will be sent</param>
 		/// <param name="peer">Destination of the message that should be sent</param>
 		/// <param name="message">The draft</param>
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
@@ -2470,7 +2478,7 @@ namespace TL
 
 		/// <summary>Get unread messages where we were mentioned		<para>See <a href="https://corefork.telegram.org/method/messages.getUnreadMentions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getUnreadMentions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer where to look for mentions</param>
-		/// <param name="top_msg_id">If set, considers only messages within the specified <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a></param>
+		/// <param name="top_msg_id">If set, considers only messages within the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="add_offset"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
@@ -2491,7 +2499,7 @@ namespace TL
 
 		/// <summary>Mark mentions as read		<para>See <a href="https://corefork.telegram.org/method/messages.readMentions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readMentions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Dialog</param>
-		/// <param name="top_msg_id">Mark as read only mentions within the specified <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a></param>
+		/// <param name="top_msg_id">Mark as read only mentions within the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		public static Task<Messages_AffectedHistory> Messages_ReadMentions(this Client client, InputPeer peer, int? top_msg_id = null)
 			=> client.Invoke(new Messages_ReadMentions
 			{
@@ -2520,7 +2528,7 @@ namespace TL
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">The destination chat</param>
 		/// <param name="reply_to_msg_id">The message to reply to</param>
-		/// <param name="top_msg_id">If set, sends the media to the specified <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a></param>
+		/// <param name="top_msg_id">If set, sends the media to the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="multi_media">The medias to send: note that they must be separately uploaded using <see cref="Messages_UploadMedia">Messages_UploadMedia</see> first, using raw <c>inputMediaUploaded*</c> constructors is not supported.</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
@@ -2688,7 +2696,7 @@ namespace TL
 
 		/// <summary>Get the number of results that would be found by a <see cref="Messages_Search">Messages_Search</see> call with the same parameters		<para>See <a href="https://corefork.telegram.org/method/messages.getSearchCounters"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getSearchCounters#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer where to search</param>
-		/// <param name="top_msg_id">If set, consider only messages within the specified <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a></param>
+		/// <param name="top_msg_id">If set, consider only messages within the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="filters">Search filters</param>
 		public static Task<Messages_SearchCounter[]> Messages_GetSearchCounters(this Client client, InputPeer peer, MessagesFilter[] filters, int? top_msg_id = null)
 			=> client.Invoke(new Messages_GetSearchCounters
@@ -2900,7 +2908,7 @@ namespace TL
 
 		/// <summary><a href="https://corefork.telegram.org/api/pin">Unpin</a> all pinned messages		<para>See <a href="https://corefork.telegram.org/method/messages.unpinAllMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.unpinAllMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Chat where to unpin</param>
-		/// <param name="top_msg_id"><a href="https://corefork.telegram.org/api/threads#message-threads">Message thread/forum topic</a> where to unpin</param>
+		/// <param name="top_msg_id"><a href="https://corefork.telegram.org/api/forum#forum-topics">Forum topic</a> where to unpin</param>
 		public static Task<Messages_AffectedHistory> Messages_UnpinAllMessages(this Client client, InputPeer peer, int? top_msg_id = null)
 			=> client.Invoke(new Messages_UnpinAllMessages
 			{
@@ -3262,7 +3270,7 @@ namespace TL
 
 		/// <summary>Get unread reactions to messages you sent		<para>See <a href="https://corefork.telegram.org/method/messages.getUnreadReactions"/></para></summary>
 		/// <param name="peer">Peer</param>
-		/// <param name="top_msg_id">If set, considers only reactions to messages within the specified <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a></param>
+		/// <param name="top_msg_id">If set, considers only reactions to messages within the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="add_offset"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
@@ -3283,7 +3291,7 @@ namespace TL
 
 		/// <summary>Mark <a href="https://corefork.telegram.org/api/reactions">message reactions »</a> as read		<para>See <a href="https://corefork.telegram.org/method/messages.readReactions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readReactions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
-		/// <param name="top_msg_id">Mark as read only reactions to messages within the specified <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a></param>
+		/// <param name="top_msg_id">Mark as read only reactions to messages within the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		public static Task<Messages_AffectedHistory> Messages_ReadReactions(this Client client, InputPeer peer, int? top_msg_id = null)
 			=> client.Invoke(new Messages_ReadReactions
 			{
@@ -3342,7 +3350,7 @@ namespace TL
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
 		/// <param name="reply_to_msg_id">Whether the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> should be sent in reply to this message ID.</param>
-		/// <param name="top_msg_id">If set, the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> will be sent to the specified <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a></param>
+		/// <param name="top_msg_id">If set, the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> will be sent to the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="send_as">Open the web app as the specified peer, sending the resulting the message as the specified peer.</param>
 		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, string platform, string url = null, string start_param = null, DataJSON theme_params = null, int? reply_to_msg_id = null, int? top_msg_id = null, InputPeer send_as = null, bool from_bot_menu = false, bool silent = false)
 			=> client.Invoke(new Messages_RequestWebView
@@ -3365,7 +3373,7 @@ namespace TL
 		/// <param name="bot">Bot that owns the <a href="https://corefork.telegram.org/api/bots/webapps">web app</a></param>
 		/// <param name="query_id">Web app interaction ID obtained from <see cref="Messages_RequestWebView">Messages_RequestWebView</see></param>
 		/// <param name="reply_to_msg_id">Whether the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> should be sent in reply to this message ID.</param>
-		/// <param name="top_msg_id">If set, the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> will be sent to the specified <a href="https://corefork.telegram.org/api/threads#message-threads">message thread/forum topic</a>.</param>
+		/// <param name="top_msg_id">If set, the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> will be sent to the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a>.</param>
 		/// <param name="send_as">Open the web app as the specified peer</param>
 		public static Task<bool> Messages_ProlongWebView(this Client client, InputPeer peer, InputUserBase bot, long query_id, int? reply_to_msg_id = null, int? top_msg_id = null, InputPeer send_as = null, bool silent = false)
 			=> client.Invoke(new Messages_ProlongWebView
@@ -3591,7 +3599,13 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.requestAppWebView"/> [bots: ✓]</para></summary>
+		/// <summary>Open a <a href="https://corefork.telegram.org/bots/webapps">bot web app</a> from a <a href="https://corefork.telegram.org/api/links#bot-web-app-links">bot web app deep link</a>, sending over user information after user confirmation.		<para>See <a href="https://corefork.telegram.org/method/messages.requestAppWebView"/> [bots: ✓]</para></summary>
+		/// <param name="write_allowed">Set this flag if the bot is asking permission to send messages to the user as specified in the <a href="https://corefork.telegram.org/api/links#bot-web-app-links">bot web app deep link</a> docs, and the user agreed.</param>
+		/// <param name="peer">If the client has clicked on the link in a Telegram chat, pass the chat's peer information; otherwise pass the bot's peer information, instead.</param>
+		/// <param name="app">The app obtained by invoking <see cref="Messages_GetBotApp">Messages_GetBotApp</see> as specified in the <a href="https://corefork.telegram.org/api/links#bot-web-app-links">bot web app deep link</a> docs.</param>
+		/// <param name="start_param">If the <c>startapp</c> query string parameter is present in the <a href="https://corefork.telegram.org/api/links#bot-web-app-links">bot web app deep link</a>, pass it to <c>start_param</c>.</param>
+		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
+		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
 		public static Task<AppWebViewResult> Messages_RequestAppWebView(this Client client, InputPeer peer, InputBotApp app, string platform, string start_param = null, DataJSON theme_params = null, bool write_allowed = false)
 			=> client.Invoke(new Messages_RequestAppWebView
 			{
@@ -4448,9 +4462,9 @@ namespace TL
 				enabled = enabled,
 			});
 
-		/// <summary>Create a <a href="https://corefork.telegram.org/api/forum">forum topic</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.createForumTopic"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.createForumTopic#possible-errors">details</a>)</para></summary>
+		/// <summary>Create a <a href="https://corefork.telegram.org/api/forum">forum topic</a>; requires <a href="https://corefork.telegram.org/api/rights"><c>manage_topics</c> rights</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.createForumTopic"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.createForumTopic#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/forum">The forum</a></param>
-		/// <param name="title">Topic title</param>
+		/// <param name="title">Topic title (maximum UTF-8 length: 128)</param>
 		/// <param name="icon_color">If no custom emoji icon is specified, specifies the color of the fallback topic icon (RGB), one of <c>0x6FB9F0</c>, <c>0xFFD67E</c>, <c>0xCB86DB</c>, <c>0x8EEE98</c>, <c>0xFF93B2</c>, or <c>0xFB6F5F</c>.</param>
 		/// <param name="icon_emoji_id">ID of the <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> used as topic icon. <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a> users can use any custom emoji, other users can only use the custom emojis contained in the <see cref="InputStickerSetEmojiDefaultTopicIcons"/> emoji pack.</param>
 		/// <param name="random_id">Unique client message ID to prevent duplicate sending of the same event <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
@@ -4496,10 +4510,10 @@ namespace TL
 				topics = topics,
 			});
 
-		/// <summary>Edit <a href="https://corefork.telegram.org/api/forum">forum topic</a>		<para>See <a href="https://corefork.telegram.org/method/channels.editForumTopic"/> [bots: ✓]</para></summary>
+		/// <summary>Edit <a href="https://corefork.telegram.org/api/forum">forum topic</a>; requires <a href="https://corefork.telegram.org/api/rights"><c>manage_topics</c> rights</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.editForumTopic"/> [bots: ✓]</para></summary>
 		/// <param name="channel">Supergroup</param>
 		/// <param name="topic_id">Topic ID</param>
-		/// <param name="title">If present, will update the topic title.</param>
+		/// <param name="title">If present, will update the topic title (maximum UTF-8 length: 128).</param>
 		/// <param name="icon_emoji_id">If present, updates the <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> used as topic icon. <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a> users can use any custom emoji, other users can only use the custom emojis contained in the <see cref="InputStickerSetEmojiDefaultTopicIcons"/> emoji pack. Pass 0 to switch to the fallback topic icon.</param>
 		/// <param name="closed">If present, will update the open/closed status of the topic.</param>
 		/// <param name="hidden">If present, will hide/unhide the topic.</param>
@@ -5629,6 +5643,13 @@ namespace TL.Methods
 			has_safety_net_token = 0x1,
 			has_ios_push_secret = 0x2,
 		}
+	}
+
+	[TLDef(0x7E960193)]
+	public class Auth_ResetLoginEmail : IMethod<Auth_SentCodeBase>
+	{
+		public string phone_number;
+		public string phone_code_hash;
 	}
 
 	[TLDef(0xEC86017A)]

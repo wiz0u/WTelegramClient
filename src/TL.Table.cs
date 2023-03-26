@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 155;					// fetched 13/03/2023 22:46:30
+		public const int Version = 156;					// fetched 26/03/2023 15:54:09
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -602,7 +602,7 @@ namespace TL
 			[0x5353E5A7] = typeof(Auth_SentCodeTypeCall),
 			[0xAB03C6D9] = typeof(Auth_SentCodeTypeFlashCall),
 			[0x82006484] = typeof(Auth_SentCodeTypeMissedCall),
-			[0x5A159841] = typeof(Auth_SentCodeTypeEmailCode),
+			[0xF450F59B] = typeof(Auth_SentCodeTypeEmailCode),
 			[0xA5491DEA] = typeof(Auth_SentCodeTypeSetUpEmailRequired),
 			[0xD9565C39] = typeof(Auth_SentCodeTypeFragmentSms),
 			[0xE57B1432] = typeof(Auth_SentCodeTypeFirebaseSms),

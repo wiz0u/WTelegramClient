@@ -7879,7 +7879,7 @@ namespace TL
 		public string prefix;
 	}
 	/// <summary>The code was sent via the <a href="https://corefork.telegram.org/api/auth#email-verification">previously configured login email »</a>		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeEmailCode"/></para></summary>
-	[TLDef(0x5A159841)]
+	[TLDef(0xF450F59B)]
 	public class Auth_SentCodeTypeEmailCode : Auth_SentCodeType
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
@@ -7888,8 +7888,8 @@ namespace TL
 		public string email_pattern;
 		/// <summary>Length of the sent verification code</summary>
 		public int length;
-		/// <summary>If set, contains an absolute UNIX timestamp indicating when will the user be able to authorize with a code sent to the user's phone number</summary>
-		[IfFlag(2)] public DateTime next_phone_login_date;
+		[IfFlag(3)] public int reset_available_period;
+		[IfFlag(4)] public DateTime reset_pending_date;
 
 		[Flags] public enum Flags : uint
 		{
@@ -7897,8 +7897,10 @@ namespace TL
 			apple_signin_allowed = 0x1,
 			/// <summary>Whether authorization through Google ID is allowed</summary>
 			google_signin_allowed = 0x2,
-			/// <summary>Field <see cref="next_phone_login_date"/> has a value</summary>
-			has_next_phone_login_date = 0x4,
+			/// <summary>Field <see cref="reset_available_period"/> has a value</summary>
+			has_reset_available_period = 0x8,
+			/// <summary>Field <see cref="reset_pending_date"/> has a value</summary>
+			has_reset_pending_date = 0x10,
 		}
 	}
 	/// <summary>The user should add and verify an email address in order to login as described <a href="https://corefork.telegram.org/api/auth#email-verification">here »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSetUpEmailRequired"/></para></summary>
@@ -11421,6 +11423,7 @@ namespace TL
 			manage_call = 0x800,
 			/// <summary>Set this flag if none of the other flags are set, but you still want the user to be an admin: if this or any of the other flags are set, the admin can get the chat <a href="https://corefork.telegram.org/api/recent-actions">admin log</a>, get <a href="https://corefork.telegram.org/api/stats">chat statistics</a>, get <a href="https://corefork.telegram.org/api/stats">message statistics in channels</a>, get channel members, see anonymous administrators in supergroups and ignore slow mode.</summary>
 			other = 0x1000,
+			/// <summary>If set, allows the admin to create, delete or modify <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topics »</a>.</summary>
 			manage_topics = 0x2000,
 		}
 	}
@@ -11448,7 +11451,7 @@ namespace TL
 			send_gifs = 0x10,
 			/// <summary>If set, does not allow a user to send games in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a></summary>
 			send_games = 0x20,
-			/// <summary>If set, does not allow a user to use inline bots in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a></summary>
+			/// <summary>If set, does not allow a user to use inline bots in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a>.</summary>
 			send_inline = 0x40,
 			/// <summary>If set, does not allow a user to embed links in the messages of a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a></summary>
 			embed_links = 0x80,
@@ -11460,13 +11463,21 @@ namespace TL
 			invite_users = 0x8000,
 			/// <summary>If set, does not allow any user to pin messages in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a></summary>
 			pin_messages = 0x20000,
+			/// <summary>If set, does not allow any user to create, delete or modify <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topics »</a>.</summary>
 			manage_topics = 0x40000,
+			/// <summary>If set, does not allow a user to send photos in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a>.</summary>
 			send_photos = 0x80000,
+			/// <summary>If set, does not allow a user to send videos in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a>.</summary>
 			send_videos = 0x100000,
+			/// <summary>If set, does not allow a user to send round videos in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a>.</summary>
 			send_roundvideos = 0x200000,
+			/// <summary>If set, does not allow a user to send audio files in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a>.</summary>
 			send_audios = 0x400000,
+			/// <summary>If set, does not allow a user to send voice messages in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a>.</summary>
 			send_voices = 0x800000,
+			/// <summary>If set, does not allow a user to send documents in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a>.</summary>
 			send_docs = 0x1000000,
+			/// <summary>If set, does not allow a user to send text messages in a <a href="https://corefork.telegram.org/api/channel">supergroup/chat</a>.</summary>
 			send_plain = 0x2000000,
 		}
 	}
@@ -12617,7 +12628,9 @@ namespace TL
 			has_reply_to_peer_id = 0x1,
 			/// <summary>Field <see cref="reply_to_top_id"/> has a value</summary>
 			has_reply_to_top_id = 0x2,
+			/// <summary>This is a reply to a scheduled message.</summary>
 			reply_to_scheduled = 0x4,
+			/// <summary>Whether this message was sent in a <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a> (except for the General topic).</summary>
 			forum_topic = 0x8,
 		}
 	}
