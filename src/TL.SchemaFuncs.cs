@@ -1124,7 +1124,7 @@ namespace TL
 				settings = settings,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.deleteAutoSaveExceptions"/></para></summary>
+		/// <summary>Clear all peer-specific autosave settings.		<para>See <a href="https://corefork.telegram.org/method/account.deleteAutoSaveExceptions"/></para></summary>
 		public static Task<bool> Account_DeleteAutoSaveExceptions(this Client client)
 			=> client.Invoke(new Account_DeleteAutoSaveExceptions
 			{
@@ -2065,7 +2065,7 @@ namespace TL
 		/// <param name="cache_time">The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300.</param>
 		/// <param name="next_offset">Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.</param>
 		/// <param name="switch_pm">If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with a certain parameter.</param>
-		public static Task<bool> Messages_SetInlineBotResults(this Client client, long query_id, InputBotInlineResultBase[] results, DateTime cache_time, string next_offset = null, InlineBotSwitchPM switch_pm = null, InlineBotWebView switch_webview = null, bool gallery = false, bool private_ = false)
+		public static Task<bool> Messages_SetInlineBotResults(this Client client, long query_id, InputBotInlineResultBase[] results, int cache_time, string next_offset = null, InlineBotSwitchPM switch_pm = null, InlineBotWebView switch_webview = null, bool gallery = false, bool private_ = false)
 			=> client.Invoke(new Messages_SetInlineBotResults
 			{
 				flags = (Messages_SetInlineBotResults.Flags)((next_offset != null ? 0x4 : 0) | (switch_pm != null ? 0x8 : 0) | (switch_webview != null ? 0x10 : 0) | (gallery ? 0x1 : 0) | (private_ ? 0x2 : 0)),
@@ -2176,7 +2176,7 @@ namespace TL
 		/// <param name="message">Popup to show</param>
 		/// <param name="url">URL to open</param>
 		/// <param name="cache_time">Cache validity</param>
-		public static Task<bool> Messages_SetBotCallbackAnswer(this Client client, long query_id, DateTime cache_time, string message = null, string url = null, bool alert = false)
+		public static Task<bool> Messages_SetBotCallbackAnswer(this Client client, long query_id, int cache_time, string message = null, string url = null, bool alert = false)
 			=> client.Invoke(new Messages_SetBotCallbackAnswer
 			{
 				flags = (Messages_SetBotCallbackAnswer.Flags)((message != null ? 0x1 : 0) | (url != null ? 0x4 : 0) | (alert ? 0x2 : 0)),
@@ -3330,6 +3330,7 @@ namespace TL
 			});
 
 		/// <summary>Enable or disable <a href="https://corefork.telegram.org/api/bots/attach">web bot attachment menu »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.toggleBotInAttachMenu"/></para></summary>
+		/// <param name="write_allowed">Whether the user authorizes the bot to write messages to them, if requested by <see cref="AttachMenuBot"/>.<c>request_write_access</c></param>
 		/// <param name="bot">Bot ID</param>
 		/// <param name="enabled">Toggle</param>
 		public static Task<bool> Messages_ToggleBotInAttachMenu(this Client client, InputUserBase bot, bool enabled, bool write_allowed = false)
@@ -3523,20 +3524,25 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setDefaultHistoryTTL"/> [bots: ✓]</para></summary>
+		/// <summary>Changes the default value of the Time-To-Live setting, applied to all new chats.		<para>See <a href="https://corefork.telegram.org/method/messages.setDefaultHistoryTTL"/> [bots: ✓]</para></summary>
+		/// <param name="period">The new default Time-To-Live of all messages sent in new chats.</param>
 		public static Task<bool> Messages_SetDefaultHistoryTTL(this Client client, int period)
 			=> client.Invoke(new Messages_SetDefaultHistoryTTL
 			{
 				period = period,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getDefaultHistoryTTL"/> [bots: ✓]</para></summary>
+		/// <summary>Gets the default value of the Time-To-Live setting, applied to all new chats.		<para>See <a href="https://corefork.telegram.org/method/messages.getDefaultHistoryTTL"/> [bots: ✓]</para></summary>
 		public static Task<DefaultHistoryTTL> Messages_GetDefaultHistoryTTL(this Client client)
 			=> client.Invoke(new Messages_GetDefaultHistoryTTL
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.sendBotRequestedPeer"/> [bots: ✓]</para></summary>
+		/// <summary>Send a chosen peer, as requested by a <see cref="KeyboardButtonRequestPeer"/> button.		<para>See <a href="https://corefork.telegram.org/method/messages.sendBotRequestedPeer"/> [bots: ✓]</para></summary>
+		/// <param name="peer">The bot that sent the <see cref="KeyboardButtonRequestPeer"/> button.</param>
+		/// <param name="msg_id">ID of the message that contained the reply keyboard with the <see cref="KeyboardButtonRequestPeer"/> button.</param>
+		/// <param name="button_id">The <c>button_id</c> field from the <see cref="KeyboardButtonRequestPeer"/>.</param>
+		/// <param name="requested_peer">The chosen peer.</param>
 		public static Task<UpdatesBase> Messages_SendBotRequestedPeer(this Client client, InputPeer peer, int msg_id, int button_id, InputPeer requested_peer)
 			=> client.Invoke(new Messages_SendBotRequestedPeer
 			{
@@ -3591,7 +3597,9 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getBotApp"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getBotApp#possible-errors">details</a>)</para></summary>
+		/// <summary>Obtain information about a <a href="https://corefork.telegram.org/api/bots/webapps#bot-web-apps">bot web app</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getBotApp"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getBotApp#possible-errors">details</a>)</para></summary>
+		/// <param name="app">Bot app information obtained from a <a href="https://corefork.telegram.org/api/links#bot-web-app-links">bot web app deep link »</a>.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<Messages_BotApp> Messages_GetBotApp(this Client client, InputBotApp app, long hash = default)
 			=> client.Invoke(new Messages_GetBotApp
 			{
@@ -4510,7 +4518,7 @@ namespace TL
 				topics = topics,
 			});
 
-		/// <summary>Edit <a href="https://corefork.telegram.org/api/forum">forum topic</a>; requires <a href="https://corefork.telegram.org/api/rights"><c>manage_topics</c> rights</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.editForumTopic"/> [bots: ✓]</para></summary>
+		/// <summary>Edit <a href="https://corefork.telegram.org/api/forum">forum topic</a>; requires <a href="https://corefork.telegram.org/api/rights"><c>manage_topics</c> rights</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.editForumTopic"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.editForumTopic#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Supergroup</param>
 		/// <param name="topic_id">Topic ID</param>
 		/// <param name="title">If present, will update the topic title (maximum UTF-8 length: 128).</param>
@@ -4869,7 +4877,8 @@ namespace TL
 
 		/// <summary>Set stickerset thumbnail		<para>See <a href="https://corefork.telegram.org/method/stickers.setStickerSetThumb"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.setStickerSetThumb#possible-errors">details</a>)</para></summary>
 		/// <param name="stickerset">Stickerset</param>
-		/// <param name="thumb">Thumbnail</param>
+		/// <param name="thumb">Thumbnail (only for normal stickersets, not custom emoji stickersets).</param>
+		/// <param name="thumb_document_id">Only for <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickersets</a>, ID of a custom emoji present in the set to use as thumbnail; pass 0 to fallback to the first custom emoji of the set.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
 		public static Task<Messages_StickerSet> Stickers_SetStickerSetThumb(this Client client, InputStickerSet stickerset, InputDocument thumb = null, long? thumb_document_id = null)
 			=> client.Invoke(new Stickers_SetStickerSetThumb
@@ -4896,7 +4905,7 @@ namespace TL
 				title = title,
 			});
 
-		/// <summary>Update the keywords, emojis or <a href="https://corefork.telegram.org/api/stickers#mask-stickers">mask coordinates</a> of a sticker		<para>See <a href="https://corefork.telegram.org/method/stickers.changeSticker"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.changeSticker#possible-errors">details</a>)</para></summary>
+		/// <summary>Update the keywords, emojis or <a href="https://corefork.telegram.org/api/stickers#mask-stickers">mask coordinates</a> of a sticker, bots only.		<para>See <a href="https://corefork.telegram.org/method/stickers.changeSticker"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.changeSticker#possible-errors">details</a>)</para></summary>
 		/// <param name="sticker">The sticker</param>
 		/// <param name="emoji">If set, updates the emoji list associated to the sticker</param>
 		/// <param name="mask_coords">If set, updates the <a href="https://corefork.telegram.org/api/stickers#mask-stickers">mask coordinates</a></param>
@@ -7047,7 +7056,7 @@ namespace TL.Methods
 		public Flags flags;
 		public long query_id;
 		public InputBotInlineResultBase[] results;
-		public DateTime cache_time;
+		public int cache_time;
 		[IfFlag(2)] public string next_offset;
 		[IfFlag(3)] public InlineBotSwitchPM switch_pm;
 		[IfFlag(4)] public InlineBotWebView switch_webview;
@@ -7162,7 +7171,7 @@ namespace TL.Methods
 		public long query_id;
 		[IfFlag(0)] public string message;
 		[IfFlag(2)] public string url;
-		public DateTime cache_time;
+		public int cache_time;
 
 		[Flags] public enum Flags : uint
 		{
