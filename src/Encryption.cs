@@ -23,7 +23,7 @@ namespace WTelegram
 		{
 			AesECB.Mode = CipherMode.ECB;
 			AesECB.Padding = PaddingMode.Zeros;
-			if (AesECB.BlockSize != 128) throw new ApplicationException("AES Blocksize is not 16 bytes");
+			if (AesECB.BlockSize != 128) throw new WTException("AES Blocksize is not 16 bytes");
 		}
 
 		internal static async Task CreateAuthorizationKey(Client client, Session.DCSession session)
@@ -36,9 +36,9 @@ namespace WTelegram
 			var nonce = new Int128(RNG);
 			var resPQ = await client.ReqPqMulti(nonce);
 			//2)
-			if (resPQ.nonce != nonce) throw new ApplicationException("Nonce mismatch");
+			if (resPQ.nonce != nonce) throw new WTException("Nonce mismatch");
 			var fingerprint = resPQ.server_public_key_fingerprints.FirstOrDefault(PublicKeys.ContainsKey);
-			if (fingerprint == 0) throw new ApplicationException("Couldn't match any server_public_key_fingerprints");
+			if (fingerprint == 0) throw new WTException("Couldn't match any server_public_key_fingerprints");
 			var publicKey = PublicKeys[fingerprint];
 			Helpers.Log(2, $"Selected public key with fingerprint {fingerprint:X}");
 			//3)
@@ -73,7 +73,7 @@ namespace WTelegram
 					clearStream.Write(aes_key, 0, 32); // write aes_key as prefix for initial Sha256 computation
 					writer.WriteTLObject(pqInnerData);
 					int clearLength = (int)clearStream.Position - 32;  // length before padding
-					if (clearLength > 144) throw new ApplicationException("PQInnerData too big");
+					if (clearLength > 144) throw new WTException("PQInnerData too big");
 					byte[] clearBuffer = clearStream.GetBuffer();
 					RNG.GetBytes(clearBuffer, 32 + clearLength, 192 - clearLength);
 					sha256.ComputeHash(clearBuffer, 0, 32 + 192).CopyTo(clearBuffer, 224); // append Sha256
@@ -91,22 +91,22 @@ namespace WTelegram
 			var serverDHparams = await client.ReqDHParams(pqInnerData.nonce, pqInnerData.server_nonce, pqInnerData.p, pqInnerData.q, fingerprint, encrypted_data);
 			//5)
 			var localTime = DateTimeOffset.UtcNow;
-			if (serverDHparams is not ServerDHParamsOk serverDHparamsOk) throw new ApplicationException("not server_DH_params_ok");
-			if (serverDHparamsOk.nonce != nonce) throw new ApplicationException("Nonce mismatch");
-			if (serverDHparamsOk.server_nonce != resPQ.server_nonce) throw new ApplicationException("Server Nonce mismatch");
+			if (serverDHparams is not ServerDHParamsOk serverDHparamsOk) throw new WTException("not server_DH_params_ok");
+			if (serverDHparamsOk.nonce != nonce) throw new WTException("Nonce mismatch");
+			if (serverDHparamsOk.server_nonce != resPQ.server_nonce) throw new WTException("Server Nonce mismatch");
 			var (tmp_aes_key, tmp_aes_iv) = ConstructTmpAESKeyIV(resPQ.server_nonce, pqInnerData.new_nonce);
 			var answer = AES_IGE_EncryptDecrypt(serverDHparamsOk.encrypted_answer, tmp_aes_key, tmp_aes_iv, false);
 
 			using var answerReader = new BinaryReader(new MemoryStream(answer));
 			var answerHash = answerReader.ReadBytes(20);
 			var answerObj = answerReader.ReadTLObject();
-			if (answerObj is not ServerDHInnerData serverDHinnerData) throw new ApplicationException("not server_DH_inner_data");
+			if (answerObj is not ServerDHInnerData serverDHinnerData) throw new WTException("not server_DH_inner_data");
 			long padding = answerReader.BaseStream.Length - answerReader.BaseStream.Position;
-			if (padding >= 16) throw new ApplicationException("Too much pad");
+			if (padding >= 16) throw new WTException("Too much pad");
 			if (!Enumerable.SequenceEqual(sha1.ComputeHash(answer, 20, answer.Length - (int)padding - 20), answerHash))
-				throw new ApplicationException("Answer SHA1 mismatch");
-			if (serverDHinnerData.nonce != nonce) throw new ApplicationException("Nonce mismatch");
-			if (serverDHinnerData.server_nonce != resPQ.server_nonce) throw new ApplicationException("Server Nonce mismatch");
+				throw new WTException("Answer SHA1 mismatch");
+			if (serverDHinnerData.nonce != nonce) throw new WTException("Nonce mismatch");
+			if (serverDHinnerData.server_nonce != resPQ.server_nonce) throw new WTException("Server Nonce mismatch");
 			var g_a = BigEndianInteger(serverDHinnerData.g_a);
 			var dh_prime = BigEndianInteger(serverDHinnerData.dh_prime);
 			CheckGoodPrime(dh_prime, serverDHinnerData.g);
@@ -149,15 +149,15 @@ namespace WTelegram
 			var authKeyHash = sha1.ComputeHash(authKey);
 			retry_id = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash); // (auth_key_aux_hash)
 			//9)
-			if (setClientDHparamsAnswer is not DhGenOk dhGenOk) throw new ApplicationException("not dh_gen_ok");
-			if (dhGenOk.nonce != nonce) throw new ApplicationException("Nonce mismatch");
-			if (dhGenOk.server_nonce != resPQ.server_nonce) throw new ApplicationException("Server Nonce mismatch");
+			if (setClientDHparamsAnswer is not DhGenOk dhGenOk) throw new WTException("not dh_gen_ok");
+			if (dhGenOk.nonce != nonce) throw new WTException("Nonce mismatch");
+			if (dhGenOk.server_nonce != resPQ.server_nonce) throw new WTException("Server Nonce mismatch");
 			var expected_new_nonceN = new byte[32 + 1 + 8];
 			pqInnerData.new_nonce.raw.CopyTo(expected_new_nonceN, 0);
 			expected_new_nonceN[32] = 1;
 			Array.Copy(authKeyHash, 0, expected_new_nonceN, 33, 8); // (auth_key_aux_hash)
 			if (!Enumerable.SequenceEqual(dhGenOk.new_nonce_hash1.raw, sha1.ComputeHash(expected_new_nonceN).Skip(4)))
-				throw new ApplicationException("setClientDHparamsAnswer.new_nonce_hashN mismatch");
+				throw new WTException("setClientDHparamsAnswer.new_nonce_hashN mismatch");
 
 			session.AuthKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
 			session.AuthKey = authKey;
@@ -188,7 +188,7 @@ namespace WTelegram
 		{
 			Helpers.Log(2, "Verifying encryption key safety... (this should happen only once per DC)");
 			// check that 2^2047 <= p < 2^2048
-			if (p.GetBitLength() != 2048) throw new ApplicationException("p is not 2048-bit number");
+			if (p.GetBitLength() != 2048) throw new WTException("p is not 2048-bit number");
 			// check that g generates a cyclic subgroup of prime order (p - 1) / 2, i.e. is a quadratic residue mod p.
 			if (g switch
 			{
@@ -200,11 +200,11 @@ namespace WTelegram
 				7 => (int)(p % 7) is not 3 and not 5 and not 6,
 				_ => true,
 			})
-				throw new ApplicationException("Bad prime mod 4g");
+				throw new WTException("Bad prime mod 4g");
 			// check whether p is a safe prime (meaning that both p and (p - 1) / 2 are prime)
 			if (SafePrimes.Contains(p)) return;
-			if (!p.IsProbablePrime()) throw new ApplicationException("p is not a prime number");
-			if (!((p - 1) / 2).IsProbablePrime()) throw new ApplicationException("(p - 1) / 2 is not a prime number");
+			if (!p.IsProbablePrime()) throw new WTException("p is not a prime number");
+			if (!((p - 1) / 2).IsProbablePrime()) throw new WTException("(p - 1) / 2 is not a prime number");
 			SafePrimes.Add(p);
 		}
 
@@ -233,7 +233,7 @@ namespace WTelegram
 			// check that g, g_a and g_b are greater than 1 and less than dh_prime - 1.
 			// We recommend checking that g_a and g_b are between 2^{2048-64} and dh_prime - 2^{2048-64} as well.
 			if (g.GetBitLength() < 2048 - 64 || (dh_prime - g).GetBitLength() < 2048 - 64)
-				throw new ApplicationException("g^a or g^b is not between 2^{2048-64} and dh_prime - 2^{2048-64}");
+				throw new WTException("g^a or g^b is not between 2^{2048-64} and dh_prime - 2^{2048-64}");
 		}
 
 		public static void LoadPublicKey(string pem)
@@ -298,7 +298,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 
 		internal static byte[] AES_IGE_EncryptDecrypt(Span<byte> input, byte[] aes_key, byte[] aes_iv, bool encrypt)
 		{
-			if (input.Length % 16 != 0) throw new ApplicationException("AES_IGE input size not divisible by 16");
+			if (input.Length % 16 != 0) throw new WTException("AES_IGE input size not divisible by 16");
 
 			using var aesCrypto = encrypt ? AesECB.CreateEncryptor(aes_key, null) : AesECB.CreateDecryptor(aes_key, null);
 			var output = new byte[input.Length];
@@ -396,7 +396,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 					RNG.GetBytes(algo.salt1, salt1len, 32);
 				}
 				else
-					throw new ApplicationException("2FA authentication uses an unsupported algo: " + accountPassword.current_algo?.GetType().Name);
+					throw new WTException("2FA authentication uses an unsupported algo: " + accountPassword.current_algo?.GetType().Name);
 
 			var g = new BigInteger(algo.g);
 			var p = BigEndianInteger(algo.p);

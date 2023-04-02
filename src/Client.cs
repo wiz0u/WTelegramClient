@@ -120,7 +120,7 @@ namespace WTelegram
 
 		internal Task<string> ConfigAsync(string what) => Task.Run(() => Config(what));
 		internal string Config(string what)
-			=> _config(what) ?? DefaultConfig(what) ?? throw new ApplicationException("You must provide a config value for " + what);
+			=> _config(what) ?? DefaultConfig(what) ?? throw new WTException("You must provide a config value for " + what);
 
 		/// <summary>Default config values, used if your Config callback returns <see langword="null"/></summary>
 		public static string DefaultConfig(string what) => what switch
@@ -232,7 +232,7 @@ namespace WTelegram
 			if ((dcSession?.AuthKeyID ?? 0) == 0) // we will need to negociate an AuthKey => can't use media_only DC
 				flags &= ~DcOption.Flags.media_only;
 			var dcOptions = _session.DcOptions.Where(dc => dc.id == dcId).OrderBy(dc => dc.flags ^ flags);
-			var dcOption = dcOptions.FirstOrDefault() ?? throw new ApplicationException($"Could not find adequate dc_option for DC {dcId}");
+			var dcOption = dcOptions.FirstOrDefault() ?? throw new WTException($"Could not find adequate dc_option for DC {dcId}");
 			dcSession ??= new Session.DCSession { Id = Helpers.RandomLong() }; // create new session only if not already existing
 			dcSession.DataCenter = dcOption;
 			return _session.DCSessions[dcId] = dcSession;
@@ -267,7 +267,7 @@ namespace WTelegram
 					{
 						var authorization = await altSession.Client.Auth_ImportAuthorization(exported.id, exported.bytes);
 						if (authorization is not Auth_Authorization { user: User user })
-							throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
+							throw new WTException("Failed to get Authorization: " + authorization.GetType().Name);
 						altSession.UserId = user.id;
 					}
 				}
@@ -289,19 +289,19 @@ namespace WTelegram
 				try
 				{
 					if (await stream.FullReadAsync(data, 4, cts.Token) != 4)
-						throw new ApplicationException(ConnectionShutDown);
+						throw new WTException(ConnectionShutDown);
 #if OBFUSCATION
 					_recvCtr.EncryptDecrypt(data, 4);
 #endif
 					int payloadLen = BinaryPrimitives.ReadInt32LittleEndian(data);
 					if (payloadLen <= 0)
-						throw new ApplicationException("Could not read frame data : Invalid payload length");
+						throw new WTException("Could not read frame data : Invalid payload length");
 					else if (payloadLen > data.Length)
 						data = new byte[payloadLen];
 					else if (Math.Max(payloadLen, MinBufferSize) < data.Length / 4)
 						data = new byte[Math.Max(payloadLen, MinBufferSize)];
 					if (await stream.FullReadAsync(data, payloadLen, cts.Token) != payloadLen)
-						throw new ApplicationException("Could not read frame data : Connection shut down");
+						throw new WTException("Could not read frame data : Connection shut down");
 #if OBFUSCATION
 					_recvCtr.EncryptDecrypt(data, payloadLen);
 #endif
@@ -310,7 +310,7 @@ namespace WTelegram
 				catch (Exception ex) // an exception in RecvAsync is always fatal
 				{
 					if (cts.IsCancellationRequested) return;
-					bool disconnectedAltDC = !IsMainDC && ex is ApplicationException { Message: ConnectionShutDown } or IOException { InnerException: SocketException };
+					bool disconnectedAltDC = !IsMainDC && ex is WTException { Message: ConnectionShutDown } or IOException { InnerException: SocketException };
 					if (disconnectedAltDC)
 						Helpers.Log(3, $"{_dcSession.DcID}>Alt DC disconnected: {ex.Message}");
 					else
@@ -378,35 +378,35 @@ namespace WTelegram
 				throw new RpcException(error_code, TransportError(error_code));
 			}
 			if (dataLen < 24) // authKeyId+msgId+length+ctorNb | authKeyId+msgKey
-				throw new ApplicationException($"Packet payload too small: {dataLen}");
+				throw new WTException($"Packet payload too small: {dataLen}");
 
 			long authKeyId = BinaryPrimitives.ReadInt64LittleEndian(data);
 			if (authKeyId != _dcSession.AuthKeyID)
-				throw new ApplicationException($"Received a packet encrypted with unexpected key {authKeyId:X}");
+				throw new WTException($"Received a packet encrypted with unexpected key {authKeyId:X}");
 			if (authKeyId == 0) // Unencrypted message
 			{
 				using var reader = new BinaryReader(new MemoryStream(data, 8, dataLen - 8));
 				long msgId = _lastRecvMsgId = reader.ReadInt64();
-				if ((msgId & 1) == 0) throw new ApplicationException($"Invalid server msgId {msgId}");
+				if ((msgId & 1) == 0) throw new WTException($"Invalid server msgId {msgId}");
 				int length = reader.ReadInt32();
 				dataLen -= 20;
 				if (length > dataLen || length < dataLen - (_paddedMode ? 15 : 0))
-					throw new ApplicationException($"Unexpected unencrypted/padding length {dataLen} - {length}");
+					throw new WTException($"Unexpected unencrypted/padding length {dataLen} - {length}");
 
 				var obj = reader.ReadTLObject();
 				Helpers.Log(1, $"{_dcSession.DcID}>Receiving {obj.GetType().Name,-40} {MsgIdToStamp(msgId):u} clear{((msgId & 2) == 0 ? "" : " NAR")}");
-				if (_bareRpc == null) throw new ApplicationException("Shouldn't receive unencrypted packet at this point");
+				if (_bareRpc == null) throw new WTException("Shouldn't receive unencrypted packet at this point");
 				return obj;
 			}
 			else
 			{
 				byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, (dataLen - 24) & ~0xF), false, 8, _dcSession.AuthKey, data, 8, _sha256Recv);
 				if (decrypted_data.Length < 36) // header below+ctorNb
-					throw new ApplicationException($"Decrypted packet too small: {decrypted_data.Length}");
+					throw new WTException($"Decrypted packet too small: {decrypted_data.Length}");
 				_sha256Recv.TransformBlock(_dcSession.AuthKey, 96, 32, null, 0);
 				_sha256Recv.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
 				if (!data.AsSpan(8, 16).SequenceEqual(_sha256Recv.Hash.AsSpan(8, 16)))
-					throw new ApplicationException("Mismatch between MsgKey & decrypted SHA256");
+					throw new WTException("Mismatch between MsgKey & decrypted SHA256");
 				_sha256Recv.Initialize();
 				using var reader = new BinaryReader(new MemoryStream(decrypted_data));
 				var serverSalt = reader.ReadInt64();    // int64 salt
@@ -415,10 +415,10 @@ namespace WTelegram
 				var seqno = reader.ReadInt32();         // int32 msg_seqno
 				var length = reader.ReadInt32();        // int32 message_data_length
 
-				if (length < 0 || length % 4 != 0) throw new ApplicationException($"Invalid message_data_length: {length}");
-				if (decrypted_data.Length - 32 - length is < 12 or > 1024) throw new ApplicationException($"Invalid message padding length: {decrypted_data.Length - 32}-{length}");
-				if (sessionId != _dcSession.Id) throw new ApplicationException($"Unexpected session ID: {sessionId} != {_dcSession.Id}");
-				if ((msgId & 1) == 0) throw new ApplicationException($"msg_id is not odd: {msgId}");
+				if (length < 0 || length % 4 != 0) throw new WTException($"Invalid message_data_length: {length}");
+				if (decrypted_data.Length - 32 - length is < 12 or > 1024) throw new WTException($"Invalid message padding length: {decrypted_data.Length - 32}-{length}");
+				if (sessionId != _dcSession.Id) throw new WTException($"Unexpected session ID: {sessionId} != {_dcSession.Id}");
+				if ((msgId & 1) == 0) throw new WTException($"msg_id is not odd: {msgId}");
 				if (!_dcSession.CheckNewMsgId(msgId))
 				{
 					Helpers.Log(3, $"{_dcSession.DcID}>Ignoring duplicate or old msg_id {msgId}");
@@ -434,7 +434,7 @@ namespace WTelegram
 					_dcSession.Salt = serverSalt;
 					_saltChangeCounter += 1200; // counter is decreased by KeepAlive (we have margin of 10 min)
 					if (_saltChangeCounter >= 1800)
-						throw new ApplicationException("Server salt changed too often! Security issue?");
+						throw new WTException("Server salt changed too often! Security issue?");
 				}
 				if ((seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msgId);
 
@@ -590,7 +590,7 @@ namespace WTelegram
 					return;
 				}
 				else if (_dcSession.AuthKeyID == 0)
-					throw new ApplicationException($"Received a {obj.GetType()} incompatible with expected bare {rpc?.type}");
+					throw new WTException($"Received a {obj.GetType()} incompatible with expected bare {rpc?.type}");
 				lock (_pendingRpcs)
 					_pendingRpcs[_bareRpc.msgId] = _bareRpc;
 			}
@@ -664,7 +664,7 @@ namespace WTelegram
 					else if (PullPendingRequest(badMsgNotification.bad_msg_id) is Rpc rpc)
 					{
 						if (_bareRpc?.msgId == badMsgNotification.bad_msg_id) _bareRpc = null;
-						rpc.tcs.SetException(new ApplicationException($"BadMsgNotification {badMsgNotification.error_code}"));
+						rpc.tcs.SetException(new WTException($"BadMsgNotification {badMsgNotification.error_code}"));
 					}
 					else
 						RaiseUpdate(obj);
@@ -879,7 +879,7 @@ namespace WTelegram
 		/// <param name="loginInfo">First call should be with phone number<br/>Further calls should be with the requested configuration value</param>
 		/// <returns>Configuration item requested to continue login, or <see langword="null"/> when login is successful<br/>
 		/// Possible values: <b>verification_code</b>, <b>name</b> (signup), <b>password</b> (2FA), <b>email</b> &amp; <b>email_verification_code</b> (email registration)</returns>
-		/// <exception cref="ApplicationException"/><exception cref="RpcException"/>
+		/// <exception cref="WTException"/><exception cref="RpcException"/>
 		public async Task<string> Login(string loginInfo)
 		{
 			if (_loginCfg.request == default) RunLoginAsync(loginInfo);
@@ -997,7 +997,7 @@ namespace WTelegram
 					}
 					var mismatch = $"Current logged user {self.id} mismatched user_id or phone_number";
 					Helpers.Log(3, mismatch);
-					if (!reloginOnFailedResume) throw new ApplicationException(mismatch);
+					if (!reloginOnFailedResume) throw new WTException(mismatch);
 				}
 				catch (RpcException ex) when (reloginOnFailedResume)
 				{
@@ -1157,7 +1157,7 @@ namespace WTelegram
 		public User LoginAlreadyDone(Auth_AuthorizationBase authorization)
 		{
 			if (authorization is not Auth_Authorization { user: User user })
-				throw new ApplicationException("Failed to get Authorization: " + authorization.GetType().Name);
+				throw new WTException("Failed to get Authorization: " + authorization.GetType().Name);
 			_session.UserId = _dcSession.UserId = user.id;
 			lock (_session) _session.Save();
 			return User = user;
@@ -1190,7 +1190,7 @@ namespace WTelegram
 
 		private async Task SendAsync(IObject msg, bool isContent, Rpc rpc = null)
 		{
-			if (_reactorTask == null) throw new ApplicationException("You must connect to Telegram first");
+			if (_reactorTask == null) throw new WTException("You must connect to Telegram first");
 			isContent &= _dcSession.AuthKeyID != 0;
 			(long msgId, int seqno) = NewMsgId(isContent);
 			if (rpc != null)
@@ -1212,7 +1212,7 @@ namespace WTelegram
 
 				if (_dcSession.AuthKeyID == 0) // send unencrypted message
 				{
-					if (_bareRpc == null) throw new ApplicationException($"Shouldn't send a {msg.GetType().Name} unencrypted");
+					if (_bareRpc == null) throw new WTException($"Shouldn't send a {msg.GetType().Name} unencrypted");
 					writer.Write(0L);                       // int64 auth_key_id = 0 (Unencrypted)
 					writer.Write(msgId);                    // int64 message_id
 					writer.Write(0);                        // int32 message_data_length (to be patched)
@@ -1273,7 +1273,7 @@ namespace WTelegram
 
 		internal async Task<T> InvokeBare<T>(IMethod<T> request)
 		{
-			if (_bareRpc != null) throw new ApplicationException("A bare request is already undergoing");
+			if (_bareRpc != null) throw new WTException("A bare request is already undergoing");
 		retry:
 			_bareRpc = new Rpc { type = typeof(T) };
 			await SendAsync(request, false, _bareRpc);
@@ -1352,7 +1352,7 @@ namespace WTelegram
 				case ReactorError:
 					goto retry;
 				default:
-					throw new ApplicationException($"{query.GetType().Name} call got a result of type {result.GetType().Name} instead of {typeof(T).Name}");
+					throw new WTException($"{query.GetType().Name} call got a result of type {result.GetType().Name} instead of {typeof(T).Name}");
 			}
 		}
 	}

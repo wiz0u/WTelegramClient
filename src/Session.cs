@@ -104,12 +104,12 @@ namespace WTelegram
 				{
 					var input = new byte[length];
 					if (store.Read(input, 0, length) != length)
-						throw new ApplicationException($"Can't read session block ({store.Position}, {length})");
+						throw new WTException($"Can't read session block ({store.Position}, {length})");
 					using var sha256 = SHA256.Create();
 					using var decryptor = aes.CreateDecryptor(rgbKey, input[0..16]);
 					var utf8Json = decryptor.TransformFinalBlock(input, 16, input.Length - 16);
 					if (!sha256.ComputeHash(utf8Json, 32, utf8Json.Length - 32).SequenceEqual(utf8Json[0..32]))
-						throw new ApplicationException("Integrity check failed in session loading");
+						throw new WTException("Integrity check failed in session loading");
 					session = JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), Helpers.JsonOptions);
 					Helpers.Log(2, "Loaded previous session");
 				}
@@ -124,7 +124,7 @@ namespace WTelegram
 			catch (Exception ex)
 			{
 				store.Dispose();
-				throw new ApplicationException($"Exception while reading session file: {ex.Message}\nUse the correct api_hash/id/key, or delete the file to start a new session", ex);
+				throw new WTException($"Exception while reading session file: {ex.Message}\nUse the correct api_hash/id/key, or delete the file to start a new session", ex);
 			}
 		}
 

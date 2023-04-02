@@ -27,7 +27,7 @@ namespace WTelegram
 				if (await _innerStream.FullReadAsync(_tlsReadHeader, 5, ct) != 5)
 					return 0;
 				if (_tlsReadHeader[0] != 0x17 || _tlsReadHeader[1] != 0x03 || _tlsReadHeader[2] != 0x03)
-					throw new ApplicationException("Could not read frame data : Invalid TLS header");
+					throw new WTException("Could not read frame data : Invalid TLS header");
 				_tlsFrameleft = (_tlsReadHeader[3] << 8) + _tlsReadHeader[4];
 			}
 			var read = await _innerStream.ReadAsync(buffer, offset, Math.Min(count, _tlsFrameleft), ct);
@@ -82,7 +82,7 @@ namespace WTelegram
 							}
 						}
 				}
-			throw new ApplicationException("TLS Handshake failed");
+			throw new WTException("TLS Handshake failed");
 		}
 
 		static readonly byte[] TlsClientHello1 = new byte[11] {

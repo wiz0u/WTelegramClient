@@ -55,7 +55,7 @@ namespace WTelegram
 					lock (tasks) tasks[file_part] = task;
 					if (!isBig)
 						md5.TransformBlock(bytes, 0, read, null, 0);
-					if (read < FilePartSize && bytesLeft != 0) throw new ApplicationException($"Failed to fully read stream ({read},{bytesLeft})");
+					if (read < FilePartSize && bytesLeft != 0) throw new WTException($"Failed to fully read stream ({read},{bytesLeft})");
 
 					async Task SavePart(int file_part, byte[] bytes)
 					{
@@ -331,7 +331,7 @@ namespace WTelegram
 				if (fileSize != 0 && fileOffset >= fileSize)
 				{
 					if (await task != ((fileSize - 1) % FilePartSize) + 1)
-						throw new ApplicationException("Downloaded file size does not match expected file size");
+						throw new WTException("Downloaded file size does not match expected file size");
 					break;
 				}
 
@@ -362,7 +362,7 @@ namespace WTelegram
 						_parallelTransfers.Release();
 					}
 					if (fileBase is not Upload_File fileData)
-						throw new ApplicationException("Upload_GetFile returned unsupported " + fileBase?.GetType().Name);
+						throw new WTException("Upload_GetFile returned unsupported " + fileBase?.GetType().Name);
 					if (fileData.bytes.Length != FilePartSize) abort = true;
 					if (fileData.bytes.Length != 0)
 					{
@@ -480,7 +480,7 @@ namespace WTelegram
 					mds.messages = messageList.ToArray();
 					return mds;
 				case Messages_Dialogs md: return md;
-				default: throw new ApplicationException("Messages_GetDialogs returned unexpected " + dialogs?.GetType().Name);
+				default: throw new WTException("Messages_GetDialogs returned unexpected " + dialogs?.GetType().Name);
 			}
 		}
 
@@ -762,13 +762,13 @@ namespace WTelegram
 				long chatId = long.Parse(url[(start + 2)..slash]);
 				var chats = await this.Channels_GetChannels(new InputChannel(chatId, 0));
 				if (!chats.chats.TryGetValue(chatId, out chat))
-					throw new ApplicationException($"Channel {chatId} not found");
+					throw new WTException($"Channel {chatId} not found");
 			}
 			else
 			{
 				var resolved = await this.Contacts_ResolveUsername(url[start..slash]);
 				chat = resolved.Chat;
-				if (chat is null) throw new ApplicationException($"@{url[start..slash]} is not a Chat/Channel");
+				if (chat is null) throw new WTException($"@{url[start..slash]} is not a Chat/Channel");
 			}
 			int msgId = int.Parse(url[(slash + 1)..end]);
 			return await this.Channels_GetMessages((Channel)chat, msgId) as Messages_ChannelMessages;

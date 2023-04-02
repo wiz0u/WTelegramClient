@@ -253,4 +253,10 @@ namespace WTelegram
 			protected override void Dispose(bool disposing) => _innerStream.Dispose();
 		}
 	}
+
+	public class WTException : ApplicationException
+	{
+		public WTException(string message) : base(message) { }
+		public WTException(string message, Exception innerException) : base(message, innerException) { }
+	}
 }

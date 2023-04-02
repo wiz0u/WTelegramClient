@@ -32,7 +32,7 @@ namespace TL
 	public abstract class DecryptedMessageMedia : IObject
 	{
 		public virtual string MimeType { get; }
-		internal virtual (long size, byte[] key, byte[] iv) SizeKeyIV { get => default; set => throw new ApplicationException("Incompatible DecryptedMessageMedia"); }
+		internal virtual (long size, byte[] key, byte[] iv) SizeKeyIV { get => default; set => throw new WTelegram.WTException("Incompatible DecryptedMessageMedia"); }
 	}
 
 	/// <summary>Object describes the action to which a service message is linked.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageAction"/></para></summary>

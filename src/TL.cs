@@ -28,7 +28,7 @@ namespace TL
 		public IfFlagAttribute(int bit) => Bit = bit;
 	}
 
-	public class RpcException : Exception
+	public class RpcException : WTelegram.WTException
 	{
 		public readonly int Code;
 		/// <summary>The value of X in the message, -1 if no variable X was found</summary>
@@ -73,7 +73,7 @@ namespace TL
 				using (var gzipReader = new BinaryReader(new GZipStream(new MemoryStream(reader.ReadTLBytes()), CompressionMode.Decompress)))
 					return ReadTLObject(gzipReader);
 			if (!Layer.Table.TryGetValue(ctorNb, out var type))
-				throw new ApplicationException($"Cannot find type for ctor #{ctorNb:x}");
+				throw new WTelegram.WTException($"Cannot find type for ctor #{ctorNb:x}");
 			if (type == null) return null; // nullable ctor (class meaning is associated with null)
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var obj = Activator.CreateInstance(type, true);
@@ -153,7 +153,7 @@ namespace TL
 						0x997275b5 => true,
 						0xbc799737 => false,
 						Layer.RpcErrorCtor => reader.ReadTLObject(Layer.RpcErrorCtor),
-						var value => throw new ApplicationException($"Invalid boolean value #{value:x}")
+						var value => throw new WTelegram.WTException($"Invalid boolean value #{value:x}")
 					};
 				case TypeCode.Object:
 					if (type.IsArray)
@@ -235,7 +235,7 @@ namespace TL
 				return array;
 			}
 			else
-				throw new ApplicationException($"Cannot deserialize {type.Name} with ctor #{ctorNb:x}");
+				throw new WTelegram.WTException($"Cannot deserialize {type.Name} with ctor #{ctorNb:x}");
 		}
 
 		internal static Dictionary<long, T> ReadTLDictionary<T>(this BinaryReader reader, Func<T, long> getID) where T : class
@@ -243,7 +243,7 @@ namespace TL
 			uint ctorNb = reader.ReadUInt32();
 			var elementType = typeof(T);
 			if (ctorNb != Layer.VectorCtor)
-				throw new ApplicationException($"Cannot deserialize Vector<{elementType.Name}> with ctor #{ctorNb:x}");
+				throw new WTelegram.WTException($"Cannot deserialize Vector<{elementType.Name}> with ctor #{ctorNb:x}");
 			int count = reader.ReadInt32();
 			var dict = new Dictionary<long, T>(count);
 			for (int i = 0; i < count; i++)

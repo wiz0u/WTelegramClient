@@ -37,10 +37,10 @@ namespace TL
 		public static void CollectUsersChats(this IPeerResolver structure, Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
 			=>  structure.UserOrChat(new CollectorPeer { _users = users, _chats = chats });
 
-		public static Task<Messages_Chats> Messages_GetChats(this Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllChats");
-		public static Task<Messages_Chats> Channels_GetChannels(this Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllChats");
-		public static Task<UserBase[]> Users_GetUsers(this Client _) => throw new ApplicationException("The method you're looking for is Messages_GetAllDialogs");
-		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client _) => throw new ApplicationException("If you want to get the messages from a chat, use Messages_GetHistory");
+		public static Task<Messages_Chats> Messages_GetChats(this Client _) => throw new WTException("The method you're looking for is Messages_GetAllChats");
+		public static Task<Messages_Chats> Channels_GetChannels(this Client _) => throw new WTException("The method you're looking for is Messages_GetAllChats");
+		public static Task<UserBase[]> Users_GetUsers(this Client _) => throw new WTException("The method you're looking for is Messages_GetAllDialogs");
+		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client _) => throw new WTException("If you want to get the messages from a chat, use Messages_GetHistory");
 	}
 
 	public static class Markdown

@@ -95,7 +95,7 @@ namespace WTelegram
 		public void Load(Stream input)
 		{
 			using var reader = new BinaryReader(input, Encoding.UTF8, true);
-			if (reader.ReadInt32() != 0) throw new ApplicationException("Unrecognized Secrets format");
+			if (reader.ReadInt32() != 0) throw new WTException("Unrecognized Secrets format");
 			dh = (Messages_DhConfig)reader.ReadTLObject();
 			if (dh?.p != null) dh_prime = BigEndianInteger(dh.p);
 			int count = reader.ReadInt32();
@@ -128,15 +128,15 @@ namespace WTelegram
 		{
 			var mdhcb = await client.Messages_GetDhConfig(dh?.version ?? 0, 256);
 			if (mdhcb is Messages_DhConfigNotModified { random: var random })
-				_ = dh ?? throw new ApplicationException("DhConfigNotModified on zero version");
+				_ = dh ?? throw new WTException("DhConfigNotModified on zero version");
 			else if (mdhcb is Messages_DhConfig dhc)
 			{
 				var p = BigEndianInteger(dhc.p);
 				CheckGoodPrime(p, dhc.g);
 				(dh, dh_prime, random, dh.random) = (dhc, p, dhc.random, null);
 			}
-			else throw new ApplicationException("Unexpected DHConfig response: " + mdhcb?.GetType().Name);
-			if (random.Length != 256) throw new ApplicationException("Invalid DHConfig random");
+			else throw new WTException("Unexpected DHConfig response: " + mdhcb?.GetType().Name);
+			if (random.Length != 256) throw new WTException("Invalid DHConfig random");
 			var salt = new byte[256];
 			RNG.GetBytes(salt);
 			for (int i = 0; i < 256; i++) salt[i] ^= random[i];
@@ -146,7 +146,7 @@ namespace WTelegram
 		/// <summary>Initiate a secret chat with the given user.<br/>(chat must be acknowledged by remote user before being active)</summary>
 		/// <param name="user">The remote user</param>
 		/// <returns>Secret Chat ID</returns>
-		/// <exception cref="ApplicationException"></exception>
+		/// <exception cref="WTException"></exception>
 		public async Task<int> Request(InputUserBase user)
 		{
 			int chat_id;
@@ -164,7 +164,7 @@ namespace WTelegram
 			CheckGoodGaAndGb(g_a, dh_prime);
 			var ecb = await client.Messages_RequestEncryption(user, chat_id, g_a.To256Bytes());
 			if (ecb is not EncryptedChatWaiting ecw || ecw.id != chat_id || ecw.participant_id != chat.participant_id)
-				throw new ApplicationException("Invalid " + ecb?.GetType().Name);
+				throw new WTException("Invalid " + ecb?.GetType().Name);
 			chat.peer.access_hash = ecw.access_hash;
 			return chat_id;
 		}
@@ -173,7 +173,7 @@ namespace WTelegram
 		/// <remarks>If update.chat is <see cref="EncryptedChatRequested"/>, you might want to first make sure you want to accept this secret chat initiated by user <see cref="EncryptedChatRequested.admin_id"/></remarks>
 		/// <param name="acceptChatRequests">Incoming requests for secret chats are automatically: accepted (<see langword="true"/>), rejected (<see langword="false"/>) or ignored (<see langword="null"/>)</param>
 		/// <returns><see langword="true"/> if the update was handled successfully</returns>
-		/// <exception cref="ApplicationException"></exception>
+		/// <exception cref="WTException"></exception>
 		public async Task<bool> HandleUpdate(UpdateEncryption update, bool? acceptChatRequests = true)
 		{
 			try
@@ -188,8 +188,8 @@ namespace WTelegram
 						var gab = BigInteger.ModPow(g_b, a, dh_prime);
 						chat.flags &= ~SecretChat.Flags.requestChat;
 						SetAuthKey(chat, gab.To256Bytes());
-						if (ec.key_fingerprint != chat.key_fingerprint) throw new ApplicationException("Invalid fingerprint on accepted secret chat");
-						if (ec.access_hash != chat.peer.access_hash || ec.participant_id != chat.participant_id) throw new ApplicationException("Invalid peer on accepted secret chat");
+						if (ec.key_fingerprint != chat.key_fingerprint) throw new WTException("Invalid fingerprint on accepted secret chat");
+						if (ec.access_hash != chat.peer.access_hash || ec.participant_id != chat.participant_id) throw new WTException("Invalid peer on accepted secret chat");
 						await SendNotifyLayer(chat);
 						return true;
 					}
@@ -227,7 +227,7 @@ namespace WTelegram
 							var ecb = await client.Messages_AcceptEncryption(chat.peer, g_b.ToByteArray(true, true), chat.key_fingerprint);
 							if (ecb is not EncryptedChat ec || ec.id != ecr.id || ec.access_hash != ecr.access_hash ||
 								ec.admin_id != ecr.admin_id || ec.key_fingerprint != chat.key_fingerprint)
-								throw new ApplicationException("Inconsistent accepted secret chat");
+								throw new WTException("Inconsistent accepted secret chat");
 							await SendNotifyLayer(chat);
 							return true;
 					}
@@ -274,7 +274,7 @@ namespace WTelegram
 		/// <returns>Confirmation of sent message</returns>
 		public async Task<Messages_SentEncryptedMessage> SendMessage(int chatId, DecryptedMessageBase msg, bool silent = false, InputEncryptedFileBase file = null)
 		{
-			if (!chats.TryGetValue(chatId, out var chat)) throw new ApplicationException("Secret chat not found");
+			if (!chats.TryGetValue(chatId, out var chat)) throw new WTException("Secret chat not found");
 			try
 			{
 				var dml = new TL.Layer23.DecryptedMessageLayer
@@ -336,14 +336,14 @@ namespace WTelegram
 		private IObject Decrypt(SecretChat chat, byte[] data, int dataLen)
 		{
 			if (dataLen < 32) // authKeyId+msgKey+(length+ctorNb)
-				throw new ApplicationException($"Encrypted packet too small: {data.Length}");
+				throw new WTException($"Encrypted packet too small: {data.Length}");
 			var authKey = chat.authKey;
 			long authKeyId = BinaryPrimitives.ReadInt64LittleEndian(data);
 			if (authKeyId == chat.key_fingerprint)
 				if (!chat.flags.HasFlag(SecretChat.Flags.commitKey)) CheckPFS(chat);
 				else { chat.flags &= ~SecretChat.Flags.commitKey; Array.Clear(chat.salt, 0, chat.salt.Length); }
 			else if (chat.flags.HasFlag(SecretChat.Flags.commitKey) && authKeyId == BinaryPrimitives.ReadInt64LittleEndian(sha1.ComputeHash(chat.salt).AsSpan(12))) authKey = chat.salt;
-			else throw new ApplicationException($"Received a packet encrypted with unexpected key {authKeyId:X}");
+			else throw new WTException($"Received a packet encrypted with unexpected key {authKeyId:X}");
 			int x = (int)(chat.flags & SecretChat.Flags.originator);
 			byte[] decrypted_data = EncryptDecryptMessage(data.AsSpan(24, dataLen - 24), false, x, authKey, data, 8, sha256);
 			var length = BinaryPrimitives.ReadInt32LittleEndian(decrypted_data);
@@ -354,11 +354,11 @@ namespace WTelegram
 				sha256.TransformBlock(authKey, 88 + x, 32, null, 0);
 				sha256.TransformFinalBlock(decrypted_data, 0, decrypted_data.Length);
 				if (success = data.AsSpan(8, 16).SequenceEqual(sha256.Hash.AsSpan(8, 16)))
-					if (decrypted_data.Length - 4 - length is < 12 or > 1024) throw new ApplicationException($"Invalid MTProto2 padding length: {decrypted_data.Length - 4}-{length}");
+					if (decrypted_data.Length - 4 - length is < 12 or > 1024) throw new WTException($"Invalid MTProto2 padding length: {decrypted_data.Length - 4}-{length}");
 					else if (chat.remoteLayer < Layer.MTProto2) chat.remoteLayer = Layer.MTProto2;
 			}
-			if (!success) throw new ApplicationException("Could not decrypt message");
-			if (length % 4 != 0) throw new ApplicationException($"Invalid message_data_length: {length}");
+			if (!success) throw new WTException("Could not decrypt message");
+			if (length % 4 != 0) throw new WTException($"Invalid message_data_length: {length}");
 			using var reader = new BinaryReader(new MemoryStream(decrypted_data, 4, length));
 			return reader.ReadTLObject();
 		}
@@ -370,16 +370,16 @@ namespace WTelegram
 		/// You can use the generic properties to access their fields
 		/// <para>May return an empty array if msg was already previously received or is not the next message in sequence.
 		/// <br/>May return multiple messages if missing messages are finally received (using <paramref name="fillGaps"/> = true)</para></returns>
-		/// <exception cref="ApplicationException"></exception>
+		/// <exception cref="WTException"></exception>
 		public ICollection<DecryptedMessageBase> DecryptMessage(EncryptedMessageBase msg, bool fillGaps = true)
 		{
-			if (!chats.TryGetValue(msg.ChatId, out var chat)) throw new ApplicationException("Secret chat not found");
+			if (!chats.TryGetValue(msg.ChatId, out var chat)) throw new WTException("Secret chat not found");
 			try
 			{
 				var obj = Decrypt(chat, msg.Bytes, msg.Bytes.Length);
-				if (obj is not TL.Layer23.DecryptedMessageLayer dml) throw new ApplicationException("Decrypted object is not DecryptedMessageLayer");
-				if (dml.random_bytes.Length < 15) throw new ApplicationException("Not enough random_bytes");
-				if (((dml.out_seq_no ^ dml.in_seq_no) & 1) != 1 || ((dml.out_seq_no ^ chat.in_seq_no) & 1) != 0) throw new ApplicationException("Invalid seq_no parities");
+				if (obj is not TL.Layer23.DecryptedMessageLayer dml) throw new WTException("Decrypted object is not DecryptedMessageLayer");
+				if (dml.random_bytes.Length < 15) throw new WTException("Not enough random_bytes");
+				if (((dml.out_seq_no ^ dml.in_seq_no) & 1) != 1 || ((dml.out_seq_no ^ chat.in_seq_no) & 1) != 0) throw new WTException("Invalid seq_no parities");
 				if (dml.layer > chat.remoteLayer) chat.remoteLayer = dml.layer;
 				//Debug.WriteLine($"<\t{dml.in_seq_no}\t{dml.out_seq_no}\t\t\t\t\t\texpected:{chat.out_seq_no}/{chat.in_seq_no + 2}");
 				if (dml.out_seq_no <= chat.in_seq_no) return Array.Empty<DecryptedMessageBase>(); // already received message
@@ -510,7 +510,7 @@ namespace WTelegram
 								}
 								break; // we lost, process with the larger exchange_id RequestKey
 							case 0: break;
-							default: throw new ApplicationException("Invalid RequestKey");
+							default: throw new WTException("Invalid RequestKey");
 						}
 						var g_a = BigEndianInteger(request.g_a);
 						var salt = new byte[256];
@@ -529,9 +529,9 @@ namespace WTelegram
 						break;
 					case TL.Layer23.DecryptedMessageActionAcceptKey accept: 
 						if ((chat.flags & (SecretChat.Flags.requestChat | SecretChat.Flags.renewKey | SecretChat.Flags.acceptKey)) != SecretChat.Flags.renewKey)
-							throw new ApplicationException("Invalid AcceptKey");
+							throw new WTException("Invalid AcceptKey");
 						if (accept.exchange_id != chat.exchange_id)
-							throw new ApplicationException("AcceptKey: exchange_id mismatch");
+							throw new WTException("AcceptKey: exchange_id mismatch");
 						var a = BigEndianInteger(chat.salt);
 						g_b = BigEndianInteger(accept.g_b);
 						CheckGoodGaAndGb(g_b, dh_prime);
@@ -539,7 +539,7 @@ namespace WTelegram
 						var authKey = gab.To256Bytes();
 						key_fingerprint = BinaryPrimitives.ReadInt64LittleEndian(sha1.ComputeHash(authKey).AsSpan(12));
 						if (accept.key_fingerprint != key_fingerprint)
-							throw new ApplicationException("AcceptKey: key_fingerprint mismatch");
+							throw new WTException("AcceptKey: key_fingerprint mismatch");
 						_ = SendMessage(chat.ChatId, new TL.Layer23.DecryptedMessageService { random_id = Helpers.RandomLong(),
 							action = new TL.Layer23.DecryptedMessageActionCommitKey { exchange_id = accept.exchange_id, key_fingerprint = accept.key_fingerprint } });
 						chat.salt = chat.authKey; // A may only discard the previous key after a message encrypted with the new key has been received.
@@ -548,10 +548,10 @@ namespace WTelegram
 						break;
 					case TL.Layer23.DecryptedMessageActionCommitKey commit: 
 						if ((chat.flags & (SecretChat.Flags.requestChat | SecretChat.Flags.renewKey | SecretChat.Flags.acceptKey)) != SecretChat.Flags.acceptKey)
-							throw new ApplicationException("Invalid RequestKey");
+							throw new WTException("Invalid RequestKey");
 						key_fingerprint = BinaryPrimitives.ReadInt64LittleEndian(sha1.ComputeHash(chat.salt).AsSpan(12));
 						if (commit.exchange_id != chat.exchange_id | commit.key_fingerprint != key_fingerprint)
-							throw new ApplicationException("CommitKey: data mismatch");
+							throw new WTException("CommitKey: data mismatch");
 						chat.flags &= ~SecretChat.Flags.acceptKey;
 						authKey = chat.authKey;
 						SetAuthKey(chat, chat.salt);
@@ -614,7 +614,7 @@ namespace WTelegram
 			var res = md5.TransformFinalBlock(iv, 0, 32);
 			long fingerprint = BinaryPrimitives.ReadInt64LittleEndian(md5.Hash);
 			fingerprint ^= fingerprint >> 32;
-			if (encryptedFile.key_fingerprint != (int)fingerprint) throw new ApplicationException("Encrypted file fingerprint mismatch");
+			if (encryptedFile.key_fingerprint != (int)fingerprint) throw new WTException("Encrypted file fingerprint mismatch");
 			
 			using var decryptStream = new AES_IGE_Stream(outputStream, size, key, iv);
 			var fileLocation = encryptedFile.ToFileLocation();
