@@ -467,8 +467,9 @@ namespace TL
 		[IfFlag(0)] public InputFileBase file;
 		/// <summary>Square video for animated profile picture</summary>
 		[IfFlag(1)] public InputFileBase video;
-		/// <summary>Timestamp that should be shown as static preview to the user (seconds)</summary>
+		/// <summary>Floating point UNIX timestamp in seconds, indicating the frame of the video/sticker that should be used as static preview; can only be used if <c>video</c> or <c>video_emoji_markup</c> is set.</summary>
 		[IfFlag(2)] public double video_start_ts;
+		/// <summary>Animated sticker profile picture, must contain either a <see cref="VideoSizeEmojiMarkup"/> or a <see cref="VideoSizeStickerMarkup"/>.</summary>
 		[IfFlag(3)] public VideoSizeBase video_emoji_markup;
 
 		[Flags] public enum Flags : uint
@@ -2072,13 +2073,13 @@ namespace TL
 		/// <summary>Action message</summary>
 		public string message;
 	}
-	/// <summary>The domain name of the website on which the user has logged in. <a href="https://corefork.telegram.org/widgets/login">More about Telegram Login »</a>		<para>See <a href="https://corefork.telegram.org/constructor/messageActionBotAllowed"/></para></summary>
+	/// <summary>The user has given the bot permission to do something.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionBotAllowed"/></para></summary>
 	[TLDef(0xC516D679)]
 	public class MessageActionBotAllowed : MessageAction
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
-		/// <summary>The domain name of the website on which the user has logged in.</summary>
+		/// <summary>The domain name of the website on which the user has logged in. <a href="https://corefork.telegram.org/widgets/login">More about Telegram Login »</a></summary>
 		[IfFlag(0)] public string domain;
 		[IfFlag(2)] public BotApp app;
 
@@ -2253,10 +2254,11 @@ namespace TL
 			has_hidden = 0x8,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionSuggestProfilePhoto"/></para></summary>
+	/// <summary>A new profile picture was suggested using <see cref="SchemaExtensions.Photos_UploadContactProfilePhoto">Photos_UploadContactProfilePhoto</see>.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionSuggestProfilePhoto"/></para></summary>
 	[TLDef(0x57DE635E)]
 	public class MessageActionSuggestProfilePhoto : MessageAction
 	{
+		/// <summary>The photo that the user suggested we set as profile picture.</summary>
 		public PhotoBase photo;
 	}
 	/// <summary>Contains info about a peer that the user shared with the bot after clicking on a <see cref="KeyboardButtonRequestPeer"/> button.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionRequestedPeer"/></para></summary>
@@ -2838,9 +2840,11 @@ namespace TL
 		[IfFlag(1)] public string about;
 		/// <summary>Peer settings</summary>
 		public PeerSettings settings;
+		/// <summary>Personal profile photo, to be shown instead of <c>profile_photo</c>.</summary>
 		[IfFlag(21)] public PhotoBase personal_photo;
 		/// <summary>Profile photo</summary>
 		[IfFlag(2)] public PhotoBase profile_photo;
+		/// <summary>Fallback profile photo, displayed if no photo is present in <c>profile_photo</c> or <c>personal_photo</c>, due to privacy settings.</summary>
 		[IfFlag(22)] public PhotoBase fallback_photo;
 		/// <summary>Notification settings</summary>
 		public PeerNotifySettings notify_settings;
@@ -3727,7 +3731,7 @@ namespace TL
 		public Flags flags;
 		/// <summary>The peer to which the draft is associated</summary>
 		public Peer peer;
-		/// <summary>ID of the <a href="https://corefork.telegram.org/api/topic#forum-topics">forum topic</a> to which the draft is associated</summary>
+		/// <summary>ID of the <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a> to which the draft is associated</summary>
 		[IfFlag(0)] public int top_msg_id;
 		/// <summary>The draft</summary>
 		public DraftMessageBase draft;
@@ -4495,10 +4499,11 @@ namespace TL
 			has_order = 0x1,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateUser"/></para></summary>
+	/// <summary>User information was updated, it must be refetched using <see cref="SchemaExtensions.Users_GetFullUser">Users_GetFullUser</see>.		<para>See <a href="https://corefork.telegram.org/constructor/updateUser"/></para></summary>
 	[TLDef(0x20529438)]
 	public class UpdateUser : Update
 	{
+		/// <summary>User ID</summary>
 		public long user_id;
 	}
 	/// <summary>Media autosave settings have changed and must be refetched using <see cref="SchemaExtensions.Account_GetAutoSaveSettings">Account_GetAutoSaveSettings</see>.		<para>See <a href="https://corefork.telegram.org/constructor/updateAutoSaveSettings"/></para></summary>
@@ -5887,6 +5892,7 @@ namespace TL
 		{
 			/// <summary>Whether this custom emoji can be sent by non-Premium users</summary>
 			free = 0x1,
+			/// <summary>Whether the color of this TGS custom emoji should be changed to the text color when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context.</summary>
 			text_color = 0x2,
 		}
 	}
@@ -6432,6 +6438,7 @@ namespace TL
 		public StickerSet set;
 		/// <summary>Emoji info for stickers</summary>
 		public StickerPack[] packs;
+		/// <summary>Keywords for some or every sticker in the stickerset.</summary>
 		public StickerKeyword[] keywords;
 		/// <summary>Stickers in stickerset</summary>
 		public DocumentBase[] documents;
@@ -8310,6 +8317,7 @@ namespace TL
 		public StickerSet set;
 		/// <summary>Emoji information about every sticker in the stickerset</summary>
 		public StickerPack[] packs;
+		/// <summary>Keywords for some or every sticker in the stickerset.</summary>
 		public StickerKeyword[] keywords;
 		/// <summary>Stickers</summary>
 		public DocumentBase[] documents;
@@ -8317,12 +8325,14 @@ namespace TL
 		/// <summary>Stickerset</summary>
 		public override StickerSet Set => set;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stickerSetNoCovered"/></para></summary>
+	/// <summary>Just the stickerset information, with no previews.		<para>See <a href="https://corefork.telegram.org/constructor/stickerSetNoCovered"/></para></summary>
 	[TLDef(0x77B15D1C)]
 	public class StickerSetNoCovered : StickerSetCoveredBase
 	{
+		/// <summary>Stickerset information.</summary>
 		public StickerSet set;
 
+		/// <summary>Stickerset information.</summary>
 		public override StickerSet Set => set;
 	}
 
@@ -9375,7 +9385,7 @@ namespace TL
 		public string emoji;
 		/// <summary>Coordinates for mask sticker</summary>
 		[IfFlag(0)] public MaskCoords mask_coords;
-		/// <summary>Set of keywords, separated by commas</summary>
+		/// <summary>Set of keywords, separated by commas (can't be provided for mask stickers)</summary>
 		[IfFlag(1)] public string keywords;
 
 		[Flags] public enum Flags : uint
@@ -12402,7 +12412,7 @@ namespace TL
 
 	/// <summary>Represents an animated video thumbnail		<para>See <a href="https://corefork.telegram.org/type/VideoSize"/></para>		<para>Derived classes: <see cref="VideoSize"/>, <see cref="VideoSizeEmojiMarkup"/>, <see cref="VideoSizeStickerMarkup"/></para></summary>
 	public abstract class VideoSizeBase : IObject { }
-	/// <summary><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> in MPEG4 format		<para>See <a href="https://corefork.telegram.org/constructor/videoSize"/></para></summary>
+	/// <summary>An <a href="https://corefork.telegram.org/api/files#animated-profile-pictures">animated profile picture</a> in MPEG4 format		<para>See <a href="https://corefork.telegram.org/constructor/videoSize"/></para></summary>
 	[TLDef(0xDE33B094)]
 	public class VideoSize : VideoSizeBase
 	{
@@ -12425,19 +12435,24 @@ namespace TL
 			has_video_start_ts = 0x1,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/videoSizeEmojiMarkup"/></para></summary>
+	/// <summary>An <a href="https://corefork.telegram.org/api/files#animated-profile-pictures">animated profile picture</a> based on a <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji sticker</a>.		<para>See <a href="https://corefork.telegram.org/constructor/videoSizeEmojiMarkup"/></para></summary>
 	[TLDef(0xF85C413C)]
 	public class VideoSizeEmojiMarkup : VideoSizeBase
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/custom-emoji">Custom emoji ID</a>: the custom emoji sticker is shown at the center of the profile picture and occupies at most 67% of it.</summary>
 		public long emoji_id;
+		/// <summary>1, 2, 3 or 4 RBG-24 colors used to generate a solid (1), gradient (2) or freeform gradient (3, 4) background, similar to how <a href="https://corefork.telegram.org/api/wallpapers#fill-types">fill wallpapers</a> are generated. The rotation angle for gradient backgrounds is 0.</summary>
 		public int[] background_colors;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/videoSizeStickerMarkup"/></para></summary>
+	/// <summary>An <a href="https://corefork.telegram.org/api/files#animated-profile-pictures">animated profile picture</a> based on a <a href="https://corefork.telegram.org/api/stickers">sticker</a>.		<para>See <a href="https://corefork.telegram.org/constructor/videoSizeStickerMarkup"/></para></summary>
 	[TLDef(0x0DA082FE)]
 	public class VideoSizeStickerMarkup : VideoSizeBase
 	{
+		/// <summary>Stickerset</summary>
 		public InputStickerSet stickerset;
+		/// <summary>Sticker ID</summary>
 		public long sticker_id;
+		/// <summary>1, 2, 3 or 4 RBG-24 colors used to generate a solid (1), gradient (2) or freeform gradient (3, 4) background, similar to how <a href="https://corefork.telegram.org/api/wallpapers#fill-types">fill wallpapers</a> are generated. The rotation angle for gradient backgrounds is 0.</summary>
 		public int[] background_colors;
 	}
 
@@ -14340,30 +14355,37 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emojiList"/></para></summary>
+	/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/custom-emoji">custom emojis</a>.		<para>See <a href="https://corefork.telegram.org/constructor/emojiList"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></remarks>
 	[TLDef(0x7A1E11D1)]
 	public class EmojiList : IObject
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public long hash;
+		/// <summary>Custom emoji IDs</summary>
 		public long[] document_id;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emojiGroup"/></para></summary>
+	/// <summary>Represents an <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji category</a>.		<para>See <a href="https://corefork.telegram.org/constructor/emojiGroup"/></para></summary>
 	[TLDef(0x7A9ABDA9)]
 	public class EmojiGroup : IObject
 	{
+		/// <summary>Category name, i.e. "Animals", "Flags", "Faces" and so on...</summary>
 		public string title;
+		/// <summary>A single custom emoji used as preview for the category.</summary>
 		public long icon_emoji_id;
+		/// <summary>A list of UTF-8 emojis, matching the category.</summary>
 		public string[] emoticons;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.emojiGroups"/></para></summary>
+	/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messages.emojiGroups"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></remarks>
 	[TLDef(0x881FB94B)]
 	public class Messages_EmojiGroups : IObject
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public int hash;
+		/// <summary>A list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>.</summary>
 		public EmojiGroup[] groups;
 	}
 

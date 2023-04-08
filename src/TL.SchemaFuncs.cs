@@ -1088,7 +1088,8 @@ namespace TL
 				active = active,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getDefaultProfilePhotoEmojis"/></para></summary>
+		/// <summary>Get a set of suggested <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickers</a> that can be <a href="https://corefork.telegram.org/api/files#sticker-profile-pictures">used as profile picture</a>		<para>See <a href="https://corefork.telegram.org/method/account.getDefaultProfilePhotoEmojis"/></para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
 		public static Task<EmojiList> Account_GetDefaultProfilePhotoEmojis(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetDefaultProfilePhotoEmojis
@@ -1096,7 +1097,8 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getDefaultGroupPhotoEmojis"/></para></summary>
+		/// <summary>Get a set of suggested <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickers</a> that can be <a href="https://corefork.telegram.org/api/files#sticker-profile-pictures">used as group picture</a>		<para>See <a href="https://corefork.telegram.org/method/account.getDefaultGroupPhotoEmojis"/></para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
 		public static Task<EmojiList> Account_GetDefaultGroupPhotoEmojis(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetDefaultGroupPhotoEmojis
@@ -3552,7 +3554,8 @@ namespace TL
 				requested_peer = requested_peer,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getEmojiGroups"/> [bots: ✓]</para></summary>
+		/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>, to be used when selecting <a href="https://corefork.telegram.org/api/custom-emoji">custom emojis</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiGroups"/> [bots: ✓]</para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></returns>
 		public static Task<Messages_EmojiGroups> Messages_GetEmojiGroups(this Client client, int hash = default)
 			=> client.Invoke(new Messages_GetEmojiGroups
@@ -3560,7 +3563,8 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStatusGroups"/> [bots: ✓]</para></summary>
+		/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>, to be used when selecting custom emojis to set as <a href="https://corefork.telegram.org/api">custom emoji status</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStatusGroups"/> [bots: ✓]</para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></returns>
 		public static Task<Messages_EmojiGroups> Messages_GetEmojiStatusGroups(this Client client, int hash = default)
 			=> client.Invoke(new Messages_GetEmojiStatusGroups
@@ -3568,7 +3572,8 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getEmojiProfilePhotoGroups"/> [bots: ✓]</para></summary>
+		/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>, to be used when selecting custom emojis to set as <a href="https://corefork.telegram.org/api/files#sticker-profile-pictures">profile picture</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiProfilePhotoGroups"/> [bots: ✓]</para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></returns>
 		public static Task<Messages_EmojiGroups> Messages_GetEmojiProfilePhotoGroups(this Client client, int hash = default)
 			=> client.Invoke(new Messages_GetEmojiProfilePhotoGroups
@@ -3663,6 +3668,7 @@ namespace TL
 			});
 
 		/// <summary>Installs a previously uploaded photo as a profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.updateProfilePhoto"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.updateProfilePhoto#possible-errors">details</a>)</para></summary>
+		/// <param name="fallback">If set, the chosen profile photo will be shown to users that can't display your main profile photo due to your privacy settings.</param>
 		/// <param name="id">Input photo</param>
 		public static Task<Photos_Photo> Photos_UpdateProfilePhoto(this Client client, InputPhoto id, bool fallback = false)
 			=> client.Invoke(new Photos_UpdateProfilePhoto
@@ -3672,9 +3678,11 @@ namespace TL
 			});
 
 		/// <summary>Updates current user profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.uploadProfilePhoto"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.uploadProfilePhoto#possible-errors">details</a>)</para></summary>
+		/// <param name="fallback">If set, the chosen profile photo will be shown to users that can't display your main profile photo due to your privacy settings.</param>
 		/// <param name="file">Profile photo</param>
 		/// <param name="video"><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> video</param>
-		/// <param name="video_start_ts">Floating point UNIX timestamp in seconds, indicating the frame of the video that should be used as static preview.</param>
+		/// <param name="video_start_ts">Floating point UNIX timestamp in seconds, indicating the frame of the video/sticker that should be used as static preview; can only be used if <c>video</c> or <c>video_emoji_markup</c> is set.</param>
+		/// <param name="video_emoji_markup">Animated sticker profile picture, must contain either a <see cref="VideoSizeEmojiMarkup"/> or a <see cref="VideoSizeStickerMarkup"/>.</param>
 		public static Task<Photos_Photo> Photos_UploadProfilePhoto(this Client client, InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null, VideoSizeBase video_emoji_markup = null, bool fallback = false)
 			=> client.Invoke(new Photos_UploadProfilePhoto
 			{
@@ -3707,10 +3715,14 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/photos.uploadContactProfilePhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.uploadContactProfilePhoto#possible-errors">details</a>)</para></summary>
+		/// <summary>Upload a custom profile picture for a contact, or suggest a new profile picture to a contact.		<para>See <a href="https://corefork.telegram.org/method/photos.uploadContactProfilePhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.uploadContactProfilePhoto#possible-errors">details</a>)</para></summary>
+		/// <param name="suggest">If set, will send a <see cref="MessageActionSuggestProfilePhoto"/> service message to <c>user_id</c>, suggesting them to use the specified profile picture; otherwise, will set a personal profile picture for the user (only visible to the current user).</param>
+		/// <param name="save">If set, removes a previously set personal profile picture (does not affect suggested profile pictures, to remove them simply deleted the <see cref="MessageActionSuggestProfilePhoto"/> service message with <see cref="Messages_DeleteMessages">Messages_DeleteMessages</see>).</param>
+		/// <param name="user_id">The contact</param>
 		/// <param name="file">Profile photo</param>
 		/// <param name="video"><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> video</param>
-		/// <param name="video_start_ts">Floating point UNIX timestamp in seconds, indicating the frame of the video that should be used as static preview.</param>
+		/// <param name="video_start_ts">Floating point UNIX timestamp in seconds, indicating the frame of the video/sticker that should be used as static preview; can only be used if <c>video</c> or <c>video_emoji_markup</c> is set.</param>
+		/// <param name="video_emoji_markup">Animated sticker profile picture, must contain either a <see cref="VideoSizeEmojiMarkup"/> or a <see cref="VideoSizeStickerMarkup"/>.</param>
 		public static Task<Photos_Photo> Photos_UploadContactProfilePhoto(this Client client, InputUserBase user_id, InputFileBase file = null, InputFileBase video = null, double? video_start_ts = null, VideoSizeBase video_emoji_markup = null, bool suggest = false, bool save = false)
 			=> client.Invoke(new Photos_UploadContactProfilePhoto
 			{
@@ -4825,6 +4837,7 @@ namespace TL
 		/// <param name="animated">Whether this is an animated stickerset</param>
 		/// <param name="videos">Whether this is a video stickerset</param>
 		/// <param name="emojis">Whether this is a <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> stickerset.</param>
+		/// <param name="text_color">Whether the color of TGS custom emojis contained in this set should be changed to the text color when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context. For custom emoji stickersets only.</param>
 		/// <param name="user_id">Stickerset owner</param>
 		/// <param name="title">Stickerset name, <c>1-64</c> chars</param>
 		/// <param name="short_name">Short name of sticker set, to be used in <a href="https://corefork.telegram.org/api/links#stickerset-links">sticker deep links »</a>. Can contain only english letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and, <strong>if called by a bot</strong>, must end in <c>"_by_&lt;bot_username&gt;"</c>. <c>&lt;bot_username&gt;</c> is case insensitive. 1-64 characters.</param>
@@ -4909,7 +4922,7 @@ namespace TL
 		/// <param name="sticker">The sticker</param>
 		/// <param name="emoji">If set, updates the emoji list associated to the sticker</param>
 		/// <param name="mask_coords">If set, updates the <a href="https://corefork.telegram.org/api/stickers#mask-stickers">mask coordinates</a></param>
-		/// <param name="keywords">If set, updates the sticker keywords (separated by commas).</param>
+		/// <param name="keywords">If set, updates the sticker keywords (separated by commas). Can't be provided for mask stickers.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
 		public static Task<Messages_StickerSet> Stickers_ChangeSticker(this Client client, InputDocument sticker, string emoji = null, MaskCoords mask_coords = null, string keywords = null)
 			=> client.Invoke(new Stickers_ChangeSticker

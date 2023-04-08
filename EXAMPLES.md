@@ -39,7 +39,7 @@ WTelegram.Helpers.Log += (lvl, str) => System.Diagnostics.Debug.WriteLine(str);
 // • In ASP.NET service, you will typically send logs to an ILogger:
 WTelegram.Helpers.Log = (lvl, str) => _logger.Log((LogLevel)lvl, str);
 
-// • Disable logging (THIS IS NOT RECOMMENDED as you won't be able to diagnose any upcoming problem):
+// • Disable logging (⛔️𝗗𝗢𝗡'𝗧 𝗗𝗢 𝗧𝗛𝗜𝗦 as you won't be able to diagnose any upcoming problem):
 WTelegram.Helpers.Log = (lvl, str) => { };
 ```
 
