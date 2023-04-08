@@ -527,7 +527,7 @@ namespace WTelegram
 					foreach (var kvp in ccp.users) result.users[kvp.Key] = kvp.Value;
 					lock (participants)
 						foreach (var participant in ccp.participants)
-							if (user_ids.Add(participant.UserID))
+							if (user_ids.Add(participant.UserId))
 								participants.Add(participant);
 					offset += ccp.participants.Length;
 					if (offset >= ccp.count || ccp.participants.Length == 0) break;

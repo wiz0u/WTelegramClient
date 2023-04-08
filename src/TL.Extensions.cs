@@ -13,9 +13,9 @@ namespace TL
 		private class CollectorPeer : Peer
 		{
 			public override long ID => 0;
-			internal Dictionary<long, User> _users;
-			internal Dictionary<long, ChatBase> _chats;
-			protected internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
+			internal IDictionary<long, User> _users;
+			internal IDictionary<long, ChatBase> _chats;
+			protected internal override IPeerInfo UserOrChat(IDictionary<long, User> users, IDictionary<long, ChatBase> chats)
 			{
 				lock (_users)
 					foreach (var user in users.Values)
@@ -34,7 +34,7 @@ namespace TL
 
 		/// <summary>Accumulate users/chats found in this structure in your dictionaries, ignoring <see href="https://core.telegram.org/api/min">Min constructors</see> when the full object is already stored</summary>
 		/// <param name="structure">The structure having a <c>users</c></param>
-		public static void CollectUsersChats(this IPeerResolver structure, Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
+		public static void CollectUsersChats(this IPeerResolver structure, IDictionary<long, User> users, IDictionary<long, ChatBase> chats)
 			=>  structure.UserOrChat(new CollectorPeer { _users = users, _chats = chats });
 
 		public static Task<Messages_Chats> Messages_GetChats(this Client _) => throw new WTException("The method you're looking for is Messages_GetAllChats");

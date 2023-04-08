@@ -118,25 +118,25 @@ namespace TL
 	partial class Peer
 	{
 		public abstract long ID { get; }
-		protected internal abstract IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats);
+		protected internal abstract IPeerInfo UserOrChat(IDictionary<long, User> users, IDictionary<long, ChatBase> chats);
 	}
 	partial class PeerUser
 	{
 		public override string ToString() => "user " + user_id;
 		public override long ID => user_id;
-		protected internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => users.TryGetValue(user_id, out var user) ? user : null;
+		protected internal override IPeerInfo UserOrChat(IDictionary<long, User> users, IDictionary<long, ChatBase> chats) => users.TryGetValue(user_id, out var user) ? user : null;
 	}
 	partial class PeerChat
 	{
 		public override string ToString() => "chat " + chat_id;
 		public override long ID => chat_id;
-		protected internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => chats.TryGetValue(chat_id, out var chat) ? chat : null;
+		protected internal override IPeerInfo UserOrChat(IDictionary<long, User> users, IDictionary<long, ChatBase> chats) => chats.TryGetValue(chat_id, out var chat) ? chat : null;
 	}
 	partial class PeerChannel
 	{
 		public override string ToString() => "channel " + channel_id;
 		public override long ID => channel_id;
-		protected internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats) => chats.TryGetValue(channel_id, out var chat) ? chat : null;
+		protected internal override IPeerInfo UserOrChat(IDictionary<long, User> users, IDictionary<long, ChatBase> chats) => chats.TryGetValue(channel_id, out var chat) ? chat : null;
 	}
 
 	partial class UserBase : IPeerInfo
@@ -191,7 +191,7 @@ namespace TL
 		/// <summary>returns true if you're banned of any of these rights</summary>
 		public abstract bool IsBanned(ChatBannedRights.Flags flags = 0);
 		public abstract InputPeer ToInputPeer();
-		public static implicit operator InputPeer(ChatBase chat) => chat.ToInputPeer();
+		public static implicit operator InputPeer(ChatBase chat) => chat?.ToInputPeer();
 	}
 	partial class ChatEmpty
 	{
@@ -542,22 +542,22 @@ namespace TL
 	partial class ChannelParticipantBase
 	{
 		public virtual bool IsAdmin => false;
-		public abstract long UserID { get; }
+		public abstract long UserId { get; }
 	}
 	partial class ChannelParticipantCreator
 	{
 		public override bool IsAdmin => true;
-		public override long UserID => user_id;
+		public override long UserId => user_id;
 	}
 	partial class ChannelParticipantAdmin
 	{
 		public override bool IsAdmin => true;
-		public override long UserID => user_id;
+		public override long UserId => user_id;
 	}
-	partial class ChannelParticipant		{ public override long UserID => user_id; }
-	partial class ChannelParticipantSelf	{ public override long UserID => user_id; }
-	partial class ChannelParticipantBanned	{ public override long UserID => peer is PeerUser pu ? pu.user_id : 0; }
-	partial class ChannelParticipantLeft	{ public override long UserID => peer is PeerUser pu ? pu.user_id : 0; }
+	partial class ChannelParticipant		{ public override long UserId => user_id; }
+	partial class ChannelParticipantSelf	{ public override long UserId => user_id; }
+	partial class ChannelParticipantBanned	{ public override long UserId => peer is PeerUser pu ? pu.user_id : 0; }
+	partial class ChannelParticipantLeft	{ public override long UserId => peer is PeerUser pu ? pu.user_id : 0; }
 
 	partial class Messages_PeerDialogs { public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer?.UserOrChat(users, chats); }
 
