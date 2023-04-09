@@ -47,7 +47,7 @@ namespace WTelegram
 			return length;
 		}
 
-		public static V GetValueOrDefault<K, V>(this Dictionary<K, V> dictionary, K key, V defaultValue = default)
+		public static V GetValueOrDefault<K, V>(this IReadOnlyDictionary<K, V> dictionary, K key, V defaultValue = default)
 			=> dictionary.TryGetValue(key, out V value) ? value : defaultValue;
 
 		public static void Deconstruct<K, V>(this KeyValuePair<K, V> kvp, out K key, out V value) { key = kvp.Key; value = kvp.Value; }

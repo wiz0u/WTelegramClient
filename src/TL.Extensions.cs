@@ -15,7 +15,7 @@ namespace TL
 			public override long ID => 0;
 			internal IDictionary<long, User> _users;
 			internal IDictionary<long, ChatBase> _chats;
-			protected internal override IPeerInfo UserOrChat(IDictionary<long, User> users, IDictionary<long, ChatBase> chats)
+			protected internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
 			{
 				lock (_users)
 					foreach (var user in users.Values)
@@ -51,7 +51,7 @@ namespace TL
 		/// <param name="premium">Generate premium entities if any</param>
 		/// <param name="users">Dictionary used for <c>tg://user?id=</c> notation</param>
 		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="Client.SendMediaAsync">SendMediaAsync</see></returns>
-		public static MessageEntity[] MarkdownToEntities(this Client _, ref string text, bool premium = false, Dictionary<long, User> users = null)
+		public static MessageEntity[] MarkdownToEntities(this Client _, ref string text, bool premium = false, IReadOnlyDictionary<long, User> users = null)
 		{
 			var entities = new List<MessageEntity>();
 			var sb = new StringBuilder(text);
@@ -251,7 +251,7 @@ namespace TL
 		/// <param name="premium">Generate premium entities if any</param>
 		/// <param name="users">Dictionary used for <c>tg://user?id=</c> notation</param>
 		/// <returns>The array of formatting entities that you can pass (along with the plain text) to <see cref="Client.SendMessageAsync">SendMessageAsync</see> or  <see cref="Client.SendMediaAsync">SendMediaAsync</see></returns>
-		public static MessageEntity[] HtmlToEntities(this Client _, ref string text, bool premium = false, Dictionary<long, User> users = null)
+		public static MessageEntity[] HtmlToEntities(this Client _, ref string text, bool premium = false, IReadOnlyDictionary<long, User> users = null)
 		{
 			var entities = new List<MessageEntity>();
 			var sb = new StringBuilder(text);

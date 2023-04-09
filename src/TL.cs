@@ -168,9 +168,9 @@ namespace TL
 					else if (type == typeof(Int256))
 						return new Int256(reader);
 					else if (type == typeof(Dictionary<long, User>))
-						return reader.ReadTLDictionary<User>(u => u.ID);
+						return reader.ReadTLDictionary<User>();
 					else if (type == typeof(Dictionary<long, ChatBase>))
-						return reader.ReadTLDictionary<ChatBase>(c => c.ID);
+						return reader.ReadTLDictionary<ChatBase>();
 					else
 						return reader.ReadTLObject();
 				default:
@@ -238,7 +238,7 @@ namespace TL
 				throw new WTelegram.WTException($"Cannot deserialize {type.Name} with ctor #{ctorNb:x}");
 		}
 
-		internal static Dictionary<long, T> ReadTLDictionary<T>(this BinaryReader reader, Func<T, long> getID) where T : class
+		internal static Dictionary<long, T> ReadTLDictionary<T>(this BinaryReader reader) where T : class, IPeerInfo
 		{
 			uint ctorNb = reader.ReadUInt32();
 			var elementType = typeof(T);
@@ -249,7 +249,7 @@ namespace TL
 			for (int i = 0; i < count; i++)
 			{
 				var value = (T)reader.ReadTLValue(elementType);
-				dict[getID(value)] = value is UserEmpty ? null : value;
+				dict[value.ID] = value is UserEmpty ? null : value;
 			}
 			return dict;
 		}
