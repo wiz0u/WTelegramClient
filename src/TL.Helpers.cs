@@ -492,6 +492,13 @@ namespace TL
 		public static implicit operator InputStickerSetID(StickerSet stickerSet) => new() { id = stickerSet.id, access_hash = stickerSet.access_hash };
 	}
 
+	partial class MessageEntity
+	{
+		public string Type { get { var name = GetType().Name; return name[(name.IndexOf("MessageEntity") + 13)..]; } }
+		public int Offset { get => offset; set => offset = value; }
+		public int Length { get => length; set => length = value; }
+	}
+
 	partial class InputChannel
 	{
 		/// <param name="channel_id">Channel identifier</param>

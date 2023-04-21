@@ -42,9 +42,9 @@ namespace TL
 		public Exception Exception;
 	}
 
-	internal static class Serialization
+	public static class Serialization
 	{
-		internal static void WriteTLObject<T>(this BinaryWriter writer, T obj) where T : IObject
+		public static void WriteTLObject<T>(this BinaryWriter writer, T obj) where T : IObject
 		{
 			if (obj == null) { writer.WriteTLNull(typeof(T)); return; }
 			var type = obj.GetType();
@@ -66,7 +66,7 @@ namespace TL
 			}
 		}
 
-		internal static IObject ReadTLObject(this BinaryReader reader, uint ctorNb = 0)
+		public static IObject ReadTLObject(this BinaryReader reader, uint ctorNb = 0)
 		{
 			if (ctorNb == 0) ctorNb = reader.ReadUInt32();
 			if (ctorNb == Layer.GZipedCtor)
