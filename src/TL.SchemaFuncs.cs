@@ -2042,7 +2042,7 @@ namespace TL
 				unsave = unsave,
 			});
 
-		/// <summary>Query an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineBotResults"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406,-503 (<a href="https://corefork.telegram.org/method/messages.getInlineBotResults#possible-errors">details</a>)</para></summary>
+		/// <summary>Query an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineBotResults"/></para>		<para>Possible <see cref="RpcException"/> codes: -503,400,406 (<a href="https://corefork.telegram.org/method/messages.getInlineBotResults#possible-errors">details</a>)</para></summary>
 		/// <param name="bot">The bot to query</param>
 		/// <param name="peer">The currently opened chat</param>
 		/// <param name="geo_point">The geolocation, if requested</param>
@@ -2066,7 +2066,8 @@ namespace TL
 		/// <param name="results">Vector of results for the inline query</param>
 		/// <param name="cache_time">The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300.</param>
 		/// <param name="next_offset">Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.</param>
-		/// <param name="switch_pm">If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with a certain parameter.</param>
+		/// <param name="switch_pm">If passed, clients will display a button on top of the remaining inline result list with the specified text, that switches the user to a private chat with the bot and sends the bot a start message with a certain parameter.</param>
+		/// <param name="switch_webview">If passed, clients will display a button on top of the remaining inline result list with the specified text, that switches the user to the specified <a href="https://corefork.telegram.org/api/bots/webapps#simple-web-apps">bot web app</a>.</param>
 		public static Task<bool> Messages_SetInlineBotResults(this Client client, long query_id, InputBotInlineResultBase[] results, int cache_time, string next_offset = null, InlineBotSwitchPM switch_pm = null, InlineBotWebView switch_webview = null, bool gallery = false, bool private_ = false)
 			=> client.Invoke(new Messages_SetInlineBotResults
 			{
@@ -2156,7 +2157,7 @@ namespace TL
 				entities = entities,
 			});
 
-		/// <summary>Press an inline callback button and get a callback answer from the bot		<para>See <a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,-503 (<a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer#possible-errors">details</a>)</para></summary>
+		/// <summary>Press an inline callback button and get a callback answer from the bot		<para>See <a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer"/></para>		<para>Possible <see cref="RpcException"/> codes: -503,400 (<a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer#possible-errors">details</a>)</para></summary>
 		/// <param name="game">Whether this is a "play game" button</param>
 		/// <param name="peer">Where was the inline keyboard sent</param>
 		/// <param name="msg_id">ID of the Message with the inline keyboard</param>
@@ -3255,10 +3256,10 @@ namespace TL
 				reaction = reaction,
 			});
 
-		/// <summary>Translate a given text		<para>See <a href="https://corefork.telegram.org/method/messages.translateText"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.translateText#possible-errors">details</a>)</para></summary>
+		/// <summary>Translate a given text.		<para>See <a href="https://corefork.telegram.org/method/messages.translateText"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.translateText#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">If the text is a chat message, the peer ID</param>
 		/// <param name="id">A list of message IDs to translate</param>
-		/// <param name="text">The text to translate</param>
+		/// <param name="text">A list of styled messages to translate</param>
 		/// <param name="to_lang">Two-letter ISO 639-1 language code of the language to which the message is translated</param>
 		public static Task<Messages_TranslatedText> Messages_TranslateText(this Client client, string to_lang, InputPeer peer = null, int[] id = null, TextWithEntities[] text = null)
 			=> client.Invoke(new Messages_TranslateText
@@ -3391,6 +3392,7 @@ namespace TL
 			});
 
 		/// <summary>Open a <a href="https://corefork.telegram.org/api/bots/webapps">bot web app</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.requestSimpleWebView"/></para></summary>
+		/// <param name="from_switch_webview">Whether the webapp was opened by clicking on the <c>switch_webview</c> button shown on top of the inline results list returned by <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see>.</param>
 		/// <param name="bot">Bot that owns the webapp</param>
 		/// <param name="url">Web app URL</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
@@ -3592,9 +3594,9 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary>Toggle <a href="https://corefork.telegram.org/api/translation">real-time chat translation</a> for a certain chat		<para>See <a href="https://corefork.telegram.org/method/messages.togglePeerTranslations"/> [bots: ✓]</para></summary>
-		/// <param name="disabled">Whether to disable or enable real-time chat translation</param>
-		/// <param name="peer">Peer where to enable or disable real-time chat translation</param>
+		/// <summary>Show or hide the <a href="https://corefork.telegram.org/api/translation">real-time chat translation popup</a> for a certain chat		<para>See <a href="https://corefork.telegram.org/method/messages.togglePeerTranslations"/> [bots: ✓]</para></summary>
+		/// <param name="disabled">Whether to disable or enable the real-time chat translation popup</param>
+		/// <param name="peer">The peer</param>
 		public static Task<bool> Messages_TogglePeerTranslations(this Client client, InputPeer peer, bool disabled = false)
 			=> client.Invoke(new Messages_TogglePeerTranslations
 			{
@@ -4584,7 +4586,7 @@ namespace TL
 			});
 
 		/// <summary>Enable or disable the <a href="https://corefork.telegram.org/api/antispam">native antispam system</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.toggleAntiSpam"/> [bots: ✓]</para></summary>
-		/// <param name="channel">Supergroup ID</param>
+		/// <param name="channel">Supergroup ID. The specified supergroup must have at least <c>telegram_antispam_group_size_min</c> members to enable antispam functionality, as specified by the <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration parameters</a>.</param>
 		/// <param name="enabled">Enable or disable the native antispam system.</param>
 		public static Task<UpdatesBase> Channels_ToggleAntiSpam(this Client client, InputChannelBase channel, bool enabled)
 			=> client.Invoke(new Channels_ToggleAntiSpam

@@ -837,6 +837,7 @@ namespace TL
 			has_video = 0x1,
 			/// <summary>Field <see cref="stripped_thumb"/> has a value</summary>
 			has_stripped_thumb = 0x2,
+			/// <summary>Whether this profile photo is only visible to us (i.e. it was set using <see cref="SchemaExtensions.Photos_UploadContactProfilePhoto">Photos_UploadContactProfilePhoto</see>).</summary>
 			personal = 0x4,
 		}
 	}
@@ -1184,7 +1185,7 @@ namespace TL
 			has_requests_pending = 0x20000,
 			/// <summary>Field <see cref="available_reactions"/> has a value</summary>
 			has_available_reactions = 0x40000,
-			/// <summary>Whether <a href="https://corefork.telegram.org/api/translation">real-time chat translation</a> is disabled.</summary>
+			/// <summary>Whether the <a href="https://corefork.telegram.org/api/translation">real-time chat translation popup</a> should be hidden.</summary>
 			translations_disabled = 0x80000,
 		}
 
@@ -1372,7 +1373,7 @@ namespace TL
 			antispam = 0x2,
 			/// <summary>Whether the participant list is hidden.</summary>
 			participants_hidden = 0x4,
-			/// <summary>Whether <a href="https://corefork.telegram.org/api/translation">real-time chat translation</a> is disabled.</summary>
+			/// <summary>Whether the <a href="https://corefork.telegram.org/api/translation">real-time chat translation popup</a> should be hidden.</summary>
 			translations_disabled = 0x8,
 		}
 
@@ -2079,14 +2080,16 @@ namespace TL
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
-		/// <summary>The domain name of the website on which the user has logged in. <a href="https://corefork.telegram.org/widgets/login">More about Telegram Login »</a></summary>
+		/// <summary>The user has logged in via <a href="https://corefork.telegram.org/widgets/login">Telegram Login »</a>; this field contains the domain name of the website on which the user has logged in.</summary>
 		[IfFlag(0)] public string domain;
+		/// <summary>We just gave the specified <a href="https://corefork.telegram.org/api/bots/webapps">bot web app</a> permission to send us messages.</summary>
 		[IfFlag(2)] public BotApp app;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="domain"/> has a value</summary>
 			has_domain = 0x1,
+			/// <summary>We just installed the bot's <a href="https://corefork.telegram.org/api/bots/attach">attachment menu</a>, thus giving the bot permission to send us messages.</summary>
 			attach_menu = 0x2,
 			/// <summary>Field <see cref="app"/> has a value</summary>
 			has_app = 0x4,
@@ -2911,6 +2914,7 @@ namespace TL
 			has_personal_photo = 0x200000,
 			/// <summary>Field <see cref="fallback_photo"/> has a value</summary>
 			has_fallback_photo = 0x400000,
+			/// <summary>Whether the <a href="https://corefork.telegram.org/api/translation">real-time chat translation popup</a> should be hidden.</summary>
 			translations_disabled = 0x800000,
 		}
 	}
@@ -4509,10 +4513,11 @@ namespace TL
 	/// <summary>Media autosave settings have changed and must be refetched using <see cref="SchemaExtensions.Account_GetAutoSaveSettings">Account_GetAutoSaveSettings</see>.		<para>See <a href="https://corefork.telegram.org/constructor/updateAutoSaveSettings"/></para></summary>
 	[TLDef(0xEC05B097)]
 	public class UpdateAutoSaveSettings : Update { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateGroupInvitePrivacyForbidden"/></para></summary>
+	/// <summary>0-N updates of this type may be returned only when invoking <see cref="SchemaExtensions.Messages_AddChatUser">Messages_AddChatUser</see>, <see cref="SchemaExtensions.Channels_InviteToChannel">Channels_InviteToChannel</see> or <see cref="SchemaExtensions.Messages_CreateChat">Messages_CreateChat</see>: it indicates we couldn't add a user to a chat because of their privacy settings; if required, an <a href="https://corefork.telegram.org/api/invites">invite link</a> can be shared with the user, instead.		<para>See <a href="https://corefork.telegram.org/constructor/updateGroupInvitePrivacyForbidden"/></para></summary>
 	[TLDef(0xCCF08AD6)]
 	public class UpdateGroupInvitePrivacyForbidden : Update
 	{
+		/// <summary>ID of the user we couldn't add.</summary>
 		public long user_id;
 	}
 
@@ -6742,6 +6747,7 @@ namespace TL
 			selective = 0x4,
 			/// <summary>Field <see cref="placeholder"/> has a value</summary>
 			has_placeholder = 0x8,
+			/// <summary>Requests clients to always show the keyboard when the regular keyboard is hidden.</summary>
 			persistent = 0x10,
 		}
 	}
@@ -7799,8 +7805,9 @@ namespace TL
 		public long query_id;
 		/// <summary>The next offset to use when navigating through results</summary>
 		[IfFlag(1)] public string next_offset;
-		/// <summary>Whether the bot requested the user to message them in private</summary>
+		/// <summary>Shown as a button on top of the remaining inline result list; if clicked, redirects the user to a private chat with the bot with the specified start parameter.</summary>
 		[IfFlag(2)] public InlineBotSwitchPM switch_pm;
+		/// <summary>Shown as a button on top of the remaining inline result list; if clicked, opens the specified <a href="https://corefork.telegram.org/api/bots/webapps#simple-web-apps">bot web app</a>.</summary>
 		[IfFlag(3)] public InlineBotWebView switch_webview;
 		/// <summary>The results</summary>
 		public BotInlineResultBase[] results;
@@ -10314,7 +10321,7 @@ namespace TL
 			invites = 0x8000,
 			/// <summary>A message was posted in a channel</summary>
 			send = 0x10000,
-			/// <summary><a href="https://corefork.telegram.org/api/forum#forum">Forum</a>-related events</summary>
+			/// <summary><a href="https://corefork.telegram.org/api/forum">Forum</a>-related events</summary>
 			forums = 0x20000,
 		}
 	}
@@ -13260,7 +13267,9 @@ namespace TL
 		public string message;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
 		[IfFlag(1)] public MessageEntity[] entities;
+		/// <summary>If set, contains additional information about the sponsor to be shown along with the message.</summary>
 		[IfFlag(7)] public string sponsor_info;
+		/// <summary>If set, contains additional information about the sponsored message to be shown along with the message.</summary>
 		[IfFlag(8)] public string additional_info;
 
 		[Flags] public enum Flags : uint
@@ -13292,6 +13301,7 @@ namespace TL
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>If set, specifies the minimum number of messages between shown sponsored messages; otherwise, only one sponsored message must be shown after all ordinary messages.</summary>
 		[IfFlag(0)] public int posts_between;
 		/// <summary>Sponsored messages</summary>
 		public SponsoredMessage[] messages;
@@ -14067,6 +14077,7 @@ namespace TL
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Identifier of the last in-store transaction for the currently used subscription.</summary>
 		[IfFlag(3)] public string transaction;
 		/// <summary>Duration of subscription in months</summary>
 		public int months;
@@ -14083,7 +14094,9 @@ namespace TL
 		{
 			/// <summary>Field <see cref="store_product"/> has a value</summary>
 			has_store_product = 0x1,
+			/// <summary>Whether this subscription option is currently in use.</summary>
 			current = 0x2,
+			/// <summary>Whether this subscription option can be used to upgrade the existing Telegram Premium subscription.</summary>
 			can_purchase_upgrade = 0x4,
 			/// <summary>Field <see cref="transaction"/> has a value</summary>
 			has_transaction = 0x8,
@@ -14242,17 +14255,22 @@ namespace TL
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
 		public Flags flags;
+		/// <summary>Total number of topics matching query; may be less than the topics contained in <c>topics</c>, in which case <a href="https://corefork.telegram.org/api/offsets">pagination</a> is required.</summary>
 		public int count;
 		/// <summary>Forum topics</summary>
 		public ForumTopicBase[] topics;
+		/// <summary>Related messages (contains the messages mentioned by <see cref="ForumTopic"/>.<c>top_message</c>).</summary>
 		public MessageBase[] messages;
+		/// <summary>Related chats</summary>
 		public Dictionary<long, ChatBase> chats;
+		/// <summary>Related users</summary>
 		public Dictionary<long, User> users;
 		/// <summary><a href="https://corefork.telegram.org/api/updates">Event count after generation</a></summary>
 		public int pts;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether the returned topics are ordered by creation date; if set, pagination by <c>next_offset</c> should use <see cref="ForumTopic"/>.<c>date</c>; otherwise topics are ordered by the last message date, so paginate by the <c>date</c> of the <see cref="MessageBase"/> referenced by <see cref="ForumTopic"/>.<c>top_message</c>.</summary>
 			order_by_create_date = 0x1,
 		}
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
@@ -14399,12 +14417,13 @@ namespace TL
 		public MessageEntity[] entities;
 	}
 
-	/// <summary>Translated text, or no result		<para>See <a href="https://corefork.telegram.org/type/messages.TranslatedText"/></para>		<para>Derived classes: <see cref="Messages_TranslateResult"/></para></summary>
+	/// <summary>Translated text with <a href="https://corefork.telegram.org/api/entities">entities</a>.		<para>See <a href="https://corefork.telegram.org/type/messages.TranslatedText"/></para>		<para>Derived classes: <see cref="Messages_TranslateResult"/></para></summary>
 	public abstract class Messages_TranslatedText : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.translateResult"/></para></summary>
+	/// <summary>Translated text with <a href="https://corefork.telegram.org/api/entities">entities</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.translateResult"/></para></summary>
 	[TLDef(0x33DB32F8)]
 	public class Messages_TranslateResult : Messages_TranslatedText
 	{
+		/// <summary>Text+<a href="https://corefork.telegram.org/api/entities">entities</a>, for each input message.</summary>
 		public TextWithEntities[] result;
 	}
 
@@ -14521,7 +14540,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>Contains information about a <a href="https://corefork.telegram.org/api/bots/webapps#bot-web-app">bot web app</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.botApp"/></para></summary>
+	/// <summary>Contains information about a <a href="https://corefork.telegram.org/api/bots/webapps#bot-web-apps">bot web app</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.botApp"/></para></summary>
 	[TLDef(0xEB50ADF5)]
 	public class Messages_BotApp : IObject
 	{
@@ -14549,11 +14568,13 @@ namespace TL
 		public string url;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inlineBotWebView"/></para></summary>
+	/// <summary>Specifies a <a href="https://corefork.telegram.org/api/bots/webapps#simple-web-apps">bot web app</a> button, shown on top of the inline query results list.		<para>See <a href="https://corefork.telegram.org/constructor/inlineBotWebView"/></para></summary>
 	[TLDef(0xB57295D5)]
 	public class InlineBotWebView : IObject
 	{
+		/// <summary>Text of the button</summary>
 		public string text;
+		/// <summary>Webapp URL</summary>
 		public string url;
 	}
 
