@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 156;					// fetched 26/03/2023 17:25:51
+		public const int Version = 158;					// fetched 21/04/2023 14:33:19
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -190,11 +190,13 @@ namespace TL
 			[0xEBBCA3CB] = typeof(MessageActionChatJoinedByRequest),
 			[0x47DD8079] = typeof(MessageActionWebViewDataSentMe),
 			[0xB4C38CB5] = typeof(MessageActionWebViewDataSent),
-			[0xABA0F5C6] = typeof(MessageActionGiftPremium),
+			[0xC83D6AEC] = typeof(MessageActionGiftPremium),
 			[0x0D999256] = typeof(MessageActionTopicCreate),
 			[0xC0944820] = typeof(MessageActionTopicEdit),
 			[0x57DE635E] = typeof(MessageActionSuggestProfilePhoto),
 			[0xFE77345D] = typeof(MessageActionRequestedPeer),
+			[0xBC44A927] = typeof(MessageActionSetChatWallPaper),
+			[0xC0787D6D] = typeof(MessageActionSetSameChatWallPaper),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -222,7 +224,7 @@ namespace TL
 			[0xA518110D] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0xF8D32AED] = typeof(UserFull),
+			[0x93EADB53] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -508,7 +510,7 @@ namespace TL
 			[0x35BBDB6B] = typeof(KeyboardButtonCallback),
 			[0xB16A6C29] = typeof(KeyboardButtonRequestPhone),
 			[0xFC796B3F] = typeof(KeyboardButtonRequestGeoLocation),
-			[0x0568A748] = typeof(KeyboardButtonSwitchInline),
+			[0x93B9FBB5] = typeof(KeyboardButtonSwitchInline),
 			[0x50F41CCF] = typeof(KeyboardButtonGame),
 			[0xAFD93FBB] = typeof(KeyboardButtonBuy),
 			[0x10B78D29] = typeof(KeyboardButtonUrlAuth),
@@ -756,7 +758,7 @@ namespace TL
 			[0xF92424D2] = typeof(ChannelAdminLogEventActionParticipantMute),
 			[0xE64429C0] = typeof(ChannelAdminLogEventActionParticipantUnmute),
 			[0x56D6A247] = typeof(ChannelAdminLogEventActionToggleGroupCallSetting),
-			[0x5CDADA77] = typeof(ChannelAdminLogEventActionParticipantJoinByInvite),
+			[0xFE9FC158] = typeof(ChannelAdminLogEventActionParticipantJoinByInvite),
 			[0x5A50FCA4] = typeof(ChannelAdminLogEventActionExportedInviteDelete),
 			[0x410A134E] = typeof(ChannelAdminLogEventActionExportedInviteRevoke),
 			[0xE90EBB59] = typeof(ChannelAdminLogEventActionExportedInviteEdit),
@@ -915,6 +917,7 @@ namespace TL
 			[0x3E24E573] = typeof(Payments_BankCardData),
 			[0x7438F7E8] = typeof(DialogFilter),
 			[0x363293AE] = null,//DialogFilterDefault
+			[0xD64A04A8] = typeof(DialogFilterChatlist),
 			[0x77744D4A] = typeof(DialogFilterSuggested),
 			[0xB637EDAF] = typeof(StatsDateRangeDays),
 			[0xCB43ACDE] = typeof(StatsAbsValueAndPrev),
@@ -1082,6 +1085,14 @@ namespace TL
 			[0x3C1B4F0D] = typeof(AppWebViewResultUrl),
 			[0xB57295D5] = typeof(InlineBotWebView),
 			[0x4A4FF172] = typeof(ReadParticipantDate),
+			[0xF3E0DA33] = typeof(InputChatlistDialogFilter),
+			[0x0C5181AC] = typeof(ExportedChatlistInvite),
+			[0x10E6E3A6] = typeof(Chatlists_ExportedChatlistInvite),
+			[0x10AB6DC7] = typeof(Chatlists_ExportedInvites),
+			[0xFA87F659] = typeof(Chatlists_ChatlistInviteAlready),
+			[0x1DCD839D] = typeof(Chatlists_ChatlistInvite),
+			[0x93BD878D] = typeof(Chatlists_ChatlistUpdates),
+			[0xE8A775B0] = typeof(Bots_BotInfo),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),
@@ -1198,6 +1209,7 @@ namespace TL
 			[typeof(ChatReactions)]                  = 0xEAFC32BC, //chatReactionsNone
 			[typeof(Messages_Reactions)]             = 0xB06FDBDF, //messages.reactionsNotModified
 			// from TL.Secret:
+			[typeof(DialogFilterBase)]               = 0x363293AE, //dialogFilterDefault
 			[typeof(EmojiList)]                      = 0x481EADFA, //emojiListNotModified
 			[typeof(Messages_EmojiGroups)]           = 0x6FB4AD87, //messages.emojiGroupsNotModified
 			[typeof(Help_AppConfig)]                 = 0x7CDE641D, //help.appConfigNotModified
