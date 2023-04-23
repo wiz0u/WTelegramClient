@@ -132,11 +132,11 @@ namespace TL
 	public abstract partial class InputFileBase : IObject
 	{
 		/// <summary>Random file identifier created by the client</summary>
-		public virtual long ID { get; }
+		public virtual long ID { get; set; }
 		/// <summary>Number of parts saved</summary>
-		public virtual int Parts { get; }
+		public virtual int Parts { get; set; }
 		/// <summary>Full name of the file</summary>
-		public virtual string Name { get; }
+		public virtual string Name { get; set; }
 	}
 	/// <summary>Defines a file saved in parts using the method <see cref="SchemaExtensions.Upload_SaveFilePart">Upload_SaveFilePart</see>.		<para>See <a href="https://corefork.telegram.org/constructor/inputFile"/></para></summary>
 	[TLDef(0xF52FF27F)]
@@ -152,11 +152,11 @@ namespace TL
 		public byte[] md5_checksum;
 
 		/// <summary>Random file identifier created by the client</summary>
-		public override long ID => id;
+		public override long ID { get => id; set => id = value; }
 		/// <summary>Number of parts saved</summary>
-		public override int Parts => parts;
+		public override int Parts { get => parts; set => parts = value; }
 		/// <summary>Full name of the file</summary>
-		public override string Name => name;
+		public override string Name { get => name; set => name = value; }
 	}
 	/// <summary>Assigns a big file (over 10 MB in size), saved in part using the method <see cref="SchemaExtensions.Upload_SaveBigFilePart">Upload_SaveBigFilePart</see>.		<para>See <a href="https://corefork.telegram.org/constructor/inputFileBig"/></para></summary>
 	[TLDef(0xFA4F0BB5)]
@@ -170,11 +170,11 @@ namespace TL
 		public string name;
 
 		/// <summary>Random file id, created by the client</summary>
-		public override long ID => id;
+		public override long ID { get => id; set => id = value; }
 		/// <summary>Number of parts saved</summary>
-		public override int Parts => parts;
+		public override int Parts { get => parts; set => parts = value; }
 		/// <summary>Full file name</summary>
-		public override string Name => name;
+		public override string Name { get => name; set => name = value; }
 	}
 
 	/// <summary>Defines media content of a message.		<para>See <a href="https://corefork.telegram.org/type/InputMedia"/></para>		<para>Derived classes: <see cref="InputMediaUploadedPhoto"/>, <see cref="InputMediaPhoto"/>, <see cref="InputMediaGeoPoint"/>, <see cref="InputMediaContact"/>, <see cref="InputMediaUploadedDocument"/>, <see cref="InputMediaDocument"/>, <see cref="InputMediaVenue"/>, <see cref="InputMediaPhotoExternal"/>, <see cref="InputMediaDocumentExternal"/>, <see cref="InputMediaGame"/>, <see cref="InputMediaInvoice"/>, <see cref="InputMediaGeoLive"/>, <see cref="InputMediaPoll"/>, <see cref="InputMediaDice"/></para></summary>
@@ -5312,7 +5312,7 @@ namespace TL
 	public abstract class InputEncryptedFileBase : IObject
 	{
 		/// <summary>Random file ID created by client</summary>
-		public virtual long ID { get; }
+		public virtual long ID { get; set; }
 	}
 	/// <summary>Sets new encrypted file saved by parts using upload.saveFilePart method.		<para>See <a href="https://corefork.telegram.org/constructor/inputEncryptedFileUploaded"/></para></summary>
 	[TLDef(0x64BD0306)]
@@ -5328,7 +5328,7 @@ namespace TL
 		public int key_fingerprint;
 
 		/// <summary>Random file ID created by client</summary>
-		public override long ID => id;
+		public override long ID { get => id; set => id = value; }
 	}
 	/// <summary>Sets forwarded encrypted file for attachment.		<para>See <a href="https://corefork.telegram.org/constructor/inputEncryptedFile"/></para></summary>
 	[TLDef(0x5A17B5E5)]
@@ -5340,7 +5340,7 @@ namespace TL
 		public long access_hash;
 
 		/// <summary>File ID, value of <strong>id</strong> parameter from <see cref="EncryptedFile"/></summary>
-		public override long ID => id;
+		public override long ID { get => id; set => id = value; }
 	}
 	/// <summary>Assigns a new big encrypted file (over 10 MB in size), saved in parts using the method <see cref="SchemaExtensions.Upload_SaveBigFilePart">Upload_SaveBigFilePart</see>.		<para>See <a href="https://corefork.telegram.org/constructor/inputEncryptedFileBigUploaded"/></para></summary>
 	[TLDef(0x2DC173C8)]
@@ -5354,7 +5354,7 @@ namespace TL
 		public int key_fingerprint;
 
 		/// <summary>Random file id, created by the client</summary>
-		public override long ID => id;
+		public override long ID { get => id; set => id = value; }
 	}
 
 	/// <summary>Object contains encrypted message.		<para>See <a href="https://corefork.telegram.org/type/EncryptedMessage"/></para>		<para>Derived classes: <see cref="EncryptedMessage"/>, <see cref="EncryptedMessageService"/></para></summary>
@@ -6883,7 +6883,7 @@ namespace TL
 	public abstract class InputChannelBase : IObject
 	{
 		/// <summary>Channel ID</summary>
-		public virtual long ChannelId { get; }
+		public virtual long ChannelId { get; set; }
 	}
 	/// <summary>Represents a channel		<para>See <a href="https://corefork.telegram.org/constructor/inputChannel"/></para></summary>
 	[TLDef(0xF35AEC28)]
@@ -6895,7 +6895,7 @@ namespace TL
 		public long access_hash;
 
 		/// <summary>Channel ID</summary>
-		public override long ChannelId => channel_id;
+		public override long ChannelId { get => channel_id; set => channel_id = value; }
 	}
 	/// <summary>Defines a <a href="https://corefork.telegram.org/api/min">min</a> channel that was seen in a certain message of a certain chat.		<para>See <a href="https://corefork.telegram.org/constructor/inputChannelFromMessage"/></para></summary>
 	[TLDef(0x5B934F9D)]
@@ -6909,7 +6909,7 @@ namespace TL
 		public long channel_id;
 
 		/// <summary>The channel ID</summary>
-		public override long ChannelId => channel_id;
+		public override long ChannelId { get => channel_id; set => channel_id = value; }
 	}
 
 	/// <summary>Resolved peer		<para>See <a href="https://corefork.telegram.org/constructor/contacts.resolvedPeer"/></para></summary>
@@ -7445,9 +7445,9 @@ namespace TL
 	public abstract class InputBotInlineResultBase : IObject
 	{
 		/// <summary>ID of result</summary>
-		public virtual string ID { get; }
+		public virtual string ID { get; set; }
 		/// <summary>Message to send when the result is selected</summary>
-		public virtual InputBotInlineMessage SendMessage { get; }
+		public virtual InputBotInlineMessage SendMessage { get; set; }
 	}
 	/// <summary>An inline bot result		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineResult"/></para></summary>
 	[TLDef(0x88BF9319)]
@@ -7487,9 +7487,9 @@ namespace TL
 		}
 
 		/// <summary>ID of result</summary>
-		public override string ID => id;
+		public override string ID { get => id; set => id = value; }
 		/// <summary>Message to send when the result is selected</summary>
-		public override InputBotInlineMessage SendMessage => send_message;
+		public override InputBotInlineMessage SendMessage { get => send_message; set => send_message = value; }
 	}
 	/// <summary>Photo		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineResultPhoto"/></para></summary>
 	[TLDef(0xA8D864A7)]
@@ -7505,9 +7505,9 @@ namespace TL
 		public InputBotInlineMessage send_message;
 
 		/// <summary>Result ID</summary>
-		public override string ID => id;
+		public override string ID { get => id; set => id = value; }
 		/// <summary>Message to send when the result is selected</summary>
-		public override InputBotInlineMessage SendMessage => send_message;
+		public override InputBotInlineMessage SendMessage { get => send_message; set => send_message = value; }
 	}
 	/// <summary>Document (media of any type except for photos)		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineResultDocument"/></para></summary>
 	[TLDef(0xFFF8FDC4)]
@@ -7537,9 +7537,9 @@ namespace TL
 		}
 
 		/// <summary>Result ID</summary>
-		public override string ID => id;
+		public override string ID { get => id; set => id = value; }
 		/// <summary>Message to send when the result is selected</summary>
-		public override InputBotInlineMessage SendMessage => send_message;
+		public override InputBotInlineMessage SendMessage { get => send_message; set => send_message = value; }
 	}
 	/// <summary>Game		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineResultGame"/></para></summary>
 	[TLDef(0x4FA417F2)]
@@ -7553,9 +7553,9 @@ namespace TL
 		public InputBotInlineMessage send_message;
 
 		/// <summary>Result ID</summary>
-		public override string ID => id;
+		public override string ID { get => id; set => id = value; }
 		/// <summary>Message to send when the result is selected</summary>
-		public override InputBotInlineMessage SendMessage => send_message;
+		public override InputBotInlineMessage SendMessage { get => send_message; set => send_message = value; }
 	}
 
 	/// <summary>Inline message		<para>See <a href="https://corefork.telegram.org/type/BotInlineMessage"/></para>		<para>Derived classes: <see cref="BotInlineMessageMediaAuto"/>, <see cref="BotInlineMessageText"/>, <see cref="BotInlineMessageMediaGeo"/>, <see cref="BotInlineMessageMediaVenue"/>, <see cref="BotInlineMessageMediaContact"/>, <see cref="BotInlineMessageMediaInvoice"/></para></summary>
@@ -8073,9 +8073,9 @@ namespace TL
 	public abstract class InputBotInlineMessageIDBase : IObject
 	{
 		/// <summary>DC ID to use when working with this inline message</summary>
-		public virtual int DcId { get; }
+		public virtual int DcId { get; set; }
 		/// <summary>Access hash of message</summary>
-		public virtual long AccessHash { get; }
+		public virtual long AccessHash { get; set; }
 	}
 	/// <summary>Represents a sent inline message from the perspective of a bot (legacy constructor)		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageID"/></para></summary>
 	[TLDef(0x890C3D89)]
@@ -8089,9 +8089,9 @@ namespace TL
 		public long access_hash;
 
 		/// <summary>DC ID to use when working with this inline message</summary>
-		public override int DcId => dc_id;
+		public override int DcId { get => dc_id; set => dc_id = value; }
 		/// <summary>Access hash of message</summary>
-		public override long AccessHash => access_hash;
+		public override long AccessHash { get => access_hash; set => access_hash = value; }
 	}
 	/// <summary>Represents a sent inline message from the perspective of a bot		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageID64"/></para></summary>
 	[TLDef(0xB6D915D7)]
@@ -8107,9 +8107,9 @@ namespace TL
 		public long access_hash;
 
 		/// <summary>DC ID to use when working with this inline message</summary>
-		public override int DcId => dc_id;
+		public override int DcId { get => dc_id; set => dc_id = value; }
 		/// <summary>Access hash of message</summary>
-		public override long AccessHash => access_hash;
+		public override long AccessHash { get => access_hash; set => access_hash = value; }
 	}
 
 	/// <summary>The bot requested the user to message them in private		<para>See <a href="https://corefork.telegram.org/constructor/inlineBotSwitchPM"/></para></summary>
@@ -9049,7 +9049,7 @@ namespace TL
 	}
 
 	/// <summary>Remote document		<para>See <a href="https://corefork.telegram.org/type/WebDocument"/></para>		<para>Derived classes: <see cref="WebDocument"/>, <see cref="WebDocumentNoProxy"/></para></summary>
-	public abstract class WebDocumentBase : IObject
+	public abstract partial class WebDocumentBase : IObject
 	{
 		/// <summary>Document URL</summary>
 		public virtual string Url { get; }
@@ -10611,7 +10611,7 @@ namespace TL
 	public abstract class InputSecureFileBase : IObject
 	{
 		/// <summary>Secure file ID</summary>
-		public virtual long ID { get; }
+		public virtual long ID { get; set; }
 	}
 	/// <summary>Uploaded secure file, for more info <a href="https://corefork.telegram.org/passport/encryption#inputsecurefile">see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputSecureFileUploaded"/></para></summary>
 	[TLDef(0x3334B0F0)]
@@ -10629,7 +10629,7 @@ namespace TL
 		public byte[] secret;
 
 		/// <summary>Secure file ID</summary>
-		public override long ID => id;
+		public override long ID { get => id; set => id = value; }
 	}
 	/// <summary>Pre-uploaded <a href="https://corefork.telegram.org/passport">passport</a> file, for more info <a href="https://corefork.telegram.org/passport/encryption#inputsecurefile">see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputSecureFile"/></para></summary>
 	[TLDef(0x5367E5BE)]
@@ -10641,7 +10641,7 @@ namespace TL
 		public long access_hash;
 
 		/// <summary>Secure file ID</summary>
-		public override long ID => id;
+		public override long ID { get => id; set => id = value; }
 	}
 
 	/// <summary>Secure <a href="https://corefork.telegram.org/passport">passport</a> file, for more info <a href="https://corefork.telegram.org/passport/encryption#inputsecurefile">see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/constructor/secureFile"/></para></summary>

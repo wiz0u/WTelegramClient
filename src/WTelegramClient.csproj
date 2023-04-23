@@ -29,11 +29,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove=".gitattributes" />
-    <None Remove=".gitignore" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\.github\dev.yml" Link="Data\dev.yml" />
     <None Include="..\.github\release.yml" Link="Data\release.yml" />
     <None Include="..\EXAMPLES.md" Link="Data\EXAMPLES.md" />

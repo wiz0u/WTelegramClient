@@ -456,10 +456,11 @@ namespace TL
 	{
 		public override long ID => id;
 		public override string ToString() => Filename is string filename ? base.ToString() + ": " + filename : base.ToString();
-		public string Filename => attributes.OfType<DocumentAttributeFilename>().FirstOrDefault()?.file_name;
+		public string Filename => GetAttribute<DocumentAttributeFilename>()?.file_name;
 		protected override InputDocument ToInputDocument() => new() { id = id, access_hash = access_hash, file_reference = file_reference };
 		public InputDocumentFileLocation ToFileLocation(PhotoSizeBase thumbSize = null) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = thumbSize?.Type };
 		public PhotoSizeBase LargestThumbSize => thumbs?.Aggregate((agg, next) => (long)next.Width * next.Height > (long)agg.Width * agg.Height ? next : agg);
+		public T GetAttribute<T>() where T : DocumentAttribute => attributes.OfType<T>().FirstOrDefault();
 	}
 
 	partial class SendMessageAction
@@ -490,6 +491,9 @@ namespace TL
 	partial class StickerSet
 	{
 		public static implicit operator InputStickerSetID(StickerSet stickerSet) => new() { id = stickerSet.id, access_hash = stickerSet.access_hash };
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060")]
+		public InputStickerSetThumb ToFileLocation(PhotoSizeBase thumbSize) => new() { stickerset = this, thumb_version = thumb_version };
+		public PhotoSizeBase LargestThumbSize => thumbs?.Aggregate((agg, next) => (long)next.Width * next.Height > (long)agg.Width * agg.Height ? next : agg);
 	}
 
 	partial class MessageEntity
@@ -569,6 +573,8 @@ namespace TL
 	partial class Messages_PeerDialogs { public IPeerInfo UserOrChat(DialogBase dialog) => dialog.Peer?.UserOrChat(users, chats); }
 
 	partial class Game			{ public static implicit operator InputGameID(Game game) => new() { id = game.id, access_hash = game.access_hash }; }
+	
+	partial class WebDocumentBase { public T GetAttribute<T>() where T : DocumentAttribute => Attributes.OfType<T>().FirstOrDefault(); }
 	partial class WebDocument	{ public static implicit operator InputWebFileLocation(WebDocument doc) => new() { url = doc.url, access_hash = doc.access_hash }; }
 
 	partial class PhoneCallBase	{ public static implicit operator InputPhoneCall(PhoneCallBase call) => new() { id = call.ID, access_hash = call.AccessHash }; }
