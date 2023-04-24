@@ -453,6 +453,13 @@ namespace WTelegram
 			return true;
 		}
 
+		/// <summary>Get all chats, channels and supergroups</summary>
+		public async Task<Messages_Chats> Messages_GetAllChats()
+		{
+			var dialogs = await Messages_GetAllDialogs();
+			return new Messages_Chats { chats = dialogs.chats };
+		}
+
 		/// <summary>Returns the current user dialog list.		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getDialogs#possible-errors">details</a>)</para></summary>
 		/// <param name="folder_id"><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></param>
 		/// <returns>See <a href="https://corefork.telegram.org/constructor/messages.dialogs"/></returns>
