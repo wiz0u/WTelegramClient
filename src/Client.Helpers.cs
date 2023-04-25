@@ -378,6 +378,7 @@ namespace WTelegram
 							await outputStream.WriteAsync(fileData.bytes, 0, fileData.bytes.Length);
 							maxOffsetSeen = Math.Max(maxOffsetSeen, offset + fileData.bytes.Length);
 							transmitted += fileData.bytes.Length;
+							progress?.Invoke(transmitted, fileSize);
 						}
 						catch (Exception)
 						{
@@ -387,7 +388,6 @@ namespace WTelegram
 						finally
 						{
 							writeSem.Release();
-							progress?.Invoke(transmitted, fileSize);
 						}
 					}
 					lock (tasks) tasks.Remove(offset);
