@@ -186,6 +186,8 @@ namespace TL
 	{
 		/// <summary>Is this chat among current user active chats?</summary>
 		public abstract bool IsActive { get; }
+		public virtual bool IsChannel => false;
+		public bool IsGroup => !IsChannel;
 		public virtual string MainUsername => null;
 		public abstract ChatPhoto Photo { get; }
 		/// <summary>returns true if you're banned of any of these rights</summary>
@@ -220,18 +222,18 @@ namespace TL
 	partial class Channel
 	{
 		public override bool IsActive => (flags & Flags.left) == 0;
+		public override bool IsChannel => (flags & Flags.broadcast) != 0;
 		public override string MainUsername => username ?? usernames?.FirstOrDefault(u => u.flags.HasFlag(Username.Flags.active))?.username;
 		public override ChatPhoto Photo => photo;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((banned_rights?.flags ?? 0) & flags) != 0 || ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		public override InputPeer ToInputPeer() => new InputPeerChannel(id, access_hash);
 		public static implicit operator InputChannel(Channel channel) => new(channel.id, channel.access_hash);
 		public override string ToString() => (flags.HasFlag(Flags.broadcast) ? "Channel " : "Group ") + (MainUsername is string uname ? '@' + uname : $"\"{title}\"");
-		public bool IsChannel => (flags & Flags.broadcast) != 0;
-		public bool IsGroup => (flags & Flags.broadcast) == 0;
 	}
 	partial class ChannelForbidden
 	{
 		public override bool IsActive => false;
+		public override bool IsChannel => (flags & Flags.broadcast) != 0;
 		public override ChatPhoto Photo => null;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => true;
 		public override InputPeer ToInputPeer() => new InputPeerChannel(id, access_hash);
