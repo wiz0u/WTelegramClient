@@ -184,7 +184,7 @@ namespace TL
 	[TLDef(0x1E287D04)]
 	public class InputMediaUploadedPhoto : InputMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The <a href="https://corefork.telegram.org/api/files">uploaded file</a></summary>
 		public InputFileBase file;
@@ -207,7 +207,7 @@ namespace TL
 	[TLDef(0xB3BA0635)]
 	public class InputMediaPhoto : InputMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Photo to be forwarded</summary>
 		public InputPhoto id;
@@ -246,7 +246,7 @@ namespace TL
 	[TLDef(0x5B38C6C1)]
 	public partial class InputMediaUploadedDocument : InputMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The <a href="https://corefork.telegram.org/api/files">uploaded file</a></summary>
 		public InputFileBase file;
@@ -281,7 +281,7 @@ namespace TL
 	[TLDef(0x33473058)]
 	public class InputMediaDocument : InputMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The document to be forwarded.</summary>
 		public InputDocument id;
@@ -321,7 +321,7 @@ namespace TL
 	[TLDef(0xE5BBFE1A)]
 	public class InputMediaPhotoExternal : InputMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>URL of the photo</summary>
 		public string url;
@@ -340,7 +340,7 @@ namespace TL
 	[TLDef(0xFB52DC99)]
 	public class InputMediaDocumentExternal : InputMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>URL of the document</summary>
 		public string url;
@@ -366,7 +366,7 @@ namespace TL
 	[TLDef(0x8EB5A6D5)]
 	public class InputMediaInvoice : InputMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Product name, 1-32 characters</summary>
 		public string title;
@@ -400,7 +400,7 @@ namespace TL
 	[TLDef(0x971FA843)]
 	public class InputMediaGeoLive : InputMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Current geolocation</summary>
 		public InputGeoPoint geo_point;
@@ -427,7 +427,7 @@ namespace TL
 	[TLDef(0x0F94E5F1)]
 	public class InputMediaPoll : InputMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The poll to send</summary>
 		public Poll poll;
@@ -442,7 +442,7 @@ namespace TL
 		{
 			/// <summary>Field <see cref="correct_answers"/> has a value</summary>
 			has_correct_answers = 0x1,
-			/// <summary>Field <see cref="solution"/> has a value</summary>
+			/// <summary>Fields <see cref="solution"/> and <see cref="solution_entities"/> have a value</summary>
 			has_solution = 0x2,
 		}
 	}
@@ -461,7 +461,7 @@ namespace TL
 	[TLDef(0xBDCDAEC0)]
 	public class InputChatUploadedPhoto : InputChatPhotoBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>File saved in parts using the method <see cref="SchemaExtensions.Upload_SaveFilePart">Upload_SaveFilePart</see></summary>
 		[IfFlag(0)] public InputFileBase file;
@@ -497,7 +497,7 @@ namespace TL
 	[TLDef(0x48222FAF)]
 	public class InputGeoPoint : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Latitude</summary>
 		public double lat;
@@ -609,7 +609,7 @@ namespace TL
 	[TLDef(0x37257E99)]
 	public class InputPeerPhotoFileLocation : InputFileLocationBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The peer whose profile picture should be downloaded</summary>
 		public InputPeer peer;
@@ -635,7 +635,7 @@ namespace TL
 	[TLDef(0x0598A92A)]
 	public class InputGroupCallStream : InputFileLocationBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Livestream info</summary>
 		public InputGroupCall call;
@@ -650,7 +650,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="video_channel"/> has a value</summary>
+			/// <summary>Fields <see cref="video_channel"/> and <see cref="video_quality"/> have a value</summary>
 			has_video_channel = 0x1,
 		}
 	}
@@ -717,9 +717,9 @@ namespace TL
 	[TLDef(0x8F97C628)]
 	public partial class User : UserBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags2.HasFlag(...)</c> to test for those</summary>
 		public Flags2 flags2;
 		/// <summary>ID of the user</summary>
 		public long id;
@@ -823,7 +823,7 @@ namespace TL
 	[TLDef(0x82D1F706)]
 	public class UserProfilePhoto : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Identifier of the respective photo</summary>
 		public long photo_id;
@@ -892,7 +892,7 @@ namespace TL
 	[TLDef(0x41CBF256)]
 	public partial class Chat : ChatBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID of the group</summary>
 		public long id;
@@ -958,9 +958,9 @@ namespace TL
 	[TLDef(0x83259464)]
 	public partial class Channel : ChatBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags2.HasFlag(...)</c> to test for those</summary>
 		public Flags2 flags2;
 		/// <summary>ID of the channel</summary>
 		public long id;
@@ -1058,7 +1058,7 @@ namespace TL
 	[TLDef(0x17D493D5)]
 	public partial class ChannelForbidden : ChatBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Channel ID</summary>
 		public long id;
@@ -1123,7 +1123,7 @@ namespace TL
 	[TLDef(0xC9D31138)]
 	public partial class ChatFull : ChatFullBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID of the chat</summary>
 		public long id;
@@ -1182,7 +1182,7 @@ namespace TL
 			has_groupcall_default_join_as = 0x8000,
 			/// <summary>Field <see cref="theme_emoticon"/> has a value</summary>
 			has_theme_emoticon = 0x10000,
-			/// <summary>Field <see cref="requests_pending"/> has a value</summary>
+			/// <summary>Fields <see cref="requests_pending"/> and <see cref="recent_requesters"/> have a value</summary>
 			has_requests_pending = 0x20000,
 			/// <summary>Field <see cref="available_reactions"/> has a value</summary>
 			has_available_reactions = 0x40000,
@@ -1225,9 +1225,9 @@ namespace TL
 	[TLDef(0xF2355507)]
 	public partial class ChannelFull : ChatFullBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags2.HasFlag(...)</c> to test for those</summary>
 		public Flags2 flags2;
 		/// <summary>ID of the channel</summary>
 		public long id;
@@ -1306,11 +1306,11 @@ namespace TL
 			has_participants_count = 0x1,
 			/// <summary>Field <see cref="admins_count"/> has a value</summary>
 			has_admins_count = 0x2,
-			/// <summary>Field <see cref="kicked_count"/> has a value</summary>
+			/// <summary>Fields <see cref="kicked_count"/> and <see cref="banned_count"/> have a value</summary>
 			has_kicked_count = 0x4,
 			/// <summary>Can we view the participant list?</summary>
 			can_view_participants = 0x8,
-			/// <summary>Field <see cref="migrated_from_chat_id"/> has a value</summary>
+			/// <summary>Fields <see cref="migrated_from_chat_id"/> and <see cref="migrated_from_max_id"/> have a value</summary>
 			has_migrated_from_chat_id = 0x10,
 			/// <summary>Field <see cref="pinned_msg_id"/> has a value</summary>
 			has_pinned_msg_id = 0x20,
@@ -1358,7 +1358,7 @@ namespace TL
 			has_groupcall_default_join_as = 0x4000000,
 			/// <summary>Field <see cref="theme_emoticon"/> has a value</summary>
 			has_theme_emoticon = 0x8000000,
-			/// <summary>Field <see cref="requests_pending"/> has a value</summary>
+			/// <summary>Fields <see cref="requests_pending"/> and <see cref="recent_requesters"/> have a value</summary>
 			has_requests_pending = 0x10000000,
 			/// <summary>Field <see cref="default_send_as"/> has a value</summary>
 			has_default_send_as = 0x20000000,
@@ -1456,7 +1456,7 @@ namespace TL
 	[TLDef(0x8763D3E1)]
 	public partial class ChatParticipantsForbidden : ChatParticipantsBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Group ID</summary>
 		public long chat_id;
@@ -1492,7 +1492,7 @@ namespace TL
 	[TLDef(0x1C6E1C11)]
 	public class ChatPhoto : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Photo ID</summary>
 		public long photo_id;
@@ -1530,7 +1530,7 @@ namespace TL
 	[TLDef(0x90A6CA84)]
 	public partial class MessageEmpty : MessageBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Message identifier</summary>
 		public int id;
@@ -1552,7 +1552,7 @@ namespace TL
 	[TLDef(0x38116EE0)]
 	public partial class Message : MessageBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID of the message</summary>
 		public int id;
@@ -1615,7 +1615,7 @@ namespace TL
 			has_from_id = 0x100,
 			/// <summary>Field <see cref="media"/> has a value</summary>
 			has_media = 0x200,
-			/// <summary>Field <see cref="views"/> has a value</summary>
+			/// <summary>Fields <see cref="views"/> and <see cref="forwards"/> have a value</summary>
 			has_views = 0x400,
 			/// <summary>Field <see cref="via_bot_id"/> has a value</summary>
 			has_via_bot_id = 0x800,
@@ -1666,7 +1666,7 @@ namespace TL
 	[TLDef(0x2B085862)]
 	public partial class MessageService : MessageBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Message ID</summary>
 		public int id;
@@ -1726,7 +1726,7 @@ namespace TL
 	[TLDef(0x695150D7)]
 	public partial class MessageMediaPhoto : MessageMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Photo</summary>
 		[IfFlag(0)] public PhotoBase photo;
@@ -1772,7 +1772,7 @@ namespace TL
 	[TLDef(0x9CB070D7)]
 	public partial class MessageMediaDocument : MessageMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Attached document</summary>
 		[IfFlag(0)] public DocumentBase document;
@@ -1826,7 +1826,7 @@ namespace TL
 	[TLDef(0xF6A548D3)]
 	public class MessageMediaInvoice : MessageMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Product name, 1-32 characters</summary>
 		public string title;
@@ -1862,7 +1862,7 @@ namespace TL
 	[TLDef(0xB940C666)]
 	public partial class MessageMediaGeoLive : MessageMedia
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Geolocation</summary>
 		public GeoPoint geo;
@@ -1900,7 +1900,7 @@ namespace TL
 		public string emoticon;
 	}
 
-	/// <summary>Object describing actions connected to a service message.		<para>See <a href="https://corefork.telegram.org/type/MessageAction"/></para>		<para>Derived classes: <see cref="MessageActionChatCreate"/>, <see cref="MessageActionChatEditTitle"/>, <see cref="MessageActionChatEditPhoto"/>, <see cref="MessageActionChatDeletePhoto"/>, <see cref="MessageActionChatAddUser"/>, <see cref="MessageActionChatDeleteUser"/>, <see cref="MessageActionChatJoinedByLink"/>, <see cref="MessageActionChannelCreate"/>, <see cref="MessageActionChatMigrateTo"/>, <see cref="MessageActionChannelMigrateFrom"/>, <see cref="MessageActionPinMessage"/>, <see cref="MessageActionHistoryClear"/>, <see cref="MessageActionGameScore"/>, <see cref="MessageActionPaymentSentMe"/>, <see cref="MessageActionPaymentSent"/>, <see cref="MessageActionPhoneCall"/>, <see cref="MessageActionScreenshotTaken"/>, <see cref="MessageActionCustomAction"/>, <see cref="MessageActionBotAllowed"/>, <see cref="MessageActionSecureValuesSentMe"/>, <see cref="MessageActionSecureValuesSent"/>, <see cref="MessageActionContactSignUp"/>, <see cref="MessageActionGeoProximityReached"/>, <see cref="MessageActionGroupCall"/>, <see cref="MessageActionInviteToGroupCall"/>, <see cref="MessageActionSetMessagesTTL"/>, <see cref="MessageActionGroupCallScheduled"/>, <see cref="MessageActionSetChatTheme"/>, <see cref="MessageActionChatJoinedByRequest"/>, <see cref="MessageActionWebViewDataSentMe"/>, <see cref="MessageActionWebViewDataSent"/>, <see cref="MessageActionGiftPremium"/>, <see cref="MessageActionTopicCreate"/>, <see cref="MessageActionTopicEdit"/>, <see cref="MessageActionSuggestProfilePhoto"/>, <see cref="MessageActionRequestedPeer"/></para></summary>
+	/// <summary>Object describing actions connected to a service message.		<para>See <a href="https://corefork.telegram.org/type/MessageAction"/></para>		<para>Derived classes: <see cref="MessageActionChatCreate"/>, <see cref="MessageActionChatEditTitle"/>, <see cref="MessageActionChatEditPhoto"/>, <see cref="MessageActionChatDeletePhoto"/>, <see cref="MessageActionChatAddUser"/>, <see cref="MessageActionChatDeleteUser"/>, <see cref="MessageActionChatJoinedByLink"/>, <see cref="MessageActionChannelCreate"/>, <see cref="MessageActionChatMigrateTo"/>, <see cref="MessageActionChannelMigrateFrom"/>, <see cref="MessageActionPinMessage"/>, <see cref="MessageActionHistoryClear"/>, <see cref="MessageActionGameScore"/>, <see cref="MessageActionPaymentSentMe"/>, <see cref="MessageActionPaymentSent"/>, <see cref="MessageActionPhoneCall"/>, <see cref="MessageActionScreenshotTaken"/>, <see cref="MessageActionCustomAction"/>, <see cref="MessageActionBotAllowed"/>, <see cref="MessageActionSecureValuesSentMe"/>, <see cref="MessageActionSecureValuesSent"/>, <see cref="MessageActionContactSignUp"/>, <see cref="MessageActionGeoProximityReached"/>, <see cref="MessageActionGroupCall"/>, <see cref="MessageActionInviteToGroupCall"/>, <see cref="MessageActionSetMessagesTTL"/>, <see cref="MessageActionGroupCallScheduled"/>, <see cref="MessageActionSetChatTheme"/>, <see cref="MessageActionChatJoinedByRequest"/>, <see cref="MessageActionWebViewDataSentMe"/>, <see cref="MessageActionWebViewDataSent"/>, <see cref="MessageActionGiftPremium"/>, <see cref="MessageActionTopicCreate"/>, <see cref="MessageActionTopicEdit"/>, <see cref="MessageActionSuggestProfilePhoto"/>, <see cref="MessageActionRequestedPeer"/>, <see cref="MessageActionSetChatWallPaper"/>, <see cref="MessageActionSetSameChatWallPaper"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/messageActionEmpty">messageActionEmpty</a></remarks>
 	public abstract class MessageAction : IObject { }
 	/// <summary>Group created		<para>See <a href="https://corefork.telegram.org/constructor/messageActionChatCreate"/></para></summary>
@@ -1992,7 +1992,7 @@ namespace TL
 	[TLDef(0x8F31B327)]
 	public class MessageActionPaymentSentMe : MessageAction
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
 		public string currency;
@@ -2023,7 +2023,7 @@ namespace TL
 	[TLDef(0x96163F56)]
 	public class MessageActionPaymentSent : MessageAction
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
 		public string currency;
@@ -2046,7 +2046,7 @@ namespace TL
 	[TLDef(0x80E11A7F)]
 	public class MessageActionPhoneCall : MessageAction
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Call ID</summary>
 		public long call_id;
@@ -2079,7 +2079,7 @@ namespace TL
 	[TLDef(0xC516D679)]
 	public class MessageActionBotAllowed : MessageAction
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>We have authorized the bot to send us messages by logging into a website via <a href="https://corefork.telegram.org/widgets/login">Telegram Login »</a>; this field contains the domain name of the website on which the user has logged in.</summary>
 		[IfFlag(0)] public string domain;
@@ -2130,7 +2130,7 @@ namespace TL
 	[TLDef(0x7A0D7F42)]
 	public class MessageActionGroupCall : MessageAction
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Group call</summary>
 		public InputGroupCall call;
@@ -2156,7 +2156,7 @@ namespace TL
 	[TLDef(0x3C134D7B)]
 	public class MessageActionSetMessagesTTL : MessageAction
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>New Time-To-Live of all messages sent in this chat; if 0, autodeletion was disabled.</summary>
 		public int period;
@@ -2206,6 +2206,7 @@ namespace TL
 	[TLDef(0xC83D6AEC)]
 	public class MessageActionGiftPremium : MessageAction
 	{
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
 		public string currency;
@@ -2218,7 +2219,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="crypto_currency"/> has a value</summary>
+			/// <summary>Fields <see cref="crypto_currency"/> and <see cref="crypto_amount"/> have a value</summary>
 			has_crypto_currency = 0x1,
 		}
 	}
@@ -2226,7 +2227,7 @@ namespace TL
 	[TLDef(0x0D999256)]
 	public class MessageActionTopicCreate : MessageAction
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Topic name.</summary>
 		public string title;
@@ -2245,7 +2246,7 @@ namespace TL
 	[TLDef(0xC0944820)]
 	public class MessageActionTopicEdit : MessageAction
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Topic title.</summary>
 		[IfFlag(0)] public string title;
@@ -2306,7 +2307,7 @@ namespace TL
 	[TLDef(0xD58A08C6)]
 	public class Dialog : DialogBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The chat</summary>
 		public Peer peer;
@@ -2358,7 +2359,7 @@ namespace TL
 	[TLDef(0x71BD134C)]
 	public class DialogFolder : DialogBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The folder</summary>
 		public Folder folder;
@@ -2400,7 +2401,7 @@ namespace TL
 	[TLDef(0xFB197A65)]
 	public partial class Photo : PhotoBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID</summary>
 		public long id;
@@ -2520,7 +2521,7 @@ namespace TL
 	[TLDef(0xB2A2F663)]
 	public partial class GeoPoint : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Longitude</summary>
 		public double lon;
@@ -2544,7 +2545,7 @@ namespace TL
 	[TLDef(0x5E002502)]
 	public class Auth_SentCode : Auth_SentCodeBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Phone code type</summary>
 		public Auth_SentCodeType type;
@@ -2576,7 +2577,7 @@ namespace TL
 	[TLDef(0x2EA2C0D4)]
 	public class Auth_Authorization : Auth_AuthorizationBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Iff setup_password_required is set and the user declines to set a 2-step verification password, they will be able to log into their account via SMS again only after this many days pass.</summary>
 		[IfFlag(1)] public int otherwise_relogin_days;
@@ -2601,7 +2602,7 @@ namespace TL
 	[TLDef(0x44747E9A)]
 	public class Auth_AuthorizationSignUpRequired : Auth_AuthorizationBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Telegram's terms of service: the user must read and accept the terms of service before signing up to telegram</summary>
 		[IfFlag(0)] public Help_TermsOfService terms_of_service;
@@ -2655,7 +2656,7 @@ namespace TL
 	[TLDef(0xDF1F002B)]
 	public class InputPeerNotifySettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>If the text of the message shall be displayed in notification</summary>
 		[IfFlag(0)] public bool show_previews;
@@ -2683,7 +2684,7 @@ namespace TL
 	[TLDef(0xA83B0426)]
 	public class PeerNotifySettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>(Ternary value) If set, indicates whether or not to display previews of messages in notifications; otherwise the default behavior should be used.</summary>
 		[IfFlag(0)] public bool show_previews;
@@ -2719,7 +2720,7 @@ namespace TL
 	[TLDef(0xA518110D)]
 	public class PeerSettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Distance in meters between us and this peer</summary>
 		[IfFlag(6)] public int geo_distance;
@@ -2748,7 +2749,7 @@ namespace TL
 			autoarchived = 0x80,
 			/// <summary>If set, this is a recently created group chat to which new members can be invited</summary>
 			invite_members = 0x100,
-			/// <summary>Field <see cref="request_chat_title"/> has a value</summary>
+			/// <summary>Fields <see cref="request_chat_title"/> and <see cref="request_chat_date"/> have a value</summary>
 			has_request_chat_title = 0x200,
 			/// <summary>This flag is set if <c>request_chat_title</c> and <c>request_chat_date</c> fields are set and the <a href="https://corefork.telegram.org/api/invites#join-requests">join request »</a> is related to a channel (otherwise if only the request fields are set, the <a href="https://corefork.telegram.org/api/invites#join-requests">join request »</a> is related to a chat).</summary>
 			request_chat_broadcast = 0x400,
@@ -2769,7 +2770,7 @@ namespace TL
 	{
 		/// <summary>Identifier</summary>
 		public long id;
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Access hash</summary>
 		public long access_hash;
@@ -2805,7 +2806,7 @@ namespace TL
 	{
 		/// <summary>Wallpaper ID</summary>
 		public long id;
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Info on how to generate the wallpaper.</summary>
 		[IfFlag(2)] public WallPaperSettings settings;
@@ -2855,7 +2856,7 @@ namespace TL
 	[TLDef(0x93EADB53)]
 	public class UserFull : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>User ID</summary>
 		public long id;
@@ -3095,7 +3096,7 @@ namespace TL
 	[TLDef(0x3A54685E)]
 	public partial class Messages_MessagesSlice : Messages_Messages, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Total number of messages in the list</summary>
 		public int count;
@@ -3118,7 +3119,7 @@ namespace TL
 	[TLDef(0xC776BA4E)]
 	public partial class Messages_ChannelMessages : Messages_MessagesBase, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/updates">Event count after generation</a></summary>
 		public int pts;
@@ -3233,7 +3234,7 @@ namespace TL
 	[TLDef(0x80C99768)]
 	public class InputMessagesFilterPhoneCalls : MessagesFilter
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
@@ -3413,7 +3414,7 @@ namespace TL
 	[TLDef(0xEBE46819)]
 	public class UpdateServiceNotification : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>When was the notification received<br/>The message must also be stored locally as part of the message history with the user id <c>777000</c> (Telegram Notifications).</summary>
 		[IfFlag(1)] public DateTime inbox_date;
@@ -3454,7 +3455,7 @@ namespace TL
 	[TLDef(0x9C974FDF)]
 	public class UpdateReadHistoryInbox : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		[IfFlag(0)] public int folder_id;
@@ -3514,7 +3515,7 @@ namespace TL
 	[TLDef(0x108D941F)]
 	public class UpdateChannelTooLong : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The channel</summary>
 		public long channel_id;
@@ -3541,7 +3542,7 @@ namespace TL
 	[TLDef(0x922E6E10)]
 	public class UpdateReadChannelInbox : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		[IfFlag(0)] public int folder_id;
@@ -3605,7 +3606,7 @@ namespace TL
 	[TLDef(0x31C24808)]
 	public class UpdateStickerSets : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
@@ -3623,7 +3624,7 @@ namespace TL
 	[TLDef(0x496F379C)]
 	public class UpdateBotInlineQuery : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Query ID</summary>
 		public long query_id;
@@ -3650,7 +3651,7 @@ namespace TL
 	[TLDef(0x12F12A07)]
 	public class UpdateBotInlineSend : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The user that chose the result</summary>
 		public long user_id;
@@ -3678,7 +3679,7 @@ namespace TL
 	[TLDef(0xB9CFC48D)]
 	public class UpdateBotCallbackQuery : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Query ID</summary>
 		public long query_id;
@@ -3718,7 +3719,7 @@ namespace TL
 	[TLDef(0x691E9052)]
 	public class UpdateInlineBotCallbackQuery : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Query ID</summary>
 		public long query_id;
@@ -3754,7 +3755,7 @@ namespace TL
 	[TLDef(0x1B49EC6D)]
 	public class UpdateDraftMessage : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The peer to which the draft is associated</summary>
 		public Peer peer;
@@ -3792,7 +3793,7 @@ namespace TL
 	[TLDef(0x6E6FE51C)]
 	public class UpdateDialogPinned : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		[IfFlag(1)] public int folder_id;
@@ -3811,7 +3812,7 @@ namespace TL
 	[TLDef(0xFA0F3CA2)]
 	public class UpdatePinnedDialogs : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		[IfFlag(1)] public int folder_id;
@@ -3861,7 +3862,7 @@ namespace TL
 	[TLDef(0x8CAA9A96)]
 	public class UpdateBotPrecheckoutQuery : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Unique query identifier</summary>
 		public long query_id;
@@ -3914,7 +3915,7 @@ namespace TL
 	[TLDef(0xEA29055D)]
 	public class UpdateChannelReadMessagesContents : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a> ID</summary>
 		public long channel_id;
@@ -3943,7 +3944,7 @@ namespace TL
 	[TLDef(0xE16459C3)]
 	public class UpdateDialogUnreadMark : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The dialog</summary>
 		public DialogPeerBase peer;
@@ -3958,7 +3959,7 @@ namespace TL
 	[TLDef(0xACA1657B)]
 	public class UpdateMessagePoll : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Poll ID</summary>
 		public long poll_id;
@@ -4063,7 +4064,7 @@ namespace TL
 	[TLDef(0x26FFDE7D)]
 	public class UpdateDialogFilter : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> ID</summary>
 		public int id;
@@ -4108,7 +4109,7 @@ namespace TL
 	[TLDef(0xD6B19546)]
 	public class UpdateReadChannelDiscussionInbox : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/channel">Discussion group ID</a></summary>
 		public long channel_id;
@@ -4123,7 +4124,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="broadcast_id"/> has a value</summary>
+			/// <summary>Fields <see cref="broadcast_id"/> and <see cref="broadcast_post"/> have a value</summary>
 			has_broadcast_id = 0x1,
 		}
 	}
@@ -4151,7 +4152,7 @@ namespace TL
 	[TLDef(0x8C88C923)]
 	public class UpdateChannelUserTyping : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Channel ID</summary>
 		public long channel_id;
@@ -4172,7 +4173,7 @@ namespace TL
 	[TLDef(0xED85EAB5)]
 	public class UpdatePinnedMessages : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Peer</summary>
 		public Peer peer;
@@ -4193,7 +4194,7 @@ namespace TL
 	[TLDef(0x5BB98608)]
 	public class UpdatePinnedChannelMessages : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Channel ID</summary>
 		public long channel_id;
@@ -4241,7 +4242,7 @@ namespace TL
 	[TLDef(0xBB9BB9A5)]
 	public class UpdatePeerHistoryTTL : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The chat</summary>
 		public Peer peer;
@@ -4258,7 +4259,7 @@ namespace TL
 	[TLDef(0xD087663A)]
 	public class UpdateChatParticipant : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/channel">Chat</a> ID</summary>
 		public long chat_id;
@@ -4291,7 +4292,7 @@ namespace TL
 	[TLDef(0x985D3ABB)]
 	public class UpdateChannelParticipant : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Channel ID</summary>
 		public long channel_id;
@@ -4338,7 +4339,7 @@ namespace TL
 	[TLDef(0x0B783982)]
 	public class UpdateGroupCallConnection : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>WebRTC parameters</summary>
 		public DataJSON params_;
@@ -4392,7 +4393,7 @@ namespace TL
 	[TLDef(0x5E1B3CB8)]
 	public class UpdateMessageReactions : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Peer</summary>
 		public Peer peer;
@@ -4435,7 +4436,7 @@ namespace TL
 	[TLDef(0x0084CD5A)]
 	public class UpdateTranscribedAudio : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Peer of the transcribed message</summary>
 		public Peer peer;
@@ -4472,7 +4473,7 @@ namespace TL
 	[TLDef(0x86FCCF85)]
 	public class UpdateMoveStickerSetToTop : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/stickers">Stickerset</a> ID</summary>
 		public long stickerset;
@@ -4497,7 +4498,7 @@ namespace TL
 	[TLDef(0x192EFBE3)]
 	public class UpdateChannelPinnedTopic : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The forum ID</summary>
 		public long channel_id;
@@ -4514,7 +4515,7 @@ namespace TL
 	[TLDef(0xFE198602)]
 	public class UpdateChannelPinnedTopics : Update
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Forum ID.</summary>
 		public long channel_id;
@@ -4669,7 +4670,7 @@ namespace TL
 	[TLDef(0x313BC7F8)]
 	public partial class UpdateShortMessage : UpdatesBase, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The message ID</summary>
 		public int id;
@@ -4725,7 +4726,7 @@ namespace TL
 	[TLDef(0x4D6DEEA5)]
 	public partial class UpdateShortChatMessage : UpdatesBase, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID of the message</summary>
 		public int id;
@@ -4839,7 +4840,7 @@ namespace TL
 	[TLDef(0x9015E101)]
 	public partial class UpdateShortSentMessage : UpdatesBase, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID of the sent message</summary>
 		public int id;
@@ -4934,7 +4935,7 @@ namespace TL
 	[TLDef(0x18B7A10D)]
 	public class DcOption : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>DC ID</summary>
 		public int id;
@@ -4968,7 +4969,7 @@ namespace TL
 	[TLDef(0xCC1A241E)]
 	public class Config : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Current date at the server</summary>
 		public DateTime date;
@@ -5059,7 +5060,7 @@ namespace TL
 		{
 			/// <summary>Field <see cref="tmp_sessions"/> has a value</summary>
 			has_tmp_sessions = 0x1,
-			/// <summary>Field <see cref="suggested_lang_code"/> has a value</summary>
+			/// <summary>Fields <see cref="suggested_lang_code"/>, <see cref="lang_pack_version"/> and <see cref="base_lang_pack_version"/> have a value</summary>
 			has_suggested_lang_code = 0x4,
 			/// <summary>Whether the client should use P2P by default for phone calls with contacts</summary>
 			default_p2p_contacts = 0x8,
@@ -5105,7 +5106,7 @@ namespace TL
 	[TLDef(0xCCBBCE30)]
 	public class Help_AppUpdate : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Update ID</summary>
 		public int id;
@@ -5197,7 +5198,7 @@ namespace TL
 	[TLDef(0x48F1D94C)]
 	public class EncryptedChatRequested : EncryptedChatBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		[IfFlag(0)] public int folder_id;
@@ -5265,7 +5266,7 @@ namespace TL
 	[TLDef(0x1E1C7C45)]
 	public class EncryptedChatDiscarded : EncryptedChatBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Chat ID</summary>
 		public int id;
@@ -5480,7 +5481,7 @@ namespace TL
 	[TLDef(0x8FD4C4D8)]
 	public partial class Document : DocumentBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Document ID</summary>
 		public long id;
@@ -5831,7 +5832,7 @@ namespace TL
 	[TLDef(0x6319D612)]
 	public class DocumentAttributeSticker : DocumentAttribute
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Alternative emoji representation of sticker</summary>
 		public string alt;
@@ -5852,7 +5853,7 @@ namespace TL
 	[TLDef(0x0EF02CE6)]
 	public class DocumentAttributeVideo : DocumentAttribute
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Duration in seconds</summary>
 		public int duration;
@@ -5873,7 +5874,7 @@ namespace TL
 	[TLDef(0x9852F9C6)]
 	public class DocumentAttributeAudio : DocumentAttribute
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Duration in seconds</summary>
 		public int duration;
@@ -5910,7 +5911,7 @@ namespace TL
 	[TLDef(0xFD149899)]
 	public class DocumentAttributeCustomEmoji : DocumentAttribute
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The actual emoji</summary>
 		public string alt;
@@ -6000,7 +6001,7 @@ namespace TL
 	[TLDef(0xE89C45B2)]
 	public class WebPage : WebPageBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Preview ID</summary>
 		public long id;
@@ -6051,9 +6052,9 @@ namespace TL
 			has_description = 0x8,
 			/// <summary>Field <see cref="photo"/> has a value</summary>
 			has_photo = 0x10,
-			/// <summary>Field <see cref="embed_url"/> has a value</summary>
+			/// <summary>Fields <see cref="embed_url"/> and <see cref="embed_type"/> have a value</summary>
 			has_embed_url = 0x20,
-			/// <summary>Field <see cref="embed_width"/> has a value</summary>
+			/// <summary>Fields <see cref="embed_width"/> and <see cref="embed_height"/> have a value</summary>
 			has_embed_width = 0x40,
 			/// <summary>Field <see cref="duration"/> has a value</summary>
 			has_duration = 0x80,
@@ -6074,7 +6075,7 @@ namespace TL
 	[TLDef(0x7311CA11)]
 	public class WebPageNotModified : WebPageBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Page view count</summary>
 		[IfFlag(0)] public int cached_page_views;
@@ -6090,7 +6091,7 @@ namespace TL
 	[TLDef(0xAD01D61D)]
 	public class Authorization : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Identifier</summary>
 		public long hash;
@@ -6146,7 +6147,7 @@ namespace TL
 	[TLDef(0x957B50FB)]
 	public class Account_Password : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The <a href="https://corefork.telegram.org/api/srp">KDF algorithm for SRP two-factor authentication</a> of the current password</summary>
 		[IfFlag(2)] public PasswordKdfAlgo current_algo;
@@ -6192,7 +6193,7 @@ namespace TL
 	[TLDef(0x9A5C33E5)]
 	public class Account_PasswordSettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/srp#email-verification">2FA Recovery email</a></summary>
 		[IfFlag(0)] public string email;
@@ -6212,7 +6213,7 @@ namespace TL
 	[TLDef(0xC23727C9)]
 	public class Account_PasswordInputSettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The <a href="https://corefork.telegram.org/api/srp">SRP algorithm</a> to use</summary>
 		[IfFlag(0)] public PasswordKdfAlgo new_algo;
@@ -6227,7 +6228,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="new_algo"/> has a value</summary>
+			/// <summary>Fields <see cref="new_algo"/>, <see cref="new_password_hash"/> and <see cref="hint"/> have a value</summary>
 			has_new_algo = 0x1,
 			/// <summary>Field <see cref="email"/> has a value</summary>
 			has_email = 0x2,
@@ -6260,7 +6261,7 @@ namespace TL
 	[TLDef(0x0AB4A819)]
 	public class ChatInviteExported : ExportedChatInvite
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Chat invitation link</summary>
 		public string link;
@@ -6320,7 +6321,7 @@ namespace TL
 	[TLDef(0x300C44C1)]
 	public class ChatInvite : ChatInviteBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Chat/supergroup/channel title</summary>
 		public string title;
@@ -6410,7 +6411,7 @@ namespace TL
 	[TLDef(0x2DD14EDC)]
 	public partial class StickerSet : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>When was this stickerset installed</summary>
 		[IfFlag(0)] public DateTime installed_date;
@@ -6445,7 +6446,7 @@ namespace TL
 			official = 0x4,
 			/// <summary>Is this a mask stickerset</summary>
 			masks = 0x8,
-			/// <summary>Field <see cref="thumbs"/> has a value</summary>
+			/// <summary>Fields <see cref="thumbs"/>, <see cref="thumb_dc_id"/> and <see cref="thumb_version"/> have a value</summary>
 			has_thumbs = 0x10,
 			/// <summary>Is this an animated stickerpack</summary>
 			animated = 0x20,
@@ -6487,7 +6488,7 @@ namespace TL
 	[TLDef(0x8F300B57)]
 	public class BotInfo : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID of the bot</summary>
 		[IfFlag(0)] public long user_id;
@@ -6546,7 +6547,7 @@ namespace TL
 	[TLDef(0x35BBDB6B)]
 	public class KeyboardButtonCallback : KeyboardButtonBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Button text</summary>
 		public string text;
@@ -6576,7 +6577,7 @@ namespace TL
 	[TLDef(0x93B9FBB5)]
 	public class KeyboardButtonSwitchInline : KeyboardButtonBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Button label</summary>
 		public string text;
@@ -6609,7 +6610,7 @@ namespace TL
 	[TLDef(0x10B78D29)]
 	public class KeyboardButtonUrlAuth : KeyboardButtonBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Button label</summary>
 		public string text;
@@ -6633,7 +6634,7 @@ namespace TL
 	[TLDef(0xD02E7FD4)]
 	public class InputKeyboardButtonUrlAuth : KeyboardButtonBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Button text</summary>
 		public string text;
@@ -6659,7 +6660,7 @@ namespace TL
 	[TLDef(0xBBC7515D)]
 	public class KeyboardButtonRequestPoll : KeyboardButton
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>If set, only quiz polls can be sent</summary>
 		[IfFlag(0)] public bool quiz;
@@ -6725,7 +6726,7 @@ namespace TL
 	[TLDef(0xA03E5B85)]
 	public class ReplyKeyboardHide : ReplyMarkup
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
@@ -6738,7 +6739,7 @@ namespace TL
 	[TLDef(0x86B40B08)]
 	public class ReplyKeyboardForceReply : ReplyMarkup
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The placeholder to be shown in the input field when the keyboard is active; 1-64 characters.</summary>
 		[IfFlag(3)] public string placeholder;
@@ -6757,7 +6758,7 @@ namespace TL
 	[TLDef(0x85DD99D1)]
 	public class ReplyKeyboardMarkup : ReplyMarkup
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Button row</summary>
 		public KeyboardButtonRow[] rows;
@@ -6946,7 +6947,7 @@ namespace TL
 	[TLDef(0x3E11AFFB)]
 	public partial class Updates_ChannelDifferenceEmpty : Updates_ChannelDifferenceBase, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The latest <a href="https://corefork.telegram.org/api/updates">PTS</a></summary>
 		public int pts;
@@ -6967,7 +6968,7 @@ namespace TL
 	[TLDef(0xA4BCC6FE)]
 	public partial class Updates_ChannelDifferenceTooLong : Updates_ChannelDifferenceBase, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Clients are supposed to refetch the channel difference after timeout seconds have elapsed</summary>
 		[IfFlag(1)] public int timeout;
@@ -6994,7 +6995,7 @@ namespace TL
 	[TLDef(0x2064674E)]
 	public partial class Updates_ChannelDifference : Updates_ChannelDifferenceBase, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The <a href="https://corefork.telegram.org/api/updates">PTS</a> from which to start getting updates the next time</summary>
 		public int pts;
@@ -7025,7 +7026,7 @@ namespace TL
 	[TLDef(0xCD77D957)]
 	public class ChannelMessagesFilter : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>A range of messages to fetch</summary>
 		public MessageRange[] ranges;
@@ -7052,7 +7053,7 @@ namespace TL
 	[TLDef(0x35A8BFA7)]
 	public partial class ChannelParticipantSelf : ChannelParticipantBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>User ID</summary>
 		public long user_id;
@@ -7071,7 +7072,7 @@ namespace TL
 	[TLDef(0x2FE601D3)]
 	public partial class ChannelParticipantCreator : ChannelParticipantBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>User ID</summary>
 		public long user_id;
@@ -7090,7 +7091,7 @@ namespace TL
 	[TLDef(0x34C3BB53)]
 	public partial class ChannelParticipantAdmin : ChannelParticipantBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Admin user ID</summary>
 		public long user_id;
@@ -7119,7 +7120,7 @@ namespace TL
 	[TLDef(0x6DF8014E)]
 	public partial class ChannelParticipantBanned : ChannelParticipantBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The banned peer</summary>
 		public Peer peer;
@@ -7187,7 +7188,7 @@ namespace TL
 	[TLDef(0xE04B5CEB)]
 	public class ChannelParticipantsMentions : ChannelParticipantsFilter
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Filter by user name or username</summary>
 		[IfFlag(0)] public string q;
@@ -7238,7 +7239,7 @@ namespace TL
 	[TLDef(0x780A0310)]
 	public class Help_TermsOfService : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID of the new terms</summary>
 		public DataJSON id;
@@ -7275,7 +7276,7 @@ namespace TL
 	[TLDef(0x3380C786)]
 	public class InputBotInlineMessageMediaAuto : InputBotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Caption</summary>
 		public string message;
@@ -7296,7 +7297,7 @@ namespace TL
 	[TLDef(0x3DCD7A87)]
 	public class InputBotInlineMessageText : InputBotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Message</summary>
 		public string message;
@@ -7319,7 +7320,7 @@ namespace TL
 	[TLDef(0x96929A85)]
 	public class InputBotInlineMessageMediaGeo : InputBotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Geolocation</summary>
 		public InputGeoPoint geo_point;
@@ -7348,7 +7349,7 @@ namespace TL
 	[TLDef(0x417BBF11)]
 	public class InputBotInlineMessageMediaVenue : InputBotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Geolocation</summary>
 		public InputGeoPoint geo_point;
@@ -7375,7 +7376,7 @@ namespace TL
 	[TLDef(0xA6EDBFFD)]
 	public class InputBotInlineMessageMediaContact : InputBotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Phone number</summary>
 		public string phone_number;
@@ -7398,7 +7399,7 @@ namespace TL
 	[TLDef(0x4B425864)]
 	public class InputBotInlineMessageGame : InputBotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Inline keyboard</summary>
 		[IfFlag(2)] public ReplyMarkup reply_markup;
@@ -7413,7 +7414,7 @@ namespace TL
 	[TLDef(0xD7E78225)]
 	public class InputBotInlineMessageMediaInvoice : InputBotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Product name, 1-32 characters</summary>
 		public string title;
@@ -7453,7 +7454,7 @@ namespace TL
 	[TLDef(0x88BF9319)]
 	public class InputBotInlineResult : InputBotInlineResultBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID of result</summary>
 		public string id;
@@ -7513,7 +7514,7 @@ namespace TL
 	[TLDef(0xFFF8FDC4)]
 	public class InputBotInlineResultDocument : InputBotInlineResultBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Result ID</summary>
 		public string id;
@@ -7564,7 +7565,7 @@ namespace TL
 	[TLDef(0x764CF810)]
 	public class BotInlineMessageMediaAuto : BotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Caption</summary>
 		public string message;
@@ -7585,7 +7586,7 @@ namespace TL
 	[TLDef(0x8C7F65E2)]
 	public class BotInlineMessageText : BotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The message</summary>
 		public string message;
@@ -7608,7 +7609,7 @@ namespace TL
 	[TLDef(0x051846FD)]
 	public class BotInlineMessageMediaGeo : BotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Geolocation</summary>
 		public GeoPoint geo;
@@ -7637,7 +7638,7 @@ namespace TL
 	[TLDef(0x8A86659C)]
 	public class BotInlineMessageMediaVenue : BotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Geolocation of venue</summary>
 		public GeoPoint geo;
@@ -7664,7 +7665,7 @@ namespace TL
 	[TLDef(0x18D1CDC2)]
 	public class BotInlineMessageMediaContact : BotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Phone number</summary>
 		public string phone_number;
@@ -7687,7 +7688,7 @@ namespace TL
 	[TLDef(0x354A9B09)]
 	public class BotInlineMessageMediaInvoice : BotInlineMessage
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Product name, 1-32 characters</summary>
 		public string title;
@@ -7733,7 +7734,7 @@ namespace TL
 	[TLDef(0x11965F3A)]
 	public class BotInlineResult : BotInlineResultBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Result ID</summary>
 		public string id;
@@ -7781,7 +7782,7 @@ namespace TL
 	[TLDef(0x17DB940B)]
 	public class BotInlineMediaResult : BotInlineResultBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Result ID</summary>
 		public string id;
@@ -7826,7 +7827,7 @@ namespace TL
 	[TLDef(0xE021F2F6)]
 	public class Messages_BotResults : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Query ID</summary>
 		public long query_id;
@@ -7870,7 +7871,7 @@ namespace TL
 	[TLDef(0x5F777DCE)]
 	public class MessageFwdHeader : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The ID of the user that originally sent the message</summary>
 		[IfFlag(0)] public Peer from_id;
@@ -7897,7 +7898,7 @@ namespace TL
 			has_channel_post = 0x4,
 			/// <summary>Field <see cref="post_author"/> has a value</summary>
 			has_post_author = 0x8,
-			/// <summary>Field <see cref="saved_from_peer"/> has a value</summary>
+			/// <summary>Fields <see cref="saved_from_peer"/> and <see cref="saved_from_msg_id"/> have a value</summary>
 			has_saved_from_peer = 0x10,
 			/// <summary>Field <see cref="from_name"/> has a value</summary>
 			has_from_name = 0x20,
@@ -7964,7 +7965,7 @@ namespace TL
 	[TLDef(0xF450F59B)]
 	public class Auth_SentCodeTypeEmailCode : Auth_SentCodeType
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/pattern">Pattern</a> of the email</summary>
 		public string email_pattern;
@@ -7989,7 +7990,7 @@ namespace TL
 	[TLDef(0xA5491DEA)]
 	public class Auth_SentCodeTypeSetUpEmailRequired : Auth_SentCodeType
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
@@ -8011,7 +8012,7 @@ namespace TL
 	[TLDef(0xE57B1432)]
 	public class Auth_SentCodeTypeFirebaseSms : Auth_SentCodeTypeSms
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>On Android, the nonce to be used as described in the <a href="https://corefork.telegram.org/api/auth">auth documentation »</a></summary>
 		[IfFlag(0)] public byte[] nonce;
@@ -8022,7 +8023,7 @@ namespace TL
 		{
 			/// <summary>Field <see cref="nonce"/> has a value</summary>
 			has_nonce = 0x1,
-			/// <summary>Field <see cref="receipt"/> has a value</summary>
+			/// <summary>Fields <see cref="receipt"/> and <see cref="push_timeout"/> have a value</summary>
 			has_receipt = 0x2,
 		}
 	}
@@ -8031,7 +8032,7 @@ namespace TL
 	[TLDef(0x36585EA4)]
 	public class Messages_BotCallbackAnswer : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Alert to show</summary>
 		[IfFlag(0)] public string message;
@@ -8059,7 +8060,7 @@ namespace TL
 	[TLDef(0x26B5DDE6)]
 	public class Messages_MessageEditData : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
@@ -8209,7 +8210,7 @@ namespace TL
 	[TLDef(0x1B0C841A)]
 	public class DraftMessageEmpty : DraftMessageBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>When was the draft last updated</summary>
 		[IfFlag(0)] public DateTime date;
@@ -8224,7 +8225,7 @@ namespace TL
 	[TLDef(0xFD8E711F)]
 	public class DraftMessage : DraftMessageBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The message this message will reply to</summary>
 		[IfFlag(0)] public int reply_to_msg_id;
@@ -8259,7 +8260,7 @@ namespace TL
 	[TLDef(0xBE382906)]
 	public class Messages_FeaturedStickers : Messages_FeaturedStickersBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public long hash;
@@ -8407,7 +8408,7 @@ namespace TL
 	[TLDef(0xBDF9653B)]
 	public partial class Game : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID of the game</summary>
 		public long id;
@@ -8701,7 +8702,7 @@ namespace TL
 	[TLDef(0x1759C560)]
 	public class PageBlockPhoto : PageBlock
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Photo ID</summary>
 		public long photo_id;
@@ -8714,7 +8715,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="url"/> has a value</summary>
+			/// <summary>Fields <see cref="url"/> and <see cref="webpage_id"/> have a value</summary>
 			has_url = 0x1,
 		}
 	}
@@ -8722,7 +8723,7 @@ namespace TL
 	[TLDef(0x7C8FE7B6)]
 	public class PageBlockVideo : PageBlock
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Video ID</summary>
 		public long video_id;
@@ -8748,7 +8749,7 @@ namespace TL
 	[TLDef(0xA8718DC5)]
 	public class PageBlockEmbed : PageBlock
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Web page URL, if available</summary>
 		[IfFlag(1)] public string url;
@@ -8775,7 +8776,7 @@ namespace TL
 			allow_scrolling = 0x8,
 			/// <summary>Field <see cref="poster_photo_id"/> has a value</summary>
 			has_poster_photo_id = 0x10,
-			/// <summary>Field <see cref="w"/> has a value</summary>
+			/// <summary>Fields <see cref="w"/> and <see cref="h"/> have a value</summary>
 			has_w = 0x20,
 		}
 	}
@@ -8843,7 +8844,7 @@ namespace TL
 	[TLDef(0xBF4DEA82)]
 	public class PageBlockTable : PageBlock
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Title</summary>
 		public RichText title;
@@ -8869,7 +8870,7 @@ namespace TL
 	[TLDef(0x76768BED)]
 	public class PageBlockDetails : PageBlock
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Block contents</summary>
 		public PageBlock[] blocks;
@@ -8942,7 +8943,7 @@ namespace TL
 	[TLDef(0x3E85A91B)]
 	public class Invoice : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
 		public string currency;
@@ -8973,7 +8974,7 @@ namespace TL
 			phone_to_provider = 0x40,
 			/// <summary>Set this flag if user's email address should be sent to provider</summary>
 			email_to_provider = 0x80,
-			/// <summary>Field <see cref="max_tip_amount"/> has a value</summary>
+			/// <summary>Fields <see cref="max_tip_amount"/> and <see cref="suggested_tip_amounts"/> have a value</summary>
 			has_max_tip_amount = 0x100,
 			/// <summary>Whether this is a recurring payment</summary>
 			recurring = 0x200,
@@ -9012,7 +9013,7 @@ namespace TL
 	[TLDef(0x909C3F94)]
 	public class PaymentRequestedInfo : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>User's full name</summary>
 		[IfFlag(0)] public string name;
@@ -9153,7 +9154,7 @@ namespace TL
 	[TLDef(0xF46FE924)]
 	public class InputWebFileAudioAlbumThumbLocation : InputWebFileLocationBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The audio file in question: must NOT be provided in secret chats, provide the <c>title</c> and <c>performer</c> fields instead.</summary>
 		[IfFlag(0)] public InputDocument document;
@@ -9166,7 +9167,7 @@ namespace TL
 		{
 			/// <summary>Field <see cref="document"/> has a value</summary>
 			has_document = 0x1,
-			/// <summary>Field <see cref="title"/> has a value</summary>
+			/// <summary>Fields <see cref="title"/> and <see cref="performer"/> have a value</summary>
 			has_title = 0x2,
 			/// <summary>Used to return a thumbnail with <c>100x100</c> resolution (instead of the default <c>600x600</c>)</summary>
 			small = 0x4,
@@ -9193,7 +9194,7 @@ namespace TL
 	[TLDef(0xA0058751)]
 	public class Payments_PaymentForm : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Form ID</summary>
 		public long form_id;
@@ -9234,7 +9235,7 @@ namespace TL
 			can_save_credentials = 0x4,
 			/// <summary>Indicates that the user can save payment credentials, but only after setting up a <a href="https://corefork.telegram.org/api/srp">2FA password</a> (currently the account doesn't have a <a href="https://corefork.telegram.org/api/srp">2FA password</a>)</summary>
 			password_missing = 0x8,
-			/// <summary>Field <see cref="native_provider"/> has a value</summary>
+			/// <summary>Fields <see cref="native_provider"/> and <see cref="native_params"/> have a value</summary>
 			has_native_provider = 0x10,
 			/// <summary>Field <see cref="photo"/> has a value</summary>
 			has_photo = 0x20,
@@ -9247,7 +9248,7 @@ namespace TL
 	[TLDef(0xD1451883)]
 	public class Payments_ValidatedRequestedInfo : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID</summary>
 		[IfFlag(0)] public string id;
@@ -9284,7 +9285,7 @@ namespace TL
 	[TLDef(0x70C4FE03)]
 	public class Payments_PaymentReceipt : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Date of generation</summary>
 		public DateTime date;
@@ -9332,7 +9333,7 @@ namespace TL
 	[TLDef(0xFB8FE43C)]
 	public class Payments_SavedInfo : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Saved server-side order information</summary>
 		[IfFlag(0)] public PaymentRequestedInfo saved_info;
@@ -9361,7 +9362,7 @@ namespace TL
 	[TLDef(0x3417D728)]
 	public class InputPaymentCredentials : InputPaymentCredentialsBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Payment credentials</summary>
 		public DataJSON data;
@@ -9413,7 +9414,7 @@ namespace TL
 	[TLDef(0x32DA9E9C)]
 	public class InputStickerSetItem : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The sticker</summary>
 		public InputDocument document;
@@ -9473,7 +9474,7 @@ namespace TL
 	[TLDef(0xC5226F17)]
 	public class PhoneCallWaiting : PhoneCallBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Call ID</summary>
 		public long id;
@@ -9515,7 +9516,7 @@ namespace TL
 	[TLDef(0x14B0ED0C)]
 	public class PhoneCallRequested : PhoneCallBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Phone call ID</summary>
 		public long id;
@@ -9555,7 +9556,7 @@ namespace TL
 	[TLDef(0x3660C311)]
 	public class PhoneCallAccepted : PhoneCallBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID of accepted phone call</summary>
 		public long id;
@@ -9595,7 +9596,7 @@ namespace TL
 	[TLDef(0x967F7C67)]
 	public class PhoneCall : PhoneCallBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Call ID</summary>
 		public long id;
@@ -9643,7 +9644,7 @@ namespace TL
 	[TLDef(0x50CA4DE1)]
 	public class PhoneCallDiscarded : PhoneCallBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Call ID</summary>
 		public long id;
@@ -9686,7 +9687,7 @@ namespace TL
 	[TLDef(0x9CC123C7)]
 	public class PhoneConnection : PhoneConnectionBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Endpoint ID</summary>
 		public long id;
@@ -9718,7 +9719,7 @@ namespace TL
 	[TLDef(0x635FE375)]
 	public class PhoneConnectionWebrtc : PhoneConnectionBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Endpoint ID</summary>
 		public long id;
@@ -9755,7 +9756,7 @@ namespace TL
 	[TLDef(0xFC878FC8)]
 	public class PhoneCallProtocol : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Minimum layer for remote libtgvoip</summary>
 		public int min_layer;
@@ -9840,7 +9841,7 @@ namespace TL
 	[TLDef(0x6C47AC9F)]
 	public class LangPackStringPluralized : LangPackStringBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Localization key</summary>
 		public string key;
@@ -9903,7 +9904,7 @@ namespace TL
 	[TLDef(0xEECA5CE3)]
 	public class LangPackLanguage : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Language name</summary>
 		public string name;
@@ -10139,6 +10140,7 @@ namespace TL
 	[TLDef(0xFE9FC158)]
 	public class ChannelAdminLogEventActionParticipantJoinByInvite : ChannelAdminLogEventAction
 	{
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The invite link used to join the <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a></summary>
 		public ExportedChatInvite invite;
@@ -10262,7 +10264,7 @@ namespace TL
 	[TLDef(0x5D8D353B)]
 	public class ChannelAdminLogEventActionPinTopic : ChannelAdminLogEventAction
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Previous topic information</summary>
 		[IfFlag(0)] public ForumTopicBase prev_topic;
@@ -10317,7 +10319,7 @@ namespace TL
 	[TLDef(0xEA107AE4)]
 	public partial class ChannelAdminLogEventsFilter : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
@@ -10440,7 +10442,7 @@ namespace TL
 	[TLDef(0x1CC6E91F)]
 	public class InputSingleMedia : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The media</summary>
 		public InputMedia media;
@@ -10729,7 +10731,7 @@ namespace TL
 	[TLDef(0x187FA0CA)]
 	public class SecureValue : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Secure <a href="https://corefork.telegram.org/passport">passport</a> value type</summary>
 		public SecureValueType type;
@@ -10773,7 +10775,7 @@ namespace TL
 	[TLDef(0xDB21D0A7)]
 	public class InputSecureValue : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Secure <a href="https://corefork.telegram.org/passport">passport</a> value type</summary>
 		public SecureValueType type;
@@ -10970,7 +10972,7 @@ namespace TL
 	[TLDef(0xAD2E1CD8)]
 	public class Account_AuthorizationForm : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Required <a href="https://corefork.telegram.org/passport">Telegram Passport</a> documents</summary>
 		public SecureRequiredTypeBase[] required_types;
@@ -11005,7 +11007,7 @@ namespace TL
 	[TLDef(0x6A4EE832)]
 	public class Help_DeepLinkInfo : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Message to show to the user</summary>
 		public string message;
@@ -11107,7 +11109,7 @@ namespace TL
 	[TLDef(0x829D99DA)]
 	public class SecureRequiredType : SecureRequiredTypeBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Secure value type</summary>
 		public SecureValueType type;
@@ -11210,7 +11212,7 @@ namespace TL
 	[TLDef(0x34566B6A)]
 	public class PageTableCell : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Content</summary>
 		[IfFlag(7)] public RichText text;
@@ -11300,7 +11302,7 @@ namespace TL
 	[TLDef(0xB390DC08)]
 	public class PageRelatedArticle : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>URL of article</summary>
 		public string url;
@@ -11336,7 +11338,7 @@ namespace TL
 	[TLDef(0x98657F0D)]
 	public class Page : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Original page HTTP URL</summary>
 		public string url;
@@ -11401,7 +11403,7 @@ namespace TL
 	{
 		/// <summary>ID of the poll</summary>
 		public long id;
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The question of the poll</summary>
 		public string question;
@@ -11433,7 +11435,7 @@ namespace TL
 	[TLDef(0x3B6DDAD2)]
 	public class PollAnswerVoters : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The param that has to be passed to <see cref="SchemaExtensions.Messages_SendVote">Messages_SendVote</see>.</summary>
 		public byte[] option;
@@ -11453,7 +11455,7 @@ namespace TL
 	[TLDef(0xDCB82EA3)]
 	public class PollResults : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Poll results</summary>
 		[IfFlag(1)] public PollAnswerVoters[] results;
@@ -11476,7 +11478,7 @@ namespace TL
 			has_total_voters = 0x4,
 			/// <summary>Field <see cref="recent_voters"/> has a value</summary>
 			has_recent_voters = 0x8,
-			/// <summary>Field <see cref="solution"/> has a value</summary>
+			/// <summary>Fields <see cref="solution"/> and <see cref="solution_entities"/> have a value</summary>
 			has_solution = 0x10,
 		}
 	}
@@ -11501,7 +11503,7 @@ namespace TL
 	[TLDef(0x5FB224D5)]
 	public class ChatAdminRights : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
@@ -11537,7 +11539,7 @@ namespace TL
 	[TLDef(0x9F120418)]
 	public class ChatBannedRights : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Validity of said permissions (it is considered forever any value less then 30 seconds or more then 366 days).</summary>
 		public DateTime until_date;
@@ -11628,7 +11630,7 @@ namespace TL
 	[TLDef(0xAD253D78)]
 	public class CodeSettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Previously stored future auth tokens, see <a href="https://corefork.telegram.org/api/auth#future-auth-tokens">the documentation for more info »</a></summary>
 		[IfFlag(6)] public byte[][] logout_tokens;
@@ -11649,7 +11651,7 @@ namespace TL
 			has_logout_tokens = 0x40,
 			/// <summary>Whether Firebase auth is supported</summary>
 			allow_firebase = 0x80,
-			/// <summary>Field <see cref="token"/> has a value</summary>
+			/// <summary>Fields <see cref="token"/> and <see cref="app_sandbox"/> have a value</summary>
 			has_token = 0x100,
 		}
 	}
@@ -11658,7 +11660,7 @@ namespace TL
 	[TLDef(0x1DC1BCA4)]
 	public class WallPaperSettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Used for <a href="https://corefork.telegram.org/api/wallpapers#solid-fill">solid »</a>, <a href="https://corefork.telegram.org/api/wallpapers#gradient-fill">gradient »</a> and <a href="https://corefork.telegram.org/api/wallpapers#freeform-gradient-fill">freeform gradient »</a> fills.</summary>
 		[IfFlag(0)] public int background_color;
@@ -11683,7 +11685,7 @@ namespace TL
 			motion = 0x4,
 			/// <summary>Field <see cref="intensity"/> has a value</summary>
 			has_intensity = 0x8,
-			/// <summary>Field <see cref="second_background_color"/> has a value</summary>
+			/// <summary>Fields <see cref="second_background_color"/> and <see cref="rotation"/> have a value</summary>
 			has_second_background_color = 0x10,
 			/// <summary>Field <see cref="third_background_color"/> has a value</summary>
 			has_third_background_color = 0x20,
@@ -11696,7 +11698,7 @@ namespace TL
 	[TLDef(0x8EFAB953)]
 	public class AutoDownloadSettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Maximum size of photos to preload</summary>
 		public int photo_size_max;
@@ -11779,7 +11781,7 @@ namespace TL
 	[TLDef(0xFF544E65)]
 	public class Folder : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Folder ID</summary>
 		public int id;
@@ -11825,7 +11827,7 @@ namespace TL
 	[TLDef(0xE844EBFF)]
 	public class Messages_SearchCounter : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Provided message filter</summary>
 		public MessagesFilter filter;
@@ -11846,7 +11848,7 @@ namespace TL
 	[TLDef(0x92D33A0E)]
 	public class UrlAuthResultRequest : UrlAuthResult
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Username of a bot, which will be used for user authorization. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See <a href="https://corefork.telegram.org/widgets/login#linking-your-domain-to-the-bot">Linking your domain to the bot</a> for more details.</summary>
 		public UserBase bot;
@@ -11944,7 +11946,7 @@ namespace TL
 	[TLDef(0xA00E67D6)]
 	public partial class Theme : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Theme ID</summary>
 		public long id;
@@ -12025,7 +12027,7 @@ namespace TL
 	[TLDef(0x57E28221)]
 	public class Account_ContentSettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
@@ -12070,7 +12072,7 @@ namespace TL
 	[TLDef(0x8FDE504F)]
 	public class InputThemeSettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Default theme on which this theme is based</summary>
 		public BaseTheme base_theme;
@@ -12089,7 +12091,7 @@ namespace TL
 		{
 			/// <summary>Field <see cref="message_colors"/> has a value</summary>
 			has_message_colors = 0x1,
-			/// <summary>Field <see cref="wallpaper"/> has a value</summary>
+			/// <summary>Fields <see cref="wallpaper"/> and <see cref="wallpaper_settings"/> have a value</summary>
 			has_wallpaper = 0x2,
 			/// <summary>If set, the freeform gradient fill needs to be animated on every sent message</summary>
 			message_colors_animated = 0x4,
@@ -12102,7 +12104,7 @@ namespace TL
 	[TLDef(0xFA58B6D4)]
 	public class ThemeSettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Base theme</summary>
 		public BaseTheme base_theme;
@@ -12134,7 +12136,7 @@ namespace TL
 	[TLDef(0x54B56617)]
 	public class WebPageAttributeTheme : WebPageAttribute
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Theme files</summary>
 		[IfFlag(0)] public DocumentBase[] documents;
@@ -12209,7 +12211,7 @@ namespace TL
 	[TLDef(0x0823F649)]
 	public class Messages_VotesList : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Total number of votes for all options (or only for the chosen <c>option</c>, if provided to <see cref="SchemaExtensions.Messages_GetPollVotes">Messages_GetPollVotes</see>)</summary>
 		public int count;
@@ -12247,7 +12249,7 @@ namespace TL
 		public BankCardOpenUrl[] open_urls;
 	}
 
-	/// <summary>Dialog filter (<a href="https://corefork.telegram.org/api/folders">folder »</a>)		<para>See <a href="https://corefork.telegram.org/type/DialogFilter"/></para>		<para>Derived classes: <see cref="DialogFilter"/></para></summary>
+	/// <summary>Dialog filter (<a href="https://corefork.telegram.org/api/folders">folder »</a>)		<para>See <a href="https://corefork.telegram.org/type/DialogFilter"/></para>		<para>Derived classes: <see cref="DialogFilter"/>, <see cref="DialogFilterChatlist"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/dialogFilterDefault">dialogFilterDefault</a></remarks>
 	public abstract class DialogFilterBase : IObject
 	{
@@ -12266,7 +12268,7 @@ namespace TL
 	[TLDef(0x7438F7E8)]
 	public class DialogFilter : DialogFilterBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> ID</summary>
 		public int id;
@@ -12318,6 +12320,7 @@ namespace TL
 	[TLDef(0xD64A04A8)]
 	public class DialogFilterChatlist : DialogFilterBase
 	{
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		public int id;
 		public string title;
@@ -12327,6 +12330,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="emoticon"/> has a value</summary>
 			has_emoticon = 0x2000000,
 			has_my_invites = 0x4000000,
 		}
@@ -12398,7 +12402,7 @@ namespace TL
 	[TLDef(0x8EA464B6)]
 	public class StatsGraph : StatsGraphBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Statistics data</summary>
 		public DataJSON json;
@@ -12473,7 +12477,7 @@ namespace TL
 	[TLDef(0x8C39793F)]
 	public class Help_PromoData : Help_PromoDataBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Expiry of PSA/MTProxy info</summary>
 		public DateTime expires;
@@ -12507,7 +12511,7 @@ namespace TL
 	[TLDef(0xDE33B094)]
 	public class VideoSize : VideoSizeBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><c>u</c> for animated profile pictures, and <c>v</c> for trimmed and downscaled video previews</summary>
 		public string type;
@@ -12627,7 +12631,7 @@ namespace TL
 	[TLDef(0xBEA2F424)]
 	public class GlobalPrivacySettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Whether to archive and mute new chats from non-contacts</summary>
 		[IfFlag(0)] public bool archive_and_mute_new_noncontact_peers;
@@ -12643,7 +12647,7 @@ namespace TL
 	[TLDef(0x4203C5EF)]
 	public class Help_CountryCode : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ISO country code</summary>
 		public string country_code;
@@ -12665,7 +12669,7 @@ namespace TL
 	[TLDef(0xC3878E23)]
 	public class Help_Country : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ISO code of country</summary>
 		public string iso2;
@@ -12700,7 +12704,7 @@ namespace TL
 	[TLDef(0x455B853D)]
 	public class MessageViews : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>View count of message</summary>
 		[IfFlag(0)] public int views;
@@ -12738,7 +12742,7 @@ namespace TL
 	[TLDef(0xA6341782)]
 	public class Messages_DiscussionMessage : IObject, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Discussion messages</summary>
 		public MessageBase[] messages;
@@ -12772,7 +12776,7 @@ namespace TL
 	[TLDef(0xA6D57763)]
 	public class MessageReplyHeader : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>ID of message to which this message is replying</summary>
 		public int reply_to_msg_id;
@@ -12798,7 +12802,7 @@ namespace TL
 	[TLDef(0x83D60FC2)]
 	public class MessageReplies : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Contains the total number of replies in this thread or comment section.</summary>
 		public int replies;
@@ -12872,7 +12876,7 @@ namespace TL
 	[TLDef(0xD597650C)]
 	public class GroupCall : GroupCallBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Group call ID</summary>
 		public long id;
@@ -12945,7 +12949,7 @@ namespace TL
 	[TLDef(0xEBA636FE)]
 	public class GroupCallParticipant : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Peer information</summary>
 		public Peer peer;
@@ -13070,7 +13074,7 @@ namespace TL
 	[TLDef(0x5E0FB7B9)]
 	public class Messages_HistoryImportParsed : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Title of the chat.</summary>
 		[IfFlag(2)] public string title;
@@ -13104,7 +13108,7 @@ namespace TL
 	[TLDef(0x8C5ADFD9)]
 	public class ChatInviteImporter : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The user</summary>
 		public long user_id;
@@ -13256,7 +13260,7 @@ namespace TL
 	[TLDef(0x67753AC8)]
 	public class GroupCallParticipantVideo : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Endpoint</summary>
 		public string endpoint;
@@ -13336,7 +13340,7 @@ namespace TL
 	[TLDef(0xFC25B828)]
 	public class SponsoredMessage : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Message ID</summary>
 		public byte[] random_id;
@@ -13369,7 +13373,7 @@ namespace TL
 			has_channel_post = 0x4,
 			/// <summary>Field <see cref="from_id"/> has a value</summary>
 			has_from_id = 0x8,
-			/// <summary>Field <see cref="chat_invite"/> has a value</summary>
+			/// <summary>Fields <see cref="chat_invite"/> and <see cref="chat_invite_hash"/> have a value</summary>
 			has_chat_invite = 0x10,
 			/// <summary>Whether the message needs to be labeled as "recommended" instead of "sponsored"</summary>
 			recommended = 0x20,
@@ -13387,7 +13391,7 @@ namespace TL
 	[TLDef(0xC9EE1D87)]
 	public class Messages_SponsoredMessages : IObject, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>If set, specifies the minimum number of messages between shown sponsored messages; otherwise, only one sponsored message must be shown after all ordinary messages.</summary>
 		[IfFlag(0)] public int posts_between;
@@ -13425,7 +13429,7 @@ namespace TL
 	[TLDef(0x147EE23C)]
 	public class Messages_SearchResultsCalendar : IObject, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Total number of results matching query</summary>
 		public int count;
@@ -13525,7 +13529,7 @@ namespace TL
 	[TLDef(0xC3A2835F)]
 	public class Auth_LoggedOut : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/auth#future-auth-tokens">Future auth token »</a> to be used on subsequent authorizations</summary>
 		[IfFlag(0)] public byte[] future_auth_token;
@@ -13541,7 +13545,7 @@ namespace TL
 	[TLDef(0xA3D1CB80)]
 	public class ReactionCount : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>If set, indicates that the current user also sent this reaction. <br/>The integer value indicates when was the reaction added: the bigger the value, the newer the reaction.</summary>
 		[IfFlag(0)] public int chosen_order;
@@ -13561,7 +13565,7 @@ namespace TL
 	[TLDef(0x4F2B9479)]
 	public class MessageReactions : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Reactions</summary>
 		public ReactionCount[] results;
@@ -13583,7 +13587,7 @@ namespace TL
 	[TLDef(0x31BD492D)]
 	public class Messages_MessageReactionsList : IObject, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Total number of reactions matching query</summary>
 		public int count;
@@ -13609,7 +13613,7 @@ namespace TL
 	[TLDef(0xC077EC01)]
 	public class AvailableReaction : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Reaction emoji</summary>
 		public string reaction;
@@ -13634,7 +13638,7 @@ namespace TL
 		{
 			/// <summary>If not set, the reaction can be added to new messages and enabled in chats.</summary>
 			inactive = 0x1,
-			/// <summary>Field <see cref="around_animation"/> has a value</summary>
+			/// <summary>Fields <see cref="around_animation"/> and <see cref="center_icon"/> have a value</summary>
 			has_around_animation = 0x2,
 			/// <summary>Whether this reaction can only be used by Telegram Premium users</summary>
 			premium = 0x4,
@@ -13656,7 +13660,7 @@ namespace TL
 	[TLDef(0x8C79B63C)]
 	public class MessagePeerReaction : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Peer that reacted to the message</summary>
 		public Peer peer_id;
@@ -13718,7 +13722,7 @@ namespace TL
 	[TLDef(0xB2A7386B)]
 	public class AttachMenuBotIcon : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>One of the following values: note that animated icons must be played when the user clicks on the button, activating the bot web app. <br/><br/><c>default_static</c> - Default attachment menu icon in SVG format <br/><c>placeholder_static</c> - Default placeholder for opened Web Apps in SVG format <br/><c>ios_static</c> - Attachment menu icon in SVG format for the official iOS app <br/><c>ios_animated</c> - Animated attachment menu icon in TGS format for the official iOS app <br/><c>android_animated</c> - Animated attachment menu icon in TGS format for the official Android app <br/><c>macos_animated</c> - Animated attachment menu icon in TGS format for the official native Mac OS app</summary>
 		public string name;
@@ -13738,7 +13742,7 @@ namespace TL
 	[TLDef(0xC8AA2CD2)]
 	public class AttachMenuBot : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Bot ID</summary>
 		public long bot_id;
@@ -13809,7 +13813,7 @@ namespace TL
 	[TLDef(0x0C94511C)]
 	public class WebViewMessageSent : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Message ID</summary>
 		[IfFlag(0)] public InputBotInlineMessageIDBase msg_id;
@@ -13928,7 +13932,7 @@ namespace TL
 	[TLDef(0x93752C52)]
 	public class Messages_TranscribedAudio : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Transcription ID</summary>
 		public long transcription_id;
@@ -13966,7 +13970,7 @@ namespace TL
 	[TLDef(0xA6751E66)]
 	public class InputStorePaymentPremiumSubscription : InputStorePaymentPurpose
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
@@ -13993,7 +13997,7 @@ namespace TL
 	[TLDef(0x74C34319)]
 	public class PremiumGiftOption : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Duration of gifted Telegram Premium subscription</summary>
 		public int months;
@@ -14075,7 +14079,7 @@ namespace TL
 	[TLDef(0x52928BCA)]
 	public class ChatReactionsAll : ChatReactions
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 
 		[Flags] public enum Flags : uint
@@ -14164,7 +14168,7 @@ namespace TL
 	[TLDef(0x5F2D1DF2)]
 	public class PremiumSubscriptionOption : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Identifier of the last in-store transaction for the currently used subscription on the current account.</summary>
 		[IfFlag(3)] public string transaction;
@@ -14196,7 +14200,7 @@ namespace TL
 	[TLDef(0xB81C7034)]
 	public class SendAsPeer : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Peer</summary>
 		public Peer peer;
@@ -14214,7 +14218,7 @@ namespace TL
 	[TLDef(0xAD628CC8)]
 	public class MessageExtendedMediaPreview : MessageExtendedMediaBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		[IfFlag(0)] public int w;
 		[IfFlag(0)] public int h;
@@ -14223,7 +14227,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="w"/> has a value</summary>
+			/// <summary>Fields <see cref="w"/> and <see cref="h"/> have a value</summary>
 			has_w = 0x1,
 			/// <summary>Field <see cref="thumb"/> has a value</summary>
 			has_thumb = 0x2,
@@ -14252,7 +14256,7 @@ namespace TL
 	[TLDef(0xB4073647)]
 	public class Username : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The username.</summary>
 		public string username;
@@ -14286,7 +14290,7 @@ namespace TL
 	[TLDef(0x71701DA9)]
 	public class ForumTopic : ForumTopicBase
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/forum#forum-topics">Topic ID</a></summary>
 		public int id;
@@ -14343,7 +14347,7 @@ namespace TL
 	[TLDef(0x367617D3)]
 	public class Messages_ForumTopics : IObject, IPeerResolver
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Total number of topics matching query; may be less than the topics contained in <c>topics</c>, in which case <a href="https://corefork.telegram.org/api/offsets">pagination</a> is required.</summary>
 		public int count;
@@ -14391,7 +14395,7 @@ namespace TL
 	[TLDef(0x5F3B8A00)]
 	public class RequestPeerTypeUser : RequestPeerType
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Whether to allow choosing only bots.</summary>
 		[IfFlag(0)] public bool bot;
@@ -14410,7 +14414,7 @@ namespace TL
 	[TLDef(0xC9F06E1B)]
 	public class RequestPeerTypeChat : RequestPeerType
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>If specified, allows only choosing channels with or without a username, according to the value of <see cref="bool"/>.</summary>
 		[IfFlag(3)] public bool has_username;
@@ -14441,7 +14445,7 @@ namespace TL
 	[TLDef(0x339BEF6C)]
 	public class RequestPeerTypeBroadcast : RequestPeerType
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>If specified, allows only choosing channels with or without a username, according to the value of <see cref="bool"/>.</summary>
 		[IfFlag(3)] public bool has_username;
@@ -14521,7 +14525,7 @@ namespace TL
 	[TLDef(0xC84834CE)]
 	public class AutoSaveSettings : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>If set, specifies a size limit for autosavable videos</summary>
 		[IfFlag(2)] public long video_max_size;
@@ -14604,7 +14608,7 @@ namespace TL
 	[TLDef(0x95FCD1D6)]
 	public class BotApp : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Bot web app ID</summary>
 		public long id;
@@ -14634,7 +14638,7 @@ namespace TL
 	[TLDef(0xEB50ADF5)]
 	public class Messages_BotApp : IObject
 	{
-		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a></summary>
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Bot app information</summary>
 		public BotApp app;
@@ -14678,7 +14682,7 @@ namespace TL
 		public DateTime date;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputChatlist"/></para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputChatlist"/></para>		<para>Derived classes: <see cref="InputChatlistDialogFilter"/></para></summary>
 	public abstract class InputChatlist : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputChatlistDialogFilter"/></para></summary>
 	[TLDef(0xF3E0DA33)]
@@ -14691,6 +14695,7 @@ namespace TL
 	[TLDef(0x0C5181AC)]
 	public class ExportedChatlistInvite : IObject
 	{
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		public string title;
 		public string url;
@@ -14720,7 +14725,7 @@ namespace TL
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/chatlists.ChatlistInvite"/></para></summary>
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/chatlists.ChatlistInvite"/></para>		<para>Derived classes: <see cref="Chatlists_ChatlistInviteAlready"/>, <see cref="Chatlists_ChatlistInvite"/></para></summary>
 	public abstract class Chatlists_ChatlistInviteBase : IObject
 	{
 		public virtual Dictionary<long, ChatBase> Chats { get; }
@@ -14745,6 +14750,7 @@ namespace TL
 	[TLDef(0x1DCD839D)]
 	public class Chatlists_ChatlistInvite : Chatlists_ChatlistInviteBase, IPeerResolver
 	{
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		public string title;
 		[IfFlag(0)] public string emoticon;
@@ -14754,6 +14760,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="emoticon"/> has a value</summary>
 			has_emoticon = 0x1,
 		}
 

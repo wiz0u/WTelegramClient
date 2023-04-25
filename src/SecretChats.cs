@@ -170,7 +170,7 @@ namespace WTelegram
 		}
 
 		/// <summary>Processes the <see cref="UpdateEncryption"/> you received from Telegram (<see cref="Client.OnUpdate"/>).</summary>
-		/// <remarks>If update.chat is <see cref="EncryptedChatRequested"/>, you might want to first make sure you want to accept this secret chat initiated by user <see cref="EncryptedChatRequested.admin_id"/></remarks>
+		/// <param name="update">If update.chat is <see cref="EncryptedChatRequested"/>, you might want to first make sure you want to accept this secret chat initiated by user <see cref="EncryptedChatRequested.admin_id"/></param>
 		/// <param name="acceptChatRequests">Incoming requests for secret chats are automatically: accepted (<see langword="true"/>), rejected (<see langword="false"/>) or ignored (<see langword="null"/>)</param>
 		/// <returns><see langword="true"/> if the update was handled successfully</returns>
 		/// <exception cref="WTException"></exception>

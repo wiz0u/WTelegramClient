@@ -575,7 +575,7 @@ namespace TL
 		[TLDef(0x36B091DE)]
 		public class DecryptedMessage : DecryptedMessageBase
 		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a> (added in layer 45)</summary>
+			/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 			public Flags flags;
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public long random_id;
@@ -747,7 +747,7 @@ namespace TL
 		[TLDef(0x91CC4674)]
 		public class DecryptedMessage : DecryptedMessageBase
 		{
-			/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a> (added in layer 45)</summary>
+			/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 			public Flags flags;
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public long random_id;

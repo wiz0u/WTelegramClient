@@ -183,6 +183,7 @@ namespace TL
 			});
 
 		/// <summary>Login as a bot		<para>See <a href="https://corefork.telegram.org/method/auth.importBotAuthorization"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.importBotAuthorization#possible-errors">details</a>)</para></summary>
+		/// <param name="flags">Reserved for future use</param>
 		/// <param name="api_id">Application identifier (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="api_hash">Application identifier hash (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="bot_auth_token">Bot token (see <a href="https://corefork.telegram.org/bots">bots</a>)</param>
@@ -312,7 +313,7 @@ namespace TL
 				ios_push_secret = ios_push_secret,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.resetLoginEmail"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.resetLoginEmail"/> [bots: ✓]</para></summary>
 		public static Task<Auth_SentCodeBase> Auth_ResetLoginEmail(this Client client, string phone_number, string phone_code_hash)
 			=> client.Invoke(new Auth_ResetLoginEmail
 			{
@@ -2371,8 +2372,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary>Get all chats, channels and supergroups		<para>See <a href="https://corefork.telegram.org/method/messages.getAllChats"/></para></summary>
-		/// <param name="except_ids">Except these chats/channels/supergroups</param>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getAllChats"/></para></summary>
 		public static Task<Messages_Chats> Messages_GetAllChats(this Client client, long[] except_ids = null)
 			=> client.Invoke(new Messages_GetAllChats
 			{
@@ -3639,7 +3639,7 @@ namespace TL
 				platform = platform,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setChatWallPaper"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setChatWallPaper"/> [bots: ✓]</para></summary>
 		public static Task<UpdatesBase> Messages_SetChatWallPaper(this Client client, InputPeer peer, InputWallPaperBase wallpaper = null, int? id = null, WallPaperSettings settings = null)
 			=> client.Invoke(new Messages_SetChatWallPaper
 			{
@@ -4747,7 +4747,7 @@ namespace TL
 				lang_code = lang_code,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.reorderUsernames"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.reorderUsernames"/> [bots: ✓]</para></summary>
 		public static Task<bool> Bots_ReorderUsernames(this Client client, InputUserBase bot, params string[] order)
 			=> client.Invoke(new Bots_ReorderUsernames
 			{
@@ -4755,7 +4755,7 @@ namespace TL
 				order = order,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.toggleUsername"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.toggleUsername"/> [bots: ✓]</para></summary>
 		public static Task<bool> Bots_ToggleUsername(this Client client, InputUserBase bot, string username, bool active)
 			=> client.Invoke(new Bots_ToggleUsername
 			{
@@ -5472,7 +5472,7 @@ namespace TL
 				msg_id = msg_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.exportChatlistInvite"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.exportChatlistInvite"/> [bots: ✓]</para></summary>
 		public static Task<Chatlists_ExportedChatlistInvite> Chatlists_ExportChatlistInvite(this Client client, InputChatlist chatlist, string title, params InputPeer[] peers)
 			=> client.Invoke(new Chatlists_ExportChatlistInvite
 			{
@@ -5481,7 +5481,7 @@ namespace TL
 				peers = peers,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.deleteExportedInvite"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.deleteExportedInvite"/> [bots: ✓]</para></summary>
 		public static Task<bool> Chatlists_DeleteExportedInvite(this Client client, InputChatlist chatlist, string slug)
 			=> client.Invoke(new Chatlists_DeleteExportedInvite
 			{
@@ -5489,7 +5489,7 @@ namespace TL
 				slug = slug,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.editExportedInvite"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.editExportedInvite"/> [bots: ✓]</para></summary>
 		public static Task<ExportedChatlistInvite> Chatlists_EditExportedInvite(this Client client, InputChatlist chatlist, string slug, string title = null, InputPeer[] peers = null)
 			=> client.Invoke(new Chatlists_EditExportedInvite
 			{
@@ -5500,21 +5500,21 @@ namespace TL
 				peers = peers,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.getExportedInvites"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.getExportedInvites"/> [bots: ✓]</para></summary>
 		public static Task<Chatlists_ExportedInvites> Chatlists_GetExportedInvites(this Client client, InputChatlist chatlist)
 			=> client.Invoke(new Chatlists_GetExportedInvites
 			{
 				chatlist = chatlist,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.checkChatlistInvite"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.checkChatlistInvite"/> [bots: ✓]</para></summary>
 		public static Task<Chatlists_ChatlistInviteBase> Chatlists_CheckChatlistInvite(this Client client, string slug)
 			=> client.Invoke(new Chatlists_CheckChatlistInvite
 			{
 				slug = slug,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.joinChatlistInvite"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.joinChatlistInvite"/> [bots: ✓]</para></summary>
 		public static Task<UpdatesBase> Chatlists_JoinChatlistInvite(this Client client, string slug, params InputPeer[] peers)
 			=> client.Invoke(new Chatlists_JoinChatlistInvite
 			{
@@ -5522,14 +5522,14 @@ namespace TL
 				peers = peers,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.getChatlistUpdates"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.getChatlistUpdates"/> [bots: ✓]</para></summary>
 		public static Task<Chatlists_ChatlistUpdates> Chatlists_GetChatlistUpdates(this Client client, InputChatlist chatlist)
 			=> client.Invoke(new Chatlists_GetChatlistUpdates
 			{
 				chatlist = chatlist,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.joinChatlistUpdates"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.joinChatlistUpdates"/> [bots: ✓]</para></summary>
 		public static Task<UpdatesBase> Chatlists_JoinChatlistUpdates(this Client client, InputChatlist chatlist, params InputPeer[] peers)
 			=> client.Invoke(new Chatlists_JoinChatlistUpdates
 			{
@@ -5537,21 +5537,21 @@ namespace TL
 				peers = peers,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.hideChatlistUpdates"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.hideChatlistUpdates"/> [bots: ✓]</para></summary>
 		public static Task<bool> Chatlists_HideChatlistUpdates(this Client client, InputChatlist chatlist)
 			=> client.Invoke(new Chatlists_HideChatlistUpdates
 			{
 				chatlist = chatlist,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.getLeaveChatlistSuggestions"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.getLeaveChatlistSuggestions"/> [bots: ✓]</para></summary>
 		public static Task<Peer[]> Chatlists_GetLeaveChatlistSuggestions(this Client client, InputChatlist chatlist)
 			=> client.Invoke(new Chatlists_GetLeaveChatlistSuggestions
 			{
 				chatlist = chatlist,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.leaveChatlist"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.leaveChatlist"/> [bots: ✓]</para></summary>
 		public static Task<UpdatesBase> Chatlists_LeaveChatlist(this Client client, InputChatlist chatlist, params InputPeer[] peers)
 			=> client.Invoke(new Chatlists_LeaveChatlist
 			{
