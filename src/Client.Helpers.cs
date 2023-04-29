@@ -152,17 +152,7 @@ namespace WTelegram
 					reply_to_msg_id: reply_to_msg_id == 0 ? null : reply_to_msg_id, schedule_date: schedule_date == default ? null : schedule_date);
 			RaiseUpdate(updates);
 			int msgId = -1;
-			foreach (var update in updates.UpdateList)
-			{
-				switch (update)
-				{
-					case UpdateMessageID updMsgId when updMsgId.random_id == random_id: msgId = updMsgId.id; break;
-					case UpdateNewMessage { message: Message message } when message.id == msgId: return message;
-					case UpdateNewScheduledMessage { message: Message schedMsg } when schedMsg.id == msgId: return schedMsg;
-				}
-			}
 			if (updates is UpdateShortSentMessage sent)
-			{
 				return new Message
 				{
 					flags = (Message.Flags)sent.flags | (reply_to_msg_id == 0 ? 0 : Message.Flags.has_reply_to) | (peer is InputPeerSelf ? 0 : Message.Flags.has_from_id),
@@ -171,6 +161,14 @@ namespace WTelegram
 					from_id = peer is InputPeerSelf ? null : new PeerUser { user_id = _session.UserId },
 					peer_id = InputToPeer(peer)
 				};
+			foreach (var update in updates.UpdateList)
+			{
+				switch (update)
+				{
+					case UpdateMessageID updMsgId when updMsgId.random_id == random_id: msgId = updMsgId.id; break;
+					case UpdateNewMessage { message: Message message } when message.id == msgId: return message;
+					case UpdateNewScheduledMessage { message: Message schedMsg } when schedMsg.id == msgId: return schedMsg;
+				}
 			}
 			return null;
 		}
