@@ -18,10 +18,9 @@ namespace WTelegramClientTest
 			client.OnUpdate += Client_OnUpdate;
 			Console.ReadKey();
 
-			async Task Client_OnUpdate(IObject arg)
+			async Task Client_OnUpdate(UpdatesBase updates)
 			{
-				if (arg is not Updates { updates: var updates } upd) return;
-				foreach (var update in updates)
+				foreach (var update in updates.UpdateList)
 				{
 					if (update is not UpdateNewMessage { message: Message message })
 						continue; // if it's not about a new message, ignore the update

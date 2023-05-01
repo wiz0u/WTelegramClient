@@ -33,9 +33,8 @@ namespace WTelegramClientTest
 		}
 
 		// if not using async/await, we could just return Task.CompletedTask
-		private static async Task Client_OnUpdate(IObject arg)
+		private static async Task Client_OnUpdate(UpdatesBase updates)
 		{
-			if (arg is not UpdatesBase updates) return;
 			updates.CollectUsersChats(Users, Chats);
 			foreach (var update in updates.UpdateList)
 				switch (update)

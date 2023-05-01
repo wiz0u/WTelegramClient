@@ -25,7 +25,9 @@ namespace WTelegram
 	{
 		/// <summary>This event will be called when unsollicited updates/messages are sent by Telegram servers</summary>
 		/// <remarks>Make your handler <see langword="async"/>, or return <see cref="Task.CompletedTask"/> or <see langword="null"/><br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
-		public event Func<IObject, Task> OnUpdate;
+		public event Func<UpdatesBase, Task> OnUpdate;
+		/// <summary>This event is called for other types of notifications (login states, reactor errors, ...)</summary>
+		public event Func<IObject, Task> OnOther;
 		/// <summary>Used to create a TcpClient connected to the given address/port, or throw an exception on failure</summary>
 		public TcpFactory TcpHandler { get; set; } = DefaultTcpHandler;
 		public delegate Task<TcpClient> TcpFactory(string host, int port);
@@ -646,7 +648,7 @@ namespace WTelegram
 							}
 							break;
 						case 48: // incorrect server salt (in this case, the bad_server_salt response is received with the correct salt, and the message is to be re-sent with it)
-							_dcSession.Salt = ((BadServerSalt)badMsgNotification).new_server_salt;
+							_dcSession.Salt = ((BadServerSalt)badMsgNotification).new_server_salt; //TODO: GetFutureSalts
 							break;
 						default:
 							retryLast = false;
@@ -688,7 +690,7 @@ namespace WTelegram
 		{
 			try
 			{
-				var task = OnUpdate?.Invoke(obj);
+				var task = obj is UpdatesBase updates ? OnUpdate?.Invoke(updates) : OnOther?.Invoke(obj);
 				if (task != null) await task;
 			}
 			catch (Exception ex)

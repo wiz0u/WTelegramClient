@@ -39,9 +39,8 @@ namespace WTelegramClientTest
 			}
 		}
 
-		private static async Task Client_OnUpdate(IObject arg)
+		private static async Task Client_OnUpdate(UpdatesBase updates)
 		{
-			if (arg is not UpdatesBase updates) return;
 			updates.CollectUsersChats(Users, Chats);
 			foreach (var update in updates.UpdateList)
 			{
