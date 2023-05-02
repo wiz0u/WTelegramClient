@@ -430,13 +430,13 @@ namespace WTelegram
 					_dcSession.ServerTicksOffset = (msgId >> 32) * 10000000 - DateTime.UtcNow.Ticks + 621355968000000000L;
 				var msgStamp = MsgIdToStamp(_lastRecvMsgId = msgId);
 
-				if (serverSalt != _dcSession.Salt) // salt change happens every 30 min
+				if (serverSalt != _dcSession.Salt && serverSalt != _dcSession.Salts?.Values.ElementAtOrDefault(1))
 				{
-					Helpers.Log(2, $"{_dcSession.DcID}>Server salt has changed: {_dcSession.Salt:X} -> {serverSalt:X}");
+					Helpers.Log(3, $"{_dcSession.DcID}>Server salt has changed: {_dcSession.Salt:X} -> {serverSalt:X}");
 					_dcSession.Salt = serverSalt;
-					_saltChangeCounter += 1200; // counter is decreased by KeepAlive (we have margin of 10 min)
-					if (_saltChangeCounter >= 1800)
+					if (++_saltChangeCounter >= 10)
 						throw new WTException("Server salt changed too often! Security issue?");
+					CheckSalt();
 				}
 				if ((seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msgId);
 
@@ -471,6 +471,35 @@ namespace WTelegram
 				444 => "Invalid DC",
 				_ => Enum.GetName(typeof(HttpStatusCode), error_code) ?? "Transport error"
 			};
+		}
+
+		internal void CheckSalt()
+		{
+			lock (_session)
+			{
+				_dcSession.Salts ??= new();
+				if (_dcSession.Salts.Count != 0)
+				{
+					var keys = _dcSession.Salts.Keys;
+					if (keys[^1] == DateTime.MaxValue) return; // GetFutureSalts ongoing
+					var now = DateTime.UtcNow.AddTicks(_dcSession.ServerTicksOffset);
+					for (; keys.Count > 1 && keys[1] < now; _dcSession.Salt = _dcSession.Salts.Values[0])
+						_dcSession.Salts.RemoveAt(0);
+					if (_dcSession.Salts.Count > 48) return;
+				}
+				_dcSession.Salts[DateTime.MaxValue] = 0;
+			}
+			Task.Delay(5000).ContinueWith(_ => this.GetFutureSalts(128).ContinueWith(gfs =>
+			{
+				lock (_session)
+				{
+					_dcSession.Salts.Remove(DateTime.MaxValue);
+					foreach (var entry in gfs.Result.salts)
+						_dcSession.Salts[entry.valid_since] = entry.salt;
+					_dcSession.Salt = _dcSession.Salts.Values[0];
+					_session.Save();
+				}
+			}));
 		}
 
 		internal MsgContainer ReadMsgContainer(BinaryReader reader)
@@ -648,7 +677,8 @@ namespace WTelegram
 							}
 							break;
 						case 48: // incorrect server salt (in this case, the bad_server_salt response is received with the correct salt, and the message is to be re-sent with it)
-							_dcSession.Salt = ((BadServerSalt)badMsgNotification).new_server_salt; //TODO: GetFutureSalts
+							_dcSession.Salt = ((BadServerSalt)badMsgNotification).new_server_salt;
+							CheckSalt();
 							break;
 						default:
 							retryLast = false;
@@ -817,7 +847,7 @@ namespace WTelegram
 #endif
 			await _networkStream.WriteAsync(preamble, 0, preamble.Length, _cts.Token);
 
-			_saltChangeCounter = 0;
+			_dcSession.Salts?.Remove(DateTime.MaxValue);
 			_reactorTask = Reactor(_networkStream, _cts);
 			_sendSemaphore.Release();
 
@@ -840,7 +870,6 @@ namespace WTelegram
 						query = new TL.Methods.Help_GetConfig()
 					});
 				_session.DcOptions = TLConfig.dc_options;
-				_saltChangeCounter = 0;
 				if (_dcSession.DataCenter == null)
 				{
 					_dcSession.DataCenter = _session.DcOptions.Where(dc => dc.id == TLConfig.this_dc)
@@ -856,7 +885,7 @@ namespace WTelegram
 			{
 				lock (_session) _session.Save();
 			}
-			Helpers.Log(2, $"Connected to {(TLConfig.test_mode ? "Test DC" : "DC")} {TLConfig.this_dc}... {TLConfig.flags & (Config.Flags)~0xE00U}");
+			Helpers.Log(2, $"Connected to {(TLConfig.test_mode ? "Test DC" : "DC")} {TLConfig.this_dc}... {TLConfig.flags & (Config.Flags)~0x18E00U}");
 		}
 
 		private async Task KeepAlive(CancellationToken ct)
@@ -865,7 +894,6 @@ namespace WTelegram
 			while (!ct.IsCancellationRequested)
 			{
 				await Task.Delay(Math.Abs(PingInterval) * 1000, ct);
-				if (_saltChangeCounter > 0) _saltChangeCounter -= Math.Abs(PingInterval);
 				if (PingInterval <= 0)
 					await this.Ping(ping_id++);
 				else // see https://core.telegram.org/api/optimisation#grouping-updates
@@ -1224,6 +1252,7 @@ namespace WTelegram
 				}
 				else
 				{
+					CheckSalt();
 					using var clearStream = new MemoryStream(1024);
 					using var clearWriter = new BinaryWriter(clearStream);
 					clearWriter.Write(_dcSession.AuthKey, 88, 32);

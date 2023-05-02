@@ -684,7 +684,7 @@ namespace WTelegram
 		private static readonly char[] QueryOrFragment = new[] { '?', '#' };
 
 		/// <summary>Return information about a chat/channel based on Invite Link</summary>
-		/// <param name="url">Channel or Invite Link, like https://t.me/+InviteHash, https://t.me/joinchat/InviteHash or https://t.me/channelname</param>
+		/// <param name="url">Public link or Invite link, like https://t.me/+InviteHash, https://t.me/joinchat/InviteHash or https://t.me/channelname<br/>Also work without https:// prefix</param>
 		/// <param name="join"><see langword="true"/> to also join the chat/channel</param>
 		/// <returns>a Chat or Channel, possibly partial Channel information only (with flag <see cref="Channel.Flags.min"/>)</returns>
 		public async Task<ChatBase> AnalyzeInviteLink(string url, bool join = false)
@@ -693,7 +693,7 @@ namespace WTelegram
 			start = url.IndexOf('/', start + 2) + 1;
 			int end = url.IndexOfAny(QueryOrFragment, start);
 			if (end == -1) end = url.Length;
-			if (start == 0 || end == start) throw new ArgumentException("Invalid URI");
+			if (start == 0 || end == start) throw new ArgumentException("Invalid URL");
 			string hash;
 			if (url[start] == '+')
 				hash = url[(start + 1)..end]; 
@@ -740,11 +740,11 @@ namespace WTelegram
 					return !ci.flags.HasFlag(ChatInvite.Flags.channel)
 						? new Chat { title = ci.title, photo = chatPhoto, participants_count = ci.participants_count }
 						: new Channel { title = ci.title, photo = chatPhoto, participants_count = ci.participants_count,
-							restriction_reason = rrAbout,
-							flags = (ci.flags.HasFlag(ChatInvite.Flags.broadcast) ? Channel.Flags.broadcast | Channel.Flags.min : Channel.Flags.min) |
-									(ci.flags.HasFlag(ChatInvite.Flags.public_) ? Channel.Flags.has_username : 0) |
-									(ci.flags.HasFlag(ChatInvite.Flags.megagroup) ? Channel.Flags.megagroup : 0) |
-									(ci.flags.HasFlag(ChatInvite.Flags.request_needed) ? Channel.Flags.join_request : 0) };
+							restriction_reason = rrAbout, flags = Channel.Flags.min |
+								(ci.flags.HasFlag(ChatInvite.Flags.broadcast) ? Channel.Flags.broadcast : 0) |
+								(ci.flags.HasFlag(ChatInvite.Flags.public_) ? Channel.Flags.has_username : 0) |
+								(ci.flags.HasFlag(ChatInvite.Flags.megagroup) ? Channel.Flags.megagroup : 0) |
+								(ci.flags.HasFlag(ChatInvite.Flags.request_needed) ? Channel.Flags.join_request : 0) };
 			}
 			return null;
 		}
@@ -758,7 +758,7 @@ namespace WTelegram
 			int start = url.IndexOf("//");
 			start = url.IndexOf('/', start + 2) + 1;
 			int slash = url.IndexOf('/', start + 2);
-			if (start == 0 || slash == -1) throw new ArgumentException("Invalid URI");
+			if (start == 0 || slash == -1) throw new ArgumentException("Invalid URL");
 			int end = url.IndexOfAny(QueryOrFragment, slash + 1);
 			if (end == -1) end = url.Length;
 			ChatBase chat;
