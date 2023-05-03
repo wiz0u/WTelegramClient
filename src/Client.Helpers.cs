@@ -553,16 +553,15 @@ namespace WTelegram
 		{
 			var admins = admin == null ? null : new[] { admin };
 			var result = await this.Channels_GetAdminLog(channel, q, events_filter: events_filter, admins: admins);
-			if (result.events.Length < 100) return result;
 			var resultFull = result;
-			List<ChannelAdminLogEvent> events = new(result.events);
-			do
+			var events = new List<ChannelAdminLogEvent>(result.events);
+			while (result.events.Length > 0)
 			{
 				result = await this.Channels_GetAdminLog(channel, q, max_id: result.events[^1].id, events_filter: events_filter, admins: admins);
 				events.AddRange(result.events);
 				foreach (var kvp in result.chats) resultFull.chats[kvp.Key] = kvp.Value;
 				foreach (var kvp in result.users) resultFull.users[kvp.Key] = kvp.Value;
-			} while (result.events.Length >= 100);
+			}
 			resultFull.events = events.ToArray();
 			return resultFull;
 		}

@@ -583,7 +583,7 @@ namespace TL
 
 	partial class ChannelAdminLogEventsFilter
 	{
-		public static implicit operator ChannelAdminLogEventsFilter(Flags flags) => new() { flags = flags };
+		public static implicit operator ChannelAdminLogEventsFilter(Flags flags) => flags == 0 ? null : new() { flags = flags };
 	}
 
 	partial class InputMessage
