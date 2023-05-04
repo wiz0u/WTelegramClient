@@ -680,31 +680,31 @@ namespace WTelegram
 		public async Task<bool> ReadHistory(InputPeer peer, int max_id = default)
 			=> peer is InputPeerChannel channel ? await this.Channels_ReadHistory(channel, max_id) : (await this.Messages_ReadHistory(peer, max_id)) != null;
 
-		private static readonly char[] QueryOrFragment = new[] { '?', '#' };
+		private static readonly char[] UrlSeparator = new[] { '?', '#', '/' };
 
 		/// <summary>Return information about a chat/channel based on Invite Link</summary>
 		/// <param name="url">Public link or Invite link, like https://t.me/+InviteHash, https://t.me/joinchat/InviteHash or https://t.me/channelname<br/>Also work without https:// prefix</param>
 		/// <param name="join"><see langword="true"/> to also join the chat/channel</param>
+		/// <param name="chats">previously collected chats, to prevent unnecessary ResolveUsername</param>
 		/// <returns>a Chat or Channel, possibly partial Channel information only (with flag <see cref="Channel.Flags.min"/>)</returns>
-		public async Task<ChatBase> AnalyzeInviteLink(string url, bool join = false)
+		public async Task<ChatBase> AnalyzeInviteLink(string url, bool join = false, IDictionary<long, ChatBase> chats = null)
 		{
 			int start = url.IndexOf("//");
 			start = url.IndexOf('/', start + 2) + 1;
-			int end = url.IndexOfAny(QueryOrFragment, start);
+			int end = url.IndexOfAny(UrlSeparator, start);
 			if (end == -1) end = url.Length;
 			if (start == 0 || end == start) throw new ArgumentException("Invalid URL");
 			string hash;
 			if (url[start] == '+')
-				hash = url[(start + 1)..end]; 
+				hash = url[(start + 1)..end];
 			else if (string.Compare(url, start, "joinchat/", 0, 9, StringComparison.OrdinalIgnoreCase) == 0)
-				hash = url[(start + 9)..end];
+				hash = url[(end + 1)..];
 			else
 			{
-				var resolved = await this.Contacts_ResolveUsername(url[start..end]);
-				var chat = resolved.Chat;
-				if (join && chat != null)
+				var chat = await CachedOrResolveUsername(url[start..end], chats);
+				if (join && chat is Channel channel)
 				{
-					var res = await this.Channels_JoinChannel((Channel)chat); 
+					var res = await this.Channels_JoinChannel(channel);
 					chat = res.Chats[chat.ID];
 				}
 				return chat;
@@ -750,32 +750,45 @@ namespace WTelegram
 
 		/// <summary>Return chat and message details based on a message URL</summary>
 		/// <param name="url">Message Link, like https://t.me/c/1234567890/1234 or https://t.me/channelname/1234</param>
+		/// <param name="chats">previously collected chats, to prevent unnecessary ResolveUsername</param>
 		/// <returns>Structure containing the message, chat and user details</returns>
 		/// <remarks>If link is for private group (<c>t.me/c/..</c>), user must have joined the group</remarks>
-		public async Task<Messages_ChannelMessages> GetMessageByLink(string url)
+		public async Task<Messages_ChannelMessages> GetMessageByLink(string url, IDictionary<long, ChatBase> chats = null)
 		{
 			int start = url.IndexOf("//");
 			start = url.IndexOf('/', start + 2) + 1;
 			int slash = url.IndexOf('/', start + 2);
 			if (start == 0 || slash == -1) throw new ArgumentException("Invalid URL");
-			int end = url.IndexOfAny(QueryOrFragment, slash + 1);
+			int end = url.IndexOfAny(UrlSeparator, slash + 1);
 			if (end == -1) end = url.Length;
+			int msgId = int.Parse(url[(slash + 1)..end]);
 			ChatBase chat;
 			if (url[start] is 'c' or 'C' && url[start + 1] == '/')
 			{
 				long chatId = long.Parse(url[(start + 2)..slash]);
-				var chats = await this.Channels_GetChannels(new InputChannel(chatId, 0));
-				if (!chats.chats.TryGetValue(chatId, out chat))
+				var mc = await this.Channels_GetChannels(new InputChannel(chatId, 0));
+				if (!mc.chats.TryGetValue(chatId, out chat))
 					throw new WTException($"Channel {chatId} not found");
 			}
 			else
+				chat = await CachedOrResolveUsername(url[start..slash], chats);
+			if (chat is not Channel channel) throw new WTException($"URL does not identify a valid Channel");
+			return await this.Channels_GetMessages(channel, msgId) as Messages_ChannelMessages;
+		}
+
+		private async Task<ChatBase> CachedOrResolveUsername(string username, IDictionary<long, ChatBase> chats = null)
+		{
+			if (chats == null)
+				return (await this.Contacts_ResolveUsername(username)).Chat;
+			ChatBase chat;
+			lock (chats)
+				chat = chats.Values.OfType<Channel>().FirstOrDefault(ch => ch.ActiveUsernames.Contains(username, StringComparer.OrdinalIgnoreCase));
+			if (chat == null)
 			{
-				var resolved = await this.Contacts_ResolveUsername(url[start..slash]);
-				chat = resolved.Chat;
-				if (chat is null) throw new WTException($"@{url[start..slash]} is not a Chat/Channel");
+				chat = (await this.Contacts_ResolveUsername(username)).Chat;
+				if (chat != null) lock (chats) chats[chat.ID] = chat;
 			}
-			int msgId = int.Parse(url[(slash + 1)..end]);
-			return await this.Channels_GetMessages((Channel)chat, msgId) as Messages_ChannelMessages;
+			return chat;
 		}
 		#endregion
 	}

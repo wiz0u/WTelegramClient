@@ -223,12 +223,24 @@ namespace TL
 	{
 		public override bool IsActive => (flags & Flags.left) == 0;
 		public override bool IsChannel => (flags & Flags.broadcast) != 0;
-		public override string MainUsername => username ?? usernames?.FirstOrDefault(u => u.flags.HasFlag(Username.Flags.active))?.username;
+		public override string MainUsername => username ?? usernames?.FirstOrDefault(un => un.flags.HasFlag(Username.Flags.active))?.username;
 		public override ChatPhoto Photo => photo;
 		public override bool IsBanned(ChatBannedRights.Flags flags = 0) => ((banned_rights?.flags ?? 0) & flags) != 0 || ((default_banned_rights?.flags ?? 0) & flags) != 0;
 		public override InputPeer ToInputPeer() => new InputPeerChannel(id, access_hash);
 		public static implicit operator InputChannel(Channel channel) => new(channel.id, channel.access_hash);
 		public override string ToString() => (flags.HasFlag(Flags.broadcast) ? "Channel " : "Group ") + (MainUsername is string uname ? '@' + uname : $"\"{title}\"");
+		public IEnumerable<string> ActiveUsernames
+		{
+			get
+			{
+				if (username != null)
+					yield return username;
+				if (usernames != null)
+					foreach (var un in usernames)
+						if (un.flags.HasFlag(Username.Flags.active))
+							yield return un.username;
+			}
+		}
 	}
 	partial class ChannelForbidden
 	{
