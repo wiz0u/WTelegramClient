@@ -484,6 +484,32 @@ else if (firstPeer is ChatBase firstChat) Console.WriteLine($"First dialog is {f
 
 *Note: If you need to save/restore those dictionaries between runs of your program, it's up to you to serialize their content to disk*
 
+<a name="message-user"></a>
+## Get chat and user info from a message
+First, you should read the above [section about collecting users/chats](#collect-users-chats), and the [FAQ about dealing with IDs](FAQ.md#access-hash).
+
+A message contains those two fields/properties:
+- `peer_id`/`Peer` that identify WHERE the message was posted
+- `from_id`/`From` that identify WHO posted the message (it can be `null` in some case of anonymous posting)
+
+These two fields derive from class `Peer` and can be of type `PeerChat`, `PeerChannel` or `PeerUser` depending on the nature of WHERE & WHO (private chat with a user? message posted BY a channel IN a chat? ...)
+
+The root structure where you obtained the message (typically `UpdatesBase` or `Messages_MessagesBase`) inherits from `IPeerResolver`. This allows you to call `.UserOrChat(peer)` on the root structure, in order to resolve those fields into a `User` class, or a `ChatBase`-derived class (typically `Chat` or `Channel`) which will give you details about the peer, instead of just the ID.
+
+However, in some case _(typically when dealing with updates)_, Telegram might choose to not include details about a peer because it expects you to already know about it (`UserOrChat` returns `null`). That's why you should collect users/chats details each time you're dealing with Updates or other API results inheriting from `IPeerResolver`, and use the collected dictionaries to find details about users/chats ([see previous section](#collect-users-chats) and [Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23) example)
+
+And finally, it may happen that you receive updates of type `UpdateShortMessage` or `UpdateShortChatMessage` with totally unknown peers (even in your collected dictionaries).
+In this case, [Telegram recommends](https://core.telegram.org/api/updates#recovering-gaps) that you use the [`Updates_GetDifference`](https://corefork.telegram.org/method/updates.getDifference) method to retrieve the full information associated with the short message.
+Here is an example showing how to deal with `UpdateShortMessage`: (same for `UpdateShortChatMessage`)
+```csharp
+if (updates is UpdateShortMessage usm && !_users.ContainsKey(usm.user_id))
+{
+    var fullDiff = await client.Updates_GetDifference(usm.pts - usm.pts_count, usm.date, 0)
+    fullDiff.CollectUsersChats(_users, _chats);
+}
+```
+
+
 <a name="proxy"></a>
 ## Use a proxy or MTProxy to connect to Telegram
 SOCKS/HTTPS proxies can be used through the `client.TcpHandler` delegate and a proxy library like [StarkSoftProxy](https://www.nuget.org/packages/StarkSoftProxy/) or [xNetStandard](https://www.nuget.org/packages/xNetStandard/):
