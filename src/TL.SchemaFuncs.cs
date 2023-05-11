@@ -303,6 +303,7 @@ namespace TL
 		/// <param name="phone_number">Phone number</param>
 		/// <param name="phone_code_hash">Phone code hash returned by <see cref="Auth_SendCode">Auth_SendCode</see></param>
 		/// <param name="safety_net_token">On Android, a JWS object obtained as described in the <a href="https://corefork.telegram.org/api/auth">auth documentation »</a></param>
+		/// <param name="ios_push_secret">Secret token received via an apple push notification</param>
 		public static Task<bool> Auth_RequestFirebaseSms(this Client client, string phone_number, string phone_code_hash, string safety_net_token = null, string ios_push_secret = null)
 			=> client.Invoke(new Auth_RequestFirebaseSms
 			{
@@ -313,7 +314,9 @@ namespace TL
 				ios_push_secret = ios_push_secret,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.resetLoginEmail"/> [bots: ✓]</para></summary>
+		/// <summary>Reset the <a href="https://corefork.telegram.org/api/auth#email-verification">login email »</a>.		<para>See <a href="https://corefork.telegram.org/method/auth.resetLoginEmail"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.resetLoginEmail#possible-errors">details</a>)</para></summary>
+		/// <param name="phone_number">Phone number of the account</param>
+		/// <param name="phone_code_hash">Phone code hash, obtained as described in the <a href="https://corefork.telegram.org/api/auth">documentation »</a></param>
 		public static Task<Auth_SentCodeBase> Auth_ResetLoginEmail(this Client client, string phone_number, string phone_code_hash)
 			=> client.Invoke(new Auth_ResetLoginEmail
 			{
@@ -772,6 +775,7 @@ namespace TL
 			});
 
 		/// <summary>Create and upload a new <a href="https://corefork.telegram.org/api/wallpapers">wallpaper</a>		<para>See <a href="https://corefork.telegram.org/method/account.uploadWallPaper"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.uploadWallPaper#possible-errors">details</a>)</para></summary>
+		/// <param name="for_chat">Set this flag when uploading wallpapers to be passed to <see cref="Messages_SetChatWallPaper">Messages_SetChatWallPaper</see>.</param>
 		/// <param name="file">The JPG/PNG wallpaper</param>
 		/// <param name="mime_type">MIME type of uploaded wallpaper</param>
 		/// <param name="settings">Wallpaper settings</param>
@@ -1086,9 +1090,9 @@ namespace TL
 				order = order,
 			});
 
-		/// <summary>Associate or dissociate a purchased <a href="https://fragment.com">fragment.com</a> username to the currently logged-in user.		<para>See <a href="https://corefork.telegram.org/method/account.toggleUsername"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.toggleUsername#possible-errors">details</a>)</para></summary>
+		/// <summary>Activate or deactivate a purchased <a href="https://fragment.com">fragment.com</a> username associated to the currently logged-in user.		<para>See <a href="https://corefork.telegram.org/method/account.toggleUsername"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.toggleUsername#possible-errors">details</a>)</para></summary>
 		/// <param name="username">Username</param>
-		/// <param name="active">Whether to associate or dissociate it</param>
+		/// <param name="active">Whether to activate or deactivate it</param>
 		public static Task<bool> Account_ToggleUsername(this Client client, string username, bool active)
 			=> client.Invoke(new Account_ToggleUsername
 			{
@@ -3199,7 +3203,7 @@ namespace TL
 		/// <param name="add_to_recent">Add this reaction to the <a href="https://corefork.telegram.org/api/reactions#recent-reactions">recent reactions list »</a>.</param>
 		/// <param name="peer">Peer</param>
 		/// <param name="msg_id">Message ID to react to</param>
-		/// <param name="reaction">Reaction (a UTF8 emoji)</param>
+		/// <param name="reaction">A list of reactions</param>
 		public static Task<UpdatesBase> Messages_SendReaction(this Client client, InputPeer peer, int msg_id, Reaction[] reaction = null, bool big = false, bool add_to_recent = false)
 			=> client.Invoke(new Messages_SendReaction
 			{
@@ -3527,7 +3531,9 @@ namespace TL
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getExtendedMedia"/></para></summary>
+		/// <summary>Get information about extended media		<para>See <a href="https://corefork.telegram.org/method/messages.getExtendedMedia"/></para></summary>
+		/// <param name="peer">Peer</param>
+		/// <param name="id">Message IDs</param>
 		public static Task<UpdatesBase> Messages_GetExtendedMedia(this Client client, InputPeer peer, params int[] id)
 			=> client.Invoke(new Messages_GetExtendedMedia
 			{
@@ -3639,7 +3645,11 @@ namespace TL
 				platform = platform,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setChatWallPaper"/> [bots: ✓]</para></summary>
+		/// <summary>Set a custom <a href="https://corefork.telegram.org/api/wallpapers">wallpaper »</a> in a specific private chat with another user.		<para>See <a href="https://corefork.telegram.org/method/messages.setChatWallPaper"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setChatWallPaper#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">The private chat where the wallpaper will be set</param>
+		/// <param name="wallpaper">The <a href="https://corefork.telegram.org/api/wallpapers">wallpaper »</a>, obtained as described in the <a href="https://corefork.telegram.org/api/wallpapers#uploading-wallpapers">wallpaper documentation »</a> or from a <see cref="MessageActionSetChatWallPaper"/> service message.</param>
+		/// <param name="settings">Wallpaper settings, obtained as described in the <a href="https://corefork.telegram.org/api/wallpapers#uploading-wallpapers">wallpaper documentation »</a> or from <see cref="MessageActionSetChatWallPaper"/>.<c>wallpaper</c>.<c>settings</c>.</param>
+		/// <param name="id">If the wallpaper was obtained from a <see cref="MessageActionSetChatWallPaper"/> service message, must contain the ID of that message.</param>
 		public static Task<UpdatesBase> Messages_SetChatWallPaper(this Client client, InputPeer peer, InputWallPaperBase wallpaper = null, int? id = null, WallPaperSettings settings = null)
 			=> client.Invoke(new Messages_SetChatWallPaper
 			{
@@ -3687,8 +3697,9 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary>Installs a previously uploaded photo as a profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.updateProfilePhoto"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.updateProfilePhoto#possible-errors">details</a>)</para></summary>
+		/// <summary>Installs a previously uploaded photo as a profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.updateProfilePhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.updateProfilePhoto#possible-errors">details</a>)</para></summary>
 		/// <param name="fallback">If set, the chosen profile photo will be shown to users that can't display your main profile photo due to your privacy settings.</param>
+		/// <param name="bot">Can contain info of a bot we own, to change the profile photo of that bot, instead of the current user.</param>
 		/// <param name="id">Input photo</param>
 		public static Task<Photos_Photo> Photos_UpdateProfilePhoto(this Client client, InputPhoto id, InputUserBase bot = null, bool fallback = false)
 			=> client.Invoke(new Photos_UpdateProfilePhoto
@@ -3698,8 +3709,9 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary>Updates current user profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.uploadProfilePhoto"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.uploadProfilePhoto#possible-errors">details</a>)</para></summary>
+		/// <summary>Updates current user profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.uploadProfilePhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.uploadProfilePhoto#possible-errors">details</a>)</para></summary>
 		/// <param name="fallback">If set, the chosen profile photo will be shown to users that can't display your main profile photo due to your privacy settings.</param>
+		/// <param name="bot">Can contain info of a bot we own, to change the profile photo of that bot, instead of the current user.</param>
 		/// <param name="file">Profile photo</param>
 		/// <param name="video"><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> video</param>
 		/// <param name="video_start_ts">Floating point UNIX timestamp in seconds, indicating the frame of the video/sticker that should be used as static preview; can only be used if <c>video</c> or <c>video_emoji_markup</c> is set.</param>
@@ -3971,7 +3983,7 @@ namespace TL
 			{
 			});
 
-		/// <summary>Internal use		<para>See <a href="https://corefork.telegram.org/method/help.getUserInfo"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/help.getUserInfo#possible-errors">details</a>)</para></summary>
+		/// <summary>Can only be used by TSF members to obtain internal information.		<para>See <a href="https://corefork.telegram.org/method/help.getUserInfo"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/help.getUserInfo#possible-errors">details</a>)</para></summary>
 		/// <param name="user_id">User ID</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.userInfoEmpty">help.userInfoEmpty</a></returns>
 		public static Task<Help_UserInfo> Help_GetUserInfo(this Client client, InputUserBase user_id)
@@ -4474,10 +4486,10 @@ namespace TL
 				order = order,
 			});
 
-		/// <summary>Associate or dissociate a purchased <a href="https://fragment.com">fragment.com</a> username to a <a href="https://corefork.telegram.org/api/channel">supergroup or channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.toggleUsername"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleUsername#possible-errors">details</a>)</para></summary>
+		/// <summary>Activate or deactivate a purchased <a href="https://fragment.com">fragment.com</a> username associated to a <a href="https://corefork.telegram.org/api/channel">supergroup or channel</a> we own.		<para>See <a href="https://corefork.telegram.org/method/channels.toggleUsername"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleUsername#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Supergroup or channel</a></param>
 		/// <param name="username">Username</param>
-		/// <param name="active">Whether to associate or dissociate the username</param>
+		/// <param name="active">Whether to activate or deactivate the username</param>
 		public static Task<bool> Channels_ToggleUsername(this Client client, InputChannelBase channel, string username, bool active)
 			=> client.Invoke(new Channels_ToggleUsername
 			{
@@ -4722,8 +4734,10 @@ namespace TL
 				admin_rights = admin_rights,
 			});
 
-		/// <summary>Set our about text and description (bots only)		<para>See <a href="https://corefork.telegram.org/method/bots.setBotInfo"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.setBotInfo#possible-errors">details</a>)</para></summary>
+		/// <summary>Set localized name, about text and description of a bot (or of the current account, if called by a bot).		<para>See <a href="https://corefork.telegram.org/method/bots.setBotInfo"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.setBotInfo#possible-errors">details</a>)</para></summary>
+		/// <param name="bot">If called by a user, <strong>must</strong> contain the peer of a bot we own.</param>
 		/// <param name="lang_code">Language code, if left empty update the fallback about text and description</param>
+		/// <param name="name">New bot name</param>
 		/// <param name="about">New about text</param>
 		/// <param name="description">New description</param>
 		public static Task<bool> Bots_SetBotInfo(this Client client, string lang_code, string about = null, string description = null, InputUserBase bot = null, string name = null)
@@ -4737,7 +4751,8 @@ namespace TL
 				description = description,
 			});
 
-		/// <summary>Get our about text and description (bots only)		<para>See <a href="https://corefork.telegram.org/method/bots.getBotInfo"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.getBotInfo#possible-errors">details</a>)</para></summary>
+		/// <summary>Get localized name, about text and description of a bot (or of the current account, if called by a bot).		<para>See <a href="https://corefork.telegram.org/method/bots.getBotInfo"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.getBotInfo#possible-errors">details</a>)</para></summary>
+		/// <param name="bot">If called by a user, <strong>must</strong> contain the peer of a bot we own.</param>
 		/// <param name="lang_code">Language code, if left empty this method will return the fallback about text and description.</param>
 		public static Task<Bots_BotInfo> Bots_GetBotInfo(this Client client, string lang_code, InputUserBase bot = null)
 			=> client.Invoke(new Bots_GetBotInfo
@@ -4747,7 +4762,9 @@ namespace TL
 				lang_code = lang_code,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.reorderUsernames"/> [bots: ✓]</para></summary>
+		/// <summary>Reorder usernames associated to a bot we own.		<para>See <a href="https://corefork.telegram.org/method/bots.reorderUsernames"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.reorderUsernames#possible-errors">details</a>)</para></summary>
+		/// <param name="bot">The bot</param>
+		/// <param name="order">The new order for active usernames. All active usernames must be specified.</param>
 		public static Task<bool> Bots_ReorderUsernames(this Client client, InputUserBase bot, params string[] order)
 			=> client.Invoke(new Bots_ReorderUsernames
 			{
@@ -4755,7 +4772,10 @@ namespace TL
 				order = order,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.toggleUsername"/> [bots: ✓]</para></summary>
+		/// <summary>Activate or deactivate a purchased <a href="https://fragment.com">fragment.com</a> username associated to a bot we own.		<para>See <a href="https://corefork.telegram.org/method/bots.toggleUsername"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.toggleUsername#possible-errors">details</a>)</para></summary>
+		/// <param name="bot">The bot</param>
+		/// <param name="username">Username</param>
+		/// <param name="active">Whether to activate or deactivate it</param>
 		public static Task<bool> Bots_ToggleUsername(this Client client, InputUserBase bot, string username, bool active)
 			=> client.Invoke(new Bots_ToggleUsername
 			{
@@ -5472,7 +5492,10 @@ namespace TL
 				msg_id = msg_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.exportChatlistInvite"/> [bots: ✓]</para></summary>
+		/// <summary>Export a <a href="https://corefork.telegram.org/api/folders">folder »</a>, creating a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/chatlists.exportChatlistInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/chatlists.exportChatlistInvite#possible-errors">details</a>)</para></summary>
+		/// <param name="chatlist">The folder to export</param>
+		/// <param name="title">An optional name for the link</param>
+		/// <param name="peers">The list of channels, group and supergroups to share with the link. Basic groups will automatically be <a href="https://corefork.telegram.org/api/channel#migration">converted to supergroups</a> when invoking the method.</param>
 		public static Task<Chatlists_ExportedChatlistInvite> Chatlists_ExportChatlistInvite(this Client client, InputChatlist chatlist, string title, params InputPeer[] peers)
 			=> client.Invoke(new Chatlists_ExportChatlistInvite
 			{
@@ -5481,7 +5504,9 @@ namespace TL
 				peers = peers,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.deleteExportedInvite"/> [bots: ✓]</para></summary>
+		/// <summary>Delete a previously created <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/chatlists.deleteExportedInvite"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/chatlists.deleteExportedInvite#possible-errors">details</a>)</para></summary>
+		/// <param name="chatlist">The related folder</param>
+		/// <param name="slug"><c>slug</c> obtained from the <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.</param>
 		public static Task<bool> Chatlists_DeleteExportedInvite(this Client client, InputChatlist chatlist, string slug)
 			=> client.Invoke(new Chatlists_DeleteExportedInvite
 			{
@@ -5489,7 +5514,11 @@ namespace TL
 				slug = slug,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.editExportedInvite"/> [bots: ✓]</para></summary>
+		/// <summary>Edit a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/chatlists.editExportedInvite"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/chatlists.editExportedInvite#possible-errors">details</a>)</para></summary>
+		/// <param name="chatlist">Folder ID</param>
+		/// <param name="slug"><c>slug</c> obtained from the <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.</param>
+		/// <param name="title">If set, sets a new name for the link</param>
+		/// <param name="peers">If set, changes the list of peers shared with the link</param>
 		public static Task<ExportedChatlistInvite> Chatlists_EditExportedInvite(this Client client, InputChatlist chatlist, string slug, string title = null, InputPeer[] peers = null)
 			=> client.Invoke(new Chatlists_EditExportedInvite
 			{
@@ -5500,21 +5529,25 @@ namespace TL
 				peers = peers,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.getExportedInvites"/> [bots: ✓]</para></summary>
+		/// <summary>List all <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep links »</a> associated to a folder		<para>See <a href="https://corefork.telegram.org/method/chatlists.getExportedInvites"/> [bots: ✓]</para></summary>
+		/// <param name="chatlist">The folder</param>
 		public static Task<Chatlists_ExportedInvites> Chatlists_GetExportedInvites(this Client client, InputChatlist chatlist)
 			=> client.Invoke(new Chatlists_GetExportedInvites
 			{
 				chatlist = chatlist,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.checkChatlistInvite"/> [bots: ✓]</para></summary>
+		/// <summary>Obtain information about a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/chatlists.checkChatlistInvite"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/chatlists.checkChatlistInvite#possible-errors">details</a>)</para></summary>
+		/// <param name="slug"><c>slug</c> obtained from the <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a></param>
 		public static Task<Chatlists_ChatlistInviteBase> Chatlists_CheckChatlistInvite(this Client client, string slug)
 			=> client.Invoke(new Chatlists_CheckChatlistInvite
 			{
 				slug = slug,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.joinChatlistInvite"/> [bots: ✓]</para></summary>
+		/// <summary>Import a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>, joining some or all the chats in the folder.		<para>See <a href="https://corefork.telegram.org/method/chatlists.joinChatlistInvite"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/chatlists.joinChatlistInvite#possible-errors">details</a>)</para></summary>
+		/// <param name="slug"><c>slug</c> obtained from a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.</param>
+		/// <param name="peers">List of new chats to join, fetched using <see cref="Chatlists_CheckChatlistInvite">Chatlists_CheckChatlistInvite</see> and filtered as specified in the <a href="https://corefork.telegram.org/api/folders#shared-folders">documentation »</a>.</param>
 		public static Task<UpdatesBase> Chatlists_JoinChatlistInvite(this Client client, string slug, params InputPeer[] peers)
 			=> client.Invoke(new Chatlists_JoinChatlistInvite
 			{
@@ -5522,14 +5555,17 @@ namespace TL
 				peers = peers,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.getChatlistUpdates"/> [bots: ✓]</para></summary>
+		/// <summary>Fetch new chats associated with an imported <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>. Must be invoked at most every <c>chatlist_update_period</c> seconds (as per the related <a href="https://corefork.telegram.org/api/config#chatlist-update-period">client configuration parameter »</a>).		<para>See <a href="https://corefork.telegram.org/method/chatlists.getChatlistUpdates"/> [bots: ✓]</para></summary>
+		/// <param name="chatlist">The folder</param>
 		public static Task<Chatlists_ChatlistUpdates> Chatlists_GetChatlistUpdates(this Client client, InputChatlist chatlist)
 			=> client.Invoke(new Chatlists_GetChatlistUpdates
 			{
 				chatlist = chatlist,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.joinChatlistUpdates"/> [bots: ✓]</para></summary>
+		/// <summary>Join channels and supergroups recently added to a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/chatlists.joinChatlistUpdates"/> [bots: ✓]</para></summary>
+		/// <param name="chatlist">The folder</param>
+		/// <param name="peers">List of new chats to join, fetched using <see cref="Chatlists_GetChatlistUpdates">Chatlists_GetChatlistUpdates</see> and filtered as specified in the <a href="https://corefork.telegram.org/api/folders#shared-folders">documentation »</a>.</param>
 		public static Task<UpdatesBase> Chatlists_JoinChatlistUpdates(this Client client, InputChatlist chatlist, params InputPeer[] peers)
 			=> client.Invoke(new Chatlists_JoinChatlistUpdates
 			{
@@ -5537,21 +5573,25 @@ namespace TL
 				peers = peers,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.hideChatlistUpdates"/> [bots: ✓]</para></summary>
+		/// <summary>Dismiss new pending peers recently added to a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/chatlists.hideChatlistUpdates"/> [bots: ✓]</para></summary>
+		/// <param name="chatlist">The folder</param>
 		public static Task<bool> Chatlists_HideChatlistUpdates(this Client client, InputChatlist chatlist)
 			=> client.Invoke(new Chatlists_HideChatlistUpdates
 			{
 				chatlist = chatlist,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.getLeaveChatlistSuggestions"/> [bots: ✓]</para></summary>
+		/// <summary>Returns identifiers of pinned or always included chats from a chat folder imported using a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>, which are suggested to be left when the chat folder is deleted.		<para>See <a href="https://corefork.telegram.org/method/chatlists.getLeaveChatlistSuggestions"/> [bots: ✓]</para></summary>
+		/// <param name="chatlist">Folder ID</param>
 		public static Task<Peer[]> Chatlists_GetLeaveChatlistSuggestions(this Client client, InputChatlist chatlist)
 			=> client.Invoke(new Chatlists_GetLeaveChatlistSuggestions
 			{
 				chatlist = chatlist,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/chatlists.leaveChatlist"/> [bots: ✓]</para></summary>
+		/// <summary>Delete a folder imported using a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>		<para>See <a href="https://corefork.telegram.org/method/chatlists.leaveChatlist"/> [bots: ✓]</para></summary>
+		/// <param name="chatlist">Folder ID</param>
+		/// <param name="peers">Also leave the specified channels and groups</param>
 		public static Task<UpdatesBase> Chatlists_LeaveChatlist(this Client client, InputChatlist chatlist, params InputPeer[] peers)
 			=> client.Invoke(new Chatlists_LeaveChatlist
 			{
