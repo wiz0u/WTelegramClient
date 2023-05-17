@@ -169,6 +169,18 @@ namespace TL
 		/// <summary>An estimation of the number of days ago the user was last seen (Online=0, Recently=1, LastWeek=5, LastMonth=20, LongTimeAgo=150)</summary>
 		public TimeSpan LastSeenAgo => status?.LastSeenAgo ?? TimeSpan.FromDays(150);
 		public bool IsBot => (flags & Flags.bot) != 0;
+		public IEnumerable<string> ActiveUsernames
+		{
+			get
+			{
+				if (username != null)
+					yield return username;
+				if (usernames != null)
+					foreach (var un in usernames)
+						if (un.flags.HasFlag(Username.Flags.active))
+							yield return un.username;
+			}
+		}
 	}
 
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/userStatusEmpty">userStatusEmpty</a> = last seen a long time ago, more than a month (or blocked/deleted users)</remarks>
