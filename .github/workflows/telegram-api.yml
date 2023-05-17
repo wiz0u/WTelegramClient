@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   action:
+    if: contains(github.event.issue.labels.*.name, 'telegram api')
     runs-on: ubuntu-latest
     steps:
       - uses: dessant/support-requests@v3.0.0
@@ -16,7 +17,7 @@ jobs:
           support-label: 'telegram api'
           issue-comment: >
             **Github Issues** should be used only for problems with the library itself.
-            
-            Questions about Telegram API usage should be asked on **StackOverflow** so the whole community can help and benefit.
-            Click here to open a question: https://stackoverflow.com/questions/ask?tags=c%23+wtelegramclient+telegram-api
+
+            For questions about Telegram API usage, you can search the [API official documentation](https://core.telegram.org/api#getting-started)
+            or [click here to ask your question on **StackOverflow**](https://stackoverflow.com/questions/ask?tags=c%23+wtelegramclient+telegram-api) so the whole community can help and benefit.
           close-issue: true

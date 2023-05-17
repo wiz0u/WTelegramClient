@@ -469,9 +469,8 @@ private Dictionary<long, ChatBase> _chats = new();
 var dialogs = await client.Messages_GetAllDialogs();
 dialogs.CollectUsersChats(_users, _chats);
 
-private async Task OnUpdate(IObject arg)
+private async Task OnUpdate(UpdatesBase updates)
 {
-	if (arg is not UpdatesBase updates) return;
 	updates.CollectUsersChats(_users, _chats);
     ...
 }

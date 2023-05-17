@@ -203,7 +203,7 @@ If Telegram servers decide to shutdown this secondary connection, it's not an is
 This should be transparent and pending API calls should automatically be resent upon reconnection.
 You can choose to increase `MaxAutoReconnects` if it happens too often because your Internet connection is unstable.
 
-3) If you reach `MaxAutoReconnects` disconnections, then the **OnUpdate** event handler will receive a `ReactorError` object to notify you of the problem,
+3) If you reach `MaxAutoReconnects` disconnections, then the **OnOther** event handler will receive a `ReactorError` object to notify you of the problem,
 and pending API calls throw the network IOException.  
 In this case, the recommended action would be to dispose the client and recreate one
 

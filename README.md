@@ -161,7 +161,7 @@ See [FAQ #4](https://wiz0u.github.io/WTelegramClient/FAQ#access-hash) to learn m
 
 # Other things to know
 
-The Client class also offers an `OnUpdate` event that is triggered when Telegram servers sends Updates (like new messages or status), independently of your API requests.
+The Client class also offers `OnUpdate` and `OnOther` events that are triggered when Telegram servers sends Updates (like new messages or status) or other structures, independently of your API requests.
 See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23)
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.

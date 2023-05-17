@@ -46,7 +46,7 @@ namespace WTelegram
 		/// <summary>Size of chunks when uploading/downloading files. Reduce this if you don't have much memory</summary>
 		public int FilePartSize { get; set; } = 512 * 1024;
 		/// <summary>Is this Client instance the main or a secondary DC session</summary>
-		public bool IsMainDC => (_dcSession?.DataCenter?.id ?? 0) == _session.MainDC;
+		public bool IsMainDC => (_dcSession?.DataCenter?.id - _session.MainDC) is null or 0;
 		/// <summary>Has this Client established connection been disconnected?</summary>
 		public bool Disconnected => _tcpClient != null && !(_tcpClient.Client?.Connected ?? false);
 		/// <summary>ID of the current logged-in user or 0</summary>
@@ -164,7 +164,7 @@ namespace WTelegram
 		public static void LoadPublicKey(string pem) => Encryption.LoadPublicKey(pem);
 
 		/// <summary>Builds a structure that is used to validate a 2FA password</summary>
-		/// <param name="accountPassword">Password validation configuration. You can obtain this via <c>Account_GetPassword</c> or through OnUpdate as part of the login process</param>
+		/// <param name="accountPassword">Password validation configuration. You can obtain this via <c>Account_GetPassword</c> or through OnOther as part of the login process</param>
 		/// <param name="password">The password to validate</param>
 		public static Task<InputCheckPasswordSRP> InputCheckPassword(Account_Password accountPassword, string password)
 			=> Check2FA(accountPassword, () => Task.FromResult(password));
