@@ -6842,7 +6842,7 @@ namespace TL
 		/// <summary>Programming language of the code</summary>
 		public string language;
 	}
-	/// <summary>Message entity representing a <a href="https://google.com">text url</a>: for in-text urls like <a href="https://google.com">https://google.com</a> use <see cref="MessageEntityUrl"/>.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityTextUrl"/></para></summary>
+	/// <summary>Message entity representing a <a href="https://google.com">text url</a>: for in-text urls like <a href="https://google.com">https://google.com</a> use <see cref="MessageEntityUrl"/>.  		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityTextUrl"/></para></summary>
 	[TLDef(0x76A6D327, inheritBefore = true)]
 	public class MessageEntityTextUrl : MessageEntity
 	{
@@ -7984,7 +7984,7 @@ namespace TL
 		public string email_pattern;
 		/// <summary>Length of the sent verification code</summary>
 		public int length;
-		/// <summary>The login email can be reset by invoking <see cref="SchemaExtensions.Auth_ResetLoginEmail">Auth_ResetLoginEmail</see> and waiting for the specified amount of seconds.</summary>
+		/// <summary>Clients should wait for the specified amount of seconds before allowing the user to invoke <see cref="SchemaExtensions.Auth_ResetLoginEmail">Auth_ResetLoginEmail</see> (will be 0 for <a href="https://corefork.telegram.org/api/premium">Premium</a> users).</summary>
 		[IfFlag(3)] public int reset_available_period;
 		/// <summary>An email reset was already requested, and will occur at the specified date.</summary>
 		[IfFlag(4)] public DateTime reset_pending_date;

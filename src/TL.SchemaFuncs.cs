@@ -3198,7 +3198,7 @@ namespace TL
 				send_as = send_as,
 			});
 
-		/// <summary>React to message		<para>See <a href="https://corefork.telegram.org/method/messages.sendReaction"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.sendReaction#possible-errors">details</a>)</para></summary>
+		/// <summary>React to message.		<para>See <a href="https://corefork.telegram.org/method/messages.sendReaction"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.sendReaction#possible-errors">details</a>)</para></summary>
 		/// <param name="big">Whether a bigger and longer reaction should be shown</param>
 		/// <param name="add_to_recent">Add this reaction to the <a href="https://corefork.telegram.org/api/reactions#recent-reactions">recent reactions list »</a>.</param>
 		/// <param name="peer">Peer</param>
@@ -3647,7 +3647,7 @@ namespace TL
 
 		/// <summary>Set a custom <a href="https://corefork.telegram.org/api/wallpapers">wallpaper »</a> in a specific private chat with another user.		<para>See <a href="https://corefork.telegram.org/method/messages.setChatWallPaper"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setChatWallPaper#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The private chat where the wallpaper will be set</param>
-		/// <param name="wallpaper">The <a href="https://corefork.telegram.org/api/wallpapers">wallpaper »</a>, obtained as described in the <a href="https://corefork.telegram.org/api/wallpapers#uploading-wallpapers">wallpaper documentation »</a> or from a <see cref="MessageActionSetChatWallPaper"/> service message.</param>
+		/// <param name="wallpaper">The <a href="https://corefork.telegram.org/api/wallpapers">wallpaper »</a>, obtained as described in the <a href="https://corefork.telegram.org/api/wallpapers#uploading-wallpapers">wallpaper documentation »</a>; must <strong>not</strong> be provided when installing a wallpaper obtained from a <see cref="MessageActionSetChatWallPaper"/> service message (<c>id</c> must be provided, instead).</param>
 		/// <param name="settings">Wallpaper settings, obtained as described in the <a href="https://corefork.telegram.org/api/wallpapers#uploading-wallpapers">wallpaper documentation »</a> or from <see cref="MessageActionSetChatWallPaper"/>.<c>wallpaper</c>.<c>settings</c>.</param>
 		/// <param name="id">If the wallpaper was obtained from a <see cref="MessageActionSetChatWallPaper"/> service message, must contain the ID of that message.</param>
 		public static Task<UpdatesBase> Messages_SetChatWallPaper(this Client client, InputPeer peer, InputWallPaperBase wallpaper = null, int? id = null, WallPaperSettings settings = null)
@@ -4196,9 +4196,9 @@ namespace TL
 				username = username,
 			});
 
-		/// <summary>Change the username of a supergroup/channel		<para>See <a href="https://corefork.telegram.org/method/channels.updateUsername"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.updateUsername#possible-errors">details</a>)</para></summary>
+		/// <summary>Change or remove the username of a supergroup/channel		<para>See <a href="https://corefork.telegram.org/method/channels.updateUsername"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.updateUsername#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel</param>
-		/// <param name="username">New username</param>
+		/// <param name="username">New username, pass an empty string to remove the username</param>
 		public static Task<bool> Channels_UpdateUsername(this Client client, InputChannelBase channel, string username)
 			=> client.Invoke(new Channels_UpdateUsername
 			{
