@@ -198,7 +198,7 @@ namespace WTelegram
 				_reactorTask?.Wait(1000);
 			}
 			catch { }
-			_reactorTask = null;
+			_reactorTask = resetSessions ? null : Task.CompletedTask;
 			_networkStream?.Close();
 			_tcpClient?.Dispose();
 #if OBFUSCATION

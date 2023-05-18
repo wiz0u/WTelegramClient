@@ -491,11 +491,18 @@ A message contains those two fields/properties:
 - `peer_id`/`Peer` that identify WHERE the message was posted
 - `from_id`/`From` that identify WHO posted the message (it can be `null` in some case of anonymous posting)
 
-These two fields derive from class `Peer` and can be of type `PeerChat`, `PeerChannel` or `PeerUser` depending on the nature of WHERE & WHO (private chat with a user? message posted BY a channel IN a chat? ...)
+These two fields derive from class `Peer` and can be of type `PeerChat`, `PeerChannel` or `PeerUser` depending on the nature of WHERE & WHO
+(private chat with a user? message posted BY a channel IN a chat? ...)
 
-The root structure where you obtained the message (typically `UpdatesBase` or `Messages_MessagesBase`) inherits from `IPeerResolver`. This allows you to call `.UserOrChat(peer)` on the root structure, in order to resolve those fields into a `User` class, or a `ChatBase`-derived class (typically `Chat` or `Channel`) which will give you details about the peer, instead of just the ID.
+The root structure where you obtained the message (typically `UpdatesBase` or `Messages_MessagesBase`) inherits from `IPeerResolver`.
+This allows you to call `.UserOrChat(peer)` on the root structure, in order to resolve those fields into a `User` class, or a `ChatBase`-derived class
+(typically `Chat` or `Channel`) which will give you details about the peer, instead of just the ID.
 
-However, in some case _(typically when dealing with updates)_, Telegram might choose to not include details about a peer because it expects you to already know about it (`UserOrChat` returns `null`). That's why you should collect users/chats details each time you're dealing with Updates or other API results inheriting from `IPeerResolver`, and use the collected dictionaries to find details about users/chats ([see previous section](#collect-users-chats) and [Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23) example)
+However, in some case _(typically when dealing with updates)_, Telegram might choose to not include details about a peer
+because it expects you to already know about it (`UserOrChat` returns `null`).
+That's why you should collect users/chats details each time you're dealing with Updates or other API results inheriting from `IPeerResolver`,
+and use the collected dictionaries to find details about users/chats
+([see previous section](#collect-users-chats) and [Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23) example)
 
 And finally, it may happen that you receive updates of type `UpdateShortMessage` or `UpdateShortChatMessage` with totally unknown peers (even in your collected dictionaries).
 In this case, [Telegram recommends](https://core.telegram.org/api/updates#recovering-gaps) that you use the [`Updates_GetDifference`](https://corefork.telegram.org/method/updates.getDifference) method to retrieve the full information associated with the short message.

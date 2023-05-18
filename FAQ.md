@@ -205,7 +205,7 @@ You can choose to increase `MaxAutoReconnects` if it happens too often because y
 
 3) If you reach `MaxAutoReconnects` disconnections, then the **OnOther** event handler will receive a `ReactorError` object to notify you of the problem,
 and pending API calls throw the network IOException.  
-In this case, the recommended action would be to dispose the client and recreate one
+In this case, the recommended action would be to dispose the client and recreate one (see example [Program_ReactorError.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ReactorError.cs))
 
 4) In case of slow Internet connection or if you break in the debugger for some time,
 you might also get Connection shutdown because your client couldn't send Pings to Telegram in the allotted time.  
