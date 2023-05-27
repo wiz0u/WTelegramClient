@@ -197,7 +197,7 @@ See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient
 
 You have to handle `client.OnUpdate` events containing an `UpdateNewMessage`.
 
-See the `DisplayMessage` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23).
+See the `HandleMessage` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23).
 
 You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.
 

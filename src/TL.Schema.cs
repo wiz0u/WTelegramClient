@@ -6721,7 +6721,7 @@ namespace TL
 	{
 		/// <summary>Button ID, to be passed to <see cref="SchemaExtensions.Messages_SendBotRequestedPeer">Messages_SendBotRequestedPeer</see>.</summary>
 		public int button_id;
-		/// <summary>Filtering criteria to use for the peer selection list shown to the user.</summary>
+		/// <summary>Filtering criteria to use for the peer selection list shown to the user. <br/>The list should display all existing peers of the specified type, and should also offer an option for the user to create and immediately use a peer of the specified type, if needed.</summary>
 		public RequestPeerType peer_type;
 	}
 
@@ -6842,7 +6842,7 @@ namespace TL
 		/// <summary>Programming language of the code</summary>
 		public string language;
 	}
-	/// <summary>Message entity representing a <a href="https://google.com">text url</a>: for in-text urls like <a href="https://google.com">https://google.com</a> use <see cref="MessageEntityUrl"/>.  		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityTextUrl"/></para></summary>
+	/// <summary>Message entity representing a <a href="https://google.com">text url</a>: for in-text urls like <a href="https://google.com">https://google.com</a> use <see cref="MessageEntityUrl"/>.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityTextUrl"/></para></summary>
 	[TLDef(0x76A6D327, inheritBefore = true)]
 	public class MessageEntityTextUrl : MessageEntity
 	{

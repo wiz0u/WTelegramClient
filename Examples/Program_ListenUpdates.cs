@@ -36,11 +36,15 @@ namespace WTelegramClientTest
 		private static async Task Client_OnUpdate(UpdatesBase updates)
 		{
 			updates.CollectUsersChats(Users, Chats);
+			if (updates is UpdateShortMessage usm && !Users.ContainsKey(usm.user_id))
+				(await Client.Updates_GetDifference(usm.pts - usm.pts_count, usm.date, 0)).CollectUsersChats(Users, Chats);
+			else if (updates is UpdateShortChatMessage uscm && (!Users.ContainsKey(uscm.from_id) || !Chats.ContainsKey(uscm.chat_id)))
+				(await Client.Updates_GetDifference(uscm.pts - uscm.pts_count, uscm.date, 0)).CollectUsersChats(Users, Chats);
 			foreach (var update in updates.UpdateList)
 				switch (update)
 				{
-					case UpdateNewMessage unm: await DisplayMessage(unm.message); break;
-					case UpdateEditMessage uem: await DisplayMessage(uem.message, true); break;
+					case UpdateNewMessage unm: await HandleMessage(unm.message); break;
+					case UpdateEditMessage uem: await HandleMessage(uem.message, true); break;
 					// Note: UpdateNewChannelMessage and UpdateEditChannelMessage are also handled by above cases
 					case UpdateDeleteChannelMessages udcm: Console.WriteLine($"{udcm.messages.Length} message(s) deleted in {Chat(udcm.channel_id)}"); break;
 					case UpdateDeleteMessages udm: Console.WriteLine($"{udm.messages.Length} message(s) deleted"); break;
@@ -56,7 +60,7 @@ namespace WTelegramClientTest
 		}
 
 		// in this example method, we're not using async/await, so we just return Task.CompletedTask
-		private static Task DisplayMessage(MessageBase messageBase, bool edit = false)
+		private static Task HandleMessage(MessageBase messageBase, bool edit = false)
 		{
 			if (edit) Console.Write("(Edit): ");
 			switch (messageBase)
