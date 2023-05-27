@@ -9,7 +9,6 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  releaseNotes: ${{ replace(variables['Build_SourceVersionMessage'], '"', '″') }}
 
 steps:
 - task: UseDotNet@2
@@ -26,7 +25,7 @@ steps:
     includesymbols: true
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'Build.BuildNumber'
-    buildProperties: 'NoWarn="0419;1573;1591";Version=$(Build.BuildNumber);ContinuousIntegrationBuild=true;ReleaseNotes="$(releaseNotes)"'
+    buildProperties: 'NoWarn="0419;1573;1591";Version=$(Build.BuildNumber);ContinuousIntegrationBuild=true;ReleaseNotes="$[replace(variables['Build_SourceVersionMessage'], '"', '″')]"'
 #   buildProperties: 'NoWarn="0419;1573;1591";AllowedOutputExtensionsInPackageBuildOutputFolder=".dll;.xml;.pdb"'
 
 - task: NuGetCommand@2
