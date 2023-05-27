@@ -9,7 +9,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  releaseNotes: $[replace(variables['Build_SourceVersionMessage'], '"', '″')]
+  releaseNotes: ${{ replace(variables['Build_SourceVersionMessage'], '"', '″') }}
 
 steps:
 - task: UseDotNet@2
