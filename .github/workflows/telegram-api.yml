@@ -17,7 +17,7 @@ jobs:
           support-label: 'telegram api'
           issue-comment: >
             **Github Issues** should be used only for problems with the library itself.
-
+            
             For questions about Telegram API usage, you can search the [API official documentation](https://core.telegram.org/api#getting-started)
             or [click here to ask your question on **StackOverflow**](https://stackoverflow.com/questions/ask?tags=c%23+wtelegramclient+telegram-api) so the whole community can help and benefit.
           close-issue: true

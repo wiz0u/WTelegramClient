@@ -473,10 +473,15 @@ namespace WTelegram
 					{
 						dialogList.AddRange(dialogs.Dialogs);
 						messageList.AddRange(dialogs.Messages);
-						var lastDialog = dialogs.Dialogs[^1];
-						var lastMsg = dialogs.Messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage);
-						var offsetPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
-						dialogs = await this.Messages_GetDialogs(lastMsg?.Date ?? default, lastDialog.TopMessage, offsetPeer, folder_id: folder_id);
+						int last = dialogs.Dialogs.Length - 1;
+						var lastDialog = dialogs.Dialogs[last];
+						var lastPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
+						var lastMsgId = lastDialog.TopMessage;
+					retryDate:
+						var lastDate = dialogs.Messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage)?.Date ?? default;
+						if (lastDate == default)
+							if (--last < 0) break; else { lastDialog = dialogs.Dialogs[last]; goto retryDate; }
+						dialogs = await this.Messages_GetDialogs(lastDate, lastMsgId, lastPeer, folder_id: folder_id);
 						if (dialogs is not Messages_Dialogs md) break;
 						foreach (var (key, value) in md.chats) mds.chats[key] = value;
 						foreach (var (key, value) in md.users) mds.users[key] = value;
@@ -682,8 +687,8 @@ namespace WTelegram
 
 		private static readonly char[] UrlSeparator = new[] { '?', '#', '/' };
 
-		/// <summary>Return information about a chat/channel based on Invite Link</summary>
-		/// <param name="url">Public link or Invite link, like https://t.me/+InviteHash, https://t.me/joinchat/InviteHash or https://t.me/channelname<br/>Also work without https:// prefix</param>
+		/// <summary>Return information about a chat/channel based on Invite Link or Public Link</summary>
+		/// <param name="url">Public link or Invite link, like https://t.me/+InviteHash, https://t.me/joinchat/InviteHash or https://t.me/channelname<br/>Works also without https:// prefix</param>
 		/// <param name="join"><see langword="true"/> to also join the chat/channel</param>
 		/// <param name="chats">previously collected chats, to prevent unnecessary ResolveUsername</param>
 		/// <returns>a Chat or Channel, possibly partial Channel information only (with flag <see cref="Channel.Flags.min"/>)</returns>
@@ -703,10 +708,12 @@ namespace WTelegram
 			{
 				var chat = await CachedOrResolveUsername(url[start..end], chats);
 				if (join && chat is Channel channel)
-				{
-					var res = await this.Channels_JoinChannel(channel);
-					chat = res.Chats[chat.ID];
-				}
+					try
+					{
+						var res = await this.Channels_JoinChannel(channel);
+						chat = res.Chats[channel.id];
+					}
+					catch (RpcException ex) when (ex.Code == 400 && ex.Message == "INVITE_REQUEST_SENT") { }
 				return chat;
 			}
 			var chatInvite = await this.Messages_CheckChatInvite(hash);
@@ -748,11 +755,11 @@ namespace WTelegram
 			return null;
 		}
 
-		/// <summary>Return chat and message details based on a message URL</summary>
+		/// <summary>Return chat and message details based on a Message Link (URL)</summary>
 		/// <param name="url">Message Link, like https://t.me/c/1234567890/1234 or https://t.me/channelname/1234</param>
 		/// <param name="chats">previously collected chats, to prevent unnecessary ResolveUsername</param>
 		/// <returns>Structure containing the message, chat and user details</returns>
-		/// <remarks>If link is for private group (<c>t.me/c/..</c>), user must have joined the group</remarks>
+		/// <remarks>If link is for private group (<c>t.me/c/..</c>), user must have joined that group</remarks>
 		public async Task<Messages_ChannelMessages> GetMessageByLink(string url, IDictionary<long, ChatBase> chats = null)
 		{
 			int start = url.IndexOf("//");

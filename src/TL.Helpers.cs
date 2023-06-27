@@ -543,8 +543,10 @@ namespace TL
 		public static implicit operator InputPeer(Contacts_ResolvedPeer resolved) => resolved?.UserOrChat.ToInputPeer();
 		/// <returns>A <see cref="TL.User"/>, or <see langword="null"/> if the username was for a channel</returns>
 		public User User => peer is PeerUser pu ? users[pu.user_id] : null;
-		/// <returns>A <see cref="Channel"/> or <see cref="ChannelForbidden"/>, or <see langword="null"/> if the username was for a user</returns>
+		/// <returns>A <see cref="TL.Channel"/> or <see cref="TL.ChannelForbidden"/>, or <see langword="null"/> if the username was for a user</returns>
 		public ChatBase Chat => peer is PeerChannel or PeerChat ? chats[peer.ID] : null;
+		/// <returns>A <see cref="TL.Channel"/>, or <see langword="null"/> if the username was for a user or for a forbidden channel</returns>
+		public Channel Channel => peer is PeerChannel pc ? chats[pc.channel_id] as Channel : null;
 	}
 
 	partial class Updates_ChannelDifferenceBase
