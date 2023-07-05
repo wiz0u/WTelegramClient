@@ -392,7 +392,7 @@ namespace WTelegram
 				if ((msgId & 1) == 0) throw new WTException($"Invalid server msgId {msgId}");
 				int length = reader.ReadInt32();
 				dataLen -= 20;
-				if (length > dataLen || length < dataLen - (_paddedMode ? 15 : 0))
+				if (length > dataLen || dataLen - length > (_paddedMode ? 256 : 0))
 					throw new WTException($"Unexpected unencrypted/padding length {dataLen} - {length}");
 
 				var obj = reader.ReadTLObject();
@@ -1283,7 +1283,7 @@ namespace WTelegram
 				}
 				if (_paddedMode) // Padded intermediate mode => append random padding
 				{
-					var padding = new byte[_random.Next(16)];
+					var padding = new byte[_random.Next(_dcSession.AuthKeyID == 0 ? 257 : 16)];
 					RNG.GetBytes(padding);
 					writer.Write(padding);
 				}
