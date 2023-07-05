@@ -9,7 +9,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  releaseNotes: $[replace(variables['Build.SourceVersionMessage'], '"', "''")]
+  releaseNotes: $[replace(variables['Build.SourceVersionMessage'], '"', '''''')]
 
 steps:
 - task: UseDotNet@2
