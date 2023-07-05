@@ -23,7 +23,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>Telegram;MTProto;Client;Api;UserBot;TLSharp</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>$(ReleaseNotes.Replace("%22", "''").Replace("|", "%0D%0A").Replace(" - ","%0D%0A- ").Replace("  ", "%0D%0A%0D%0A"))</PackageReleaseNotes>
+    <PackageReleaseNotes>$(ReleaseNotes.Replace("|", "%0D%0A").Replace(" - ","%0D%0A- ").Replace("  ", "%0D%0A%0D%0A"))</PackageReleaseNotes>
     <NoWarn>0419;1573;1591;NETSDK1138</NoWarn>
     <DefineConstants>TRACE;OBFUSCATION</DefineConstants>
   </PropertyGroup>
