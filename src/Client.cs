@@ -689,7 +689,7 @@ namespace WTelegram
 						Rpc prevRequest;
 						lock (_pendingRpcs)
 							_pendingRpcs.TryGetValue(badMsgNotification.bad_msg_id, out prevRequest);
-						await SendAsync(lastSentMsg, true, prevRequest);
+						await SendAsync(lastSentMsg, lastSentMsg is not MsgContainer, prevRequest);
 						lock (_pendingRpcs)
 							_pendingRpcs.Remove(badMsgNotification.bad_msg_id);
 					}

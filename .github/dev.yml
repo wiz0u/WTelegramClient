@@ -26,8 +26,7 @@ steps:
     includesymbols: true
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'Build.BuildNumber'
-    buildProperties: 'NoWarn="0419;1573;1591";ContinuousIntegrationBuild=true;Version=$(Build.BuildNumber);ReleaseNotes=$(releaseNotes)'
-#   buildProperties: 'NoWarn="0419;1573;1591";AllowedOutputExtensionsInPackageBuildOutputFolder=".dll;.xml;.pdb"'
+    buildProperties: 'NoWarn="0419;1573;1591";ContinuousIntegrationBuild=true;Version=$(Build.BuildNumber);ReleaseNotes="$(releaseNotes)"'
 
 - task: NuGetCommand@2
   inputs:
