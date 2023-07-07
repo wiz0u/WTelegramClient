@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace TL
 {
 	public interface IObject { }
@@ -333,9 +335,9 @@ namespace TL
 		public Int128(RNGCryptoServiceProvider rng) => rng.GetBytes(raw = new byte[16]);
 		public static bool operator ==(Int128 left, Int128 right) { for (int i = 0; i < 16; i++) if (left.raw[i] != right.raw[i]) return false; return true; }
 		public static bool operator !=(Int128 left, Int128 right) { for (int i = 0; i < 16; i++) if (left.raw[i] != right.raw[i]) return true; return false; }
-		public override bool Equals(object obj) => obj is Int128 other && this == other;
-		public override int GetHashCode() => BitConverter.ToInt32(raw, 0);
-		public override string ToString() => Convert.ToHexString(raw);
+		public override readonly bool Equals(object obj) => obj is Int128 other && this == other;
+		public override readonly int GetHashCode() => BitConverter.ToInt32(raw, 0);
+		public override readonly string ToString() => Convert.ToHexString(raw);
 		public static implicit operator byte[](Int128 int128) => int128.raw;
 	}
 
@@ -347,9 +349,9 @@ namespace TL
 		public Int256(RNGCryptoServiceProvider rng) => rng.GetBytes(raw = new byte[32]);
 		public static bool operator ==(Int256 left, Int256 right) { for (int i = 0; i < 32; i++) if (left.raw[i] != right.raw[i]) return false; return true; }
 		public static bool operator !=(Int256 left, Int256 right) { for (int i = 0; i < 32; i++) if (left.raw[i] != right.raw[i]) return true; return false; }
-		public override bool Equals(object obj) => obj is Int256 other && this == other;
-		public override int GetHashCode() => BitConverter.ToInt32(raw, 0);
-		public override string ToString() => Convert.ToHexString(raw);
+		public override readonly bool Equals(object obj) => obj is Int256 other && this == other;
+		public override readonly int GetHashCode() => BitConverter.ToInt32(raw, 0);
+		public override readonly string ToString() => Convert.ToHexString(raw);
 		public static implicit operator byte[](Int256 int256) => int256.raw;
 	}
 
@@ -369,7 +371,6 @@ namespace TL
 		public object result;
 	}
 
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006")]
 	[TLDef(0x5BB8E511)] //message#5bb8e511 msg_id:long seqno:int bytes:int body:Object = Message
 	public class _Message
 	{

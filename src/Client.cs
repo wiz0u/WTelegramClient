@@ -594,9 +594,9 @@ namespace WTelegram
 
 		class Rpc
 		{
-			public Type type;
-			public TaskCompletionSource<object> tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
-			public long msgId;
+			internal Type type;
+			internal TaskCompletionSource<object> tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+			internal long msgId;
 			public Task<object> Task => tcs.Task;
 		}
 

@@ -37,39 +37,39 @@ namespace WTelegram
 			internal void Renew() { Helpers.Log(3, $"Renewing session on DC {DcID}..."); Id = Helpers.RandomLong(); Seqno = 0; LastSentMsgId = 0; }
 			public void DisableUpdates(bool disable = true) { if (WithoutUpdates != disable) { WithoutUpdates = disable; Renew(); } }
 
-			const int msgIdsN = 512;
-			private long[] msgIds;
-			private int msgIdsHead;
+			const int MsgIdsN = 512;
+			private long[] _msgIds;
+			private int _msgIdsHead;
 			internal bool CheckNewMsgId(long msg_id)
 			{
-				if (msgIds == null)
+				if (_msgIds == null)
 				{
-					msgIds = new long[msgIdsN];
-					msgIds[0] = msg_id;
+					_msgIds = new long[MsgIdsN];
+					_msgIds[0] = msg_id;
 					msg_id -= 300L << 32; // until the array is filled with real values, allow ids up to 300 seconds in the past
-					for (int i = 1; i < msgIdsN; i++) msgIds[i] = msg_id;
+					for (int i = 1; i < MsgIdsN; i++) _msgIds[i] = msg_id;
 					return true;
 				}
-				int newHead = (msgIdsHead + 1) % msgIdsN;
-				if (msg_id > msgIds[msgIdsHead])
-					msgIds[msgIdsHead = newHead] = msg_id;
-				else if (msg_id <= msgIds[newHead])
+				int newHead = (_msgIdsHead + 1) % MsgIdsN;
+				if (msg_id > _msgIds[_msgIdsHead])
+					_msgIds[_msgIdsHead = newHead] = msg_id;
+				else if (msg_id <= _msgIds[newHead])
 					return false;
 				else
 				{
-					int min = 0, max = msgIdsN - 1;
+					int min = 0, max = MsgIdsN - 1;
 					while (min <= max)  // binary search (rotated at newHead)
 					{
 						int mid = (min + max) / 2;
-						int sign = msg_id.CompareTo(msgIds[(mid + newHead) % msgIdsN]);
+						int sign = msg_id.CompareTo(_msgIds[(mid + newHead) % MsgIdsN]);
 						if (sign == 0) return false;
 						else if (sign < 0) max = mid - 1;
 						else min = mid + 1;
 					}
-					msgIdsHead = newHead;
-					for (min = (min + newHead) % msgIdsN; newHead != min;)
-						msgIds[newHead] = msgIds[newHead = newHead == 0 ? msgIdsN - 1 : newHead - 1];
-					msgIds[min] = msg_id;
+					_msgIdsHead = newHead;
+					for (min = (min + newHead) % MsgIdsN; newHead != min;)
+						_msgIds[newHead] = _msgIds[newHead = newHead == 0 ? MsgIdsN - 1 : newHead - 1];
+					_msgIds[min] = msg_id;
 				}
 				return true;
 			}

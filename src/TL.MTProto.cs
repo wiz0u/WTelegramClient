@@ -5,6 +5,7 @@ using Client = WTelegram.Client;
 
 namespace TL
 {
+	#pragma warning disable IDE1006
 	[TLDef(0x05162463)] //resPQ#05162463 nonce:int128 server_nonce:int128 pq:bytes server_public_key_fingerprints:Vector<long> = ResPQ
 	public class ResPQ : IObject
 	{
@@ -365,6 +366,7 @@ namespace TL
 
 namespace TL.Methods
 {
+	#pragma warning disable IDE1006
 	[TLDef(0x60469778)] //req_pq#60469778 nonce:int128 = ResPQ
 	public class ReqPq : IMethod<ResPQ>
 	{

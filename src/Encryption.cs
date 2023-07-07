@@ -320,31 +320,31 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 #if OBFUSCATION
 		internal class AesCtr : IDisposable
 		{
-			readonly ICryptoTransform encryptor;
-			readonly byte[] ivec;
-			readonly byte[] ecount = new byte[16];
-			int num;
+			readonly ICryptoTransform _encryptor;
+			readonly byte[] _ivec;
+			readonly byte[] _ecount = new byte[16];
+			int _num;
 
 			public AesCtr(byte[] key, byte[] iv)
 			{
-				encryptor = AesECB.CreateEncryptor(key, null);
-				ivec = iv;
+				_encryptor = AesECB.CreateEncryptor(key, null);
+				_ivec = iv;
 			}
 
-			public void Dispose() => encryptor.Dispose();
+			public void Dispose() => _encryptor.Dispose();
 
 			public void EncryptDecrypt(byte[] buffer, int length)
 			{
 				for (int i = 0; i < length; i++)
 				{
-					if (num == 0)
+					if (_num == 0)
 					{
-						encryptor.TransformBlock(ivec, 0, 16, ecount, 0);
+						_encryptor.TransformBlock(_ivec, 0, 16, _ecount, 0);
 						for (int n = 15; n >= 0; n--) // increment big-endian counter
-							if (++ivec[n] != 0) break;
+							if (++_ivec[n] != 0) break;
 					}
-					buffer[i] ^= ecount[num];
-					num = (num + 1) % 16;
+					buffer[i] ^= _ecount[_num];
+					_num = (_num + 1) % 16;
 				}
 			}
 		}
@@ -526,15 +526,15 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 
 	internal class AES_IGE_Stream : Helpers.IndirectStream
 	{
-		private readonly ICryptoTransform aesCrypto;
-		private readonly byte[] prevBytes;
+		private readonly ICryptoTransform _aesCrypto;
+		private readonly byte[] _prevBytes;
 
 		public AES_IGE_Stream(Stream stream, long size, byte[] key, byte[] iv) : this(stream, key, iv, false) { ContentLength = size; }
 		public AES_IGE_Stream(Stream stream, byte[] key, byte[] iv, bool encrypt) : base(stream)
 		{
-			aesCrypto = encrypt ? Encryption.AesECB.CreateEncryptor(key, null) : Encryption.AesECB.CreateDecryptor(key, null);
-			if (encrypt) prevBytes = (byte[])iv.Clone();
-			else { prevBytes = new byte[32]; Array.Copy(iv, 0, prevBytes, 16, 16); Array.Copy(iv, 16, prevBytes, 0, 16); }
+			_aesCrypto = encrypt ? Encryption.AesECB.CreateEncryptor(key, null) : Encryption.AesECB.CreateDecryptor(key, null);
+			if (encrypt) _prevBytes = (byte[])iv.Clone();
+			else { _prevBytes = new byte[32]; Array.Copy(iv, 0, _prevBytes, 16, 16); Array.Copy(iv, 16, _prevBytes, 0, 16); }
 		}
 
 		public override long Length => base.Length + 15 & ~15;
@@ -563,11 +563,11 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 		{
 			count = count + 15 & ~15;
 			var span = MemoryMarshal.Cast<byte, long>(buffer.AsSpan(offset, count));
-			var prev = MemoryMarshal.Cast<byte, long>(prevBytes);
+			var prev = MemoryMarshal.Cast<byte, long>(_prevBytes);
 			for (offset = 0, count /= 8; offset < count;)
 			{
 				prev[0] ^= span[offset]; prev[1] ^= span[offset + 1];
-				aesCrypto.TransformBlock(prevBytes, 0, 16, prevBytes, 0);
+				_aesCrypto.TransformBlock(_prevBytes, 0, 16, _prevBytes, 0);
 				prev[0] ^= prev[2]; prev[1] ^= prev[3];
 				prev[2] = span[offset]; prev[3] = span[offset + 1];
 				span[offset++] = prev[0]; span[offset++] = prev[1];

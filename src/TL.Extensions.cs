@@ -173,7 +173,7 @@ namespace TL
 				if (i == sb.Length) break;
 				for (; offset == nextEntity?.offset; nextEntity = ++entityIndex < entities.Length ? entities[entityIndex] : null)
 				{
-					if (entityToMD.TryGetValue(nextEntity.GetType(), out var md))
+					if (EntityToMD.TryGetValue(nextEntity.GetType(), out var md))
 					{
 						var closing = (nextEntity.offset + nextEntity.length, md);
 						if (md[0] is '[' or '!')
@@ -207,7 +207,7 @@ namespace TL
 			return sb.ToString();
 		}
 
-		static readonly Dictionary<Type, string> entityToMD = new()
+		static readonly Dictionary<Type, string> EntityToMD = new()
 		{
 			[typeof(MessageEntityBold)] = "*",
 			[typeof(MessageEntityItalic)] = "_",
@@ -360,7 +360,7 @@ namespace TL
 				if (i == sb.Length) break;
 				for (; offset == nextEntity?.offset; nextEntity = ++entityIndex < entities.Length ? entities[entityIndex] : null)
 				{
-					if (entityToTag.TryGetValue(nextEntity.GetType(), out var tag))
+					if (EntityToTag.TryGetValue(nextEntity.GetType(), out var tag))
 					{
 						var closing = (nextEntity.offset + nextEntity.length, $"</{tag}>");
 						if (tag[0] == 'a')
@@ -397,7 +397,7 @@ namespace TL
 			return sb.ToString();
 		}
 
-		static readonly Dictionary<Type, string> entityToTag = new()
+		static readonly Dictionary<Type, string> EntityToTag = new()
 		{
 			[typeof(MessageEntityBold)] = "b",
 			[typeof(MessageEntityItalic)] = "i",

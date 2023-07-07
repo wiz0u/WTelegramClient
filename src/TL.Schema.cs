@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace TL
 {
+	#pragma warning disable IDE1006
 	/// <summary>Boolean type.		<para>See <a href="https://corefork.telegram.org/type/Bool"/></para></summary>
 	public enum Bool : uint
 	{
@@ -6811,7 +6812,7 @@ namespace TL
 	/// <summary>Unknown message entity		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityUnknown"/></para></summary>
 	[TLDef(0xBB92BA95)]
 	public class MessageEntityUnknown : MessageEntity { }
-	/// <summary>Message entity <a href="https://corefork.telegram.org/api/mentions">mentioning</a> the current user		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityMention"/></para></summary>
+	/// <summary>Message entity <a href="https://corefork.telegram.org/api/mentions">mentioning</a> a user by <c>@username</c>; <see cref="MessageEntityMentionName"/> can also be used to mention users by their ID.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityMention"/></para></summary>
 	[TLDef(0xFA04579D)]
 	public class MessageEntityMention : MessageEntity { }
 	/// <summary><strong>#hashtag</strong> message entity		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityHashtag"/></para></summary>

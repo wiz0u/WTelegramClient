@@ -5603,6 +5603,7 @@ namespace TL
 
 namespace TL.Methods
 {
+	#pragma warning disable IDE1006
 	[TLDef(0xCB9F372D)]
 	public class InvokeAfterMsg<X> : IMethod<X>
 	{
