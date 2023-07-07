@@ -17,17 +17,19 @@ namespace TL
 			internal IDictionary<long, ChatBase> _chats;
 			protected internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
 			{
-				lock (_users)
-					foreach (var user in users.Values)
-						if (user != null)
-							if (!user.flags.HasFlag(User.Flags.min) || !_users.TryGetValue(user.id, out var prevUser) || prevUser.flags.HasFlag(User.Flags.min))
-								_users[user.id] = user;
-				lock (_chats)
-					foreach (var kvp in chats)
-						if (kvp.Value is not Channel channel)
-							_chats[kvp.Key] = kvp.Value;
-						else if (!channel.flags.HasFlag(Channel.Flags.min) || !_chats.TryGetValue(channel.id, out var prevChat) || prevChat is not Channel prevChannel || prevChannel.flags.HasFlag(Channel.Flags.min))
-							_chats[kvp.Key] = channel;
+				if (_users != null)
+					lock (_users)
+						foreach (var user in users.Values)
+							if (user != null)
+								if (!user.flags.HasFlag(User.Flags.min) || !_users.TryGetValue(user.id, out var prevUser) || prevUser.flags.HasFlag(User.Flags.min))
+									_users[user.id] = user;
+				if (_chats != null)
+					lock (_chats)
+						foreach (var kvp in chats)
+							if (kvp.Value is not Channel channel)
+								_chats[kvp.Key] = kvp.Value;
+							else if (!channel.flags.HasFlag(Channel.Flags.min) || !_chats.TryGetValue(channel.id, out var prevChat) || prevChat is not Channel prevChannel || prevChannel.flags.HasFlag(Channel.Flags.min))
+								_chats[kvp.Key] = channel;
 				return null;
 			}
 		}
