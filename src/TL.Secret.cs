@@ -740,6 +740,26 @@ namespace TL
 		/// <summary>User is uploading a round video		<para>See <a href="https://corefork.telegram.org/constructor/sendMessageUploadRoundAction"/></para></summary>
 		[TLDef(0xBB718624)]
 		public class SendMessageUploadRoundAction : SendMessageAction { }
+
+		/// <summary>Defines a video		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeVideo"/></para></summary>
+		[TLDef(0x0EF02CE6)]
+		public class DocumentAttributeVideo : DocumentAttribute
+		{
+			/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
+			public Flags flags;
+			/// <summary>Duration in seconds</summary>
+			public int duration;
+			/// <summary>Video width</summary>
+			public int w;
+			/// <summary>Video height</summary>
+			public int h;
+
+			[Flags] public enum Flags : uint
+			{
+				/// <summary>Whether this is a round video</summary>
+				round_message = 0x1,
+			}
+		}
 	}
 
 	namespace Layer73

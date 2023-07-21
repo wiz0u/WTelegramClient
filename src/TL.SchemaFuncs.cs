@@ -759,10 +759,10 @@ namespace TL
 		/// <summary>Returns list of chats with non-default notification settings		<para>See <a href="https://corefork.telegram.org/method/account.getNotifyExceptions"/></para></summary>
 		/// <param name="compare_sound">If true, chats with non-default sound will also be returned</param>
 		/// <param name="peer">If specified, only chats of the specified category will be returned</param>
-		public static Task<UpdatesBase> Account_GetNotifyExceptions(this Client client, InputNotifyPeerBase peer = null, bool compare_sound = false)
+		public static Task<UpdatesBase> Account_GetNotifyExceptions(this Client client, InputNotifyPeerBase peer = null, bool compare_sound = false, bool compare_stories = false)
 			=> client.Invoke(new Account_GetNotifyExceptions
 			{
-				flags = (Account_GetNotifyExceptions.Flags)((peer != null ? 0x1 : 0) | (compare_sound ? 0x2 : 0)),
+				flags = (Account_GetNotifyExceptions.Flags)((peer != null ? 0x1 : 0) | (compare_sound ? 0x2 : 0) | (compare_stories ? 0x4 : 0)),
 				peer = peer,
 			});
 
@@ -1144,6 +1144,13 @@ namespace TL
 			{
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.invalidateSignInCodes"/></para></summary>
+		public static Task<bool> Account_InvalidateSignInCodes(this Client client, params string[] codes)
+			=> client.Invoke(new Account_InvalidateSignInCodes
+			{
+				codes = codes,
+			});
+
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, params InputUserBase[] id)
@@ -1168,6 +1175,13 @@ namespace TL
 			{
 				id = id,
 				errors = errors,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/users.getStoriesMaxIDs"/></para></summary>
+		public static Task<int[]> Users_GetStoriesMaxIDs(this Client client, params InputUserBase[] id)
+			=> client.Invoke(new Users_GetStoriesMaxIDs
+			{
+				id = id,
 			});
 
 		/// <summary>Get contact by telegram IDs		<para>See <a href="https://corefork.telegram.org/method/contacts.getContactIDs"/></para></summary>
@@ -1383,6 +1397,21 @@ namespace TL
 				token = token,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.editCloseFriends"/></para></summary>
+		public static Task<bool> Contacts_EditCloseFriends(this Client client, params long[] id)
+			=> client.Invoke(new Contacts_EditCloseFriends
+			{
+				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.toggleStoriesHidden"/></para></summary>
+		public static Task<bool> Contacts_ToggleStoriesHidden(this Client client, InputUserBase id, bool hidden)
+			=> client.Invoke(new Contacts_ToggleStoriesHidden
+			{
+				id = id,
+				hidden = hidden,
+			});
+
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para></summary>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client client, params InputMessage[] id)
@@ -1532,21 +1561,18 @@ namespace TL
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">The destination where the message will be sent</param>
-		/// <param name="reply_to_msg_id">The message ID to which this message will reply to</param>
-		/// <param name="top_msg_id">This field must contain the topic ID <strong>only</strong> when replying to messages in <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topics</a> different from the "General" topic (i.e. <c>reply_to_msg_id</c> is set and <c>reply_to_msg_id != topicID</c> and <c>topicID != 1</c>). <br/>If the replied-to message is deleted before the method finishes execution, the value in this field will be used to send the message to the correct topic, instead of the "General" topic.</param>
 		/// <param name="message">The message</param>
 		/// <param name="random_id">Unique client message ID required to prevent message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="reply_markup">Reply markup for sending bot buttons</param>
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
+		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
 			=> client.Invoke(new Messages_SendMessage
 			{
-				flags = (Messages_SendMessage.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
+				flags = (Messages_SendMessage.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
 				peer = peer,
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				reply_to = reply_to,
 				message = message,
 				random_id = random_id,
 				reply_markup = reply_markup,
@@ -1562,8 +1588,6 @@ namespace TL
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">Destination</param>
-		/// <param name="reply_to_msg_id">Message ID to which this message should reply to</param>
-		/// <param name="top_msg_id">This field must contain the topic ID <strong>only</strong> when replying to messages in <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topics</a> different from the "General" topic (i.e. <c>reply_to_msg_id</c> is set and <c>reply_to_msg_id != topicID</c> and <c>topicID != 1</c>). <br/>If the replied-to message is deleted before the method finishes execution, the value in this field will be used to send the message to the correct topic, instead of the "General" topic.</param>
 		/// <param name="media">Attached media</param>
 		/// <param name="message">Caption</param>
 		/// <param name="random_id">Random ID to avoid resending the same message <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
@@ -1571,13 +1595,12 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, int? reply_to_msg_id = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
+		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
 			=> client.Invoke(new Messages_SendMedia
 			{
-				flags = (Messages_SendMedia.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
+				flags = (Messages_SendMedia.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
 				peer = peer,
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				reply_to = reply_to,
 				media = media,
 				message = message,
 				random_id = random_id,
@@ -2098,20 +2121,17 @@ namespace TL
 		/// <param name="clear_draft">Whether to clear the <a href="https://corefork.telegram.org/api/drafts">draft</a></param>
 		/// <param name="hide_via">Whether to hide the <c>via @botname</c> in the resulting message (only for bot usernames encountered in the <see cref="Config"/>)</param>
 		/// <param name="peer">Destination</param>
-		/// <param name="reply_to_msg_id">ID of the message this message should reply to</param>
-		/// <param name="top_msg_id">This field must contain the topic ID <strong>only</strong> when replying to messages in <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topics</a> different from the "General" topic (i.e. <c>reply_to_msg_id</c> is set and <c>reply_to_msg_id != topicID</c> and <c>topicID != 1</c>). <br/>If the replied-to message is deleted before the method finishes execution, the value in this field will be used to send the message to the correct topic, instead of the "General" topic.</param>
 		/// <param name="random_id">Random ID to avoid resending the same query <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="query_id">Query ID from <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see></param>
 		/// <param name="id">Result ID from <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see></param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, int? reply_to_msg_id = null, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false)
+		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false)
 			=> client.Invoke(new Messages_SendInlineBotResult
 			{
-				flags = (Messages_SendInlineBotResult.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0)),
+				flags = (Messages_SendInlineBotResult.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0)),
 				peer = peer,
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				reply_to = reply_to,
 				random_id = random_id,
 				query_id = query_id,
 				id = id,
@@ -2376,13 +2396,6 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getAllChats"/></para></summary>
-		public static Task<Messages_Chats> Messages_GetAllChats(this Client client, long[] except_ids = null)
-			=> client.Invoke(new Messages_GetAllChats
-			{
-				except_ids = except_ids,
-			});
-
 		/// <summary>Get <a href="https://instantview.telegram.org">instant view</a> page		<para>See <a href="https://corefork.telegram.org/method/messages.getWebPage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getWebPage#possible-errors">details</a>)</para></summary>
 		/// <param name="url">URL of IV page to fetch</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
@@ -2461,13 +2474,12 @@ namespace TL
 
 		/// <summary>Notify the other user in a private chat that a screenshot of the chat was taken		<para>See <a href="https://corefork.telegram.org/method/messages.sendScreenshotNotification"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendScreenshotNotification#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Other user</param>
-		/// <param name="reply_to_msg_id">ID of message that was screenshotted, can be 0</param>
 		/// <param name="random_id">Random ID to avoid message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
-		public static Task<UpdatesBase> Messages_SendScreenshotNotification(this Client client, InputPeer peer, int reply_to_msg_id, long random_id)
+		public static Task<UpdatesBase> Messages_SendScreenshotNotification(this Client client, InputPeer peer, InputReplyTo reply_to, long random_id)
 			=> client.Invoke(new Messages_SendScreenshotNotification
 			{
 				peer = peer,
-				reply_to_msg_id = reply_to_msg_id,
+				reply_to = reply_to,
 				random_id = random_id,
 			});
 
@@ -2541,18 +2553,15 @@ namespace TL
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">The destination chat</param>
-		/// <param name="reply_to_msg_id">The message to reply to</param>
-		/// <param name="top_msg_id">This field must contain the topic ID <strong>only</strong> when replying to messages in <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topics</a> different from the "General" topic (i.e. <c>reply_to_msg_id</c> is set and <c>reply_to_msg_id != topicID</c> and <c>topicID != 1</c>). <br/>If the replied-to message is deleted before the method finishes execution, the value in this field will be used to send the message to the correct topic, instead of the "General" topic.</param>
 		/// <param name="multi_media">The medias to send: note that they must be separately uploaded using <see cref="Messages_UploadMedia">Messages_UploadMedia</see> first, using raw <c>inputMediaUploaded*</c> constructors is not supported.</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, int? reply_to_msg_id = null, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
+		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
-				flags = (Messages_SendMultiMedia.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
+				flags = (Messages_SendMultiMedia.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
 				peer = peer,
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				reply_to = reply_to,
 				multi_media = multi_media,
 				schedule_date = schedule_date.GetValueOrDefault(),
 				send_as = send_as,
@@ -3364,21 +3373,18 @@ namespace TL
 		/// <param name="start_param">If the web app was opened from the attachment menu using a <a href="https://corefork.telegram.org/api/links#bot-attachment-menu-links">attachment menu deep link</a>, <c>start_param</c> should contain the <c>data</c> from the <c>startattach</c> parameter.</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
-		/// <param name="reply_to_msg_id">Whether the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> should be sent in reply to this message ID.</param>
-		/// <param name="top_msg_id">This field must contain the topic ID <strong>only</strong> when replying to messages in <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topics</a> different from the "General" topic (i.e. <c>reply_to_msg_id</c> is set and <c>reply_to_msg_id != topicID</c> and <c>topicID != 1</c>). <br/>If the replied-to message is deleted before the method finishes execution, the value in this field will be used to send the message to the correct topic, instead of the "General" topic.</param>
 		/// <param name="send_as">Open the web app as the specified peer, sending the resulting the message as the specified peer.</param>
-		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, string platform, int? reply_to_msg_id = null, string url = null, DataJSON theme_params = null, string start_param = null, int? top_msg_id = null, InputPeer send_as = null, bool from_bot_menu = false, bool silent = false)
+		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, string platform, InputReplyTo reply_to = null, string url = null, DataJSON theme_params = null, string start_param = null, InputPeer send_as = null, bool from_bot_menu = false, bool silent = false)
 			=> client.Invoke(new Messages_RequestWebView
 			{
-				flags = (Messages_RequestWebView.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (url != null ? 0x2 : 0) | (theme_params != null ? 0x4 : 0) | (start_param != null ? 0x8 : 0) | (top_msg_id != null ? 0x200 : 0) | (send_as != null ? 0x2000 : 0) | (from_bot_menu ? 0x10 : 0) | (silent ? 0x20 : 0)),
+				flags = (Messages_RequestWebView.Flags)((reply_to != null ? 0x1 : 0) | (url != null ? 0x2 : 0) | (theme_params != null ? 0x4 : 0) | (start_param != null ? 0x8 : 0) | (send_as != null ? 0x2000 : 0) | (from_bot_menu ? 0x10 : 0) | (silent ? 0x20 : 0)),
 				peer = peer,
 				bot = bot,
 				url = url,
 				start_param = start_param,
 				theme_params = theme_params,
 				platform = platform,
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				reply_to = reply_to,
 				send_as = send_as,
 			});
 
@@ -3387,18 +3393,15 @@ namespace TL
 		/// <param name="peer">Dialog where the web app was opened.</param>
 		/// <param name="bot">Bot that owns the <a href="https://corefork.telegram.org/api/bots/webapps">web app</a></param>
 		/// <param name="query_id">Web app interaction ID obtained from <see cref="Messages_RequestWebView">Messages_RequestWebView</see></param>
-		/// <param name="reply_to_msg_id">Whether the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> should be sent in reply to this message ID.</param>
-		/// <param name="top_msg_id">This field must contain the topic ID <strong>only</strong> when replying to messages in <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topics</a> different from the "General" topic (i.e. <c>reply_to_msg_id</c> is set and <c>reply_to_msg_id != topicID</c> and <c>topicID != 1</c>). <br/>If the replied-to message is deleted before the method finishes execution, the value in this field will be used to send the message to the correct topic, instead of the "General" topic.</param>
 		/// <param name="send_as">Open the web app as the specified peer</param>
-		public static Task<bool> Messages_ProlongWebView(this Client client, InputPeer peer, InputUserBase bot, long query_id, int? reply_to_msg_id = null, int? top_msg_id = null, InputPeer send_as = null, bool silent = false)
+		public static Task<bool> Messages_ProlongWebView(this Client client, InputPeer peer, InputUserBase bot, long query_id, InputReplyTo reply_to = null, InputPeer send_as = null, bool silent = false)
 			=> client.Invoke(new Messages_ProlongWebView
 			{
-				flags = (Messages_ProlongWebView.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x200 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0)),
+				flags = (Messages_ProlongWebView.Flags)((reply_to != null ? 0x1 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0)),
 				peer = peer,
 				bot = bot,
 				query_id = query_id,
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				reply_to = reply_to,
 				send_as = send_as,
 			});
 
@@ -3671,14 +3674,16 @@ namespace TL
 		/// <param name="pts_total_limit">For fast updating: if provided and <c>pts + pts_total_limit &lt; remote pts</c>, <see cref="Updates_DifferenceTooLong"/> will be returned.<br/>Simply tells the server to not return the difference if it is bigger than <c>pts_total_limit</c><br/>If the remote pts is too big (&gt; ~4000000), this field will default to 1000000</param>
 		/// <param name="date">date, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</param>
 		/// <param name="qts">QTS, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</param>
-		public static Task<Updates_DifferenceBase> Updates_GetDifference(this Client client, int pts, DateTime date, int qts, int? pts_total_limit = null)
+		public static Task<Updates_DifferenceBase> Updates_GetDifference(this Client client, int pts, DateTime date, int qts, int? pts_total_limit = null, int? pts_limit = null, int? qts_limit = null)
 			=> client.Invoke(new Updates_GetDifference
 			{
-				flags = (Updates_GetDifference.Flags)(pts_total_limit != null ? 0x1 : 0),
+				flags = (Updates_GetDifference.Flags)((pts_total_limit != null ? 0x1 : 0) | (pts_limit != null ? 0x2 : 0) | (qts_limit != null ? 0x4 : 0)),
 				pts = pts,
+				pts_limit = pts_limit.GetValueOrDefault(),
 				pts_total_limit = pts_total_limit.GetValueOrDefault(),
 				date = date,
 				qts = qts,
+				qts_limit = qts_limit.GetValueOrDefault(),
 			});
 
 		/// <summary>Returns the difference between the current state of updates of a certain channel and transmitted.		<para>See <a href="https://corefork.telegram.org/method/updates.getChannelDifference"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,500 (<a href="https://corefork.telegram.org/method/updates.getChannelDifference#possible-errors">details</a>)</para></summary>
@@ -4647,6 +4652,14 @@ namespace TL
 				enabled = enabled,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.clickSponsoredMessage"/></para></summary>
+		public static Task<bool> Channels_ClickSponsoredMessage(this Client client, InputChannelBase channel, byte[] random_id)
+			=> client.Invoke(new Channels_ClickSponsoredMessage
+			{
+				channel = channel,
+				random_id = random_id,
+			});
+
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
 		/// <param name="custom_method">The method name</param>
 		/// <param name="params_">JSON-serialized method parameters</param>
@@ -5598,6 +5611,150 @@ namespace TL
 				chatlist = chatlist,
 				peers = peers,
 			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.sendStory"/></para></summary>
+		public static Task<UpdatesBase> Stories_SendStory(this Client client, InputMedia media, InputPrivacyRule[] privacy_rules, long random_id, string caption = null, MessageEntity[] entities = null, int? period = null, bool pinned = false, bool noforwards = false)
+			=> client.Invoke(new Stories_SendStory
+			{
+				flags = (Stories_SendStory.Flags)((caption != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (period != null ? 0x8 : 0) | (pinned ? 0x4 : 0) | (noforwards ? 0x10 : 0)),
+				media = media,
+				caption = caption,
+				entities = entities,
+				privacy_rules = privacy_rules,
+				random_id = random_id,
+				period = period.GetValueOrDefault(),
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.editStory"/></para></summary>
+		public static Task<UpdatesBase> Stories_EditStory(this Client client, int id, InputMedia media = null, string caption = null, MessageEntity[] entities = null, InputPrivacyRule[] privacy_rules = null)
+			=> client.Invoke(new Stories_EditStory
+			{
+				flags = (Stories_EditStory.Flags)((media != null ? 0x1 : 0) | (caption != null ? 0x2 : 0) | (entities != null ? 0x2 : 0) | (privacy_rules != null ? 0x4 : 0)),
+				id = id,
+				media = media,
+				caption = caption,
+				entities = entities,
+				privacy_rules = privacy_rules,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.deleteStories"/></para></summary>
+		public static Task<int[]> Stories_DeleteStories(this Client client, params int[] id)
+			=> client.Invoke(new Stories_DeleteStories
+			{
+				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.togglePinned"/></para></summary>
+		public static Task<int[]> Stories_TogglePinned(this Client client, int[] id, bool pinned)
+			=> client.Invoke(new Stories_TogglePinned
+			{
+				id = id,
+				pinned = pinned,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getAllStories"/></para></summary>
+		public static Task<Stories_AllStoriesBase> Stories_GetAllStories(this Client client, string state = null, bool next = false, bool hidden = false)
+			=> client.Invoke(new Stories_GetAllStories
+			{
+				flags = (Stories_GetAllStories.Flags)((state != null ? 0x1 : 0) | (next ? 0x2 : 0) | (hidden ? 0x4 : 0)),
+				state = state,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getUserStories"/></para></summary>
+		public static Task<Stories_UserStories> Stories_GetUserStories(this Client client, InputUserBase user_id)
+			=> client.Invoke(new Stories_GetUserStories
+			{
+				user_id = user_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getPinnedStories"/></para></summary>
+		public static Task<Stories_Stories> Stories_GetPinnedStories(this Client client, InputUserBase user_id, int offset_id = default, int limit = int.MaxValue)
+			=> client.Invoke(new Stories_GetPinnedStories
+			{
+				user_id = user_id,
+				offset_id = offset_id,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoriesArchive"/></para></summary>
+		public static Task<Stories_Stories> Stories_GetStoriesArchive(this Client client, int offset_id = default, int limit = int.MaxValue)
+			=> client.Invoke(new Stories_GetStoriesArchive
+			{
+				offset_id = offset_id,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoriesByID"/></para></summary>
+		public static Task<Stories_Stories> Stories_GetStoriesByID(this Client client, InputUserBase user_id, params int[] id)
+			=> client.Invoke(new Stories_GetStoriesByID
+			{
+				user_id = user_id,
+				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.toggleAllStoriesHidden"/></para></summary>
+		public static Task<bool> Stories_ToggleAllStoriesHidden(this Client client, bool hidden)
+			=> client.Invoke(new Stories_ToggleAllStoriesHidden
+			{
+				hidden = hidden,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getAllReadUserStories"/></para></summary>
+		public static Task<UpdatesBase> Stories_GetAllReadUserStories(this Client client)
+			=> client.Invoke(new Stories_GetAllReadUserStories
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.readStories"/></para></summary>
+		public static Task<int[]> Stories_ReadStories(this Client client, InputUserBase user_id, int max_id = default)
+			=> client.Invoke(new Stories_ReadStories
+			{
+				user_id = user_id,
+				max_id = max_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.incrementStoryViews"/></para></summary>
+		public static Task<bool> Stories_IncrementStoryViews(this Client client, InputUserBase user_id, params int[] id)
+			=> client.Invoke(new Stories_IncrementStoryViews
+			{
+				user_id = user_id,
+				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoryViewsList"/></para></summary>
+		public static Task<Stories_StoryViewsList> Stories_GetStoryViewsList(this Client client, int id, DateTime offset_date = default, long offset_id = default, int limit = int.MaxValue)
+			=> client.Invoke(new Stories_GetStoryViewsList
+			{
+				id = id,
+				offset_date = offset_date,
+				offset_id = offset_id,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoriesViews"/></para></summary>
+		public static Task<Stories_StoryViews> Stories_GetStoriesViews(this Client client, params int[] id)
+			=> client.Invoke(new Stories_GetStoriesViews
+			{
+				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.exportStoryLink"/></para></summary>
+		public static Task<ExportedStoryLink> Stories_ExportStoryLink(this Client client, InputUserBase user_id, int id)
+			=> client.Invoke(new Stories_ExportStoryLink
+			{
+				user_id = user_id,
+				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.report"/></para></summary>
+		public static Task<bool> Stories_Report(this Client client, InputUserBase user_id, int[] id, ReportReason reason, string message)
+			=> client.Invoke(new Stories_Report
+			{
+				user_id = user_id,
+				id = id,
+				reason = reason,
+				message = message,
+			});
 	}
 }
 
@@ -6167,6 +6324,7 @@ namespace TL.Methods
 		{
 			has_peer = 0x1,
 			compare_sound = 0x2,
+			compare_stories = 0x4,
 		}
 	}
 
@@ -6473,6 +6631,12 @@ namespace TL.Methods
 	[TLDef(0x53BC0020)]
 	public class Account_DeleteAutoSaveExceptions : IMethod<bool> { }
 
+	[TLDef(0xCA8AE8BA)]
+	public class Account_InvalidateSignInCodes : IMethod<bool>
+	{
+		public string[] codes;
+	}
+
 	[TLDef(0x0D91A548)]
 	public class Users_GetUsers : IMethod<UserBase[]>
 	{
@@ -6490,6 +6654,12 @@ namespace TL.Methods
 	{
 		public InputUserBase id;
 		public SecureValueErrorBase[] errors;
+	}
+
+	[TLDef(0xCA1CB9AB)]
+	public class Users_GetStoriesMaxIDs : IMethod<int[]>
+	{
+		public InputUserBase[] id;
 	}
 
 	[TLDef(0x7ADC669D)]
@@ -6661,6 +6831,19 @@ namespace TL.Methods
 		public string token;
 	}
 
+	[TLDef(0xBA6705F0)]
+	public class Contacts_EditCloseFriends : IMethod<bool>
+	{
+		public long[] id;
+	}
+
+	[TLDef(0x753FB865)]
+	public class Contacts_ToggleStoriesHidden : IMethod<bool>
+	{
+		public InputUserBase id;
+		public bool hidden;
+	}
+
 	[TLDef(0x63C66506)]
 	public class Messages_GetMessages : IMethod<Messages_MessagesBase>
 	{
@@ -6780,13 +6963,12 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x1CC20387)]
+	[TLDef(0x280D096F)]
 	public class Messages_SendMessage : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
-		[IfFlag(0)] public int reply_to_msg_id;
-		[IfFlag(9)] public int top_msg_id;
+		[IfFlag(0)] public InputReplyTo reply_to;
 		public string message;
 		public long random_id;
 		[IfFlag(2)] public ReplyMarkup reply_markup;
@@ -6796,14 +6978,13 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			has_reply_to_msg_id = 0x1,
+			has_reply_to = 0x1,
 			no_webpage = 0x2,
 			has_reply_markup = 0x4,
 			has_entities = 0x8,
 			silent = 0x20,
 			background = 0x40,
 			clear_draft = 0x80,
-			has_top_msg_id = 0x200,
 			has_schedule_date = 0x400,
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
@@ -6811,13 +6992,12 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x7547C966)]
+	[TLDef(0x72CCC23D)]
 	public class Messages_SendMedia : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
-		[IfFlag(0)] public int reply_to_msg_id;
-		[IfFlag(9)] public int top_msg_id;
+		[IfFlag(0)] public InputReplyTo reply_to;
 		public InputMedia media;
 		public string message;
 		public long random_id;
@@ -6828,13 +7008,12 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			has_reply_to_msg_id = 0x1,
+			has_reply_to = 0x1,
 			has_reply_markup = 0x4,
 			has_entities = 0x8,
 			silent = 0x20,
 			background = 0x40,
 			clear_draft = 0x80,
-			has_top_msg_id = 0x200,
 			has_schedule_date = 0x400,
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
@@ -7253,13 +7432,12 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xD3FBDCCB)]
+	[TLDef(0xF7BC68BA)]
 	public class Messages_SendInlineBotResult : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
-		[IfFlag(0)] public int reply_to_msg_id;
-		[IfFlag(9)] public int top_msg_id;
+		[IfFlag(0)] public InputReplyTo reply_to;
 		public long random_id;
 		public long query_id;
 		public string id;
@@ -7268,11 +7446,10 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
-			has_reply_to_msg_id = 0x1,
+			has_reply_to = 0x1,
 			silent = 0x20,
 			background = 0x40,
 			clear_draft = 0x80,
-			has_top_msg_id = 0x200,
 			has_schedule_date = 0x400,
 			hide_via = 0x800,
 			has_send_as = 0x2000,
@@ -7519,12 +7696,6 @@ namespace TL.Methods
 		public int limit;
 	}
 
-	[TLDef(0x875F74BE)]
-	public class Messages_GetAllChats : IMethod<Messages_Chats>
-	{
-		public long[] except_ids;
-	}
-
 	[TLDef(0x32CA8F91)]
 	public class Messages_GetWebPage : IMethod<WebPageBase>
 	{
@@ -7599,11 +7770,11 @@ namespace TL.Methods
 		public InputMedia media;
 	}
 
-	[TLDef(0xC97DF020)]
+	[TLDef(0xA1405817)]
 	public class Messages_SendScreenshotNotification : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
-		public int reply_to_msg_id;
+		public InputReplyTo reply_to;
 		public long random_id;
 	}
 
@@ -7659,24 +7830,22 @@ namespace TL.Methods
 		public long hash;
 	}
 
-	[TLDef(0xB6F11A1C)]
+	[TLDef(0x456E8987)]
 	public class Messages_SendMultiMedia : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
-		[IfFlag(0)] public int reply_to_msg_id;
-		[IfFlag(9)] public int top_msg_id;
+		[IfFlag(0)] public InputReplyTo reply_to;
 		public InputSingleMedia[] multi_media;
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 
 		[Flags] public enum Flags : uint
 		{
-			has_reply_to_msg_id = 0x1,
+			has_reply_to = 0x1,
 			silent = 0x20,
 			background = 0x40,
 			clear_draft = 0x80,
-			has_top_msg_id = 0x200,
 			has_schedule_date = 0x400,
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
@@ -8343,7 +8512,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x178B480B)]
+	[TLDef(0x269DC2C1)]
 	public class Messages_RequestWebView : IMethod<WebViewResult>
 	{
 		public Flags flags;
@@ -8353,39 +8522,35 @@ namespace TL.Methods
 		[IfFlag(3)] public string start_param;
 		[IfFlag(2)] public DataJSON theme_params;
 		public string platform;
-		[IfFlag(0)] public int reply_to_msg_id;
-		[IfFlag(9)] public int top_msg_id;
+		[IfFlag(0)] public InputReplyTo reply_to;
 		[IfFlag(13)] public InputPeer send_as;
 
 		[Flags] public enum Flags : uint
 		{
-			has_reply_to_msg_id = 0x1,
+			has_reply_to = 0x1,
 			has_url = 0x2,
 			has_theme_params = 0x4,
 			has_start_param = 0x8,
 			from_bot_menu = 0x10,
 			silent = 0x20,
-			has_top_msg_id = 0x200,
 			has_send_as = 0x2000,
 		}
 	}
 
-	[TLDef(0x7FF34309)]
+	[TLDef(0xB0D81A83)]
 	public class Messages_ProlongWebView : IMethod<bool>
 	{
 		public Flags flags;
 		public InputPeer peer;
 		public InputUserBase bot;
 		public long query_id;
-		[IfFlag(0)] public int reply_to_msg_id;
-		[IfFlag(9)] public int top_msg_id;
+		[IfFlag(0)] public InputReplyTo reply_to;
 		[IfFlag(13)] public InputPeer send_as;
 
 		[Flags] public enum Flags : uint
 		{
-			has_reply_to_msg_id = 0x1,
+			has_reply_to = 0x1,
 			silent = 0x20,
-			has_top_msg_id = 0x200,
 			has_send_as = 0x2000,
 		}
 	}
@@ -8588,18 +8753,22 @@ namespace TL.Methods
 	[TLDef(0xEDD4882A)]
 	public class Updates_GetState : IMethod<Updates_State> { }
 
-	[TLDef(0x25939651)]
+	[TLDef(0x19C2F763)]
 	public class Updates_GetDifference : IMethod<Updates_DifferenceBase>
 	{
 		public Flags flags;
 		public int pts;
+		[IfFlag(1)] public int pts_limit;
 		[IfFlag(0)] public int pts_total_limit;
 		public DateTime date;
 		public int qts;
+		[IfFlag(2)] public int qts_limit;
 
 		[Flags] public enum Flags : uint
 		{
 			has_pts_total_limit = 0x1,
+			has_pts_limit = 0x2,
+			has_qts_limit = 0x4,
 		}
 	}
 
@@ -9335,6 +9504,13 @@ namespace TL.Methods
 	{
 		public InputChannelBase channel;
 		public bool enabled;
+	}
+
+	[TLDef(0x18AFBC93)]
+	public class Channels_ClickSponsoredMessage : IMethod<bool>
+	{
+		public InputChannelBase channel;
+		public byte[] random_id;
 	}
 
 	[TLDef(0xAA2769ED)]
@@ -10121,5 +10297,153 @@ namespace TL.Methods
 	{
 		public InputChatlist chatlist;
 		public InputPeer[] peers;
+	}
+
+	[TLDef(0x424CD47A)]
+	public class Stories_SendStory : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputMedia media;
+		[IfFlag(0)] public string caption;
+		[IfFlag(1)] public MessageEntity[] entities;
+		public InputPrivacyRule[] privacy_rules;
+		public long random_id;
+		[IfFlag(3)] public int period;
+
+		[Flags] public enum Flags : uint
+		{
+			has_caption = 0x1,
+			has_entities = 0x2,
+			pinned = 0x4,
+			has_period = 0x8,
+			noforwards = 0x10,
+		}
+	}
+
+	[TLDef(0x2AAE7A41)]
+	public class Stories_EditStory : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public int id;
+		[IfFlag(0)] public InputMedia media;
+		[IfFlag(1)] public string caption;
+		[IfFlag(1)] public MessageEntity[] entities;
+		[IfFlag(2)] public InputPrivacyRule[] privacy_rules;
+
+		[Flags] public enum Flags : uint
+		{
+			has_media = 0x1,
+			has_caption = 0x2,
+			has_privacy_rules = 0x4,
+		}
+	}
+
+	[TLDef(0xB5D501D7)]
+	public class Stories_DeleteStories : IMethod<int[]>
+	{
+		public int[] id;
+	}
+
+	[TLDef(0x51602944)]
+	public class Stories_TogglePinned : IMethod<int[]>
+	{
+		public int[] id;
+		public bool pinned;
+	}
+
+	[TLDef(0xEEB0D625)]
+	public class Stories_GetAllStories : IMethod<Stories_AllStoriesBase>
+	{
+		public Flags flags;
+		[IfFlag(0)] public string state;
+
+		[Flags] public enum Flags : uint
+		{
+			has_state = 0x1,
+			next = 0x2,
+			hidden = 0x4,
+		}
+	}
+
+	[TLDef(0x96D528E0)]
+	public class Stories_GetUserStories : IMethod<Stories_UserStories>
+	{
+		public InputUserBase user_id;
+	}
+
+	[TLDef(0x0B471137)]
+	public class Stories_GetPinnedStories : IMethod<Stories_Stories>
+	{
+		public InputUserBase user_id;
+		public int offset_id;
+		public int limit;
+	}
+
+	[TLDef(0x1F5BC5D2)]
+	public class Stories_GetStoriesArchive : IMethod<Stories_Stories>
+	{
+		public int offset_id;
+		public int limit;
+	}
+
+	[TLDef(0x6A15CF46)]
+	public class Stories_GetStoriesByID : IMethod<Stories_Stories>
+	{
+		public InputUserBase user_id;
+		public int[] id;
+	}
+
+	[TLDef(0x7C2557C4)]
+	public class Stories_ToggleAllStoriesHidden : IMethod<bool>
+	{
+		public bool hidden;
+	}
+
+	[TLDef(0x729C562C)]
+	public class Stories_GetAllReadUserStories : IMethod<UpdatesBase> { }
+
+	[TLDef(0xEDC5105B)]
+	public class Stories_ReadStories : IMethod<int[]>
+	{
+		public InputUserBase user_id;
+		public int max_id;
+	}
+
+	[TLDef(0x22126127)]
+	public class Stories_IncrementStoryViews : IMethod<bool>
+	{
+		public InputUserBase user_id;
+		public int[] id;
+	}
+
+	[TLDef(0x4B3B5E97)]
+	public class Stories_GetStoryViewsList : IMethod<Stories_StoryViewsList>
+	{
+		public int id;
+		public DateTime offset_date;
+		public long offset_id;
+		public int limit;
+	}
+
+	[TLDef(0x9A75D6A6)]
+	public class Stories_GetStoriesViews : IMethod<Stories_StoryViews>
+	{
+		public int[] id;
+	}
+
+	[TLDef(0x16E443CE)]
+	public class Stories_ExportStoryLink : IMethod<ExportedStoryLink>
+	{
+		public InputUserBase user_id;
+		public int id;
+	}
+
+	[TLDef(0xC95BE06A)]
+	public class Stories_Report : IMethod<bool>
+	{
+		public InputUserBase user_id;
+		public int[] id;
+		public ReportReason reason;
+		public string message;
 	}
 }

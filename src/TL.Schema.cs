@@ -455,6 +455,13 @@ namespace TL
 		/// <summary>The emoji, for now 🏀, 🎲 and 🎯 are supported</summary>
 		public string emoticon;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputMediaStory"/></para></summary>
+	[TLDef(0x9A86B58F)]
+	public class InputMediaStory : InputMedia
+	{
+		public InputUserBase user_id;
+		public int id;
+	}
 
 	/// <summary>Defines a new group profile photo.		<para>See <a href="https://corefork.telegram.org/type/InputChatPhoto"/></para>		<para>Derived classes: <see cref="InputChatUploadedPhoto"/>, <see cref="InputChatPhoto"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/inputChatPhotoEmpty">inputChatPhotoEmpty</a></remarks>
@@ -716,7 +723,7 @@ namespace TL
 		public long id;
 	}
 	/// <summary>Indicates info about a certain user		<para>See <a href="https://corefork.telegram.org/constructor/user"/></para></summary>
-	[TLDef(0x8F97C628)]
+	[TLDef(0xABB5F120)]
 	public partial class User : UserBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -751,6 +758,7 @@ namespace TL
 		[IfFlag(30)] public EmojiStatus emoji_status;
 		/// <summary>Additional usernames</summary>
 		[IfFlag(32)] public Username[] usernames;
+		[IfFlag(37)] public int stories_max_id;
 
 		[Flags] public enum Flags : uint
 		{
@@ -818,6 +826,11 @@ namespace TL
 			has_usernames = 0x1,
 			/// <summary>Whether we can edit the profile picture, name, about text and description of this bot because we own it.</summary>
 			bot_can_edit = 0x2,
+			close_friend = 0x4,
+			stories_hidden = 0x8,
+			stories_unavailable = 0x10,
+			/// <summary>Field <see cref="stories_max_id"/> has a value</summary>
+			has_stories_max_id = 0x20,
 		}
 	}
 
@@ -1523,7 +1536,7 @@ namespace TL
 		/// <summary>Peer ID, the chat where this message was sent</summary>
 		public virtual Peer Peer { get; }
 		/// <summary>Reply information</summary>
-		public virtual MessageReplyHeader ReplyTo { get; }
+		public virtual MessageReplyHeaderBase ReplyTo { get; }
 		/// <summary>Date of the message</summary>
 		public virtual DateTime Date { get; }
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
@@ -1568,7 +1581,7 @@ namespace TL
 		/// <summary>ID of the inline bot that generated the message</summary>
 		[IfFlag(11)] public long via_bot_id;
 		/// <summary>Reply information</summary>
-		[IfFlag(3)] public MessageReplyHeader reply_to;
+		[IfFlag(3)] public MessageReplyHeaderBase reply_to;
 		/// <summary>Date of the message</summary>
 		public DateTime date;
 		/// <summary>The message</summary>
@@ -1659,7 +1672,7 @@ namespace TL
 		/// <summary>Peer ID, the chat where this message was sent</summary>
 		public override Peer Peer => peer_id;
 		/// <summary>Reply information</summary>
-		public override MessageReplyHeader ReplyTo => reply_to;
+		public override MessageReplyHeaderBase ReplyTo => reply_to;
 		/// <summary>Date of the message</summary>
 		public override DateTime Date => date;
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
@@ -1678,7 +1691,7 @@ namespace TL
 		/// <summary>Sender of service message</summary>
 		public Peer peer_id;
 		/// <summary>Reply (thread) information</summary>
-		[IfFlag(3)] public MessageReplyHeader reply_to;
+		[IfFlag(3)] public MessageReplyHeaderBase reply_to;
 		/// <summary>Message date</summary>
 		public DateTime date;
 		/// <summary>Event connected with the service message</summary>
@@ -1715,7 +1728,7 @@ namespace TL
 		/// <summary>Sender of service message</summary>
 		public override Peer Peer => peer_id;
 		/// <summary>Reply (thread) information</summary>
-		public override MessageReplyHeader ReplyTo => reply_to;
+		public override MessageReplyHeaderBase ReplyTo => reply_to;
 		/// <summary>Message date</summary>
 		public override DateTime Date => date;
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
@@ -1772,13 +1785,14 @@ namespace TL
 	[TLDef(0x9F84F49E)]
 	public class MessageMediaUnsupported : MessageMedia { }
 	/// <summary>Document (video, audio, voice, sticker, any media type except photo)		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaDocument"/></para></summary>
-	[TLDef(0x9CB070D7)]
+	[TLDef(0x4CF4D72D)]
 	public partial class MessageMediaDocument : MessageMedia
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Attached document</summary>
 		[IfFlag(0)] public DocumentBase document;
+		[IfFlag(5)] public DocumentBase alt_document;
 		/// <summary>Time to live of self-destructing document</summary>
 		[IfFlag(2)] public int ttl_seconds;
 
@@ -1792,6 +1806,8 @@ namespace TL
 			nopremium = 0x8,
 			/// <summary>Whether this media should be hidden behind a spoiler warning</summary>
 			spoiler = 0x10,
+			/// <summary>Field <see cref="alt_document"/> has a value</summary>
+			has_alt_document = 0x20,
 		}
 	}
 	/// <summary>Preview of webpage		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaWebPage"/></para></summary>
@@ -1902,6 +1918,21 @@ namespace TL
 		public int value;
 		/// <summary>The emoji, for now 🏀, 🎲 and 🎯 are supported</summary>
 		public string emoticon;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageMediaStory"/></para></summary>
+	[TLDef(0xCBB20D88)]
+	public class MessageMediaStory : MessageMedia
+	{
+		public Flags flags;
+		public long user_id;
+		public int id;
+		[IfFlag(0)] public StoryItemBase story;
+
+		[Flags] public enum Flags : uint
+		{
+			has_story = 0x1,
+			via_mention = 0x2,
+		}
 	}
 
 	/// <summary>Object describing actions connected to a service message.		<para>See <a href="https://corefork.telegram.org/type/MessageAction"/></para>		<para>Derived classes: <see cref="MessageActionChatCreate"/>, <see cref="MessageActionChatEditTitle"/>, <see cref="MessageActionChatEditPhoto"/>, <see cref="MessageActionChatDeletePhoto"/>, <see cref="MessageActionChatAddUser"/>, <see cref="MessageActionChatDeleteUser"/>, <see cref="MessageActionChatJoinedByLink"/>, <see cref="MessageActionChannelCreate"/>, <see cref="MessageActionChatMigrateTo"/>, <see cref="MessageActionChannelMigrateFrom"/>, <see cref="MessageActionPinMessage"/>, <see cref="MessageActionHistoryClear"/>, <see cref="MessageActionGameScore"/>, <see cref="MessageActionPaymentSentMe"/>, <see cref="MessageActionPaymentSent"/>, <see cref="MessageActionPhoneCall"/>, <see cref="MessageActionScreenshotTaken"/>, <see cref="MessageActionCustomAction"/>, <see cref="MessageActionBotAllowed"/>, <see cref="MessageActionSecureValuesSentMe"/>, <see cref="MessageActionSecureValuesSent"/>, <see cref="MessageActionContactSignUp"/>, <see cref="MessageActionGeoProximityReached"/>, <see cref="MessageActionGroupCall"/>, <see cref="MessageActionInviteToGroupCall"/>, <see cref="MessageActionSetMessagesTTL"/>, <see cref="MessageActionGroupCallScheduled"/>, <see cref="MessageActionSetChatTheme"/>, <see cref="MessageActionChatJoinedByRequest"/>, <see cref="MessageActionWebViewDataSentMe"/>, <see cref="MessageActionWebViewDataSent"/>, <see cref="MessageActionGiftPremium"/>, <see cref="MessageActionTopicCreate"/>, <see cref="MessageActionTopicEdit"/>, <see cref="MessageActionSuggestProfilePhoto"/>, <see cref="MessageActionRequestedPeer"/>, <see cref="MessageActionSetChatWallPaper"/>, <see cref="MessageActionSetSameChatWallPaper"/></para></summary>
@@ -2661,7 +2692,7 @@ namespace TL
 	}
 
 	/// <summary>Notification settings.		<para>See <a href="https://corefork.telegram.org/constructor/inputPeerNotifySettings"/></para></summary>
-	[TLDef(0xDF1F002B)]
+	[TLDef(0xCACB6AE2)]
 	public class InputPeerNotifySettings : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -2674,6 +2705,9 @@ namespace TL
 		[IfFlag(2)] public int mute_until;
 		/// <summary>Name of an audio file for notification</summary>
 		[IfFlag(3)] public NotificationSound sound;
+		[IfFlag(6)] public bool stories_muted;
+		[IfFlag(7)] public bool stories_hide_sender;
+		[IfFlag(8)] public NotificationSound stories_sound;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2685,11 +2719,17 @@ namespace TL
 			has_mute_until = 0x4,
 			/// <summary>Field <see cref="sound"/> has a value</summary>
 			has_sound = 0x8,
+			/// <summary>Field <see cref="stories_muted"/> has a value</summary>
+			has_stories_muted = 0x40,
+			/// <summary>Field <see cref="stories_hide_sender"/> has a value</summary>
+			has_stories_hide_sender = 0x80,
+			/// <summary>Field <see cref="stories_sound"/> has a value</summary>
+			has_stories_sound = 0x100,
 		}
 	}
 
 	/// <summary>Notification settings.		<para>See <a href="https://corefork.telegram.org/constructor/peerNotifySettings"/></para></summary>
-	[TLDef(0xA83B0426)]
+	[TLDef(0x99622C0C)]
 	public class PeerNotifySettings : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -2706,6 +2746,11 @@ namespace TL
 		[IfFlag(4)] public NotificationSound android_sound;
 		/// <summary>Notification sound for other applications</summary>
 		[IfFlag(5)] public NotificationSound other_sound;
+		[IfFlag(6)] public bool stories_muted;
+		[IfFlag(7)] public bool stories_hide_sender;
+		[IfFlag(8)] public NotificationSound stories_ios_sound;
+		[IfFlag(9)] public NotificationSound stories_android_sound;
+		[IfFlag(10)] public NotificationSound stories_other_sound;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2721,6 +2766,16 @@ namespace TL
 			has_android_sound = 0x10,
 			/// <summary>Field <see cref="other_sound"/> has a value</summary>
 			has_other_sound = 0x20,
+			/// <summary>Field <see cref="stories_muted"/> has a value</summary>
+			has_stories_muted = 0x40,
+			/// <summary>Field <see cref="stories_hide_sender"/> has a value</summary>
+			has_stories_hide_sender = 0x80,
+			/// <summary>Field <see cref="stories_ios_sound"/> has a value</summary>
+			has_stories_ios_sound = 0x100,
+			/// <summary>Field <see cref="stories_android_sound"/> has a value</summary>
+			has_stories_android_sound = 0x200,
+			/// <summary>Field <see cref="stories_other_sound"/> has a value</summary>
+			has_stories_other_sound = 0x400,
 		}
 	}
 
@@ -2861,7 +2916,7 @@ namespace TL
 	}
 
 	/// <summary>Extended user info		<para>See <a href="https://corefork.telegram.org/constructor/userFull"/></para></summary>
-	[TLDef(0x93EADB53)]
+	[TLDef(0x4FE1CC86)]
 	public class UserFull : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -2902,6 +2957,7 @@ namespace TL
 		[IfFlag(19)] public PremiumGiftOption[] premium_gifts;
 		/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a> to use in the private chat with the user.</summary>
 		[IfFlag(24)] public WallPaperBase wallpaper;
+		[IfFlag(25)] public UserStories stories;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2949,6 +3005,9 @@ namespace TL
 			translations_disabled = 0x800000,
 			/// <summary>Field <see cref="wallpaper"/> has a value</summary>
 			has_wallpaper = 0x1000000,
+			/// <summary>Field <see cref="stories"/> has a value</summary>
+			has_stories = 0x2000000,
+			stories_pinned_available = 0x4000000,
 		}
 	}
 
@@ -4057,13 +4116,12 @@ namespace TL
 	[TLDef(0x564FE691)]
 	public class UpdateLoginToken : Update { }
 	/// <summary>A specific user has voted in a poll		<para>See <a href="https://corefork.telegram.org/constructor/updateMessagePollVote"/></para></summary>
-	[TLDef(0x106395C9)]
+	[TLDef(0x24F40E77)]
 	public class UpdateMessagePollVote : Update
 	{
 		/// <summary>Poll ID</summary>
 		public long poll_id;
-		/// <summary>User ID</summary>
-		public long user_id;
+		public Peer peer;
 		/// <summary>Chosen option(s)</summary>
 		public byte[][] options;
 		/// <summary>New <strong>qts</strong> value, see <a href="https://corefork.telegram.org/api/updates">updates »</a> for more info.</summary>
@@ -4558,6 +4616,27 @@ namespace TL
 		/// <summary>ID of the user we couldn't add.</summary>
 		public long user_id;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateStory"/></para></summary>
+	[TLDef(0x205A4133)]
+	public class UpdateStory : Update
+	{
+		public long user_id;
+		public StoryItemBase story;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateReadStories"/></para></summary>
+	[TLDef(0xFEB5345A)]
+	public class UpdateReadStories : Update
+	{
+		public long user_id;
+		public int max_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateStoryID"/></para></summary>
+	[TLDef(0x1BF335B9)]
+	public class UpdateStoryID : Update
+	{
+		public int id;
+		public long random_id;
+	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]
@@ -4702,7 +4781,7 @@ namespace TL
 		/// <summary>Info about the inline bot used to generate this message</summary>
 		[IfFlag(11)] public long via_bot_id;
 		/// <summary>Reply and <a href="https://corefork.telegram.org/api/threads">thread</a> information</summary>
-		[IfFlag(3)] public MessageReplyHeader reply_to;
+		[IfFlag(3)] public MessageReplyHeaderBase reply_to;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Entities</a> for styled text</summary>
 		[IfFlag(7)] public MessageEntity[] entities;
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
@@ -4760,7 +4839,7 @@ namespace TL
 		/// <summary>Info about the inline bot used to generate this message</summary>
 		[IfFlag(11)] public long via_bot_id;
 		/// <summary>Reply (thread) information</summary>
-		[IfFlag(3)] public MessageReplyHeader reply_to;
+		[IfFlag(3)] public MessageReplyHeaderBase reply_to;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Entities</a> for styled text</summary>
 		[IfFlag(7)] public MessageEntity[] entities;
 		/// <summary>Time To Live of the message, once updateShortChatMessage.date+updateShortChatMessage.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
@@ -5694,6 +5773,8 @@ namespace TL
 		AddedByPhone = 0xD1219BDD,
 		///<summary>Whether people can send you voice messages</summary>
 		VoiceMessages = 0xAEE69D68,
+		///<summary>See <a href="https://corefork.telegram.org/constructor/inputPrivacyKeyAbout"/></summary>
+		About = 0x3823CC40,
 	}
 
 	/// <summary>Privacy key		<para>See <a href="https://corefork.telegram.org/type/PrivacyKey"/></para></summary>
@@ -5717,6 +5798,8 @@ namespace TL
 		AddedByPhone = 0x42FFD42B,
 		///<summary>Whether the user accepts voice messages</summary>
 		VoiceMessages = 0x0697F414,
+		///<summary>See <a href="https://corefork.telegram.org/constructor/privacyKeyAbout"/></summary>
+		About = 0xA486B761,
 	}
 
 	/// <summary>Privacy rule		<para>See <a href="https://corefork.telegram.org/type/InputPrivacyRule"/></para>		<para>Derived classes: <see cref="InputPrivacyValueAllowContacts"/>, <see cref="InputPrivacyValueAllowAll"/>, <see cref="InputPrivacyValueAllowUsers"/>, <see cref="InputPrivacyValueDisallowContacts"/>, <see cref="InputPrivacyValueDisallowAll"/>, <see cref="InputPrivacyValueDisallowUsers"/>, <see cref="InputPrivacyValueAllowChatParticipants"/>, <see cref="InputPrivacyValueDisallowChatParticipants"/></para></summary>
@@ -5761,6 +5844,9 @@ namespace TL
 		/// <summary>Disallowed chat IDs</summary>
 		public long[] chats;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputPrivacyValueAllowCloseFriends"/></para></summary>
+	[TLDef(0x2F453E49)]
+	public class InputPrivacyValueAllowCloseFriends : InputPrivacyRule { }
 
 	/// <summary>Privacy rule		<para>See <a href="https://corefork.telegram.org/type/PrivacyRule"/></para>		<para>Derived classes: <see cref="PrivacyValueAllowContacts"/>, <see cref="PrivacyValueAllowAll"/>, <see cref="PrivacyValueAllowUsers"/>, <see cref="PrivacyValueDisallowContacts"/>, <see cref="PrivacyValueDisallowAll"/>, <see cref="PrivacyValueDisallowUsers"/>, <see cref="PrivacyValueAllowChatParticipants"/>, <see cref="PrivacyValueDisallowChatParticipants"/></para></summary>
 	public abstract class PrivacyRule : IObject { }
@@ -5804,6 +5890,9 @@ namespace TL
 		/// <summary>Disallowed chats</summary>
 		public long[] chats;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/privacyValueAllowCloseFriends"/></para></summary>
+	[TLDef(0xF7E8D89B)]
+	public class PrivacyValueAllowCloseFriends : PrivacyRule { }
 
 	/// <summary>Privacy rules		<para>See <a href="https://corefork.telegram.org/constructor/account.privacyRules"/></para></summary>
 	[TLDef(0x50A04E45)]
@@ -5863,17 +5952,18 @@ namespace TL
 		}
 	}
 	/// <summary>Defines a video		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeVideo"/></para></summary>
-	[TLDef(0x0EF02CE6)]
+	[TLDef(0xD38FF1C2)]
 	public class DocumentAttributeVideo : DocumentAttribute
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Duration in seconds</summary>
-		public int duration;
+		public double duration;
 		/// <summary>Video width</summary>
 		public int w;
 		/// <summary>Video height</summary>
 		public int h;
+		[IfFlag(2)] public int preload_prefix_size;
 
 		[Flags] public enum Flags : uint
 		{
@@ -5881,6 +5971,9 @@ namespace TL
 			round_message = 0x1,
 			/// <summary>Whether the video supports streaming</summary>
 			supports_streaming = 0x2,
+			/// <summary>Field <see cref="preload_prefix_size"/> has a value</summary>
+			has_preload_prefix_size = 0x4,
+			nosound = 0x8,
 		}
 	}
 	/// <summary>Represents an audio file		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeAudio"/></para></summary>
@@ -11471,7 +11564,7 @@ namespace TL
 	}
 
 	/// <summary>Results of poll		<para>See <a href="https://corefork.telegram.org/constructor/pollResults"/></para></summary>
-	[TLDef(0xDCB82EA3)]
+	[TLDef(0x7ADF2420)]
 	public class PollResults : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -11481,7 +11574,7 @@ namespace TL
 		/// <summary>Total number of people that voted in the poll</summary>
 		[IfFlag(2)] public int total_voters;
 		/// <summary>IDs of the last users that recently voted in the poll</summary>
-		[IfFlag(3)] public long[] recent_voters;
+		[IfFlag(3)] public Peer[] recent_voters;
 		/// <summary>Explanation of quiz solution</summary>
 		[IfFlag(4)] public string solution;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text in quiz solution</a></summary>
@@ -11716,7 +11809,7 @@ namespace TL
 	}
 
 	/// <summary>Autodownload settings		<para>See <a href="https://corefork.telegram.org/constructor/autoDownloadSettings"/></para></summary>
-	[TLDef(0x8EFAB953)]
+	[TLDef(0xBAA57628)]
 	public class AutoDownloadSettings : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -11729,6 +11822,8 @@ namespace TL
 		public long file_size_max;
 		/// <summary>Maximum suggested bitrate for <strong>uploading</strong> videos</summary>
 		public int video_upload_maxbitrate;
+		public int small_queue_active_operations_max;
+		public int large_queue_active_operations_max;
 
 		[Flags] public enum Flags : uint
 		{
@@ -11740,6 +11835,7 @@ namespace TL
 			audio_preload_next = 0x4,
 			/// <summary>Whether to enable data saving mode in phone calls</summary>
 			phonecalls_less_data = 0x8,
+			stories_preload = 0x10,
 		}
 	}
 
@@ -12172,72 +12268,32 @@ namespace TL
 			has_settings = 0x2,
 		}
 	}
-
-	/// <summary>How a user voted in a poll		<para>See <a href="https://corefork.telegram.org/type/MessageUserVote"/></para>		<para>Derived classes: <see cref="MessageUserVote"/>, <see cref="MessageUserVoteInputOption"/>, <see cref="MessageUserVoteMultiple"/></para></summary>
-	public abstract class MessageUserVoteBase : IObject
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/webPageAttributeStory"/></para></summary>
+	[TLDef(0x939A4671)]
+	public class WebPageAttributeStory : WebPageAttribute
 	{
-		/// <summary>User ID</summary>
-		public virtual long UserId { get; }
-		/// <summary>When did the user cast the vote</summary>
-		public virtual DateTime Date { get; }
-	}
-	/// <summary>How a user voted in a poll		<para>See <a href="https://corefork.telegram.org/constructor/messageUserVote"/></para></summary>
-	[TLDef(0x34D247B4)]
-	public class MessageUserVote : MessageUserVoteBase
-	{
-		/// <summary>User ID</summary>
+		public Flags flags;
 		public long user_id;
-		/// <summary>The option chosen by the user</summary>
-		public byte[] option;
-		/// <summary>When did the user cast the vote</summary>
-		public DateTime date;
+		public int id;
+		[IfFlag(0)] public StoryItemBase story;
 
-		/// <summary>User ID</summary>
-		public override long UserId => user_id;
-		/// <summary>When did the user cast the vote</summary>
-		public override DateTime Date => date;
-	}
-	/// <summary>How a user voted in a poll (reduced constructor, returned if an <c>option</c> was provided to <see cref="SchemaExtensions.Messages_GetPollVotes">Messages_GetPollVotes</see>)		<para>See <a href="https://corefork.telegram.org/constructor/messageUserVoteInputOption"/></para></summary>
-	[TLDef(0x3CA5B0EC)]
-	public class MessageUserVoteInputOption : MessageUserVoteBase
-	{
-		/// <summary>The user that voted for the queried <c>option</c></summary>
-		public long user_id;
-		/// <summary>When did the user cast the vote</summary>
-		public DateTime date;
-
-		/// <summary>The user that voted for the queried <c>option</c></summary>
-		public override long UserId => user_id;
-		/// <summary>When did the user cast the vote</summary>
-		public override DateTime Date => date;
-	}
-	/// <summary>How a user voted in a multiple-choice poll		<para>See <a href="https://corefork.telegram.org/constructor/messageUserVoteMultiple"/></para></summary>
-	[TLDef(0x8A65E557)]
-	public class MessageUserVoteMultiple : MessageUserVoteBase
-	{
-		/// <summary>User ID</summary>
-		public long user_id;
-		/// <summary>Options chosen by the user</summary>
-		public byte[][] options;
-		/// <summary>When did the user cast their votes</summary>
-		public DateTime date;
-
-		/// <summary>User ID</summary>
-		public override long UserId => user_id;
-		/// <summary>When did the user cast their votes</summary>
-		public override DateTime Date => date;
+		[Flags] public enum Flags : uint
+		{
+			has_story = 0x1,
+		}
 	}
 
 	/// <summary>How users voted in a poll		<para>See <a href="https://corefork.telegram.org/constructor/messages.votesList"/></para></summary>
-	[TLDef(0x0823F649)]
-	public class Messages_VotesList : IObject
+	[TLDef(0x4899484E)]
+	public class Messages_VotesList : IObject, IPeerResolver
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Total number of votes for all options (or only for the chosen <c>option</c>, if provided to <see cref="SchemaExtensions.Messages_GetPollVotes">Messages_GetPollVotes</see>)</summary>
 		public int count;
 		/// <summary>Vote info for each user</summary>
-		public MessageUserVoteBase[] votes;
+		public MessagePeerVoteBase[] votes;
+		public Dictionary<long, ChatBase> chats;
 		/// <summary>Info about users that voted in the poll</summary>
 		public Dictionary<long, User> users;
 		/// <summary>Offset to use with the next <see cref="SchemaExtensions.Messages_GetPollVotes">Messages_GetPollVotes</see> request, empty string if no more results are available.</summary>
@@ -12248,6 +12304,8 @@ namespace TL
 			/// <summary>Field <see cref="next_offset"/> has a value</summary>
 			has_next_offset = 0x1,
 		}
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Credit card info URL provided by the bank		<para>See <a href="https://corefork.telegram.org/constructor/bankCardOpenUrl"/></para></summary>
@@ -12660,18 +12718,18 @@ namespace TL
 	}
 
 	/// <summary>Global privacy settings		<para>See <a href="https://corefork.telegram.org/constructor/globalPrivacySettings"/></para></summary>
-	[TLDef(0xBEA2F424)]
+	[TLDef(0x734C4CCB)]
 	public class GlobalPrivacySettings : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>Whether to archive and mute new chats from non-contacts</summary>
-		[IfFlag(0)] public bool archive_and_mute_new_noncontact_peers;
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Field <see cref="archive_and_mute_new_noncontact_peers"/> has a value</summary>
-			has_archive_and_mute_new_noncontact_peers = 0x1,
+			/// <summary>Whether to archive and mute new chats from non-contacts</summary>
+			archive_and_mute_new_noncontact_peers = 0x1,
+			keep_archived_unmuted = 0x2,
+			keep_archived_folders = 0x4,
 		}
 	}
 
@@ -12804,9 +12862,11 @@ namespace TL
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
+	/// <summary>Reply information		<para>See <a href="https://corefork.telegram.org/type/MessageReplyHeader"/></para>		<para>Derived classes: <see cref="MessageReplyHeader"/></para></summary>
+	public abstract class MessageReplyHeaderBase : IObject { }
 	/// <summary>Message replies and <a href="https://corefork.telegram.org/api/threads">thread</a> information		<para>See <a href="https://corefork.telegram.org/constructor/messageReplyHeader"/></para></summary>
 	[TLDef(0xA6D57763)]
-	public class MessageReplyHeader : IObject
+	public class MessageReplyHeader : MessageReplyHeaderBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
@@ -12828,6 +12888,13 @@ namespace TL
 			/// <summary>Whether this message was sent in a <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a> (except for the General topic).</summary>
 			forum_topic = 0x8,
 		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageReplyStoryHeader"/></para></summary>
+	[TLDef(0x9C98BFC1)]
+	public class MessageReplyStoryHeader : MessageReplyHeaderBase
+	{
+		public long user_id;
+		public int story_id;
 	}
 
 	/// <summary>Info about <a href="https://corefork.telegram.org/api/threads">the comment section of a channel post, or a simple message thread</a>		<para>See <a href="https://corefork.telegram.org/constructor/messageReplies"/></para></summary>
@@ -13370,7 +13437,7 @@ namespace TL
 	public class Account_ResetPasswordOk : Account_ResetPasswordResult { }
 
 	/// <summary>A <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message</a>.		<para>See <a href="https://corefork.telegram.org/constructor/sponsoredMessage"/></para></summary>
-	[TLDef(0xFC25B828)]
+	[TLDef(0xDAAFFF6B)]
 	public class SponsoredMessage : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -13387,6 +13454,7 @@ namespace TL
 		[IfFlag(2)] public int channel_post;
 		/// <summary>Parameter for the bot start message if the sponsored chat is a chat with a bot.</summary>
 		[IfFlag(0)] public string start_param;
+		[IfFlag(9)] public SponsoredWebPage webpage;
 		/// <summary>Sponsored message</summary>
 		public string message;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
@@ -13416,6 +13484,8 @@ namespace TL
 			has_sponsor_info = 0x80,
 			/// <summary>Field <see cref="additional_info"/> has a value</summary>
 			has_additional_info = 0x100,
+			/// <summary>Field <see cref="webpage"/> has a value</summary>
+			has_webpage = 0x200,
 		}
 	}
 
@@ -13708,6 +13778,8 @@ namespace TL
 			big = 0x1,
 			/// <summary>Whether the reaction wasn't yet marked as read by the current user</summary>
 			unread = 0x2,
+			/// <summary>Starting from layer 159, <see cref="SchemaExtensions.Messages_SendReaction">Messages_SendReaction</see> will send reactions from the peer (user or channel) specified using <see cref="SchemaExtensions.Messages_SaveDefaultSendAs">Messages_SaveDefaultSendAs</see>. <br/>If set, this flag indicates that this reaction was sent by us, even if the <c>peer</c> doesn't point to the current account.</summary>
+			my = 0x4,
 		}
 	}
 
@@ -14857,5 +14929,246 @@ namespace TL
 		public string about;
 		/// <summary>Bot description</summary>
 		public string description;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/MessagePeerVote"/></para></summary>
+	public abstract class MessagePeerVoteBase : IObject
+	{
+		public virtual Peer Peer { get; }
+		public virtual DateTime Date { get; }
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messagePeerVote"/></para></summary>
+	[TLDef(0xB6CC2D5C)]
+	public class MessagePeerVote : MessagePeerVoteBase
+	{
+		public Peer peer;
+		public byte[] option;
+		public DateTime date;
+
+		public override Peer Peer => peer;
+		public override DateTime Date => date;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messagePeerVoteInputOption"/></para></summary>
+	[TLDef(0x74CDA504)]
+	public class MessagePeerVoteInputOption : MessagePeerVoteBase
+	{
+		public Peer peer;
+		public DateTime date;
+
+		public override Peer Peer => peer;
+		public override DateTime Date => date;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messagePeerVoteMultiple"/></para></summary>
+	[TLDef(0x4628F6E6)]
+	public class MessagePeerVoteMultiple : MessagePeerVoteBase
+	{
+		public Peer peer;
+		public byte[][] options;
+		public DateTime date;
+
+		public override Peer Peer => peer;
+		public override DateTime Date => date;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/sponsoredWebPage"/></para></summary>
+	[TLDef(0x3DB8EC63)]
+	public class SponsoredWebPage : IObject
+	{
+		public Flags flags;
+		public string url;
+		public string site_name;
+		[IfFlag(0)] public PhotoBase photo;
+
+		[Flags] public enum Flags : uint
+		{
+			has_photo = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyViews"/></para></summary>
+	[TLDef(0xD36760CF)]
+	public class StoryViews : IObject
+	{
+		public Flags flags;
+		public int views_count;
+		[IfFlag(0)] public long[] recent_viewers;
+
+		[Flags] public enum Flags : uint
+		{
+			has_recent_viewers = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/StoryItem"/></para></summary>
+	public abstract class StoryItemBase : IObject
+	{
+		public virtual int ID { get; }
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyItemDeleted"/></para></summary>
+	[TLDef(0x51E6EE4F)]
+	public class StoryItemDeleted : StoryItemBase
+	{
+		public int id;
+
+		public override int ID => id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyItemSkipped"/></para></summary>
+	[TLDef(0xFFADC913)]
+	public class StoryItemSkipped : StoryItemBase
+	{
+		public Flags flags;
+		public int id;
+		public DateTime date;
+		public DateTime expire_date;
+
+		[Flags] public enum Flags : uint
+		{
+			close_friends = 0x100,
+		}
+
+		public override int ID => id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyItem"/></para></summary>
+	[TLDef(0x562AA637)]
+	public class StoryItem : StoryItemBase
+	{
+		public Flags flags;
+		public int id;
+		public DateTime date;
+		public DateTime expire_date;
+		[IfFlag(0)] public string caption;
+		[IfFlag(1)] public MessageEntity[] entities;
+		public MessageMedia media;
+		[IfFlag(2)] public PrivacyRule[] privacy;
+		[IfFlag(3)] public StoryViews views;
+
+		[Flags] public enum Flags : uint
+		{
+			has_caption = 0x1,
+			has_entities = 0x2,
+			has_privacy = 0x4,
+			has_views = 0x8,
+			pinned = 0x20,
+			public_ = 0x80,
+			close_friends = 0x100,
+			min = 0x200,
+			noforwards = 0x400,
+			edited = 0x800,
+			contacts = 0x1000,
+			selected_contacts = 0x2000,
+		}
+
+		public override int ID => id;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/userStories"/></para></summary>
+	[TLDef(0x8611A200)]
+	public class UserStories : IObject
+	{
+		public Flags flags;
+		public long user_id;
+		[IfFlag(0)] public int max_read_id;
+		public StoryItemBase[] stories;
+
+		[Flags] public enum Flags : uint
+		{
+			has_max_read_id = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/stories.AllStories"/></para></summary>
+	public abstract class Stories_AllStoriesBase : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.allStoriesNotModified"/></para></summary>
+	[TLDef(0x47E0A07E)]
+	public class Stories_AllStoriesNotModified : Stories_AllStoriesBase
+	{
+		public string state;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.allStories"/></para></summary>
+	[TLDef(0x839E0428)]
+	public class Stories_AllStories : Stories_AllStoriesBase
+	{
+		public Flags flags;
+		public int count;
+		public string state;
+		public UserStories[] user_stories;
+		public Dictionary<long, User> users;
+
+		[Flags] public enum Flags : uint
+		{
+			has_more = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.stories"/></para></summary>
+	[TLDef(0x4FE57DF1)]
+	public class Stories_Stories : IObject
+	{
+		public int count;
+		public StoryItemBase[] stories;
+		public Dictionary<long, User> users;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.userStories"/></para></summary>
+	[TLDef(0x37A6FF5F)]
+	public class Stories_UserStories : IObject
+	{
+		public UserStories stories;
+		public Dictionary<long, User> users;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyView"/></para></summary>
+	[TLDef(0xA71AACC2)]
+	public class StoryView : IObject
+	{
+		public long user_id;
+		public DateTime date;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.storyViewsList"/></para></summary>
+	[TLDef(0xFB3F77AC)]
+	public class Stories_StoryViewsList : IObject
+	{
+		public int count;
+		public StoryView[] views;
+		public Dictionary<long, User> users;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.storyViews"/></para></summary>
+	[TLDef(0xDE9EED1D)]
+	public class Stories_StoryViews : IObject
+	{
+		public StoryViews[] views;
+		public Dictionary<long, User> users;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputReplyTo"/></para></summary>
+	public abstract class InputReplyTo : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputReplyToMessage"/></para></summary>
+	[TLDef(0x9C5386E4)]
+	public class InputReplyToMessage : InputReplyTo
+	{
+		public Flags flags;
+		public int reply_to_msg_id;
+		[IfFlag(0)] public int top_msg_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_top_msg_id = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputReplyToStory"/></para></summary>
+	[TLDef(0x15B0F283)]
+	public class InputReplyToStory : InputReplyTo
+	{
+		public InputUserBase user_id;
+		public int story_id;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/exportedStoryLink"/></para></summary>
+	[TLDef(0x3FC9053B)]
+	public class ExportedStoryLink : IObject
+	{
+		public string link;
 	}
 }
