@@ -2129,6 +2129,7 @@ namespace TL
 			attach_menu = 0x2,
 			/// <summary>Field <see cref="app"/> has a value</summary>
 			has_app = 0x4,
+			from_request = 0x8,
 		}
 	}
 	/// <summary>Secure <a href="https://corefork.telegram.org/passport">telegram passport</a> values were received		<para>See <a href="https://corefork.telegram.org/constructor/messageActionSecureValuesSentMe"/></para></summary>
@@ -3008,6 +3009,7 @@ namespace TL
 			/// <summary>Field <see cref="stories"/> has a value</summary>
 			has_stories = 0x2000000,
 			stories_pinned_available = 0x4000000,
+			blocked_my_stories_from = 0x8000000,
 		}
 	}
 
@@ -4207,13 +4209,19 @@ namespace TL
 		public int read_max_id;
 	}
 	/// <summary>A peer was blocked		<para>See <a href="https://corefork.telegram.org/constructor/updatePeerBlocked"/></para></summary>
-	[TLDef(0x246A4B22)]
+	[TLDef(0xEBE07752)]
 	public class UpdatePeerBlocked : Update
 	{
+		public Flags flags;
 		/// <summary>The blocked peer</summary>
 		public Peer peer_id;
-		/// <summary>Whether the peer was blocked or unblocked</summary>
-		public bool blocked;
+
+		[Flags] public enum Flags : uint
+		{
+			/// <summary>Whether the peer was blocked or unblocked</summary>
+			blocked = 0x1,
+			blocked_my_stories_from = 0x2,
+		}
 	}
 	/// <summary>A user is typing in a <a href="https://corefork.telegram.org/api/channel">supergroup, channel</a> or <a href="https://corefork.telegram.org/api/threads">message thread</a>		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelUserTyping"/></para></summary>
 	[TLDef(0x8C88C923)]
@@ -4636,6 +4644,20 @@ namespace TL
 	{
 		public int id;
 		public long random_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateStoriesStealthMode"/></para></summary>
+	[TLDef(0x2C084DC1)]
+	public class UpdateStoriesStealthMode : Update
+	{
+		public StoriesStealthMode stealth_mode;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSentStoryReaction"/></para></summary>
+	[TLDef(0xE3A73D20)]
+	public class UpdateSentStoryReaction : Update
+	{
+		public long user_id;
+		public int story_id;
+		public Reaction reaction;
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -6456,6 +6478,9 @@ namespace TL
 			has_about = 0x20,
 			/// <summary>Whether the <a href="https://corefork.telegram.org/api/invites#join-requests">join request »</a> must be first approved by an administrator</summary>
 			request_needed = 0x40,
+			verified = 0x80,
+			scam = 0x100,
+			fake = 0x200,
 		}
 	}
 	/// <summary>A chat invitation that also allows peeking into the group to read messages without joining it.		<para>See <a href="https://corefork.telegram.org/constructor/chatInvitePeek"/></para></summary>
@@ -14986,16 +15011,18 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyViews"/></para></summary>
-	[TLDef(0xD36760CF)]
+	[TLDef(0xC64C0B97)]
 	public class StoryViews : IObject
 	{
 		public Flags flags;
 		public int views_count;
+		public int reactions_count;
 		[IfFlag(0)] public long[] recent_viewers;
 
 		[Flags] public enum Flags : uint
 		{
 			has_recent_viewers = 0x1,
+			has_viewers = 0x2,
 		}
 	}
 
@@ -15029,7 +15056,7 @@ namespace TL
 		public override int ID => id;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyItem"/></para></summary>
-	[TLDef(0x562AA637)]
+	[TLDef(0x44C457CE)]
 	public class StoryItem : StoryItemBase
 	{
 		public Flags flags;
@@ -15039,8 +15066,10 @@ namespace TL
 		[IfFlag(0)] public string caption;
 		[IfFlag(1)] public MessageEntity[] entities;
 		public MessageMedia media;
+		[IfFlag(14)] public MediaArea[] media_areas;
 		[IfFlag(2)] public PrivacyRule[] privacy;
 		[IfFlag(3)] public StoryViews views;
+		[IfFlag(15)] public Reaction sent_reaction;
 
 		[Flags] public enum Flags : uint
 		{
@@ -15056,6 +15085,8 @@ namespace TL
 			edited = 0x800,
 			contacts = 0x1000,
 			selected_contacts = 0x2000,
+			has_media_areas = 0x4000,
+			has_sent_reaction = 0x8000,
 		}
 
 		public override int ID => id;
@@ -15079,13 +15110,19 @@ namespace TL
 	/// <summary><para>See <a href="https://corefork.telegram.org/type/stories.AllStories"/></para></summary>
 	public abstract class Stories_AllStoriesBase : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.allStoriesNotModified"/></para></summary>
-	[TLDef(0x47E0A07E)]
+	[TLDef(0x1158FE3E)]
 	public class Stories_AllStoriesNotModified : Stories_AllStoriesBase
 	{
+		public Flags flags;
 		public string state;
+		public StoriesStealthMode stealth_mode;
+
+		[Flags] public enum Flags : uint
+		{
+		}
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.allStories"/></para></summary>
-	[TLDef(0x839E0428)]
+	[TLDef(0x519D899E)]
 	public class Stories_AllStories : Stories_AllStoriesBase
 	{
 		public Flags flags;
@@ -15093,6 +15130,7 @@ namespace TL
 		public string state;
 		public UserStories[] user_stories;
 		public Dictionary<long, User> users;
+		public StoriesStealthMode stealth_mode;
 
 		[Flags] public enum Flags : uint
 		{
@@ -15118,20 +15156,37 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyView"/></para></summary>
-	[TLDef(0xA71AACC2)]
+	[TLDef(0xB0BDEAC5)]
 	public class StoryView : IObject
 	{
+		public Flags flags;
 		public long user_id;
 		public DateTime date;
+		[IfFlag(2)] public Reaction reaction;
+
+		[Flags] public enum Flags : uint
+		{
+			blocked = 0x1,
+			blocked_my_stories_from = 0x2,
+			has_reaction = 0x4,
+		}
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.storyViewsList"/></para></summary>
-	[TLDef(0xFB3F77AC)]
+	[TLDef(0x46E9B9EC)]
 	public class Stories_StoryViewsList : IObject
 	{
+		public Flags flags;
 		public int count;
+		public int reactions_count;
 		public StoryView[] views;
 		public Dictionary<long, User> users;
+		[IfFlag(0)] public string next_offset;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
+		}
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.storyViews"/></para></summary>
@@ -15170,5 +15225,61 @@ namespace TL
 	public class ExportedStoryLink : IObject
 	{
 		public string link;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storiesStealthMode"/></para></summary>
+	[TLDef(0x712E27FD)]
+	public class StoriesStealthMode : IObject
+	{
+		public Flags flags;
+		[IfFlag(0)] public DateTime active_until_date;
+		[IfFlag(1)] public DateTime cooldown_until_date;
+
+		[Flags] public enum Flags : uint
+		{
+			has_active_until_date = 0x1,
+			has_cooldown_until_date = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/mediaAreaCoordinates"/></para></summary>
+	[TLDef(0x03D1EA4E)]
+	public class MediaAreaCoordinates : IObject
+	{
+		public double x;
+		public double y;
+		public double w;
+		public double h;
+		public double rotation;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/MediaArea"/></para></summary>
+	public abstract class MediaArea : IObject
+	{
+		public MediaAreaCoordinates coordinates;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/mediaAreaVenue"/></para></summary>
+	[TLDef(0xBE82DB9C, inheritBefore = true)]
+	public class MediaAreaVenue : MediaArea
+	{
+		public GeoPoint geo;
+		public string title;
+		public string address;
+		public string provider;
+		public string venue_id;
+		public string venue_type;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputMediaAreaVenue"/></para></summary>
+	[TLDef(0xB282217F, inheritBefore = true)]
+	public class InputMediaAreaVenue : MediaArea
+	{
+		public long query_id;
+		public string result_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/mediaAreaGeoPoint"/></para></summary>
+	[TLDef(0xDF8B3B22, inheritBefore = true)]
+	public class MediaAreaGeoPoint : MediaArea
+	{
+		public GeoPoint geo;
 	}
 }

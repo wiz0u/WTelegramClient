@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 160;					// fetched 21/07/2023 07:55:22
+		public const int Version = 162;					// fetched 06/09/2023 16:21:22
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -342,7 +342,7 @@ namespace TL
 			[0xD29A27F4] = typeof(UpdateChannelMessageForwards),
 			[0xD6B19546] = typeof(UpdateReadChannelDiscussionInbox),
 			[0x695C9E7C] = typeof(UpdateReadChannelDiscussionOutbox),
-			[0x246A4B22] = typeof(UpdatePeerBlocked),
+			[0xEBE07752] = typeof(UpdatePeerBlocked),
 			[0x8C88C923] = typeof(UpdateChannelUserTyping),
 			[0xED85EAB5] = typeof(UpdatePinnedMessages),
 			[0x5BB98608] = typeof(UpdatePinnedChannelMessages),
@@ -377,6 +377,8 @@ namespace TL
 			[0x205A4133] = typeof(UpdateStory),
 			[0xFEB5345A] = typeof(UpdateReadStories),
 			[0x1BF335B9] = typeof(UpdateStoryID),
+			[0x2C084DC1] = typeof(UpdateStoriesStealthMode),
+			[0xE3A73D20] = typeof(UpdateSentStoryReaction),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -1103,21 +1105,26 @@ namespace TL
 			[0x74CDA504] = typeof(MessagePeerVoteInputOption),
 			[0x4628F6E6] = typeof(MessagePeerVoteMultiple),
 			[0x3DB8EC63] = typeof(SponsoredWebPage),
-			[0xD36760CF] = typeof(StoryViews),
+			[0xC64C0B97] = typeof(StoryViews),
 			[0x51E6EE4F] = typeof(StoryItemDeleted),
 			[0xFFADC913] = typeof(StoryItemSkipped),
-			[0x562AA637] = typeof(StoryItem),
+			[0x44C457CE] = typeof(StoryItem),
 			[0x8611A200] = typeof(UserStories),
-			[0x47E0A07E] = typeof(Stories_AllStoriesNotModified),
-			[0x839E0428] = typeof(Stories_AllStories),
+			[0x1158FE3E] = typeof(Stories_AllStoriesNotModified),
+			[0x519D899E] = typeof(Stories_AllStories),
 			[0x4FE57DF1] = typeof(Stories_Stories),
 			[0x37A6FF5F] = typeof(Stories_UserStories),
-			[0xA71AACC2] = typeof(StoryView),
-			[0xFB3F77AC] = typeof(Stories_StoryViewsList),
+			[0xB0BDEAC5] = typeof(StoryView),
+			[0x46E9B9EC] = typeof(Stories_StoryViewsList),
 			[0xDE9EED1D] = typeof(Stories_StoryViews),
 			[0x9C5386E4] = typeof(InputReplyToMessage),
 			[0x15B0F283] = typeof(InputReplyToStory),
 			[0x3FC9053B] = typeof(ExportedStoryLink),
+			[0x712E27FD] = typeof(StoriesStealthMode),
+			[0x03D1EA4E] = typeof(MediaAreaCoordinates),
+			[0xBE82DB9C] = typeof(MediaAreaVenue),
+			[0xB282217F] = typeof(InputMediaAreaVenue),
+			[0xDF8B3B22] = typeof(MediaAreaGeoPoint),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),

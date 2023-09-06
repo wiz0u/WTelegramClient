@@ -445,8 +445,8 @@ namespace TL
 			});
 
 		/// <summary>Change privacy settings of current account		<para>See <a href="https://corefork.telegram.org/method/account.setPrivacy"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.setPrivacy#possible-errors">details</a>)</para></summary>
-		/// <param name="key">Peers to which the privacy rules apply</param>
-		/// <param name="rules">New privacy rules</param>
+		/// <param name="key">New privacy rule</param>
+		/// <param name="rules">Peers to which the privacy rule will apply.</param>
 		public static Task<Account_PrivacyRules> Account_SetPrivacy(this Client client, InputPrivacyKey key, params InputPrivacyRule[] rules)
 			=> client.Invoke(new Account_SetPrivacy
 			{
@@ -1233,26 +1233,29 @@ namespace TL
 
 		/// <summary>Adds the user to the blacklist.		<para>See <a href="https://corefork.telegram.org/method/contacts.block"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.block#possible-errors">details</a>)</para></summary>
 		/// <param name="id">User ID</param>
-		public static Task<bool> Contacts_Block(this Client client, InputPeer id)
+		public static Task<bool> Contacts_Block(this Client client, InputPeer id, bool my_stories_from = false)
 			=> client.Invoke(new Contacts_Block
 			{
+				flags = (Contacts_Block.Flags)(my_stories_from ? 0x1 : 0),
 				id = id,
 			});
 
 		/// <summary>Deletes the user from the blacklist.		<para>See <a href="https://corefork.telegram.org/method/contacts.unblock"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.unblock#possible-errors">details</a>)</para></summary>
 		/// <param name="id">User ID</param>
-		public static Task<bool> Contacts_Unblock(this Client client, InputPeer id)
+		public static Task<bool> Contacts_Unblock(this Client client, InputPeer id, bool my_stories_from = false)
 			=> client.Invoke(new Contacts_Unblock
 			{
+				flags = (Contacts_Unblock.Flags)(my_stories_from ? 0x1 : 0),
 				id = id,
 			});
 
 		/// <summary>Returns the list of blocked users.		<para>See <a href="https://corefork.telegram.org/method/contacts.getBlocked"/></para></summary>
 		/// <param name="offset">The number of list elements to be skipped</param>
 		/// <param name="limit">The number of list elements to be returned</param>
-		public static Task<Contacts_Blocked> Contacts_GetBlocked(this Client client, int offset = default, int limit = int.MaxValue)
+		public static Task<Contacts_Blocked> Contacts_GetBlocked(this Client client, int offset = default, int limit = int.MaxValue, bool my_stories_from = false)
 			=> client.Invoke(new Contacts_GetBlocked
 			{
+				flags = (Contacts_GetBlocked.Flags)(my_stories_from ? 0x1 : 0),
 				offset = offset,
 				limit = limit,
 			});
@@ -1412,6 +1415,15 @@ namespace TL
 				hidden = hidden,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.setBlocked"/></para></summary>
+		public static Task<bool> Contacts_SetBlocked(this Client client, InputPeer[] id, int limit = int.MaxValue, bool my_stories_from = false)
+			=> client.Invoke(new Contacts_SetBlocked
+			{
+				flags = (Contacts_SetBlocked.Flags)(my_stories_from ? 0x1 : 0),
+				id = id,
+				limit = limit,
+			});
+
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para></summary>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client client, params InputMessage[] id)
@@ -1424,7 +1436,7 @@ namespace TL
 		/// <param name="exclude_pinned">Exclude pinned dialogs</param>
 		/// <param name="folder_id"><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></param>
 		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
-		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
+		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a> (<c>top_message</c> ID used for pagination)</param>
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offset peer for pagination</a></param>
 		/// <param name="limit">Number of list elements to be returned</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
@@ -3776,7 +3788,7 @@ namespace TL
 		/// <summary>Saves a part of file for further sending to one of the methods.		<para>See <a href="https://corefork.telegram.org/method/upload.saveFilePart"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.saveFilePart#possible-errors">details</a>)</para></summary>
 		/// <param name="file_id">Random file identifier created by the client</param>
 		/// <param name="file_part">Numerical order of a part</param>
-		/// <param name="bytes">Binary data, contend of a part</param>
+		/// <param name="bytes">Binary data, content of a part</param>
 		public static Task<bool> Upload_SaveFilePart(this Client client, long file_id, int file_part, byte[] bytes)
 			=> client.Invoke(new Upload_SaveFilePart
 			{
@@ -4797,6 +4809,29 @@ namespace TL
 				active = active,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.canSendMessage"/></para></summary>
+		public static Task<bool> Bots_CanSendMessage(this Client client, InputUserBase bot)
+			=> client.Invoke(new Bots_CanSendMessage
+			{
+				bot = bot,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.allowSendMessage"/></para></summary>
+		public static Task<UpdatesBase> Bots_AllowSendMessage(this Client client, InputUserBase bot)
+			=> client.Invoke(new Bots_AllowSendMessage
+			{
+				bot = bot,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.invokeWebViewCustomMethod"/></para></summary>
+		public static Task<DataJSON> Bots_InvokeWebViewCustomMethod(this Client client, InputUserBase bot, string custom_method, DataJSON params_)
+			=> client.Invoke(new Bots_InvokeWebViewCustomMethod
+			{
+				bot = bot,
+				custom_method = custom_method,
+				params_ = params_,
+			});
+
 		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
 		/// <param name="invoice">Invoice</param>
 		/// <param name="theme_params">A JSON object with the following keys, containing color theme information (integers, RGB24) to pass to the payment provider, to apply in eventual verification pages: <br/><c>bg_color</c> - Background color <br/><c>text_color</c> - Text color <br/><c>hint_color</c> - Hint text color <br/><c>link_color</c> - Link color <br/><c>button_color</c> - Button color <br/><c>button_text_color</c> - Button text color</param>
@@ -5612,12 +5647,19 @@ namespace TL
 				peers = peers,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.canSendStory"/></para></summary>
+		public static Task<bool> Stories_CanSendStory(this Client client)
+			=> client.Invoke(new Stories_CanSendStory
+			{
+			});
+
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.sendStory"/></para></summary>
-		public static Task<UpdatesBase> Stories_SendStory(this Client client, InputMedia media, InputPrivacyRule[] privacy_rules, long random_id, string caption = null, MessageEntity[] entities = null, int? period = null, bool pinned = false, bool noforwards = false)
+		public static Task<UpdatesBase> Stories_SendStory(this Client client, InputMedia media, InputPrivacyRule[] privacy_rules, long random_id, string caption = null, MessageEntity[] entities = null, int? period = null, MediaArea[] media_areas = null, bool pinned = false, bool noforwards = false)
 			=> client.Invoke(new Stories_SendStory
 			{
-				flags = (Stories_SendStory.Flags)((caption != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (period != null ? 0x8 : 0) | (pinned ? 0x4 : 0) | (noforwards ? 0x10 : 0)),
+				flags = (Stories_SendStory.Flags)((caption != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (period != null ? 0x8 : 0) | (media_areas != null ? 0x20 : 0) | (pinned ? 0x4 : 0) | (noforwards ? 0x10 : 0)),
 				media = media,
+				media_areas = media_areas,
 				caption = caption,
 				entities = entities,
 				privacy_rules = privacy_rules,
@@ -5626,12 +5668,13 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.editStory"/></para></summary>
-		public static Task<UpdatesBase> Stories_EditStory(this Client client, int id, InputMedia media = null, string caption = null, MessageEntity[] entities = null, InputPrivacyRule[] privacy_rules = null)
+		public static Task<UpdatesBase> Stories_EditStory(this Client client, int id, InputMedia media = null, string caption = null, MessageEntity[] entities = null, InputPrivacyRule[] privacy_rules = null, MediaArea[] media_areas = null)
 			=> client.Invoke(new Stories_EditStory
 			{
-				flags = (Stories_EditStory.Flags)((media != null ? 0x1 : 0) | (caption != null ? 0x2 : 0) | (entities != null ? 0x2 : 0) | (privacy_rules != null ? 0x4 : 0)),
+				flags = (Stories_EditStory.Flags)((media != null ? 0x1 : 0) | (caption != null ? 0x2 : 0) | (entities != null ? 0x2 : 0) | (privacy_rules != null ? 0x4 : 0) | (media_areas != null ? 0x8 : 0)),
 				id = id,
 				media = media,
+				media_areas = media_areas,
 				caption = caption,
 				entities = entities,
 				privacy_rules = privacy_rules,
@@ -5722,12 +5765,13 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoryViewsList"/></para></summary>
-		public static Task<Stories_StoryViewsList> Stories_GetStoryViewsList(this Client client, int id, DateTime offset_date = default, long offset_id = default, int limit = int.MaxValue)
+		public static Task<Stories_StoryViewsList> Stories_GetStoryViewsList(this Client client, int id, string offset, int limit = int.MaxValue, string q = null, bool just_contacts = false, bool reactions_first = false)
 			=> client.Invoke(new Stories_GetStoryViewsList
 			{
+				flags = (Stories_GetStoryViewsList.Flags)((q != null ? 0x2 : 0) | (just_contacts ? 0x1 : 0) | (reactions_first ? 0x4 : 0)),
+				q = q,
 				id = id,
-				offset_date = offset_date,
-				offset_id = offset_id,
+				offset = offset,
 				limit = limit,
 			});
 
@@ -5754,6 +5798,23 @@ namespace TL
 				id = id,
 				reason = reason,
 				message = message,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.activateStealthMode"/></para></summary>
+		public static Task<UpdatesBase> Stories_ActivateStealthMode(this Client client, bool past = false, bool future = false)
+			=> client.Invoke(new Stories_ActivateStealthMode
+			{
+				flags = (Stories_ActivateStealthMode.Flags)((past ? 0x1 : 0) | (future ? 0x2 : 0)),
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.sendReaction"/></para></summary>
+		public static Task<UpdatesBase> Stories_SendReaction(this Client client, InputUserBase user_id, int story_id, Reaction reaction, bool add_to_recent = false)
+			=> client.Invoke(new Stories_SendReaction
+			{
+				flags = (Stories_SendReaction.Flags)(add_to_recent ? 0x1 : 0),
+				user_id = user_id,
+				story_id = story_id,
+				reaction = reaction,
 			});
 	}
 }
@@ -6695,23 +6756,41 @@ namespace TL.Methods
 		public string[] phones;
 	}
 
-	[TLDef(0x68CC1411)]
+	[TLDef(0x2E2E8734)]
 	public class Contacts_Block : IMethod<bool>
 	{
+		public Flags flags;
 		public InputPeer id;
+
+		[Flags] public enum Flags : uint
+		{
+			my_stories_from = 0x1,
+		}
 	}
 
-	[TLDef(0xBEA65D50)]
+	[TLDef(0xB550D328)]
 	public class Contacts_Unblock : IMethod<bool>
 	{
+		public Flags flags;
 		public InputPeer id;
+
+		[Flags] public enum Flags : uint
+		{
+			my_stories_from = 0x1,
+		}
 	}
 
-	[TLDef(0xF57C350F)]
+	[TLDef(0x9A868F80)]
 	public class Contacts_GetBlocked : IMethod<Contacts_Blocked>
 	{
+		public Flags flags;
 		public int offset;
 		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			my_stories_from = 0x1,
+		}
 	}
 
 	[TLDef(0x11F812D8)]
@@ -6842,6 +6921,19 @@ namespace TL.Methods
 	{
 		public InputUserBase id;
 		public bool hidden;
+	}
+
+	[TLDef(0x94C65C76)]
+	public class Contacts_SetBlocked : IMethod<bool>
+	{
+		public Flags flags;
+		public InputPeer[] id;
+		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			my_stories_from = 0x1,
+		}
 	}
 
 	[TLDef(0x63C66506)]
@@ -9621,6 +9713,26 @@ namespace TL.Methods
 		public bool active;
 	}
 
+	[TLDef(0x1359F4E6)]
+	public class Bots_CanSendMessage : IMethod<bool>
+	{
+		public InputUserBase bot;
+	}
+
+	[TLDef(0xF132E3EF)]
+	public class Bots_AllowSendMessage : IMethod<UpdatesBase>
+	{
+		public InputUserBase bot;
+	}
+
+	[TLDef(0x087FC5E7)]
+	public class Bots_InvokeWebViewCustomMethod : IMethod<DataJSON>
+	{
+		public InputUserBase bot;
+		public string custom_method;
+		public DataJSON params_;
+	}
+
 	[TLDef(0x37148DBB)]
 	public class Payments_GetPaymentForm : IMethod<Payments_PaymentForm>
 	{
@@ -10299,11 +10411,15 @@ namespace TL.Methods
 		public InputPeer[] peers;
 	}
 
-	[TLDef(0x424CD47A)]
+	[TLDef(0xB100D45D)]
+	public class Stories_CanSendStory : IMethod<bool> { }
+
+	[TLDef(0xD455FCEC)]
 	public class Stories_SendStory : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputMedia media;
+		[IfFlag(5)] public MediaArea[] media_areas;
 		[IfFlag(0)] public string caption;
 		[IfFlag(1)] public MessageEntity[] entities;
 		public InputPrivacyRule[] privacy_rules;
@@ -10317,15 +10433,17 @@ namespace TL.Methods
 			pinned = 0x4,
 			has_period = 0x8,
 			noforwards = 0x10,
+			has_media_areas = 0x20,
 		}
 	}
 
-	[TLDef(0x2AAE7A41)]
+	[TLDef(0xA9B91AE4)]
 	public class Stories_EditStory : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public int id;
 		[IfFlag(0)] public InputMedia media;
+		[IfFlag(3)] public MediaArea[] media_areas;
 		[IfFlag(1)] public string caption;
 		[IfFlag(1)] public MessageEntity[] entities;
 		[IfFlag(2)] public InputPrivacyRule[] privacy_rules;
@@ -10335,6 +10453,7 @@ namespace TL.Methods
 			has_media = 0x1,
 			has_caption = 0x2,
 			has_privacy_rules = 0x4,
+			has_media_areas = 0x8,
 		}
 	}
 
@@ -10416,13 +10535,21 @@ namespace TL.Methods
 		public int[] id;
 	}
 
-	[TLDef(0x4B3B5E97)]
+	[TLDef(0xF95F61A4)]
 	public class Stories_GetStoryViewsList : IMethod<Stories_StoryViewsList>
 	{
+		public Flags flags;
+		[IfFlag(1)] public string q;
 		public int id;
-		public DateTime offset_date;
-		public long offset_id;
+		public string offset;
 		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			just_contacts = 0x1,
+			has_q = 0x2,
+			reactions_first = 0x4,
+		}
 	}
 
 	[TLDef(0x9A75D6A6)]
@@ -10445,5 +10572,31 @@ namespace TL.Methods
 		public int[] id;
 		public ReportReason reason;
 		public string message;
+	}
+
+	[TLDef(0x57BBD166)]
+	public class Stories_ActivateStealthMode : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+
+		[Flags] public enum Flags : uint
+		{
+			past = 0x1,
+			future = 0x2,
+		}
+	}
+
+	[TLDef(0x49AAA9B3)]
+	public class Stories_SendReaction : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputUserBase user_id;
+		public int story_id;
+		public Reaction reaction;
+
+		[Flags] public enum Flags : uint
+		{
+			add_to_recent = 0x1,
+		}
 	}
 }

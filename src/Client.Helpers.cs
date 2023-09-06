@@ -750,6 +750,9 @@ namespace WTelegram
 								(ci.flags.HasFlag(ChatInvite.Flags.broadcast) ? Channel.Flags.broadcast : 0) |
 								(ci.flags.HasFlag(ChatInvite.Flags.public_) ? Channel.Flags.has_username : 0) |
 								(ci.flags.HasFlag(ChatInvite.Flags.megagroup) ? Channel.Flags.megagroup : 0) |
+								(ci.flags.HasFlag(ChatInvite.Flags.verified) ? Channel.Flags.verified : 0) |
+								(ci.flags.HasFlag(ChatInvite.Flags.scam) ? Channel.Flags.scam : 0) |
+								(ci.flags.HasFlag(ChatInvite.Flags.fake) ? Channel.Flags.fake : 0) |
 								(ci.flags.HasFlag(ChatInvite.Flags.request_needed) ? Channel.Flags.join_request : 0) };
 			}
 			return null;
