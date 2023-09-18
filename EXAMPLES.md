@@ -199,7 +199,8 @@ You have to handle `client.OnUpdate` events containing an `UpdateNewMessage`.
 
 See the `HandleMessage` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23).
 
-You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.
+You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.  
+See also [explanation below](#message-user) to extract user/chat info from messages.
 
 <a name="download"></a>
 ## Downloading photos, medias, files
@@ -270,6 +271,7 @@ InputPeer peer = chats.chats[1234567890]; // the chat we want
 DateTime when = DateTime.UtcNow.AddMinutes(3);
 await client.SendMessageAsync(peer, "This will be posted in 3 minutes", schedule_date: when);
 ```
+*Note: Make sure your computer clock is synchronized with Internet time*
 
 <a name="fun"></a>
 ## Fun with stickers, GIFs, dice, and animated emojies
@@ -471,7 +473,7 @@ dialogs.CollectUsersChats(_users, _chats);
 
 private async Task OnUpdate(UpdatesBase updates)
 {
-	updates.CollectUsersChats(_users, _chats);
+    updates.CollectUsersChats(_users, _chats);
     ...
 }
 

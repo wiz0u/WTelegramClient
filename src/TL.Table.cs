@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 162;					// fetched 06/09/2023 16:21:22
+		public const int Version = 163;					// fetched 18/09/2023 17:16:36
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -271,6 +271,7 @@ namespace TL
 			[0x07761198] = typeof(UpdateChatParticipants),
 			[0xE5BDF8DE] = typeof(UpdateUserStatus),
 			[0xA7848924] = typeof(UpdateUserName),
+			[0x8951ABEF] = typeof(UpdateNewAuthorization),
 			[0x12BCBD9A] = typeof(UpdateNewEncryptedMessage),
 			[0x1710F156] = typeof(UpdateEncryptedChatTyping),
 			[0xB4A2E88D] = typeof(UpdateEncryption),
@@ -285,7 +286,7 @@ namespace TL
 			[0x9C974FDF] = typeof(UpdateReadHistoryInbox),
 			[0x2F2F21BF] = typeof(UpdateReadHistoryOutbox),
 			[0x7F891213] = typeof(UpdateWebPage),
-			[0x68C13933] = typeof(UpdateReadMessagesContents),
+			[0xF8227181] = typeof(UpdateReadMessagesContents),
 			[0x108D941F] = typeof(UpdateChannelTooLong),
 			[0x635B4C09] = typeof(UpdateChannel),
 			[0x62BA04D9] = typeof(UpdateNewChannelMessage),
@@ -1011,7 +1012,7 @@ namespace TL
 			[0x2DBF3432] = typeof(Phone_GroupCallStreamRtmpUrl),
 			[0x4576F3F0] = typeof(AttachMenuBotIconColor),
 			[0xB2A7386B] = typeof(AttachMenuBotIcon),
-			[0xC8AA2CD2] = typeof(AttachMenuBot),
+			[0xD90D8DFE] = typeof(AttachMenuBot),
 			[0xF1D88A5C] = null,//AttachMenuBotsNotModified
 			[0x3C4301C0] = typeof(AttachMenuBots),
 			[0x93BF667F] = typeof(AttachMenuBotsBot),

@@ -2286,13 +2286,13 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>Topic title.</summary>
+		/// <summary>New topic title.</summary>
 		[IfFlag(0)] public string title;
-		/// <summary>ID of the <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> used as topic icon.</summary>
+		/// <summary>ID of the new <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> used as topic icon, or if it was removed.</summary>
 		[IfFlag(1)] public long icon_emoji_id;
-		/// <summary>Whether the topic was closed.</summary>
+		/// <summary>Whether the topic was opened or closed.</summary>
 		[IfFlag(2)] public bool closed;
-		/// <summary>Whether the topic was hidden (only valid for the "General" topic, <c>id=1</c>).</summary>
+		/// <summary>Whether the topic was hidden or unhidden (only valid for the "General" topic, <c>id=1</c>).</summary>
 		[IfFlag(3)] public bool hidden;
 
 		[Flags] public enum Flags : uint
@@ -3406,6 +3406,21 @@ namespace TL
 		/// <summary>Usernames.</summary>
 		public Username[] usernames;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateNewAuthorization"/></para></summary>
+	[TLDef(0x8951ABEF)]
+	public class UpdateNewAuthorization : Update
+	{
+		public Flags flags;
+		public long hash;
+		[IfFlag(0)] public DateTime date;
+		[IfFlag(0)] public string device;
+		[IfFlag(0)] public string location;
+
+		[Flags] public enum Flags : uint
+		{
+			unconfirmed = 0x1,
+		}
+	}
 	/// <summary>New encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/updateNewEncryptedMessage"/></para></summary>
 	[TLDef(0x12BCBD9A)]
 	public class UpdateNewEncryptedMessage : Update
@@ -3571,15 +3586,23 @@ namespace TL
 		public int pts_count;
 	}
 	/// <summary>Contents of messages in the common <a href="https://corefork.telegram.org/api/updates">message box</a> were read		<para>See <a href="https://corefork.telegram.org/constructor/updateReadMessagesContents"/></para></summary>
-	[TLDef(0x68C13933)]
+	[TLDef(0xF8227181)]
 	public class UpdateReadMessagesContents : Update
 	{
+		public Flags flags;
 		/// <summary>IDs of read messages</summary>
 		public int[] messages;
 		/// <summary><a href="https://corefork.telegram.org/api/updates">Event count after generation</a></summary>
 		public int pts;
 		/// <summary><a href="https://corefork.telegram.org/api/updates">Number of events that were generated</a></summary>
 		public int pts_count;
+		[IfFlag(0)] public DateTime date;
+
+		[Flags] public enum Flags : uint
+		{
+			/// <summary>Field <see cref="date"/> has a value</summary>
+			has_date = 0x1,
+		}
 	}
 	/// <summary>There are new updates in the specified channel, the client must fetch them.<br/>If the difference is too long or if the channel isn't currently in the states, start fetching from the specified pts.		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelTooLong"/></para></summary>
 	[TLDef(0x108D941F)]
@@ -6258,6 +6281,7 @@ namespace TL
 			encrypted_requests_disabled = 0x8,
 			/// <summary>Whether this session will accept phone calls</summary>
 			call_requests_disabled = 0x10,
+			unconfirmed = 0x20,
 		}
 	}
 
@@ -13869,7 +13893,7 @@ namespace TL
 	}
 
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/bots/attach">bot web app that can be launched from the attachment menu »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBot"/></para></summary>
-	[TLDef(0xC8AA2CD2)]
+	[TLDef(0xD90D8DFE)]
 	public class AttachMenuBot : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -13879,7 +13903,7 @@ namespace TL
 		/// <summary>Attachment menu item name</summary>
 		public string short_name;
 		/// <summary>List of dialog types where this attachment menu entry should be shown</summary>
-		public AttachMenuPeerType[] peer_types;
+		[IfFlag(3)] public AttachMenuPeerType[] peer_types;
 		/// <summary>List of platform-specific static icons and animations to use for the attachment menu button</summary>
 		public AttachMenuBotIcon[] icons;
 
@@ -13891,6 +13915,9 @@ namespace TL
 			has_settings = 0x2,
 			/// <summary>Whether the bot would like to send messages to the user.</summary>
 			request_write_access = 0x4,
+			show_in_attach_menu = 0x8,
+			show_in_side_menu = 0x10,
+			side_menu_disclaimer_needed = 0x20,
 		}
 	}
 
@@ -14784,6 +14811,7 @@ namespace TL
 			inactive = 0x1,
 			/// <summary>The bot is asking permission to send messages to the user: if the user agrees, set the <c>write_allowed</c> flag when invoking <see cref="SchemaExtensions.Messages_RequestAppWebView">Messages_RequestAppWebView</see>.</summary>
 			request_write_access = 0x2,
+			has_settings = 0x4,
 		}
 	}
 

@@ -8,7 +8,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  releaseNotes: $[replace(variables['releaseNotes'], '"', '''''')]
+  releaseNotes2: $[replace($(releaseNotes), '"', '''''')]
 
 stages:
   - stage: publish

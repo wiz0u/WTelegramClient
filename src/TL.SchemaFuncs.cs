@@ -1010,10 +1010,10 @@ namespace TL
 		/// <param name="hash">Session ID from the <see cref="Authorization"/>, fetchable using <see cref="Account_GetAuthorizations">Account_GetAuthorizations</see></param>
 		/// <param name="encrypted_requests_disabled">Whether to enable or disable receiving encrypted chats: if the flag is not set, the previous setting is not changed</param>
 		/// <param name="call_requests_disabled">Whether to enable or disable receiving calls: if the flag is not set, the previous setting is not changed</param>
-		public static Task<bool> Account_ChangeAuthorizationSettings(this Client client, long hash, bool? encrypted_requests_disabled = default, bool? call_requests_disabled = default)
+		public static Task<bool> Account_ChangeAuthorizationSettings(this Client client, long hash, bool? encrypted_requests_disabled = default, bool? call_requests_disabled = default, bool confirmed = false)
 			=> client.Invoke(new Account_ChangeAuthorizationSettings
 			{
-				flags = (Account_ChangeAuthorizationSettings.Flags)((encrypted_requests_disabled != default ? 0x1 : 0) | (call_requests_disabled != default ? 0x2 : 0)),
+				flags = (Account_ChangeAuthorizationSettings.Flags)((encrypted_requests_disabled != default ? 0x1 : 0) | (call_requests_disabled != default ? 0x2 : 0) | (confirmed ? 0x8 : 0)),
 				hash = hash,
 				encrypted_requests_disabled = encrypted_requests_disabled.GetValueOrDefault(),
 				call_requests_disabled = call_requests_disabled.GetValueOrDefault(),
@@ -3095,7 +3095,7 @@ namespace TL
 		/// <param name="link">Invite link</param>
 		/// <param name="q">Search for a user in the pending <a href="https://corefork.telegram.org/api/invites#join-requests">join requests »</a> list: only available when the <c>requested</c> flag is set, cannot be used together with a specific <c>link</c>.</param>
 		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
-		/// <param name="offset_user">User ID for <a href="https://corefork.telegram.org/api/offsets">pagination</a></param>
+		/// <param name="offset_user">User ID for <a href="https://corefork.telegram.org/api/offsets">pagination</a>: if set, <c>offset_date</c> <strong>must also be set</strong>.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(this Client client, InputPeer peer, DateTime offset_date = default, InputUserBase offset_user = null, int limit = int.MaxValue, string link = null, string q = null, bool requested = false)
 			=> client.Invoke(new Messages_GetChatInviteImporters
@@ -3423,12 +3423,13 @@ namespace TL
 		/// <param name="url">Web app URL</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
-		public static Task<SimpleWebViewResult> Messages_RequestSimpleWebView(this Client client, InputUserBase bot, string url, string platform, DataJSON theme_params = null, bool from_switch_webview = false)
+		public static Task<SimpleWebViewResult> Messages_RequestSimpleWebView(this Client client, InputUserBase bot, string platform, DataJSON theme_params = null, string url = null, string start_param = null, bool from_switch_webview = false, bool from_side_menu = false)
 			=> client.Invoke(new Messages_RequestSimpleWebView
 			{
-				flags = (Messages_RequestSimpleWebView.Flags)((theme_params != null ? 0x1 : 0) | (from_switch_webview ? 0x2 : 0)),
+				flags = (Messages_RequestSimpleWebView.Flags)((theme_params != null ? 0x1 : 0) | (url != null ? 0x8 : 0) | (start_param != null ? 0x10 : 0) | (from_switch_webview ? 0x2 : 0) | (from_side_menu ? 0x4 : 0)),
 				bot = bot,
 				url = url,
+				start_param = start_param,
 				theme_params = theme_params,
 				platform = platform,
 			});
@@ -6600,6 +6601,7 @@ namespace TL.Methods
 		{
 			has_encrypted_requests_disabled = 0x1,
 			has_call_requests_disabled = 0x2,
+			confirmed = 0x8,
 		}
 	}
 
@@ -8647,12 +8649,13 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x299BEC8E)]
+	[TLDef(0x1A46500A)]
 	public class Messages_RequestSimpleWebView : IMethod<SimpleWebViewResult>
 	{
 		public Flags flags;
 		public InputUserBase bot;
-		public string url;
+		[IfFlag(3)] public string url;
+		[IfFlag(4)] public string start_param;
 		[IfFlag(0)] public DataJSON theme_params;
 		public string platform;
 
@@ -8660,6 +8663,9 @@ namespace TL.Methods
 		{
 			has_theme_params = 0x1,
 			from_switch_webview = 0x2,
+			from_side_menu = 0x4,
+			has_url = 0x8,
+			has_start_param = 0x10,
 		}
 	}
 

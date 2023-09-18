@@ -21,6 +21,7 @@ namespace WTelegram
 		int RemoteLayer { get; }
 	}
 
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles")]
 	public sealed class SecretChats : IDisposable
 	{
 		public event Action OnChanged;
