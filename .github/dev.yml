@@ -9,7 +9,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  RN1: $[replace(variables.releaseNotes, '"', '''''')]
+  releaseNotes: $[replace(variables.releaseNotes, '"', '''''')]
 #  releaseNotes: $[replace(variables['Build.SourceVersionMessage'], '"', '''''')]
 
 steps:
@@ -21,15 +21,13 @@ steps:
     includePreviewVersions: true
 
 - task: DotNetCoreCLI@2
-  env:
-    RN2: $[replace($(releaseNotes), '"', '''''')]
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
     includesymbols: true
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'Build.BuildNumber'
-    buildProperties: "NoWarn=0419;1573;1591;ContinuousIntegrationBuild=true;Version=$(Build.BuildNumber);ReleaseNotes=$[replace($(releaseNotes), '\"', '''''')];CD=$env:RN2"
+    buildProperties: "NoWarn=0419;1573;1591;ContinuousIntegrationBuild=true;Version=$(Build.BuildNumber);ReleaseNotes=$(releaseNotes)"
 
 # - task: NuGetCommand@2
 #   inputs:
