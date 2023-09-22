@@ -9,7 +9,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  RN1: $[replace($env:releaseNotes, '"', '''''')]
+  RN1: $[replace(variables.releaseNotes, '"', '''''')]
 #  releaseNotes: $[replace(variables['Build.SourceVersionMessage'], '"', '''''')]
 
 steps:
