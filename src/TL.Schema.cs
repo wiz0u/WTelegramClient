@@ -456,10 +456,10 @@ namespace TL
 		public string emoticon;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputMediaStory"/></para></summary>
-	[TLDef(0x9A86B58F)]
+	[TLDef(0x89FDD778)]
 	public class InputMediaStory : InputMedia
 	{
-		public InputUserBase user_id;
+		public InputPeer peer;
 		public int id;
 	}
 
@@ -971,7 +971,7 @@ namespace TL
 		public override string Title => title;
 	}
 	/// <summary>Channel/supergroup info		<para>See <a href="https://corefork.telegram.org/constructor/channel"/></para></summary>
-	[TLDef(0x83259464)]
+	[TLDef(0x94F592DB)]
 	public partial class Channel : ChatBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1002,6 +1002,7 @@ namespace TL
 		[IfFlag(17)] public int participants_count;
 		/// <summary>Additional usernames</summary>
 		[IfFlag(32)] public Username[] usernames;
+		[IfFlag(36)] public int stories_max_id;
 
 		[Flags] public enum Flags : uint
 		{
@@ -1063,6 +1064,11 @@ namespace TL
 		{
 			/// <summary>Field <see cref="usernames"/> has a value</summary>
 			has_usernames = 0x1,
+			stories_hidden = 0x2,
+			stories_hidden_min = 0x4,
+			stories_unavailable = 0x8,
+			/// <summary>Field <see cref="stories_max_id"/> has a value</summary>
+			has_stories_max_id = 0x10,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -1238,7 +1244,7 @@ namespace TL
 		public override ChatReactions AvailableReactions => available_reactions;
 	}
 	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel#channels">channel</a>, <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a> or <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a>.		<para>See <a href="https://corefork.telegram.org/constructor/channelFull"/></para></summary>
-	[TLDef(0xF2355507)]
+	[TLDef(0x723027BD)]
 	public partial class ChannelFull : ChatFullBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1315,6 +1321,7 @@ namespace TL
 		[IfFlag(29)] public Peer default_send_as;
 		/// <summary>Allowed <a href="https://corefork.telegram.org/api/reactions">message reactions »</a></summary>
 		[IfFlag(30)] public ChatReactions available_reactions;
+		[IfFlag(36)] public PeerStories stories;
 
 		[Flags] public enum Flags : uint
 		{
@@ -1392,6 +1399,9 @@ namespace TL
 			participants_hidden = 0x4,
 			/// <summary>Whether the <a href="https://corefork.telegram.org/api/translation">real-time chat translation popup</a> should be hidden.</summary>
 			translations_disabled = 0x8,
+			/// <summary>Field <see cref="stories"/> has a value</summary>
+			has_stories = 0x10,
+			stories_pinned_available = 0x20,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -1920,11 +1930,11 @@ namespace TL
 		public string emoticon;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageMediaStory"/></para></summary>
-	[TLDef(0xCBB20D88)]
+	[TLDef(0x68CB6283)]
 	public class MessageMediaStory : MessageMedia
 	{
 		public Flags flags;
-		public long user_id;
+		public Peer peer;
 		public int id;
 		[IfFlag(0)] public StoryItemBase story;
 
@@ -2917,7 +2927,7 @@ namespace TL
 	}
 
 	/// <summary>Extended user info		<para>See <a href="https://corefork.telegram.org/constructor/userFull"/></para></summary>
-	[TLDef(0x4FE1CC86)]
+	[TLDef(0xB9B12C6C)]
 	public class UserFull : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -2958,7 +2968,7 @@ namespace TL
 		[IfFlag(19)] public PremiumGiftOption[] premium_gifts;
 		/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a> to use in the private chat with the user.</summary>
 		[IfFlag(24)] public WallPaperBase wallpaper;
-		[IfFlag(25)] public UserStories stories;
+		[IfFlag(25)] public PeerStories stories;
 
 		[Flags] public enum Flags : uint
 		{
@@ -4648,17 +4658,17 @@ namespace TL
 		public long user_id;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateStory"/></para></summary>
-	[TLDef(0x205A4133)]
+	[TLDef(0x75B3B798)]
 	public class UpdateStory : Update
 	{
-		public long user_id;
+		public Peer peer;
 		public StoryItemBase story;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateReadStories"/></para></summary>
-	[TLDef(0xFEB5345A)]
+	[TLDef(0xF74E932B)]
 	public class UpdateReadStories : Update
 	{
-		public long user_id;
+		public Peer peer;
 		public int max_id;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateStoryID"/></para></summary>
@@ -4675,10 +4685,10 @@ namespace TL
 		public StoriesStealthMode stealth_mode;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSentStoryReaction"/></para></summary>
-	[TLDef(0xE3A73D20)]
+	[TLDef(0x7D627683)]
 	public class UpdateSentStoryReaction : Update
 	{
-		public long user_id;
+		public Peer peer;
 		public int story_id;
 		public Reaction reaction;
 	}
@@ -9100,7 +9110,7 @@ namespace TL
 	}
 
 	/// <summary>Invoice		<para>See <a href="https://corefork.telegram.org/constructor/invoice"/></para></summary>
-	[TLDef(0x3E85A91B)]
+	[TLDef(0x5DB95A15)]
 	public class Invoice : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -9113,8 +9123,7 @@ namespace TL
 		[IfFlag(8)] public long max_tip_amount;
 		/// <summary>A vector of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, not float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <c>max_tip_amount</c>.</summary>
 		[IfFlag(8)] public long[] suggested_tip_amounts;
-		/// <summary>Terms of service URL for the recurring payment</summary>
-		[IfFlag(9)] public string recurring_terms_url;
+		[IfFlag(10)] public string terms_url;
 
 		[Flags] public enum Flags : uint
 		{
@@ -9138,6 +9147,8 @@ namespace TL
 			has_max_tip_amount = 0x100,
 			/// <summary>Whether this is a recurring payment</summary>
 			recurring = 0x200,
+			/// <summary>Field <see cref="terms_url"/> has a value</summary>
+			has_terms_url = 0x400,
 		}
 	}
 
@@ -11693,6 +11704,9 @@ namespace TL
 			other = 0x1000,
 			/// <summary>If set, allows the admin to create, delete or modify <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topics »</a>.</summary>
 			manage_topics = 0x2000,
+			post_stories = 0x4000,
+			edit_stories = 0x8000,
+			delete_stories = 0x10000,
 		}
 	}
 
@@ -12318,11 +12332,11 @@ namespace TL
 		}
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/webPageAttributeStory"/></para></summary>
-	[TLDef(0x939A4671)]
+	[TLDef(0x2E94C3E7)]
 	public class WebPageAttributeStory : WebPageAttribute
 	{
 		public Flags flags;
-		public long user_id;
+		public Peer peer;
 		public int id;
 		[IfFlag(0)] public StoryItemBase story;
 
@@ -15039,18 +15053,23 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyViews"/></para></summary>
-	[TLDef(0xC64C0B97)]
+	[TLDef(0x8D595CD6)]
 	public class StoryViews : IObject
 	{
 		public Flags flags;
 		public int views_count;
-		public int reactions_count;
+		[IfFlag(2)] public int forwards_count;
+		[IfFlag(3)] public ReactionCount[] reactions;
+		[IfFlag(4)] public int reactions_count;
 		[IfFlag(0)] public long[] recent_viewers;
 
 		[Flags] public enum Flags : uint
 		{
 			has_recent_viewers = 0x1,
 			has_viewers = 0x2,
+			has_forwards_count = 0x4,
+			has_reactions = 0x8,
+			has_reactions_count = 0x10,
 		}
 	}
 
@@ -15115,24 +15134,10 @@ namespace TL
 			selected_contacts = 0x2000,
 			has_media_areas = 0x4000,
 			has_sent_reaction = 0x8000,
+			out_ = 0x10000,
 		}
 
 		public override int ID => id;
-	}
-
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/userStories"/></para></summary>
-	[TLDef(0x8611A200)]
-	public class UserStories : IObject
-	{
-		public Flags flags;
-		public long user_id;
-		[IfFlag(0)] public int max_read_id;
-		public StoryItemBase[] stories;
-
-		[Flags] public enum Flags : uint
-		{
-			has_max_read_id = 0x1,
-		}
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/type/stories.AllStories"/></para></summary>
@@ -15150,13 +15155,14 @@ namespace TL
 		}
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.allStories"/></para></summary>
-	[TLDef(0x519D899E)]
-	public class Stories_AllStories : Stories_AllStoriesBase
+	[TLDef(0x6EFC5E81)]
+	public class Stories_AllStories : Stories_AllStoriesBase, IPeerResolver
 	{
 		public Flags flags;
 		public int count;
 		public string state;
-		public UserStories[] user_stories;
+		public PeerStories[] peer_stories;
+		public Dictionary<long, ChatBase> chats;
 		public Dictionary<long, User> users;
 		public StoriesStealthMode stealth_mode;
 
@@ -15164,23 +15170,20 @@ namespace TL
 		{
 			has_more = 0x1,
 		}
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.stories"/></para></summary>
-	[TLDef(0x4FE57DF1)]
-	public class Stories_Stories : IObject
+	[TLDef(0x5DD8C3C8)]
+	public class Stories_Stories : IObject, IPeerResolver
 	{
 		public int count;
 		public StoryItemBase[] stories;
+		public Dictionary<long, ChatBase> chats;
 		public Dictionary<long, User> users;
-	}
-
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.userStories"/></para></summary>
-	[TLDef(0x37A6FF5F)]
-	public class Stories_UserStories : IObject
-	{
-		public UserStories stories;
-		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyView"/></para></summary>
@@ -15282,14 +15285,12 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/type/MediaArea"/></para></summary>
-	public abstract class MediaArea : IObject
-	{
-		public MediaAreaCoordinates coordinates;
-	}
+	public abstract class MediaArea : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/mediaAreaVenue"/></para></summary>
-	[TLDef(0xBE82DB9C, inheritBefore = true)]
+	[TLDef(0xBE82DB9C)]
 	public class MediaAreaVenue : MediaArea
 	{
+		public MediaAreaCoordinates coordinates;
 		public GeoPoint geo;
 		public string title;
 		public string address;
@@ -15298,16 +15299,114 @@ namespace TL
 		public string venue_type;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputMediaAreaVenue"/></para></summary>
-	[TLDef(0xB282217F, inheritBefore = true)]
+	[TLDef(0xB282217F)]
 	public class InputMediaAreaVenue : MediaArea
 	{
+		public MediaAreaCoordinates coordinates;
 		public long query_id;
 		public string result_id;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/mediaAreaGeoPoint"/></para></summary>
-	[TLDef(0xDF8B3B22, inheritBefore = true)]
+	[TLDef(0xDF8B3B22)]
 	public class MediaAreaGeoPoint : MediaArea
 	{
+		public MediaAreaCoordinates coordinates;
 		public GeoPoint geo;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/mediaAreaSuggestedReaction"/></para></summary>
+	[TLDef(0x14455871)]
+	public class MediaAreaSuggestedReaction : MediaArea
+	{
+		public Flags flags;
+		public MediaAreaCoordinates coordinates;
+		public Reaction reaction;
+
+		[Flags] public enum Flags : uint
+		{
+			dark = 0x1,
+			flipped = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/peerStories"/></para></summary>
+	[TLDef(0x9A35E999)]
+	public class PeerStories : IObject
+	{
+		public Flags flags;
+		public Peer peer;
+		[IfFlag(0)] public int max_read_id;
+		public StoryItemBase[] stories;
+
+		[Flags] public enum Flags : uint
+		{
+			has_max_read_id = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.peerStories"/></para></summary>
+	[TLDef(0xCAE68768)]
+	public class Stories_PeerStories : IObject, IPeerResolver
+	{
+		public PeerStories stories;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.boostsStatus"/></para></summary>
+	[TLDef(0x66EA1FEF)]
+	public class Stories_BoostsStatus : IObject
+	{
+		public Flags flags;
+		public int level;
+		public int current_level_boosts;
+		public int boosts;
+		[IfFlag(0)] public int next_level_boosts;
+		[IfFlag(1)] public StatsPercentValue premium_audience;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_level_boosts = 0x1,
+			has_premium_audience = 0x2,
+			my_boost = 0x4,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/stories.CanApplyBoostResult"/></para></summary>
+	public abstract class Stories_CanApplyBoostResult : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.canApplyBoostOk"/></para></summary>
+	[TLDef(0xC3173587)]
+	public class Stories_CanApplyBoostOk : Stories_CanApplyBoostResult { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.canApplyBoostReplace"/></para></summary>
+	[TLDef(0x712C4655)]
+	public class Stories_CanApplyBoostReplace : Stories_CanApplyBoostResult
+	{
+		public Peer current_boost;
+		public Dictionary<long, ChatBase> chats;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/booster"/></para></summary>
+	[TLDef(0x0E9E6380)]
+	public class Booster : IObject
+	{
+		public long user_id;
+		public DateTime expires;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.boostersList"/></para></summary>
+	[TLDef(0xF3DD3D1D)]
+	public class Stories_BoostersList : IObject
+	{
+		public Flags flags;
+		public int count;
+		public Booster[] boosters;
+		[IfFlag(0)] public string next_offset;
+		public Dictionary<long, User> users;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
+		}
 	}
 }

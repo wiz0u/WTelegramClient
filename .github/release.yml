@@ -25,15 +25,13 @@ stages:
           includePreviewVersions: true
 
       - task: DotNetCoreCLI@2
-        env:
-          ReleaseNotes: $[replace($(releaseNotes), '"', '''''')]
         inputs:
           command: 'pack'
           packagesToPack: '**/*.csproj'
           includesymbols: true
           versioningScheme: 'byEnvVar'
           versionEnvVar: 'Build.BuildNumber'
-          buildProperties: 'NoWarn="0419;1573;1591";ContinuousIntegrationBuild=true;Version=$(Build.BuildNumber);ReleaseNotes="$ReleaseNotes"'
+          buildProperties: 'NoWarn="0419;1573;1591";ContinuousIntegrationBuild=true;Version=$(Build.BuildNumber);ReleaseNotes="$[replace($(releaseNotes), '"', '''''')]"'
 
       - task: NuGetCommand@2
         inputs:

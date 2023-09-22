@@ -1177,13 +1177,6 @@ namespace TL
 				errors = errors,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/users.getStoriesMaxIDs"/></para></summary>
-		public static Task<int[]> Users_GetStoriesMaxIDs(this Client client, params InputUserBase[] id)
-			=> client.Invoke(new Users_GetStoriesMaxIDs
-			{
-				id = id,
-			});
-
 		/// <summary>Get contact by telegram IDs		<para>See <a href="https://corefork.telegram.org/method/contacts.getContactIDs"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<int[]> Contacts_GetContactIDs(this Client client, long hash = default)
@@ -1405,14 +1398,6 @@ namespace TL
 			=> client.Invoke(new Contacts_EditCloseFriends
 			{
 				id = id,
-			});
-
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.toggleStoriesHidden"/></para></summary>
-		public static Task<bool> Contacts_ToggleStoriesHidden(this Client client, InputUserBase id, bool hidden)
-			=> client.Invoke(new Contacts_ToggleStoriesHidden
-			{
-				id = id,
-				hidden = hidden,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.setBlocked"/></para></summary>
@@ -5649,16 +5634,18 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.canSendStory"/></para></summary>
-		public static Task<bool> Stories_CanSendStory(this Client client)
+		public static Task<bool> Stories_CanSendStory(this Client client, InputPeer peer)
 			=> client.Invoke(new Stories_CanSendStory
 			{
+				peer = peer,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.sendStory"/></para></summary>
-		public static Task<UpdatesBase> Stories_SendStory(this Client client, InputMedia media, InputPrivacyRule[] privacy_rules, long random_id, string caption = null, MessageEntity[] entities = null, int? period = null, MediaArea[] media_areas = null, bool pinned = false, bool noforwards = false)
+		public static Task<UpdatesBase> Stories_SendStory(this Client client, InputPeer peer, InputMedia media, InputPrivacyRule[] privacy_rules, long random_id, string caption = null, MessageEntity[] entities = null, int? period = null, MediaArea[] media_areas = null, bool pinned = false, bool noforwards = false)
 			=> client.Invoke(new Stories_SendStory
 			{
 				flags = (Stories_SendStory.Flags)((caption != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (period != null ? 0x8 : 0) | (media_areas != null ? 0x20 : 0) | (pinned ? 0x4 : 0) | (noforwards ? 0x10 : 0)),
+				peer = peer,
 				media = media,
 				media_areas = media_areas,
 				caption = caption,
@@ -5669,10 +5656,11 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.editStory"/></para></summary>
-		public static Task<UpdatesBase> Stories_EditStory(this Client client, int id, InputMedia media = null, string caption = null, MessageEntity[] entities = null, InputPrivacyRule[] privacy_rules = null, MediaArea[] media_areas = null)
+		public static Task<UpdatesBase> Stories_EditStory(this Client client, InputPeer peer, int id, InputMedia media = null, string caption = null, MessageEntity[] entities = null, InputPrivacyRule[] privacy_rules = null, MediaArea[] media_areas = null)
 			=> client.Invoke(new Stories_EditStory
 			{
 				flags = (Stories_EditStory.Flags)((media != null ? 0x1 : 0) | (caption != null ? 0x2 : 0) | (entities != null ? 0x2 : 0) | (privacy_rules != null ? 0x4 : 0) | (media_areas != null ? 0x8 : 0)),
+				peer = peer,
 				id = id,
 				media = media,
 				media_areas = media_areas,
@@ -5682,16 +5670,18 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.deleteStories"/></para></summary>
-		public static Task<int[]> Stories_DeleteStories(this Client client, params int[] id)
+		public static Task<int[]> Stories_DeleteStories(this Client client, InputPeer peer, params int[] id)
 			=> client.Invoke(new Stories_DeleteStories
 			{
+				peer = peer,
 				id = id,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.togglePinned"/></para></summary>
-		public static Task<int[]> Stories_TogglePinned(this Client client, int[] id, bool pinned)
+		public static Task<int[]> Stories_TogglePinned(this Client client, InputPeer peer, int[] id, bool pinned)
 			=> client.Invoke(new Stories_TogglePinned
 			{
+				peer = peer,
 				id = id,
 				pinned = pinned,
 			});
@@ -5704,35 +5694,29 @@ namespace TL
 				state = state,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getUserStories"/></para></summary>
-		public static Task<Stories_UserStories> Stories_GetUserStories(this Client client, InputUserBase user_id)
-			=> client.Invoke(new Stories_GetUserStories
-			{
-				user_id = user_id,
-			});
-
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getPinnedStories"/></para></summary>
-		public static Task<Stories_Stories> Stories_GetPinnedStories(this Client client, InputUserBase user_id, int offset_id = default, int limit = int.MaxValue)
+		public static Task<Stories_Stories> Stories_GetPinnedStories(this Client client, InputPeer peer, int offset_id = default, int limit = int.MaxValue)
 			=> client.Invoke(new Stories_GetPinnedStories
 			{
-				user_id = user_id,
+				peer = peer,
 				offset_id = offset_id,
 				limit = limit,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoriesArchive"/></para></summary>
-		public static Task<Stories_Stories> Stories_GetStoriesArchive(this Client client, int offset_id = default, int limit = int.MaxValue)
+		public static Task<Stories_Stories> Stories_GetStoriesArchive(this Client client, InputPeer peer, int offset_id = default, int limit = int.MaxValue)
 			=> client.Invoke(new Stories_GetStoriesArchive
 			{
+				peer = peer,
 				offset_id = offset_id,
 				limit = limit,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoriesByID"/></para></summary>
-		public static Task<Stories_Stories> Stories_GetStoriesByID(this Client client, InputUserBase user_id, params int[] id)
+		public static Task<Stories_Stories> Stories_GetStoriesByID(this Client client, InputPeer peer, params int[] id)
 			=> client.Invoke(new Stories_GetStoriesByID
 			{
-				user_id = user_id,
+				peer = peer,
 				id = id,
 			});
 
@@ -5743,33 +5727,28 @@ namespace TL
 				hidden = hidden,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getAllReadUserStories"/></para></summary>
-		public static Task<UpdatesBase> Stories_GetAllReadUserStories(this Client client)
-			=> client.Invoke(new Stories_GetAllReadUserStories
-			{
-			});
-
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.readStories"/></para></summary>
-		public static Task<int[]> Stories_ReadStories(this Client client, InputUserBase user_id, int max_id = default)
+		public static Task<int[]> Stories_ReadStories(this Client client, InputPeer peer, int max_id = default)
 			=> client.Invoke(new Stories_ReadStories
 			{
-				user_id = user_id,
+				peer = peer,
 				max_id = max_id,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.incrementStoryViews"/></para></summary>
-		public static Task<bool> Stories_IncrementStoryViews(this Client client, InputUserBase user_id, params int[] id)
+		public static Task<bool> Stories_IncrementStoryViews(this Client client, InputPeer peer, params int[] id)
 			=> client.Invoke(new Stories_IncrementStoryViews
 			{
-				user_id = user_id,
+				peer = peer,
 				id = id,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoryViewsList"/></para></summary>
-		public static Task<Stories_StoryViewsList> Stories_GetStoryViewsList(this Client client, int id, string offset, int limit = int.MaxValue, string q = null, bool just_contacts = false, bool reactions_first = false)
+		public static Task<Stories_StoryViewsList> Stories_GetStoryViewsList(this Client client, InputPeer peer, int id, string offset, int limit = int.MaxValue, string q = null, bool just_contacts = false, bool reactions_first = false)
 			=> client.Invoke(new Stories_GetStoryViewsList
 			{
 				flags = (Stories_GetStoryViewsList.Flags)((q != null ? 0x2 : 0) | (just_contacts ? 0x1 : 0) | (reactions_first ? 0x4 : 0)),
+				peer = peer,
 				q = q,
 				id = id,
 				offset = offset,
@@ -5777,25 +5756,26 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoriesViews"/></para></summary>
-		public static Task<Stories_StoryViews> Stories_GetStoriesViews(this Client client, params int[] id)
+		public static Task<Stories_StoryViews> Stories_GetStoriesViews(this Client client, InputPeer peer, params int[] id)
 			=> client.Invoke(new Stories_GetStoriesViews
 			{
+				peer = peer,
 				id = id,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.exportStoryLink"/></para></summary>
-		public static Task<ExportedStoryLink> Stories_ExportStoryLink(this Client client, InputUserBase user_id, int id)
+		public static Task<ExportedStoryLink> Stories_ExportStoryLink(this Client client, InputPeer peer, int id)
 			=> client.Invoke(new Stories_ExportStoryLink
 			{
-				user_id = user_id,
+				peer = peer,
 				id = id,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.report"/></para></summary>
-		public static Task<bool> Stories_Report(this Client client, InputUserBase user_id, int[] id, ReportReason reason, string message)
+		public static Task<bool> Stories_Report(this Client client, InputPeer peer, int[] id, ReportReason reason, string message)
 			=> client.Invoke(new Stories_Report
 			{
-				user_id = user_id,
+				peer = peer,
 				id = id,
 				reason = reason,
 				message = message,
@@ -5809,13 +5789,77 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.sendReaction"/></para></summary>
-		public static Task<UpdatesBase> Stories_SendReaction(this Client client, InputUserBase user_id, int story_id, Reaction reaction, bool add_to_recent = false)
+		public static Task<UpdatesBase> Stories_SendReaction(this Client client, InputPeer peer, int story_id, Reaction reaction, bool add_to_recent = false)
 			=> client.Invoke(new Stories_SendReaction
 			{
 				flags = (Stories_SendReaction.Flags)(add_to_recent ? 0x1 : 0),
-				user_id = user_id,
+				peer = peer,
 				story_id = story_id,
 				reaction = reaction,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getPeerStories"/></para></summary>
+		public static Task<Stories_PeerStories> Stories_GetPeerStories(this Client client, InputPeer peer)
+			=> client.Invoke(new Stories_GetPeerStories
+			{
+				peer = peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getAllReadPeerStories"/></para></summary>
+		public static Task<UpdatesBase> Stories_GetAllReadPeerStories(this Client client)
+			=> client.Invoke(new Stories_GetAllReadPeerStories
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getPeerMaxIDs"/></para></summary>
+		public static Task<int[]> Stories_GetPeerMaxIDs(this Client client, params InputPeer[] id)
+			=> client.Invoke(new Stories_GetPeerMaxIDs
+			{
+				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getChatsToSend"/></para></summary>
+		public static Task<Messages_Chats> Stories_GetChatsToSend(this Client client)
+			=> client.Invoke(new Stories_GetChatsToSend
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.togglePeerStoriesHidden"/></para></summary>
+		public static Task<bool> Stories_TogglePeerStoriesHidden(this Client client, InputPeer peer, bool hidden)
+			=> client.Invoke(new Stories_TogglePeerStoriesHidden
+			{
+				peer = peer,
+				hidden = hidden,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getBoostsStatus"/></para></summary>
+		public static Task<Stories_BoostsStatus> Stories_GetBoostsStatus(this Client client, InputPeer peer)
+			=> client.Invoke(new Stories_GetBoostsStatus
+			{
+				peer = peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getBoostersList"/></para></summary>
+		public static Task<Stories_BoostersList> Stories_GetBoostersList(this Client client, InputPeer peer, string offset, int limit = int.MaxValue)
+			=> client.Invoke(new Stories_GetBoostersList
+			{
+				peer = peer,
+				offset = offset,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.canApplyBoost"/></para></summary>
+		public static Task<Stories_CanApplyBoostResult> Stories_CanApplyBoost(this Client client, InputPeer peer)
+			=> client.Invoke(new Stories_CanApplyBoost
+			{
+				peer = peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.applyBoost"/></para></summary>
+		public static Task<bool> Stories_ApplyBoost(this Client client, InputPeer peer)
+			=> client.Invoke(new Stories_ApplyBoost
+			{
+				peer = peer,
 			});
 	}
 }
@@ -6719,12 +6763,6 @@ namespace TL.Methods
 		public SecureValueErrorBase[] errors;
 	}
 
-	[TLDef(0xCA1CB9AB)]
-	public class Users_GetStoriesMaxIDs : IMethod<int[]>
-	{
-		public InputUserBase[] id;
-	}
-
 	[TLDef(0x7ADC669D)]
 	public class Contacts_GetContactIDs : IMethod<int[]>
 	{
@@ -6916,13 +6954,6 @@ namespace TL.Methods
 	public class Contacts_EditCloseFriends : IMethod<bool>
 	{
 		public long[] id;
-	}
-
-	[TLDef(0x753FB865)]
-	public class Contacts_ToggleStoriesHidden : IMethod<bool>
-	{
-		public InputUserBase id;
-		public bool hidden;
 	}
 
 	[TLDef(0x94C65C76)]
@@ -10417,13 +10448,17 @@ namespace TL.Methods
 		public InputPeer[] peers;
 	}
 
-	[TLDef(0xB100D45D)]
-	public class Stories_CanSendStory : IMethod<bool> { }
+	[TLDef(0xC7DFDFDD)]
+	public class Stories_CanSendStory : IMethod<bool>
+	{
+		public InputPeer peer;
+	}
 
-	[TLDef(0xD455FCEC)]
+	[TLDef(0xBCB73644)]
 	public class Stories_SendStory : IMethod<UpdatesBase>
 	{
 		public Flags flags;
+		public InputPeer peer;
 		public InputMedia media;
 		[IfFlag(5)] public MediaArea[] media_areas;
 		[IfFlag(0)] public string caption;
@@ -10443,10 +10478,11 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xA9B91AE4)]
+	[TLDef(0xB583BA46)]
 	public class Stories_EditStory : IMethod<UpdatesBase>
 	{
 		public Flags flags;
+		public InputPeer peer;
 		public int id;
 		[IfFlag(0)] public InputMedia media;
 		[IfFlag(3)] public MediaArea[] media_areas;
@@ -10463,15 +10499,17 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xB5D501D7)]
+	[TLDef(0xAE59DB5F)]
 	public class Stories_DeleteStories : IMethod<int[]>
 	{
+		public InputPeer peer;
 		public int[] id;
 	}
 
-	[TLDef(0x51602944)]
+	[TLDef(0x9A75A1EF)]
 	public class Stories_TogglePinned : IMethod<int[]>
 	{
+		public InputPeer peer;
 		public int[] id;
 		public bool pinned;
 	}
@@ -10490,31 +10528,26 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x96D528E0)]
-	public class Stories_GetUserStories : IMethod<Stories_UserStories>
-	{
-		public InputUserBase user_id;
-	}
-
-	[TLDef(0x0B471137)]
+	[TLDef(0x5821A5DC)]
 	public class Stories_GetPinnedStories : IMethod<Stories_Stories>
 	{
-		public InputUserBase user_id;
+		public InputPeer peer;
 		public int offset_id;
 		public int limit;
 	}
 
-	[TLDef(0x1F5BC5D2)]
+	[TLDef(0xB4352016)]
 	public class Stories_GetStoriesArchive : IMethod<Stories_Stories>
 	{
+		public InputPeer peer;
 		public int offset_id;
 		public int limit;
 	}
 
-	[TLDef(0x6A15CF46)]
+	[TLDef(0x5774CA74)]
 	public class Stories_GetStoriesByID : IMethod<Stories_Stories>
 	{
-		public InputUserBase user_id;
+		public InputPeer peer;
 		public int[] id;
 	}
 
@@ -10524,27 +10557,25 @@ namespace TL.Methods
 		public bool hidden;
 	}
 
-	[TLDef(0x729C562C)]
-	public class Stories_GetAllReadUserStories : IMethod<UpdatesBase> { }
-
-	[TLDef(0xEDC5105B)]
+	[TLDef(0xA556DAC8)]
 	public class Stories_ReadStories : IMethod<int[]>
 	{
-		public InputUserBase user_id;
+		public InputPeer peer;
 		public int max_id;
 	}
 
-	[TLDef(0x22126127)]
+	[TLDef(0xB2028AFB)]
 	public class Stories_IncrementStoryViews : IMethod<bool>
 	{
-		public InputUserBase user_id;
+		public InputPeer peer;
 		public int[] id;
 	}
 
-	[TLDef(0xF95F61A4)]
+	[TLDef(0x7ED23C57)]
 	public class Stories_GetStoryViewsList : IMethod<Stories_StoryViewsList>
 	{
 		public Flags flags;
+		public InputPeer peer;
 		[IfFlag(1)] public string q;
 		public int id;
 		public string offset;
@@ -10558,23 +10589,24 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x9A75D6A6)]
+	[TLDef(0x28E16CC8)]
 	public class Stories_GetStoriesViews : IMethod<Stories_StoryViews>
 	{
+		public InputPeer peer;
 		public int[] id;
 	}
 
-	[TLDef(0x16E443CE)]
+	[TLDef(0x7B8DEF20)]
 	public class Stories_ExportStoryLink : IMethod<ExportedStoryLink>
 	{
-		public InputUserBase user_id;
+		public InputPeer peer;
 		public int id;
 	}
 
-	[TLDef(0xC95BE06A)]
+	[TLDef(0x1923FA8C)]
 	public class Stories_Report : IMethod<bool>
 	{
-		public InputUserBase user_id;
+		public InputPeer peer;
 		public int[] id;
 		public ReportReason reason;
 		public string message;
@@ -10592,11 +10624,11 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x49AAA9B3)]
+	[TLDef(0x7FD736B2)]
 	public class Stories_SendReaction : IMethod<UpdatesBase>
 	{
 		public Flags flags;
-		public InputUserBase user_id;
+		public InputPeer peer;
 		public int story_id;
 		public Reaction reaction;
 
@@ -10604,5 +10636,56 @@ namespace TL.Methods
 		{
 			add_to_recent = 0x1,
 		}
+	}
+
+	[TLDef(0x2C4ADA50)]
+	public class Stories_GetPeerStories : IMethod<Stories_PeerStories>
+	{
+		public InputPeer peer;
+	}
+
+	[TLDef(0x9B5AE7F9)]
+	public class Stories_GetAllReadPeerStories : IMethod<UpdatesBase> { }
+
+	[TLDef(0x535983C3)]
+	public class Stories_GetPeerMaxIDs : IMethod<int[]>
+	{
+		public InputPeer[] id;
+	}
+
+	[TLDef(0xA56A8B60)]
+	public class Stories_GetChatsToSend : IMethod<Messages_Chats> { }
+
+	[TLDef(0xBD0415C4)]
+	public class Stories_TogglePeerStoriesHidden : IMethod<bool>
+	{
+		public InputPeer peer;
+		public bool hidden;
+	}
+
+	[TLDef(0x4C449472)]
+	public class Stories_GetBoostsStatus : IMethod<Stories_BoostsStatus>
+	{
+		public InputPeer peer;
+	}
+
+	[TLDef(0x337EF980)]
+	public class Stories_GetBoostersList : IMethod<Stories_BoostersList>
+	{
+		public InputPeer peer;
+		public string offset;
+		public int limit;
+	}
+
+	[TLDef(0xDB05C1BD)]
+	public class Stories_CanApplyBoost : IMethod<Stories_CanApplyBoostResult>
+	{
+		public InputPeer peer;
+	}
+
+	[TLDef(0xF29D7C2B)]
+	public class Stories_ApplyBoost : IMethod<bool>
+	{
+		public InputPeer peer;
 	}
 }
