@@ -9,6 +9,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  RN1: $[replace($env:releaseNotes, '"', '''''')]
 #  releaseNotes: $[replace(variables['Build.SourceVersionMessage'], '"', '''''')]
 
 steps:
@@ -28,7 +29,7 @@ steps:
     includesymbols: true
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'Build.BuildNumber'
-    buildProperties: NoWarn="0419;1573;1591";ContinuousIntegrationBuild=true;Version=$(Build.BuildNumber);ReleaseNotes="$[replace($(releaseNotes), '\"', '''''')]";CD="$(RN2)"
+    buildProperties: "NoWarn=0419;1573;1591;ContinuousIntegrationBuild=true;Version=$(Build.BuildNumber);ReleaseNotes=$[replace($(releaseNotes), '\"', '''''')];CD=$env:RN2"
 
 # - task: NuGetCommand@2
 #   inputs:
