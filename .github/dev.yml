@@ -1,6 +1,6 @@
 ﻿pr: none
-trigger:
-- master
+trigger: none
+#- master
 
 name: 3.5.6-dev.$(Rev:r)
 
@@ -9,7 +9,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  releaseNotes: $[replace(variables['Build.SourceVersionMessage'], '"', '''''')]
+#  releaseNotes: $[replace(variables['Build.SourceVersionMessage'], '"', '''''')]
 
 steps:
 - task: UseDotNet@2
@@ -20,18 +20,20 @@ steps:
     includePreviewVersions: true
 
 - task: DotNetCoreCLI@2
+  variables:
+    Release_Notes: $[replace($(releaseNotes), '"', '''''')]
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
     includesymbols: true
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'Build.BuildNumber'
-    buildProperties: 'NoWarn="0419;1573;1591";ContinuousIntegrationBuild=true;Version=$(Build.BuildNumber);ReleaseNotes="$(releaseNotes)"'
+    buildProperties: 'NoWarn="0419;1573;1591";ContinuousIntegrationBuild=true;Version=$(Build.BuildNumber);ReleaseNotes="$(Release_Notes)"'
 
-- task: NuGetCommand@2
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
-    publishPackageMetadata: true
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'nuget.org'
+# - task: NuGetCommand@2
+#   inputs:
+#     command: 'push'
+#     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+#     publishPackageMetadata: true
+#     nuGetFeedType: 'external'
+#     publishFeedCredentials: 'nuget.org'
