@@ -667,6 +667,10 @@ namespace WTelegram
 			}
 		}
 
+		/// <summary>If you want to get all messages from a chat, use method Messages_GetHistory</summary>
+		public Task<Messages_MessagesBase> GetMessages(InputPeer peer)
+			=> throw new WTException("If you want to get all messages from a chat, use method Messages_GetHistory");
+
 		/// <summary>Generic helper: Get individual messages by IDs [bots: ✓]		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/><br/> and <a href="https://corefork.telegram.org/method/channels.getMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400</para></summary>
 		/// <param name="peer">User/Chat/Channel</param>
 		/// <param name="id">IDs of messages to get</param>
