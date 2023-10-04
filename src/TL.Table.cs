@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 164;					// fetched 22/09/2023 19:03:28
+		public const int Version = 165;					// fetched 04/10/2023 17:10:52
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -1127,11 +1127,12 @@ namespace TL
 			[0x14455871] = typeof(MediaAreaSuggestedReaction),
 			[0x9A35E999] = typeof(PeerStories),
 			[0xCAE68768] = typeof(Stories_PeerStories),
-			[0x66EA1FEF] = typeof(Stories_BoostsStatus),
+			[0xE5C1AA5C] = typeof(Stories_BoostsStatus),
 			[0xC3173587] = typeof(Stories_CanApplyBoostOk),
 			[0x712C4655] = typeof(Stories_CanApplyBoostReplace),
 			[0x0E9E6380] = typeof(Booster),
 			[0xF3DD3D1D] = typeof(Stories_BoostersList),
+			[0xFD5E12BD] = typeof(Messages_WebPage),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),
