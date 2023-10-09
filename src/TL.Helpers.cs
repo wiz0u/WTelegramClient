@@ -381,6 +381,13 @@ namespace TL
 		public static implicit operator InputGeoPoint(GeoPoint geo) => new() { lat = geo.lat, lon = geo.lon, accuracy_radius = geo.accuracy_radius, flags = (InputGeoPoint.Flags)geo.flags };
 	}
 
+	partial class InputNotifyPeerBase
+	{
+		public static implicit operator InputNotifyPeerBase(InputPeer peer) => new InputNotifyPeer { peer = peer };
+		public static implicit operator InputNotifyPeerBase(ChatBase chat) => new InputNotifyPeer { peer = chat };
+		public static implicit operator InputNotifyPeerBase(UserBase user) => new InputNotifyPeer { peer = user };
+	}
+
 	partial class WallPaperBase					{ public static implicit operator InputWallPaperBase(WallPaperBase wp) => wp.ToInputWallPaper();
 												  protected abstract InputWallPaperBase ToInputWallPaper(); }
 	partial class WallPaper						{ protected override InputWallPaperBase ToInputWallPaper() => new InputWallPaper { id = id, access_hash = access_hash }; }
@@ -620,6 +627,8 @@ namespace TL
 	partial class InputDialogPeerBase
 	{
 		public static implicit operator InputDialogPeerBase(InputPeer peer) => new InputDialogPeer { peer = peer };
+		public static implicit operator InputDialogPeerBase(ChatBase chat) => new InputDialogPeer { peer = chat };
+		public static implicit operator InputDialogPeerBase(UserBase user) => new InputDialogPeer { peer = user };
 	}
 
 	partial class SecureFile

@@ -2000,7 +2000,7 @@ namespace TL
 				is_admin = is_admin,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Turn a <a href="https://corefork.telegram.org/api/channel#migration">basic group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Turn a <a href="https://corefork.telegram.org/api/channel#migration">basic group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id"><a href="https://corefork.telegram.org/api/channel#basic-groups">Basic group</a> to migrate</param>
 		public static Task<UpdatesBase> Messages_MigrateChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_MigrateChat
@@ -2459,7 +2459,7 @@ namespace TL
 				error = error,
 			});
 
-		/// <summary>Upload a file and associate it to a chat (without actually sending it to the chat)		<para>See <a href="https://corefork.telegram.org/method/messages.uploadMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/messages.uploadMedia#possible-errors">details</a>)</para></summary>
+		/// <summary>Upload a file and associate it to a chat (without actually sending it to the chat)		<para>See <a href="https://corefork.telegram.org/method/messages.uploadMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.uploadMedia#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The chat, can be <see langword="null"/> for bots and <see cref="InputPeerSelf"/> for users.</param>
 		/// <param name="media">File uploaded in chunks as described in <a href="https://corefork.telegram.org/api/files">files »</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messageMediaEmpty">messageMediaEmpty</a></returns>
@@ -3207,7 +3207,7 @@ namespace TL
 
 		/// <summary>React to message.		<para>See <a href="https://corefork.telegram.org/method/messages.sendReaction"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.sendReaction#possible-errors">details</a>)</para></summary>
 		/// <param name="big">Whether a bigger and longer reaction should be shown</param>
-		/// <param name="add_to_recent">Add this reaction to the <a href="https://corefork.telegram.org/api/reactions#recent-reactions">recent reactions list »</a>.</param>
+		/// <param name="add_to_recent">Whether to add this reaction to the <a href="https://corefork.telegram.org/api/reactions#recent-reactions">recent reactions list »</a>.</param>
 		/// <param name="peer">Peer</param>
 		/// <param name="msg_id">Message ID to react to</param>
 		/// <param name="reaction">A list of reactions</param>
@@ -3701,7 +3701,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary>Installs a previously uploaded photo as a profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.updateProfilePhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,500 (<a href="https://corefork.telegram.org/method/photos.updateProfilePhoto#possible-errors">details</a>)</para></summary>
+		/// <summary>Installs a previously uploaded photo as a profile photo.		<para>See <a href="https://corefork.telegram.org/method/photos.updateProfilePhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.updateProfilePhoto#possible-errors">details</a>)</para></summary>
 		/// <param name="fallback">If set, the chosen profile photo will be shown to users that can't display your main profile photo due to your privacy settings.</param>
 		/// <param name="bot">Can contain info of a bot we own, to change the profile photo of that bot, instead of the current user.</param>
 		/// <param name="id">Input photo</param>
@@ -4135,7 +4135,7 @@ namespace TL
 				channel = channel,
 			});
 
-		/// <summary>Create a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.createChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406,500 (<a href="https://corefork.telegram.org/method/channels.createChannel#possible-errors">details</a>)</para></summary>
+		/// <summary>Create a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.createChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/channels.createChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="broadcast">Whether to create a <a href="https://corefork.telegram.org/api/channel">channel</a></param>
 		/// <param name="megagroup">Whether to create a <a href="https://corefork.telegram.org/api/channel">supergroup</a></param>
 		/// <param name="for_import">Whether the supergroup is being created to import messages from a foreign chat service using <see cref="Messages_InitHistoryImport">Messages_InitHistoryImport</see></param>
@@ -5634,7 +5634,8 @@ namespace TL
 				peers = peers,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.canSendStory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.canSendStory#possible-errors">details</a>)</para></summary>
+		/// <summary>Check whether we can post stories as the specified peer.		<para>See <a href="https://corefork.telegram.org/method/stories.canSendStory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.canSendStory#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">The peer from which we wish to post stories.</param>
 		public static Task<bool> Stories_CanSendStory(this Client client, InputPeer peer)
 			=> client.Invoke(new Stories_CanSendStory
 			{
@@ -5643,6 +5644,7 @@ namespace TL
 
 		/// <summary>Uploads a <a href="https://corefork.telegram.org/api/stories">Telegram Story</a>.		<para>See <a href="https://corefork.telegram.org/method/stories.sendStory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.sendStory#possible-errors">details</a>)</para></summary>
 		/// <param name="noforwards">If set, disables forwards and story download functionality.</param>
+		/// <param name="peer">The peer to send the story as.</param>
 		/// <param name="media">The media file.</param>
 		/// <param name="caption">Story caption.</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
@@ -5662,7 +5664,12 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.editStory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.editStory#possible-errors">details</a>)</para></summary>
-		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
+		/// <param name="peer">Peer where the story was posted.</param>
+		/// <param name="id">ID of story to edit.</param>
+		/// <param name="media">If specified, replaces the story media.</param>
+		/// <param name="caption">If specified, replaces the story caption.</param>
+		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text in the caption</a></param>
+		/// <param name="privacy_rules">If specified, alters the privacy settings of the story.</param>
 		public static Task<UpdatesBase> Stories_EditStory(this Client client, InputPeer peer, int id, InputMedia media = null, string caption = null, MessageEntity[] entities = null, InputPrivacyRule[] privacy_rules = null, MediaArea[] media_areas = null)
 			=> client.Invoke(new Stories_EditStory
 			{
@@ -5802,14 +5809,20 @@ namespace TL
 				message = message,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.activateStealthMode"/></para></summary>
+		/// <summary>Activates <a href="https://corefork.telegram.org/api/stories#stealth-mode">stories stealth mode</a>, see <a href="https://corefork.telegram.org/api/stories#stealth-mode">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/stories.activateStealthMode"/></para></summary>
+		/// <param name="past">Whether to erase views from any stories opened in the past <a href="https://corefork.telegram.org/api/config#stories-stealth-past-period"><c>stories_stealth_past_period</c> seconds »</a>, as specified by the <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration</a>.</param>
+		/// <param name="future">Whether to hide future story views for the next <a href="https://corefork.telegram.org/api/config#stories-stealth-future-period"><c>stories_stealth_future_period</c> seconds »</a>, as specified by the <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration</a>.</param>
 		public static Task<UpdatesBase> Stories_ActivateStealthMode(this Client client, bool past = false, bool future = false)
 			=> client.Invoke(new Stories_ActivateStealthMode
 			{
 				flags = (Stories_ActivateStealthMode.Flags)((past ? 0x1 : 0) | (future ? 0x2 : 0)),
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.sendReaction"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.sendReaction#possible-errors">details</a>)</para></summary>
+		/// <summary>React to a story.		<para>See <a href="https://corefork.telegram.org/method/stories.sendReaction"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.sendReaction#possible-errors">details</a>)</para></summary>
+		/// <param name="add_to_recent">Whether to add this reaction to the <a href="https://corefork.telegram.org/api/reactions#recent-reactions">recent reactions list »</a>.</param>
+		/// <param name="peer">The peer that sent the story</param>
+		/// <param name="story_id">ID of the story to react to</param>
+		/// <param name="reaction">Reaction</param>
 		public static Task<UpdatesBase> Stories_SendReaction(this Client client, InputPeer peer, int story_id, Reaction reaction, bool add_to_recent = false)
 			=> client.Invoke(new Stories_SendReaction
 			{
@@ -5853,14 +5866,17 @@ namespace TL
 				hidden = hidden,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getBoostsStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.getBoostsStatus#possible-errors">details</a>)</para></summary>
+		/// <summary>Get the current <a href="https://corefork.telegram.org/api/stories#boosts">boost status</a> of a channel, see <a href="https://corefork.telegram.org/api/stories#boosts">here »</a> for more info on boosts.		<para>See <a href="https://corefork.telegram.org/method/stories.getBoostsStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.getBoostsStatus#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">The channel</param>
 		public static Task<Stories_BoostsStatus> Stories_GetBoostsStatus(this Client client, InputPeer peer)
 			=> client.Invoke(new Stories_GetBoostsStatus
 			{
 				peer = peer,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getBoostersList"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.getBoostersList#possible-errors">details</a>)</para></summary>
+		/// <summary>Obtain info about the users currently <a href="https://corefork.telegram.org/api/stories#boosts">boosting</a> a channel, see <a href="https://corefork.telegram.org/api/stories#boosts">here »</a> for more info about boosts.		<para>See <a href="https://corefork.telegram.org/method/stories.getBoostersList"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.getBoostersList#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">The channel.</param>
+		/// <param name="offset">Next offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a>, obtained from the <c>next_offset</c> field of <see cref="Stories_BoostersList"/>.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Stories_BoostersList> Stories_GetBoostersList(this Client client, InputPeer peer, string offset, int limit = int.MaxValue)
 			=> client.Invoke(new Stories_GetBoostersList
@@ -5870,14 +5886,16 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.canApplyBoost"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.canApplyBoost#possible-errors">details</a>)</para></summary>
+		/// <summary>Check whether a channel can be <a href="https://corefork.telegram.org/api/stories#boosts">boosted, see here for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/stories.canApplyBoost"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.canApplyBoost#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">The channel to boost.</param>
 		public static Task<Stories_CanApplyBoostResult> Stories_CanApplyBoost(this Client client, InputPeer peer)
 			=> client.Invoke(new Stories_CanApplyBoost
 			{
 				peer = peer,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.applyBoost"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.applyBoost#possible-errors">details</a>)</para></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/stories#boosts">Boost »</a> a <a href="https://corefork.telegram.org/api/channel">channel</a>, leveling it up and granting it permission to post <a href="https://corefork.telegram.org/api/stories">stories »</a>.		<para>See <a href="https://corefork.telegram.org/method/stories.applyBoost"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.applyBoost#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">The channel to boost.</param>
 		public static Task<bool> Stories_ApplyBoost(this Client client, InputPeer peer)
 			=> client.Invoke(new Stories_ApplyBoost
 			{

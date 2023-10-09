@@ -668,6 +668,7 @@ namespace WTelegram
 		}
 
 		/// <summary>If you want to get all messages from a chat, use method Messages_GetHistory</summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822")]
 		public Task<Messages_MessagesBase> GetMessages(InputPeer peer)
 			=> throw new WTException("If you want to get all messages from a chat, use method Messages_GetHistory");
 
