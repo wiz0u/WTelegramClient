@@ -38,19 +38,27 @@ namespace WTelegram
 			using var md5 = MD5.Create();
 			using (stream)
 			{
-				long transmitted = 0, length = stream.Length;
-				var isBig = length >= 10 * 1024 * 1024;
-				int file_total_parts = (int)((length - 1) / FilePartSize) + 1;
+				bool hasLength = stream.CanSeek;
+				long transmitted = 0, length = hasLength ? stream.Length : -1;
+				bool isBig = hasLength ? length >= 10 * 1024 * 1024 : true;
+				int file_total_parts = hasLength ? (int)((length - 1) / FilePartSize) + 1 : -1;
 				long file_id = Helpers.RandomLong();
 				int file_part = 0, read;
 				var tasks = new Dictionary<int, Task>();
 				bool abort = false;
-				for (long bytesLeft = length; !abort && bytesLeft != 0; file_part++)
+				for (long bytesLeft = hasLength ? length : long.MaxValue; !abort && bytesLeft != 0; file_part++)
 				{
 					var bytes = new byte[Math.Min(FilePartSize, bytesLeft)];
 					read = await stream.FullReadAsync(bytes, bytes.Length, default);
 					await _parallelTransfers.WaitAsync();
 					bytesLeft -= read;
+					if (!hasLength && read < bytes.Length)
+					{
+						file_total_parts = file_part;
+						if (read == 0) break; else file_total_parts++;
+						bytes = bytes[..read]; 
+						bytesLeft = 0; 
+					}
 					var task = SavePart(file_part, bytes);
 					lock (tasks) tasks[file_part] = task;
 					if (!isBig)
