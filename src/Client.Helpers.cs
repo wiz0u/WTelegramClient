@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using TL;
@@ -34,7 +33,6 @@ namespace WTelegram
 		/// <returns>an <see cref="InputFile"/> or <see cref="InputFileBig"/> than can be used in various requests</returns>
 		public async Task<InputFileBase> UploadFileAsync(Stream stream, string filename, ProgressCallback progress = null)
 		{
-			using var md5 = MD5.Create();
 			using (stream)
 			{
 				bool hasLength = stream.CanSeek;
@@ -60,8 +58,6 @@ namespace WTelegram
 					}
 					var task = SavePart(file_part, bytes);
 					lock (tasks) tasks[file_part] = task;
-					if (!isBig)
-						md5.TransformBlock(bytes, 0, read, null, 0);
 					if (read < FilePartSize && bytesLeft != 0) throw new WTException($"Failed to fully read stream ({read},{bytesLeft})");
 
 					async Task SavePart(int file_part, byte[] bytes)
@@ -89,9 +85,8 @@ namespace WTelegram
 				Task[] remainingTasks;
 				lock (tasks) remainingTasks = tasks.Values.ToArray();
 				await Task.WhenAll(remainingTasks); // wait completion and eventually propagate any task exception
-				if (!isBig) md5.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 				return isBig ? new InputFileBig { id = file_id, parts = file_total_parts, name = filename }
-					: new InputFile { id = file_id, parts = file_total_parts, name = filename, md5_checksum = Convert.ToHexString(md5.Hash).ToLower() };
+					: new InputFile { id = file_id, parts = file_total_parts, name = filename };
 			}
 		}
 
