@@ -150,7 +150,7 @@ namespace TL
 		/// <summary>Full name of the file</summary>
 		public string name;
 		/// <summary>In case the file's <a href="https://en.wikipedia.org/wiki/MD5#MD5_hashes">md5-hash</a> was passed, contents of the file will be checked prior to use</summary>
-		public byte[] md5_checksum;
+		public string md5_checksum;
 
 		/// <summary>Random file identifier created by the client</summary>
 		public override long ID { get => id; set => id = value; }
@@ -5481,7 +5481,7 @@ namespace TL
 		/// <summary>Number of saved parts</summary>
 		public int parts;
 		/// <summary>In case <a href="https://en.wikipedia.org/wiki/MD5">md5-HASH</a> of the (already encrypted) file was transmitted, file content will be checked prior to use</summary>
-		public byte[] md5_checksum;
+		public string md5_checksum;
 		/// <summary>32-bit fingerprint of the key used to encrypt a file</summary>
 		public int key_fingerprint;
 
@@ -10806,7 +10806,7 @@ namespace TL
 		/// <summary>Secure file part count</summary>
 		public int parts;
 		/// <summary>MD5 hash of encrypted uploaded file, to be checked server-side</summary>
-		public byte[] md5_checksum;
+		public string md5_checksum;
 		/// <summary>File hash</summary>
 		public byte[] file_hash;
 		/// <summary>Secret</summary>

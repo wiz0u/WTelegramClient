@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +39,7 @@ namespace WTelegram
 			{
 				bool hasLength = stream.CanSeek;
 				long transmitted = 0, length = hasLength ? stream.Length : -1;
-				bool isBig = hasLength ? length >= 10 * 1024 * 1024 : true;
+				bool isBig = !hasLength || length >= 10 * 1024 * 1024;
 				int file_total_parts = hasLength ? (int)((length - 1) / FilePartSize) + 1 : -1;
 				long file_id = Helpers.RandomLong();
 				int file_part = 0, read;
@@ -92,7 +91,7 @@ namespace WTelegram
 				await Task.WhenAll(remainingTasks); // wait completion and eventually propagate any task exception
 				if (!isBig) md5.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 				return isBig ? new InputFileBig { id = file_id, parts = file_total_parts, name = filename }
-					: new InputFile { id = file_id, parts = file_total_parts, name = filename, md5_checksum = md5.Hash };
+					: new InputFile { id = file_id, parts = file_total_parts, name = filename, md5_checksum = Convert.ToHexString(md5.Hash).ToLower() };
 			}
 		}
 
