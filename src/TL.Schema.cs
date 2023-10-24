@@ -311,7 +311,7 @@ namespace TL
 		public string title;
 		/// <summary>Physical address of the venue</summary>
 		public string address;
-		/// <summary>Venue provider: currently only "foursquare" needs to be supported</summary>
+		/// <summary>Venue provider: currently only "foursquare" and "gplaces" (Google Places) need to be supported</summary>
 		public string provider;
 		/// <summary>Venue ID in the provider's database</summary>
 		public string venue_id;
@@ -1671,7 +1671,7 @@ namespace TL
 			pinned = 0x1000000,
 			/// <summary>Field <see cref="ttl_period"/> has a value</summary>
 			has_ttl_period = 0x2000000,
-			/// <summary>Whether this message is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a> and thus cannot be forwarded</summary>
+			/// <summary>Whether this message is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a> and thus cannot be forwarded; clients should also prevent users from saving attached media (i.e. videos should only be streamed, photos should be kept in RAM, et cetera).</summary>
 			noforwards = 0x4000000,
 		}
 
@@ -1837,7 +1837,7 @@ namespace TL
 		public string title;
 		/// <summary>Address</summary>
 		public string address;
-		/// <summary>Venue provider: currently only "foursquare" needs to be supported</summary>
+		/// <summary>Venue provider: currently only "foursquare" and "gplaces" (Google Places) need to be supported</summary>
 		public string provider;
 		/// <summary>Venue ID in the provider's database</summary>
 		public string venue_id;
@@ -5817,7 +5817,7 @@ namespace TL
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
-	/// <summary>Privacy key		<para>See <a href="https://corefork.telegram.org/type/InputPrivacyKey"/></para></summary>
+	/// <summary>Privacy <strong>keys</strong> together with <a href="https://corefork.telegram.org/api/privacy#privacy-rules">privacy rules »</a> indicate <em>what</em> can or can't someone do and are specified by a <see cref="PrivacyKey"/> constructor, and its input counterpart <see cref="InputPrivacyKey"/>.		<para>See <a href="https://corefork.telegram.org/type/InputPrivacyKey"/></para></summary>
 	public enum InputPrivacyKey : uint
 	{
 		///<summary>Whether people will be able to see your exact last online timestamp</summary>
@@ -5842,7 +5842,7 @@ namespace TL
 		About = 0x3823CC40,
 	}
 
-	/// <summary>Privacy key		<para>See <a href="https://corefork.telegram.org/type/PrivacyKey"/></para></summary>
+	/// <summary>Privacy <strong>keys</strong> together with <a href="https://corefork.telegram.org/api/privacy#privacy-rules">privacy rules »</a> indicate <em>what</em> can or can't someone do and are specified by a <see cref="PrivacyKey"/> constructor, and its input counterpart <see cref="InputPrivacyKey"/>.		<para>See <a href="https://corefork.telegram.org/type/PrivacyKey"/></para></summary>
 	public enum PrivacyKey : uint
 	{
 		///<summary>Whether we can see the last online timestamp of this user</summary>
@@ -5867,7 +5867,7 @@ namespace TL
 		About = 0xA486B761,
 	}
 
-	/// <summary>Privacy rule		<para>See <a href="https://corefork.telegram.org/type/InputPrivacyRule"/></para>		<para>Derived classes: <see cref="InputPrivacyValueAllowContacts"/>, <see cref="InputPrivacyValueAllowAll"/>, <see cref="InputPrivacyValueAllowUsers"/>, <see cref="InputPrivacyValueDisallowContacts"/>, <see cref="InputPrivacyValueDisallowAll"/>, <see cref="InputPrivacyValueDisallowUsers"/>, <see cref="InputPrivacyValueAllowChatParticipants"/>, <see cref="InputPrivacyValueDisallowChatParticipants"/>, <see cref="InputPrivacyValueAllowCloseFriends"/></para></summary>
+	/// <summary>Privacy <strong>rules</strong> indicate <em>who</em> can or can't do something and are specified by a <see cref="PrivacyRule"/>, and its input counterpart <see cref="InputPrivacyRule"/>.		<para>See <a href="https://corefork.telegram.org/type/InputPrivacyRule"/></para>		<para>Derived classes: <see cref="InputPrivacyValueAllowContacts"/>, <see cref="InputPrivacyValueAllowAll"/>, <see cref="InputPrivacyValueAllowUsers"/>, <see cref="InputPrivacyValueDisallowContacts"/>, <see cref="InputPrivacyValueDisallowAll"/>, <see cref="InputPrivacyValueDisallowUsers"/>, <see cref="InputPrivacyValueAllowChatParticipants"/>, <see cref="InputPrivacyValueDisallowChatParticipants"/>, <see cref="InputPrivacyValueAllowCloseFriends"/></para></summary>
 	public abstract class InputPrivacyRule : IObject { }
 	/// <summary>Allow only contacts		<para>See <a href="https://corefork.telegram.org/constructor/inputPrivacyValueAllowContacts"/></para></summary>
 	[TLDef(0x0D09E07B)]
@@ -5913,7 +5913,7 @@ namespace TL
 	[TLDef(0x2F453E49)]
 	public class InputPrivacyValueAllowCloseFriends : InputPrivacyRule { }
 
-	/// <summary>Privacy rule		<para>See <a href="https://corefork.telegram.org/type/PrivacyRule"/></para>		<para>Derived classes: <see cref="PrivacyValueAllowContacts"/>, <see cref="PrivacyValueAllowAll"/>, <see cref="PrivacyValueAllowUsers"/>, <see cref="PrivacyValueDisallowContacts"/>, <see cref="PrivacyValueDisallowAll"/>, <see cref="PrivacyValueDisallowUsers"/>, <see cref="PrivacyValueAllowChatParticipants"/>, <see cref="PrivacyValueDisallowChatParticipants"/>, <see cref="PrivacyValueAllowCloseFriends"/></para></summary>
+	/// <summary>Privacy <strong>rules</strong> together with <a href="https://corefork.telegram.org/api/privacy#privacy-rules">privacy</a> indicate <em>what</em> can or can't someone do and are specified by a <see cref="PrivacyKey"/> constructor, and its input counterpart <see cref="InputPrivacyKey"/>.		<para>See <a href="https://corefork.telegram.org/type/PrivacyRule"/></para>		<para>Derived classes: <see cref="PrivacyValueAllowContacts"/>, <see cref="PrivacyValueAllowAll"/>, <see cref="PrivacyValueAllowUsers"/>, <see cref="PrivacyValueDisallowContacts"/>, <see cref="PrivacyValueDisallowAll"/>, <see cref="PrivacyValueDisallowUsers"/>, <see cref="PrivacyValueAllowChatParticipants"/>, <see cref="PrivacyValueDisallowChatParticipants"/>, <see cref="PrivacyValueAllowCloseFriends"/></para></summary>
 	public abstract class PrivacyRule : IObject { }
 	/// <summary>Allow all contacts		<para>See <a href="https://corefork.telegram.org/constructor/privacyValueAllowContacts"/></para></summary>
 	[TLDef(0xFFFE1BAC)]
@@ -6963,7 +6963,7 @@ namespace TL
 		public KeyboardButtonRow[] rows;
 	}
 
-	/// <summary>Message entities, representing styled text in a message		<para>See <a href="https://corefork.telegram.org/type/MessageEntity"/></para>		<para>Derived classes: <see cref="MessageEntityUnknown"/>, <see cref="MessageEntityMention"/>, <see cref="MessageEntityHashtag"/>, <see cref="MessageEntityBotCommand"/>, <see cref="MessageEntityUrl"/>, <see cref="MessageEntityEmail"/>, <see cref="MessageEntityBold"/>, <see cref="MessageEntityItalic"/>, <see cref="MessageEntityCode"/>, <see cref="MessageEntityPre"/>, <see cref="MessageEntityTextUrl"/>, <see cref="MessageEntityMentionName"/>, <see cref="InputMessageEntityMentionName"/>, <see cref="MessageEntityPhone"/>, <see cref="MessageEntityCashtag"/>, <see cref="MessageEntityUnderline"/>, <see cref="MessageEntityStrike"/>, <see cref="MessageEntityBlockquote"/>, <see cref="MessageEntityBankCard"/>, <see cref="MessageEntitySpoiler"/>, <see cref="MessageEntityCustomEmoji"/></para></summary>
+	/// <summary>Message entities, representing styled text in a message		<para>See <a href="https://corefork.telegram.org/type/MessageEntity"/></para>		<para>Derived classes: <see cref="MessageEntityUnknown"/>, <see cref="MessageEntityMention"/>, <see cref="MessageEntityHashtag"/>, <see cref="MessageEntityBotCommand"/>, <see cref="MessageEntityUrl"/>, <see cref="MessageEntityEmail"/>, <see cref="MessageEntityBold"/>, <see cref="MessageEntityItalic"/>, <see cref="MessageEntityCode"/>, <see cref="MessageEntityPre"/>, <see cref="MessageEntityTextUrl"/>, <see cref="MessageEntityMentionName"/>, <see cref="InputMessageEntityMentionName"/>, <see cref="MessageEntityPhone"/>, <see cref="MessageEntityCashtag"/>, <see cref="MessageEntityUnderline"/>, <see cref="MessageEntityStrike"/>, <see cref="MessageEntityBankCard"/>, <see cref="MessageEntitySpoiler"/>, <see cref="MessageEntityCustomEmoji"/></para></summary>
 	public abstract partial class MessageEntity : IObject
 	{
 		/// <summary>Offset of message entity within message (in <a href="https://corefork.telegram.org/api/entities#entity-length">UTF-16 code units</a>)</summary>
@@ -7533,7 +7533,7 @@ namespace TL
 		public string title;
 		/// <summary>Address</summary>
 		public string address;
-		/// <summary>Venue provider: currently only "foursquare" needs to be supported</summary>
+		/// <summary>Venue provider: currently only "foursquare" and "gplaces" (Google Places) need to be supported</summary>
 		public string provider;
 		/// <summary>Venue ID in the provider's database</summary>
 		public string venue_id;
@@ -7822,7 +7822,7 @@ namespace TL
 		public string title;
 		/// <summary>Address</summary>
 		public string address;
-		/// <summary>Venue provider: currently only "foursquare" needs to be supported</summary>
+		/// <summary>Venue provider: currently only "foursquare" and "gplaces" (Google Places) need to be supported</summary>
 		public string provider;
 		/// <summary>Venue ID in the provider's database</summary>
 		public string venue_id;
@@ -15125,22 +15125,29 @@ namespace TL
 
 		public override int ID => id;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyItem"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/stories">story</a>.		<para>See <a href="https://corefork.telegram.org/constructor/storyItem"/></para></summary>
 	[TLDef(0x44C457CE)]
 	public class StoryItem : StoryItemBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>ID of the story.</summary>
 		public int id;
+		/// <summary>When was the story posted.</summary>
 		public DateTime date;
+		/// <summary>When does the story expire.</summary>
 		public DateTime expire_date;
+		/// <summary>Story caption.</summary>
 		[IfFlag(0)] public string caption;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
 		[IfFlag(1)] public MessageEntity[] entities;
+		/// <summary>Story media.</summary>
 		public MessageMedia media;
+		/// <summary>List of media areas, see <a href="https://corefork.telegram.org/api/stories#media-areas">here »</a> for more info on media areas.</summary>
 		[IfFlag(14)] public MediaArea[] media_areas;
 		[IfFlag(2)] public PrivacyRule[] privacy;
 		[IfFlag(3)] public StoryViews views;
+		/// <summary>The reaction we sent.</summary>
 		[IfFlag(15)] public Reaction sent_reaction;
 
 		[Flags] public enum Flags : uint
@@ -15157,7 +15164,9 @@ namespace TL
 			public_ = 0x80,
 			close_friends = 0x100,
 			min = 0x200,
+			/// <summary>Whether this story is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a> and thus cannot be forwarded; clients should also prevent users from saving attached media (i.e. videos should only be streamed, photos should be kept in RAM, et cetera).</summary>
 			noforwards = 0x400,
+			/// <summary>Indicates whether the story was edited.</summary>
 			edited = 0x800,
 			contacts = 0x1000,
 			selected_contacts = 0x2000,
@@ -15165,9 +15174,11 @@ namespace TL
 			has_media_areas = 0x4000,
 			/// <summary>Field <see cref="sent_reaction"/> has a value</summary>
 			has_sent_reaction = 0x8000,
+			/// <summary>indicates whether we sent this story.</summary>
 			out_ = 0x10000,
 		}
 
+		/// <summary>ID of the story.</summary>
 		public override int ID => id;
 	}
 
@@ -15317,29 +15328,41 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/mediaAreaCoordinates"/></para></summary>
+	/// <summary>Coordinates and size of a clicable rectangular area on top of a story.		<para>See <a href="https://corefork.telegram.org/constructor/mediaAreaCoordinates"/></para></summary>
 	[TLDef(0x03D1EA4E)]
 	public class MediaAreaCoordinates : IObject
 	{
+		/// <summary>The abscissa of the rectangle's center, as a percentage of the media width (0-100).</summary>
 		public double x;
+		/// <summary>The ordinate of the rectangle's center, as a percentage of the media height (0-100).</summary>
 		public double y;
+		/// <summary>The width of the rectangle, as a percentage of the media width (0-100).</summary>
 		public double w;
+		/// <summary>The height of the rectangle, as a percentage of the media height (0-100).</summary>
 		public double h;
+		/// <summary>Clockwise rotation angle of the rectangle, in degrees (0-360).</summary>
 		public double rotation;
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/type/MediaArea"/></para>		<para>Derived classes: <see cref="MediaAreaVenue"/>, <see cref="InputMediaAreaVenue"/>, <see cref="MediaAreaGeoPoint"/>, <see cref="MediaAreaSuggestedReaction"/></para></summary>
 	public abstract class MediaArea : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/mediaAreaVenue"/></para></summary>
+	/// <summary>Represents a location tag attached to a <a href="https://corefork.telegram.org/api/stories">story</a>, with additional venue information.		<para>See <a href="https://corefork.telegram.org/constructor/mediaAreaVenue"/></para></summary>
 	[TLDef(0xBE82DB9C)]
 	public class MediaAreaVenue : MediaArea
 	{
+		/// <summary>The size and location of the media area corresponding to the location sticker on top of the story media.</summary>
 		public MediaAreaCoordinates coordinates;
+		/// <summary>Coordinates of the venue</summary>
 		public GeoPoint geo;
+		/// <summary>Venue name</summary>
 		public string title;
+		/// <summary>Address</summary>
 		public string address;
+		/// <summary>Venue provider: currently only "foursquare" needs to be supported.</summary>
 		public string provider;
+		/// <summary>Venue ID in the provider's database</summary>
 		public string venue_id;
+		/// <summary>Venue type in the provider's database</summary>
 		public string venue_type;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputMediaAreaVenue"/></para></summary>
@@ -15350,25 +15373,31 @@ namespace TL
 		public long query_id;
 		public string result_id;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/mediaAreaGeoPoint"/></para></summary>
+	/// <summary>Represents a geolocation tag attached to a <a href="https://corefork.telegram.org/api/stories">story</a>.		<para>See <a href="https://corefork.telegram.org/constructor/mediaAreaGeoPoint"/></para></summary>
 	[TLDef(0xDF8B3B22)]
 	public class MediaAreaGeoPoint : MediaArea
 	{
+		/// <summary>The size and position of the media area corresponding to the location sticker on top of the story media.</summary>
 		public MediaAreaCoordinates coordinates;
+		/// <summary>Coordinates of the geolocation tag.</summary>
 		public GeoPoint geo;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/mediaAreaSuggestedReaction"/></para></summary>
+	/// <summary>Represents a reaction bubble.		<para>See <a href="https://corefork.telegram.org/constructor/mediaAreaSuggestedReaction"/></para></summary>
 	[TLDef(0x14455871)]
 	public class MediaAreaSuggestedReaction : MediaArea
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>The coordinates of the media area corresponding to the reaction button.</summary>
 		public MediaAreaCoordinates coordinates;
+		/// <summary>The reaction that should be sent when this area is clicked.</summary>
 		public Reaction reaction;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether the reaction bubble has a dark background.</summary>
 			dark = 0x1,
+			/// <summary>Whether the reaction bubble is mirrored (see <a href="https://corefork.telegram.org/api/stories#reactions">here »</a> for more info).</summary>
 			flipped = 0x2,
 		}
 	}

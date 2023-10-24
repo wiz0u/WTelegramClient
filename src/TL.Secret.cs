@@ -721,7 +721,7 @@ namespace TL
 			public string title;
 			/// <summary>Address</summary>
 			public string address;
-			/// <summary>Venue provider: currently only "foursquare" needs to be supported</summary>
+			/// <summary>Venue provider: currently only "foursquare" and "gplaces" (Google Places) need to be supported</summary>
 			public string provider;
 			/// <summary>Venue ID in the provider's database</summary>
 			public string venue_id;

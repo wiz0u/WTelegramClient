@@ -1328,7 +1328,7 @@ namespace TL
 		/// <param name="id">Telegram ID of the other user</param>
 		/// <param name="first_name">First name</param>
 		/// <param name="last_name">Last name</param>
-		/// <param name="phone">User's phone number</param>
+		/// <param name="phone">User's phone number, may be omitted to simply add the user to the contact list, without a phone number.</param>
 		public static Task<UpdatesBase> Contacts_AddContact(this Client client, InputUserBase id, string first_name, string last_name, string phone, bool add_phone_privacy_exception = false)
 			=> client.Invoke(new Contacts_AddContact
 			{
@@ -2000,7 +2000,7 @@ namespace TL
 				is_admin = is_admin,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Turn a <a href="https://corefork.telegram.org/api/channel#migration">basic group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Turn a <a href="https://corefork.telegram.org/api/channel#migration">basic group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id"><a href="https://corefork.telegram.org/api/channel#basic-groups">Basic group</a> to migrate</param>
 		public static Task<UpdatesBase> Messages_MigrateChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_MigrateChat
@@ -5643,12 +5643,16 @@ namespace TL
 			});
 
 		/// <summary>Uploads a <a href="https://corefork.telegram.org/api/stories">Telegram Story</a>.		<para>See <a href="https://corefork.telegram.org/method/stories.sendStory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.sendStory#possible-errors">details</a>)</para></summary>
-		/// <param name="noforwards">If set, disables forwards and story download functionality.</param>
+		/// <param name="pinned">Whether to add the story to the profile automatically upon expiration. If not set, the story will only be added to the archive, see <a href="https://corefork.telegram.org/api/stories">here »</a> for more info.</param>
+		/// <param name="noforwards">If set, disables forwards, screenshots, and downloads.</param>
 		/// <param name="peer">The peer to send the story as.</param>
-		/// <param name="media">The media file.</param>
+		/// <param name="media">The story media.</param>
+		/// <param name="media_areas"><a href="https://corefork.telegram.org/api/stories#media-areas">Media areas</a> associated to the story, see <a href="https://corefork.telegram.org/api/stories#media-areas">here »</a> for more info.</param>
 		/// <param name="caption">Story caption.</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
+		/// <param name="privacy_rules"><a href="https://corefork.telegram.org/api/privacy">Privacy rules</a> for the story, indicating who can or can't view the story.</param>
 		/// <param name="random_id">Unique client message ID required to prevent message resending. <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
+		/// <param name="period">Period after which the story is moved to archive (and to the profile if <c>pinned</c> is set), in seconds; must be one of <c>6 * 3600</c>, <c>12 * 3600</c>, <c>86400</c>, or <c>2 * 86400</c> for Telegram Premium users, and <c>86400</c> otherwise.</param>
 		public static Task<UpdatesBase> Stories_SendStory(this Client client, InputPeer peer, InputMedia media, InputPrivacyRule[] privacy_rules, long random_id, string caption = null, MessageEntity[] entities = null, int? period = null, MediaArea[] media_areas = null, bool pinned = false, bool noforwards = false)
 			=> client.Invoke(new Stories_SendStory
 			{
@@ -5667,9 +5671,10 @@ namespace TL
 		/// <param name="peer">Peer where the story was posted.</param>
 		/// <param name="id">ID of story to edit.</param>
 		/// <param name="media">If specified, replaces the story media.</param>
+		/// <param name="media_areas"><a href="https://corefork.telegram.org/api/stories#media-areas">Media areas</a> associated to the story, see <a href="https://corefork.telegram.org/api/stories#media-areas">here »</a> for more info.</param>
 		/// <param name="caption">If specified, replaces the story caption.</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text in the caption</a></param>
-		/// <param name="privacy_rules">If specified, alters the privacy settings of the story.</param>
+		/// <param name="privacy_rules">If specified, alters the <a href="https://corefork.telegram.org/api/privacy">privacy settings »</a> of the story, changing who can or can't view the story.</param>
 		public static Task<UpdatesBase> Stories_EditStory(this Client client, InputPeer peer, int id, InputMedia media = null, string caption = null, MessageEntity[] entities = null, InputPrivacyRule[] privacy_rules = null, MediaArea[] media_areas = null)
 			=> client.Invoke(new Stories_EditStory
 			{
