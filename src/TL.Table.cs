@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 165;					// fetched 04/10/2023 17:10:52
+		public const int Version = 166;					// fetched 28/10/2023 21:16:53
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -99,6 +99,7 @@ namespace TL
 			[0x0F94E5F1] = typeof(InputMediaPoll),
 			[0xE66FBF7B] = typeof(InputMediaDice),
 			[0x89FDD778] = typeof(InputMediaStory),
+			[0xC21B8849] = typeof(InputMediaWebPage),
 			[0x1CA48F57] = null,//InputChatPhotoEmpty
 			[0xBDCDAEC0] = typeof(InputChatUploadedPhoto),
 			[0x8953AD37] = typeof(InputChatPhoto),
@@ -120,7 +121,7 @@ namespace TL
 			[0x36C6019A] = typeof(PeerChat),
 			[0xA2A5371E] = typeof(PeerChannel),
 			[0xD3BC4B7A] = typeof(UserEmpty),
-			[0xABB5F120] = typeof(User),
+			[0xEB602F25] = typeof(User),
 			[0x4F11BAE1] = null,//UserProfilePhotoEmpty
 			[0x82D1F706] = typeof(UserProfilePhoto),
 			[0x09D05049] = null,//UserStatusEmpty
@@ -132,7 +133,7 @@ namespace TL
 			[0x29562865] = typeof(ChatEmpty),
 			[0x41CBF256] = typeof(Chat),
 			[0x6592A1A7] = typeof(ChatForbidden),
-			[0x94F592DB] = typeof(Channel),
+			[0x1981EA7E] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
 			[0xC9D31138] = typeof(ChatFull),
 			[0x723027BD] = typeof(ChannelFull),
@@ -152,7 +153,7 @@ namespace TL
 			[0x70322949] = typeof(MessageMediaContact),
 			[0x9F84F49E] = typeof(MessageMediaUnsupported),
 			[0x4CF4D72D] = typeof(MessageMediaDocument),
-			[0xA32DD600] = typeof(MessageMediaWebPage),
+			[0xDDF10C3B] = typeof(MessageMediaWebPage),
 			[0x2EC0533F] = typeof(MessageMediaVenue),
 			[0xFDB19008] = typeof(MessageMediaGame),
 			[0xF6A548D3] = typeof(MessageMediaInvoice),
@@ -160,6 +161,7 @@ namespace TL
 			[0x4BD6E798] = typeof(MessageMediaPoll),
 			[0x3F7EE58B] = typeof(MessageMediaDice),
 			[0x68CB6283] = typeof(MessageMediaStory),
+			[0x58260664] = typeof(MessageMediaGiveaway),
 			[0xB6AEF7B0] = null,//MessageActionEmpty
 			[0xBD47CBAD] = typeof(MessageActionChatCreate),
 			[0xB5A1CE5A] = typeof(MessageActionChatEditTitle),
@@ -199,6 +201,8 @@ namespace TL
 			[0xFE77345D] = typeof(MessageActionRequestedPeer),
 			[0xBC44A927] = typeof(MessageActionSetChatWallPaper),
 			[0xC0787D6D] = typeof(MessageActionSetSameChatWallPaper),
+			[0xD2CFDB0E] = typeof(MessageActionGiftCode),
+			[0x332BA9ED] = typeof(MessageActionGiveawayLaunch),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -484,8 +488,8 @@ namespace TL
 			[0xE86602C3] = null,//Messages_AllStickersNotModified
 			[0xCDBBCEBB] = typeof(Messages_AllStickers),
 			[0x84D19185] = typeof(Messages_AffectedMessages),
-			[0xEB1477E8] = typeof(WebPageEmpty),
-			[0xC586DA1C] = typeof(WebPagePending),
+			[0x211A1788] = typeof(WebPageEmpty),
+			[0xB0D13E47] = typeof(WebPagePending),
 			[0xE89C45B2] = typeof(WebPage),
 			[0x7311CA11] = typeof(WebPageNotModified),
 			[0xAD01D61D] = typeof(Authorization),
@@ -498,7 +502,7 @@ namespace TL
 			[0x0AB4A819] = typeof(ChatInviteExported),
 			[0xED107AB7] = typeof(ChatInvitePublicJoinRequests),
 			[0x5A686D7C] = typeof(ChatInviteAlready),
-			[0x300C44C1] = typeof(ChatInvite),
+			[0xCDE0EC40] = typeof(ChatInvite),
 			[0x61695CB0] = typeof(ChatInvitePeek),
 			[0xFFB62B95] = null,//InputStickerSetEmpty
 			[0x9DE7A269] = typeof(InputStickerSetID),
@@ -553,10 +557,10 @@ namespace TL
 			[0x4C4E743F] = typeof(MessageEntityCashtag),
 			[0x9C4E7E8B] = typeof(MessageEntityUnderline),
 			[0xBF0693D4] = typeof(MessageEntityStrike),
-			[0x020DF5D0] = typeof(MessageEntityBlockquote),
 			[0x761E6AF4] = typeof(MessageEntityBankCard),
 			[0x32CA960F] = typeof(MessageEntitySpoiler),
 			[0xC8CF05F8] = typeof(MessageEntityCustomEmoji),
+			[0x020DF5D0] = typeof(MessageEntityBlockquote),
 			[0xEE8C1E86] = null,//InputChannelEmpty
 			[0xF35AEC28] = typeof(InputChannel),
 			[0x5B934F9D] = typeof(InputChannelFromMessage),
@@ -594,6 +598,7 @@ namespace TL
 			[0xA6EDBFFD] = typeof(InputBotInlineMessageMediaContact),
 			[0x4B425864] = typeof(InputBotInlineMessageGame),
 			[0xD7E78225] = typeof(InputBotInlineMessageMediaInvoice),
+			[0xBDDCC510] = typeof(InputBotInlineMessageMediaWebPage),
 			[0x88BF9319] = typeof(InputBotInlineResult),
 			[0xA8D864A7] = typeof(InputBotInlineResultPhoto),
 			[0xFFF8FDC4] = typeof(InputBotInlineResultDocument),
@@ -604,6 +609,7 @@ namespace TL
 			[0x8A86659C] = typeof(BotInlineMessageMediaVenue),
 			[0x18D1CDC2] = typeof(BotInlineMessageMediaContact),
 			[0x354A9B09] = typeof(BotInlineMessageMediaInvoice),
+			[0x809AD9A6] = typeof(BotInlineMessageMediaWebPage),
 			[0x11965F3A] = typeof(BotInlineResult),
 			[0x17DB940B] = typeof(BotInlineMediaResult),
 			[0xE021F2F6] = typeof(Messages_BotResults),
@@ -630,7 +636,7 @@ namespace TL
 			[0x70B772A8] = typeof(Contacts_TopPeers),
 			[0xB52C939D] = typeof(Contacts_TopPeersDisabled),
 			[0x1B0C841A] = typeof(DraftMessageEmpty),
-			[0xFD8E711F] = typeof(DraftMessage),
+			[0x3FCCF7EF] = typeof(DraftMessage),
 			[0xC6DC0C66] = typeof(Messages_FeaturedStickersNotModified),
 			[0xBE382906] = typeof(Messages_FeaturedStickers),
 			[0x0B17F890] = null,//Messages_RecentStickersNotModified
@@ -785,6 +791,8 @@ namespace TL
 			[0xAE168909] = typeof(ChannelAdminLogEventActionDeleteTopic),
 			[0x5D8D353B] = typeof(ChannelAdminLogEventActionPinTopic),
 			[0x64F36DFC] = typeof(ChannelAdminLogEventActionToggleAntiSpam),
+			[0x3C2B247B] = typeof(ChannelAdminLogEventActionChangeColor),
+			[0x445FC434] = typeof(ChannelAdminLogEventActionChangeBackgroundEmoji),
 			[0x1FAD68CD] = typeof(ChannelAdminLogEvent),
 			[0xED8AF74D] = typeof(Channels_AdminLogResults),
 			[0xEA107AE4] = typeof(ChannelAdminLogEventsFilter),
@@ -952,7 +960,7 @@ namespace TL
 			[0x455B853D] = typeof(MessageViews),
 			[0xB6C4F543] = typeof(Messages_MessageViews),
 			[0xA6341782] = typeof(Messages_DiscussionMessage),
-			[0xA6D57763] = typeof(MessageReplyHeader),
+			[0x6EEBCABD] = typeof(MessageReplyHeader),
 			[0x9C98BFC1] = typeof(MessageReplyStoryHeader),
 			[0x83D60FC2] = typeof(MessageReplies),
 			[0xE8FD8014] = typeof(PeerBlocked),
@@ -1032,11 +1040,14 @@ namespace TL
 			[0x1F307EB7] = typeof(Account_SavedRingtoneConverted),
 			[0xC5B56859] = typeof(InputInvoiceMessage),
 			[0xC326CAEF] = typeof(InputInvoiceSlug),
+			[0x98986C0D] = typeof(InputInvoicePremiumGiftCode),
 			[0xAED0CBD9] = typeof(Payments_ExportedInvoice),
 			[0x93752C52] = typeof(Messages_TranscribedAudio),
 			[0x5334759C] = typeof(Help_PremiumPromo),
 			[0xA6751E66] = typeof(InputStorePaymentPremiumSubscription),
 			[0x616F7FE8] = typeof(InputStorePaymentGiftPremium),
+			[0xA3805F3F] = typeof(InputStorePaymentPremiumGiftCode),
+			[0x7C9375E6] = typeof(InputStorePaymentPremiumGiveaway),
 			[0x74C34319] = typeof(PremiumGiftOption),
 			[0x88F8F21B] = typeof(PaymentFormMethod),
 			[0x2DE11AAE] = null,//EmojiStatusEmpty
@@ -1116,7 +1127,7 @@ namespace TL
 			[0xB0BDEAC5] = typeof(StoryView),
 			[0x46E9B9EC] = typeof(Stories_StoryViewsList),
 			[0xDE9EED1D] = typeof(Stories_StoryViews),
-			[0x9C5386E4] = typeof(InputReplyToMessage),
+			[0x073EC805] = typeof(InputReplyToMessage),
 			[0x15B0F283] = typeof(InputReplyToStory),
 			[0x3FC9053B] = typeof(ExportedStoryLink),
 			[0x712E27FD] = typeof(StoriesStealthMode),
@@ -1127,12 +1138,17 @@ namespace TL
 			[0x14455871] = typeof(MediaAreaSuggestedReaction),
 			[0x9A35E999] = typeof(PeerStories),
 			[0xCAE68768] = typeof(Stories_PeerStories),
-			[0xE5C1AA5C] = typeof(Stories_BoostsStatus),
-			[0xC3173587] = typeof(Stories_CanApplyBoostOk),
-			[0x712C4655] = typeof(Stories_CanApplyBoostReplace),
-			[0x0E9E6380] = typeof(Booster),
-			[0xF3DD3D1D] = typeof(Stories_BoostersList),
 			[0xFD5E12BD] = typeof(Messages_WebPage),
+			[0x257E962B] = typeof(PremiumGiftCodeOption),
+			[0xB722F158] = typeof(Payments_CheckedGiftCode),
+			[0x4367DAA0] = typeof(Payments_GiveawayInfo),
+			[0x00CD5570] = typeof(Payments_GiveawayInfoResults),
+			[0xB2539D54] = typeof(PrepaidGiveaway),
+			[0x2A1C8C71] = typeof(Boost),
+			[0x86F8613C] = typeof(Premium_BoostsList),
+			[0xC448415C] = typeof(MyBoost),
+			[0x9AE228E2] = typeof(Premium_MyBoosts),
+			[0x4959427A] = typeof(Premium_BoostsStatus),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),

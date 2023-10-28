@@ -1151,6 +1151,23 @@ namespace TL
 				codes = codes,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateColor"/></para></summary>
+		public static Task<bool> Account_UpdateColor(this Client client, int color, long? background_emoji_id = null)
+			=> client.Invoke(new Account_UpdateColor
+			{
+				flags = (Account_UpdateColor.Flags)(background_emoji_id != null ? 0x1 : 0),
+				color = color,
+				background_emoji_id = background_emoji_id.GetValueOrDefault(),
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getDefaultBackgroundEmojis"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
+		public static Task<EmojiList> Account_GetDefaultBackgroundEmojis(this Client client, long hash = default)
+			=> client.Invoke(new Account_GetDefaultBackgroundEmojis
+			{
+				hash = hash,
+			});
+
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, params InputUserBase[] id)
@@ -1572,10 +1589,10 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
+		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMessage
 			{
-				flags = (Messages_SendMessage.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
+				flags = (Messages_SendMessage.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				message = message,
@@ -1601,10 +1618,10 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
+		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMedia
 			{
-				flags = (Messages_SendMedia.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
+				flags = (Messages_SendMedia.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				media = media,
@@ -2165,10 +2182,10 @@ namespace TL
 		/// <param name="reply_markup">Reply markup for inline keyboards</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
-		public static Task<UpdatesBase> Messages_EditMessage(this Client client, InputPeer peer, int id, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, bool no_webpage = false)
+		public static Task<UpdatesBase> Messages_EditMessage(this Client client, InputPeer peer, int id, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, bool no_webpage = false, bool invert_media = false)
 			=> client.Invoke(new Messages_EditMessage
 			{
-				flags = (Messages_EditMessage.Flags)((message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x8000 : 0) | (no_webpage ? 0x2 : 0)),
+				flags = (Messages_EditMessage.Flags)((message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x8000 : 0) | (no_webpage ? 0x2 : 0) | (invert_media ? 0x10000 : 0)),
 				peer = peer,
 				id = id,
 				message = message,
@@ -2185,10 +2202,10 @@ namespace TL
 		/// <param name="media">Media</param>
 		/// <param name="reply_markup">Reply markup for inline keyboards</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
-		public static Task<bool> Messages_EditInlineBotMessage(this Client client, InputBotInlineMessageIDBase id, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, bool no_webpage = false)
+		public static Task<bool> Messages_EditInlineBotMessage(this Client client, InputBotInlineMessageIDBase id, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, bool no_webpage = false, bool invert_media = false)
 			=> client.Invoke(new Messages_EditInlineBotMessage
 			{
-				flags = (Messages_EditInlineBotMessage.Flags)((message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (no_webpage ? 0x2 : 0)),
+				flags = (Messages_EditInlineBotMessage.Flags)((message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (no_webpage ? 0x2 : 0) | (invert_media ? 0x10000 : 0)),
 				id = id,
 				message = message,
 				media = media,
@@ -2238,20 +2255,18 @@ namespace TL
 
 		/// <summary>Save a message <a href="https://corefork.telegram.org/api/drafts">draft</a> associated to a chat.		<para>See <a href="https://corefork.telegram.org/method/messages.saveDraft"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.saveDraft#possible-errors">details</a>)</para></summary>
 		/// <param name="no_webpage">Disable generation of the webpage preview</param>
-		/// <param name="reply_to_msg_id">Message ID the message should reply to</param>
-		/// <param name="top_msg_id"><a href="https://corefork.telegram.org/api/forum#forum-topics">Forum topic</a> where the message will be sent</param>
 		/// <param name="peer">Destination of the message that should be sent</param>
 		/// <param name="message">The draft</param>
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
-		public static Task<bool> Messages_SaveDraft(this Client client, InputPeer peer, string message, int? reply_to_msg_id = null, int? top_msg_id = null, MessageEntity[] entities = null, bool no_webpage = false)
+		public static Task<bool> Messages_SaveDraft(this Client client, InputPeer peer, string message, MessageEntity[] entities = null, InputReplyTo reply_to = null, InputMedia media = null, bool no_webpage = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SaveDraft
 			{
-				flags = (Messages_SaveDraft.Flags)((reply_to_msg_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (no_webpage ? 0x2 : 0)),
-				reply_to_msg_id = reply_to_msg_id.GetValueOrDefault(),
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				flags = (Messages_SaveDraft.Flags)((entities != null ? 0x8 : 0) | (reply_to != null ? 0x10 : 0) | (media != null ? 0x20 : 0) | (no_webpage ? 0x2 : 0) | (invert_media ? 0x40 : 0)),
+				reply_to = reply_to,
 				peer = peer,
 				message = message,
 				entities = entities,
+				media = media,
 			});
 
 		/// <summary>Return all message <a href="https://corefork.telegram.org/api/drafts">drafts</a>.<br/>Returns all the latest <see cref="UpdateDraftMessage"/> updates related to all chats with drafts.		<para>See <a href="https://corefork.telegram.org/method/messages.getAllDrafts"/></para></summary>
@@ -2565,10 +2580,10 @@ namespace TL
 		/// <param name="multi_media">The medias to send: note that they must be separately uploaded using <see cref="Messages_UploadMedia">Messages_UploadMedia</see> first, using raw <c>inputMediaUploaded*</c> constructors is not supported.</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false)
+		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
-				flags = (Messages_SendMultiMedia.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0)),
+				flags = (Messages_SendMultiMedia.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				multi_media = multi_media,
@@ -4672,6 +4687,16 @@ namespace TL
 				random_id = random_id,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.updateColor"/></para></summary>
+		public static Task<UpdatesBase> Channels_UpdateColor(this Client client, InputChannelBase channel, int color, long? background_emoji_id = null)
+			=> client.Invoke(new Channels_UpdateColor
+			{
+				flags = (Channels_UpdateColor.Flags)(background_emoji_id != null ? 0x1 : 0),
+				channel = channel,
+				color = color,
+				background_emoji_id = background_emoji_id.GetValueOrDefault(),
+			});
+
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
 		/// <param name="custom_method">The method name</param>
 		/// <param name="params_">JSON-serialized method parameters</param>
@@ -4940,6 +4965,45 @@ namespace TL
 		public static Task<bool> Payments_CanPurchasePremium(this Client client, InputStorePaymentPurpose purpose)
 			=> client.Invoke(new Payments_CanPurchasePremium
 			{
+				purpose = purpose,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getPremiumGiftCodeOptions"/></para></summary>
+		public static Task<PremiumGiftCodeOption[]> Payments_GetPremiumGiftCodeOptions(this Client client, InputPeer boost_peer = null)
+			=> client.Invoke(new Payments_GetPremiumGiftCodeOptions
+			{
+				flags = (Payments_GetPremiumGiftCodeOptions.Flags)(boost_peer != null ? 0x1 : 0),
+				boost_peer = boost_peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.checkGiftCode"/></para></summary>
+		public static Task<Payments_CheckedGiftCode> Payments_CheckGiftCode(this Client client, string slug)
+			=> client.Invoke(new Payments_CheckGiftCode
+			{
+				slug = slug,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.applyGiftCode"/></para></summary>
+		public static Task<UpdatesBase> Payments_ApplyGiftCode(this Client client, string slug)
+			=> client.Invoke(new Payments_ApplyGiftCode
+			{
+				slug = slug,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getGiveawayInfo"/></para></summary>
+		public static Task<Payments_GiveawayInfoBase> Payments_GetGiveawayInfo(this Client client, InputPeer peer, int msg_id)
+			=> client.Invoke(new Payments_GetGiveawayInfo
+			{
+				peer = peer,
+				msg_id = msg_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.launchPrepaidGiveaway"/></para></summary>
+		public static Task<UpdatesBase> Payments_LaunchPrepaidGiveaway(this Client client, InputPeer peer, long giveaway_id, InputStorePaymentPurpose purpose)
+			=> client.Invoke(new Payments_LaunchPrepaidGiveaway
+			{
+				peer = peer,
+				giveaway_id = giveaway_id,
 				purpose = purpose,
 			});
 
@@ -5886,38 +5950,34 @@ namespace TL
 				hidden = hidden,
 			});
 
-		/// <summary>Get the current <a href="https://corefork.telegram.org/api/stories#boosts">boost status</a> of a channel, see <a href="https://corefork.telegram.org/api/stories#boosts">here »</a> for more info on boosts.		<para>See <a href="https://corefork.telegram.org/method/stories.getBoostsStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.getBoostsStatus#possible-errors">details</a>)</para></summary>
-		/// <param name="peer">The channel</param>
-		public static Task<Stories_BoostsStatus> Stories_GetBoostsStatus(this Client client, InputPeer peer)
-			=> client.Invoke(new Stories_GetBoostsStatus
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/premium.getBoostsList"/></para></summary>
+		public static Task<Premium_BoostsList> Premium_GetBoostsList(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, bool gifts = false)
+			=> client.Invoke(new Premium_GetBoostsList
 			{
-				peer = peer,
-			});
-
-		/// <summary>Obtain info about the users currently <a href="https://corefork.telegram.org/api/stories#boosts">boosting</a> a channel, see <a href="https://corefork.telegram.org/api/stories#boosts">here »</a> for more info about boosts.		<para>See <a href="https://corefork.telegram.org/method/stories.getBoostersList"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.getBoostersList#possible-errors">details</a>)</para></summary>
-		/// <param name="peer">The channel.</param>
-		/// <param name="offset">Next offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a>, obtained from the <c>next_offset</c> field of <see cref="Stories_BoostersList"/>.</param>
-		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Stories_BoostersList> Stories_GetBoostersList(this Client client, InputPeer peer, string offset, int limit = int.MaxValue)
-			=> client.Invoke(new Stories_GetBoostersList
-			{
+				flags = (Premium_GetBoostsList.Flags)(gifts ? 0x1 : 0),
 				peer = peer,
 				offset = offset,
 				limit = limit,
 			});
 
-		/// <summary>Check whether a channel can be <a href="https://corefork.telegram.org/api/stories#boosts">boosted, see here for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/stories.canApplyBoost"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.canApplyBoost#possible-errors">details</a>)</para></summary>
-		/// <param name="peer">The channel to boost.</param>
-		public static Task<Stories_CanApplyBoostResult> Stories_CanApplyBoost(this Client client, InputPeer peer)
-			=> client.Invoke(new Stories_CanApplyBoost
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/premium.getMyBoosts"/></para></summary>
+		public static Task<Premium_MyBoosts> Premium_GetMyBoosts(this Client client)
+			=> client.Invoke(new Premium_GetMyBoosts
 			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/premium.applyBoost"/></para></summary>
+		public static Task<Premium_MyBoosts> Premium_ApplyBoost(this Client client, InputPeer peer, int[] slots = null)
+			=> client.Invoke(new Premium_ApplyBoost
+			{
+				flags = (Premium_ApplyBoost.Flags)(slots != null ? 0x1 : 0),
+				slots = slots,
 				peer = peer,
 			});
 
-		/// <summary><a href="https://corefork.telegram.org/api/stories#boosts">Boost »</a> a <a href="https://corefork.telegram.org/api/channel">channel</a>, leveling it up and granting it permission to post <a href="https://corefork.telegram.org/api/stories">stories »</a>.		<para>See <a href="https://corefork.telegram.org/method/stories.applyBoost"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.applyBoost#possible-errors">details</a>)</para></summary>
-		/// <param name="peer">The channel to boost.</param>
-		public static Task<bool> Stories_ApplyBoost(this Client client, InputPeer peer)
-			=> client.Invoke(new Stories_ApplyBoost
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/premium.getBoostsStatus"/></para></summary>
+		public static Task<Premium_BoostsStatus> Premium_GetBoostsStatus(this Client client, InputPeer peer)
+			=> client.Invoke(new Premium_GetBoostsStatus
 			{
 				peer = peer,
 			});
@@ -6804,6 +6864,25 @@ namespace TL.Methods
 		public string[] codes;
 	}
 
+	[TLDef(0xA001CC43)]
+	public class Account_UpdateColor : IMethod<bool>
+	{
+		public Flags flags;
+		public int color;
+		[IfFlag(0)] public long background_emoji_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_background_emoji_id = 0x1,
+		}
+	}
+
+	[TLDef(0xA60AB9CE)]
+	public class Account_GetDefaultBackgroundEmojis : IMethod<EmojiList>
+	{
+		public long hash;
+	}
+
 	[TLDef(0x0D91A548)]
 	public class Users_GetUsers : IMethod<UserBase[]>
 	{
@@ -7174,6 +7253,7 @@ namespace TL.Methods
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
 			update_stickersets_order = 0x8000,
+			invert_media = 0x10000,
 		}
 	}
 
@@ -7203,6 +7283,7 @@ namespace TL.Methods
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
 			update_stickersets_order = 0x8000,
+			invert_media = 0x10000,
 		}
 	}
 
@@ -7668,6 +7749,7 @@ namespace TL.Methods
 			has_message = 0x800,
 			has_media = 0x4000,
 			has_schedule_date = 0x8000,
+			invert_media = 0x10000,
 		}
 	}
 
@@ -7688,6 +7770,7 @@ namespace TL.Methods
 			has_entities = 0x8,
 			has_message = 0x800,
 			has_media = 0x4000,
+			invert_media = 0x10000,
 		}
 	}
 
@@ -7731,22 +7814,23 @@ namespace TL.Methods
 		public InputDialogPeerBase[] peers;
 	}
 
-	[TLDef(0xB4331E3F)]
+	[TLDef(0x7FF3B806)]
 	public class Messages_SaveDraft : IMethod<bool>
 	{
 		public Flags flags;
-		[IfFlag(0)] public int reply_to_msg_id;
-		[IfFlag(2)] public int top_msg_id;
+		[IfFlag(4)] public InputReplyTo reply_to;
 		public InputPeer peer;
 		public string message;
 		[IfFlag(3)] public MessageEntity[] entities;
+		[IfFlag(5)] public InputMedia media;
 
 		[Flags] public enum Flags : uint
 		{
-			has_reply_to_msg_id = 0x1,
 			no_webpage = 0x2,
-			has_top_msg_id = 0x4,
 			has_entities = 0x8,
+			has_reply_to = 0x10,
+			has_media = 0x20,
+			invert_media = 0x40,
 		}
 	}
 
@@ -8035,6 +8119,7 @@ namespace TL.Methods
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
 			update_stickersets_order = 0x8000,
+			invert_media = 0x10000,
 		}
 	}
 
@@ -9702,6 +9787,20 @@ namespace TL.Methods
 		public byte[] random_id;
 	}
 
+	[TLDef(0x621A201F)]
+	public class Channels_UpdateColor : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputChannelBase channel;
+		public int color;
+		[IfFlag(0)] public long background_emoji_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_background_emoji_id = 0x1,
+		}
+	}
+
 	[TLDef(0xAA2769ED)]
 	public class Bots_SendCustomRequest : IMethod<DataJSON>
 	{
@@ -9926,6 +10025,45 @@ namespace TL.Methods
 	[TLDef(0x9FC19EB6)]
 	public class Payments_CanPurchasePremium : IMethod<bool>
 	{
+		public InputStorePaymentPurpose purpose;
+	}
+
+	[TLDef(0x2757BA54)]
+	public class Payments_GetPremiumGiftCodeOptions : IMethod<PremiumGiftCodeOption[]>
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputPeer boost_peer;
+
+		[Flags] public enum Flags : uint
+		{
+			has_boost_peer = 0x1,
+		}
+	}
+
+	[TLDef(0x8E51B4C1)]
+	public class Payments_CheckGiftCode : IMethod<Payments_CheckedGiftCode>
+	{
+		public string slug;
+	}
+
+	[TLDef(0xF6E26854)]
+	public class Payments_ApplyGiftCode : IMethod<UpdatesBase>
+	{
+		public string slug;
+	}
+
+	[TLDef(0xF4239425)]
+	public class Payments_GetGiveawayInfo : IMethod<Payments_GiveawayInfoBase>
+	{
+		public InputPeer peer;
+		public int msg_id;
+	}
+
+	[TLDef(0x5FF58F20)]
+	public class Payments_LaunchPrepaidGiveaway : IMethod<UpdatesBase>
+	{
+		public InputPeer peer;
+		public long giveaway_id;
 		public InputStorePaymentPurpose purpose;
 	}
 
@@ -10723,28 +10861,38 @@ namespace TL.Methods
 		public bool hidden;
 	}
 
-	[TLDef(0x4C449472)]
-	public class Stories_GetBoostsStatus : IMethod<Stories_BoostsStatus>
+	[TLDef(0x60F67660)]
+	public class Premium_GetBoostsList : IMethod<Premium_BoostsList>
 	{
-		public InputPeer peer;
-	}
-
-	[TLDef(0x337EF980)]
-	public class Stories_GetBoostersList : IMethod<Stories_BoostersList>
-	{
+		public Flags flags;
 		public InputPeer peer;
 		public string offset;
 		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			gifts = 0x1,
+		}
 	}
 
-	[TLDef(0xDB05C1BD)]
-	public class Stories_CanApplyBoost : IMethod<Stories_CanApplyBoostResult>
+	[TLDef(0x0BE77B4A)]
+	public class Premium_GetMyBoosts : IMethod<Premium_MyBoosts> { }
+
+	[TLDef(0x6B7DA746)]
+	public class Premium_ApplyBoost : IMethod<Premium_MyBoosts>
 	{
+		public Flags flags;
+		[IfFlag(0)] public int[] slots;
 		public InputPeer peer;
+
+		[Flags] public enum Flags : uint
+		{
+			has_slots = 0x1,
+		}
 	}
 
-	[TLDef(0xF29D7C2B)]
-	public class Stories_ApplyBoost : IMethod<bool>
+	[TLDef(0x042F1F61)]
+	public class Premium_GetBoostsStatus : IMethod<Premium_BoostsStatus>
 	{
 		public InputPeer peer;
 	}

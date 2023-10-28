@@ -159,7 +159,7 @@ namespace WTelegram
 				{
 					flags = (Message.Flags)sent.flags | (reply_to_msg_id == 0 ? 0 : Message.Flags.has_reply_to) | (peer is InputPeerSelf ? 0 : Message.Flags.has_from_id),
 					id = sent.id, date = sent.date, message = text, entities = sent.entities, media = sent.media, ttl_period = sent.ttl_period,
-					reply_to = reply_to_msg_id == 0 ? null : new MessageReplyHeader { reply_to_msg_id = reply_to_msg_id },
+					reply_to = reply_to_msg_id == 0 ? null : new MessageReplyHeader { reply_to_msg_id = reply_to_msg_id, flags = MessageReplyHeader.Flags.has_reply_to_msg_id },
 					from_id = peer is InputPeerSelf ? null : new PeerUser { user_id = _session.UserId },
 					peer_id = InputToPeer(peer)
 				};

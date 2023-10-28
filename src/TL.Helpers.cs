@@ -296,6 +296,7 @@ namespace TL
 		correct_answers = results.results?.Where(pav => pav.flags.HasFlag(PollAnswerVoters.Flags.correct)).Select(pav => pav.option).ToArray(), 
 		flags = (results.results != null ? InputMediaPoll.Flags.has_correct_answers : 0) | (results.solution != null ? InputMediaPoll.Flags.has_solution : 0) }; }
 	partial class MessageMediaDice			{ public override InputMedia ToInputMedia() => new InputMediaDice { emoticon = emoticon }; }
+	partial class MessageMediaWebPage		{ public override InputMedia ToInputMedia() => new InputMediaWebPage { flags = (InputMediaWebPage.Flags)((int)flags & 3), url = webpage.Url }; }
 
 	partial class PhotoBase
 	{
