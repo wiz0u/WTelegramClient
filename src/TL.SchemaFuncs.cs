@@ -1224,8 +1224,9 @@ namespace TL
 				phones = phones,
 			});
 
-		/// <summary>Adds the user to the blacklist.		<para>See <a href="https://corefork.telegram.org/method/contacts.block"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.block#possible-errors">details</a>)</para></summary>
-		/// <param name="id">User ID</param>
+		/// <summary>Adds a peer to a blocklist, see <a href="https://corefork.telegram.org/api/block">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/contacts.block"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.block#possible-errors">details</a>)</para></summary>
+		/// <param name="my_stories_from">Whether the peer should be added to the story blocklist; if not set, the peer will be added to the main blocklist, see <a href="https://corefork.telegram.org/api/block">here »</a> for more info.</param>
+		/// <param name="id">Peer</param>
 		public static Task<bool> Contacts_Block(this Client client, InputPeer id, bool my_stories_from = false)
 			=> client.Invoke(new Contacts_Block
 			{
@@ -1233,8 +1234,9 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary>Deletes the user from the blacklist.		<para>See <a href="https://corefork.telegram.org/method/contacts.unblock"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.unblock#possible-errors">details</a>)</para></summary>
-		/// <param name="id">User ID</param>
+		/// <summary>Deletes a peer from a blocklist, see <a href="https://corefork.telegram.org/api/block">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/contacts.unblock"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.unblock#possible-errors">details</a>)</para></summary>
+		/// <param name="my_stories_from">Whether the peer should be removed from the story blocklist; if not set, the peer will be removed from the main blocklist, see <a href="https://corefork.telegram.org/api/block">here »</a> for more info.</param>
+		/// <param name="id">Peer</param>
 		public static Task<bool> Contacts_Unblock(this Client client, InputPeer id, bool my_stories_from = false)
 			=> client.Invoke(new Contacts_Unblock
 			{
@@ -1243,6 +1245,7 @@ namespace TL
 			});
 
 		/// <summary>Returns the list of blocked users.		<para>See <a href="https://corefork.telegram.org/method/contacts.getBlocked"/></para></summary>
+		/// <param name="my_stories_from">Whether to fetch the story blocklist; if not set, will fetch the main blocklist. See <a href="https://corefork.telegram.org/api/block">here »</a> for differences between the two.</param>
 		/// <param name="offset">The number of list elements to be skipped</param>
 		/// <param name="limit">The number of list elements to be returned</param>
 		public static Task<Contacts_Blocked> Contacts_GetBlocked(this Client client, int offset = default, int limit = int.MaxValue, bool my_stories_from = false)
@@ -1339,7 +1342,7 @@ namespace TL
 				phone = phone,
 			});
 
-		/// <summary>If the <see cref="PeerSettings"/> of a new user allow us to add them as contact, add that user as contact		<para>See <a href="https://corefork.telegram.org/method/contacts.acceptContact"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.acceptContact#possible-errors">details</a>)</para></summary>
+		/// <summary>If the <a href="https://corefork.telegram.org/api/action-bar#add-contact">add contact action bar is active</a>, add that user as contact		<para>See <a href="https://corefork.telegram.org/method/contacts.acceptContact"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.acceptContact#possible-errors">details</a>)</para></summary>
 		/// <param name="id">The user to add as contact</param>
 		public static Task<UpdatesBase> Contacts_AcceptContact(this Client client, InputUserBase id)
 			=> client.Invoke(new Contacts_AcceptContact
@@ -1347,7 +1350,7 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary>Get contacts near you		<para>See <a href="https://corefork.telegram.org/method/contacts.getLocated"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/contacts.getLocated#possible-errors">details</a>)</para></summary>
+		/// <summary>Get users and geochats near you, see <a href="https://corefork.telegram.org/api/nearby">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/contacts.getLocated"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/contacts.getLocated#possible-errors">details</a>)</para></summary>
 		/// <param name="background">While the geolocation of the current user is public, clients should update it in the background every half-an-hour or so, while setting this flag. <br/>Do this only if the new location is more than 1 KM away from the previous one, or if the previous location is unknown.</param>
 		/// <param name="geo_point">Geolocation</param>
 		/// <param name="self_expires">If set, the geolocation of the current user will be public for the specified number of seconds; pass 0x7fffffff to disable expiry, 0 to make the current geolocation private; if the flag isn't set, no changes will be applied.</param>
@@ -1393,14 +1396,17 @@ namespace TL
 				token = token,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.editCloseFriends"/></para></summary>
+		/// <summary>Edit the <a href="https://corefork.telegram.org/api/privacy">close friends list, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/contacts.editCloseFriends"/></para></summary>
+		/// <param name="id">Full list of user IDs of close friends, see <a href="https://corefork.telegram.org/api/privacy">here</a> for more info.</param>
 		public static Task<bool> Contacts_EditCloseFriends(this Client client, params long[] id)
 			=> client.Invoke(new Contacts_EditCloseFriends
 			{
 				id = id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.setBlocked"/></para></summary>
+		/// <summary>Replace the contents of an entire <a href="https://corefork.telegram.org/api/contacts">blocklist, see here for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/contacts.setBlocked"/></para></summary>
+		/// <param name="my_stories_from">Whether to edit the story blocklist; if not set, will edit the main blocklist. See <a href="https://corefork.telegram.org/api/block">here »</a> for differences between the two.</param>
+		/// <param name="id">Full content of the blocklist.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<bool> Contacts_SetBlocked(this Client client, InputPeer[] id, int limit = int.MaxValue, bool my_stories_from = false)
 			=> client.Invoke(new Contacts_SetBlocked
@@ -1559,6 +1565,7 @@ namespace TL
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">The destination where the message will be sent</param>
+		/// <param name="reply_to">If set, indicates that the message should be sent in reply to the specified message or story.</param>
 		/// <param name="message">The message</param>
 		/// <param name="random_id">Unique client message ID required to prevent message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="reply_markup">Reply markup for sending bot buttons</param>
@@ -1586,6 +1593,7 @@ namespace TL
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">Destination</param>
+		/// <param name="reply_to">If set, indicates that the message should be sent in reply to the specified message or story.</param>
 		/// <param name="media">Attached media</param>
 		/// <param name="message">Caption</param>
 		/// <param name="random_id">Random ID to avoid resending the same message <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
@@ -2119,6 +2127,7 @@ namespace TL
 		/// <param name="clear_draft">Whether to clear the <a href="https://corefork.telegram.org/api/drafts">draft</a></param>
 		/// <param name="hide_via">Whether to hide the <c>via @botname</c> in the resulting message (only for bot usernames encountered in the <see cref="Config"/>)</param>
 		/// <param name="peer">Destination</param>
+		/// <param name="reply_to">If set, indicates that the message should be sent in reply to the specified message or story.</param>
 		/// <param name="random_id">Random ID to avoid resending the same query <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="query_id">Query ID from <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see></param>
 		/// <param name="id">Result ID from <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see></param>
@@ -2472,6 +2481,7 @@ namespace TL
 
 		/// <summary>Notify the other user in a private chat that a screenshot of the chat was taken		<para>See <a href="https://corefork.telegram.org/method/messages.sendScreenshotNotification"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendScreenshotNotification#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Other user</param>
+		/// <param name="reply_to">Indicates the message that was screenshotted (the specified message ID can also be <c>0</c> to avoid indicating any specific message).</param>
 		/// <param name="random_id">Random ID to avoid message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		public static Task<UpdatesBase> Messages_SendScreenshotNotification(this Client client, InputPeer peer, InputReplyTo reply_to, long random_id)
 			=> client.Invoke(new Messages_SendScreenshotNotification
@@ -2551,6 +2561,7 @@ namespace TL
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="peer">The destination chat</param>
+		/// <param name="reply_to">If set, indicates that the message should be sent in reply to the specified message or story.</param>
 		/// <param name="multi_media">The medias to send: note that they must be separately uploaded using <see cref="Messages_UploadMedia">Messages_UploadMedia</see> first, using raw <c>inputMediaUploaded*</c> constructors is not supported.</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
@@ -2761,7 +2772,7 @@ namespace TL
 				url = url,
 			});
 
-		/// <summary>Should be called after the user hides the report spam/add as contact bar of a new chat, effectively prevents the user from executing the actions specified in the <see cref="PeerSettings">peer's settings</see>.		<para>See <a href="https://corefork.telegram.org/method/messages.hidePeerSettingsBar"/></para></summary>
+		/// <summary>Should be called after the user hides the <a href="https://corefork.telegram.org/api/action-bar">report spam/add as contact bar</a> of a new chat, effectively prevents the user from executing the actions specified in the <a href="https://corefork.telegram.org/api/action-bar">action bar »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.hidePeerSettingsBar"/></para></summary>
 		/// <param name="peer">Peer</param>
 		public static Task<bool> Messages_HidePeerSettingsBar(this Client client, InputPeer peer)
 			=> client.Invoke(new Messages_HidePeerSettingsBar
@@ -3371,6 +3382,7 @@ namespace TL
 		/// <param name="start_param">If the web app was opened from the attachment menu using a <a href="https://corefork.telegram.org/api/links#bot-attachment-menu-links">attachment menu deep link</a>, <c>start_param</c> should contain the <c>data</c> from the <c>startattach</c> parameter.</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
+		/// <param name="reply_to">If set, indicates that the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> should be sent in reply to the specified message or story.</param>
 		/// <param name="send_as">Open the web app as the specified peer, sending the resulting the message as the specified peer.</param>
 		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, string platform, InputReplyTo reply_to = null, string url = null, DataJSON theme_params = null, string start_param = null, InputPeer send_as = null, bool from_bot_menu = false, bool silent = false)
 			=> client.Invoke(new Messages_RequestWebView
@@ -3391,6 +3403,7 @@ namespace TL
 		/// <param name="peer">Dialog where the web app was opened.</param>
 		/// <param name="bot">Bot that owns the <a href="https://corefork.telegram.org/api/bots/webapps">web app</a></param>
 		/// <param name="query_id">Web app interaction ID obtained from <see cref="Messages_RequestWebView">Messages_RequestWebView</see></param>
+		/// <param name="reply_to">If set, indicates that the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> should be sent in reply to the specified message or story.</param>
 		/// <param name="send_as">Open the web app as the specified peer</param>
 		public static Task<bool> Messages_ProlongWebView(this Client client, InputPeer peer, InputUserBase bot, long query_id, InputReplyTo reply_to = null, InputPeer send_as = null, bool silent = false)
 			=> client.Invoke(new Messages_ProlongWebView
@@ -4142,8 +4155,8 @@ namespace TL
 		/// <param name="forum">Whether to create a <a href="https://corefork.telegram.org/api/forum">forum</a></param>
 		/// <param name="title">Channel title</param>
 		/// <param name="about">Channel description</param>
-		/// <param name="geo_point">Geogroup location</param>
-		/// <param name="address">Geogroup address</param>
+		/// <param name="geo_point">Geogroup location, see <a href="https://corefork.telegram.org/api/nearby">here »</a> for more info on geogroups.</param>
+		/// <param name="address">Geogroup address, see <a href="https://corefork.telegram.org/api/nearby">here »</a> for more info on geogroups.</param>
 		/// <param name="ttl_period">Time-to-live of all messages that will be sent in the supergroup: once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well. You can use <see cref="Messages_SetDefaultHistoryTTL">Messages_SetDefaultHistoryTTL</see> to edit this value later.</param>
 		public static Task<UpdatesBase> Channels_CreateChannel(this Client client, string title, string about, InputGeoPoint geo_point = null, string address = null, int? ttl_period = null, bool broadcast = false, bool megagroup = false, bool for_import = false, bool forum = false)
 			=> client.Invoke(new Channels_CreateChannel
@@ -4387,7 +4400,7 @@ namespace TL
 				password = password,
 			});
 
-		/// <summary>Edit location of geogroup		<para>See <a href="https://corefork.telegram.org/method/channels.editLocation"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.editLocation#possible-errors">details</a>)</para></summary>
+		/// <summary>Edit location of geogroup, see <a href="https://corefork.telegram.org/api/nearby">here »</a> for more info on geogroups.		<para>See <a href="https://corefork.telegram.org/method/channels.editLocation"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.editLocation#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Geogroup</a></param>
 		/// <param name="geo_point">New geolocation</param>
 		/// <param name="address">Address string</param>
@@ -5863,7 +5876,9 @@ namespace TL
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.togglePeerStoriesHidden"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.togglePeerStoriesHidden#possible-errors">details</a>)</para></summary>
+		/// <summary>Hide the active stories of a user, preventing them from being displayed on the action bar on the homescreen, see <a href="https://corefork.telegram.org/api/stories#hiding-stories-of-other-users">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/stories.togglePeerStoriesHidden"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.togglePeerStoriesHidden#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer whose stories should be (un)hidden.</param>
+		/// <param name="hidden">Whether to hide or unhide stories.</param>
 		public static Task<bool> Stories_TogglePeerStoriesHidden(this Client client, InputPeer peer, bool hidden)
 			=> client.Invoke(new Stories_TogglePeerStoriesHidden
 			{

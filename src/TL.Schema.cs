@@ -827,6 +827,7 @@ namespace TL
 			/// <summary>Whether we can edit the profile picture, name, about text and description of this bot because we own it.</summary>
 			bot_can_edit = 0x2,
 			close_friend = 0x4,
+			/// <summary>Whether we have <a href="https://corefork.telegram.org/api/stories#hiding-stories-of-other-users">hidden »</a> all active stories of this user.</summary>
 			stories_hidden = 0x8,
 			stories_unavailable = 0x10,
 			/// <summary>Field <see cref="stories_max_id"/> has a value</summary>
@@ -2792,7 +2793,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>List of actions that are possible when interacting with this user, to be shown as suggested actions in the chat bar		<para>See <a href="https://corefork.telegram.org/constructor/peerSettings"/></para></summary>
+	/// <summary>List of actions that are possible when interacting with this user, to be shown as suggested actions in the <a href="https://corefork.telegram.org/api/action-bar">chat action bar »</a>, see <a href="https://corefork.telegram.org/api/action-bar">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/peerSettings"/></para></summary>
 	[TLDef(0xA518110D)]
 	public class PeerSettings : IObject
 	{
@@ -3639,7 +3640,7 @@ namespace TL
 			has_pts = 0x1,
 		}
 	}
-	/// <summary>A new channel is available		<para>See <a href="https://corefork.telegram.org/constructor/updateChannel"/></para></summary>
+	/// <summary>A new channel or supergroup is available, or info about an existing channel has changed and must be refeteched.		<para>See <a href="https://corefork.telegram.org/constructor/updateChannel"/></para></summary>
 	[TLDef(0x635B4C09)]
 	public class UpdateChannel : Update
 	{
@@ -4249,19 +4250,20 @@ namespace TL
 		/// <summary>Message ID of latest read outgoing message for this <a href="https://corefork.telegram.org/api/threads">thread</a></summary>
 		public int read_max_id;
 	}
-	/// <summary>A peer was blocked		<para>See <a href="https://corefork.telegram.org/constructor/updatePeerBlocked"/></para></summary>
+	/// <summary>We blocked a peer, see <a href="https://corefork.telegram.org/api/block">here »</a> for more info on blocklists.		<para>See <a href="https://corefork.telegram.org/constructor/updatePeerBlocked"/></para></summary>
 	[TLDef(0xEBE07752)]
 	public class UpdatePeerBlocked : Update
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>The blocked peer</summary>
+		/// <summary>The (un)blocked peer</summary>
 		public Peer peer_id;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the peer was blocked or unblocked</summary>
 			blocked = 0x1,
+			/// <summary>Whether the peer was added/removed to/from the story blocklist; if not set, this update affects the main blocklist, see <a href="https://corefork.telegram.org/api/block">here »</a> for more info.</summary>
 			blocked_my_stories_from = 0x2,
 		}
 	}
@@ -5913,7 +5915,7 @@ namespace TL
 	[TLDef(0x2F453E49)]
 	public class InputPrivacyValueAllowCloseFriends : InputPrivacyRule { }
 
-	/// <summary>Privacy <strong>rules</strong> together with <a href="https://corefork.telegram.org/api/privacy#privacy-rules">privacy</a> indicate <em>what</em> can or can't someone do and are specified by a <see cref="PrivacyKey"/> constructor, and its input counterpart <see cref="InputPrivacyKey"/>.		<para>See <a href="https://corefork.telegram.org/type/PrivacyRule"/></para>		<para>Derived classes: <see cref="PrivacyValueAllowContacts"/>, <see cref="PrivacyValueAllowAll"/>, <see cref="PrivacyValueAllowUsers"/>, <see cref="PrivacyValueDisallowContacts"/>, <see cref="PrivacyValueDisallowAll"/>, <see cref="PrivacyValueDisallowUsers"/>, <see cref="PrivacyValueAllowChatParticipants"/>, <see cref="PrivacyValueDisallowChatParticipants"/>, <see cref="PrivacyValueAllowCloseFriends"/></para></summary>
+	/// <summary>Privacy <strong>rules</strong> together with <a href="https://corefork.telegram.org/api/privacy#privacy-keys">privacy keys</a> indicate <em>what</em> can or can't someone do and are specified by a <see cref="PrivacyRule"/> constructor, and its input counterpart <see cref="InputPrivacyRule"/>.		<para>See <a href="https://corefork.telegram.org/type/PrivacyRule"/></para>		<para>Derived classes: <see cref="PrivacyValueAllowContacts"/>, <see cref="PrivacyValueAllowAll"/>, <see cref="PrivacyValueAllowUsers"/>, <see cref="PrivacyValueDisallowContacts"/>, <see cref="PrivacyValueDisallowAll"/>, <see cref="PrivacyValueDisallowUsers"/>, <see cref="PrivacyValueAllowChatParticipants"/>, <see cref="PrivacyValueDisallowChatParticipants"/>, <see cref="PrivacyValueAllowCloseFriends"/></para></summary>
 	public abstract class PrivacyRule : IObject { }
 	/// <summary>Allow all contacts		<para>See <a href="https://corefork.telegram.org/constructor/privacyValueAllowContacts"/></para></summary>
 	[TLDef(0xFFFE1BAC)]
@@ -15276,15 +15278,17 @@ namespace TL
 		public Dictionary<long, User> users;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputReplyTo"/></para>		<para>Derived classes: <see cref="InputReplyToMessage"/>, <see cref="InputReplyToStory"/></para></summary>
+	/// <summary>Contains info about a message or story to reply to.		<para>See <a href="https://corefork.telegram.org/type/InputReplyTo"/></para>		<para>Derived classes: <see cref="InputReplyToMessage"/>, <see cref="InputReplyToStory"/></para></summary>
 	public abstract class InputReplyTo : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputReplyToMessage"/></para></summary>
+	/// <summary>Reply to a message.		<para>See <a href="https://corefork.telegram.org/constructor/inputReplyToMessage"/></para></summary>
 	[TLDef(0x9C5386E4)]
 	public class InputReplyToMessage : InputReplyTo
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>The message ID to reply to.</summary>
 		public int reply_to_msg_id;
+		/// <summary>This field must contain the topic ID <strong>only</strong> when replying to messages in forum topics different from the "General" topic (i.e. <c>reply_to_msg_id</c> is set and <c>reply_to_msg_id != topicID</c> and <c>topicID != 1</c>).  <br/>If the replied-to message is deleted before the method finishes execution, the value in this field will be used to send the message to the correct topic, instead of the "General" topic.</summary>
 		[IfFlag(0)] public int top_msg_id;
 
 		[Flags] public enum Flags : uint
@@ -15293,11 +15297,13 @@ namespace TL
 			has_top_msg_id = 0x1,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputReplyToStory"/></para></summary>
+	/// <summary>Reply to a story.		<para>See <a href="https://corefork.telegram.org/constructor/inputReplyToStory"/></para></summary>
 	[TLDef(0x15B0F283)]
 	public class InputReplyToStory : InputReplyTo
 	{
+		/// <summary>ID of the user that posted the story.</summary>
 		public InputUserBase user_id;
+		/// <summary>ID of the story to reply to.</summary>
 		public int story_id;
 	}
 

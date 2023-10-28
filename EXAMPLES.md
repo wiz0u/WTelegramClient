@@ -454,8 +454,8 @@ finally
 Many API calls return a structure with a `users` and a `chats` field at the root of the structure.
 This is also the case for updates passed to `client.OnUpdate`.
 
-These two dictionaries give details about the various users/chats that will be typically referenced in subobjects deeper in the structure,
-typically in the form of a `Peer` object or a `user_id` field.
+These two dictionaries give details *(including access hash)* about the various users/chats that will be typically referenced in subobjects deeper in the structure,
+typically in the form of a `Peer` object or a `user_id`/`chat_id` field.
 
 In such case, the root structure inherits the `IPeerResolver` interface, and you can use the `UserOrChat(peer)` method to resolve a `Peer`
 into either a `User` or `ChatBase` (`Chat`,`Channel`...) description structure *(depending on the kind of peer it was describing)*
