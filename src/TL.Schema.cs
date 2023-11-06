@@ -4777,6 +4777,14 @@ namespace TL
 		public int story_id;
 		public Reaction reaction;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBotChatBoost"/></para></summary>
+	[TLDef(0x904DD49C)]
+	public class UpdateBotChatBoost : Update
+	{
+		public Peer peer;
+		public Boost boost;
+		public int qts;
+	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]

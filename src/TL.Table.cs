@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 166;					// fetched 28/10/2023 21:16:53
+		public const int Version = 166;					// fetched 06/11/2023 22:51:44
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -384,6 +384,7 @@ namespace TL
 			[0x1BF335B9] = typeof(UpdateStoryID),
 			[0x2C084DC1] = typeof(UpdateStoriesStealthMode),
 			[0x7D627683] = typeof(UpdateSentStoryReaction),
+			[0x904DD49C] = typeof(UpdateBotChatBoost),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),

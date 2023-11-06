@@ -5981,6 +5981,14 @@ namespace TL
 			{
 				peer = peer,
 			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/premium.getUserBoosts"/></para></summary>
+		public static Task<Premium_BoostsList> Premium_GetUserBoosts(this Client client, InputPeer peer, InputUserBase user_id)
+			=> client.Invoke(new Premium_GetUserBoosts
+			{
+				peer = peer,
+				user_id = user_id,
+			});
 	}
 }
 
@@ -10895,5 +10903,12 @@ namespace TL.Methods
 	public class Premium_GetBoostsStatus : IMethod<Premium_BoostsStatus>
 	{
 		public InputPeer peer;
+	}
+
+	[TLDef(0x39854D1F)]
+	public class Premium_GetUserBoosts : IMethod<Premium_BoostsList>
+	{
+		public InputPeer peer;
+		public InputUserBase user_id;
 	}
 }
