@@ -143,6 +143,7 @@ namespace WTelegram
 			"lang_code" => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
 			"user_id" => "-1",
 			"verification_code" or "email_verification_code" or "password" => AskConfig(what),
+			"init_params" => "{}",
 			_ => null // api_id api_hash phone_number... it's up to you to reply to these correctly
 		};
 
@@ -857,9 +858,11 @@ namespace WTelegram
 					await CreateAuthorizationKey(this, _dcSession);
 
 				var keepAliveTask = KeepAlive(_cts.Token);
+				var initParams = JSONValue.FromJsonElement(System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(Config("init_params")));
 				TLConfig = await this.InvokeWithLayer(Layer.Version,
 					new TL.Methods.InitConnection<Config>
 					{
+						flags = TL.Methods.InitConnection<Config>.Flags.has_params,
 						api_id = _session.ApiId,
 						device_model = Config("device_model"),
 						system_version = Config("system_version"),
@@ -867,6 +870,7 @@ namespace WTelegram
 						system_lang_code = Config("system_lang_code"),
 						lang_pack = Config("lang_pack"),
 						lang_code = Config("lang_code"),
+						params_ = initParams,
 						query = new TL.Methods.Help_GetConfig()
 					});
 				_session.DcOptions = TLConfig.dc_options;

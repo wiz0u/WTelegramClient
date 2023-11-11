@@ -639,7 +639,19 @@ namespace TL
 	}
 
 	partial class JsonObjectValue { public override string ToString() => $"{HttpUtility.JavaScriptStringEncode(key, true)}:{value}"; }
-	partial class JSONValue		{ public abstract object ToNative(); }
+	partial class JSONValue		{ public abstract object ToNative();
+		private static JsonObjectValue FromJsonProperty(System.Text.Json.JsonProperty p) => new() { key = p.Name, value = FromJsonElement(p.Value) };
+		public static JSONValue FromJsonElement(System.Text.Json.JsonElement elem) => elem.ValueKind switch
+		{
+			System.Text.Json.JsonValueKind.True or
+			System.Text.Json.JsonValueKind.False => new JsonBool { value = elem.GetBoolean() },
+			System.Text.Json.JsonValueKind.Object => new JsonObject { value = elem.EnumerateObject().Select(FromJsonProperty).ToArray() },
+			System.Text.Json.JsonValueKind.Array => new JsonArray { value = elem.EnumerateArray().Select(FromJsonElement).ToArray() },
+			System.Text.Json.JsonValueKind.String => new JsonString { value = elem.GetString() },
+			System.Text.Json.JsonValueKind.Number => new JsonNumber { value = elem.GetDouble() },
+			_ => new JsonNull(),
+		};
+	}
 	partial class JsonNull		{ public override object ToNative() => null;  public override string ToString() => "null"; }
 	partial class JsonBool		{ public override object ToNative() => value; public override string ToString() => value ? "true" : "false"; }
 	partial class JsonNumber	{ public override object ToNative() => value; public override string ToString() => value.ToString(CultureInfo.InvariantCulture); }
