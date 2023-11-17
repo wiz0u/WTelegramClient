@@ -133,6 +133,7 @@ namespace WTelegram
 			return SendMessageAsync(peer, caption, new InputMediaUploadedDocument(mediaFile, mimeType), reply_to_msg_id, entities, schedule_date);
 		}
 
+		public enum LinkPreview { Disabled = 0, BelowText = 1, AboveText = 2 };
 		/// <summary>Helper function to send a text or media message easily</summary>
 		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>
 		/// <param name="text">The plain text of the message (or media caption)</param>
@@ -140,14 +141,15 @@ namespace WTelegram
 		/// <param name="reply_to_msg_id">Your message is a reply to an existing message with this ID, in the same chat</param>
 		/// <param name="entities">Text formatting entities. You can use <see cref="HtmlText.HtmlToEntities">HtmlToEntities</see> or <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
 		/// <param name="schedule_date">UTC timestamp when the message should be sent</param>
-		/// <param name="disable_preview">Should website/media preview be shown or not, for URLs in your message</param>
+		/// <param name="preview">Should website/media preview be shown below, above or not, for URL links in your message</param>
 		/// <returns>The transmitted message as confirmed by Telegram</returns>
-		public async Task<Message> SendMessageAsync(InputPeer peer, string text, InputMedia media = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, bool disable_preview = false)
+		public async Task<Message> SendMessageAsync(InputPeer peer, string text, InputMedia media = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, LinkPreview preview = LinkPreview.BelowText)
 		{
 			UpdatesBase updates;
 			long random_id = Helpers.RandomLong();
 			if (media == null)
-				updates = await this.Messages_SendMessage(peer, text, random_id, no_webpage: disable_preview, entities: entities,
+				updates = await this.Messages_SendMessage(peer, text, random_id, entities: entities,
+					no_webpage: preview == LinkPreview.Disabled, invert_media: preview == LinkPreview.AboveText,
 					reply_to: reply_to_msg_id == 0 ? null : new InputReplyToMessage { reply_to_msg_id = reply_to_msg_id }, schedule_date: schedule_date == default ? null : schedule_date);
 			else
 				updates = await this.Messages_SendMedia(peer, media, text, random_id, entities: entities,
