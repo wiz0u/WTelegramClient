@@ -56,6 +56,7 @@ namespace TL
 		public static MessageEntity[] MarkdownToEntities(this Client _, ref string text, bool premium = false, IReadOnlyDictionary<long, User> users = null)
 		{
 			var entities = new List<MessageEntity>();
+			MessageEntityBlockquote lastBlockQuote = null;
 			var sb = new StringBuilder(text);
 			for (int offset = 0; offset < sb.Length;)
 			{
@@ -100,6 +101,16 @@ namespace TL
 						}
 						else
 							ProcessEntity<MessageEntityCode>();
+						break;
+					case '>' when offset == 0 || sb[offset - 1] == '\n':
+						sb.Remove(offset, 1);
+						if (lastBlockQuote is null || lastBlockQuote.length < offset - lastBlockQuote.offset)
+							entities.Add(lastBlockQuote = new MessageEntityBlockquote { offset = offset, length = -1 });
+						else
+							lastBlockQuote.length = -1;
+						break;
+					case '\n' when lastBlockQuote is { length: -1 }:
+						lastBlockQuote.length = ++offset - lastBlockQuote.offset;
 						break;
 					case '!' when offset + 1 < sb.Length && sb[offset + 1] == '[':
 						sb.Remove(offset, 1);
@@ -146,6 +157,8 @@ namespace TL
 					sb.Remove(offset, 1);
 				}
 			}
+			if (lastBlockQuote is { length: -1 })
+				lastBlockQuote.length = sb.Length - lastBlockQuote.offset;
 			text = sb.ToString();
 			return entities.Count == 0 ? null : entities.ToArray();
 		}
@@ -163,16 +176,20 @@ namespace TL
 			var sb = new StringBuilder(message);
 			int entityIndex = 0;
 			var nextEntity = entities[entityIndex];
+			bool inBlockQuote = false;
+			char lastCh = '\0';
 			for (int offset = 0, i = 0; ; offset++, i++)
 			{
 				while (closings.Count != 0 && offset == closings[0].offset)
 				{
 					var md = closings[0].md;
-					if (i > 0 && md[0] == '_' && sb[i - 1] == '_') md = '\r' + md;
-					sb.Insert(i, md); i += md.Length;
 					closings.RemoveAt(0);
+					if (i > 0 && md[0] == '_' && sb[i - 1] == '_') md = '\r' + md;
+					if (md[0] == '>') { inBlockQuote = false; if (lastCh != '\n' && i < sb.Length && sb[i] != '\n') md = "\n"; else continue; }
+					sb.Insert(i, md); i += md.Length;
 				}
 				if (i == sb.Length) break;
+				if (lastCh == '\n' && inBlockQuote) sb.Insert(i++, '>');
 				for (; offset == nextEntity?.offset; nextEntity = ++entityIndex < entities.Length ? entities[entityIndex] : null)
 				{
 					if (EntityToMD.TryGetValue(nextEntity.GetType(), out var md))
@@ -190,6 +207,8 @@ namespace TL
 								if (premium) closing.md = $"](tg://emoji?id={mecu.document_id})";
 								else continue;
 						}
+						else if (md[0] == '>')
+						{ inBlockQuote = true; if (lastCh is not '\n' and not '\0') md = "\n>"; }
 						else if (nextEntity is MessageEntityPre mep)
 							md = $"```{mep.language}\n";
 						int index = ~closings.BinarySearch(closing, Comparer<(int, string)>.Create((x, y) => x.Item1.CompareTo(y.Item1) | 1));
@@ -198,11 +217,11 @@ namespace TL
 						sb.Insert(i, md); i += md.Length;
 					}
 				}
-				switch (sb[i])
+				switch (lastCh = sb[i])
 				{
 					case '_': case '*': case '~': case '`': case '#': case '+': case '-': case '=': case '.': case '!':
 					case '[': case ']': case '(': case ')': case '{': case '}': case '>': case '|': case '\\':
-						sb.Insert(i, '\\'); i++;
+						sb.Insert(i++, '\\');
 						break;
 				}
 			}
@@ -222,6 +241,7 @@ namespace TL
 			[typeof(MessageEntityStrike)] = "~",
 			[typeof(MessageEntitySpoiler)] = "||",
 			[typeof(MessageEntityCustomEmoji)] = "![",
+			[typeof(MessageEntityBlockquote)] = ">",
 		};
 
 		/// <summary>Insert backslashes in front of Markdown reserved characters</summary>
@@ -295,6 +315,7 @@ namespace TL
 						case "code": ProcessEntity<MessageEntityCode>(); break;
 						case "pre": ProcessEntity<MessageEntityPre>(); break;
 						case "tg-emoji" when closing: ProcessEntity<MessageEntityCustomEmoji>(); break;
+						case "blockquote": ProcessEntity<MessageEntityBlockquote>(); break;
 						default:
 							if (closing)
 							{
@@ -412,6 +433,7 @@ namespace TL
 			[typeof(MessageEntityStrike)] = "s",
 			[typeof(MessageEntitySpoiler)] = "tg-spoiler",
 			[typeof(MessageEntityCustomEmoji)] = "tg-emoji",
+			[typeof(MessageEntityBlockquote)] = "blockquote",
 		};
 
 		/// <summary>Replace special HTML characters with their &amp;xx; equivalent</summary>

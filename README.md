@@ -168,7 +168,10 @@ See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
-The other configuration items that you can provide include: **session_pathname, email, email_verification_code, session_key, server_address, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, firebase, user_id, bot_token**
+To [prevent getting banned](https://wiz0u.github.io/WTelegramClient/FAQ#prevent-ban) during dev, you can connect to [test servers](https://docs.pyrogram.org/topics/test-servers), by adding this line in your Config callback:  
+`case "server_address": return "149.154.167.40:443"; // test DC`
+
+The other configuration items that you can provide include: **session_pathname, email, email_verification_code, session_key, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, firebase, user_id, bot_token**
 
 Optional API parameters have a default value of `null` when unset. Passing `null` for a required string/array is the same as *empty* (0-length).
 Required API parameters/fields can sometimes be set to 0 or `null` when unused (check API documentation or experiment).
