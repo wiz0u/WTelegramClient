@@ -107,6 +107,15 @@ namespace TL
 			mime_type = mimeType;
 			if (inputFile.Name is string filename) attributes = new[] { new DocumentAttributeFilename { file_name = filename } };
 		}
+		public InputMediaUploadedDocument(InputFileBase inputFile, string mimeType, params DocumentAttribute[] attribs)
+		{
+			file = inputFile;
+			mime_type = mimeType;
+			if (inputFile.Name is string filename && !attribs.Any(a => a is DocumentAttributeFilename))
+				attributes = attribs.Append(new DocumentAttributeFilename { file_name = filename }).ToArray();
+			else
+				attributes = attribs;
+		}
 	}
 
 	partial class InputPhoto

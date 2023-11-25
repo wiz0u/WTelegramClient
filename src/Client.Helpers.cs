@@ -110,27 +110,30 @@ namespace WTelegram
 		/// <summary>Helper function to send a media message more easily</summary>
 		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>
 		/// <param name="caption">Caption for the media <i>(in plain text)</i> or <see langword="null"/></param>
-		/// <param name="mediaFile">Media file already uploaded to TG <i>(see <see cref="UploadFileAsync">UploadFileAsync</see>)</i></param>
-		/// <param name="mimeType"><see langword="null"/> for automatic detection, <c>"photo"</c> for an inline photo, or a MIME type to send as a document</param>
+		/// <param name="uploadedFile">Media file already uploaded to TG <i>(see <see cref="UploadFileAsync">UploadFileAsync</see>)</i></param>
+		/// <param name="mimeType"><see langword="null"/> for automatic detection, <c>"photo"</c> for an inline photo, <c>"video"</c> for a streamable MP4 video, or a MIME type to send as a document</param>
 		/// <param name="reply_to_msg_id">Your message is a reply to an existing message with this ID, in the same chat</param>
 		/// <param name="entities">Text formatting entities for the caption. You can use <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
 		/// <param name="schedule_date">UTC timestamp when the message should be sent</param>
 		/// <returns>The transmitted message confirmed by Telegram</returns>
-		public Task<Message> SendMediaAsync(InputPeer peer, string caption, InputFileBase mediaFile, string mimeType = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
+		public Task<Message> SendMediaAsync(InputPeer peer, string caption, InputFileBase uploadedFile, string mimeType = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
 		{
-			mimeType ??= Path.GetExtension(mediaFile.Name)?.ToLowerInvariant() switch
+			mimeType ??= Path.GetExtension(uploadedFile.Name)?.ToLowerInvariant() switch
 			{
 				".jpg" or ".jpeg" or ".png" or ".bmp" => "photo",
+				".mp4" => "video",
 				".gif" => "image/gif",
 				".webp" => "image/webp",
-				".mp4" => "video/mp4",
 				".mp3" => "audio/mpeg",
 				".wav" => "audio/x-wav",
 				_ => "", // send as generic document with undefined MIME type
 			};
 			if (mimeType == "photo")
-				return SendMessageAsync(peer, caption, new InputMediaUploadedPhoto { file = mediaFile }, reply_to_msg_id, entities, schedule_date);
-			return SendMessageAsync(peer, caption, new InputMediaUploadedDocument(mediaFile, mimeType), reply_to_msg_id, entities, schedule_date);
+				return SendMessageAsync(peer, caption, new InputMediaUploadedPhoto { file = uploadedFile }, reply_to_msg_id, entities, schedule_date);
+			else if (mimeType == "video")
+				return SendMessageAsync(peer, caption, new InputMediaUploadedDocument(uploadedFile, "video/mp4", new DocumentAttributeVideo { flags = DocumentAttributeVideo.Flags.supports_streaming }), reply_to_msg_id, entities, schedule_date);
+			else
+				return SendMessageAsync(peer, caption, new InputMediaUploadedDocument(uploadedFile, mimeType), reply_to_msg_id, entities, schedule_date);
 		}
 
 		public enum LinkPreview { Disabled = 0, BelowText = 1, AboveText = 2 };
@@ -184,6 +187,7 @@ namespace WTelegram
 		/// <param name="reply_to_msg_id">Your message is a reply to an existing message with this ID, in the same chat</param>
 		/// <param name="entities">Text formatting entities for the caption. You can use <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
 		/// <param name="schedule_date">UTC timestamp when the message should be sent</param>
+		/// <param name="videoUrlAsFile">Any <see cref="InputMediaDocumentExternal"/> URL pointing to a video should be considered as non-streamable</param>
 		/// <returns>The last of the media group messages, confirmed by Telegram</returns>
 		/// <remarks>
 		/// * The caption/entities are set on the last media<br/>
@@ -191,7 +195,7 @@ namespace WTelegram
 		///   WTelegramClient proxy settings don't apply to HttpClient<br/>
 		/// * You may run into errors if you mix, in the same album, photos and file documents having no thumbnails/video attributes
 		/// </remarks>
-		public async Task<Message[]> SendAlbumAsync(InputPeer peer, ICollection<InputMedia> medias, string caption = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default)
+		public async Task<Message[]> SendAlbumAsync(InputPeer peer, ICollection<InputMedia> medias, string caption = null, int reply_to_msg_id = 0, MessageEntity[] entities = null, DateTime schedule_date = default, bool videoUrlAsFile = false)
 		{
 			System.Net.Http.HttpClient httpClient = null;
 			int i = 0, length = medias.Count;
@@ -215,7 +219,10 @@ namespace WTelegram
 					case InputMediaDocumentExternal imde:
 						string mimeType = null;
 						var inputFile = await UploadFromUrl(imde.url);
-						ism.media = new InputMediaUploadedDocument(inputFile, mimeType);
+						if (mimeType?.StartsWith("video/") == true)
+							ism.media = new InputMediaUploadedDocument(inputFile, mimeType, new DocumentAttributeVideo { flags = DocumentAttributeVideo.Flags.supports_streaming });
+						else
+							ism.media = new InputMediaUploadedDocument(inputFile, mimeType);
 						goto retry;
 					case InputMediaPhotoExternal impe:
 						inputFile = await UploadFromUrl(impe.url);
@@ -226,18 +233,14 @@ namespace WTelegram
 						{
 							var filename = Path.GetFileName(new Uri(url).LocalPath);
 							httpClient ??= new();
-							var response = await httpClient.GetAsync(url);
+							using var response = await httpClient.GetAsync(url, System.Net.Http.HttpCompletionOption.ResponseHeadersRead);
+							response.EnsureSuccessStatusCode();
 							using var stream = await response.Content.ReadAsStreamAsync();
 							mimeType = response.Content.Headers.ContentType?.MediaType;
 							if (response.Content.Headers.ContentLength is long length)
 								return await UploadFileAsync(new Helpers.IndirectStream(stream) { ContentLength = length }, filename);
 							else
-							{
-								using var ms = new MemoryStream();
-								await stream.CopyToAsync(ms);
-								ms.Position = 0;
-								return await UploadFileAsync(ms, filename);
-							}
+								return await UploadFileAsync(stream, filename);
 						}
 				}
 			}
