@@ -244,10 +244,10 @@ namespace WTelegram
 						}
 				}
 			}
-			var lastMedia = multiMedia[^1];
-			lastMedia.message = caption;
-			lastMedia.entities = entities;
-			if (entities != null) lastMedia.flags = InputSingleMedia.Flags.has_entities;
+			var firstMedia = multiMedia[0];
+			firstMedia.message = caption;
+			firstMedia.entities = entities;
+			if (entities != null) firstMedia.flags = InputSingleMedia.Flags.has_entities;
 
 			var updates = await this.Messages_SendMultiMedia(peer, multiMedia, reply_to: reply_to_msg_id == 0 ? null : new InputReplyToMessage { reply_to_msg_id = reply_to_msg_id }, schedule_date: schedule_date);
 			RaiseUpdate(updates);

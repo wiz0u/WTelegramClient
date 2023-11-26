@@ -160,6 +160,7 @@ or a [broadcast channel](https://corefork.telegram.org/api/channel#channels) (th
 See [FAQ #4](https://wiz0u.github.io/WTelegramClient/FAQ#access-hash) to learn more about it.
 - **DC** (DataCenter): There are a few datacenters depending on where in the world the user (or an uploaded media file) is from.
 - **Session** or **Authorization**: Pairing between a device and a phone number. You can have several active sessions for the same phone number.
+- **Participant**: A member/subscriber of a chat group or channel
 
 # Other things to know
 

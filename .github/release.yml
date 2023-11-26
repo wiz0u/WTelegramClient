@@ -59,13 +59,13 @@ stages:
           serviceConnection: 'Telegram Deploy Notice'
           method: 'POST'
           body: |
-            { 
+            {
               "status": "success",
               "complete": true,
               "message": "{
                 \"commitId\": \"$(Build.SourceVersion)\",
                 \"buildNumber\": \"$(Build.BuildNumber)\",
-                \"teamProjectName\": \"$(system.TeamProject)\"
+                \"teamProjectName\": \"$(System.TeamProject)\"
               }"
             }
           waitForCompletion: 'false'

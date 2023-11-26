@@ -34,3 +34,21 @@ steps:
     publishPackageMetadata: true
     nuGetFeedType: 'external'
     publishFeedCredentials: 'nuget.org'
+
+- task: InvokeRESTAPI@1
+  inputs:
+    connectionType: 'connectedServiceName'
+    serviceConnection: 'Telegram Deploy Notice'
+    method: 'POST'
+    body: |
+      { 
+        "status": "success",
+        "complete": true,
+        "message": "{
+          \"commitId\": \"$(Build.SourceVersion)\",
+          \"buildNumber\": \"$(Build.BuildNumber)\",
+          \"teamProjectName\": \"$(System.TeamProject)\",
+          \"commitMessage\": \"$(Build.SourceVersionMessage)\"
+        }"
+      }
+    waitForCompletion: 'false'
