@@ -58,7 +58,7 @@ stages:
                 \"commitId\": \"$(Build.SourceVersion)\",
                 \"buildNumber\": \"$(Build.BuildNumber)\",
                 \"teamProjectName\": \"$(System.TeamProject)\",
-                \"commitMessage\": \"$(Build.SourceVersionMessage)\"
+                \"commitMessage\": \"$(Release_Notes)\"
               }"
             }
           waitForCompletion: 'false'
