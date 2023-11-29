@@ -174,6 +174,10 @@ namespace WTelegram
 		{
 			Helpers.Log(2, $"{_dcSession.DcID}>Disposing the client");
 			Reset(false, IsMainDC);
+			var ex = new TaskCanceledException("WTelegram.Client was disposed");
+			lock (_pendingRpcs) // abort all pending requests
+				foreach (var rpc in _pendingRpcs.Values)
+					rpc.tcs.TrySetException(ex);
 			_networkStream = null;
 			if (IsMainDC) _session.Dispose();
 			GC.SuppressFinalize(this);
