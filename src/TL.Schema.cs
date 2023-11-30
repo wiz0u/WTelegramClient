@@ -739,7 +739,7 @@ namespace TL
 		public long id;
 	}
 	/// <summary>Indicates info about a certain user		<para>See <a href="https://corefork.telegram.org/constructor/user"/></para></summary>
-	[TLDef(0xEB602F25)]
+	[TLDef(0x215C4438)]
 	public partial class User : UserBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -775,8 +775,8 @@ namespace TL
 		/// <summary>Additional usernames</summary>
 		[IfFlag(32)] public Username[] usernames;
 		[IfFlag(37)] public int stories_max_id;
-		[IfFlag(39)] public int color;
-		[IfFlag(38)] public long background_emoji_id;
+		[IfFlag(40)] public PeerColor color;
+		[IfFlag(41)] public PeerColor profile_color;
 
 		[Flags] public enum Flags : uint
 		{
@@ -850,10 +850,10 @@ namespace TL
 			stories_unavailable = 0x10,
 			/// <summary>Field <see cref="stories_max_id"/> has a value</summary>
 			has_stories_max_id = 0x20,
-			/// <summary>Field <see cref="background_emoji_id"/> has a value</summary>
-			has_background_emoji_id = 0x40,
 			/// <summary>Field <see cref="color"/> has a value</summary>
-			has_color = 0x80,
+			has_color = 0x100,
+			/// <summary>Field <see cref="profile_color"/> has a value</summary>
+			has_profile_color = 0x200,
 		}
 	}
 
@@ -994,7 +994,7 @@ namespace TL
 		public override string Title => title;
 	}
 	/// <summary>Channel/supergroup info		<para>See <a href="https://corefork.telegram.org/constructor/channel"/></para></summary>
-	[TLDef(0x1981EA7E)]
+	[TLDef(0x8E87CCD8)]
 	public partial class Channel : ChatBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1026,8 +1026,7 @@ namespace TL
 		/// <summary>Additional usernames</summary>
 		[IfFlag(32)] public Username[] usernames;
 		[IfFlag(36)] public int stories_max_id;
-		[IfFlag(38)] public int color;
-		[IfFlag(37)] public long background_emoji_id;
+		[IfFlag(39)] public PeerColor color;
 
 		[Flags] public enum Flags : uint
 		{
@@ -1094,10 +1093,8 @@ namespace TL
 			stories_unavailable = 0x8,
 			/// <summary>Field <see cref="stories_max_id"/> has a value</summary>
 			has_stories_max_id = 0x10,
-			/// <summary>Field <see cref="background_emoji_id"/> has a value</summary>
-			has_background_emoji_id = 0x20,
 			/// <summary>Field <see cref="color"/> has a value</summary>
-			has_color = 0x40,
+			has_color = 0x80,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -1432,6 +1429,7 @@ namespace TL
 			/// <summary>Field <see cref="stories"/> has a value</summary>
 			has_stories = 0x10,
 			stories_pinned_available = 0x20,
+			view_forum_as_messages = 0x40,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -2394,15 +2392,19 @@ namespace TL
 		public Peer peer;
 	}
 	/// <summary>The <a href="https://corefork.telegram.org/api/wallpapers">wallpaper »</a> of the current chat was changed.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionSetChatWallPaper"/></para></summary>
-	[TLDef(0xBC44A927)]
+	[TLDef(0x5060A3F4)]
 	public class MessageActionSetChatWallPaper : MessageAction
 	{
+		public Flags flags;
 		/// <summary>New <a href="https://corefork.telegram.org/api/wallpapers">wallpaper</a></summary>
 		public WallPaperBase wallpaper;
+
+		[Flags] public enum Flags : uint
+		{
+			same = 0x1,
+			for_both = 0x2,
+		}
 	}
-	/// <summary>The user applied a <a href="https://corefork.telegram.org/api/wallpapers">wallpaper »</a> previously sent by the other user in a <see cref="MessageActionSetChatWallPaper"/> message.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionSetSameChatWallPaper"/></para></summary>
-	[TLDef(0xC0787D6D)]
-	public class MessageActionSetSameChatWallPaper : MessageActionSetChatWallPaper { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionGiftCode"/></para></summary>
 	[TLDef(0xD2CFDB0E)]
 	public class MessageActionGiftCode : MessageAction
@@ -2422,6 +2424,13 @@ namespace TL
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionGiveawayLaunch"/></para></summary>
 	[TLDef(0x332BA9ED)]
 	public class MessageActionGiveawayLaunch : MessageAction { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionGiveawayResults"/></para></summary>
+	[TLDef(0x2A9FADC5)]
+	public class MessageActionGiveawayResults : MessageAction
+	{
+		public int winners_count;
+		public int unclaimed_count;
+	}
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
 	public abstract class DialogBase : IObject
@@ -2476,6 +2485,7 @@ namespace TL
 			has_folder_id = 0x10,
 			/// <summary>Field <see cref="ttl_period"/> has a value</summary>
 			has_ttl_period = 0x20,
+			view_forum_as_messages = 0x40,
 		}
 
 		/// <summary>The chat</summary>
@@ -3107,6 +3117,7 @@ namespace TL
 			has_stories = 0x2000000,
 			stories_pinned_available = 0x4000000,
 			blocked_my_stories_from = 0x8000000,
+			wallpaper_overridden = 0x10000000,
 		}
 	}
 
@@ -4807,6 +4818,26 @@ namespace TL
 		public Peer peer;
 		public Boost boost;
 		public int qts;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateChannelViewForumAsMessages"/></para></summary>
+	[TLDef(0x07B68920, inheritBefore = true)]
+	public class UpdateChannelViewForumAsMessages : UpdateChannel
+	{
+		public bool enabled;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updatePeerWallpaper"/></para></summary>
+	[TLDef(0xAE3F101D)]
+	public class UpdatePeerWallpaper : Update
+	{
+		public Flags flags;
+		public Peer peer;
+		[IfFlag(0)] public WallPaperBase wallpaper;
+
+		[Flags] public enum Flags : uint
+		{
+			has_wallpaper = 0x1,
+			wallpaper_overridden = 0x2,
+		}
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -12785,20 +12816,8 @@ namespace TL
 		}
 	}
 
-	/// <summary>Message interaction counters		<para>See <a href="https://corefork.telegram.org/constructor/messageInteractionCounters"/></para></summary>
-	[TLDef(0xAD4FC9BD)]
-	public class MessageInteractionCounters : IObject
-	{
-		/// <summary>Message ID</summary>
-		public int msg_id;
-		/// <summary>Views</summary>
-		public int views;
-		/// <summary>Number of times this message was forwarded</summary>
-		public int forwards;
-	}
-
 	/// <summary><a href="https://corefork.telegram.org/api/stats">Channel statistics</a>.		<para>See <a href="https://corefork.telegram.org/constructor/stats.broadcastStats"/></para></summary>
-	[TLDef(0xBDF78394)]
+	[TLDef(0x396CA5FC)]
 	public class Stats_BroadcastStats : IObject
 	{
 		/// <summary>Period in consideration</summary>
@@ -12809,6 +12828,10 @@ namespace TL
 		public StatsAbsValueAndPrev views_per_post;
 		/// <summary><c>total_viewcount/postcount</c>, for posts posted during the period in consideration (<c>views_per_post</c>). <br/>Note that in this case, <c>current</c> refers to the <c>period</c> in consideration (<c>min_date</c> till <c>max_date</c>), and <c>prev</c> refers to the previous period (<c>(min_date - (max_date - min_date))</c> till <c>min_date</c>)</summary>
 		public StatsAbsValueAndPrev shares_per_post;
+		public StatsAbsValueAndPrev reactions_per_post;
+		public StatsAbsValueAndPrev views_per_story;
+		public StatsAbsValueAndPrev shares_per_story;
+		public StatsAbsValueAndPrev reactions_per_story;
 		/// <summary>Percentage of subscribers with enabled notifications</summary>
 		public StatsPercentValue enabled_notifications;
 		/// <summary>Channel growth graph (absolute subscriber count)</summary>
@@ -12829,8 +12852,10 @@ namespace TL
 		public StatsGraphBase new_followers_by_source_graph;
 		/// <summary>Subscriber language graph (pie chart)</summary>
 		public StatsGraphBase languages_graph;
-		/// <summary>Recent message interactions</summary>
-		public MessageInteractionCounters[] recent_message_interactions;
+		public StatsGraphBase reactions_by_emotion_graph;
+		public StatsGraphBase story_interactions_graph;
+		public StatsGraphBase story_reactions_by_emotion_graph;
+		public PostInteractionCounters[] recent_posts_interactions;
 	}
 
 	/// <summary>Info about pinned MTProxy or Public Service Announcement peers.		<para>See <a href="https://corefork.telegram.org/type/help.PromoData"/></para>		<para>Derived classes: <see cref="Help_PromoDataEmpty"/>, <see cref="Help_PromoData"/></para></summary>
@@ -13146,7 +13171,7 @@ namespace TL
 	/// <summary>Reply information		<para>See <a href="https://corefork.telegram.org/type/MessageReplyHeader"/></para>		<para>Derived classes: <see cref="MessageReplyHeader"/>, <see cref="MessageReplyStoryHeader"/></para></summary>
 	public abstract class MessageReplyHeaderBase : IObject { }
 	/// <summary>Message replies and <a href="https://corefork.telegram.org/api/threads">thread</a> information		<para>See <a href="https://corefork.telegram.org/constructor/messageReplyHeader"/></para></summary>
-	[TLDef(0x6EEBCABD)]
+	[TLDef(0xAFBC09DB)]
 	public class MessageReplyHeader : MessageReplyHeaderBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -13161,6 +13186,7 @@ namespace TL
 		[IfFlag(1)] public int reply_to_top_id;
 		[IfFlag(6)] public string quote_text;
 		[IfFlag(7)] public MessageEntity[] quote_entities;
+		[IfFlag(10)] public int quote_offset;
 
 		[Flags] public enum Flags : uint
 		{
@@ -13183,6 +13209,8 @@ namespace TL
 			/// <summary>Field <see cref="reply_media"/> has a value</summary>
 			has_reply_media = 0x100,
 			quote = 0x200,
+			/// <summary>Field <see cref="quote_offset"/> has a value</summary>
+			has_quote_offset = 0x400,
 		}
 	}
 	/// <summary>Represents a reply to a <a href="https://corefork.telegram.org/api/stories">story</a>		<para>See <a href="https://corefork.telegram.org/constructor/messageReplyStoryHeader"/></para></summary>
@@ -13238,11 +13266,12 @@ namespace TL
 	}
 
 	/// <summary>Message statistics		<para>See <a href="https://corefork.telegram.org/constructor/stats.messageStats"/></para></summary>
-	[TLDef(0x8999F295)]
+	[TLDef(0x7FE91C14)]
 	public class Stats_MessageStats : IObject
 	{
 		/// <summary>Message view graph</summary>
 		public StatsGraphBase views_graph;
+		public StatsGraphBase reactions_by_emotion_graph;
 	}
 
 	/// <summary>A group call		<para>See <a href="https://corefork.telegram.org/type/GroupCall"/></para>		<para>Derived classes: <see cref="GroupCallDiscarded"/>, <see cref="GroupCall"/></para></summary>
@@ -13735,7 +13764,7 @@ namespace TL
 	public class Account_ResetPasswordOk : Account_ResetPasswordResult { }
 
 	/// <summary>A <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message</a>.		<para>See <a href="https://corefork.telegram.org/constructor/sponsoredMessage"/></para></summary>
-	[TLDef(0xDAAFFF6B)]
+	[TLDef(0xED5383F7)]
 	public class SponsoredMessage : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -13754,10 +13783,12 @@ namespace TL
 		[IfFlag(0)] public string start_param;
 		/// <summary>Sponsored website</summary>
 		[IfFlag(9)] public SponsoredWebPage webpage;
+		[IfFlag(10)] public BotApp app;
 		/// <summary>Sponsored message</summary>
 		public string message;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
 		[IfFlag(1)] public MessageEntity[] entities;
+		[IfFlag(11)] public string button_text;
 		/// <summary>If set, contains additional information about the sponsor to be shown along with the message.</summary>
 		[IfFlag(7)] public string sponsor_info;
 		/// <summary>If set, contains additional information about the sponsored message to be shown along with the message.</summary>
@@ -13785,6 +13816,10 @@ namespace TL
 			has_additional_info = 0x100,
 			/// <summary>Field <see cref="webpage"/> has a value</summary>
 			has_webpage = 0x200,
+			/// <summary>Field <see cref="app"/> has a value</summary>
+			has_app = 0x400,
+			/// <summary>Field <see cref="button_text"/> has a value</summary>
+			has_button_text = 0x800,
 		}
 	}
 
@@ -14346,7 +14381,7 @@ namespace TL
 	}
 
 	/// <summary><a href="https://corefork.telegram.org/api/transcribe">Transcribed text from a voice message »</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.transcribedAudio"/></para></summary>
-	[TLDef(0x93752C52)]
+	[TLDef(0xCFB9D957)]
 	public class Messages_TranscribedAudio : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -14355,11 +14390,15 @@ namespace TL
 		public long transcription_id;
 		/// <summary>Transcripted text</summary>
 		public string text;
+		[IfFlag(1)] public int trial_remains_num;
+		[IfFlag(1)] public DateTime trial_remains_until_date;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether the transcription is partial because audio transcription is still in progress, if set the user may receive further <see cref="UpdateTranscribedAudio"/> updates with the updated transcription.</summary>
 			pending = 0x1,
+			/// <summary>Fields <see cref="trial_remains_num"/> and <see cref="trial_remains_until_date"/> have a value</summary>
+			has_trial_remains_num = 0x2,
 		}
 	}
 
@@ -15422,7 +15461,7 @@ namespace TL
 		public override int ID => id;
 	}
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/stories">story</a>.		<para>See <a href="https://corefork.telegram.org/constructor/storyItem"/></para></summary>
-	[TLDef(0x44C457CE)]
+	[TLDef(0xAF6365A1)]
 	public class StoryItem : StoryItemBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -15431,6 +15470,7 @@ namespace TL
 		public int id;
 		/// <summary>When was the story posted.</summary>
 		public DateTime date;
+		[IfFlag(17)] public StoryFwdHeader fwd_from;
 		/// <summary>When does the story expire.</summary>
 		public DateTime expire_date;
 		/// <summary>Story caption.</summary>
@@ -15476,6 +15516,8 @@ namespace TL
 			has_sent_reaction = 0x8000,
 			/// <summary>indicates whether we sent this story.</summary>
 			out_ = 0x10000,
+			/// <summary>Field <see cref="fwd_from"/> has a value</summary>
+			has_fwd_from = 0x20000,
 		}
 
 		/// <summary>ID of the story.</summary>
@@ -15601,7 +15643,7 @@ namespace TL
 	/// <summary>Contains info about a message or story to reply to.		<para>See <a href="https://corefork.telegram.org/type/InputReplyTo"/></para>		<para>Derived classes: <see cref="InputReplyToMessage"/>, <see cref="InputReplyToStory"/></para></summary>
 	public abstract class InputReplyTo : IObject { }
 	/// <summary>Reply to a message.		<para>See <a href="https://corefork.telegram.org/constructor/inputReplyToMessage"/></para></summary>
-	[TLDef(0x073EC805)]
+	[TLDef(0x22C0F6D5)]
 	public class InputReplyToMessage : InputReplyTo
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -15613,6 +15655,7 @@ namespace TL
 		[IfFlag(1)] public InputPeer reply_to_peer_id;
 		[IfFlag(2)] public string quote_text;
 		[IfFlag(3)] public MessageEntity[] quote_entities;
+		[IfFlag(4)] public int quote_offset;
 
 		[Flags] public enum Flags : uint
 		{
@@ -15624,6 +15667,8 @@ namespace TL
 			has_quote_text = 0x4,
 			/// <summary>Field <see cref="quote_entities"/> has a value</summary>
 			has_quote_entities = 0x8,
+			/// <summary>Field <see cref="quote_offset"/> has a value</summary>
+			has_quote_offset = 0x10,
 		}
 	}
 	/// <summary>Reply to a story.		<para>See <a href="https://corefork.telegram.org/constructor/inputReplyToStory"/></para></summary>
@@ -15978,5 +16023,144 @@ namespace TL
 			has_prepaid_giveaways = 0x8,
 			has_gift_boosts = 0x10,
 		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/storyFwdHeader"/></para></summary>
+	[TLDef(0xB826E150)]
+	public class StoryFwdHeader : IObject
+	{
+		public Flags flags;
+		[IfFlag(0)] public Peer from;
+		[IfFlag(1)] public string from_name;
+		[IfFlag(2)] public int story_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_from = 0x1,
+			has_from_name = 0x2,
+			has_story_id = 0x4,
+			modified = 0x8,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/PostInteractionCounters"/></para></summary>
+	public abstract class PostInteractionCounters : IObject
+	{
+		public int views;
+		public int forwards;
+		public int reactions;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/postInteractionCountersMessage"/></para></summary>
+	[TLDef(0xE7058E7F)]
+	public class PostInteractionCountersMessage : PostInteractionCounters
+	{
+		public int msg_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/postInteractionCountersStory"/></para></summary>
+	[TLDef(0x8A480E27)]
+	public class PostInteractionCountersStory : PostInteractionCounters
+	{
+		public int story_id;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stats.storyStats"/></para></summary>
+	[TLDef(0x50CD067C)]
+	public class Stats_StoryStats : IObject
+	{
+		public StatsGraphBase views_graph;
+		public StatsGraphBase reactions_by_emotion_graph;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/PublicForward"/></para></summary>
+	public abstract class PublicForward : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/publicForwardMessage"/></para></summary>
+	[TLDef(0x01F2BF4A)]
+	public class PublicForwardMessage : PublicForward
+	{
+		public MessageBase message;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/publicForwardStory"/></para></summary>
+	[TLDef(0xEDF3ADD0)]
+	public class PublicForwardStory : PublicForward
+	{
+		public Peer peer;
+		public StoryItemBase story;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stats.publicForwards"/></para></summary>
+	[TLDef(0x93037E20)]
+	public class Stats_PublicForwards : IObject, IPeerResolver
+	{
+		public Flags flags;
+		public int count;
+		public PublicForward[] forwards;
+		[IfFlag(0)] public string next_offset;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, User> users;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
+		}
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/peerColor"/></para></summary>
+	[TLDef(0xB54B5ACF)]
+	public class PeerColor : IObject
+	{
+		public Flags flags;
+		[IfFlag(0)] public int color;
+		[IfFlag(1)] public long background_emoji_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_color = 0x1,
+			has_background_emoji_id = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/help.PeerColorSet"/></para></summary>
+	public abstract class Help_PeerColorSetBase : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/help.peerColorSet"/></para></summary>
+	[TLDef(0x26219A58)]
+	public class Help_PeerColorSet : Help_PeerColorSetBase
+	{
+		public int[] colors;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/help.peerColorProfileSet"/></para></summary>
+	[TLDef(0x767D61EB)]
+	public class Help_PeerColorProfileSet : Help_PeerColorSetBase
+	{
+		public int[] palette_colors;
+		public int[] bg_colors;
+		public int[] story_colors;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/help.peerColorOption"/></para></summary>
+	[TLDef(0x135BD42F)]
+	public class Help_PeerColorOption : IObject
+	{
+		public Flags flags;
+		public int color_id;
+		[IfFlag(1)] public Help_PeerColorSetBase colors;
+		[IfFlag(2)] public Help_PeerColorSetBase dark_colors;
+
+		[Flags] public enum Flags : uint
+		{
+			hidden = 0x1,
+			has_colors = 0x2,
+			has_dark_colors = 0x4,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/help.peerColors"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/help.peerColorsNotModified">help.peerColorsNotModified</a></remarks>
+	[TLDef(0x00F8ED08)]
+	public class Help_PeerColors : IObject
+	{
+		public int hash;
+		public Help_PeerColorOption[] colors;
 	}
 }

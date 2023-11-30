@@ -1155,11 +1155,11 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateColor"/></para></summary>
-		public static Task<bool> Account_UpdateColor(this Client client, int color, long? background_emoji_id = null)
+		public static Task<bool> Account_UpdateColor(this Client client, long? background_emoji_id = null, int? color = null, bool for_profile = false)
 			=> client.Invoke(new Account_UpdateColor
 			{
-				flags = (Account_UpdateColor.Flags)(background_emoji_id != null ? 0x1 : 0),
-				color = color,
+				flags = (Account_UpdateColor.Flags)((background_emoji_id != null ? 0x1 : 0) | (color != null ? 0x4 : 0) | (for_profile ? 0x2 : 0)),
+				color = color.GetValueOrDefault(),
 				background_emoji_id = background_emoji_id.GetValueOrDefault(),
 			});
 
@@ -3685,14 +3685,24 @@ namespace TL
 		/// <param name="wallpaper">The <a href="https://corefork.telegram.org/api/wallpapers">wallpaper »</a>, obtained as described in the <a href="https://corefork.telegram.org/api/wallpapers#uploading-wallpapers">wallpaper documentation »</a>; must <strong>not</strong> be provided when installing a wallpaper obtained from a <see cref="MessageActionSetChatWallPaper"/> service message (<c>id</c> must be provided, instead).</param>
 		/// <param name="settings">Wallpaper settings, obtained as described in the <a href="https://corefork.telegram.org/api/wallpapers#uploading-wallpapers">wallpaper documentation »</a> or from <see cref="MessageActionSetChatWallPaper"/>.<c>wallpaper</c>.<c>settings</c>.</param>
 		/// <param name="id">If the wallpaper was obtained from a <see cref="MessageActionSetChatWallPaper"/> service message, must contain the ID of that message.</param>
-		public static Task<UpdatesBase> Messages_SetChatWallPaper(this Client client, InputPeer peer, InputWallPaperBase wallpaper = null, int? id = null, WallPaperSettings settings = null)
+		public static Task<UpdatesBase> Messages_SetChatWallPaper(this Client client, InputPeer peer, InputWallPaperBase wallpaper = null, int? id = null, WallPaperSettings settings = null, bool for_both = false, bool revert = false)
 			=> client.Invoke(new Messages_SetChatWallPaper
 			{
-				flags = (Messages_SetChatWallPaper.Flags)((wallpaper != null ? 0x1 : 0) | (id != null ? 0x2 : 0) | (settings != null ? 0x4 : 0)),
+				flags = (Messages_SetChatWallPaper.Flags)((wallpaper != null ? 0x1 : 0) | (id != null ? 0x2 : 0) | (settings != null ? 0x4 : 0) | (for_both ? 0x8 : 0) | (revert ? 0x10 : 0)),
 				peer = peer,
 				wallpaper = wallpaper,
 				settings = settings,
 				id = id.GetValueOrDefault(),
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.searchEmojiStickerSets"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.foundStickerSetsNotModified">messages.foundStickerSetsNotModified</a></returns>
+		public static Task<Messages_FoundStickerSets> Messages_SearchEmojiStickerSets(this Client client, string q, long hash = default, bool exclude_featured = false)
+			=> client.Invoke(new Messages_SearchEmojiStickerSets
+			{
+				flags = (Messages_SearchEmojiStickerSets.Flags)(exclude_featured ? 0x1 : 0),
+				q = q,
+				hash = hash,
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -4081,6 +4091,22 @@ namespace TL
 		public static Task<Help_PremiumPromo> Help_GetPremiumPromo(this Client client)
 			=> client.Invoke(new Help_GetPremiumPromo
 			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/help.getPeerColors"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.peerColorsNotModified">help.peerColorsNotModified</a></returns>
+		public static Task<Help_PeerColors> Help_GetPeerColors(this Client client, int hash = default)
+			=> client.Invoke(new Help_GetPeerColors
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/help.getPeerProfileColors"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.peerColorsNotModified">help.peerColorsNotModified</a></returns>
+		public static Task<Help_PeerColors> Help_GetPeerProfileColors(this Client client, int hash = default)
+			=> client.Invoke(new Help_GetPeerProfileColors
+			{
+				hash = hash,
 			});
 
 		/// <summary>Mark <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> history as read		<para>See <a href="https://corefork.telegram.org/method/channels.readHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/channels.readHistory#possible-errors">details</a>)</para></summary>
@@ -4702,6 +4728,21 @@ namespace TL
 				channel = channel,
 				color = color,
 				background_emoji_id = background_emoji_id.GetValueOrDefault(),
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.toggleViewForumAsMessages"/></para></summary>
+		public static Task<UpdatesBase> Channels_ToggleViewForumAsMessages(this Client client, InputChannelBase channel, bool enabled)
+			=> client.Invoke(new Channels_ToggleViewForumAsMessages
+			{
+				channel = channel,
+				enabled = enabled,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.getChannelRecommendations"/></para></summary>
+		public static Task<Messages_Chats> Channels_GetChannelRecommendations(this Client client, InputChannelBase channel)
+			=> client.Invoke(new Channels_GetChannelRecommendations
+			{
+				channel = channel,
 			});
 
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
@@ -5616,6 +5657,25 @@ namespace TL
 				msg_id = msg_id,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stats.getStoryStats"/></para></summary>
+		public static Task<Stats_StoryStats> Stats_GetStoryStats(this Client client, InputPeer peer, int id, bool dark = false)
+			=> client.Invoke(new Stats_GetStoryStats
+			{
+				flags = (Stats_GetStoryStats.Flags)(dark ? 0x1 : 0),
+				peer = peer,
+				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stats.getStoryPublicForwards"/></para></summary>
+		public static Task<Stats_PublicForwards> Stats_GetStoryPublicForwards(this Client client, InputPeer peer, int id, string offset, int limit = int.MaxValue)
+			=> client.Invoke(new Stats_GetStoryPublicForwards
+			{
+				peer = peer,
+				id = id,
+				offset = offset,
+				limit = limit,
+			});
+
 		/// <summary>Export a <a href="https://corefork.telegram.org/api/folders">folder »</a>, creating a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/chatlists.exportChatlistInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/chatlists.exportChatlistInvite#possible-errors">details</a>)</para></summary>
 		/// <param name="chatlist">The folder to export</param>
 		/// <param name="title">An optional name for the link</param>
@@ -5742,10 +5802,10 @@ namespace TL
 		/// <param name="privacy_rules"><a href="https://corefork.telegram.org/api/privacy">Privacy rules</a> for the story, indicating who can or can't view the story.</param>
 		/// <param name="random_id">Unique client message ID required to prevent message resending. <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="period">Period after which the story is moved to archive (and to the profile if <c>pinned</c> is set), in seconds; must be one of <c>6 * 3600</c>, <c>12 * 3600</c>, <c>86400</c>, or <c>2 * 86400</c> for Telegram Premium users, and <c>86400</c> otherwise.</param>
-		public static Task<UpdatesBase> Stories_SendStory(this Client client, InputPeer peer, InputMedia media, InputPrivacyRule[] privacy_rules, long random_id, string caption = null, MessageEntity[] entities = null, int? period = null, MediaArea[] media_areas = null, bool pinned = false, bool noforwards = false)
+		public static Task<UpdatesBase> Stories_SendStory(this Client client, InputPeer peer, InputMedia media, InputPrivacyRule[] privacy_rules, long random_id, string caption = null, MessageEntity[] entities = null, int? period = null, MediaArea[] media_areas = null, InputPeer fwd_from_id = null, int? fwd_from_story = null, bool pinned = false, bool noforwards = false, bool fwd_modified = false)
 			=> client.Invoke(new Stories_SendStory
 			{
-				flags = (Stories_SendStory.Flags)((caption != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (period != null ? 0x8 : 0) | (media_areas != null ? 0x20 : 0) | (pinned ? 0x4 : 0) | (noforwards ? 0x10 : 0)),
+				flags = (Stories_SendStory.Flags)((caption != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (period != null ? 0x8 : 0) | (media_areas != null ? 0x20 : 0) | (fwd_from_id != null ? 0x40 : 0) | (fwd_from_story != null ? 0x40 : 0) | (pinned ? 0x4 : 0) | (noforwards ? 0x10 : 0) | (fwd_modified ? 0x80 : 0)),
 				peer = peer,
 				media = media,
 				media_areas = media_areas,
@@ -5754,6 +5814,8 @@ namespace TL
 				privacy_rules = privacy_rules,
 				random_id = random_id,
 				period = period.GetValueOrDefault(),
+				fwd_from_id = fwd_from_id,
+				fwd_from_story = fwd_from_story.GetValueOrDefault(),
 			});
 
 		/// <summary>Edit an uploaded <a href="https://corefork.telegram.org/api/stories">story</a>		<para>See <a href="https://corefork.telegram.org/method/stories.editStory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.editStory#possible-errors">details</a>)</para></summary>
@@ -6906,16 +6968,18 @@ namespace TL.Methods
 		public string[] codes;
 	}
 
-	[TLDef(0xA001CC43)]
+	[TLDef(0x7CEFA15D)]
 	public class Account_UpdateColor : IMethod<bool>
 	{
 		public Flags flags;
-		public int color;
+		[IfFlag(2)] public int color;
 		[IfFlag(0)] public long background_emoji_id;
 
 		[Flags] public enum Flags : uint
 		{
 			has_background_emoji_id = 0x1,
+			for_profile = 0x2,
+			has_color = 0x4,
 		}
 	}
 
@@ -9063,6 +9127,21 @@ namespace TL.Methods
 			has_wallpaper = 0x1,
 			has_id = 0x2,
 			has_settings = 0x4,
+			for_both = 0x8,
+			revert = 0x10,
+		}
+	}
+
+	[TLDef(0x92B4494C)]
+	public class Messages_SearchEmojiStickerSets : IMethod<Messages_FoundStickerSets>
+	{
+		public Flags flags;
+		public string q;
+		public long hash;
+
+		[Flags] public enum Flags : uint
+		{
+			exclude_featured = 0x1,
 		}
 	}
 
@@ -9358,6 +9437,18 @@ namespace TL.Methods
 
 	[TLDef(0xB81B93D4)]
 	public class Help_GetPremiumPromo : IMethod<Help_PremiumPromo> { }
+
+	[TLDef(0xDA80F42F)]
+	public class Help_GetPeerColors : IMethod<Help_PeerColors>
+	{
+		public int hash;
+	}
+
+	[TLDef(0xABCFA9FD)]
+	public class Help_GetPeerProfileColors : IMethod<Help_PeerColors>
+	{
+		public int hash;
+	}
 
 	[TLDef(0xCC104937)]
 	public class Channels_ReadHistory : IMethod<bool>
@@ -9841,6 +9932,19 @@ namespace TL.Methods
 		{
 			has_background_emoji_id = 0x1,
 		}
+	}
+
+	[TLDef(0x9738BB15)]
+	public class Channels_ToggleViewForumAsMessages : IMethod<UpdatesBase>
+	{
+		public InputChannelBase channel;
+		public bool enabled;
+	}
+
+	[TLDef(0x83B70D97)]
+	public class Channels_GetChannelRecommendations : IMethod<Messages_Chats>
+	{
+		public InputChannelBase channel;
 	}
 
 	[TLDef(0xAA2769ED)]
@@ -10606,6 +10710,28 @@ namespace TL.Methods
 		}
 	}
 
+	[TLDef(0x374FEF40)]
+	public class Stats_GetStoryStats : IMethod<Stats_StoryStats>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int id;
+
+		[Flags] public enum Flags : uint
+		{
+			dark = 0x1,
+		}
+	}
+
+	[TLDef(0xA6437EF6)]
+	public class Stats_GetStoryPublicForwards : IMethod<Stats_PublicForwards>
+	{
+		public InputPeer peer;
+		public int id;
+		public string offset;
+		public int limit;
+	}
+
 	[TLDef(0x8472478E)]
 	public class Chatlists_ExportChatlistInvite : IMethod<Chatlists_ExportedChatlistInvite>
 	{
@@ -10694,7 +10820,7 @@ namespace TL.Methods
 		public InputPeer peer;
 	}
 
-	[TLDef(0xBCB73644)]
+	[TLDef(0xE4E6694B)]
 	public class Stories_SendStory : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -10706,6 +10832,8 @@ namespace TL.Methods
 		public InputPrivacyRule[] privacy_rules;
 		public long random_id;
 		[IfFlag(3)] public int period;
+		[IfFlag(6)] public InputPeer fwd_from_id;
+		[IfFlag(6)] public int fwd_from_story;
 
 		[Flags] public enum Flags : uint
 		{
@@ -10715,6 +10843,8 @@ namespace TL.Methods
 			has_period = 0x8,
 			noforwards = 0x10,
 			has_media_areas = 0x20,
+			has_fwd_from_id = 0x40,
+			fwd_modified = 0x80,
 		}
 	}
 
