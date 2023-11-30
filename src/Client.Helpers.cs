@@ -157,7 +157,6 @@ namespace WTelegram
 			else
 				updates = await this.Messages_SendMedia(peer, media, text, random_id, entities: entities,
 					reply_to: reply_to_msg_id == 0 ? null : new InputReplyToMessage { reply_to_msg_id = reply_to_msg_id }, schedule_date: schedule_date == default ? null : schedule_date);
-			RaiseUpdate(updates);
 			int msgId = -1;
 			if (updates is UpdateShortSentMessage sent)
 				return new Message
@@ -250,7 +249,6 @@ namespace WTelegram
 			if (entities != null) firstMedia.flags = InputSingleMedia.Flags.has_entities;
 
 			var updates = await this.Messages_SendMultiMedia(peer, multiMedia, reply_to: reply_to_msg_id == 0 ? null : new InputReplyToMessage { reply_to_msg_id = reply_to_msg_id }, schedule_date: schedule_date);
-			RaiseUpdate(updates);
 			var msgIds = new int[length];
 			var result = new Message[length];
 			foreach (var update in updates.UpdateList)

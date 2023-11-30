@@ -28,6 +28,8 @@ namespace WTelegram
 		public event Func<UpdatesBase, Task> OnUpdate;
 		/// <summary>This event is called for other types of notifications (login states, reactor errors, ...)</summary>
 		public event Func<IObject, Task> OnOther;
+		/// <summary>Use this handler to intercept Updates that resulted from your own API calls</summary>
+		public event Func<UpdatesBase, Task> OnOwnUpdate;
 		/// <summary>Used to create a TcpClient connected to the given address/port, or throw an exception on failure</summary>
 		public TcpFactory TcpHandler { get; set; } = DefaultTcpHandler;
 		public delegate Task<TcpClient> TcpFactory(string host, int port);
@@ -568,7 +570,12 @@ namespace WTelegram
 					if (result is RpcError rpcError)
 						Helpers.Log(4, $"             → RpcError {rpcError.error_code,3} {rpcError.error_message,-24} #{(short)msgId.GetHashCode():X4}");
 					else
+					{
 						Helpers.Log(1, $"             → {result?.GetType().Name,-37} #{(short)msgId.GetHashCode():X4}");
+						if (OnOwnUpdate != null && result is UpdatesBase updates)
+							RaiseOwnUpdate(updates);
+					}
+
 					rpc.tcs.SetResult(result);
 				}
 				catch (Exception ex)
@@ -587,7 +594,13 @@ namespace WTelegram
 				}
 				else if (ctorNb == (uint)Bool.False) result = false;
 				else if (ctorNb == (uint)Bool.True) result = true;
-				else result = reader.ReadTLObject(ctorNb);
+				else
+				{
+					result = reader.ReadTLObject(ctorNb);
+					if (OnOwnUpdate != null && result is UpdatesBase updates)
+						RaiseOwnUpdate(updates);
+				}
+
 				var typeName = result?.GetType().Name;
 				if (MsgIdToStamp(msgId) >= _session.SessionStart)
 					Helpers.Log(4, $"             → {typeName,-37} for unknown msgId #{(short)msgId.GetHashCode():X4}");
@@ -731,6 +744,18 @@ namespace WTelegram
 			catch (Exception ex)
 			{
 				Helpers.Log(4, $"{nameof(OnUpdate)}({obj?.GetType().Name}) raised {ex}");
+			}
+		}
+
+		private async void RaiseOwnUpdate(UpdatesBase updates)
+		{
+			try
+			{
+				await OnOwnUpdate(updates);
+			}
+			catch (Exception ex)
+			{
+				Helpers.Log(4, $"{nameof(OnOwnUpdate)}({updates.GetType().Name}) raised {ex}");
 			}
 		}
 
