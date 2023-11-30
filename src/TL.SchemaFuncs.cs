@@ -1436,7 +1436,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para></summary>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client client, params InputMessage[] id)
 			=> client.Invoke(new Messages_GetMessages
@@ -1546,7 +1546,7 @@ namespace TL
 				max_date = max_date.GetValueOrDefault(),
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Deletes messages by their identifiers.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.deleteMessages#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Deletes messages by their identifiers.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.deleteMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="revoke">Whether to delete messages for all participants of the chat</param>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_AffectedMessages> Messages_DeleteMessages(this Client client, int[] id, bool revoke = false)
@@ -1556,7 +1556,7 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Confirms receipt of messages by a client, cancels PUSH-notification sending.		<para>See <a href="https://corefork.telegram.org/method/messages.receivedMessages"/></para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Confirms receipt of messages by a client, cancels PUSH-notification sending.		<para>See <a href="https://corefork.telegram.org/method/messages.receivedMessages"/></para></summary>
 		/// <param name="max_id">Maximum message ID available in a client.</param>
 		public static Task<ReceivedNotifyMessage[]> Messages_ReceivedMessages(this Client client, int max_id = default)
 			=> client.Invoke(new Messages_ReceivedMessages
@@ -1693,7 +1693,7 @@ namespace TL
 				message = message,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns chat basic info on their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getChats"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getChats#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns chat basic info on their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getChats"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getChats#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of chat IDs</param>
 		public static Task<Messages_Chats> Messages_GetChats(this Client client, params long[] id)
 			=> client.Invoke(new Messages_GetChats
@@ -1701,7 +1701,7 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Get full info about a <a href="https://corefork.telegram.org/api/channel#basic-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getFullChat"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getFullChat#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Get full info about a <a href="https://corefork.telegram.org/api/channel#basic-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getFullChat"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getFullChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id"><a href="https://corefork.telegram.org/api/channel#basic-groups">Basic group</a> ID.</param>
 		public static Task<Messages_ChatFull> Messages_GetFullChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_GetFullChat
@@ -1709,7 +1709,7 @@ namespace TL
 				chat_id = chat_id,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Changes chat name and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatTitle"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatTitle#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Changes chat name and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatTitle"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatTitle#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="title">New chat name, different from the old one</param>
 		public static Task<UpdatesBase> Messages_EditChatTitle(this Client client, long chat_id, string title)
@@ -1719,7 +1719,7 @@ namespace TL
 				title = title,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Changes chat photo and sends a service message on it		<para>See <a href="https://corefork.telegram.org/method/messages.editChatPhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatPhoto#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Changes chat photo and sends a service message on it		<para>See <a href="https://corefork.telegram.org/method/messages.editChatPhoto"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatPhoto#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="photo">Photo to be set</param>
 		public static Task<UpdatesBase> Messages_EditChatPhoto(this Client client, long chat_id, InputChatPhotoBase photo)
@@ -1729,7 +1729,7 @@ namespace TL
 				photo = photo,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Adds a user to a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.addChatUser"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.addChatUser#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Adds a user to a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.addChatUser"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.addChatUser#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="user_id">User ID to be added</param>
 		/// <param name="fwd_limit">Number of last messages to be forwarded</param>
@@ -1741,7 +1741,7 @@ namespace TL
 				fwd_limit = fwd_limit,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Deletes a user from a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChatUser"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChatUser#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Deletes a user from a chat and sends a service message on it.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChatUser"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChatUser#possible-errors">details</a>)</para></summary>
 		/// <param name="revoke_history">Remove the entire chat history of the specified user in this chat.</param>
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="user_id">User ID to be deleted</param>
@@ -1888,7 +1888,7 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Notifies the sender about the recipient having listened a voice message or watched a video.		<para>See <a href="https://corefork.telegram.org/method/messages.readMessageContents"/></para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Notifies the sender about the recipient having listened a voice message or watched a video.		<para>See <a href="https://corefork.telegram.org/method/messages.readMessageContents"/></para></summary>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_AffectedMessages> Messages_ReadMessageContents(this Client client, params int[] id)
 			=> client.Invoke(new Messages_ReadMessageContents
@@ -2016,7 +2016,7 @@ namespace TL
 				increment = increment,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Make a user admin in a <a href="https://corefork.telegram.org/api/channel#basic-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAdmin"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatAdmin#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Make a user admin in a <a href="https://corefork.telegram.org/api/channel#basic-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatAdmin"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editChatAdmin#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">The ID of the group</param>
 		/// <param name="user_id">The user to make admin</param>
 		/// <param name="is_admin">Whether to make them admin</param>
@@ -2028,7 +2028,7 @@ namespace TL
 				is_admin = is_admin,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Turn a <a href="https://corefork.telegram.org/api/channel#migration">basic group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Turn a <a href="https://corefork.telegram.org/api/channel#migration">basic group into a supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/messages.migrateChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/messages.migrateChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id"><a href="https://corefork.telegram.org/api/channel#basic-groups">Basic group</a> to migrate</param>
 		public static Task<UpdatesBase> Messages_MigrateChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_MigrateChat
@@ -2103,7 +2103,7 @@ namespace TL
 				unsave = unsave,
 			});
 
-		/// <summary>Query an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineBotResults"/></para>		<para>Possible <see cref="RpcException"/> codes: -503,400,406 (<a href="https://corefork.telegram.org/method/messages.getInlineBotResults#possible-errors">details</a>)</para></summary>
+		/// <summary>Query an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineBotResults"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406,-503 (<a href="https://corefork.telegram.org/method/messages.getInlineBotResults#possible-errors">details</a>)</para></summary>
 		/// <param name="bot">The bot to query</param>
 		/// <param name="peer">The currently opened chat</param>
 		/// <param name="geo_point">The geolocation, if requested</param>
@@ -2216,7 +2216,7 @@ namespace TL
 				entities = entities,
 			});
 
-		/// <summary>Press an inline callback button and get a callback answer from the bot		<para>See <a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer"/></para>		<para>Possible <see cref="RpcException"/> codes: -503,400 (<a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer#possible-errors">details</a>)</para></summary>
+		/// <summary>Press an inline callback button and get a callback answer from the bot		<para>See <a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,-503 (<a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer#possible-errors">details</a>)</para></summary>
 		/// <param name="game">Whether this is a "play game" button</param>
 		/// <param name="peer">Where was the inline keyboard sent</param>
 		/// <param name="msg_id">ID of the Message with the inline keyboard</param>
@@ -2967,7 +2967,7 @@ namespace TL
 				top_msg_id = top_msg_id.GetValueOrDefault(),
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Delete a <a href="https://corefork.telegram.org/api/channel">chat</a>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChat#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Delete a <a href="https://corefork.telegram.org/api/channel">chat</a>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
 		public static Task<bool> Messages_DeleteChat(this Client client, long chat_id)
 			=> client.Invoke(new Messages_DeleteChat
@@ -3397,7 +3397,7 @@ namespace TL
 		/// <param name="peer">Dialog where the web app is being opened, and where the resulting message will be sent (see the <a href="https://corefork.telegram.org/api/bots/webapps">docs for more info »</a>).</param>
 		/// <param name="bot">Bot that owns the <a href="https://corefork.telegram.org/api/bots/webapps">web app</a></param>
 		/// <param name="url"><a href="https://corefork.telegram.org/api/bots/webapps">Web app URL</a></param>
-		/// <param name="start_param">If the web app was opened from the attachment menu using a <a href="https://corefork.telegram.org/api/links#bot-attachment-menu-links">attachment menu deep link</a>, <c>start_param</c> should contain the <c>data</c> from the <c>startattach</c> parameter.</param>
+		/// <param name="start_param">If the web app was opened from the attachment menu using a <a href="https://corefork.telegram.org/api/links#bot-attachment-or-side-menu-links">attachment menu deep link</a>, <c>start_param</c> should contain the <c>data</c> from the <c>startattach</c> parameter.</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
 		/// <param name="reply_to">If set, indicates that the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> should be sent in reply to the specified message or story.</param>
@@ -3436,8 +3436,10 @@ namespace TL
 
 		/// <summary>Open a <a href="https://corefork.telegram.org/api/bots/webapps">bot mini app</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.requestSimpleWebView"/></para></summary>
 		/// <param name="from_switch_webview">Whether the webapp was opened by clicking on the <c>switch_webview</c> button shown on top of the inline results list returned by <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see>.</param>
+		/// <param name="from_side_menu">Set this flag if opening the Mini App from the installed <a href="https://corefork.telegram.org/api/bots/attach">side menu entry »</a> or from a <a href="https://corefork.telegram.org/api/links#open-anywhere"><c>startapp</c> link »</a>.</param>
 		/// <param name="bot">Bot that owns the mini app</param>
-		/// <param name="url">Web app URL</param>
+		/// <param name="url">Web app URL, if opening from a keyboard button or inline result</param>
+		/// <param name="start_param">Start parameter, if opening from a <a href="https://corefork.telegram.org/api/links#open-anywhere"><c>startapp</c> link »</a>.</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
 		public static Task<SimpleWebViewResult> Messages_RequestSimpleWebView(this Client client, InputUserBase bot, string platform, DataJSON theme_params = null, string url = null, string start_param = null, bool from_switch_webview = false, bool from_side_menu = false)
@@ -3451,7 +3453,7 @@ namespace TL
 				platform = platform,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/README#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Terminate webview interaction started with <see cref="Messages_RequestWebView">Messages_RequestWebView</see>, sending the specified message to the chat on behalf of the user.		<para>See <a href="https://corefork.telegram.org/method/messages.sendWebViewResultMessage"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendWebViewResultMessage#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Terminate webview interaction started with <see cref="Messages_RequestWebView">Messages_RequestWebView</see>, sending the specified message to the chat on behalf of the user.		<para>See <a href="https://corefork.telegram.org/method/messages.sendWebViewResultMessage"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendWebViewResultMessage#possible-errors">details</a>)</para></summary>
 		/// <param name="bot_query_id">Webview interaction ID obtained from <see cref="Messages_RequestWebView">Messages_RequestWebView</see></param>
 		/// <param name="result">Message to send</param>
 		public static Task<WebViewMessageSent> Messages_SendWebViewResultMessage(this Client client, string bot_query_id, InputBotInlineResultBase result)
@@ -4839,21 +4841,26 @@ namespace TL
 				active = active,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.canSendMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.canSendMessage#possible-errors">details</a>)</para></summary>
+		/// <summary>Check whether the specified bot can send us messages		<para>See <a href="https://corefork.telegram.org/method/bots.canSendMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.canSendMessage#possible-errors">details</a>)</para></summary>
+		/// <param name="bot">The bot</param>
 		public static Task<bool> Bots_CanSendMessage(this Client client, InputUserBase bot)
 			=> client.Invoke(new Bots_CanSendMessage
 			{
 				bot = bot,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.allowSendMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.allowSendMessage#possible-errors">details</a>)</para></summary>
+		/// <summary>Allow the specified bot to send us messages		<para>See <a href="https://corefork.telegram.org/method/bots.allowSendMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.allowSendMessage#possible-errors">details</a>)</para></summary>
+		/// <param name="bot">The bot</param>
 		public static Task<UpdatesBase> Bots_AllowSendMessage(this Client client, InputUserBase bot)
 			=> client.Invoke(new Bots_AllowSendMessage
 			{
 				bot = bot,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.invokeWebViewCustomMethod"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.invokeWebViewCustomMethod#possible-errors">details</a>)</para></summary>
+		/// <summary>Send a custom request from a <a href="https://corefork.telegram.org/api/bots/webapps">mini bot app</a>		<para>See <a href="https://corefork.telegram.org/method/bots.invokeWebViewCustomMethod"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.invokeWebViewCustomMethod#possible-errors">details</a>)</para></summary>
+		/// <param name="bot">Identifier of the bot associated to the <a href="https://corefork.telegram.org/api/bots/webapps">mini bot app</a></param>
+		/// <param name="custom_method">Identifier of the custom method to invoke</param>
+		/// <param name="params_">Method parameters</param>
 		public static Task<DataJSON> Bots_InvokeWebViewCustomMethod(this Client client, InputUserBase bot, string custom_method, DataJSON params_)
 			=> client.Invoke(new Bots_InvokeWebViewCustomMethod
 			{

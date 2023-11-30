@@ -14128,7 +14128,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>One of the following values: note that animated icons must be played when the user clicks on the button, activating the bot mini app. <br/><br/><c>default_static</c> - Default attachment menu icon in SVG format <br/><c>placeholder_static</c> - Default placeholder for opened Web Apps in SVG format <br/><c>ios_static</c> - Attachment menu icon in SVG format for the official iOS app <br/><c>ios_animated</c> - Animated attachment menu icon in TGS format for the official iOS app <br/><c>android_animated</c> - Animated attachment menu icon in TGS format for the official Android app <br/><c>macos_animated</c> - Animated attachment menu icon in TGS format for the official native Mac OS app</summary>
+		/// <summary>One of the following values: note that animated icons must be played when the user clicks on the button, activating the bot mini app. <br/><br/><c>default_static</c> - Default attachment menu icon in SVG format <br/><c>placeholder_static</c> - Default placeholder for opened Web Apps in SVG format <br/><c>ios_static</c> - Attachment menu icon in SVG format for the official iOS app <br/><c>ios_animated</c> - Animated attachment menu icon in TGS format for the official iOS app <br/><c>android_animated</c> - Animated attachment menu icon in TGS format for the official Android app <br/><c>macos_animated</c> - Animated attachment menu icon in TGS format for the official native Mac OS app <br/><c>ios_side_menu_static</c> - Side menu icon in PNG format for the official iOS app <br/><c>android_side_menu_static</c> - Side menu icon in SVG format for the official android app <br/><c>macos_side_menu_static</c> - Side menu icon in PNG format for the official native Mac OS app</summary>
 		public string name;
 		/// <summary>The actual icon file.</summary>
 		public DocumentBase icon;
@@ -14142,7 +14142,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>Represents a <a href="https://corefork.telegram.org/api/bots/attach">bot mini app that can be launched from the attachment menu »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBot"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/bots/attach">bot mini app that can be launched from the attachment/side menu »</a>		<para>See <a href="https://corefork.telegram.org/constructor/attachMenuBot"/></para></summary>
 	[TLDef(0xD90D8DFE)]
 	public class AttachMenuBot : IObject
 	{
@@ -14159,14 +14159,17 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Whether this bot attachment menu entry should be shown in the attachment menu (toggle using <see cref="SchemaExtensions.Messages_ToggleBotInAttachMenu">Messages_ToggleBotInAttachMenu</see>)</summary>
+			/// <summary>If set, before launching the mini app the client should ask the user to add the mini app to the attachment/side menu, and only if the user accepts, after invoking <see cref="SchemaExtensions.Messages_ToggleBotInAttachMenu">Messages_ToggleBotInAttachMenu</see> the app should be opened.</summary>
 			inactive = 0x1,
 			/// <summary>True, if the bot supports the <a href="https://corefork.telegram.org/api/bots/webapps#settings-button-pressed">"settings_button_pressed" event »</a></summary>
 			has_settings = 0x2,
 			/// <summary>Whether the bot would like to send messages to the user.</summary>
 			request_write_access = 0x4,
+			/// <summary>Whether, when installed, an attachment menu entry should be shown for the Mini App.</summary>
 			show_in_attach_menu = 0x8,
+			/// <summary>Whether, when installed, an entry in the main view side menu should be shown for the Mini App.</summary>
 			show_in_side_menu = 0x10,
+			/// <summary>If <c>inactive</c> if set and the user hasn't previously accepted the third-party mini apps <a href="https://telegram.org/tos/mini-apps">Terms of Service</a> for this bot, when showing the mini app installation prompt, an additional mandatory checkbox to accept the <a href="https://telegram.org/tos/mini-apps">mini apps TOS</a> and a disclaimer indicating that this Mini App is not affiliated to Telegram should be shown.</summary>
 			side_menu_disclaimer_needed = 0x20,
 		}
 	}
