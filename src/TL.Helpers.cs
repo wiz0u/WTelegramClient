@@ -27,7 +27,7 @@ namespace TL
 	}
 	partial class InputPeerChat
 	{
-		/// <summary>⚠ Only for small private Chat. Chat groups of type Channel must use InputPeerChannel. See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/README.md#terminology">Terminology</see> in README</summary>
+		/// <summary>⚠ <b>This type is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Chat groups of type Channel must use <see cref="InputPeerChannel"/>.</summary>
 		/// <param name="chat_id">Chat identifier</param>
 		public InputPeerChat(long chat_id) => this.chat_id = chat_id;
 		internal InputPeerChat() { }
@@ -207,6 +207,7 @@ namespace TL
 	{
 		/// <summary>Is this chat among current user active chats?</summary>
 		public abstract bool IsActive { get; }
+		/// <summary>Is this chat a broadcast channel?</summary>
 		public virtual bool IsChannel => false;
 		public bool IsGroup => !IsChannel;
 		public virtual string MainUsername => null;

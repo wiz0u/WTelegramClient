@@ -774,6 +774,7 @@ namespace TL
 		[IfFlag(30)] public EmojiStatus emoji_status;
 		/// <summary>Additional usernames</summary>
 		[IfFlag(32)] public Username[] usernames;
+		/// <summary>ID of the maximum read <a href="https://corefork.telegram.org/api/stories">story</a>.</summary>
 		[IfFlag(37)] public int stories_max_id;
 		[IfFlag(40)] public PeerColor color;
 		[IfFlag(41)] public PeerColor profile_color;
@@ -844,6 +845,7 @@ namespace TL
 			has_usernames = 0x1,
 			/// <summary>Whether we can edit the profile picture, name, about text and description of this bot because we own it.</summary>
 			bot_can_edit = 0x2,
+			/// <summary>Whether we marked this user as a <a href="https://corefork.telegram.org/api/privacy">close friend, see here » for more info</a></summary>
 			close_friend = 0x4,
 			/// <summary>Whether we have <a href="https://corefork.telegram.org/api/stories#hiding-stories-of-other-users">hidden »</a> all active stories of this user.</summary>
 			stories_hidden = 0x8,
@@ -1025,6 +1027,7 @@ namespace TL
 		[IfFlag(17)] public int participants_count;
 		/// <summary>Additional usernames</summary>
 		[IfFlag(32)] public Username[] usernames;
+		/// <summary>ID of the maximum read <a href="https://corefork.telegram.org/api/stories">story</a>.</summary>
 		[IfFlag(36)] public int stories_max_id;
 		[IfFlag(39)] public PeerColor color;
 
@@ -1032,7 +1035,7 @@ namespace TL
 		{
 			/// <summary>Whether the current user is the creator of this channel</summary>
 			creator = 0x1,
-			/// <summary>Whether the current user has left this channel</summary>
+			/// <summary>Whether the current user has left or is not a member of this channel</summary>
 			left = 0x4,
 			/// <summary>Is this a channel?</summary>
 			broadcast = 0x20,
@@ -1088,7 +1091,9 @@ namespace TL
 		{
 			/// <summary>Field <see cref="usernames"/> has a value</summary>
 			has_usernames = 0x1,
+			/// <summary>Whether we have <a href="https://corefork.telegram.org/api/stories#hiding-stories-of-other-users">hidden all stories posted by this channel »</a>.</summary>
 			stories_hidden = 0x2,
+			/// <summary>If set, indicates that the <c>stories_hidden</c> flag was not populated, and its value must cannot be relied on; use the previously cached value, or re-fetch the constructor using <see cref="SchemaExtensions.Channels_GetChannels">Channels_GetChannels</see> to obtain the latest value of the <c>stories_hidden</c> flag.</summary>
 			stories_hidden_min = 0x4,
 			stories_unavailable = 0x8,
 			/// <summary>Field <see cref="stories_max_id"/> has a value</summary>
@@ -1428,6 +1433,7 @@ namespace TL
 			translations_disabled = 0x8,
 			/// <summary>Field <see cref="stories"/> has a value</summary>
 			has_stories = 0x10,
+			/// <summary>Whether this user has some <a href="https://corefork.telegram.org/api/stories#pinned-or-archived-stories">pinned stories</a>.</summary>
 			stories_pinned_available = 0x20,
 			view_forum_as_messages = 0x40,
 		}
@@ -1968,20 +1974,24 @@ namespace TL
 		/// <summary>The emoji, for now 🏀, 🎲 and 🎯 are supported</summary>
 		public string emoticon;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageMediaStory"/></para></summary>
+	/// <summary>Represents a forwarded <a href="https://corefork.telegram.org/api/stories">story</a> or a story mention.		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaStory"/></para></summary>
 	[TLDef(0x68CB6283)]
 	public class MessageMediaStory : MessageMedia
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Peer that posted the story.</summary>
 		public Peer peer;
+		/// <summary>Story ID</summary>
 		public int id;
+		/// <summary>The story itself, if absent fetch it using <see cref="SchemaExtensions.Stories_GetStoriesByID">Stories_GetStoriesByID</see> and the <c>peer</c>/<c>id</c> parameters specified above.</summary>
 		[IfFlag(0)] public StoryItemBase story;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="story"/> has a value</summary>
 			has_story = 0x1,
+			/// <summary>If set, indicates that this someone has mentioned us in this story (i.e. by tagging us in the description) or vice versa, we have mentioned the other peer (if the message is outgoing).</summary>
 			via_mention = 0x2,
 		}
 	}
@@ -2197,6 +2207,7 @@ namespace TL
 			attach_menu = 0x2,
 			/// <summary>Field <see cref="app"/> has a value</summary>
 			has_app = 0x4,
+			/// <summary>We have allowed the bot to send us messages using <see cref="SchemaExtensions.Bots_AllowSendMessage">Bots_AllowSendMessage</see>.</summary>
 			from_request = 0x8,
 		}
 	}
@@ -3065,6 +3076,7 @@ namespace TL
 		[IfFlag(19)] public PremiumGiftOption[] premium_gifts;
 		/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a> to use in the private chat with the user.</summary>
 		[IfFlag(24)] public WallPaperBase wallpaper;
+		/// <summary>Active <a href="https://corefork.telegram.org/api/stories">stories »</a></summary>
 		[IfFlag(25)] public PeerStories stories;
 
 		[Flags] public enum Flags : uint
@@ -3115,7 +3127,9 @@ namespace TL
 			has_wallpaper = 0x1000000,
 			/// <summary>Field <see cref="stories"/> has a value</summary>
 			has_stories = 0x2000000,
+			/// <summary>Whether this user has some <a href="https://corefork.telegram.org/api/stories#pinned-or-archived-stories">pinned stories</a>.</summary>
 			stories_pinned_available = 0x4000000,
+			/// <summary>Whether we've <a href="https://corefork.telegram.org/api/block">blocked this user, preventing them from seeing our stories »</a>.</summary>
 			blocked_my_stories_from = 0x8000000,
 			wallpaper_overridden = 0x10000000,
 		}
@@ -8223,7 +8237,7 @@ namespace TL
 		[IfFlag(1)] public string next_offset;
 		/// <summary>Shown as a button on top of the remaining inline result list; if clicked, redirects the user to a private chat with the bot with the specified start parameter.</summary>
 		[IfFlag(2)] public InlineBotSwitchPM switch_pm;
-		/// <summary>Shown as a button on top of the remaining inline result list; if clicked, opens the specified <a href="https://corefork.telegram.org/api/bots/webapps#simple-mini-apps">bot mini app</a>.</summary>
+		/// <summary>Shown as a button on top of the remaining inline result list; if clicked, opens the specified <a href="https://corefork.telegram.org/api/bots/webapps#inline-mode-mini-apps">inline mode mini app</a>.</summary>
 		[IfFlag(3)] public InlineBotWebView switch_webview;
 		/// <summary>The results</summary>
 		public BotInlineResultBase[] results;
@@ -10736,7 +10750,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary><see cref="ChannelAdminLogEventActionParticipantJoin">Join events</see></summary>
+			/// <summary><see cref="ChannelAdminLogEventActionParticipantJoin">Join events</see>, including <see cref="ChannelAdminLogEventActionParticipantJoinByInvite">joins using invite links</see> and <see cref="ChannelAdminLogEventActionParticipantJoinByRequest">join requests</see>.</summary>
 			join = 0x1,
 			/// <summary><see cref="ChannelAdminLogEventActionParticipantLeave">Leave events</see></summary>
 			leave = 0x2,
@@ -10754,9 +10768,9 @@ namespace TL
 			promote = 0x80,
 			/// <summary><see cref="ChannelAdminLogEventActionParticipantToggleAdmin">Admin demotion events</see></summary>
 			demote = 0x100,
-			/// <summary>Info change events (when <see cref="ChannelAdminLogEventActionChangeAbout">about</see>, <see cref="ChannelAdminLogEventActionChangeLinkedChat">linked chat</see>, <see cref="ChannelAdminLogEventActionChangeLocation">location</see>, <see cref="ChannelAdminLogEventActionChangePhoto">photo</see>, <see cref="ChannelAdminLogEventActionChangeStickerSet">stickerset</see>, <see cref="ChannelAdminLogEventActionChangeTitle">title</see> or <see cref="ChannelAdminLogEventActionChangeUsername">username</see> data of a channel gets modified)</summary>
+			/// <summary>Info change events (when <see cref="ChannelAdminLogEventActionChangeAbout">about</see>, <see cref="ChannelAdminLogEventActionChangeLinkedChat">linked chat</see>, <see cref="ChannelAdminLogEventActionChangeLocation">location</see>, <see cref="ChannelAdminLogEventActionChangePhoto">photo</see>, <see cref="ChannelAdminLogEventActionChangeStickerSet">stickerset</see>, <see cref="ChannelAdminLogEventActionChangeTitle">title</see> or <see cref="ChannelAdminLogEventActionChangeUsername">username</see>, <see cref="ChannelAdminLogEventActionToggleSlowMode">slowmode</see>, <see cref="ChannelAdminLogEventActionChangeHistoryTTL">history TTL</see> settings of a channel gets modified)</summary>
 			info = 0x200,
-			/// <summary>Settings change events (<see cref="ChannelAdminLogEventActionToggleInvites">invites</see>, <see cref="ChannelAdminLogEventActionTogglePreHistoryHidden">hidden prehistory</see>, <see cref="ChannelAdminLogEventActionToggleSignatures">signatures</see>, <see cref="ChannelAdminLogEventActionDefaultBannedRights">default banned rights</see>)</summary>
+			/// <summary>Settings change events (<see cref="ChannelAdminLogEventActionToggleInvites">invites</see>, <see cref="ChannelAdminLogEventActionTogglePreHistoryHidden">hidden prehistory</see>, <see cref="ChannelAdminLogEventActionToggleSignatures">signatures</see>, <see cref="ChannelAdminLogEventActionDefaultBannedRights">default banned rights</see>, <see cref="ChannelAdminLogEventActionToggleForum">forum toggle events</see>)</summary>
 			settings = 0x400,
 			/// <summary><see cref="ChannelAdminLogEventActionUpdatePinned">Message pin events</see></summary>
 			pinned = 0x800,
@@ -12575,14 +12589,17 @@ namespace TL
 			has_settings = 0x2,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/webPageAttributeStory"/></para></summary>
+	/// <summary>Webpage preview of a Telegram story		<para>See <a href="https://corefork.telegram.org/constructor/webPageAttributeStory"/></para></summary>
 	[TLDef(0x2E94C3E7)]
 	public class WebPageAttributeStory : WebPageAttribute
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Peer that posted the story</summary>
 		public Peer peer;
+		/// <summary><a href="https://corefork.telegram.org/api/stories#watching-stories">Story ID</a></summary>
 		public int id;
+		/// <summary>May contain the story, if not the story should be fetched when and if needed using <see cref="SchemaExtensions.Stories_GetStoriesByID">Stories_GetStoriesByID</see> with the above <c>id</c> and <c>peer</c>.</summary>
 		[IfFlag(0)] public StoryItemBase story;
 
 		[Flags] public enum Flags : uint
@@ -14845,7 +14862,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>Total number of topics matching query; may be less than the topics contained in <c>topics</c>, in which case <a href="https://corefork.telegram.org/api/offsets">pagination</a> is required.</summary>
+		/// <summary>Total number of topics matching query; may be more than the topics contained in <c>topics</c>, in which case <a href="https://corefork.telegram.org/api/offsets">pagination</a> is required.</summary>
 		public int count;
 		/// <summary>Forum topics</summary>
 		public ForumTopicBase[] topics;
@@ -14860,7 +14877,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Whether the returned topics are ordered by creation date; if set, pagination by <c>next_offset</c> should use <see cref="ForumTopic"/>.<c>date</c>; otherwise topics are ordered by the last message date, so paginate by the <c>date</c> of the <see cref="MessageBase"/> referenced by <see cref="ForumTopic"/>.<c>top_message</c>.</summary>
+			/// <summary>Whether the returned topics are ordered by creation date; if set, pagination by <c>offset_date</c> should use <see cref="ForumTopic"/>.<c>date</c>; otherwise topics are ordered by the last message date, so paginate by the <c>date</c> of the <see cref="MessageBase"/> referenced by <see cref="ForumTopic"/>.<c>top_message</c>.</summary>
 			order_by_create_date = 0x1,
 		}
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
@@ -15078,28 +15095,28 @@ namespace TL
 		public JsonObject config;
 	}
 
-	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-bot-mini-apps">named bot mini app</a>		<para>See <a href="https://corefork.telegram.org/type/InputBotApp"/></para>		<para>Derived classes: <see cref="InputBotAppID"/>, <see cref="InputBotAppShortName"/></para></summary>
+	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a>		<para>See <a href="https://corefork.telegram.org/type/InputBotApp"/></para>		<para>Derived classes: <see cref="InputBotAppID"/>, <see cref="InputBotAppShortName"/></para></summary>
 	public abstract class InputBotApp : IObject { }
-	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-bot-mini-apps">named bot mini app</a> by its ID		<para>See <a href="https://corefork.telegram.org/constructor/inputBotAppID"/></para></summary>
+	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a> by its ID		<para>See <a href="https://corefork.telegram.org/constructor/inputBotAppID"/></para></summary>
 	[TLDef(0xA920BD7A)]
 	public class InputBotAppID : InputBotApp
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/bots/webapps#named-bot-mini-apps">named bot mini app</a> ID.</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a> ID.</summary>
 		public long id;
 		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash, obtained from the <see cref="BotApp"/>.</summary>
 		public long access_hash;
 	}
-	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-bot-mini-apps">named bot mini app</a> by its short name		<para>See <a href="https://corefork.telegram.org/constructor/inputBotAppShortName"/></para></summary>
+	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a> by its short name		<para>See <a href="https://corefork.telegram.org/constructor/inputBotAppShortName"/></para></summary>
 	[TLDef(0x908C0407)]
 	public class InputBotAppShortName : InputBotApp
 	{
 		/// <summary>ID of the bot that owns the bot mini app</summary>
 		public InputUserBase bot_id;
-		/// <summary>Short name, obtained from a <a href="https://corefork.telegram.org/api/links#named-bot-mini-app-links">named bot mini app deep link</a></summary>
+		/// <summary>Short name, obtained from a <a href="https://corefork.telegram.org/api/links#named-mini-app-links">named Mini App deep link</a></summary>
 		public string short_name;
 	}
 
-	/// <summary>Contains information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-bot-mini-apps">named bot mini app</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botApp"/></para></summary>
+	/// <summary>Contains information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botApp"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/botAppNotModified">botAppNotModified</a></remarks>
 	[TLDef(0x95FCD1D6)]
 	public class BotApp : IObject
@@ -15110,7 +15127,7 @@ namespace TL
 		public long id;
 		/// <summary>bot mini app access hash</summary>
 		public long access_hash;
-		/// <summary>bot mini app short name, used to generate <a href="https://corefork.telegram.org/api/links#named-bot-mini-app-links">named bot mini app deep links</a>.</summary>
+		/// <summary>bot mini app short name, used to generate <a href="https://corefork.telegram.org/api/links#named-mini-app-links">named Mini App deep links</a>.</summary>
 		public string short_name;
 		/// <summary>bot mini app title.</summary>
 		public string title;
@@ -15130,7 +15147,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>Contains information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-bot-mini-apps">named bot mini app</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.botApp"/></para></summary>
+	/// <summary>Contains information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.botApp"/></para></summary>
 	[TLDef(0xEB50ADF5)]
 	public class Messages_BotApp : IObject
 	{
@@ -15149,9 +15166,9 @@ namespace TL
 		}
 	}
 
-	/// <summary>Contains the link that must be used to open a <a href="https://corefork.telegram.org/api/bots/webapps#named-bot-mini-apps">named bot mini app</a>.		<para>See <a href="https://corefork.telegram.org/type/AppWebViewResult"/></para>		<para>Derived classes: <see cref="AppWebViewResultUrl"/></para></summary>
+	/// <summary>Contains the link that must be used to open a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a>.		<para>See <a href="https://corefork.telegram.org/type/AppWebViewResult"/></para>		<para>Derived classes: <see cref="AppWebViewResultUrl"/></para></summary>
 	public abstract class AppWebViewResult : IObject { }
-	/// <summary>Contains the link that must be used to open a <a href="https://corefork.telegram.org/api/bots/webapps#named-bot-mini-apps">named bot mini app</a>.		<para>See <a href="https://corefork.telegram.org/constructor/appWebViewResultUrl"/></para></summary>
+	/// <summary>Contains the link that must be used to open a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a>.		<para>See <a href="https://corefork.telegram.org/constructor/appWebViewResultUrl"/></para></summary>
 	[TLDef(0x3C1B4F0D)]
 	public class AppWebViewResultUrl : AppWebViewResult
 	{
@@ -15159,7 +15176,7 @@ namespace TL
 		public string url;
 	}
 
-	/// <summary>Specifies a <a href="https://corefork.telegram.org/api/bots/webapps#simple-mini-apps">bot mini app</a> button, shown on top of the inline query results list.		<para>See <a href="https://corefork.telegram.org/constructor/inlineBotWebView"/></para></summary>
+	/// <summary>Specifies an <a href="https://corefork.telegram.org/api/bots/webapps#inline-mode-mini-apps">inline mode mini app</a> button, shown on top of the inline query results list.		<para>See <a href="https://corefork.telegram.org/constructor/inlineBotWebView"/></para></summary>
 	[TLDef(0xB57295D5)]
 	public class InlineBotWebView : IObject
 	{
@@ -15405,6 +15422,7 @@ namespace TL
 		[IfFlag(2)] public int forwards_count;
 		/// <summary>All reactions sent to this story</summary>
 		[IfFlag(3)] public ReactionCount[] reactions;
+		/// <summary>Number of reactions added to the story</summary>
 		[IfFlag(4)] public int reactions_count;
 		/// <summary>User IDs of some recent viewers of the story</summary>
 		[IfFlag(0)] public long[] recent_viewers;
@@ -15454,6 +15472,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether this story can only be viewed by <a href="https://corefork.telegram.org/api/privacy">our close friends, see here »</a> for more info</summary>
 			close_friends = 0x100,
 		}
 
@@ -15500,15 +15519,19 @@ namespace TL
 			has_views = 0x8,
 			/// <summary>Whether this story is pinned on the user's profile</summary>
 			pinned = 0x20,
-			/// <summary>Whether this story is public</summary>
+			/// <summary>Whether this story is public and can be viewed by everyone</summary>
 			public_ = 0x80,
+			/// <summary>Whether this story can only be viewed by <a href="https://corefork.telegram.org/api/privacy">our close friends, see here »</a> for more info</summary>
 			close_friends = 0x100,
+			/// <summary>Full information about this story was omitted for space and performance reasons; use <see cref="SchemaExtensions.Stories_GetStoriesByID">Stories_GetStoriesByID</see> to fetch full info about this story when and if needed.</summary>
 			min = 0x200,
 			/// <summary>Whether this story is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a> and thus cannot be forwarded; clients should also prevent users from saving attached media (i.e. videos should only be streamed, photos should be kept in RAM, et cetera).</summary>
 			noforwards = 0x400,
 			/// <summary>Indicates whether the story was edited.</summary>
 			edited = 0x800,
+			/// <summary>Whether this story can only be viewed by our contacts</summary>
 			contacts = 0x1000,
+			/// <summary>Whether this story can only be viewed by a select list of our contacts</summary>
 			selected_contacts = 0x2000,
 			/// <summary>Field <see cref="media_areas"/> has a value</summary>
 			has_media_areas = 0x4000,
@@ -15600,7 +15623,9 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether we have <a href="https://corefork.telegram.org/api/block">completely blocked</a> this user, including from viewing more of our stories.</summary>
 			blocked = 0x1,
+			/// <summary>Whether we have <a href="https://corefork.telegram.org/api/block">blocked</a> this user from viewing more of our stories.</summary>
 			blocked_my_stories_from = 0x2,
 			/// <summary>Field <see cref="reaction"/> has a value</summary>
 			has_reaction = 0x4,
@@ -15615,6 +15640,7 @@ namespace TL
 		public Flags flags;
 		/// <summary>Total number of results that can be fetched</summary>
 		public int count;
+		/// <summary>Number of reactions that were added to the story</summary>
 		public int reactions_count;
 		/// <summary>Story view date and reaction information</summary>
 		public StoryView[] views;

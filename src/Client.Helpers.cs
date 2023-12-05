@@ -505,7 +505,7 @@ namespace WTelegram
 		/// <param name="alphabet1">first letters used to search for in participants names<br/>(default values crafted with ♥ to find most latin and cyrillic names)</param>
 		/// <param name="alphabet2">second (and further) letters used to search for in participants names</param>
 		/// <param name="cancellationToken">Can be used to abort the work of this method</param>
-		/// <returns>Field count indicates the total count of members. Field participants contains those that were successfully fetched</returns>
+		/// <returns>Field <c>count</c> indicates the total count of members. Field <c>participants</c> contains those that were successfully fetched</returns>
 		/// <remarks>⚠ This method can take a few minutes to complete on big broadcast channels. It likely won't be able to obtain the full total count of members</remarks>
 		public async Task<Channels_ChannelParticipants> Channels_GetAllParticipants(InputChannelBase channel, bool includeKickBan = false, string alphabet1 = "АБCДЕЄЖФГHИІJКЛМНОПQРСТУВWХЦЧШЩЫЮЯЗ", string alphabet2 = "АCЕHИJЛМНОРСТУВWЫ", CancellationToken cancellationToken = default)
 		{
