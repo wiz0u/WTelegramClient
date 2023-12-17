@@ -23,6 +23,7 @@ namespace WTelegram
 			public long AuthKeyID;
 			public byte[] AuthKey;      // 2048-bit = 256 bytes
 			public long UserId;
+			public long OldSalt;        // still accepted for a further 1800 seconds
 			public long Salt;
 			public SortedList<DateTime, long> Salts;
 			public int Seqno;

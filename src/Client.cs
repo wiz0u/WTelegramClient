@@ -437,9 +437,10 @@ namespace WTelegram
 					_dcSession.ServerTicksOffset = (msgId >> 32) * 10000000 - DateTime.UtcNow.Ticks + 621355968000000000L;
 				var msgStamp = MsgIdToStamp(_lastRecvMsgId = msgId);
 
-				if (serverSalt != _dcSession.Salt && serverSalt != _dcSession.Salts?.Values.ElementAtOrDefault(1))
+				if (serverSalt != _dcSession.Salt && serverSalt != _dcSession.OldSalt && serverSalt != _dcSession.Salts?.Values.ElementAtOrDefault(1))
 				{
 					Helpers.Log(3, $"{_dcSession.DcID}>Server salt has changed: {_dcSession.Salt:X} -> {serverSalt:X}");
+					_dcSession.OldSalt = _dcSession.Salt;
 					_dcSession.Salt = serverSalt;
 					if (++_saltChangeCounter >= 10)
 						throw new WTException("Server salt changed too often! Security issue?");
@@ -490,7 +491,7 @@ namespace WTelegram
 					var keys = _dcSession.Salts.Keys;
 					if (keys[^1] == DateTime.MaxValue) return; // GetFutureSalts ongoing
 					var now = DateTime.UtcNow.AddTicks(_dcSession.ServerTicksOffset);
-					for (; keys.Count > 1 && keys[1] < now; _dcSession.Salt = _dcSession.Salts.Values[0])
+					for (; keys.Count > 1 && keys[1] < now;  _dcSession.OldSalt = _dcSession.Salt, _dcSession.Salt = _dcSession.Salts.Values[0])
 						_dcSession.Salts.RemoveAt(0);
 					if (_dcSession.Salts.Count > 48) return;
 				}
@@ -503,6 +504,7 @@ namespace WTelegram
 					_dcSession.Salts.Remove(DateTime.MaxValue);
 					foreach (var entry in gfs.Result.salts)
 						_dcSession.Salts[entry.valid_since] = entry.salt;
+					_dcSession.OldSalt = _dcSession.Salt;
 					_dcSession.Salt = _dcSession.Salts.Values[0];
 					_session.Save();
 				}
@@ -695,6 +697,7 @@ namespace WTelegram
 							}
 							break;
 						case 48: // incorrect server salt (in this case, the bad_server_salt response is received with the correct salt, and the message is to be re-sent with it)
+							_dcSession.OldSalt = _dcSession.Salt;
 							_dcSession.Salt = ((BadServerSalt)badMsgNotification).new_server_salt;
 							CheckSalt();
 							break;
