@@ -430,18 +430,21 @@ namespace TL
 		public virtual Dictionary<long, ChatBase> Chats => NoChats;
 		private static readonly Dictionary<long, User> NoUsers = new();
 		private static readonly Dictionary<long, ChatBase> NoChats = new();
+		public virtual (long mbox_id, int pts, int pts_count) GetMBox() => default;
 	}
 	partial class UpdatesCombined
 	{
 		public override Update[] UpdateList => updates;
 		public override Dictionary<long, User> Users => users;
 		public override Dictionary<long, ChatBase> Chats => chats;
+		public override (long mbox_id, int pts, int pts_count) GetMBox() => (-2, seq, seq - seq_start + 1);
 	}
 	partial class Updates
 	{
 		public override Update[] UpdateList => updates;
 		public override Dictionary<long, User> Users => users;
 		public override Dictionary<long, ChatBase> Chats => chats;
+		public override (long mbox_id, int pts, int pts_count) GetMBox() => (-2, seq, 1);
 	}
 	partial class UpdatesTooLong			{ public override Update[] UpdateList => Array.Empty<Update>(); }
 	partial class UpdateShort				{ public override Update[] UpdateList => new[] { update }; }

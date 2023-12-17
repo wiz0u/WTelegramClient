@@ -188,7 +188,7 @@ This library works best with **.NET 5.0+** (faster, no dependencies) and is also
 This library can be used for any Telegram scenario including:
 - Sequential or parallel automated steps based on API requests/responses
 - Real-time [monitoring](https://wiz0u.github.io/WTelegramClient/EXAMPLES#updates) of incoming Updates/Messages
-- Download/upload of files/media
+- [Download](https://wiz0u.github.io/WTelegramClient/EXAMPLES#download)/[upload](https://wiz0u.github.io/WTelegramClient/EXAMPLES#upload) of files/media
 - Exchange end-to-end encrypted messages/files in [Secret Chats](https://wiz0u.github.io/WTelegramClient/EXAMPLES#e2e)
 - Building a full-featured interactive client
 

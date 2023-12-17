@@ -3455,7 +3455,10 @@ namespace TL
 	public class InputMessagesFilterPinned : MessagesFilter { }
 
 	/// <summary>Object contains info on events occurred.		<para>See <a href="https://corefork.telegram.org/type/Update"/></para>		<para>Derived classes: <see cref="UpdateNewMessage"/>, <see cref="UpdateMessageID"/>, <see cref="UpdateDeleteMessages"/>, <see cref="UpdateUserTyping"/>, <see cref="UpdateChatUserTyping"/>, <see cref="UpdateChatParticipants"/>, <see cref="UpdateUserStatus"/>, <see cref="UpdateUserName"/>, <see cref="UpdateNewAuthorization"/>, <see cref="UpdateNewEncryptedMessage"/>, <see cref="UpdateEncryptedChatTyping"/>, <see cref="UpdateEncryption"/>, <see cref="UpdateEncryptedMessagesRead"/>, <see cref="UpdateChatParticipantAdd"/>, <see cref="UpdateChatParticipantDelete"/>, <see cref="UpdateDcOptions"/>, <see cref="UpdateNotifySettings"/>, <see cref="UpdateServiceNotification"/>, <see cref="UpdatePrivacy"/>, <see cref="UpdateUserPhone"/>, <see cref="UpdateReadHistoryInbox"/>, <see cref="UpdateReadHistoryOutbox"/>, <see cref="UpdateWebPage"/>, <see cref="UpdateReadMessagesContents"/>, <see cref="UpdateChannelTooLong"/>, <see cref="UpdateChannel"/>, <see cref="UpdateNewChannelMessage"/>, <see cref="UpdateReadChannelInbox"/>, <see cref="UpdateDeleteChannelMessages"/>, <see cref="UpdateChannelMessageViews"/>, <see cref="UpdateChatParticipantAdmin"/>, <see cref="UpdateNewStickerSet"/>, <see cref="UpdateStickerSetsOrder"/>, <see cref="UpdateStickerSets"/>, <see cref="UpdateSavedGifs"/>, <see cref="UpdateBotInlineQuery"/>, <see cref="UpdateBotInlineSend"/>, <see cref="UpdateEditChannelMessage"/>, <see cref="UpdateBotCallbackQuery"/>, <see cref="UpdateEditMessage"/>, <see cref="UpdateInlineBotCallbackQuery"/>, <see cref="UpdateReadChannelOutbox"/>, <see cref="UpdateDraftMessage"/>, <see cref="UpdateReadFeaturedStickers"/>, <see cref="UpdateRecentStickers"/>, <see cref="UpdateConfig"/>, <see cref="UpdatePtsChanged"/>, <see cref="UpdateChannelWebPage"/>, <see cref="UpdateDialogPinned"/>, <see cref="UpdatePinnedDialogs"/>, <see cref="UpdateBotWebhookJSON"/>, <see cref="UpdateBotWebhookJSONQuery"/>, <see cref="UpdateBotShippingQuery"/>, <see cref="UpdateBotPrecheckoutQuery"/>, <see cref="UpdatePhoneCall"/>, <see cref="UpdateLangPackTooLong"/>, <see cref="UpdateLangPack"/>, <see cref="UpdateFavedStickers"/>, <see cref="UpdateChannelReadMessagesContents"/>, <see cref="UpdateContactsReset"/>, <see cref="UpdateChannelAvailableMessages"/>, <see cref="UpdateDialogUnreadMark"/>, <see cref="UpdateMessagePoll"/>, <see cref="UpdateChatDefaultBannedRights"/>, <see cref="UpdateFolderPeers"/>, <see cref="UpdatePeerSettings"/>, <see cref="UpdatePeerLocated"/>, <see cref="UpdateNewScheduledMessage"/>, <see cref="UpdateDeleteScheduledMessages"/>, <see cref="UpdateTheme"/>, <see cref="UpdateGeoLiveViewed"/>, <see cref="UpdateLoginToken"/>, <see cref="UpdateMessagePollVote"/>, <see cref="UpdateDialogFilter"/>, <see cref="UpdateDialogFilterOrder"/>, <see cref="UpdateDialogFilters"/>, <see cref="UpdatePhoneCallSignalingData"/>, <see cref="UpdateChannelMessageForwards"/>, <see cref="UpdateReadChannelDiscussionInbox"/>, <see cref="UpdateReadChannelDiscussionOutbox"/>, <see cref="UpdatePeerBlocked"/>, <see cref="UpdateChannelUserTyping"/>, <see cref="UpdatePinnedMessages"/>, <see cref="UpdatePinnedChannelMessages"/>, <see cref="UpdateChat"/>, <see cref="UpdateGroupCallParticipants"/>, <see cref="UpdateGroupCall"/>, <see cref="UpdatePeerHistoryTTL"/>, <see cref="UpdateChatParticipant"/>, <see cref="UpdateChannelParticipant"/>, <see cref="UpdateBotStopped"/>, <see cref="UpdateGroupCallConnection"/>, <see cref="UpdateBotCommands"/>, <see cref="UpdatePendingJoinRequests"/>, <see cref="UpdateBotChatInviteRequester"/>, <see cref="UpdateMessageReactions"/>, <see cref="UpdateAttachMenuBots"/>, <see cref="UpdateWebViewResultSent"/>, <see cref="UpdateBotMenuButton"/>, <see cref="UpdateSavedRingtones"/>, <see cref="UpdateTranscribedAudio"/>, <see cref="UpdateReadFeaturedEmojiStickers"/>, <see cref="UpdateUserEmojiStatus"/>, <see cref="UpdateRecentEmojiStatuses"/>, <see cref="UpdateRecentReactions"/>, <see cref="UpdateMoveStickerSetToTop"/>, <see cref="UpdateMessageExtendedMedia"/>, <see cref="UpdateChannelPinnedTopic"/>, <see cref="UpdateChannelPinnedTopics"/>, <see cref="UpdateUser"/>, <see cref="UpdateAutoSaveSettings"/>, <see cref="UpdateGroupInvitePrivacyForbidden"/>, <see cref="UpdateStory"/>, <see cref="UpdateReadStories"/>, <see cref="UpdateStoryID"/>, <see cref="UpdateStoriesStealthMode"/>, <see cref="UpdateSentStoryReaction"/></para></summary>
-	public abstract class Update : IObject { }
+	public abstract class Update : IObject
+	{
+		public virtual (long mbox_id, int pts, int pts_count) GetMBox() => default;
+	}
 	/// <summary>New message in a private chat or in a <a href="https://corefork.telegram.org/api/channel#basic-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateNewMessage"/></para></summary>
 	[TLDef(0x1F2B0AFD)]
 	public class UpdateNewMessage : Update
@@ -3466,6 +3469,8 @@ namespace TL
 		public int pts;
 		/// <summary>Number of generated events</summary>
 		public int pts_count;
+
+		public override (long, int, int) GetMBox() => (0, pts, pts_count);
 	}
 	/// <summary>Sent message with <strong>random_id</strong> client identifier was assigned an identifier.		<para>See <a href="https://corefork.telegram.org/constructor/updateMessageID"/></para></summary>
 	[TLDef(0x4E90BFD6)]
@@ -3486,6 +3491,8 @@ namespace TL
 		public int pts;
 		/// <summary>Number of generated <a href="https://corefork.telegram.org/api/updates">events</a></summary>
 		public int pts_count;
+
+		public override (long, int, int) GetMBox() => (0, pts, pts_count);
 	}
 	/// <summary>The user is preparing a message; typing, recording, uploading, etc. This update is valid for 6 seconds. If no further updates of this kind are received after 6 seconds, it should be considered that the user stopped doing whatever they were doing		<para>See <a href="https://corefork.telegram.org/constructor/updateUserTyping"/></para></summary>
 	[TLDef(0xC01E857F, inheritBefore = true)]
@@ -3557,6 +3564,8 @@ namespace TL
 		public EncryptedMessageBase message;
 		/// <summary>New <strong>qts</strong> value, see <a href="https://corefork.telegram.org/api/updates">updates »</a> for more info.</summary>
 		public int qts;
+
+		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
 	/// <summary>Interlocutor is typing a message in an encrypted chat. Update period is 6 second. If upon this time there is no repeated update, it shall be considered that the interlocutor stopped typing.		<para>See <a href="https://corefork.telegram.org/constructor/updateEncryptedChatTyping"/></para></summary>
 	[TLDef(0x1710F156)]
@@ -3689,6 +3698,8 @@ namespace TL
 			/// <summary>Field <see cref="folder_id"/> has a value</summary>
 			has_folder_id = 0x1,
 		}
+
+		public override (long, int, int) GetMBox() => (0, pts, pts_count);
 	}
 	/// <summary>Outgoing messages were read		<para>See <a href="https://corefork.telegram.org/constructor/updateReadHistoryOutbox"/></para></summary>
 	[TLDef(0x2F2F21BF)]
@@ -3702,6 +3713,8 @@ namespace TL
 		public int pts;
 		/// <summary><a href="https://corefork.telegram.org/api/updates">Number of events that were generated</a></summary>
 		public int pts_count;
+
+		public override (long, int, int) GetMBox() => (0, pts, pts_count);
 	}
 	/// <summary>An <a href="https://instantview.telegram.org">instant view</a> webpage preview was generated		<para>See <a href="https://corefork.telegram.org/constructor/updateWebPage"/></para></summary>
 	[TLDef(0x7F891213)]
@@ -3713,6 +3726,8 @@ namespace TL
 		public int pts;
 		/// <summary><a href="https://corefork.telegram.org/api/updates">Number of events that were generated</a></summary>
 		public int pts_count;
+
+		public override (long, int, int) GetMBox() => (0, pts, pts_count);
 	}
 	/// <summary>Contents of messages in the common <a href="https://corefork.telegram.org/api/updates">message box</a> were read		<para>See <a href="https://corefork.telegram.org/constructor/updateReadMessagesContents"/></para></summary>
 	[TLDef(0xF8227181)]
@@ -3733,6 +3748,8 @@ namespace TL
 			/// <summary>Field <see cref="date"/> has a value</summary>
 			has_date = 0x1,
 		}
+
+		public override (long, int, int) GetMBox() => (0, pts, pts_count);
 	}
 	/// <summary>There are new updates in the specified channel, the client must fetch them.<br/>If the difference is too long or if the channel isn't currently in the states, start fetching from the specified pts.		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelTooLong"/></para></summary>
 	[TLDef(0x108D941F)]
@@ -3750,6 +3767,8 @@ namespace TL
 			/// <summary>Field <see cref="pts"/> has a value</summary>
 			has_pts = 0x1,
 		}
+
+		public override (long, int, int) GetMBox() => (channel_id, pts, 0);
 	}
 	/// <summary>A new channel or supergroup is available, or info about an existing channel has changed and must be refeteched.		<para>See <a href="https://corefork.telegram.org/constructor/updateChannel"/></para></summary>
 	[TLDef(0x635B4C09)]
@@ -3760,7 +3779,10 @@ namespace TL
 	}
 	/// <summary>A new message was sent in a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/constructor/updateNewChannelMessage"/></para></summary>
 	[TLDef(0x62BA04D9)]
-	public class UpdateNewChannelMessage : UpdateNewMessage { }
+	public class UpdateNewChannelMessage : UpdateNewMessage
+	{
+		public override (long, int, int) GetMBox() => (message.Peer is PeerChannel pc ? pc.channel_id : 0, pts, pts_count);
+	}
 	/// <summary>Incoming messages in a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> were read		<para>See <a href="https://corefork.telegram.org/constructor/updateReadChannelInbox"/></para></summary>
 	[TLDef(0x922E6E10)]
 	public class UpdateReadChannelInbox : Update
@@ -3783,6 +3805,8 @@ namespace TL
 			/// <summary>Field <see cref="folder_id"/> has a value</summary>
 			has_folder_id = 0x1,
 		}
+
+		public override (long, int, int) GetMBox() => (channel_id, pts, 0);
 	}
 	/// <summary>Some messages in a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a> were deleted		<para>See <a href="https://corefork.telegram.org/constructor/updateDeleteChannelMessages"/></para></summary>
 	[TLDef(0xC32D5B12)]
@@ -3790,6 +3814,8 @@ namespace TL
 	{
 		/// <summary>Channel ID</summary>
 		public long channel_id;
+
+		public override (long, int, int) GetMBox() => (channel_id, pts, pts_count);
 	}
 	/// <summary>The view counter of a message in a channel has changed		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelMessageViews"/></para></summary>
 	[TLDef(0xF226AC08, inheritBefore = true)]
@@ -3897,7 +3923,10 @@ namespace TL
 	}
 	/// <summary>A message was edited in a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/constructor/updateEditChannelMessage"/></para></summary>
 	[TLDef(0x1B3F4DF7)]
-	public class UpdateEditChannelMessage : UpdateEditMessage { }
+	public class UpdateEditChannelMessage : UpdateEditMessage
+	{
+		public override (long, int, int) GetMBox() => (message.Peer is PeerChannel pc ? pc.channel_id : 0, pts, pts_count);
+	}
 	/// <summary>A callback button was pressed, and the button data was sent to the bot that created the button		<para>See <a href="https://corefork.telegram.org/constructor/updateBotCallbackQuery"/></para></summary>
 	[TLDef(0xB9CFC48D)]
 	public class UpdateBotCallbackQuery : Update
@@ -3937,6 +3966,8 @@ namespace TL
 		public int pts;
 		/// <summary><a href="https://corefork.telegram.org/api/updates">PTS count</a></summary>
 		public int pts_count;
+
+		public override (long, int, int) GetMBox() => (0, pts, pts_count);
 	}
 	/// <summary>This notification is received by bots when a button is pressed		<para>See <a href="https://corefork.telegram.org/constructor/updateInlineBotCallbackQuery"/></para></summary>
 	[TLDef(0x691E9052)]
@@ -4011,6 +4042,8 @@ namespace TL
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a> ID</summary>
 		public long channel_id;
+
+		public override (long, int, int) GetMBox() => (channel_id, pts, pts_count);
 	}
 	/// <summary>A dialog was pinned/unpinned		<para>See <a href="https://corefork.telegram.org/constructor/updateDialogPinned"/></para></summary>
 	[TLDef(0x6E6FE51C)]
@@ -4218,6 +4251,8 @@ namespace TL
 		public int pts;
 		/// <summary><a href="https://corefork.telegram.org/api/updates">Number of events that were generated</a></summary>
 		public int pts_count;
+
+		public override (long, int, int) GetMBox() => (0, pts, pts_count);
 	}
 	/// <summary>Settings of a certain peer have changed		<para>See <a href="https://corefork.telegram.org/constructor/updatePeerSettings"/></para></summary>
 	[TLDef(0x6A7E7366)]
@@ -4282,6 +4317,8 @@ namespace TL
 		public byte[][] options;
 		/// <summary>New <strong>qts</strong> value, see <a href="https://corefork.telegram.org/api/updates">updates »</a> for more info.</summary>
 		public int qts;
+
+		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
 	/// <summary>A new <a href="https://corefork.telegram.org/api/folders">folder</a> was added		<para>See <a href="https://corefork.telegram.org/constructor/updateDialogFilter"/></para></summary>
 	[TLDef(0x26FFDE7D)]
@@ -4420,6 +4457,8 @@ namespace TL
 			/// <summary>Whether the messages were pinned or unpinned</summary>
 			pinned = 0x1,
 		}
+
+		public override (long, int, int) GetMBox() => (0, pts, pts_count);
 	}
 	/// <summary>Messages were pinned/unpinned in a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/constructor/updatePinnedChannelMessages"/></para></summary>
 	[TLDef(0x5BB98608)]
@@ -4441,6 +4480,8 @@ namespace TL
 			/// <summary>Whether the messages were pinned or unpinned</summary>
 			pinned = 0x1,
 		}
+
+		public override (long, int, int) GetMBox() => (channel_id, pts, pts_count);
 	}
 	/// <summary>A new chat is available		<para>See <a href="https://corefork.telegram.org/constructor/updateChat"/></para></summary>
 	[TLDef(0xF89A6A4E)]
@@ -4518,6 +4559,8 @@ namespace TL
 			/// <summary>Field <see cref="invite"/> has a value</summary>
 			has_invite = 0x4,
 		}
+
+		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
 	/// <summary>A participant has left, joined, was banned or admined in a <a href="https://corefork.telegram.org/api/channel">channel or supergroup</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelParticipant"/></para></summary>
 	[TLDef(0x985D3ABB)]
@@ -4553,6 +4596,8 @@ namespace TL
 			/// <summary>Whether the participant joined using a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.</summary>
 			via_chatlist = 0x8,
 		}
+
+		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
 	/// <summary>A bot was stopped or re-started.		<para>See <a href="https://corefork.telegram.org/constructor/updateBotStopped"/></para></summary>
 	[TLDef(0xC4870A49)]
@@ -4566,6 +4611,8 @@ namespace TL
 		public bool stopped;
 		/// <summary>New <strong>qts</strong> value, see <a href="https://corefork.telegram.org/api/updates">updates »</a> for more info.</summary>
 		public int qts;
+
+		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
 	/// <summary>New WebRTC parameters		<para>See <a href="https://corefork.telegram.org/constructor/updateGroupCallConnection"/></para></summary>
 	[TLDef(0x0B783982)]
@@ -4620,6 +4667,8 @@ namespace TL
 		public ExportedChatInvite invite;
 		/// <summary><a href="https://corefork.telegram.org/api/updates">QTS</a> event sequence identifier</summary>
 		public int qts;
+
+		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
 	/// <summary>New <a href="https://corefork.telegram.org/api/reactions">message reactions »</a> are available		<para>See <a href="https://corefork.telegram.org/constructor/updateMessageReactions"/></para></summary>
 	[TLDef(0x5E1B3CB8)]
@@ -4832,6 +4881,8 @@ namespace TL
 		public Peer peer;
 		public Boost boost;
 		public int qts;
+
+		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateChannelViewForumAsMessages"/></para></summary>
 	[TLDef(0x07B68920, inheritBefore = true)]
