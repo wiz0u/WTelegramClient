@@ -2,10 +2,13 @@
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
 using System.Text.Json;
+
+// I really respect Wizou's work on this library, but the session workflow is poorly disigned (ridiculous)
+//	with no way to swap session/store implementation
+// So I have removed the encryption stuff completely.
+// Now the session is stored as plain JSON, and Wizou can continue inventing bicycles on his own 
 
 namespace WTelegram
 {
@@ -78,49 +81,43 @@ namespace WTelegram
 
 		public DateTime SessionStart => _sessionStart;
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
-		private readonly SHA256 _sha256 = SHA256.Create();
 		private Stream _store;
-		private byte[] _reuseKey;   // used only if AES Encryptor.CanReuseTransform = false (Mono)
 		private byte[] _encrypted = new byte[16];
-		private ICryptoTransform _encryptor;
 		private Utf8JsonWriter _jsonWriter;
 		private readonly MemoryStream _jsonStream = new(4096);
 
 		public void Dispose()
 		{
-			_sha256.Dispose();
 			_store.Dispose();
-			_encryptor.Dispose();
 			_jsonWriter.Dispose();
 			_jsonStream.Dispose();
 		}
 
-		internal static Session LoadOrCreate(Stream store, byte[] rgbKey)
+		internal static Session LoadOrCreate(Stream store)
 		{
-			using var aes = Aes.Create();
 			Session session = null;
+			
 			try
 			{
 				var length = (int)store.Length;
+			
 				if (length > 0)
 				{
-					var input = new byte[length];
-					if (store.Read(input, 0, length) != length)
+					var utf8Json = new byte[length];
+
+					if (store.Read(utf8Json, 0, length) != length)
+					{
 						throw new WTException($"Can't read session block ({store.Position}, {length})");
-					using var sha256 = SHA256.Create();
-					using var decryptor = aes.CreateDecryptor(rgbKey, input[0..16]);
-					var utf8Json = decryptor.TransformFinalBlock(input, 16, input.Length - 16);
-					if (!sha256.ComputeHash(utf8Json, 32, utf8Json.Length - 32).SequenceEqual(utf8Json[0..32]))
-						throw new WTException("Integrity check failed in session loading");
+					}
+
 					session = JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), Helpers.JsonOptions);
 					Helpers.Log(2, "Loaded previous session");
 				}
+				
 				session ??= new Session();
 				session._store = store;
-				Encryption.RNG.GetBytes(session._encrypted, 0, 16);
-				session._encryptor = aes.CreateEncryptor(rgbKey, session._encrypted);
-				if (!session._encryptor.CanReuseTransform) session._reuseKey = rgbKey;
 				session._jsonWriter = new Utf8JsonWriter(session._jsonStream, default);
+				
 				return session;
 			}
 			catch (Exception ex)
@@ -135,21 +132,13 @@ namespace WTelegram
 			JsonSerializer.Serialize(_jsonWriter, this, Helpers.JsonOptions);
 			var utf8Json = _jsonStream.GetBuffer();
 			var utf8JsonLen = (int)_jsonStream.Position;
-			int encryptedLen = 64 + (utf8JsonLen & ~15);
+
 			lock (_store) // while updating _encrypted buffer and writing to store
 			{
-				if (encryptedLen > _encrypted.Length)
-					Array.Copy(_encrypted, _encrypted = new byte[encryptedLen + 256], 16);
-				_encryptor.TransformBlock(_sha256.ComputeHash(utf8Json, 0, utf8JsonLen), 0, 32, _encrypted, 16);
-				_encryptor.TransformBlock(utf8Json, 0, encryptedLen - 64, _encrypted, 48);
-				_encryptor.TransformFinalBlock(utf8Json, encryptedLen - 64, utf8JsonLen & 15).CopyTo(_encrypted, encryptedLen - 16);
-				if (!_encryptor.CanReuseTransform) // under Mono, AES encryptor is not reusable
-					using (var aes = Aes.Create())
-						_encryptor = aes.CreateEncryptor(_reuseKey, _encrypted[0..16]);
-				_store.Position = 0;
-				_store.Write(_encrypted, 0, encryptedLen);
-				_store.SetLength(encryptedLen);
+				_store.Write(utf8Json, 0, utf8JsonLen);
+				_store.SetLength(utf8JsonLen);
 			}
+			
 			_jsonStream.Position = 0;
 			_jsonWriter.Reset();
 		}
