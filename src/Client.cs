@@ -100,13 +100,20 @@ namespace WTelegram
 		public Client(Func<string, string> configProvider = null, Stream sessionStore = null)
 		{
 			_config = configProvider ?? DefaultConfigOrAsk;
-			sessionStore ??= new SessionStore(Config("session_pathname"));
+			
+			sessionStore ??= new FileStream(
+				Config("session_pathname"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1);
+			
 			_session = Session.LoadOrCreate(sessionStore);
+			
 			if (_session.ApiId == 0) _session.ApiId = int.Parse(Config("api_id"));
 			if (_session.MainDC != 0) _session.DCSessions.TryGetValue(_session.MainDC, out _dcSession);
+			
 			_dcSession ??= new() { Id = Helpers.RandomLong() };
 			_dcSession.Client = this;
+			
 			var version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+			
 			Helpers.Log(1, $"WTelegramClient {version} running under {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}");
 		}
 

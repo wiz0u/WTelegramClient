@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -141,40 +140,6 @@ namespace WTelegram
 			
 			_jsonStream.Position = 0;
 			_jsonWriter.Reset();
-		}
-	}
-
-	internal class SessionStore : FileStream
-	{
-		public override long Length { get; }
-		public override long Position { get => base.Position; set { } }
-		public override void SetLength(long value) { }
-		private readonly byte[] _header = new byte[8];
-		private int _nextPosition = 8;
-
-		public SessionStore(string pathname)
-			: base(pathname, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1) // no in-app buffering
-		{
-			if (base.Read(_header, 0, 8) == 8)
-			{
-				var position = BinaryPrimitives.ReadInt32LittleEndian(_header);
-				var length = BinaryPrimitives.ReadInt32LittleEndian(_header.AsSpan(4));
-				base.Position = position;
-				Length = length;
-				_nextPosition = position + length;
-			}
-		}
-
-		public override void Write(byte[] buffer, int offset, int count)
-		{
-			if (_nextPosition > count * 3) _nextPosition = 8;
-			base.Position = _nextPosition;
-			base.Write(buffer, offset, count);
-			BinaryPrimitives.WriteInt32LittleEndian(_header, _nextPosition);
-			BinaryPrimitives.WriteInt32LittleEndian(_header.AsSpan(4), count);
-			_nextPosition += count;
-			base.Position = 0;
-			base.Write(_header, 0, 8);
 		}
 	}
 }
