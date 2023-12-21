@@ -126,6 +126,7 @@ namespace WTelegram
 			
 			lock (_store)
 			{
+				_store.Position = 0;
 				_store.Write(jsonUtf8Bytes, 0, jsonUtf8Bytes.Length);
 			}
 		}
