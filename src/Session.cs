@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 
 // I really respect Wizou's work on this library, but the session workflow is poorly disigned (ridiculous)
@@ -89,29 +90,28 @@ namespace WTelegram
 
 		internal static Session LoadOrCreate(Stream store)
 		{
-			Session session = null;
-			
 			try
 			{
 				var length = (int)store.Length;
-			
-				if (length > 0)
+
+				if (length <= 0)
 				{
-					var utf8Json = new byte[length];
-
-					if (store.Read(utf8Json, 0, length) != length)
-					{
-						throw new WTException($"Can't read session block ({store.Position}, {length})");
-					}
-
-					session = JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), Helpers.JsonOptions);
-					Helpers.Log(2, "Loaded previous session");
+					var session = new Session();
+					session._store = store;
+					return session;
 				}
-				
-				session ??= new Session();
-				session._store = store;
-				
-				return session;
+
+				var utf8Json = new byte[length];
+
+				if (store.Read(utf8Json, 0, length) != length)
+				{
+					throw new WTException($"Can't read session block ({store.Position}, {length})");
+				}
+					
+				var prevSession = JsonSerializer.Deserialize<Session>(utf8Json, Helpers.JsonOptions);
+				Helpers.Log(2, "Loaded previous session");
+
+				return prevSession;
 			}
 			catch (Exception ex)
 			{
