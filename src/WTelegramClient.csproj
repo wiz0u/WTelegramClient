@@ -11,7 +11,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PackageId>TTelegramClient</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>Wizou, TrixiS</Authors>
     <Description>Telegram Client API (MTProto) library written 100% in C# and .NET Standard | Latest API layer: 167&#10;&#10;Release Notes:&#10;$(ReleaseNotes.Replace("|", "%0D%0A").Replace(" - ","%0D%0A- ").Replace("  ", "%0D%0A%0D%0A"))</Description>
     <Copyright>Copyright © Olivier Marcoux 2021-2023</Copyright>

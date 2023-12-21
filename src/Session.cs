@@ -81,15 +81,10 @@ namespace WTelegram
 		public DateTime SessionStart => _sessionStart;
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
 		private Stream _store;
-		private byte[] _encrypted = new byte[16];
-		private Utf8JsonWriter _jsonWriter;
-		private readonly MemoryStream _jsonStream = new(4096);
 
 		public void Dispose()
 		{
 			_store.Dispose();
-			_jsonWriter.Dispose();
-			_jsonStream.Dispose();
 		}
 
 		internal static Session LoadOrCreate(Stream store)
@@ -115,7 +110,6 @@ namespace WTelegram
 				
 				session ??= new Session();
 				session._store = store;
-				session._jsonWriter = new Utf8JsonWriter(session._jsonStream, default);
 				
 				return session;
 			}
@@ -128,18 +122,12 @@ namespace WTelegram
 
 		internal void Save() // must be called with lock(session)
 		{
-			JsonSerializer.Serialize(_jsonWriter, this, Helpers.JsonOptions);
-			var utf8Json = _jsonStream.GetBuffer();
-			var utf8JsonLen = (int)_jsonStream.Position;
-
-			lock (_store) // while updating _encrypted buffer and writing to store
-			{
-				_store.Write(utf8Json, 0, utf8JsonLen);
-				_store.SetLength(utf8JsonLen);
-			}
+			var jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(this, Helpers.JsonOptions);
 			
-			_jsonStream.Position = 0;
-			_jsonWriter.Reset();
+			lock (_store)
+			{
+				_store.Write(jsonUtf8Bytes, 0, jsonUtf8Bytes.Length);
+			}
 		}
 	}
 }

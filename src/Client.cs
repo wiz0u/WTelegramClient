@@ -102,7 +102,7 @@ namespace WTelegram
 			_config = configProvider ?? DefaultConfigOrAsk;
 			
 			sessionStore ??= new FileStream(
-				Config("session_pathname"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1);
+				Config("session_pathname"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
 			
 			_session = Session.LoadOrCreate(sessionStore);
 			
