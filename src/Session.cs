@@ -109,6 +109,7 @@ namespace WTelegram
 				}
 					
 				var prevSession = JsonSerializer.Deserialize<Session>(utf8Json, Helpers.JsonOptions);
+				prevSession._store = store;
 				Helpers.Log(2, "Loaded previous session");
 
 				return prevSession;
