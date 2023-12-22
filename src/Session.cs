@@ -96,9 +96,7 @@ namespace WTelegram
 
 				if (length <= 0)
 				{
-					var session = new Session();
-					session._store = store;
-					return session;
+					return new Session { _store = store };
 				}
 
 				var utf8Json = new byte[length];
@@ -127,6 +125,7 @@ namespace WTelegram
 			
 			lock (_store)
 			{
+				_store.SetLength(0);
 				_store.Position = 0;
 				_store.Write(jsonUtf8Bytes, 0, jsonUtf8Bytes.Length);
 			}
