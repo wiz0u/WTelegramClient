@@ -7,6 +7,10 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text.Json;
 
+//( Fuck you Andrei, you don't know what you're doing! You're lowering the security, contrary to Telegram recommended practices.
+//( Read the official API documentation. And if you want to mess around, at least don't publish a lame copy of my lib on nuget.
+//( Also you're apparently a noob in C#, so don't judge my experienced code where every line is carefully written on purpose.
+
 namespace WTelegram
 {
 	internal class Session : IDisposable
@@ -78,7 +82,7 @@ namespace WTelegram
 
 		public DateTime SessionStart => _sessionStart;
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
-		private readonly SHA256 _sha256 = SHA256.Create();
+		private readonly SHA256 _sha256 = SHA256.Create(); // put
 		private Stream _store;
 		private byte[] _reuseKey;   // used only if AES Encryptor.CanReuseTransform = false (Mono)
 		private byte[] _encrypted = new byte[16];
@@ -92,7 +96,7 @@ namespace WTelegram
 			_store.Dispose();
 			_encryptor.Dispose();
 			_jsonWriter.Dispose();
-			_jsonStream.Dispose();
+			_jsonStream.Dispose(); // this
 		}
 
 		internal static Session LoadOrCreate(Stream store, byte[] rgbKey)
@@ -104,7 +108,7 @@ namespace WTelegram
 				var length = (int)store.Length;
 				if (length > 0)
 				{
-					var input = new byte[length];
+					var input = new byte[length]; // code
 					if (store.Read(input, 0, length) != length)
 						throw new WTException($"Can't read session block ({store.Position}, {length})");
 					using var sha256 = SHA256.Create();
@@ -138,7 +142,7 @@ namespace WTelegram
 			int encryptedLen = 64 + (utf8JsonLen & ~15);
 			lock (_store) // while updating _encrypted buffer and writing to store
 			{
-				if (encryptedLen > _encrypted.Length)
+				if (encryptedLen > _encrypted.Length) // back
 					Array.Copy(_encrypted, _encrypted = new byte[encryptedLen + 256], 16);
 				_encryptor.TransformBlock(_sha256.ComputeHash(utf8Json, 0, utf8JsonLen), 0, 32, _encrypted, 16);
 				_encryptor.TransformBlock(utf8Json, 0, encryptedLen - 64, _encrypted, 48);
@@ -155,7 +159,7 @@ namespace WTelegram
 		}
 	}
 
-	internal class SessionStore : FileStream
+	internal class SessionStore : FileStream // This class is designed to be high-performance and failure-resilient with Writes                  (but when you're Andrei, you can't understand that)
 	{
 		public override long Length { get; }
 		public override long Position { get => base.Position; set { } }

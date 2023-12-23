@@ -491,7 +491,7 @@ namespace WTelegram
 					var keys = _dcSession.Salts.Keys;
 					if (keys[^1] == DateTime.MaxValue) return; // GetFutureSalts ongoing
 					var now = DateTime.UtcNow.AddTicks(_dcSession.ServerTicksOffset);
-					for (; keys.Count > 1 && keys[1] < now;  _dcSession.OldSalt = _dcSession.Salt, _dcSession.Salt = _dcSession.Salts.Values[0])
+					for (; keys.Count > 1 && keys[1] < now; _dcSession.OldSalt = _dcSession.Salt, _dcSession.Salt = _dcSession.Salts.Values[0])
 						_dcSession.Salts.RemoveAt(0);
 					if (_dcSession.Salts.Count > 48) return;
 				}

@@ -1175,6 +1175,22 @@ namespace TL
 				hash = hash,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getChannelDefaultEmojiStatuses"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.emojiStatusesNotModified">account.emojiStatusesNotModified</a></returns>
+		public static Task<Account_EmojiStatuses> Account_GetChannelDefaultEmojiStatuses(this Client client, long hash = default)
+			=> client.Invoke(new Account_GetChannelDefaultEmojiStatuses
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getChannelRestrictedStatusEmojis"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
+		public static Task<EmojiList> Account_GetChannelRestrictedStatusEmojis(this Client client, long hash = default)
+			=> client.Invoke(new Account_GetChannelRestrictedStatusEmojis
+			{
+				hash = hash,
+			});
+
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, params InputUserBase[] id)
@@ -3606,14 +3622,13 @@ namespace TL
 		/// <param name="peer">The bot that sent the <see cref="KeyboardButtonRequestPeer"/> button.</param>
 		/// <param name="msg_id">ID of the message that contained the reply keyboard with the <see cref="KeyboardButtonRequestPeer"/> button.</param>
 		/// <param name="button_id">The <c>button_id</c> field from the <see cref="KeyboardButtonRequestPeer"/>.</param>
-		/// <param name="requested_peer">The chosen peer.</param>
-		public static Task<UpdatesBase> Messages_SendBotRequestedPeer(this Client client, InputPeer peer, int msg_id, int button_id, InputPeer requested_peer)
+		public static Task<UpdatesBase> Messages_SendBotRequestedPeer(this Client client, InputPeer peer, int msg_id, int button_id, params InputPeer[] requested_peers)
 			=> client.Invoke(new Messages_SendBotRequestedPeer
 			{
 				peer = peer,
 				msg_id = msg_id,
 				button_id = button_id,
-				requested_peer = requested_peer,
+				requested_peers = requested_peers,
 			});
 
 		/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>, to be used when selecting <a href="https://corefork.telegram.org/api/custom-emoji">custom emojis</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiGroups"/> [bots: ✓]</para></summary>
@@ -3958,14 +3973,6 @@ namespace TL
 		public static Task<Help_Support> Help_GetSupport(this Client client)
 			=> client.Invoke(new Help_GetSupport
 			{
-			});
-
-		/// <summary>Get changelog of current app.<br/>Typically, an <see cref="Updates"/> will be returned, containing one or more <see cref="UpdateServiceNotification"/> updates with app-specific changelogs.		<para>See <a href="https://corefork.telegram.org/method/help.getAppChangelog"/></para></summary>
-		/// <param name="prev_app_version">Previous app version</param>
-		public static Task<UpdatesBase> Help_GetAppChangelog(this Client client, string prev_app_version)
-			=> client.Invoke(new Help_GetAppChangelog
-			{
-				prev_app_version = prev_app_version,
 			});
 
 		/// <summary>Informs the server about the number of pending bot updates if they haven't been processed for a long time; for bots only		<para>See <a href="https://corefork.telegram.org/method/help.setBotUpdatesStatus"/> [bots: ✓]</para></summary>
@@ -4743,16 +4750,18 @@ namespace TL
 		/// <param name="channel">Channel whose accent color should be changed.</param>
 		/// <param name="color"><a href="https://corefork.telegram.org/api/colors">ID of the accent color palette »</a> to use (not RGB24, see <a href="https://corefork.telegram.org/api/colors">here »</a> for more info).</param>
 		/// <param name="background_emoji_id">Custom emoji ID used in the accent color pattern.</param>
-		public static Task<UpdatesBase> Channels_UpdateColor(this Client client, InputChannelBase channel, int color, long? background_emoji_id = null)
+		public static Task<UpdatesBase> Channels_UpdateColor(this Client client, InputChannelBase channel, long? background_emoji_id = null, int? color = null, bool for_profile = false)
 			=> client.Invoke(new Channels_UpdateColor
 			{
-				flags = (Channels_UpdateColor.Flags)(background_emoji_id != null ? 0x1 : 0),
+				flags = (Channels_UpdateColor.Flags)((background_emoji_id != null ? 0x1 : 0) | (color != null ? 0x4 : 0) | (for_profile ? 0x2 : 0)),
 				channel = channel,
-				color = color,
+				color = color.GetValueOrDefault(),
 				background_emoji_id = background_emoji_id.GetValueOrDefault(),
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.toggleViewForumAsMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleViewForumAsMessages#possible-errors">details</a>)</para></summary>
+		/// <summary>Users may also choose to display messages from all topics of a <a href="https://corefork.telegram.org/api/forum">forum</a> as if they were sent to a normal group, using a "View as messages" setting in the local client: this setting only affects the current account, and is synced to other logged in sessions using this method.		<para>See <a href="https://corefork.telegram.org/method/channels.toggleViewForumAsMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleViewForumAsMessages#possible-errors">details</a>)</para></summary>
+		/// <param name="channel">The forum</param>
+		/// <param name="enabled">The new value of the <c>view_forum_as_messages</c> flag.</param>
 		public static Task<UpdatesBase> Channels_ToggleViewForumAsMessages(this Client client, InputChannelBase channel, bool enabled)
 			=> client.Invoke(new Channels_ToggleViewForumAsMessages
 			{
@@ -4766,6 +4775,14 @@ namespace TL
 			=> client.Invoke(new Channels_GetChannelRecommendations
 			{
 				channel = channel,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.updateEmojiStatus"/></para></summary>
+		public static Task<UpdatesBase> Channels_UpdateEmojiStatus(this Client client, InputChannelBase channel, EmojiStatus emoji_status)
+			=> client.Invoke(new Channels_UpdateEmojiStatus
+			{
+				channel = channel,
+				emoji_status = emoji_status,
 			});
 
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
@@ -5045,6 +5062,7 @@ namespace TL
 			});
 
 		/// <summary>Obtain a list of Telegram Premium <a href="https://corefork.telegram.org/api/giveaways">giveaway/gift code »</a> options.		<para>See <a href="https://corefork.telegram.org/method/payments.getPremiumGiftCodeOptions"/></para></summary>
+		/// <param name="boost_peer">The channel that will start the giveaway</param>
 		public static Task<PremiumGiftCodeOption[]> Payments_GetPremiumGiftCodeOptions(this Client client, InputPeer boost_peer = null)
 			=> client.Invoke(new Payments_GetPremiumGiftCodeOptions
 			{
@@ -5660,18 +5678,13 @@ namespace TL
 		/// <summary>Obtains a list of messages, indicating to which other public channels was a channel message forwarded.<br/>Will return a list of <see cref="Message">messages</see> with <c>peer_id</c> equal to the public channel to which this message was forwarded.		<para>See <a href="https://corefork.telegram.org/method/stats.getMessagePublicForwards"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getMessagePublicForwards#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Source channel</param>
 		/// <param name="msg_id">Source message ID</param>
-		/// <param name="offset_rate">Initially 0, then set to the <c>next_rate</c> parameter of <see cref="Messages_MessagesSlice"/></param>
-		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
-		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_MessagesBase> Stats_GetMessagePublicForwards(this Client client, InputChannelBase channel, int msg_id, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue)
+		public static Task<Stats_PublicForwards> Stats_GetMessagePublicForwards(this Client client, InputChannelBase channel, int msg_id, string offset, int limit = int.MaxValue)
 			=> client.Invoke(new Stats_GetMessagePublicForwards
 			{
 				channel = channel,
 				msg_id = msg_id,
-				offset_rate = offset_rate,
-				offset_peer = offset_peer,
-				offset_id = offset_id,
+				offset = offset,
 				limit = limit,
 			});
 
@@ -5982,10 +5995,10 @@ namespace TL
 		/// <param name="id">Story ID</param>
 		/// <param name="offset">Offset for pagination, obtained from <see cref="Stories_StoryViewsList"/>.<c>next_offset</c></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Stories_StoryViewsList> Stories_GetStoryViewsList(this Client client, InputPeer peer, int id, string offset, int limit = int.MaxValue, string q = null, bool just_contacts = false, bool reactions_first = false)
+		public static Task<Stories_StoryViewsList> Stories_GetStoryViewsList(this Client client, InputPeer peer, int id, string offset, int limit = int.MaxValue, string q = null, bool just_contacts = false, bool reactions_first = false, bool forwards_first = false)
 			=> client.Invoke(new Stories_GetStoryViewsList
 			{
-				flags = (Stories_GetStoryViewsList.Flags)((q != null ? 0x2 : 0) | (just_contacts ? 0x1 : 0) | (reactions_first ? 0x4 : 0)),
+				flags = (Stories_GetStoryViewsList.Flags)((q != null ? 0x2 : 0) | (just_contacts ? 0x1 : 0) | (reactions_first ? 0x4 : 0) | (forwards_first ? 0x8 : 0)),
 				peer = peer,
 				q = q,
 				id = id,
@@ -6064,7 +6077,8 @@ namespace TL
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getPeerMaxIDs"/></para></summary>
+		/// <summary>Get the IDs of the maximum read stories for a set of peers.		<para>See <a href="https://corefork.telegram.org/method/stories.getPeerMaxIDs"/></para></summary>
+		/// <param name="id">Peers</param>
 		public static Task<int[]> Stories_GetPeerMaxIDs(this Client client, params InputPeer[] id)
 			=> client.Invoke(new Stories_GetPeerMaxIDs
 			{
@@ -6085,6 +6099,18 @@ namespace TL
 			{
 				peer = peer,
 				hidden = hidden,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoryReactionsList"/></para></summary>
+		public static Task<Stories_StoryReactionsList> Stories_GetStoryReactionsList(this Client client, InputPeer peer, int id, int limit = int.MaxValue, Reaction reaction = null, string offset = null, bool forwards_first = false)
+			=> client.Invoke(new Stories_GetStoryReactionsList
+			{
+				flags = (Stories_GetStoryReactionsList.Flags)((reaction != null ? 0x1 : 0) | (offset != null ? 0x2 : 0) | (forwards_first ? 0x4 : 0)),
+				peer = peer,
+				id = id,
+				reaction = reaction,
+				offset = offset,
+				limit = limit,
 			});
 
 		/// <summary>Obtains info about the boosts that were applied to a certain channel (admins only)		<para>See <a href="https://corefork.telegram.org/method/premium.getBoostsList"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/premium.getBoostsList#possible-errors">details</a>)</para></summary>
@@ -6118,7 +6144,7 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary>Gets the current <a href="https://corefork.telegram.org/api/boost">boost status</a> of a peer.		<para>See <a href="https://corefork.telegram.org/method/premium.getBoostsStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/premium.getBoostsStatus#possible-errors">details</a>)</para></summary>
+		/// <summary>Gets the current <a href="https://corefork.telegram.org/api/boost">number of boosts</a> of a channel.		<para>See <a href="https://corefork.telegram.org/method/premium.getBoostsStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/premium.getBoostsStatus#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The peer.</param>
 		public static Task<Premium_BoostsStatus> Premium_GetBoostsStatus(this Client client, InputPeer peer)
 			=> client.Invoke(new Premium_GetBoostsStatus
@@ -7035,6 +7061,18 @@ namespace TL.Methods
 
 	[TLDef(0xA60AB9CE)]
 	public class Account_GetDefaultBackgroundEmojis : IMethod<EmojiList>
+	{
+		public long hash;
+	}
+
+	[TLDef(0x7727A7D5)]
+	public class Account_GetChannelDefaultEmojiStatuses : IMethod<Account_EmojiStatuses>
+	{
+		public long hash;
+	}
+
+	[TLDef(0x35A9E0D5)]
+	public class Account_GetChannelRestrictedStatusEmojis : IMethod<EmojiList>
 	{
 		public long hash;
 	}
@@ -9092,13 +9130,13 @@ namespace TL.Methods
 	[TLDef(0x658B7188)]
 	public class Messages_GetDefaultHistoryTTL : IMethod<DefaultHistoryTTL> { }
 
-	[TLDef(0xFE38D01B)]
+	[TLDef(0x91B2D060)]
 	public class Messages_SendBotRequestedPeer : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public int msg_id;
 		public int button_id;
-		public InputPeer requested_peer;
+		public InputPeer[] requested_peers;
 	}
 
 	[TLDef(0x7488CE5B)]
@@ -9389,12 +9427,6 @@ namespace TL.Methods
 
 	[TLDef(0x9CDF08CD)]
 	public class Help_GetSupport : IMethod<Help_Support> { }
-
-	[TLDef(0x9010EF6F)]
-	public class Help_GetAppChangelog : IMethod<UpdatesBase>
-	{
-		public string prev_app_version;
-	}
 
 	[TLDef(0xEC22CFCD)]
 	public class Help_SetBotUpdatesStatus : IMethod<bool>
@@ -9970,17 +10002,19 @@ namespace TL.Methods
 		public byte[] random_id;
 	}
 
-	[TLDef(0x621A201F)]
+	[TLDef(0xD8AA3671)]
 	public class Channels_UpdateColor : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
-		public int color;
+		[IfFlag(2)] public int color;
 		[IfFlag(0)] public long background_emoji_id;
 
 		[Flags] public enum Flags : uint
 		{
 			has_background_emoji_id = 0x1,
+			for_profile = 0x2,
+			has_color = 0x4,
 		}
 	}
 
@@ -9995,6 +10029,13 @@ namespace TL.Methods
 	public class Channels_GetChannelRecommendations : IMethod<Messages_Chats>
 	{
 		public InputChannelBase channel;
+	}
+
+	[TLDef(0xF0D3E6A8)]
+	public class Channels_UpdateEmojiStatus : IMethod<UpdatesBase>
+	{
+		public InputChannelBase channel;
+		public EmojiStatus emoji_status;
 	}
 
 	[TLDef(0xAA2769ED)]
@@ -10736,14 +10777,12 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x5630281B)]
-	public class Stats_GetMessagePublicForwards : IMethod<Messages_MessagesBase>
+	[TLDef(0x5F150144)]
+	public class Stats_GetMessagePublicForwards : IMethod<Stats_PublicForwards>
 	{
 		public InputChannelBase channel;
 		public int msg_id;
-		public int offset_rate;
-		public InputPeer offset_peer;
-		public int offset_id;
+		public string offset;
 		public int limit;
 	}
 
@@ -11006,6 +11045,7 @@ namespace TL.Methods
 			just_contacts = 0x1,
 			has_q = 0x2,
 			reactions_first = 0x4,
+			forwards_first = 0x8,
 		}
 	}
 
@@ -11081,6 +11121,24 @@ namespace TL.Methods
 	{
 		public InputPeer peer;
 		public bool hidden;
+	}
+
+	[TLDef(0xB9B2881F)]
+	public class Stories_GetStoryReactionsList : IMethod<Stories_StoryReactionsList>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int id;
+		[IfFlag(0)] public Reaction reaction;
+		[IfFlag(1)] public string offset;
+		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			has_reaction = 0x1,
+			has_offset = 0x2,
+			forwards_first = 0x4,
+		}
 	}
 
 	[TLDef(0x60F67660)]
