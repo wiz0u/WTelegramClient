@@ -378,7 +378,7 @@ namespace TL
 			{
 			});
 
-		/// <summary>Updates user profile.		<para>See <a href="https://corefork.telegram.org/method/account.updateProfile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/account.updateProfile#possible-errors">details</a>)</para></summary>
+		/// <summary>Updates user profile.		<para>See <a href="https://corefork.telegram.org/method/account.updateProfile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.updateProfile#possible-errors">details</a>)</para></summary>
 		/// <param name="first_name">New user first name</param>
 		/// <param name="last_name">New user last name</param>
 		/// <param name="about">New bio</param>
@@ -391,7 +391,7 @@ namespace TL
 				about = about,
 			});
 
-		/// <summary>Updates online user status.		<para>See <a href="https://corefork.telegram.org/method/account.updateStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/account.updateStatus#possible-errors">details</a>)</para></summary>
+		/// <summary>Updates online user status.		<para>See <a href="https://corefork.telegram.org/method/account.updateStatus"/></para></summary>
 		/// <param name="offline">If <see langword="true"/> is transmitted, user status will change to <see cref="UserStatusOffline"/>.</param>
 		public static Task<bool> Account_UpdateStatus(this Client client, bool offline)
 			=> client.Invoke(new Account_UpdateStatus
@@ -1217,7 +1217,7 @@ namespace TL
 				errors = errors,
 			});
 
-		/// <summary>Get contact by telegram IDs		<para>See <a href="https://corefork.telegram.org/method/contacts.getContactIDs"/></para></summary>
+		/// <summary>Get the telegram IDs of all contacts.<br/>Returns an array of Telegram user IDs for all contacts (0 if a contact does not have an associated Telegram account or have hidden their account using privacy settings).		<para>See <a href="https://corefork.telegram.org/method/contacts.getContactIDs"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<int[]> Contacts_GetContactIDs(this Client client, long hash = default)
 			=> client.Invoke(new Contacts_GetContactIDs
@@ -1225,7 +1225,7 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary>Returns the list of contact statuses.		<para>See <a href="https://corefork.telegram.org/method/contacts.getStatuses"/></para></summary>
+		/// <summary>Use this method to obtain the online statuses of all contacts with an accessible associated Telegram account.		<para>See <a href="https://corefork.telegram.org/method/contacts.getStatuses"/></para></summary>
 		public static Task<ContactStatus[]> Contacts_GetStatuses(this Client client)
 			=> client.Invoke(new Contacts_GetStatuses
 			{
@@ -1520,13 +1520,14 @@ namespace TL
 		/// <param name="max_id"><a href="https://corefork.telegram.org/api/offsets">Maximum message ID to return</a></param>
 		/// <param name="min_id"><a href="https://corefork.telegram.org/api/offsets">Minimum message ID to return</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets">Hash</a></param>
-		public static Task<Messages_MessagesBase> Messages_Search(this Client client, InputPeer peer, string q, MessagesFilter filter = null, DateTime min_date = default, DateTime max_date = default, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default, InputPeer from_id = null, int? top_msg_id = null)
+		public static Task<Messages_MessagesBase> Messages_Search(this Client client, InputPeer peer, string q, MessagesFilter filter = null, DateTime min_date = default, DateTime max_date = default, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default, InputPeer from_id = null, int? top_msg_id = null, InputPeer saved_peer_id = null)
 			=> client.Invoke(new Messages_Search
 			{
-				flags = (Messages_Search.Flags)((from_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x2 : 0)),
+				flags = (Messages_Search.Flags)((from_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x2 : 0) | (saved_peer_id != null ? 0x4 : 0)),
 				peer = peer,
 				q = q,
 				from_id = from_id,
+				saved_peer_id = saved_peer_id,
 				top_msg_id = top_msg_id.GetValueOrDefault(),
 				filter = filter,
 				min_date = min_date,
@@ -2776,11 +2777,12 @@ namespace TL
 		/// <param name="peer">Peer where to search</param>
 		/// <param name="top_msg_id">If set, consider only messages within the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="filters">Search filters</param>
-		public static Task<Messages_SearchCounter[]> Messages_GetSearchCounters(this Client client, InputPeer peer, MessagesFilter[] filters, int? top_msg_id = null)
+		public static Task<Messages_SearchCounter[]> Messages_GetSearchCounters(this Client client, InputPeer peer, MessagesFilter[] filters, int? top_msg_id = null, InputPeer saved_peer_id = null)
 			=> client.Invoke(new Messages_GetSearchCounters
 			{
-				flags = (Messages_GetSearchCounters.Flags)(top_msg_id != null ? 0x1 : 0),
+				flags = (Messages_GetSearchCounters.Flags)((top_msg_id != null ? 0x1 : 0) | (saved_peer_id != null ? 0x4 : 0)),
 				peer = peer,
+				saved_peer_id = saved_peer_id,
 				top_msg_id = top_msg_id.GetValueOrDefault(),
 				filters = filters,
 			});
@@ -3195,10 +3197,12 @@ namespace TL
 		/// <param name="filter">Message filter, <see langword="null"/>, <see cref="InputMessagesFilterMyMentions"/> filters are not supported by this method.</param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
-		public static Task<Messages_SearchResultsCalendar> Messages_GetSearchResultsCalendar(this Client client, InputPeer peer, MessagesFilter filter = null, int offset_id = default, DateTime offset_date = default)
+		public static Task<Messages_SearchResultsCalendar> Messages_GetSearchResultsCalendar(this Client client, InputPeer peer, MessagesFilter filter = null, int offset_id = default, DateTime offset_date = default, InputPeer saved_peer_id = null)
 			=> client.Invoke(new Messages_GetSearchResultsCalendar
 			{
+				flags = (Messages_GetSearchResultsCalendar.Flags)(saved_peer_id != null ? 0x4 : 0),
 				peer = peer,
+				saved_peer_id = saved_peer_id,
 				filter = filter,
 				offset_id = offset_id,
 				offset_date = offset_date,
@@ -3209,10 +3213,12 @@ namespace TL
 		/// <param name="filter">Message filter, <see langword="null"/>, <see cref="InputMessagesFilterMyMentions"/> filters are not supported by this method.</param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_SearchResultsPositions> Messages_GetSearchResultsPositions(this Client client, InputPeer peer, MessagesFilter filter = null, int offset_id = default, int limit = int.MaxValue)
+		public static Task<Messages_SearchResultsPositions> Messages_GetSearchResultsPositions(this Client client, InputPeer peer, MessagesFilter filter = null, int offset_id = default, int limit = int.MaxValue, InputPeer saved_peer_id = null)
 			=> client.Invoke(new Messages_GetSearchResultsPositions
 			{
+				flags = (Messages_GetSearchResultsPositions.Flags)(saved_peer_id != null ? 0x4 : 0),
 				peer = peer,
+				saved_peer_id = saved_peer_id,
 				filter = filter,
 				offset_id = offset_id,
 				limit = limit,
@@ -3252,7 +3258,7 @@ namespace TL
 				enabled = enabled,
 			});
 
-		/// <summary>Change the default peer that should be used when sending messages to a specific group		<para>See <a href="https://corefork.telegram.org/method/messages.saveDefaultSendAs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.saveDefaultSendAs#possible-errors">details</a>)</para></summary>
+		/// <summary>Change the default peer that should be used when sending messages, reactions, poll votes to a specific group		<para>See <a href="https://corefork.telegram.org/method/messages.saveDefaultSendAs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.saveDefaultSendAs#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Group</param>
 		/// <param name="send_as">The default peer that should be used when sending messages to the group</param>
 		public static Task<bool> Messages_SaveDefaultSendAs(this Client client, InputPeer peer, InputPeer send_as)
@@ -3419,7 +3425,7 @@ namespace TL
 				enabled = enabled,
 			});
 
-		/// <summary>Open a <a href="https://corefork.telegram.org/bots/webapps">bot mini app</a>, sending over user information after user confirmation.		<para>See <a href="https://corefork.telegram.org/method/messages.requestWebView"/></para></summary>
+		/// <summary>Open a <a href="https://corefork.telegram.org/bots/webapps">bot mini app</a>, sending over user information after user confirmation.		<para>See <a href="https://corefork.telegram.org/method/messages.requestWebView"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.requestWebView#possible-errors">details</a>)</para></summary>
 		/// <param name="from_bot_menu">Whether the webview was opened by clicking on the bot's <a href="https://corefork.telegram.org/api/bots/menu">menu button »</a>.</param>
 		/// <param name="silent">Whether the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> should be sent silently (no notifications for the receivers).</param>
 		/// <param name="peer">Dialog where the web app is being opened, and where the resulting message will be sent (see the <a href="https://corefork.telegram.org/api/bots/webapps">docs for more info »</a>).</param>
@@ -3737,6 +3743,65 @@ namespace TL
 				hash = hash,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSavedDialogs"/></para></summary>
+		public static Task<Messages_SavedDialogsBase> Messages_GetSavedDialogs(this Client client, DateTime offset_date = default, int offset_id = default, InputPeer offset_peer = null, int limit = int.MaxValue, long hash = default, bool exclude_pinned = false)
+			=> client.Invoke(new Messages_GetSavedDialogs
+			{
+				flags = (Messages_GetSavedDialogs.Flags)(exclude_pinned ? 0x1 : 0),
+				offset_date = offset_date,
+				offset_id = offset_id,
+				offset_peer = offset_peer,
+				limit = limit,
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSavedHistory"/></para></summary>
+		public static Task<Messages_MessagesBase> Messages_GetSavedHistory(this Client client, InputPeer peer, int offset_id = default, DateTime offset_date = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default)
+			=> client.Invoke(new Messages_GetSavedHistory
+			{
+				peer = peer,
+				offset_id = offset_id,
+				offset_date = offset_date,
+				add_offset = add_offset,
+				limit = limit,
+				max_id = max_id,
+				min_id = min_id,
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.deleteSavedHistory"/></para></summary>
+		public static Task<Messages_AffectedHistory> Messages_DeleteSavedHistory(this Client client, InputPeer peer, int max_id = default, DateTime? min_date = null, DateTime? max_date = null)
+			=> client.Invoke(new Messages_DeleteSavedHistory
+			{
+				flags = (Messages_DeleteSavedHistory.Flags)((min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0)),
+				peer = peer,
+				max_id = max_id,
+				min_date = min_date.GetValueOrDefault(),
+				max_date = max_date.GetValueOrDefault(),
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getPinnedSavedDialogs"/></para></summary>
+		public static Task<Messages_SavedDialogsBase> Messages_GetPinnedSavedDialogs(this Client client)
+			=> client.Invoke(new Messages_GetPinnedSavedDialogs
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleSavedDialogPin"/></para></summary>
+		public static Task<bool> Messages_ToggleSavedDialogPin(this Client client, InputDialogPeerBase peer, bool pinned = false)
+			=> client.Invoke(new Messages_ToggleSavedDialogPin
+			{
+				flags = (Messages_ToggleSavedDialogPin.Flags)(pinned ? 0x1 : 0),
+				peer = peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.reorderPinnedSavedDialogs"/></para></summary>
+		public static Task<bool> Messages_ReorderPinnedSavedDialogs(this Client client, InputDialogPeerBase[] order, bool force = false)
+			=> client.Invoke(new Messages_ReorderPinnedSavedDialogs
+			{
+				flags = (Messages_ReorderPinnedSavedDialogs.Flags)(force ? 0x1 : 0),
+				order = order,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -3745,9 +3810,11 @@ namespace TL
 
 		/// <summary>Get new <a href="https://corefork.telegram.org/api/updates">updates</a>.		<para>See <a href="https://corefork.telegram.org/method/updates.getDifference"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/updates.getDifference#possible-errors">details</a>)</para></summary>
 		/// <param name="pts">PTS, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</param>
+		/// <param name="pts_limit">PTS limit</param>
 		/// <param name="pts_total_limit">For fast updating: if provided and <c>pts + pts_total_limit &lt; remote pts</c>, <see cref="Updates_DifferenceTooLong"/> will be returned.<br/>Simply tells the server to not return the difference if it is bigger than <c>pts_total_limit</c><br/>If the remote pts is too big (&gt; ~4000000), this field will default to 1000000</param>
 		/// <param name="date">date, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</param>
 		/// <param name="qts">QTS, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</param>
+		/// <param name="qts_limit">QTS limit</param>
 		public static Task<Updates_DifferenceBase> Updates_GetDifference(this Client client, int pts, DateTime date, int qts, int? pts_total_limit = null, int? pts_limit = null, int? qts_limit = null)
 			=> client.Invoke(new Updates_GetDifference
 			{
@@ -4295,7 +4362,7 @@ namespace TL
 				username = username,
 			});
 
-		/// <summary>Join a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.joinChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406,500 (<a href="https://corefork.telegram.org/method/channels.joinChannel#possible-errors">details</a>)</para></summary>
+		/// <summary>Join a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.joinChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/channels.joinChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup to join</param>
 		public static Task<UpdatesBase> Channels_JoinChannel(this Client client, InputChannelBase channel)
 			=> client.Invoke(new Channels_JoinChannel
@@ -7339,13 +7406,14 @@ namespace TL.Methods
 		public long hash;
 	}
 
-	[TLDef(0xA0FDA762)]
+	[TLDef(0xA7B4E929)]
 	public class Messages_Search : IMethod<Messages_MessagesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
 		public string q;
 		[IfFlag(0)] public InputPeer from_id;
+		[IfFlag(2)] public InputPeer saved_peer_id;
 		[IfFlag(1)] public int top_msg_id;
 		public MessagesFilter filter;
 		public DateTime min_date;
@@ -7361,6 +7429,7 @@ namespace TL.Methods
 		{
 			has_from_id = 0x1,
 			has_top_msg_id = 0x2,
+			has_saved_peer_id = 0x4,
 		}
 	}
 
@@ -8433,17 +8502,19 @@ namespace TL.Methods
 		public string lang_code;
 	}
 
-	[TLDef(0x00AE7CC1)]
+	[TLDef(0x1BBCF300)]
 	public class Messages_GetSearchCounters : IMethod<Messages_SearchCounter[]>
 	{
 		public Flags flags;
 		public InputPeer peer;
+		[IfFlag(2)] public InputPeer saved_peer_id;
 		[IfFlag(0)] public int top_msg_id;
 		public MessagesFilter[] filters;
 
 		[Flags] public enum Flags : uint
 		{
 			has_top_msg_id = 0x1,
+			has_saved_peer_id = 0x4,
 		}
 	}
 
@@ -8778,22 +8849,36 @@ namespace TL.Methods
 		public int msg_id;
 	}
 
-	[TLDef(0x49F0BDE9)]
+	[TLDef(0x6AA3F6BD)]
 	public class Messages_GetSearchResultsCalendar : IMethod<Messages_SearchResultsCalendar>
 	{
+		public Flags flags;
 		public InputPeer peer;
+		[IfFlag(2)] public InputPeer saved_peer_id;
 		public MessagesFilter filter;
 		public int offset_id;
 		public DateTime offset_date;
+
+		[Flags] public enum Flags : uint
+		{
+			has_saved_peer_id = 0x4,
+		}
 	}
 
-	[TLDef(0x6E9583A3)]
+	[TLDef(0x9C7F2F10)]
 	public class Messages_GetSearchResultsPositions : IMethod<Messages_SearchResultsPositions>
 	{
+		public Flags flags;
 		public InputPeer peer;
+		[IfFlag(2)] public InputPeer saved_peer_id;
 		public MessagesFilter filter;
 		public int offset_id;
 		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			has_saved_peer_id = 0x4,
+		}
 	}
 
 	[TLDef(0x7FE7E815)]
@@ -9230,6 +9315,78 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			exclude_featured = 0x1,
+		}
+	}
+
+	[TLDef(0x5381D21A)]
+	public class Messages_GetSavedDialogs : IMethod<Messages_SavedDialogsBase>
+	{
+		public Flags flags;
+		public DateTime offset_date;
+		public int offset_id;
+		public InputPeer offset_peer;
+		public int limit;
+		public long hash;
+
+		[Flags] public enum Flags : uint
+		{
+			exclude_pinned = 0x1,
+		}
+	}
+
+	[TLDef(0x3D9A414D)]
+	public class Messages_GetSavedHistory : IMethod<Messages_MessagesBase>
+	{
+		public InputPeer peer;
+		public int offset_id;
+		public DateTime offset_date;
+		public int add_offset;
+		public int limit;
+		public int max_id;
+		public int min_id;
+		public long hash;
+	}
+
+	[TLDef(0x6E98102B)]
+	public class Messages_DeleteSavedHistory : IMethod<Messages_AffectedHistory>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int max_id;
+		[IfFlag(2)] public DateTime min_date;
+		[IfFlag(3)] public DateTime max_date;
+
+		[Flags] public enum Flags : uint
+		{
+			has_min_date = 0x4,
+			has_max_date = 0x8,
+		}
+	}
+
+	[TLDef(0xD63D94E0)]
+	public class Messages_GetPinnedSavedDialogs : IMethod<Messages_SavedDialogsBase> { }
+
+	[TLDef(0xAC81BBDE)]
+	public class Messages_ToggleSavedDialogPin : IMethod<bool>
+	{
+		public Flags flags;
+		public InputDialogPeerBase peer;
+
+		[Flags] public enum Flags : uint
+		{
+			pinned = 0x1,
+		}
+	}
+
+	[TLDef(0x8B716587)]
+	public class Messages_ReorderPinnedSavedDialogs : IMethod<bool>
+	{
+		public Flags flags;
+		public InputDialogPeerBase[] order;
+
+		[Flags] public enum Flags : uint
+		{
+			force = 0x1,
 		}
 	}
 

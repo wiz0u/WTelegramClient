@@ -1632,7 +1632,7 @@ namespace TL
 		public override Peer Peer => peer_id;
 	}
 	/// <summary>A message		<para>See <a href="https://corefork.telegram.org/constructor/message"/></para></summary>
-	[TLDef(0x38116EE0)]
+	[TLDef(0x76BEC211)]
 	public partial class Message : MessageBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1643,6 +1643,7 @@ namespace TL
 		[IfFlag(8)] public Peer from_id;
 		/// <summary>Peer ID, the chat where this message was sent</summary>
 		public Peer peer_id;
+		[IfFlag(28)] public Peer saved_peer_id;
 		/// <summary>Info about forwarded messages</summary>
 		[IfFlag(2)] public MessageFwdHeader fwd_from;
 		/// <summary>ID of the inline bot that generated the message</summary>
@@ -1732,6 +1733,8 @@ namespace TL
 			noforwards = 0x4000000,
 			/// <summary>If set, any eventual webpage preview will be shown on top of the message instead of at the bottom.</summary>
 			invert_media = 0x8000000,
+			/// <summary>Field <see cref="saved_peer_id"/> has a value</summary>
+			has_saved_peer_id = 0x10000000,
 		}
 
 		/// <summary>ID of the message</summary>
@@ -1878,6 +1881,9 @@ namespace TL
 			spoiler = 0x10,
 			/// <summary>Field <see cref="alt_document"/> has a value</summary>
 			has_alt_document = 0x20,
+			video = 0x40,
+			round = 0x80,
+			voice = 0x100,
 		}
 	}
 	/// <summary>Preview of webpage		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaWebPage"/></para></summary>
@@ -5023,6 +5029,30 @@ namespace TL
 		public int qts;
 
 		public override (long, int, int) GetMBox() => (-1, qts, 1);
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSavedDialogPinned"/></para></summary>
+	[TLDef(0xAEAF9E74)]
+	public class UpdateSavedDialogPinned : Update
+	{
+		public Flags flags;
+		public DialogPeerBase peer;
+
+		[Flags] public enum Flags : uint
+		{
+			pinned = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updatePinnedSavedDialogs"/></para></summary>
+	[TLDef(0x686C85A6)]
+	public class UpdatePinnedSavedDialogs : Update
+	{
+		public Flags flags;
+		[IfFlag(0)] public DialogPeerBase[] order;
+
+		[Flags] public enum Flags : uint
+		{
+			has_order = 0x1,
+		}
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -8483,7 +8513,7 @@ namespace TL
 	}
 
 	/// <summary>Info about a forwarded message		<para>See <a href="https://corefork.telegram.org/constructor/messageFwdHeader"/></para></summary>
-	[TLDef(0x5F777DCE)]
+	[TLDef(0x4E4DF4BB)]
 	public class MessageFwdHeader : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -8502,6 +8532,9 @@ namespace TL
 		[IfFlag(4)] public Peer saved_from_peer;
 		/// <summary>Only for messages forwarded to the current user (inputPeerSelf), ID of the message that was forwarded from the original user/channel</summary>
 		[IfFlag(4)] public int saved_from_msg_id;
+		[IfFlag(8)] public Peer saved_from_id;
+		[IfFlag(9)] public string saved_from_name;
+		[IfFlag(10)] public DateTime saved_date;
 		/// <summary>PSA type</summary>
 		[IfFlag(6)] public string psa_type;
 
@@ -8521,6 +8554,13 @@ namespace TL
 			has_psa_type = 0x40,
 			/// <summary>Whether this message was <a href="https://corefork.telegram.org/api/import">imported from a foreign chat service, click here for more info »</a></summary>
 			imported = 0x80,
+			/// <summary>Field <see cref="saved_from_id"/> has a value</summary>
+			has_saved_from_id = 0x100,
+			/// <summary>Field <see cref="saved_from_name"/> has a value</summary>
+			has_saved_from_name = 0x200,
+			/// <summary>Field <see cref="saved_date"/> has a value</summary>
+			has_saved_date = 0x400,
+			saved_out = 0x800,
 		}
 	}
 
@@ -12371,7 +12411,9 @@ namespace TL
 		public long file_size_max;
 		/// <summary>Maximum suggested bitrate for <strong>uploading</strong> videos</summary>
 		public int video_upload_maxbitrate;
+		/// <summary>A limit, specifying the maximum number of files that should be downloaded in parallel from the same DC, for files smaller than 20MB.</summary>
 		public int small_queue_active_operations_max;
+		/// <summary>A limit, specifying the maximum number of files that should be downloaded in parallel from the same DC, for files bigger than 20MB.</summary>
 		public int large_queue_active_operations_max;
 
 		[Flags] public enum Flags : uint
@@ -15433,6 +15475,7 @@ namespace TL
 			inactive = 0x1,
 			/// <summary>The bot is asking permission to send messages to the user: if the user agrees, set the <c>write_allowed</c> flag when invoking <see cref="SchemaExtensions.Messages_RequestAppWebView">Messages_RequestAppWebView</see>.</summary>
 			request_write_access = 0x2,
+			/// <summary>Deprecated flag, can be ignored.</summary>
 			has_settings = 0x4,
 		}
 	}
@@ -15987,7 +16030,7 @@ namespace TL
 		[IfFlag(0)] public int top_msg_id;
 		/// <summary>Used to reply to messages sent to another chat (specified here), can only be used for non-<c>protected</c> chats and messages.</summary>
 		[IfFlag(1)] public InputPeer reply_to_peer_id;
-		/// <summary>Used to quote-reply to only a certain section (specified here) of the original message.</summary>
+		/// <summary>Used to quote-reply to only a certain section (specified here) of the original message. The maximum UTF-8 length for quotes is specified in the <a href="https://corefork.telegram.org/api/config#quote-length-max">quote_length_max</a> config key.</summary>
 		[IfFlag(2)] public string quote_text;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a> from the <c>quote_text</c> field.</summary>
 		[IfFlag(3)] public MessageEntity[] quote_entities;
@@ -16702,5 +16745,56 @@ namespace TL
 		}
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/savedDialog"/></para></summary>
+	[TLDef(0xBD87CB6C)]
+	public class SavedDialog : IObject
+	{
+		public Flags flags;
+		public Peer peer;
+		public int top_message;
+
+		[Flags] public enum Flags : uint
+		{
+			pinned = 0x4,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/messages.SavedDialogs"/></para></summary>
+	public abstract class Messages_SavedDialogsBase : IObject
+	{
+		public virtual SavedDialog[] Dialogs { get; }
+		public virtual MessageBase[] Messages { get; }
+		public virtual Dictionary<long, ChatBase> Chats { get; }
+		public virtual Dictionary<long, User> Users { get; }
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.savedDialogs"/></para></summary>
+	[TLDef(0xF83AE221)]
+	public class Messages_SavedDialogs : Messages_SavedDialogsBase, IPeerResolver
+	{
+		public SavedDialog[] dialogs;
+		public MessageBase[] messages;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, User> users;
+
+		public override SavedDialog[] Dialogs => dialogs;
+		public override MessageBase[] Messages => messages;
+		public override Dictionary<long, ChatBase> Chats => chats;
+		public override Dictionary<long, User> Users => users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.savedDialogsSlice"/></para></summary>
+	[TLDef(0x44BA9DD9)]
+	public class Messages_SavedDialogsSlice : Messages_SavedDialogs
+	{
+		public int count;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.savedDialogsNotModified"/></para></summary>
+	[TLDef(0xC01F6FE8)]
+	public class Messages_SavedDialogsNotModified : Messages_SavedDialogsBase
+	{
+		public int count;
 	}
 }

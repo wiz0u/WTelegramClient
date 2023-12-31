@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 169;					// fetched 23/12/2023 19:20:07
+		public const int Version = 170;					// fetched 31/12/2023 17:22:50
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -145,7 +145,7 @@ namespace TL
 			[0x37C1011C] = null,//ChatPhotoEmpty
 			[0x1C6E1C11] = typeof(ChatPhoto),
 			[0x90A6CA84] = typeof(MessageEmpty),
-			[0x38116EE0] = typeof(Message),
+			[0x76BEC211] = typeof(Message),
 			[0x2B085862] = typeof(MessageService),
 			[0x3DED6320] = null,//MessageMediaEmpty
 			[0x695150D7] = typeof(MessageMediaPhoto),
@@ -390,6 +390,8 @@ namespace TL
 			[0xAE3F101D] = typeof(UpdatePeerWallpaper),
 			[0xAC21D3CE] = typeof(UpdateBotMessageReaction),
 			[0x09CB7759] = typeof(UpdateBotMessageReactions),
+			[0xAEAF9E74] = typeof(UpdateSavedDialogPinned),
+			[0x686C85A6] = typeof(UpdatePinnedSavedDialogs),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -621,7 +623,7 @@ namespace TL
 			[0x17DB940B] = typeof(BotInlineMediaResult),
 			[0xE021F2F6] = typeof(Messages_BotResults),
 			[0x5DAB1AF4] = typeof(ExportedMessageLink),
-			[0x5F777DCE] = typeof(MessageFwdHeader),
+			[0x4E4DF4BB] = typeof(MessageFwdHeader),
 			[0x3DBB5986] = typeof(Auth_SentCodeTypeApp),
 			[0xC000BBA2] = typeof(Auth_SentCodeTypeSms),
 			[0x5353E5A7] = typeof(Auth_SentCodeTypeCall),
@@ -1178,6 +1180,10 @@ namespace TL
 			[0xBBAB2643] = typeof(StoryReactionPublicForward),
 			[0xCFCD0F13] = typeof(StoryReactionPublicRepost),
 			[0xAA5F789C] = typeof(Stories_StoryReactionsList),
+			[0xBD87CB6C] = typeof(SavedDialog),
+			[0xF83AE221] = typeof(Messages_SavedDialogs),
+			[0x44BA9DD9] = typeof(Messages_SavedDialogsSlice),
+			[0xC01F6FE8] = typeof(Messages_SavedDialogsNotModified),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),
