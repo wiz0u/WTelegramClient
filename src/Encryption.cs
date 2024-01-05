@@ -387,7 +387,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 		}
 #endif
 
-		internal static async Task<InputCheckPasswordSRP> Check2FA(Account_Password accountPassword, Func<Task<string>> getPassword)
+		public static async Task<InputCheckPasswordSRP> Check2FA(Account_Password accountPassword, Func<Task<string>> getPassword)
 		{
 			if (accountPassword.current_algo is not PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow algo)
 				if (accountPassword.current_algo == null && (algo = accountPassword.new_algo as PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow) != null)
