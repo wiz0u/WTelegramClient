@@ -13,7 +13,7 @@ using static WTelegram.Compat;
 
 namespace WTelegram
 {
-	internal static class Encryption
+	public static class Encryption
 	{
 		private static readonly Dictionary<long, RSAPublicKey> PublicKeys = new();
 		internal static readonly RNGCryptoServiceProvider RNG = new();
