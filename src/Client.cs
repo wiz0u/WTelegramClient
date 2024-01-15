@@ -1355,7 +1355,7 @@ namespace WTelegram
 		/// <returns>Wait for the reply and return the resulting object, or throws an RpcException if an error was replied</returns>
 		public async Task<T> Invoke<T>(IMethod<T> query)
 		{
-			if (_dcSession.WithoutUpdates && query is not IMethod<Pong>)
+			if (_dcSession.WithoutUpdates && query is not IMethod<Pong> and not IMethod<FutureSalts>)
 				query = new TL.Methods.InvokeWithoutUpdates<T> { query = query };
 			bool got503 = false;
 		retry:
