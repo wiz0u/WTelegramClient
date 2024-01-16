@@ -128,6 +128,7 @@ namespace TL
 	{
 		public abstract long ID { get; }
 		protected internal abstract IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats);
+		public static implicit operator long(Peer peer) => peer.ID;
 	}
 	partial class PeerUser
 	{
