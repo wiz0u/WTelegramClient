@@ -1175,7 +1175,8 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getChannelDefaultEmojiStatuses"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getChannelDefaultEmojiStatuses"/> [bots: ✓]</para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.emojiStatusesNotModified">account.emojiStatusesNotModified</a></returns>
 		public static Task<Account_EmojiStatuses> Account_GetChannelDefaultEmojiStatuses(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetChannelDefaultEmojiStatuses
@@ -1183,7 +1184,8 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getChannelRestrictedStatusEmojis"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getChannelRestrictedStatusEmojis"/> [bots: ✓]</para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
 		public static Task<EmojiList> Account_GetChannelRestrictedStatusEmojis(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetChannelRestrictedStatusEmojis
@@ -3743,7 +3745,11 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSavedDialogs"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSavedDialogs"/> [bots: ✓]</para></summary>
+		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
+		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
+		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<Messages_SavedDialogsBase> Messages_GetSavedDialogs(this Client client, DateTime offset_date = default, int offset_id = default, InputPeer offset_peer = null, int limit = int.MaxValue, long hash = default, bool exclude_pinned = false)
 			=> client.Invoke(new Messages_GetSavedDialogs
 			{
@@ -3755,7 +3761,12 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSavedHistory"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSavedHistory"/> [bots: ✓]</para></summary>
+		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
+		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
+		/// <param name="add_offset"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
+		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<Messages_MessagesBase> Messages_GetSavedHistory(this Client client, InputPeer peer, int offset_id = default, DateTime offset_date = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default)
 			=> client.Invoke(new Messages_GetSavedHistory
 			{
@@ -3769,7 +3780,7 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.deleteSavedHistory"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.deleteSavedHistory"/> [bots: ✓]</para></summary>
 		public static Task<Messages_AffectedHistory> Messages_DeleteSavedHistory(this Client client, InputPeer peer, int max_id = default, DateTime? min_date = null, DateTime? max_date = null)
 			=> client.Invoke(new Messages_DeleteSavedHistory
 			{
@@ -3780,13 +3791,13 @@ namespace TL
 				max_date = max_date.GetValueOrDefault(),
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getPinnedSavedDialogs"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getPinnedSavedDialogs"/> [bots: ✓]</para></summary>
 		public static Task<Messages_SavedDialogsBase> Messages_GetPinnedSavedDialogs(this Client client)
 			=> client.Invoke(new Messages_GetPinnedSavedDialogs
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleSavedDialogPin"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleSavedDialogPin"/> [bots: ✓]</para></summary>
 		public static Task<bool> Messages_ToggleSavedDialogPin(this Client client, InputDialogPeerBase peer, bool pinned = false)
 			=> client.Invoke(new Messages_ToggleSavedDialogPin
 			{
@@ -3794,7 +3805,7 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.reorderPinnedSavedDialogs"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.reorderPinnedSavedDialogs"/> [bots: ✓]</para></summary>
 		public static Task<bool> Messages_ReorderPinnedSavedDialogs(this Client client, InputDialogPeerBase[] order, bool force = false)
 			=> client.Invoke(new Messages_ReorderPinnedSavedDialogs
 			{
@@ -4844,7 +4855,7 @@ namespace TL
 				channel = channel,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.updateEmojiStatus"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.updateEmojiStatus"/> [bots: ✓]</para></summary>
 		public static Task<UpdatesBase> Channels_UpdateEmojiStatus(this Client client, InputChannelBase channel, EmojiStatus emoji_status)
 			=> client.Invoke(new Channels_UpdateEmojiStatus
 			{
@@ -6168,7 +6179,8 @@ namespace TL
 				hidden = hidden,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoryReactionsList"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoryReactionsList"/> [bots: ✓]</para></summary>
+		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Stories_StoryReactionsList> Stories_GetStoryReactionsList(this Client client, InputPeer peer, int id, int limit = int.MaxValue, Reaction reaction = null, string offset = null, bool forwards_first = false)
 			=> client.Invoke(new Stories_GetStoryReactionsList
 			{
