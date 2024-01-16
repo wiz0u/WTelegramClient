@@ -5060,6 +5060,9 @@ namespace TL
 			has_order = 0x1,
 		}
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSavedReactionTags"/></para></summary>
+	[TLDef(0x39C67432)]
+	public class UpdateSavedReactionTags : Update { }
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]
@@ -14328,6 +14331,7 @@ namespace TL
 			has_recent_reactions = 0x2,
 			/// <summary>Whether <see cref="SchemaExtensions.Messages_GetMessageReactionsList">Messages_GetMessageReactionsList</see> can be used to see how each specific peer reacted to the message</summary>
 			can_see_list = 0x4,
+			reactions_as_tags = 0x8,
 		}
 	}
 
@@ -16807,5 +16811,29 @@ namespace TL
 	public class Messages_SavedDialogsNotModified : Messages_SavedDialogsBase
 	{
 		public int count;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/savedReactionTag"/></para></summary>
+	[TLDef(0xCB6FF828)]
+	public class SavedReactionTag : IObject
+	{
+		public Flags flags;
+		public Reaction reaction;
+		[IfFlag(0)] public string title;
+		public int count;
+
+		[Flags] public enum Flags : uint
+		{
+			has_title = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.savedReactionTags"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/messages.savedReactionTagsNotModified">messages.savedReactionTagsNotModified</a></remarks>
+	[TLDef(0x3259950A)]
+	public class Messages_SavedReactionTags : IObject
+	{
+		public SavedReactionTag[] tags;
+		public long hash;
 	}
 }

@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 170;					// fetched 31/12/2023 17:22:50
+		public const int Version = 171;					// fetched 16/01/2024 17:09:52
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -392,6 +392,7 @@ namespace TL
 			[0x09CB7759] = typeof(UpdateBotMessageReactions),
 			[0xAEAF9E74] = typeof(UpdateSavedDialogPinned),
 			[0x686C85A6] = typeof(UpdatePinnedSavedDialogs),
+			[0x39C67432] = typeof(UpdateSavedReactionTags),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -1184,6 +1185,9 @@ namespace TL
 			[0xF83AE221] = typeof(Messages_SavedDialogs),
 			[0x44BA9DD9] = typeof(Messages_SavedDialogsSlice),
 			[0xC01F6FE8] = typeof(Messages_SavedDialogsNotModified),
+			[0xCB6FF828] = typeof(SavedReactionTag),
+			[0x889B59EF] = null,//Messages_SavedReactionTagsNotModified
+			[0x3259950A] = typeof(Messages_SavedReactionTags),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),
@@ -1307,6 +1311,7 @@ namespace TL
 			[typeof(Help_AppConfig)]                 = 0x7CDE641D, //help.appConfigNotModified
 			[typeof(BotApp)]                         = 0x5DA674B7, //botAppNotModified
 			[typeof(Help_PeerColors)]                = 0x2BA1F5CE, //help.peerColorsNotModified
+			[typeof(Messages_SavedReactionTags)]     = 0x889B59EF, //messages.savedReactionTagsNotModified
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}

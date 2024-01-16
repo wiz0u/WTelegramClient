@@ -1522,14 +1522,15 @@ namespace TL
 		/// <param name="max_id"><a href="https://corefork.telegram.org/api/offsets">Maximum message ID to return</a></param>
 		/// <param name="min_id"><a href="https://corefork.telegram.org/api/offsets">Minimum message ID to return</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets">Hash</a></param>
-		public static Task<Messages_MessagesBase> Messages_Search(this Client client, InputPeer peer, string q, MessagesFilter filter = null, DateTime min_date = default, DateTime max_date = default, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default, InputPeer from_id = null, int? top_msg_id = null, InputPeer saved_peer_id = null)
+		public static Task<Messages_MessagesBase> Messages_Search(this Client client, InputPeer peer, string q, MessagesFilter filter = null, DateTime min_date = default, DateTime max_date = default, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default, InputPeer from_id = null, int? top_msg_id = null, InputPeer saved_peer_id = null, Reaction[] saved_reaction = null)
 			=> client.Invoke(new Messages_Search
 			{
-				flags = (Messages_Search.Flags)((from_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x2 : 0) | (saved_peer_id != null ? 0x4 : 0)),
+				flags = (Messages_Search.Flags)((from_id != null ? 0x1 : 0) | (top_msg_id != null ? 0x2 : 0) | (saved_peer_id != null ? 0x4 : 0) | (saved_reaction != null ? 0x8 : 0)),
 				peer = peer,
 				q = q,
 				from_id = from_id,
 				saved_peer_id = saved_peer_id,
+				saved_reaction = saved_reaction,
 				top_msg_id = top_msg_id.GetValueOrDefault(),
 				filter = filter,
 				min_date = min_date,
@@ -3811,6 +3812,31 @@ namespace TL
 			{
 				flags = (Messages_ReorderPinnedSavedDialogs.Flags)(force ? 0x1 : 0),
 				order = order,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSavedReactionTags"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.savedReactionTagsNotModified">messages.savedReactionTagsNotModified</a></returns>
+		public static Task<Messages_SavedReactionTags> Messages_GetSavedReactionTags(this Client client, long hash = default)
+			=> client.Invoke(new Messages_GetSavedReactionTags
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.updateSavedReactionTag"/></para></summary>
+		public static Task<bool> Messages_UpdateSavedReactionTag(this Client client, Reaction reaction, string title = null)
+			=> client.Invoke(new Messages_UpdateSavedReactionTag
+			{
+				flags = (Messages_UpdateSavedReactionTag.Flags)(title != null ? 0x1 : 0),
+				reaction = reaction,
+				title = title,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getDefaultTagReactions"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.reactionsNotModified">messages.reactionsNotModified</a></returns>
+		public static Task<Messages_Reactions> Messages_GetDefaultTagReactions(this Client client, long hash = default)
+			=> client.Invoke(new Messages_GetDefaultTagReactions
+			{
+				hash = hash,
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -7418,7 +7444,7 @@ namespace TL.Methods
 		public long hash;
 	}
 
-	[TLDef(0xA7B4E929)]
+	[TLDef(0x29EE847A)]
 	public class Messages_Search : IMethod<Messages_MessagesBase>
 	{
 		public Flags flags;
@@ -7426,6 +7452,7 @@ namespace TL.Methods
 		public string q;
 		[IfFlag(0)] public InputPeer from_id;
 		[IfFlag(2)] public InputPeer saved_peer_id;
+		[IfFlag(3)] public Reaction[] saved_reaction;
 		[IfFlag(1)] public int top_msg_id;
 		public MessagesFilter filter;
 		public DateTime min_date;
@@ -7442,6 +7469,7 @@ namespace TL.Methods
 			has_from_id = 0x1,
 			has_top_msg_id = 0x2,
 			has_saved_peer_id = 0x4,
+			has_saved_reaction = 0x8,
 		}
 	}
 
@@ -9400,6 +9428,31 @@ namespace TL.Methods
 		{
 			force = 0x1,
 		}
+	}
+
+	[TLDef(0x761DDACF)]
+	public class Messages_GetSavedReactionTags : IMethod<Messages_SavedReactionTags>
+	{
+		public long hash;
+	}
+
+	[TLDef(0x60297DEC)]
+	public class Messages_UpdateSavedReactionTag : IMethod<bool>
+	{
+		public Flags flags;
+		public Reaction reaction;
+		[IfFlag(0)] public string title;
+
+		[Flags] public enum Flags : uint
+		{
+			has_title = 0x1,
+		}
+	}
+
+	[TLDef(0xBDF93428)]
+	public class Messages_GetDefaultTagReactions : IMethod<Messages_Reactions>
+	{
+		public long hash;
 	}
 
 	[TLDef(0xEDD4882A)]
