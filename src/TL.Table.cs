@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 171;					// fetched 16/01/2024 17:09:52
+		public const int Version = 172;					// fetched 18/01/2024 14:49:18
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -127,9 +127,9 @@ namespace TL
 			[0x09D05049] = null,//UserStatusEmpty
 			[0xEDB93949] = typeof(UserStatusOnline),
 			[0x008C703F] = typeof(UserStatusOffline),
-			[0xE26F42F1] = typeof(UserStatusRecently),
-			[0x07BF09FC] = typeof(UserStatusLastWeek),
-			[0x77EBC742] = typeof(UserStatusLastMonth),
+			[0x7B197DC8] = typeof(UserStatusRecently),
+			[0x541A1D1A] = typeof(UserStatusLastWeek),
+			[0x65899777] = typeof(UserStatusLastMonth),
 			[0x29562865] = typeof(ChatEmpty),
 			[0x41CBF256] = typeof(Chat),
 			[0x6592A1A7] = typeof(ChatForbidden),
@@ -1188,6 +1188,7 @@ namespace TL
 			[0xCB6FF828] = typeof(SavedReactionTag),
 			[0x889B59EF] = null,//Messages_SavedReactionTagsNotModified
 			[0x3259950A] = typeof(Messages_SavedReactionTags),
+			[0x3BB842AC] = typeof(OutboxReadDate),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),

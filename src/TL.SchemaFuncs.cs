@@ -990,7 +990,7 @@ namespace TL
 			{
 			});
 
-		/// <summary>Get all available chat themes		<para>See <a href="https://corefork.telegram.org/method/account.getChatThemes"/></para></summary>
+		/// <summary>Get all available chat <a href="https://corefork.telegram.org/api/themes">themes »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getChatThemes"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.themesNotModified">account.themesNotModified</a></returns>
 		public static Task<Account_Themes> Account_GetChatThemes(this Client client, long hash = default)
@@ -1175,7 +1175,7 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getChannelDefaultEmojiStatuses"/> [bots: ✓]</para></summary>
+		/// <summary>Get a list of default suggested <a href="https://corefork.telegram.org/api/emoji-status">channel emoji statuses</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getChannelDefaultEmojiStatuses"/> [bots: ✓]</para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.emojiStatusesNotModified">account.emojiStatusesNotModified</a></returns>
 		public static Task<Account_EmojiStatuses> Account_GetChannelDefaultEmojiStatuses(this Client client, long hash = default)
@@ -1184,7 +1184,7 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getChannelRestrictedStatusEmojis"/> [bots: ✓]</para></summary>
+		/// <summary>Returns fetch the full list of <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji IDs »</a> that cannot be used in <a href="https://corefork.telegram.org/api/emoji-status">channel emoji statuses »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getChannelRestrictedStatusEmojis"/> [bots: ✓]</para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
 		public static Task<EmojiList> Account_GetChannelRestrictedStatusEmojis(this Client client, long hash = default)
@@ -1217,6 +1217,13 @@ namespace TL
 			{
 				id = id,
 				errors = errors,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/users.getIsPremiumRequiredToContact"/></para></summary>
+		public static Task<bool[]> Users_GetIsPremiumRequiredToContact(this Client client, params InputUserBase[] id)
+			=> client.Invoke(new Users_GetIsPremiumRequiredToContact
+			{
+				id = id,
 			});
 
 		/// <summary>Get the telegram IDs of all contacts.<br/>Returns an array of Telegram user IDs for all contacts (0 if a contact does not have an associated Telegram account or have hidden their account using privacy settings).		<para>See <a href="https://corefork.telegram.org/method/contacts.getContactIDs"/></para></summary>
@@ -1348,7 +1355,7 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary>Delete saved contacts		<para>See <a href="https://corefork.telegram.org/method/contacts.resetSaved"/></para></summary>
+		/// <summary>Removes all contacts without an associated Telegram account.		<para>See <a href="https://corefork.telegram.org/method/contacts.resetSaved"/></para></summary>
 		public static Task<bool> Contacts_ResetSaved(this Client client)
 			=> client.Invoke(new Contacts_ResetSaved
 			{
@@ -3299,8 +3306,8 @@ namespace TL
 		/// <summary>Get <a href="https://corefork.telegram.org/api/reactions">message reaction</a> list, along with the sender of each reaction.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageReactionsList"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.getMessageReactionsList#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="id">Message ID</param>
-		/// <param name="reaction">Get only reactions of this type (UTF8 emoji)</param>
-		/// <param name="offset">Offset (typically taken from the <c>next_offset</c> field of the returned <see cref="Messages_MessageReactionsList"/>)</param>
+		/// <param name="reaction">Get only reactions of this type</param>
+		/// <param name="offset">Offset for pagination (taken from the <c>next_offset</c> field of the returned <see cref="Messages_MessageReactionsList"/>); empty in the first request.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_MessageReactionsList> Messages_GetMessageReactionsList(this Client client, InputPeer peer, int id, int limit = int.MaxValue, Reaction reaction = null, string offset = null)
 			=> client.Invoke(new Messages_GetMessageReactionsList
@@ -3627,10 +3634,11 @@ namespace TL
 			{
 			});
 
-		/// <summary>Send a chosen peer, as requested by a <see cref="KeyboardButtonRequestPeer"/> button.		<para>See <a href="https://corefork.telegram.org/method/messages.sendBotRequestedPeer"/> [bots: ✓]</para></summary>
+		/// <summary>Send one or more chosen peers, as requested by a <see cref="KeyboardButtonRequestPeer"/> button.		<para>See <a href="https://corefork.telegram.org/method/messages.sendBotRequestedPeer"/> [bots: ✓]</para></summary>
 		/// <param name="peer">The bot that sent the <see cref="KeyboardButtonRequestPeer"/> button.</param>
 		/// <param name="msg_id">ID of the message that contained the reply keyboard with the <see cref="KeyboardButtonRequestPeer"/> button.</param>
 		/// <param name="button_id">The <c>button_id</c> field from the <see cref="KeyboardButtonRequestPeer"/>.</param>
+		/// <param name="requested_peers">The chosen peers.</param>
 		public static Task<UpdatesBase> Messages_SendBotRequestedPeer(this Client client, InputPeer peer, int msg_id, int button_id, params InputPeer[] requested_peers)
 			=> client.Invoke(new Messages_SendBotRequestedPeer
 			{
@@ -3837,6 +3845,14 @@ namespace TL
 			=> client.Invoke(new Messages_GetDefaultTagReactions
 			{
 				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getOutboxReadDate"/></para></summary>
+		public static Task<OutboxReadDate> Messages_GetOutboxReadDate(this Client client, InputPeer peer, int msg_id)
+			=> client.Invoke(new Messages_GetOutboxReadDate
+			{
+				peer = peer,
+				msg_id = msg_id,
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -4851,6 +4867,7 @@ namespace TL
 			});
 
 		/// <summary>Update the <a href="https://corefork.telegram.org/api/colors">accent color and background custom emoji »</a> of a channel.		<para>See <a href="https://corefork.telegram.org/method/channels.updateColor"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.updateColor#possible-errors">details</a>)</para></summary>
+		/// <param name="for_profile">Whether to change the accent color emoji pattern of the profile page; otherwise, the accent color and emoji pattern of messages will be changed.</param>
 		/// <param name="channel">Channel whose accent color should be changed.</param>
 		/// <param name="color"><a href="https://corefork.telegram.org/api/colors">ID of the accent color palette »</a> to use (not RGB24, see <a href="https://corefork.telegram.org/api/colors">here »</a> for more info).</param>
 		/// <param name="background_emoji_id">Custom emoji ID used in the accent color pattern.</param>
@@ -4881,7 +4898,9 @@ namespace TL
 				channel = channel,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.updateEmojiStatus"/> [bots: ✓]</para></summary>
+		/// <summary>Set an <a href="https://corefork.telegram.org/api/emoji-status">emoji status</a> for a channel.		<para>See <a href="https://corefork.telegram.org/method/channels.updateEmojiStatus"/> [bots: ✓]</para></summary>
+		/// <param name="channel">The channel, must have at least <a href="https://corefork.telegram.org/api/config#channel-emoji-status-level-min"><c>channel_emoji_status_level_min</c> boosts</a>.</param>
+		/// <param name="emoji_status"><a href="https://corefork.telegram.org/api/emoji-status">Emoji status</a> to set</param>
 		public static Task<UpdatesBase> Channels_UpdateEmojiStatus(this Client client, InputChannelBase channel, EmojiStatus emoji_status)
 			=> client.Invoke(new Channels_UpdateEmojiStatus
 			{
@@ -5782,6 +5801,7 @@ namespace TL
 		/// <summary>Obtains a list of messages, indicating to which other public channels was a channel message forwarded.<br/>Will return a list of <see cref="Message">messages</see> with <c>peer_id</c> equal to the public channel to which this message was forwarded.		<para>See <a href="https://corefork.telegram.org/method/stats.getMessagePublicForwards"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getMessagePublicForwards#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Source channel</param>
 		/// <param name="msg_id">Source message ID</param>
+		/// <param name="offset">Offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a>, empty string on first call, then use the <c>next_offset</c> field of the returned constructor (if present, otherwise no more results are available).</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Stats_PublicForwards> Stats_GetMessagePublicForwards(this Client client, InputChannelBase channel, int msg_id, string offset, int limit = int.MaxValue)
 			=> client.Invoke(new Stats_GetMessagePublicForwards
@@ -6093,7 +6113,8 @@ namespace TL
 
 		/// <summary>Obtain the list of users that have viewed a specific <a href="https://corefork.telegram.org/api/stories">story we posted</a>		<para>See <a href="https://corefork.telegram.org/method/stories.getStoryViewsList"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.getStoryViewsList#possible-errors">details</a>)</para></summary>
 		/// <param name="just_contacts">Whether to only fetch view reaction/views made by our <a href="https://corefork.telegram.org/api/contacts">contacts</a></param>
-		/// <param name="reactions_first">Whether to return <see cref="StoryView"/> info about users that reacted to the story (i.e. if set, the server will first sort results by view date as usual, and then also additionally sort the list by putting <see cref="StoryView"/>s with an associated reaction first in the list).</param>
+		/// <param name="reactions_first">Whether to return <see cref="StoryView"/> info about users that reacted to the story (i.e. if set, the server will first sort results by view date as usual, and then also additionally sort the list by putting <see cref="StoryView"/>s with an associated reaction first in the list). Ignored if <c>forwards_first</c> is set.</param>
+		/// <param name="forwards_first">If set, returns forwards and reposts first, then reactions, then other views; otherwise returns interactions sorted just by interaction date.</param>
 		/// <param name="peer">Peer where the story was posted</param>
 		/// <param name="q">Search for specific peers</param>
 		/// <param name="id">Story ID</param>
@@ -6205,7 +6226,12 @@ namespace TL
 				hidden = hidden,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getStoryReactionsList"/> [bots: ✓]</para></summary>
+		/// <summary>Get the <a href="https://corefork.telegram.org/api/reactions">reaction</a> and interaction list of a <a href="https://corefork.telegram.org/api/stories">story</a> posted to a channel, along with the sender of each reaction.		<para>See <a href="https://corefork.telegram.org/method/stories.getStoryReactionsList"/> [bots: ✓]</para></summary>
+		/// <param name="forwards_first">If set, returns forwards and reposts first, then reactions, then other views; otherwise returns interactions sorted just by interaction date.</param>
+		/// <param name="peer">Channel</param>
+		/// <param name="id"><a href="https://corefork.telegram.org/api/stories">Story</a> ID</param>
+		/// <param name="reaction">Get only reactions of this type</param>
+		/// <param name="offset">Offset for pagination (taken from the <c>next_offset</c> field of the returned <see cref="Stories_StoryReactionsList"/>); empty in the first request.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Stories_StoryReactionsList> Stories_GetStoryReactionsList(this Client client, InputPeer peer, int id, int limit = int.MaxValue, Reaction reaction = null, string offset = null, bool forwards_first = false)
 			=> client.Invoke(new Stories_GetStoryReactionsList
@@ -7199,6 +7225,12 @@ namespace TL.Methods
 	{
 		public InputUserBase id;
 		public SecureValueErrorBase[] errors;
+	}
+
+	[TLDef(0xA622AA10)]
+	public class Users_GetIsPremiumRequiredToContact : IMethod<bool[]>
+	{
+		public InputUserBase[] id;
 	}
 
 	[TLDef(0x7ADC669D)]
@@ -9453,6 +9485,13 @@ namespace TL.Methods
 	public class Messages_GetDefaultTagReactions : IMethod<Messages_Reactions>
 	{
 		public long hash;
+	}
+
+	[TLDef(0x8C4BFE5D)]
+	public class Messages_GetOutboxReadDate : IMethod<OutboxReadDate>
+	{
+		public InputPeer peer;
+		public int msg_id;
 	}
 
 	[TLDef(0xEDD4882A)]
