@@ -317,7 +317,7 @@ namespace WTelegram
 			var client = dc_id == 0 ? this : await GetClientForDC(dc_id, true);
 			using var writeSem = new SemaphoreSlim(1);
 			bool canSeek = outputStream.CanSeek;
-			long streamStartPos = outputStream.Position;
+			long streamStartPos = canSeek ? outputStream.Position : 0;
 			long fileOffset = 0, maxOffsetSeen = 0;
 			long transmitted = 0;
 			var tasks = new Dictionary<long, Task>();
@@ -373,7 +373,7 @@ namespace WTelegram
 						await writeSem.WaitAsync();
 						try
 						{
-							if (streamStartPos + offset != outputStream.Position) // if we're about to write out of order
+							if (canSeek && streamStartPos + offset != outputStream.Position) // if we're about to write out of order
 							{
 								await outputStream.FlushAsync(); // async flush, otherwise Seek would do a sync flush
 								outputStream.Seek(streamStartPos + offset, SeekOrigin.Begin);
