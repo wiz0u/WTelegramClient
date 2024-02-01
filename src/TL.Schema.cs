@@ -1672,6 +1672,7 @@ namespace TL
 		[IfFlag(8)] public Peer from_id;
 		/// <summary>Peer ID, the chat where this message was sent</summary>
 		public Peer peer_id;
+		/// <summary>Messages fetched from a <a href="https://corefork.telegram.org/api/saved-messages">saved messages dialog »</a> will have <c>peer</c>=<see cref="InputPeerSelf"/> and the <c>saved_peer_id</c> flag set to the ID of the saved dialog.<br/></summary>
 		[IfFlag(28)] public Peer saved_peer_id;
 		/// <summary>Info about forwarded messages</summary>
 		[IfFlag(2)] public MessageFwdHeader fwd_from;
@@ -1910,8 +1911,11 @@ namespace TL
 			spoiler = 0x10,
 			/// <summary>Field <see cref="alt_document"/> has a value</summary>
 			has_alt_document = 0x20,
+			/// <summary>Whether this is a video.</summary>
 			video = 0x40,
+			/// <summary>Whether this is a round video.</summary>
 			round = 0x80,
+			/// <summary>Whether this is a voice message.</summary>
 			voice = 0x100,
 		}
 	}
@@ -3269,7 +3273,7 @@ namespace TL
 			stories_pinned_available = 0x4000000,
 			/// <summary>Whether we've <a href="https://corefork.telegram.org/api/block">blocked this user, preventing them from seeing our stories »</a>.</summary>
 			blocked_my_stories_from = 0x8000000,
-			/// <summary>Whether the other user has chosen a custom wallpaper for us using <see cref="SchemaExtensions.Messages_SetChatWallPaper">Messages_SetChatWallPaper</see> and the <c>for_both</c> flag, see <a href="https://corefork.telegram.org/api/wallpapers#installing-wallpapers-in-a-specific-chator-channel">here »</a> for more info.</summary>
+			/// <summary>Whether the other user has chosen a custom wallpaper for us using <see cref="SchemaExtensions.Messages_SetChatWallPaper">Messages_SetChatWallPaper</see> and the <c>for_both</c> flag, see <a href="https://corefork.telegram.org/api/wallpapers#installing-wallpapers-in-a-specific-chat-or-channel">here »</a> for more info.</summary>
 			wallpaper_overridden = 0x10000000,
 			contact_require_premium = 0x20000000,
 			read_dates_private = 0x40000000,
@@ -5094,25 +5098,28 @@ namespace TL
 
 		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSavedDialogPinned"/></para></summary>
+	/// <summary>A <a href="https://corefork.telegram.org/api/saved-messages">saved message dialog</a> was pinned/unpinned		<para>See <a href="https://corefork.telegram.org/constructor/updateSavedDialogPinned"/></para></summary>
 	[TLDef(0xAEAF9E74)]
 	public class UpdateSavedDialogPinned : Update
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>The dialog</summary>
 		public DialogPeerBase peer;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether the dialog was pinned</summary>
 			pinned = 0x1,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updatePinnedSavedDialogs"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/saved-messages">Pinned saved dialogs »</a> were updated		<para>See <a href="https://corefork.telegram.org/constructor/updatePinnedSavedDialogs"/></para></summary>
 	[TLDef(0x686C85A6)]
 	public class UpdatePinnedSavedDialogs : Update
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>New order of pinned saved dialogs</summary>
 		[IfFlag(0)] public DialogPeerBase[] order;
 
 		[Flags] public enum Flags : uint
@@ -8600,12 +8607,15 @@ namespace TL
 		[IfFlag(2)] public int channel_post;
 		/// <summary>For channels and if signatures are enabled, author of the channel message</summary>
 		[IfFlag(3)] public string post_author;
-		/// <summary>Only for messages forwarded to the current user (inputPeerSelf), full info about the user/channel that originally sent the message</summary>
+		/// <summary>Only for messages forwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, contains the dialog where the message was originally sent.</summary>
 		[IfFlag(4)] public Peer saved_from_peer;
-		/// <summary>Only for messages forwarded to the current user (inputPeerSelf), ID of the message that was forwarded from the original user/channel</summary>
+		/// <summary>Only for messages forwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, contains the original ID of the message in <c>saved_from_peer</c>.</summary>
 		[IfFlag(4)] public int saved_from_msg_id;
+		/// <summary>Only for forwarded messages reforwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, contains the sender of the original message (i.e. if user A sends a message, then user B forwards it somewhere, then user C saves it to saved messages, this field will contain the ID of user A and <c>from_id</c> will contain the ID of user B).</summary>
 		[IfFlag(8)] public Peer saved_from_id;
+		/// <summary>Only for forwarded messages from users with forward privacy enabled reforwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, contains the sender of the original message (i.e. if user A (fwd privacy enabled) sends a message, then user B forwards it somewhere, then user C saves it to saved messages, this field will contain the name of user A and <c>from_id</c> will contain the ID of user B).</summary>
 		[IfFlag(9)] public string saved_from_name;
+		/// <summary>Only for forwarded messages reforwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, indicates when was the original message sent (i.e. if user A sends a message @ unixtime 1, then user B forwards it somewhere @ unixtime 2, then user C saves it to saved messages @ unixtime 3, this field will contain 1, <c>date</c> will contain 2 and the <c>date</c> of the containing <see cref="Message"/> will contain 3).</summary>
 		[IfFlag(10)] public DateTime saved_date;
 		/// <summary>PSA type</summary>
 		[IfFlag(6)] public string psa_type;
@@ -8632,6 +8642,7 @@ namespace TL
 			has_saved_from_name = 0x200,
 			/// <summary>Field <see cref="saved_date"/> has a value</summary>
 			has_saved_date = 0x400,
+			/// <summary>Only for messages forwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, set if the original message was outgoing (though the message may have been originally outgoing even if this flag is not set, if <c>from_id</c> points to the current user).</summary>
 			saved_out = 0x800,
 		}
 	}
@@ -16863,55 +16874,72 @@ namespace TL
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/savedDialog"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/saved-messages">saved dialog »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/savedDialog"/></para></summary>
 	[TLDef(0xBD87CB6C)]
 	public class SavedDialog : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>The dialog</summary>
 		public Peer peer;
+		/// <summary>The latest message ID</summary>
 		public int top_message;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Is the dialog pinned</summary>
 			pinned = 0x4,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/messages.SavedDialogs"/></para>		<para>Derived classes: <see cref="Messages_SavedDialogs"/>, <see cref="Messages_SavedDialogsSlice"/>, <see cref="Messages_SavedDialogsNotModified"/></para></summary>
+	/// <summary>Represents some <a href="https://corefork.telegram.org/api/saved-messages">saved message dialogs »</a>.		<para>See <a href="https://corefork.telegram.org/type/messages.SavedDialogs"/></para>		<para>Derived classes: <see cref="Messages_SavedDialogs"/>, <see cref="Messages_SavedDialogsSlice"/>, <see cref="Messages_SavedDialogsNotModified"/></para></summary>
 	public abstract class Messages_SavedDialogsBase : IObject
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/saved-messages">Saved message dialogs »</a>.</summary>
 		public virtual SavedDialog[] Dialogs { get; }
+		/// <summary>List of last messages from each saved dialog</summary>
 		public virtual MessageBase[] Messages { get; }
+		/// <summary>Mentioned chats</summary>
 		public virtual Dictionary<long, ChatBase> Chats { get; }
+		/// <summary>Mentioned users</summary>
 		public virtual Dictionary<long, User> Users { get; }
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.savedDialogs"/></para></summary>
+	/// <summary>Represents some <a href="https://corefork.telegram.org/api/saved-messages">saved message dialogs »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messages.savedDialogs"/></para></summary>
 	[TLDef(0xF83AE221)]
 	public class Messages_SavedDialogs : Messages_SavedDialogsBase, IPeerResolver
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/saved-messages">Saved message dialogs »</a>.</summary>
 		public SavedDialog[] dialogs;
+		/// <summary>List of last messages from each saved dialog</summary>
 		public MessageBase[] messages;
+		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
+		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 
+		/// <summary><a href="https://corefork.telegram.org/api/saved-messages">Saved message dialogs »</a>.</summary>
 		public override SavedDialog[] Dialogs => dialogs;
+		/// <summary>List of last messages from each saved dialog</summary>
 		public override MessageBase[] Messages => messages;
+		/// <summary>Mentioned chats</summary>
 		public override Dictionary<long, ChatBase> Chats => chats;
+		/// <summary>Mentioned users</summary>
 		public override Dictionary<long, User> Users => users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.savedDialogsSlice"/></para></summary>
+	/// <summary>Incomplete list of <a href="https://corefork.telegram.org/api/saved-messages">saved message dialogs »</a> with messages and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/messages.savedDialogsSlice"/></para></summary>
 	[TLDef(0x44BA9DD9)]
 	public class Messages_SavedDialogsSlice : Messages_SavedDialogs
 	{
+		/// <summary>Total number of saved message dialogs</summary>
 		public int count;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.savedDialogsNotModified"/></para></summary>
+	/// <summary>The saved dialogs haven't changed		<para>See <a href="https://corefork.telegram.org/constructor/messages.savedDialogsNotModified"/></para></summary>
 	[TLDef(0xC01F6FE8)]
 	public class Messages_SavedDialogsNotModified : Messages_SavedDialogsBase
 	{
+		/// <summary>Number of <a href="https://corefork.telegram.org/api/saved-messages">saved dialogs</a> found server-side by the query</summary>
 		public int count;
 	}
 
