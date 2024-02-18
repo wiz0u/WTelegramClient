@@ -33,6 +33,7 @@ namespace WTelegram
 			public long LastSentMsgId;
 			public TL.DcOption DataCenter;
 			public bool WithoutUpdates;
+			public int Layer;
 
 			internal Client Client;
 			internal int DcID => DataCenter?.id ?? 0;

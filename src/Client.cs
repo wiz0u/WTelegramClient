@@ -773,16 +773,17 @@ namespace WTelegram
 		}
 
 		/// <summary>Establish connection to Telegram servers without negociating a user session</summary>
+		/// <param name="quickResume">Attempt to resume session immediately without issuing Layer/InitConnection/GetConfig <i>(not recommended by default)</i></param>
 		/// <remarks>Usually you shouldn't need to call this method: Use <see cref="LoginUserIfNeeded">LoginUserIfNeeded</see> instead. <br/>Config callback is queried for: <b>server_address</b></remarks>
 		/// <returns>Most methods of this class are async (Task), so please use <see langword="await"/></returns>
-		public async Task ConnectAsync()
+		public async Task ConnectAsync(bool quickResume = false)
 		{
 			lock (this)
-				_connecting ??= DoConnectAsync();
+				_connecting ??= DoConnectAsync(quickResume);
 			await _connecting;
 		}
 
-		private async Task DoConnectAsync()
+		private async Task DoConnectAsync(bool quickResume)
 		{
 			_cts = new();
 			IPEndPoint endpoint = null;
@@ -893,32 +894,38 @@ namespace WTelegram
 					await CreateAuthorizationKey(this, _dcSession);
 
 				var keepAliveTask = KeepAlive(_cts.Token);
-				var initParams = JSONValue.FromJsonElement(System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(Config("init_params")));
-				TLConfig = await this.InvokeWithLayer(Layer.Version,
-					new TL.Methods.InitConnection<Config>
-					{
-						flags = TL.Methods.InitConnection<Config>.Flags.has_params,
-						api_id = _session.ApiId,
-						device_model = Config("device_model"),
-						system_version = Config("system_version"),
-						app_version = Config("app_version"),
-						system_lang_code = Config("system_lang_code"),
-						lang_pack = Config("lang_pack"),
-						lang_code = Config("lang_code"),
-						params_ = initParams,
-						query = new TL.Methods.Help_GetConfig()
-					});
-				_session.DcOptions = TLConfig.dc_options;
-				if (_dcSession.DataCenter == null)
+				if (quickResume && _dcSession.Layer == Layer.Version && _dcSession.DataCenter != null && _session.MainDC != 0)
+					TLConfig = new Config { this_dc = _session.MainDC, dc_options = _session.DcOptions };
+				else
 				{
-					_dcSession.DataCenter = _session.DcOptions.Where(dc => dc.id == TLConfig.this_dc)
-						.OrderByDescending(dc => dc.ip_address == endpoint?.Address.ToString())
-						.ThenByDescending(dc => dc.port == endpoint?.Port)
-						.ThenByDescending(dc => dc.flags == (endpoint?.AddressFamily == AddressFamily.InterNetworkV6 ? DcOption.Flags.ipv6 : 0))
-						.First();
-					_session.DCSessions[TLConfig.this_dc] = _dcSession;
+					var initParams = JSONValue.FromJsonElement(System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(Config("init_params")));
+					TLConfig = await this.InvokeWithLayer(Layer.Version,
+						new TL.Methods.InitConnection<Config>
+						{
+							flags = TL.Methods.InitConnection<Config>.Flags.has_params,
+							api_id = _session.ApiId,
+							device_model = Config("device_model"),
+							system_version = Config("system_version"),
+							app_version = Config("app_version"),
+							system_lang_code = Config("system_lang_code"),
+							lang_pack = Config("lang_pack"),
+							lang_code = Config("lang_code"),
+							params_ = initParams,
+							query = new TL.Methods.Help_GetConfig()
+						});
+					_dcSession.Layer = Layer.Version;
+					_session.DcOptions = TLConfig.dc_options;
+					if (_dcSession.DataCenter == null)
+					{
+						_dcSession.DataCenter = _session.DcOptions.Where(dc => dc.id == TLConfig.this_dc)
+							.OrderByDescending(dc => dc.ip_address == endpoint?.Address.ToString())
+							.ThenByDescending(dc => dc.port == endpoint?.Port)
+							.ThenByDescending(dc => dc.flags == (endpoint?.AddressFamily == AddressFamily.InterNetworkV6 ? DcOption.Flags.ipv6 : 0))
+							.First();
+						_session.DCSessions[TLConfig.this_dc] = _dcSession;
+					}
+					if (_session.MainDC == 0) _session.MainDC = TLConfig.this_dc;
 				}
-				if (_session.MainDC == 0) _session.MainDC = TLConfig.this_dc;
 			}
 			finally
 			{
