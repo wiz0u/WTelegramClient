@@ -7,9 +7,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text.Json;
 
-//( Fuck you Andrei, you don't know what you're doing! You're lowering the security, contrary to Telegram recommended practices.
-//( Read the official API documentation. And if you want to mess around, at least don't publish a lame copy of my lib on nuget.
-//( Also you're apparently a noob in C#, so don't judge my experienced code where every line is carefully written on purpose.
+//( Don't change this code to lower the security. That's contrary to Telegram recommended practices. Read the official API documentation.
 
 namespace WTelegram
 {
@@ -194,9 +192,11 @@ namespace WTelegram
 	}
 
 	// QWxp couldn't be bothered to write such a simple SessionStore, so here it is:
-	internal class ActionStore(byte[] startSession, Action<byte[]> saveSession) : MemoryStream(startSession ?? Array.Empty<byte>())
+	internal class ActionStore : MemoryStream
 	{
-		public override void Write(byte[] buffer, int offset, int count) => saveSession(buffer[offset..(offset + count)]);
+		private readonly Action<byte[]> _save;
+		public ActionStore(byte[] initial, Action<byte[]> save) : base(initial ?? Array.Empty<byte>()) => _save = save;
+		public override void Write(byte[] buffer, int offset, int count) => _save(buffer[offset..(offset + count)]);
 		public override void SetLength(long value) { }
 	}
 }
