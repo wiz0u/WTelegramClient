@@ -1322,7 +1322,7 @@ namespace TL
 		public override ChatReactions AvailableReactions => available_reactions;
 	}
 	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel#channels">channel</a>, <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a> or <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a>.		<para>See <a href="https://corefork.telegram.org/constructor/channelFull"/></para></summary>
-	[TLDef(0x0F2BCB6F)]
+	[TLDef(0x44C054A7)]
 	public partial class ChannelFull : ChatFullBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1403,6 +1403,9 @@ namespace TL
 		[IfFlag(36)] public PeerStories stories;
 		/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpaper</a></summary>
 		[IfFlag(39)] public WallPaperBase wallpaper;
+		[IfFlag(40)] public int boosts_applied;
+		[IfFlag(41)] public int boosts_unrestrict;
+		[IfFlag(42)] public StickerSet emojiset;
 
 		[Flags] public enum Flags : uint
 		{
@@ -1488,6 +1491,12 @@ namespace TL
 			view_forum_as_messages = 0x40,
 			/// <summary>Field <see cref="wallpaper"/> has a value</summary>
 			has_wallpaper = 0x80,
+			/// <summary>Field <see cref="boosts_applied"/> has a value</summary>
+			has_boosts_applied = 0x100,
+			/// <summary>Field <see cref="boosts_unrestrict"/> has a value</summary>
+			has_boosts_unrestrict = 0x200,
+			/// <summary>Field <see cref="emojiset"/> has a value</summary>
+			has_emojiset = 0x400,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -1661,7 +1670,7 @@ namespace TL
 		public override Peer Peer => peer_id;
 	}
 	/// <summary>A message		<para>See <a href="https://corefork.telegram.org/constructor/message"/></para></summary>
-	[TLDef(0x76BEC211)]
+	[TLDef(0x1E4C8A69)]
 	public partial class Message : MessageBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1670,6 +1679,7 @@ namespace TL
 		public int id;
 		/// <summary>ID of the sender of the message</summary>
 		[IfFlag(8)] public Peer from_id;
+		[IfFlag(29)] public int from_boosts_applied;
 		/// <summary>Peer ID, the chat where this message was sent</summary>
 		public Peer peer_id;
 		/// <summary>Messages fetched from a <a href="https://corefork.telegram.org/api/saved-messages">saved messages dialog »</a> will have <c>peer</c>=<see cref="InputPeerSelf"/> and the <c>saved_peer_id</c> flag set to the ID of the saved dialog.<br/></summary>
@@ -1765,6 +1775,8 @@ namespace TL
 			invert_media = 0x8000000,
 			/// <summary>Field <see cref="saved_peer_id"/> has a value</summary>
 			has_saved_peer_id = 0x10000000,
+			/// <summary>Field <see cref="from_boosts_applied"/> has a value</summary>
+			has_from_boosts_applied = 0x20000000,
 		}
 
 		/// <summary>ID of the message</summary>
@@ -2582,6 +2594,12 @@ namespace TL
 		public int winners_count;
 		/// <summary>Number of undistributed prizes</summary>
 		public int unclaimed_count;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionBoostApply"/></para></summary>
+	[TLDef(0xCC02AA6D)]
+	public class MessageActionBoostApply : MessageAction
+	{
+		public int boosts;
 	}
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
@@ -8611,11 +8629,11 @@ namespace TL
 		[IfFlag(4)] public Peer saved_from_peer;
 		/// <summary>Only for messages forwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, contains the original ID of the message in <c>saved_from_peer</c>.</summary>
 		[IfFlag(4)] public int saved_from_msg_id;
-		/// <summary>Only for forwarded messages reforwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, contains the sender of the original message (i.e. if user A sends a message, then user B forwards it somewhere, then user C saves it to saved messages, this field will contain the ID of user A and <c>from_id</c> will contain the ID of user B).</summary>
+		/// <summary>Only for forwarded messages reforwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, contains the sender of the original message (i.e. if user A sends a message, then user B forwards it somewhere, then user C saves it to saved messages, this field will contain the ID of user B and <c>from_id</c> will contain the ID of user A).</summary>
 		[IfFlag(8)] public Peer saved_from_id;
-		/// <summary>Only for forwarded messages from users with forward privacy enabled reforwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, contains the sender of the original message (i.e. if user A (fwd privacy enabled) sends a message, then user B forwards it somewhere, then user C saves it to saved messages, this field will contain the name of user A and <c>from_id</c> will contain the ID of user B).</summary>
+		/// <summary>Only for forwarded messages from users with forward privacy enabled, sent by users with forward privacy enabled, reforwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, contains the sender of the original message (i.e. if user A (fwd privacy enabled) sends a message, then user B (fwd privacy enabled) forwards it somewhere, then user C saves it to saved messages, this field will contain the name of user B and <c>from_name</c> will contain the name of user A).</summary>
 		[IfFlag(9)] public string saved_from_name;
-		/// <summary>Only for forwarded messages reforwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, indicates when was the original message sent (i.e. if user A sends a message @ unixtime 1, then user B forwards it somewhere @ unixtime 2, then user C saves it to saved messages @ unixtime 3, this field will contain 1, <c>date</c> will contain 2 and the <c>date</c> of the containing <see cref="Message"/> will contain 3).</summary>
+		/// <summary>Only for forwarded messages reforwarded to <a href="https://corefork.telegram.org/api/saved-messages">saved messages »</a>, indicates when was the original message sent (i.e. if user A sends a message @ unixtime 1, then user B forwards it somewhere @ unixtime 2, then user C saves it to saved messages @ unixtime 3, this field will contain 2, <c>date</c> will contain 1 and the <c>date</c> of the containing <see cref="Message"/> will contain 3).</summary>
 		[IfFlag(10)] public DateTime saved_date;
 		/// <summary>PSA type</summary>
 		[IfFlag(6)] public string psa_type;
@@ -11067,6 +11085,9 @@ namespace TL
 		/// <summary>New emoji status</summary>
 		public EmojiStatus new_value;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionChangeEmojiStickerSet"/></para></summary>
+	[TLDef(0x46D840AB)]
+	public class ChannelAdminLogEventActionChangeEmojiStickerSet : ChannelAdminLogEventActionChangeStickerSet { }
 
 	/// <summary>Admin log event		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEvent"/></para></summary>
 	[TLDef(0x1FAD68CD)]
@@ -13608,11 +13629,10 @@ namespace TL
 		}
 	}
 	/// <summary>Represents a reply to a <a href="https://corefork.telegram.org/api/stories">story</a>		<para>See <a href="https://corefork.telegram.org/constructor/messageReplyStoryHeader"/></para></summary>
-	[TLDef(0x9C98BFC1)]
+	[TLDef(0x0E5AF939)]
 	public class MessageReplyStoryHeader : MessageReplyHeaderBase
 	{
-		/// <summary>ID of the user that posted a story</summary>
-		public long user_id;
+		public Peer peer;
 		/// <summary>Story ID</summary>
 		public int story_id;
 	}
@@ -15503,28 +15523,28 @@ namespace TL
 		public JsonObject config;
 	}
 
-	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a>		<para>See <a href="https://corefork.telegram.org/type/InputBotApp"/></para>		<para>Derived classes: <see cref="InputBotAppID"/>, <see cref="InputBotAppShortName"/></para></summary>
+	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#direct-link-mini-apps">direct link Mini App</a>		<para>See <a href="https://corefork.telegram.org/type/InputBotApp"/></para>		<para>Derived classes: <see cref="InputBotAppID"/>, <see cref="InputBotAppShortName"/></para></summary>
 	public abstract class InputBotApp : IObject { }
-	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a> by its ID		<para>See <a href="https://corefork.telegram.org/constructor/inputBotAppID"/></para></summary>
+	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#direct-link-mini-apps">direct link Mini App</a> by its ID		<para>See <a href="https://corefork.telegram.org/constructor/inputBotAppID"/></para></summary>
 	[TLDef(0xA920BD7A)]
 	public class InputBotAppID : InputBotApp
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a> ID.</summary>
+		/// <summary><a href="https://corefork.telegram.org/api/bots/webapps#direct-link-mini-apps">direct link Mini App</a> ID.</summary>
 		public long id;
 		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Access hash, obtained from the <see cref="BotApp"/>.</summary>
 		public long access_hash;
 	}
-	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a> by its short name		<para>See <a href="https://corefork.telegram.org/constructor/inputBotAppShortName"/></para></summary>
+	/// <summary>Used to fetch information about a <a href="https://corefork.telegram.org/api/bots/webapps#direct-link-mini-apps">direct link Mini App</a> by its short name		<para>See <a href="https://corefork.telegram.org/constructor/inputBotAppShortName"/></para></summary>
 	[TLDef(0x908C0407)]
 	public class InputBotAppShortName : InputBotApp
 	{
 		/// <summary>ID of the bot that owns the bot mini app</summary>
 		public InputUserBase bot_id;
-		/// <summary>Short name, obtained from a <a href="https://corefork.telegram.org/api/links#named-mini-app-links">named Mini App deep link</a></summary>
+		/// <summary>Short name, obtained from a <a href="https://corefork.telegram.org/api/links#direct-mini-app-links">Direct Mini App deep link</a></summary>
 		public string short_name;
 	}
 
-	/// <summary>Contains information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botApp"/></para></summary>
+	/// <summary>Contains information about a <a href="https://corefork.telegram.org/api/bots/webapps#direct-link-mini-apps">direct link Mini App</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botApp"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/botAppNotModified">botAppNotModified</a></remarks>
 	[TLDef(0x95FCD1D6)]
 	public class BotApp : IObject
@@ -15535,7 +15555,7 @@ namespace TL
 		public long id;
 		/// <summary>bot mini app access hash</summary>
 		public long access_hash;
-		/// <summary>bot mini app short name, used to generate <a href="https://corefork.telegram.org/api/links#named-mini-app-links">named Mini App deep links</a>.</summary>
+		/// <summary>bot mini app short name, used to generate <a href="https://corefork.telegram.org/api/links#direct-mini-app-links">Direct Mini App deep links</a>.</summary>
 		public string short_name;
 		/// <summary>bot mini app title.</summary>
 		public string title;
@@ -15555,7 +15575,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>Contains information about a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.botApp"/></para></summary>
+	/// <summary>Contains information about a <a href="https://corefork.telegram.org/api/bots/webapps#direct-link-mini-apps">direct link Mini App</a>		<para>See <a href="https://corefork.telegram.org/constructor/messages.botApp"/></para></summary>
 	[TLDef(0xEB50ADF5)]
 	public class Messages_BotApp : IObject
 	{
@@ -15575,9 +15595,9 @@ namespace TL
 		}
 	}
 
-	/// <summary>Contains the link that must be used to open a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a>.		<para>See <a href="https://corefork.telegram.org/type/AppWebViewResult"/></para>		<para>Derived classes: <see cref="AppWebViewResultUrl"/></para></summary>
+	/// <summary>Contains the link that must be used to open a <a href="https://corefork.telegram.org/api/bots/webapps#direct-link-mini-apps">direct link Mini App</a>.		<para>See <a href="https://corefork.telegram.org/type/AppWebViewResult"/></para>		<para>Derived classes: <see cref="AppWebViewResultUrl"/></para></summary>
 	public abstract class AppWebViewResult : IObject { }
-	/// <summary>Contains the link that must be used to open a <a href="https://corefork.telegram.org/api/bots/webapps#named-mini-apps">named Mini App</a>.		<para>See <a href="https://corefork.telegram.org/constructor/appWebViewResultUrl"/></para></summary>
+	/// <summary>Contains the link that must be used to open a <a href="https://corefork.telegram.org/api/bots/webapps#direct-link-mini-apps">direct link Mini App</a>.		<para>See <a href="https://corefork.telegram.org/constructor/appWebViewResultUrl"/></para></summary>
 	[TLDef(0x3C1B4F0D)]
 	public class AppWebViewResultUrl : AppWebViewResult
 	{
@@ -15890,7 +15910,7 @@ namespace TL
 		public override int ID => id;
 	}
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/stories">story</a>.		<para>See <a href="https://corefork.telegram.org/constructor/storyItem"/></para></summary>
-	[TLDef(0xAF6365A1)]
+	[TLDef(0x79B26A24)]
 	public class StoryItem : StoryItemBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -15899,6 +15919,7 @@ namespace TL
 		public int id;
 		/// <summary>When was the story posted.</summary>
 		public DateTime date;
+		[IfFlag(18)] public Peer from_id;
 		/// <summary>For <a href="https://corefork.telegram.org/api/stories#reposting-stories">reposted stories »</a>, contains info about the original story.</summary>
 		[IfFlag(17)] public StoryFwdHeader fwd_from;
 		/// <summary>When does the story expire.</summary>
@@ -15952,6 +15973,8 @@ namespace TL
 			out_ = 0x10000,
 			/// <summary>Field <see cref="fwd_from"/> has a value</summary>
 			has_fwd_from = 0x20000,
+			/// <summary>Field <see cref="from_id"/> has a value</summary>
+			has_from_id = 0x40000,
 		}
 
 		/// <summary>ID of the story.</summary>
@@ -16159,11 +16182,10 @@ namespace TL
 		}
 	}
 	/// <summary>Reply to a story.		<para>See <a href="https://corefork.telegram.org/constructor/inputReplyToStory"/></para></summary>
-	[TLDef(0x15B0F283)]
+	[TLDef(0x5881323A)]
 	public class InputReplyToStory : InputReplyTo
 	{
-		/// <summary>ID of the user that posted the story.</summary>
-		public InputUserBase user_id;
+		public InputPeer peer;
 		/// <summary>ID of the story to reply to.</summary>
 		public int story_id;
 	}
@@ -16780,7 +16802,7 @@ namespace TL
 	}
 
 	/// <summary>Contains info about a <a href="https://corefork.telegram.org/api/colors">color palette »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/help.peerColorOption"/></para></summary>
-	[TLDef(0xEF8430AB)]
+	[TLDef(0xADEC6EBE)]
 	public class Help_PeerColorOption : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -16793,6 +16815,7 @@ namespace TL
 		[IfFlag(2)] public Help_PeerColorSetBase dark_colors;
 		/// <summary>Channels can use this palette only after reaching at least the <a href="https://corefork.telegram.org/api/boost">boost level</a> specified in this field.</summary>
 		[IfFlag(3)] public int channel_min_level;
+		[IfFlag(4)] public int group_min_level;
 
 		[Flags] public enum Flags : uint
 		{
@@ -16804,6 +16827,8 @@ namespace TL
 			has_dark_colors = 0x4,
 			/// <summary>Field <see cref="channel_min_level"/> has a value</summary>
 			has_channel_min_level = 0x8,
+			/// <summary>Field <see cref="group_min_level"/> has a value</summary>
+			has_group_min_level = 0x10,
 		}
 	}
 

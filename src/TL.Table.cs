@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 173;					// fetched 01/02/2024 20:25:01
+		public const int Version = 174;					// fetched 18/02/2024 15:53:49
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -136,7 +136,7 @@ namespace TL
 			[0x0AADFC8F] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
 			[0xC9D31138] = typeof(ChatFull),
-			[0x0F2BCB6F] = typeof(ChannelFull),
+			[0x44C054A7] = typeof(ChannelFull),
 			[0xC02D4007] = typeof(ChatParticipant),
 			[0xE46BCEE4] = typeof(ChatParticipantCreator),
 			[0xA0933F5B] = typeof(ChatParticipantAdmin),
@@ -145,7 +145,7 @@ namespace TL
 			[0x37C1011C] = null,//ChatPhotoEmpty
 			[0x1C6E1C11] = typeof(ChatPhoto),
 			[0x90A6CA84] = typeof(MessageEmpty),
-			[0x76BEC211] = typeof(Message),
+			[0x1E4C8A69] = typeof(Message),
 			[0x2B085862] = typeof(MessageService),
 			[0x3DED6320] = null,//MessageMediaEmpty
 			[0x695150D7] = typeof(MessageMediaPhoto),
@@ -204,6 +204,7 @@ namespace TL
 			[0x678C2E09] = typeof(MessageActionGiftCode),
 			[0x332BA9ED] = typeof(MessageActionGiveawayLaunch),
 			[0x2A9FADC5] = typeof(MessageActionGiveawayResults),
+			[0xCC02AA6D] = typeof(MessageActionBoostApply),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -805,6 +806,7 @@ namespace TL
 			[0x5E477B25] = typeof(ChannelAdminLogEventActionChangeProfilePeerColor),
 			[0x31BB5D52] = typeof(ChannelAdminLogEventActionChangeWallpaper),
 			[0x3EA9FEB1] = typeof(ChannelAdminLogEventActionChangeEmojiStatus),
+			[0x46D840AB] = typeof(ChannelAdminLogEventActionChangeEmojiStickerSet),
 			[0x1FAD68CD] = typeof(ChannelAdminLogEvent),
 			[0xED8AF74D] = typeof(Channels_AdminLogResults),
 			[0xEA107AE4] = typeof(ChannelAdminLogEventsFilter),
@@ -972,7 +974,7 @@ namespace TL
 			[0xB6C4F543] = typeof(Messages_MessageViews),
 			[0xA6341782] = typeof(Messages_DiscussionMessage),
 			[0xAFBC09DB] = typeof(MessageReplyHeader),
-			[0x9C98BFC1] = typeof(MessageReplyStoryHeader),
+			[0x0E5AF939] = typeof(MessageReplyStoryHeader),
 			[0x83D60FC2] = typeof(MessageReplies),
 			[0xE8FD8014] = typeof(PeerBlocked),
 			[0x7FE91C14] = typeof(Stats_MessageStats),
@@ -1131,7 +1133,7 @@ namespace TL
 			[0x8D595CD6] = typeof(StoryViews),
 			[0x51E6EE4F] = typeof(StoryItemDeleted),
 			[0xFFADC913] = typeof(StoryItemSkipped),
-			[0xAF6365A1] = typeof(StoryItem),
+			[0x79B26A24] = typeof(StoryItem),
 			[0x1158FE3E] = typeof(Stories_AllStoriesNotModified),
 			[0x6EFC5E81] = typeof(Stories_AllStories),
 			[0x5DD8C3C8] = typeof(Stories_Stories),
@@ -1141,7 +1143,7 @@ namespace TL
 			[0x59D78FC5] = typeof(Stories_StoryViewsList),
 			[0xDE9EED1D] = typeof(Stories_StoryViews),
 			[0x22C0F6D5] = typeof(InputReplyToMessage),
-			[0x15B0F283] = typeof(InputReplyToStory),
+			[0x5881323A] = typeof(InputReplyToStory),
 			[0x3FC9053B] = typeof(ExportedStoryLink),
 			[0x712E27FD] = typeof(StoriesStealthMode),
 			[0x03D1EA4E] = typeof(MediaAreaCoordinates),
@@ -1174,7 +1176,7 @@ namespace TL
 			[0xB54B5ACF] = typeof(PeerColor),
 			[0x26219A58] = typeof(Help_PeerColorSet),
 			[0x767D61EB] = typeof(Help_PeerColorProfileSet),
-			[0xEF8430AB] = typeof(Help_PeerColorOption),
+			[0xADEC6EBE] = typeof(Help_PeerColorOption),
 			[0x2BA1F5CE] = null,//Help_PeerColorsNotModified
 			[0x00F8ED08] = typeof(Help_PeerColors),
 			[0x6090D6D5] = typeof(StoryReaction),
