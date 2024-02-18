@@ -192,4 +192,11 @@ namespace WTelegram
 			base.Write(_header, 0, 8);
 		}
 	}
+
+	// QWxp couldn't be bothered to write such a simple SessionStore, so here it is:
+	internal class ActionStore(byte[] startSession, Action<byte[]> saveSession) : MemoryStream(startSession ?? Array.Empty<byte>())
+	{
+		public override void Write(byte[] buffer, int offset, int count) => saveSession(buffer[offset..(offset + count)]);
+		public override void SetLength(long value) { }
+	}
 }

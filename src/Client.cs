@@ -94,6 +94,9 @@ namespace WTelegram
 			})
 		{ }
 
+		public Client(Func<string, string> configProvider, byte[] startSession, Action<byte[]> saveSession)
+			: this(configProvider, new ActionStore(startSession, saveSession)) { }
+
 		/// <summary>Welcome to WTelegramClient! 🙂</summary>
 		/// <param name="configProvider">Config callback, is queried for: <b>api_id</b>, <b>api_hash</b>, <b>session_pathname</b></param>
 		/// <param name="sessionStore">if specified, must support initial Length &amp; Read() of a session, then calls to Write() the updated session. Other calls can be ignored</param>
