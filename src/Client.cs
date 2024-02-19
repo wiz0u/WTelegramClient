@@ -136,9 +136,9 @@ namespace WTelegram
 				Path.GetDirectoryName(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar)))
 				?? AppDomain.CurrentDomain.BaseDirectory, "WTelegram.session"),
 #if DEBUG
-			"server_address" => "149.154.167.40:443",   // Test DC 2
+			"server_address" => "2>149.154.167.40:443",	// Test DC 2
 #else
-			"server_address" => "149.154.167.50:443",	// DC 2
+			"server_address" => "2>149.154.167.50:443",	// DC 2
 #endif
 			"device_model" => Environment.Is64BitOperatingSystem ? "PC 64bit" : "PC 32bit",
 			"system_version" => Helpers.GetSystemVersion(),
@@ -772,6 +772,13 @@ namespace WTelegram
 			return tcpClient;
 		}
 
+		private IPEndPoint GetDefaultEndpoint(out int dcId)
+		{
+			string addr = Config("server_address");
+			dcId = addr.Length > 2 && addr[1] == '>' && addr[0] is > '0' and <= '9' ? addr[0] - '0' : 0;
+			return Compat.IPEndPoint_Parse(dcId == 0 ? addr : addr[2..]);
+		}
+
 		/// <summary>Establish connection to Telegram servers without negociating a user session</summary>
 		/// <param name="quickResume">Attempt to resume session immediately without issuing Layer/InitConnection/GetConfig <i>(not recommended by default)</i></param>
 		/// <remarks>Usually you shouldn't need to call this method: Use <see cref="LoginUserIfNeeded">LoginUserIfNeeded</see> instead. <br/>Config callback is queried for: <b>server_address</b></remarks>
@@ -819,7 +826,7 @@ namespace WTelegram
 			}
 			else
 			{
-				endpoint = _dcSession?.EndPoint ?? Compat.IPEndPoint_Parse(Config("server_address"));
+				endpoint = _dcSession?.EndPoint ?? GetDefaultEndpoint(out int defaultDc);
 				Helpers.Log(2, $"Connecting to {endpoint}...");
 				TcpClient tcpClient = null;
 				try
@@ -855,11 +862,13 @@ namespace WTelegram
 						}
 						if (tcpClient == null)
 						{
-							endpoint = Compat.IPEndPoint_Parse(Config("server_address")); // re-ask callback for an address
+							endpoint = GetDefaultEndpoint(out defaultDc); // re-ask callback for an address
 							if (!triedEndpoints.Add(endpoint)) throw;
 							_dcSession.Client = null;
 							// is it address for a known DCSession?
 							_dcSession = _session.DCSessions.Values.FirstOrDefault(dcs => dcs.EndPoint.Equals(endpoint));
+							if (_dcSession == null && defaultDc != 0 && _session.DCSessions.TryGetValue(defaultDc, out _dcSession))
+								_dcSession.DataCenter = null;
 							_dcSession ??= new() { Id = Helpers.RandomLong() };
 							_dcSession.Client = this;
 							Helpers.Log(2, $"Connecting to {endpoint}...");
