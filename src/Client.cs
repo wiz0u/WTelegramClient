@@ -867,12 +867,12 @@ namespace WTelegram
 							_dcSession.Client = null;
 							// is it address for a known DCSession?
 							_dcSession = _session.DCSessions.Values.FirstOrDefault(dcs => dcs.EndPoint.Equals(endpoint));
-							if (_dcSession == null && defaultDc != 0 && _session.DCSessions.TryGetValue(defaultDc, out _dcSession))
-								_dcSession.DataCenter = null;
+							if (defaultDc != 0) _dcSession ??= _session.DCSessions.GetValueOrDefault(defaultDc);
 							_dcSession ??= new() { Id = Helpers.RandomLong() };
 							_dcSession.Client = this;
 							Helpers.Log(2, $"Connecting to {endpoint}...");
 							tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
+							_dcSession.DataCenter = null;
 						}
 					}
 				}
