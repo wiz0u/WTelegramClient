@@ -436,8 +436,9 @@ namespace WTelegram
 					Helpers.Log(3, $"{_dcSession.DcID}>Ignoring duplicate or old msg_id {msgId}");
 					return null;
 				}
+				var utcNow = DateTime.UtcNow;
 				if (_lastRecvMsgId == 0) // resync ServerTicksOffset on first message
-					_dcSession.ServerTicksOffset = (msgId >> 32) * 10000000 - DateTime.UtcNow.Ticks + 621355968000000000L;
+					_dcSession.ServerTicksOffset = (msgId >> 32) * 10000000 - utcNow.Ticks + 621355968000000000L;
 				var msgStamp = MsgIdToStamp(_lastRecvMsgId = msgId);
 
 				if (serverSalt != _dcSession.Salt && serverSalt != _dcSession.OldSalt && serverSalt != _dcSession.Salts?.Values.ElementAtOrDefault(1))
@@ -452,9 +453,9 @@ namespace WTelegram
 				if ((seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msgId);
 
 				var ctorNb = reader.ReadUInt32();
-				if (ctorNb != Layer.BadMsgCtor && (msgStamp - DateTime.UtcNow).Ticks / TimeSpan.TicksPerSecond is > 30 or < -300)
+				if (ctorNb != Layer.BadMsgCtor && (msgStamp - utcNow).Ticks / TimeSpan.TicksPerSecond is > 30 or < -300)
 				{   // msg_id values that belong over 30 seconds in the future or over 300 seconds in the past are to be ignored.
-					Helpers.Log(1, $"{_dcSession.DcID}>Ignoring  0x{ctorNb:X8} because of wrong timestamp    {msgStamp:u} (svc)");
+					Helpers.Log(1, $"{_dcSession.DcID}>Ignoring  0x{ctorNb:X8} because of wrong timestamp    {msgStamp:u} - {utcNow:u} Δ={new TimeSpan(_dcSession.ServerTicksOffset):c}");
 					return null;
 				}
 				if (ctorNb == Layer.MsgContainerCtor)
