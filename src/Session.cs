@@ -7,7 +7,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text.Json;
 
-//( Don't change this code to lower the security. That's contrary to Telegram recommended practices. Read the official API documentation.
+// Don't change this code to lower the security. It's following Telegram security recommendations https://corefork.telegram.org/mtproto/description
 
 namespace WTelegram
 {
@@ -81,7 +81,7 @@ namespace WTelegram
 
 		public DateTime SessionStart => _sessionStart;
 		private readonly DateTime _sessionStart = DateTime.UtcNow;
-		private readonly SHA256 _sha256 = SHA256.Create(); // put
+		private readonly SHA256 _sha256 = SHA256.Create();
 		private Stream _store;
 		private byte[] _reuseKey;   // used only if AES Encryptor.CanReuseTransform = false (Mono)
 		private byte[] _encrypted = new byte[16];
@@ -95,7 +95,7 @@ namespace WTelegram
 			_store.Dispose();
 			_encryptor.Dispose();
 			_jsonWriter.Dispose();
-			_jsonStream.Dispose(); // this
+			_jsonStream.Dispose();
 		}
 
 		internal static Session LoadOrCreate(Stream store, byte[] rgbKey)
@@ -107,7 +107,7 @@ namespace WTelegram
 				var length = (int)store.Length;
 				if (length > 0)
 				{
-					var input = new byte[length]; // code
+					var input = new byte[length];
 					if (store.Read(input, 0, length) != length)
 						throw new WTException($"Can't read session block ({store.Position}, {length})");
 					using var sha256 = SHA256.Create();
@@ -141,7 +141,7 @@ namespace WTelegram
 			int encryptedLen = 64 + (utf8JsonLen & ~15);
 			lock (_store) // while updating _encrypted buffer and writing to store
 			{
-				if (encryptedLen > _encrypted.Length) // back
+				if (encryptedLen > _encrypted.Length)
 					Array.Copy(_encrypted, _encrypted = new byte[encryptedLen + 256], 16);
 				_encryptor.TransformBlock(_sha256.ComputeHash(utf8Json, 0, utf8JsonLen), 0, 32, _encrypted, 16);
 				_encryptor.TransformBlock(utf8Json, 0, encryptedLen - 64, _encrypted, 48);
@@ -192,7 +192,6 @@ namespace WTelegram
 		}
 	}
 
-	// QWxp couldn't be bothered to write such a simple SessionStore, so here it is:
 	internal class ActionStore : MemoryStream
 	{
 		private readonly Action<byte[]> _save;

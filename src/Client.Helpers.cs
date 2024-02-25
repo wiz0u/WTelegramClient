@@ -769,7 +769,7 @@ namespace WTelegram
 		}
 
 		/// <summary>Return chat and message details based on a Message Link (URL)</summary>
-		/// <param name="url">Message Link, like https://t.me/c/1234567890/1234 or https://t.me/channelname/1234</param>
+		/// <param name="url">Message Link, like https://t.me/c/1234567890/1234 or t.me/channelname/1234</param>
 		/// <param name="chats">previously collected chats, to prevent unnecessary ResolveUsername</param>
 		/// <returns>Structure containing the message, chat and user details</returns>
 		/// <remarks>If link is for private group (<c>t.me/c/..</c>), user must have joined that group</remarks>
@@ -778,17 +778,28 @@ namespace WTelegram
 			int start = url.IndexOf("//");
 			start = url.IndexOf('/', start + 2) + 1;
 			int slash = url.IndexOf('/', start + 2);
-			if (start == 0 || slash == -1) throw new ArgumentException("Invalid URL");
-			int end = url.IndexOfAny(UrlSeparator, slash + 1);
+			int msgStart = slash + 1;
+			int end = url.IndexOfAny(UrlSeparator, msgStart);
 			if (end == -1) end = url.Length;
-			int msgId = int.Parse(url[(slash + 1)..end]);
+			else if (url[end] == '/' && char.IsDigit(url[msgStart]) && url.Length > end + 1 && char.IsDigit(url[end + 1]))
+			{
+				end = url.IndexOfAny(UrlSeparator, msgStart = end + 1);
+				if (end == -1) end = url.Length;
+			}
+			if (start == 0 || slash == -1 || end <= slash + 1 || !char.IsDigit(url[msgStart])) throw new ArgumentException("Invalid URL");
+			int msgId = int.Parse(url[msgStart..end]);
 			ChatBase chat;
 			if (url[start] is 'c' or 'C' && url[start + 1] == '/')
 			{
 				long chatId = long.Parse(url[(start + 2)..slash]);
-				var mc = await this.Channels_GetChannels(new InputChannel(chatId, 0));
-				if (!mc.chats.TryGetValue(chatId, out chat))
-					throw new WTException($"Channel {chatId} not found");
+				if (chats?.TryGetValue(chatId, out chat) != true)
+				{
+					var mc = await this.Channels_GetChannels(new InputChannel(chatId, 0));
+					if (!mc.chats.TryGetValue(chatId, out chat))
+						throw new WTException($"Channel {chatId} not found");
+					else if (chats != null)
+						chats[chatId] = chat;
+				}
 			}
 			else
 				chat = await CachedOrResolveUsername(url[start..slash], chats);

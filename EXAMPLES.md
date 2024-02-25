@@ -238,6 +238,7 @@ var inputMedias = new List<InputMedia>
     photoFromTelegram, // PhotoBase has implicit conversion to InputMediaPhoto
     new InputMediaUploadedPhoto { file = uploadedFile },
     new InputMediaPhotoExternal { url = photoUrl },
+    //or Document, InputMediaDocument, InputMediaUploadedDocument, InputMediaDocumentExternal...
 };
 await client.SendAlbumAsync(InputPeer.Self, inputMedias, "My first album");
 ```

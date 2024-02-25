@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,9 +40,13 @@ namespace TL
 		public static void CollectUsersChats(this IPeerResolver structure, IDictionary<long, User> users, IDictionary<long, ChatBase> chats)
 			=>  structure.UserOrChat(new CollectorPeer { _users = users, _chats = chats });
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Messages_Chats> Messages_GetChats(this Client _) => throw new WTException("The method you're looking for is Messages_GetAllChats");
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Messages_Chats> Channels_GetChannels(this Client _) => throw new WTException("The method you're looking for is Messages_GetAllChats");
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<UserBase[]> Users_GetUsers(this Client _) => throw new WTException("The method you're looking for is Messages_GetAllDialogs");
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client _) => throw new WTException("If you want to get all messages from a chat, use method Messages_GetHistory");
 	}
 

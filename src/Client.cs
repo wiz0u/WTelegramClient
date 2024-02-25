@@ -522,7 +522,7 @@ namespace WTelegram
 			for (int i = 0; i < count; i++)
 			{
 				var msg = array[i] = new _Message(reader.ReadInt64(), reader.ReadInt32(), null) { bytes = reader.ReadInt32() };
-				if ((msg.seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msg.msg_id);
+				if ((msg.seq_no & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msg.msg_id);
 				var pos = reader.BaseStream.Position;
 				try
 				{
@@ -535,7 +535,7 @@ namespace WTelegram
 					else
 					{
 						var obj = msg.body = reader.ReadTLObject(ctorNb);
-						Helpers.Log(1, $"            → {obj.GetType().Name,-38} {MsgIdToStamp(msg.msg_id):u} {((msg.seqno & 1) != 0 ? "" : "(svc)")} {((msg.msg_id & 2) == 0 ? "" : "NAR")}");
+						Helpers.Log(1, $"            → {obj.GetType().Name,-38} {MsgIdToStamp(msg.msg_id):u} {((msg.seq_no & 1) != 0 ? "" : "(svc)")} {((msg.msg_id & 2) == 0 ? "" : "NAR")}");
 					}
 				}
 				catch (Exception ex)
