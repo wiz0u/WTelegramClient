@@ -254,6 +254,7 @@ namespace TL
 		/// <returns>The escaped text, ready to be used in <see cref="MarkdownToEntities">MarkdownToEntities</see> without problems</returns>
 		public static string Escape(string text)
 		{
+			if (text == null) return null;
 			StringBuilder sb = null;
 			for (int index = 0, added = 0; index < text.Length; index++)
 			{
@@ -445,6 +446,6 @@ namespace TL
 		/// <param name="text">The text to make HTML-safe</param>
 		/// <returns>The HTML-safe text, ready to be used in <see cref="HtmlToEntities">HtmlToEntities</see> without problems</returns>
 		public static string Escape(string text)
-			=> text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
+			=> text?.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 	}
 }
