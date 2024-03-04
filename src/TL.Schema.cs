@@ -133,11 +133,11 @@ namespace TL
 	public abstract partial class InputFileBase : IObject
 	{
 		/// <summary>Random file identifier created by the client</summary>
-		public virtual long ID { get; set; }
+		public abstract long ID { get; set; }
 		/// <summary>Number of parts saved</summary>
-		public virtual int Parts { get; set; }
+		public abstract int Parts { get; set; }
 		/// <summary>Full name of the file</summary>
-		public virtual string Name { get; set; }
+		public abstract string Name { get; set; }
 	}
 	/// <summary>Defines a file saved in parts using the method <see cref="SchemaExtensions.Upload_SaveFilePart">Upload_SaveFilePart</see>.		<para>See <a href="https://corefork.telegram.org/constructor/inputFile"/></para></summary>
 	[TLDef(0xF52FF27F)]
@@ -948,9 +948,9 @@ namespace TL
 	public abstract partial class ChatBase : IObject
 	{
 		/// <summary>ID of the group</summary>
-		public virtual long ID { get; }
+		public virtual long ID => default;
 		/// <summary>Title</summary>
-		public virtual string Title { get; }
+		public virtual string Title => default;
 	}
 	/// <summary>Empty constructor, group doesn't exist		<para>See <a href="https://corefork.telegram.org/constructor/chatEmpty"/></para></summary>
 	[TLDef(0x29562865)]
@@ -1189,35 +1189,35 @@ namespace TL
 	public abstract partial class ChatFullBase : IObject
 	{
 		/// <summary>ID of the chat</summary>
-		public virtual long ID { get; }
+		public virtual long ID => default;
 		/// <summary>About string for this chat</summary>
-		public virtual string About { get; }
+		public virtual string About => default;
 		/// <summary>Chat photo</summary>
-		public virtual PhotoBase ChatPhoto { get; }
+		public virtual PhotoBase ChatPhoto => default;
 		/// <summary>Notification settings</summary>
-		public virtual PeerNotifySettings NotifySettings { get; }
+		public virtual PeerNotifySettings NotifySettings => default;
 		/// <summary>Chat invite</summary>
-		public virtual ExportedChatInvite ExportedInvite { get; }
+		public virtual ExportedChatInvite ExportedInvite => default;
 		/// <summary>Info about bots that are in this chat</summary>
-		public virtual BotInfo[] BotInfo { get; }
+		public virtual BotInfo[] BotInfo => default;
 		/// <summary>Message ID of the last <a href="https://corefork.telegram.org/api/pin">pinned message</a></summary>
-		public virtual int PinnedMsg { get; }
+		public virtual int PinnedMsg => default;
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
-		public virtual int Folder { get; }
+		public virtual int Folder => default;
 		/// <summary>Group call information</summary>
-		public virtual InputGroupCall Call { get; }
+		public virtual InputGroupCall Call => default;
 		/// <summary>Time-To-Live of messages sent by the current user to this chat</summary>
-		public virtual int TtlPeriod { get; }
+		public virtual int TtlPeriod => default;
 		/// <summary>When using <see cref="SchemaExtensions.Phone_GetGroupCallJoinAs">Phone_GetGroupCallJoinAs</see> to get a list of peers that can be used to join a group call, this field indicates the peer that should be selected by default.</summary>
-		public virtual Peer GroupcallDefaultJoinAs { get; }
+		public virtual Peer GroupcallDefaultJoinAs => default;
 		/// <summary>Emoji representing a specific chat theme</summary>
-		public virtual string ThemeEmoticon { get; }
+		public virtual string ThemeEmoticon => default;
 		/// <summary>Pending <a href="https://corefork.telegram.org/api/invites#join-requests">join requests »</a></summary>
-		public virtual int RequestsPending { get; }
+		public virtual int RequestsPending => default;
 		/// <summary>IDs of users who requested to join recently</summary>
-		public virtual long[] RecentRequesters { get; }
+		public virtual long[] RecentRequesters => default;
 		/// <summary>Allowed <a href="https://corefork.telegram.org/api/reactions">message reactions »</a></summary>
-		public virtual ChatReactions AvailableReactions { get; }
+		public virtual ChatReactions AvailableReactions => default;
 	}
 	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel#basic-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/constructor/chatFull"/></para></summary>
 	[TLDef(0xC9D31138)]
@@ -1535,7 +1535,7 @@ namespace TL
 	public abstract partial class ChatParticipantBase : IObject
 	{
 		/// <summary>Member user ID</summary>
-		public virtual long UserId { get; }
+		public virtual long UserId => default;
 	}
 	/// <summary>Group member.		<para>See <a href="https://corefork.telegram.org/constructor/chatParticipant"/></para></summary>
 	[TLDef(0xC02D4007)]
@@ -1571,7 +1571,7 @@ namespace TL
 	public abstract partial class ChatParticipantsBase : IObject
 	{
 		/// <summary>Group ID</summary>
-		public virtual long ChatId { get; }
+		public virtual long ChatId => default;
 	}
 	/// <summary>Info on members is unavailable		<para>See <a href="https://corefork.telegram.org/constructor/chatParticipantsForbidden"/></para></summary>
 	[TLDef(0x8763D3E1)]
@@ -1635,17 +1635,17 @@ namespace TL
 	public abstract class MessageBase : IObject
 	{
 		/// <summary>ID of the message</summary>
-		public virtual int ID { get; }
+		public virtual int ID => default;
 		/// <summary>ID of the sender of the message</summary>
-		public virtual Peer From { get; }
+		public virtual Peer From => default;
 		/// <summary>Peer ID, the chat where this message was sent</summary>
-		public virtual Peer Peer { get; }
+		public virtual Peer Peer => default;
 		/// <summary>Reply information</summary>
-		public virtual MessageReplyHeaderBase ReplyTo { get; }
+		public virtual MessageReplyHeaderBase ReplyTo => default;
 		/// <summary>Date of the message</summary>
-		public virtual DateTime Date { get; }
+		public virtual DateTime Date => default;
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
-		public virtual int TtlPeriod { get; }
+		public virtual int TtlPeriod => default;
 	}
 	/// <summary>Empty constructor, non-existent message.		<para>See <a href="https://corefork.telegram.org/constructor/messageEmpty"/></para></summary>
 	[TLDef(0x90A6CA84)]
@@ -2606,9 +2606,9 @@ namespace TL
 	public abstract class DialogBase : IObject
 	{
 		/// <summary>The chat</summary>
-		public virtual Peer Peer { get; }
+		public virtual Peer Peer => default;
 		/// <summary>The latest message ID</summary>
-		public virtual int TopMessage { get; }
+		public virtual int TopMessage => default;
 	}
 	/// <summary>Chat		<para>See <a href="https://corefork.telegram.org/constructor/dialog"/></para></summary>
 	[TLDef(0xD58A08C6)]
@@ -2740,7 +2740,7 @@ namespace TL
 	public abstract partial class PhotoSizeBase : IObject
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/files#image-thumbnail-types">Thumbnail type »</a></summary>
-		public virtual string Type { get; }
+		public virtual string Type => default;
 	}
 	/// <summary>Empty constructor. Image with this thumbnail is unavailable.		<para>See <a href="https://corefork.telegram.org/constructor/photoSizeEmpty"/></para></summary>
 	[TLDef(0x0E17E23C)]
@@ -3102,9 +3102,9 @@ namespace TL
 	public abstract partial class WallPaperBase : IObject
 	{
 		/// <summary>Identifier</summary>
-		public virtual long ID { get; }
+		public virtual long ID => default;
 		/// <summary>Info on how to generate the wallpaper, according to <a href="https://corefork.telegram.org/api/wallpapers">these instructions »</a>.</summary>
-		public virtual WallPaperSettings Settings { get; }
+		public virtual WallPaperSettings Settings => default;
 	}
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/wallpapers">wallpaper</a> based on an image.		<para>See <a href="https://corefork.telegram.org/constructor/wallPaper"/></para></summary>
 	[TLDef(0xA437C3ED)]
@@ -3380,9 +3380,9 @@ namespace TL
 	public abstract partial class Messages_DialogsBase : IObject, IPeerResolver
 	{
 		/// <summary>List of chats</summary>
-		public virtual DialogBase[] Dialogs { get; }
+		public virtual DialogBase[] Dialogs => default;
 		/// <summary>List of last messages from each chat</summary>
-		public virtual MessageBase[] Messages { get; }
+		public virtual MessageBase[] Messages => default;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
@@ -3427,7 +3427,7 @@ namespace TL
 	public abstract partial class Messages_MessagesBase : IObject, IPeerResolver
 	{
 		/// <summary>List of messages</summary>
-		public virtual MessageBase[] Messages { get; }
+		public virtual MessageBase[] Messages => default;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
@@ -3544,13 +3544,9 @@ namespace TL
 	}
 
 	/// <summary>Affected part of communication history with the user or in a chat.		<para>See <a href="https://corefork.telegram.org/constructor/messages.affectedHistory"/></para></summary>
-	[TLDef(0xB45C69D1)]
-	public class Messages_AffectedHistory : IObject
+	[TLDef(0xB45C69D1, inheritBefore = true)]
+	public class Messages_AffectedHistory : Messages_AffectedMessages
 	{
-		/// <summary>Number of events occurred in a text box</summary>
-		public int pts;
-		/// <summary>Number of affected events</summary>
-		public int pts_count;
 		/// <summary>If a parameter contains positive value, it is necessary to repeat the method call using the given value; during the proceeding of all the history the value itself shall gradually decrease</summary>
 		public int offset;
 	}
@@ -5170,11 +5166,11 @@ namespace TL
 	public abstract partial class Updates_DifferenceBase : IObject, IPeerResolver
 	{
 		/// <summary>List of new messages</summary>
-		public virtual MessageBase[] NewMessages { get; }
+		public virtual MessageBase[] NewMessages => default;
 		/// <summary>List of new encrypted secret chat messages</summary>
-		public virtual EncryptedMessageBase[] NewEncryptedMessages { get; }
+		public virtual EncryptedMessageBase[] NewEncryptedMessages => default;
 		/// <summary>List of updates</summary>
-		public virtual Update[] OtherUpdates { get; }
+		public virtual Update[] OtherUpdates => default;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
@@ -5259,7 +5255,7 @@ namespace TL
 	public abstract partial class UpdatesBase : IObject, IPeerResolver
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/updates">date</a></summary>
-		public virtual DateTime Date { get; }
+		public virtual DateTime Date => default;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public abstract IPeerInfo UserOrChat(Peer peer);
 	}
@@ -5752,15 +5748,15 @@ namespace TL
 	public abstract class EncryptedChatBase : IObject
 	{
 		/// <summary>Chat ID</summary>
-		public virtual int ID { get; }
+		public virtual int ID => default;
 		/// <summary>Checking sum depending on user ID</summary>
-		public virtual long AccessHash { get; }
+		public virtual long AccessHash => default;
 		/// <summary>Date of chat creation</summary>
-		public virtual DateTime Date { get; }
+		public virtual DateTime Date => default;
 		/// <summary>Chat creator ID</summary>
-		public virtual long AdminId { get; }
+		public virtual long AdminId => default;
 		/// <summary>ID of second chat participant</summary>
-		public virtual long ParticipantId { get; }
+		public virtual long ParticipantId => default;
 	}
 	/// <summary>Empty constructor.		<para>See <a href="https://corefork.telegram.org/constructor/encryptedChatEmpty"/></para></summary>
 	[TLDef(0xAB7EC0A0)]
@@ -5917,7 +5913,7 @@ namespace TL
 	public abstract class InputEncryptedFileBase : IObject
 	{
 		/// <summary>Random file ID created by client</summary>
-		public virtual long ID { get; set; }
+		public abstract long ID { get; set; }
 	}
 	/// <summary>Sets new encrypted file saved by parts using upload.saveFilePart method.		<para>See <a href="https://corefork.telegram.org/constructor/inputEncryptedFileUploaded"/></para></summary>
 	[TLDef(0x64BD0306)]
@@ -5966,13 +5962,13 @@ namespace TL
 	public abstract class EncryptedMessageBase : IObject
 	{
 		/// <summary>Random message ID, assigned by the author of message</summary>
-		public virtual long RandomId { get; }
+		public virtual long RandomId => default;
 		/// <summary>ID of encrypted chat</summary>
-		public virtual int ChatId { get; }
+		public virtual int ChatId => default;
 		/// <summary>Date of sending</summary>
-		public virtual DateTime Date { get; }
+		public virtual DateTime Date => default;
 		/// <summary>TL-serialization of <see cref="DecryptedMessageBase"/> type, encrypted with the key created at chat initialization</summary>
-		public virtual byte[] Bytes { get; }
+		public virtual byte[] Bytes => default;
 	}
 	/// <summary>Encrypted message.		<para>See <a href="https://corefork.telegram.org/constructor/encryptedMessage"/></para></summary>
 	[TLDef(0xED18C118)]
@@ -6593,9 +6589,9 @@ namespace TL
 	public abstract class WebPageBase : IObject
 	{
 		/// <summary>Preview ID</summary>
-		public virtual long ID { get; }
+		public virtual long ID => default;
 		/// <summary>URL of the webpage.</summary>
-		public virtual string Url { get; }
+		public virtual string Url => default;
 	}
 	/// <summary>No preview is available for the webpage		<para>See <a href="https://corefork.telegram.org/constructor/webPageEmpty"/></para></summary>
 	[TLDef(0x211A1788)]
@@ -7191,7 +7187,7 @@ namespace TL
 	public abstract class KeyboardButtonBase : IObject
 	{
 		/// <summary>Button text</summary>
-		public virtual string Text { get; }
+		public virtual string Text => default;
 	}
 	/// <summary>Bot keyboard button		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButton"/></para></summary>
 	[TLDef(0xA2FA4880)]
@@ -7554,7 +7550,7 @@ namespace TL
 	public abstract class InputChannelBase : IObject
 	{
 		/// <summary>Channel ID</summary>
-		public virtual long ChannelId { get; set; }
+		public abstract long ChannelId { get; set; }
 	}
 	/// <summary>Represents a channel		<para>See <a href="https://corefork.telegram.org/constructor/inputChannel"/></para></summary>
 	[TLDef(0xF35AEC28)]
@@ -8151,9 +8147,9 @@ namespace TL
 	public abstract class InputBotInlineResultBase : IObject
 	{
 		/// <summary>ID of result</summary>
-		public virtual string ID { get; set; }
+		public abstract string ID { get; set; }
 		/// <summary>Message to send when the result is selected</summary>
-		public virtual InputBotInlineMessage SendMessage { get; set; }
+		public abstract InputBotInlineMessage SendMessage { get; set; }
 	}
 	/// <summary>An inline bot result		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineResult"/></para></summary>
 	[TLDef(0x88BF9319)]
@@ -8462,15 +8458,15 @@ namespace TL
 	public abstract class BotInlineResultBase : IObject
 	{
 		/// <summary>Result ID</summary>
-		public virtual string ID { get; }
+		public virtual string ID => default;
 		/// <summary>Result type (see <a href="https://corefork.telegram.org/bots/api#inlinequeryresult">bot API docs</a>)</summary>
-		public virtual string Type { get; }
+		public virtual string Type => default;
 		/// <summary>Result title</summary>
-		public virtual string Title { get; }
+		public virtual string Title => default;
 		/// <summary>Result description</summary>
-		public virtual string Description { get; }
+		public virtual string Description => default;
 		/// <summary>Message to send</summary>
-		public virtual BotInlineMessage SendMessage { get; }
+		public virtual BotInlineMessage SendMessage => default;
 	}
 	/// <summary>Generic result		<para>See <a href="https://corefork.telegram.org/constructor/botInlineResult"/></para></summary>
 	[TLDef(0x11965F3A)]
@@ -8834,9 +8830,9 @@ namespace TL
 	public abstract class InputBotInlineMessageIDBase : IObject
 	{
 		/// <summary>DC ID to use when working with this inline message</summary>
-		public virtual int DcId { get; set; }
+		public abstract int DcId { get; set; }
 		/// <summary>Access hash of message</summary>
-		public virtual long AccessHash { get; set; }
+		public abstract long AccessHash { get; set; }
 	}
 	/// <summary>Represents a sent inline message from the perspective of a bot (legacy constructor)		<para>See <a href="https://corefork.telegram.org/constructor/inputBotInlineMessageID"/></para></summary>
 	[TLDef(0x890C3D89)]
@@ -9086,7 +9082,7 @@ namespace TL
 	public abstract class StickerSetCoveredBase : IObject
 	{
 		/// <summary>Stickerset</summary>
-		public virtual StickerSet Set { get; }
+		public virtual StickerSet Set => default;
 	}
 	/// <summary>Stickerset with a single sticker as preview		<para>See <a href="https://corefork.telegram.org/constructor/stickerSetCovered"/></para></summary>
 	[TLDef(0x6410A5D2)]
@@ -9821,13 +9817,13 @@ namespace TL
 	public abstract partial class WebDocumentBase : IObject
 	{
 		/// <summary>Document URL</summary>
-		public virtual string Url { get; }
+		public virtual string Url => default;
 		/// <summary>File size</summary>
-		public virtual int Size { get; }
+		public virtual int Size => default;
 		/// <summary>MIME type</summary>
-		public virtual string MimeType { get; }
+		public virtual string MimeType => default;
 		/// <summary>Attributes for media types</summary>
-		public virtual DocumentAttribute[] Attributes { get; }
+		public virtual DocumentAttribute[] Attributes => default;
 	}
 	/// <summary>Remote document		<para>See <a href="https://corefork.telegram.org/constructor/webDocument"/></para></summary>
 	[TLDef(0x1C570ED1)]
@@ -10216,17 +10212,17 @@ namespace TL
 	public abstract partial class PhoneCallBase : IObject
 	{
 		/// <summary>Call ID</summary>
-		public virtual long ID { get; }
+		public virtual long ID => default;
 		/// <summary>Access hash</summary>
-		public virtual long AccessHash { get; }
+		public virtual long AccessHash => default;
 		/// <summary>Date</summary>
-		public virtual DateTime Date { get; }
+		public virtual DateTime Date => default;
 		/// <summary>Admin ID</summary>
-		public virtual long AdminId { get; }
+		public virtual long AdminId => default;
 		/// <summary>Participant ID</summary>
-		public virtual long ParticipantId { get; }
+		public virtual long ParticipantId => default;
 		/// <summary>Phone call protocol info</summary>
-		public virtual PhoneCallProtocol Protocol { get; }
+		public virtual PhoneCallProtocol Protocol => default;
 	}
 	/// <summary>Empty constructor		<para>See <a href="https://corefork.telegram.org/constructor/phoneCallEmpty"/></para></summary>
 	[TLDef(0x5366C915)]
@@ -10443,13 +10439,13 @@ namespace TL
 	public abstract class PhoneConnectionBase : IObject
 	{
 		/// <summary>Endpoint ID</summary>
-		public virtual long ID { get; }
+		public virtual long ID => default;
 		/// <summary>IP address of endpoint</summary>
-		public virtual string Ip { get; }
+		public virtual string Ip => default;
 		/// <summary>IPv6 address of endpoint</summary>
-		public virtual string Ipv6 { get; }
+		public virtual string Ipv6 => default;
 		/// <summary>Port ID</summary>
-		public virtual int Port { get; }
+		public virtual int Port => default;
 	}
 	/// <summary>Identifies an endpoint that can be used to connect to the other user in a phone call		<para>See <a href="https://corefork.telegram.org/constructor/phoneConnection"/></para></summary>
 	[TLDef(0x9CC123C7)]
@@ -10591,7 +10587,7 @@ namespace TL
 	public abstract class LangPackStringBase : IObject
 	{
 		/// <summary>Language key</summary>
-		public virtual string Key { get; }
+		public virtual string Key => default;
 	}
 	/// <summary>Translated localization string		<para>See <a href="https://corefork.telegram.org/constructor/langPackString"/></para></summary>
 	[TLDef(0xCAD181F6)]
@@ -11415,7 +11411,7 @@ namespace TL
 	public abstract class InputSecureFileBase : IObject
 	{
 		/// <summary>Secure file ID</summary>
-		public virtual long ID { get; set; }
+		public abstract long ID { get; set; }
 	}
 	/// <summary>Uploaded secure file, for more info <a href="https://corefork.telegram.org/passport/encryption#inputsecurefile">see the passport docs »</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputSecureFileUploaded"/></para></summary>
 	[TLDef(0x3334B0F0)]
@@ -11629,9 +11625,9 @@ namespace TL
 	public abstract class SecureValueErrorBase : IObject
 	{
 		/// <summary>The section of the user's Telegram Passport which has the error, one of <see cref="SecureValueType.PersonalDetails"/>, <see cref="SecureValueType.Passport"/>, <see cref="SecureValueType.DriverLicense"/>, <see cref="SecureValueType.IdentityCard"/>, <see cref="SecureValueType.InternalPassport"/>, <see cref="SecureValueType.Address"/></summary>
-		public virtual SecureValueType Type { get; }
+		public virtual SecureValueType Type => default;
 		/// <summary>Error message</summary>
-		public virtual string Text { get; }
+		public virtual string Text => default;
 	}
 	/// <summary>Represents an issue in one of the data fields that was provided by the user. The error is considered resolved when the field's value changes.		<para>See <a href="https://corefork.telegram.org/constructor/secureValueErrorData"/></para></summary>
 	[TLDef(0xE8A40BD9)]
@@ -12704,7 +12700,7 @@ namespace TL
 	public abstract class PeerLocatedBase : IObject
 	{
 		/// <summary>Validity period of current data</summary>
-		public virtual DateTime Expires { get; }
+		public virtual DateTime Expires => default;
 	}
 	/// <summary>Peer geolocated nearby		<para>See <a href="https://corefork.telegram.org/constructor/peerLocated"/></para></summary>
 	[TLDef(0xCA461B5D)]
@@ -13042,15 +13038,15 @@ namespace TL
 	public abstract class DialogFilterBase : IObject
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> ID</summary>
-		public virtual int ID { get; }
+		public virtual int ID => default;
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> name</summary>
-		public virtual string Title { get; }
+		public virtual string Title => default;
 		/// <summary>Emoji to use as icon for the folder.</summary>
-		public virtual string Emoticon { get; }
+		public virtual string Emoticon => default;
 		/// <summary>Pinned chats, <a href="https://corefork.telegram.org/api/folders">folders</a> can have unlimited pinned chats</summary>
-		public virtual InputPeer[] PinnedPeers { get; }
+		public virtual InputPeer[] PinnedPeers => default;
 		/// <summary>Include the following chats in this <a href="https://corefork.telegram.org/api/folders">folder</a></summary>
-		public virtual InputPeer[] IncludePeers { get; }
+		public virtual InputPeer[] IncludePeers => default;
 	}
 	/// <summary>Dialog filter AKA <a href="https://corefork.telegram.org/api/folders">folder</a>		<para>See <a href="https://corefork.telegram.org/constructor/dialogFilter"/></para></summary>
 	[TLDef(0x7438F7E8)]
@@ -13693,9 +13689,9 @@ namespace TL
 	public abstract partial class GroupCallBase : IObject
 	{
 		/// <summary>Group call ID</summary>
-		public virtual long ID { get; }
+		public virtual long ID => default;
 		/// <summary>Group call access hash</summary>
-		public virtual long AccessHash { get; }
+		public virtual long AccessHash => default;
 	}
 	/// <summary>An ended group call		<para>See <a href="https://corefork.telegram.org/constructor/groupCallDiscarded"/></para></summary>
 	[TLDef(0x7780BCB4)]
@@ -13932,15 +13928,9 @@ namespace TL
 	}
 
 	/// <summary>Messages found and affected by changes		<para>See <a href="https://corefork.telegram.org/constructor/messages.affectedFoundMessages"/></para></summary>
-	[TLDef(0xEF8D3E6C)]
-	public class Messages_AffectedFoundMessages : IObject
+	[TLDef(0xEF8D3E6C, inheritBefore = true)]
+	public class Messages_AffectedFoundMessages : Messages_AffectedHistory
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/updates">Event count after generation</a></summary>
-		public int pts;
-		/// <summary><a href="https://corefork.telegram.org/api/updates">Number of events that were generated</a></summary>
-		public int pts_count;
-		/// <summary>If bigger than zero, the request must be repeated to remove more messages</summary>
-		public int offset;
 		/// <summary>Affected message IDs</summary>
 		public int[] messages;
 	}
@@ -13989,9 +13979,9 @@ namespace TL
 	public abstract class Messages_ExportedChatInviteBase : IObject
 	{
 		/// <summary>Info about the chat invite</summary>
-		public virtual ExportedChatInvite Invite { get; }
+		public virtual ExportedChatInvite Invite => default;
 		/// <summary>Mentioned users</summary>
-		public virtual Dictionary<long, User> Users { get; }
+		public virtual Dictionary<long, User> Users => default;
 	}
 	/// <summary>Info about a chat invite		<para>See <a href="https://corefork.telegram.org/constructor/messages.exportedChatInvite"/></para></summary>
 	[TLDef(0x1871BE50)]
@@ -15215,7 +15205,7 @@ namespace TL
 	public abstract class ForumTopicBase : IObject
 	{
 		/// <summary>The ID of the deleted forum topic.</summary>
-		public virtual int ID { get; }
+		public virtual int ID => default;
 	}
 	/// <summary>Represents a deleted forum topic.		<para>See <a href="https://corefork.telegram.org/constructor/forumTopicDeleted"/></para></summary>
 	[TLDef(0x023F109B)]
@@ -15681,9 +15671,9 @@ namespace TL
 	public abstract class Chatlists_ChatlistInviteBase : IObject
 	{
 		/// <summary>Related chat information</summary>
-		public virtual Dictionary<long, ChatBase> Chats { get; }
+		public virtual Dictionary<long, ChatBase> Chats => default;
 		/// <summary>Related user information</summary>
-		public virtual Dictionary<long, User> Users { get; }
+		public virtual Dictionary<long, User> Users => default;
 	}
 	/// <summary>Updated info about a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a> we already imported.		<para>See <a href="https://corefork.telegram.org/constructor/chatlists.chatlistInviteAlready"/></para></summary>
 	[TLDef(0xFA87F659)]
@@ -15768,9 +15758,9 @@ namespace TL
 	public abstract class MessagePeerVoteBase : IObject
 	{
 		/// <summary>Peer ID</summary>
-		public virtual Peer Peer { get; }
+		public virtual Peer Peer => default;
 		/// <summary>When did the peer cast the vote</summary>
-		public virtual DateTime Date { get; }
+		public virtual DateTime Date => default;
 	}
 	/// <summary>How a peer voted in a poll		<para>See <a href="https://corefork.telegram.org/constructor/messagePeerVote"/></para></summary>
 	[TLDef(0xB6CC2D5C)]
@@ -15875,7 +15865,7 @@ namespace TL
 	public abstract class StoryItemBase : IObject
 	{
 		/// <summary>Story ID</summary>
-		public virtual int ID { get; }
+		public virtual int ID => default;
 	}
 	/// <summary>Represents a previously active story, that was deleted		<para>See <a href="https://corefork.telegram.org/constructor/storyItemDeleted"/></para></summary>
 	[TLDef(0x51E6EE4F)]
@@ -16437,7 +16427,7 @@ namespace TL
 	public abstract class Payments_GiveawayInfoBase : IObject
 	{
 		/// <summary>When was the giveaway started</summary>
-		public virtual DateTime StartDate { get; }
+		public virtual DateTime StartDate => default;
 	}
 	/// <summary>Contains info about an ongoing <a href="https://corefork.telegram.org/api/giveaways">giveaway</a>.		<para>See <a href="https://corefork.telegram.org/constructor/payments.giveawayInfo"/></para></summary>
 	[TLDef(0x4367DAA0)]
@@ -16921,13 +16911,13 @@ namespace TL
 	public abstract class Messages_SavedDialogsBase : IObject
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/saved-messages">Saved message dialogs »</a>.</summary>
-		public virtual SavedDialog[] Dialogs { get; }
+		public virtual SavedDialog[] Dialogs => default;
 		/// <summary>List of last messages from each saved dialog</summary>
-		public virtual MessageBase[] Messages { get; }
+		public virtual MessageBase[] Messages => default;
 		/// <summary>Mentioned chats</summary>
-		public virtual Dictionary<long, ChatBase> Chats { get; }
+		public virtual Dictionary<long, ChatBase> Chats => default;
 		/// <summary>Mentioned users</summary>
-		public virtual Dictionary<long, User> Users { get; }
+		public virtual Dictionary<long, User> Users => default;
 	}
 	/// <summary>Represents some <a href="https://corefork.telegram.org/api/saved-messages">saved message dialogs »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messages.savedDialogs"/></para></summary>
 	[TLDef(0xF83AE221)]

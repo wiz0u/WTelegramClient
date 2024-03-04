@@ -463,6 +463,7 @@ into either a `User` or `ChatBase` (`Chat`,`Channel`...) description structure *
 
 You can also use the `CollectUsersChats` helper method to collect these 2 fields into 2 aggregate dictionaries to remember details
 *(including access hashes)* about all the users/chats you've encountered so far.
+This method also helps dealing with [incomplete `min` structures](https://core.telegram.org/api/min).
 
 Example of usage:
 ```csharp

@@ -7,32 +7,32 @@ namespace TL
 	public abstract class DecryptedMessageBase : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a> (added in layer 45)</summary>
-		public virtual uint FFlags { get; }
+		public virtual uint FFlags => default;
 		/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
-		public virtual long RandomId { get; }
+		public virtual long RandomId => default;
 		/// <summary>Message lifetime. Has higher priority than <see cref="Layer8.DecryptedMessageActionSetMessageTTL"/>.<br/>Parameter added in Layer 17.</summary>
-		public virtual int Ttl { get; }
+		public virtual int Ttl => default;
 		/// <summary>Message text</summary>
-		public virtual string Message { get; }
+		public virtual string Message => default;
 		/// <summary>Media content</summary>
-		public virtual DecryptedMessageMedia Media { get; }
+		public virtual DecryptedMessageMedia Media => default;
 		/// <summary>Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text (parameter added in layer 45)</summary>
-		public virtual MessageEntity[] Entities { get; }
+		public virtual MessageEntity[] Entities => default;
 		/// <summary>Specifies the ID of the inline bot that generated the message (parameter added in layer 45)</summary>
-		public virtual string ViaBotName { get; }
+		public virtual string ViaBotName => default;
 		/// <summary>Random message ID of the message this message replies to (parameter added in layer 45)</summary>
-		public virtual long ReplyToRandom { get; }
+		public virtual long ReplyToRandom => default;
 		/// <summary>Random group ID, assigned by the author of message.<br/>Multiple encrypted messages with a photo attached and with the same group ID indicate an <a href="https://corefork.telegram.org/api/files#albums-grouped-media">album or grouped media</a> (parameter added in layer 45)</summary>
-		public virtual long Grouped { get; }
-		public virtual byte[] RandomBytes { get; }
-		public virtual DecryptedMessageAction Action { get; }
+		public virtual long Grouped => default;
+		public virtual byte[] RandomBytes => default;
+		public virtual DecryptedMessageAction Action => default;
 	}
 
 	/// <summary>Object describes media contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageMedia"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaEmpty">decryptedMessageMediaEmpty</a></remarks>
 	public abstract class DecryptedMessageMedia : IObject
 	{
-		public virtual string MimeType { get; }
+		public virtual string MimeType => default;
 		internal virtual (long size, byte[] key, byte[] iv) SizeKeyIV { get => default; set => throw new WTelegram.WTException("Incompatible DecryptedMessageMedia"); }
 	}
 
@@ -43,11 +43,11 @@ namespace TL
 	public abstract class FileLocationBase : IObject
 	{
 		/// <summary>Server volume</summary>
-		public virtual long VolumeId { get; }
+		public virtual long VolumeId => default;
 		/// <summary>File ID</summary>
-		public virtual int LocalId { get; }
+		public virtual int LocalId => default;
 		/// <summary>Checksum to access the file</summary>
-		public virtual long Secret { get; }
+		public virtual long Secret => default;
 	}
 
 	namespace Layer8
