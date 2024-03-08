@@ -17,8 +17,8 @@ namespace WTelegramClientTest
 	{
 		static WTelegram.Client Client;
 		static User My;
-		static readonly Dictionary<long, User> Users = new();
-		static readonly Dictionary<long, ChatBase> Chats = new();
+		static readonly Dictionary<long, User> Users = [];
+		static readonly Dictionary<long, ChatBase> Chats = [];
 
 		// See steps at the end of this file to setup required Environment variables
 		static async Task Main(string[] _)

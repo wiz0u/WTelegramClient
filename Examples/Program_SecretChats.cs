@@ -13,8 +13,8 @@ namespace WTelegramClientTest
 		static Client Client;
 		static SecretChats Secrets;
 		static ISecretChat ActiveChat; // the secret chat currently selected
-		static readonly Dictionary<long, User> Users = new();
-		static readonly Dictionary<long, ChatBase> Chats = new();
+		static readonly Dictionary<long, User> Users = [];
+		static readonly Dictionary<long, ChatBase> Chats = [];
 
 		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main()
