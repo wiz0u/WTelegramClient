@@ -64,12 +64,12 @@ namespace WTelegram
 		private Stream _networkStream;
 		private IObject _lastSentMsg;
 		private long _lastRecvMsgId;
-		private readonly List<long> _msgsToAck = new();
+		private readonly List<long> _msgsToAck = [];
 		private readonly Random _random = new();
 		private int _saltChangeCounter;
 		private Task _reactorTask;
 		private Rpc _bareRpc;
-		private readonly Dictionary<long, Rpc> _pendingRpcs = new();
+		private readonly Dictionary<long, Rpc> _pendingRpcs = [];
 		private SemaphoreSlim _sendSemaphore = new(0);
 		private readonly SemaphoreSlim _semaphore = new(1);
 		private Task _connecting;
@@ -489,7 +489,7 @@ namespace WTelegram
 		{
 			lock (_session)
 			{
-				_dcSession.Salts ??= new();
+				_dcSession.Salts ??= [];
 				if (_dcSession.Salts.Count != 0)
 				{
 					var keys = _dcSession.Salts.Keys;
@@ -1285,7 +1285,7 @@ namespace WTelegram
 			if (isContent && CheckMsgsToAck() is MsgsAck msgsAck)
 			{
 				var (ackId, ackSeqno) = NewMsgId(false);
-				var container = new MsgContainer { messages = new _Message[] { new(msgId, seqno, msg), new(ackId, ackSeqno, msgsAck) } };
+				var container = new MsgContainer { messages = [new(msgId, seqno, msg), new(ackId, ackSeqno, msgsAck)] };
 				await SendAsync(container, false);
 				return;
 			}

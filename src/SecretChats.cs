@@ -28,7 +28,7 @@ namespace WTelegram
 
 		private readonly Client client;
 		private readonly FileStream storage;
-		private readonly Dictionary<int, SecretChat> chats = new();
+		private readonly Dictionary<int, SecretChat> chats = [];
 		private Messages_DhConfig dh;
 		private BigInteger dh_prime;
 		private readonly SHA256 sha256 = SHA256.Create();
@@ -57,7 +57,7 @@ namespace WTelegram
 			public int RemoteLayer => remoteLayer;
 
 			internal long key_fingerprint;
-			internal SortedList<int, TL.Layer23.DecryptedMessageLayer> pendingMsgs = new();
+			internal SortedList<int, TL.Layer23.DecryptedMessageLayer> pendingMsgs = [];
 			internal void Discarded() // clear out fields for more security
 			{
 				Array.Clear(authKey, 0, authKey.Length);

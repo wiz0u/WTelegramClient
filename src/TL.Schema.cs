@@ -5183,9 +5183,9 @@ namespace TL
 		/// <summary>Number of sent updates</summary>
 		public int seq;
 
-		public override MessageBase[] NewMessages => Array.Empty<MessageBase>();
-		public override EncryptedMessageBase[] NewEncryptedMessages => Array.Empty<EncryptedMessageBase>();
-		public override Update[] OtherUpdates => Array.Empty<Update>();
+		public override MessageBase[] NewMessages => [];
+		public override EncryptedMessageBase[] NewEncryptedMessages => [];
+		public override Update[] OtherUpdates => [];
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public override IPeerInfo UserOrChat(Peer peer) => null;
 	}

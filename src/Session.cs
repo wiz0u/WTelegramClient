@@ -16,7 +16,7 @@ namespace WTelegram
 		public int ApiId;
 		public long UserId;
 		public int MainDC;
-		public Dictionary<int, DCSession> DCSessions = new();
+		public Dictionary<int, DCSession> DCSessions = [];
 		public TL.DcOption[] DcOptions;
 
 		public class DCSession
@@ -195,7 +195,7 @@ namespace WTelegram
 	internal class ActionStore : MemoryStream
 	{
 		private readonly Action<byte[]> _save;
-		public ActionStore(byte[] initial, Action<byte[]> save) : base(initial ?? Array.Empty<byte>()) => _save = save;
+		public ActionStore(byte[] initial, Action<byte[]> save) : base(initial ?? []) => _save = save;
 		public override void Write(byte[] buffer, int offset, int count) => _save(buffer[offset..(offset + count)]);
 		public override void SetLength(long value) { }
 	}

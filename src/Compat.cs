@@ -87,7 +87,7 @@ namespace System.Runtime.CompilerServices
 		{
 			if (array == null) throw new ArgumentNullException();
 			var (offset, length) = range.GetOffsetAndLength(array.Length);
-			if (length == 0) return Array.Empty<T>();
+			if (length == 0) return [];
 			var dest = typeof(T).IsValueType || typeof(T[]) == array.GetType() ? new T[length]
 				: (T[])Array.CreateInstance(array.GetType().GetElementType()!, length);
 			Array.Copy(array, offset, dest, 0, length);

@@ -285,7 +285,7 @@ namespace TL
 	partial class ChatParticipantAdmin		{ public override bool IsAdmin => true; }
 
 	partial class ChatParticipantsBase		{ public abstract ChatParticipantBase[] Participants { get; }}
-	partial class ChatParticipantsForbidden { public override ChatParticipantBase[] Participants => Array.Empty<ChatParticipantBase>(); }
+	partial class ChatParticipantsForbidden { public override ChatParticipantBase[] Participants => []; }
 	partial class ChatParticipants			{ public override ChatParticipantBase[] Participants => participants; }
 
 	partial class MessageEmpty				{ public override string ToString() => "(no message)"; }
@@ -429,8 +429,8 @@ namespace TL
 		public abstract Update[] UpdateList { get; }
 		public virtual Dictionary<long, User> Users => NoUsers;
 		public virtual Dictionary<long, ChatBase> Chats => NoChats;
-		private static readonly Dictionary<long, User> NoUsers = new();
-		private static readonly Dictionary<long, ChatBase> NoChats = new();
+		private static readonly Dictionary<long, User> NoUsers = [];
+		private static readonly Dictionary<long, ChatBase> NoChats = [];
 		public virtual (long mbox_id, int pts, int pts_count) GetMBox() => default;
 	}
 	partial class UpdatesCombined
@@ -447,10 +447,10 @@ namespace TL
 		public override Dictionary<long, ChatBase> Chats => chats;
 		public override (long mbox_id, int pts, int pts_count) GetMBox() => (-2, seq, 1);
 	}
-	partial class UpdatesTooLong			{ public override Update[] UpdateList => Array.Empty<Update>(); }
-	partial class UpdateShort				{ public override Update[] UpdateList => new[] { update }; }
-	partial class UpdateShortSentMessage	{ public override Update[] UpdateList => Array.Empty<Update>(); }
-	partial class UpdateShortMessage		{ public override Update[] UpdateList => new[] { new UpdateNewMessage
+	partial class UpdatesTooLong			{ public override Update[] UpdateList => []; }
+	partial class UpdateShort				{ public override Update[] UpdateList => [update]; }
+	partial class UpdateShortSentMessage	{ public override Update[] UpdateList => []; }
+	partial class UpdateShortMessage		{ public override Update[] UpdateList => [ new UpdateNewMessage
 	{
 		message = new Message
 		{
@@ -460,8 +460,8 @@ namespace TL
 			peer_id = new PeerUser { user_id = user_id },
 			fwd_from = fwd_from, via_bot_id = via_bot_id, ttl_period = ttl_period
 		}, pts = pts, pts_count = pts_count
-	} }; }
-	partial class UpdateShortChatMessage { public override Update[] UpdateList => new[] { new UpdateNewMessage
+	} ]; }
+	partial class UpdateShortChatMessage { public override Update[] UpdateList => [ new UpdateNewMessage
 	{
 		message = new Message
 		{
@@ -471,7 +471,7 @@ namespace TL
 			peer_id = new PeerChat { chat_id = chat_id },
 			fwd_from = fwd_from, via_bot_id = via_bot_id, ttl_period = ttl_period
 		}, pts = pts, pts_count = pts_count
-	} }; }
+	} ]; }
 
 	partial class InputEncryptedChat	{ public static implicit operator int(InputEncryptedChat chat) => chat.chat_id;
 										  public static implicit operator InputEncryptedChat(EncryptedChatBase chat) => new() { chat_id = chat.ID, access_hash = chat.AccessHash }; }
@@ -580,8 +580,8 @@ namespace TL
 	}
 	partial class Updates_ChannelDifferenceEmpty
 	{
-		public override MessageBase[] NewMessages => Array.Empty<MessageBase>();
-		public override Update[] OtherUpdates => Array.Empty<Update>();
+		public override MessageBase[] NewMessages => [];
+		public override Update[] OtherUpdates => [];
 		public override bool Final => flags.HasFlag(Flags.final);
 		public override int Timeout => timeout;
 	}

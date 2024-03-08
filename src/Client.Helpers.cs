@@ -218,10 +218,10 @@ namespace WTelegram
 					case InputMediaDocumentExternal imde:
 						string mimeType = null;
 						var inputFile = await UploadFromUrl(imde.url);
-						if (mimeType?.StartsWith("video/") == true)
-							ism.media = new InputMediaUploadedDocument(inputFile, mimeType, new DocumentAttributeVideo { flags = DocumentAttributeVideo.Flags.supports_streaming });
-						else
+						if (videoUrlAsFile || mimeType?.StartsWith("video/") != true)
 							ism.media = new InputMediaUploadedDocument(inputFile, mimeType);
+						else
+							ism.media = new InputMediaUploadedDocument(inputFile, mimeType, new DocumentAttributeVideo { flags = DocumentAttributeVideo.Flags.supports_streaming });
 						goto retry;
 					case InputMediaPhotoExternal impe:
 						inputFile = await UploadFromUrl(impe.url);
@@ -510,7 +510,7 @@ namespace WTelegram
 		public async Task<Channels_ChannelParticipants> Channels_GetAllParticipants(InputChannelBase channel, bool includeKickBan = false, string alphabet1 = "АБCДЕЄЖФГHИІJКЛМНОПQРСТУВWХЦЧШЩЫЮЯЗ", string alphabet2 = "АCЕHИJЛМНОРСТУВWЫ", CancellationToken cancellationToken = default)
 		{
 			alphabet2 ??= alphabet1;
-			var result = new Channels_ChannelParticipants { chats = new(), users = new() };
+			var result = new Channels_ChannelParticipants { chats = [], users = [] };
 			var user_ids = new HashSet<long>();
 			var participants = new List<ChannelParticipantBase>();
 
@@ -616,7 +616,7 @@ namespace WTelegram
 			{
 				case InputPeerChat chat:
 					await this.Messages_EditChatAdmin(chat.chat_id, user, is_admin);
-					return new Updates { date = DateTime.UtcNow, users = new(), updates = Array.Empty<Update>(),
+					return new Updates { date = DateTime.UtcNow, users = [], updates = [],
 						chats = (await this.Messages_GetChats(chat.chat_id)).chats };
 				case InputPeerChannel channel:
 					return await this.Channels_EditAdmin(channel, user,
@@ -663,7 +663,7 @@ namespace WTelegram
 			{
 				case InputPeerChat chat:
 					await this.Messages_DeleteChat(chat.chat_id);
-					return new Updates { date = DateTime.UtcNow, users = new(), updates = Array.Empty<Update>(),
+					return new Updates { date = DateTime.UtcNow, users = [], updates = [],
 						chats = (await this.Messages_GetChats(chat.chat_id)).chats };
 				case InputPeerChannel channel:
 					return await this.Channels_DeleteChannel(channel);
@@ -695,7 +695,7 @@ namespace WTelegram
 		public async Task<bool> ReadHistory(InputPeer peer, int max_id = default)
 			=> peer is InputPeerChannel channel ? await this.Channels_ReadHistory(channel, max_id) : (await this.Messages_ReadHistory(peer, max_id)) != null;
 
-		private static readonly char[] UrlSeparator = new[] { '?', '#', '/' };
+		private static readonly char[] UrlSeparator = ['?', '#', '/'];
 
 		/// <summary>Return information about a chat/channel based on Invite Link or Public Link</summary>
 		/// <param name="url">Public link or Invite link, like https://t.me/+InviteHash, https://t.me/joinchat/InviteHash or https://t.me/channelname<br/>Works also without https:// prefix</param>
