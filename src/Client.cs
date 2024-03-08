@@ -1254,7 +1254,7 @@ namespace WTelegram
 			lock (_msgsToAck)
 			{
 				if (_msgsToAck.Count == 0) return null;
-				var msgsAck = new MsgsAck { msg_ids = _msgsToAck.ToArray() };
+				var msgsAck = new MsgsAck { msg_ids = [.. _msgsToAck] };
 				_msgsToAck.Clear();
 				return msgsAck;
 			}

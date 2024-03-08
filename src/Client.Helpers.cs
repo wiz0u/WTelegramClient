@@ -83,7 +83,7 @@ namespace WTelegram
 					}
 				}
 				Task[] remainingTasks;
-				lock (tasks) remainingTasks = tasks.Values.ToArray();
+				lock (tasks) remainingTasks = [.. tasks.Values];
 				await Task.WhenAll(remainingTasks); // wait completion and eventually propagate any task exception
 				return isBig ? new InputFileBig { id = file_id, parts = file_total_parts, name = filename }
 					: new InputFile { id = file_id, parts = file_total_parts, name = filename };
@@ -398,7 +398,7 @@ namespace WTelegram
 				}
 			}
 			Task[] remainingTasks;
-			lock (tasks) remainingTasks = tasks.Values.ToArray();
+			lock (tasks) remainingTasks = [.. tasks.Values];
 			await Task.WhenAll(remainingTasks); // wait completion and eventually propagate any task exception
 			await outputStream.FlushAsync();
 			if (canSeek) outputStream.Seek(streamStartPos + maxOffsetSeen, SeekOrigin.Begin);
@@ -491,8 +491,8 @@ namespace WTelegram
 						foreach (var (key, value) in md.chats) mds.chats[key] = value;
 						foreach (var (key, value) in md.users) mds.users[key] = value;
 					}
-					mds.dialogs = dialogList.ToArray();
-					mds.messages = messageList.ToArray();
+					mds.dialogs = [.. dialogList];
+					mds.messages = [.. messageList];
 					return mds;
 				case Messages_Dialogs md: return md;
 				default: throw new WTException("Messages_GetDialogs returned unexpected " + dialogs?.GetType().Name);
@@ -526,7 +526,7 @@ namespace WTelegram
 				await GetWithFilter(new ChannelParticipantsKicked { q = "" }, (f, c) => new ChannelParticipantsKicked { q = f.q + c }, alphabet1);
 				await GetWithFilter(new ChannelParticipantsBanned { q = "" }, (f, c) => new ChannelParticipantsBanned { q = f.q + c }, alphabet1);
 			}
-			result.participants = participants.ToArray();
+			result.participants = [.. participants];
 			return result;
 
 			async Task GetWithFilter<T>(T filter, Func<T, char, T> recurse = null, string alphabet = null) where T : ChannelParticipantsFilter
@@ -572,7 +572,7 @@ namespace WTelegram
 				foreach (var kvp in result.chats) resultFull.chats[kvp.Key] = kvp.Value;
 				foreach (var kvp in result.users) resultFull.users[kvp.Key] = kvp.Value;
 			}
-			resultFull.events = events.ToArray();
+			resultFull.events = [.. events];
 			return resultFull;
 		}
 

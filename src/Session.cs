@@ -192,11 +192,9 @@ namespace WTelegram
 		}
 	}
 
-	internal class ActionStore : MemoryStream
+	internal class ActionStore(byte[] initial, Action<byte[]> save) : MemoryStream(initial ?? [])
 	{
-		private readonly Action<byte[]> _save;
-		public ActionStore(byte[] initial, Action<byte[]> save) : base(initial ?? []) => _save = save;
-		public override void Write(byte[] buffer, int offset, int count) => _save(buffer[offset..(offset + count)]);
+		public override void Write(byte[] buffer, int offset, int count) => save(buffer[offset..(offset + count)]);
 		public override void SetLength(long value) { }
 	}
 }

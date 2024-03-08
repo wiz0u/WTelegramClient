@@ -11,9 +11,8 @@ using System.Threading.Tasks;
 
 namespace WTelegram
 {
-	class TlsStream : Helpers.IndirectStream
+	class TlsStream(Stream innerStream) : Helpers.IndirectStream(innerStream)
 	{
-		public TlsStream(Stream innerStream) : base(innerStream) { }
 		private int _tlsFrameleft;
 		private readonly byte[] _tlsSendHeader = [0x17, 0x03, 0x03, 0, 0];
 		private readonly byte[] _tlsReadHeader = new byte[5];

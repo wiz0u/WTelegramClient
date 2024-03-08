@@ -80,7 +80,7 @@ namespace WTelegram
 		}
 		public void Dispose() { OnChanged?.Invoke(); storage?.Dispose(); sha256.Dispose(); sha1.Dispose(); }
 
-		public List<ISecretChat> Chats => chats.Values.ToList<ISecretChat>();
+		public List<ISecretChat> Chats => [.. chats.Values];
 
 		public bool IsChatActive(int chat_id) => !(chats.GetValueOrDefault(chat_id)?.flags.HasFlag(SecretChat.Flags.requestChat) ?? true);
 

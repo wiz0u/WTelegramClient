@@ -165,7 +165,7 @@ namespace TL
 			if (lastBlockQuote is { length: -1 })
 				lastBlockQuote.length = sb.Length - lastBlockQuote.offset;
 			text = sb.ToString();
-			return entities.Count == 0 ? null : entities.ToArray();
+			return entities.Count == 0 ? null : [.. entities];
 		}
 
 		/// <summary>Converts the (plain text + entities) format used by Telegram messages into a <a href="https://core.telegram.org/bots/api/#markdownv2-style">Markdown text</a></summary>
@@ -362,7 +362,7 @@ namespace TL
 					offset++;
 			}
 			text = sb.ToString();
-			return entities.Count == 0 ? null : entities.ToArray();
+			return entities.Count == 0 ? null : [.. entities];
 		}
 
 		/// <summary>Converts the (plain text + entities) format used by Telegram messages into an <a href="https://core.telegram.org/bots/api/#html-style">HTML-formatted text</a></summary>

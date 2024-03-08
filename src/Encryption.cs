@@ -319,18 +319,11 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 		}
 
 #if OBFUSCATION
-		internal class AesCtr : IDisposable
+		internal class AesCtr(byte[] key, byte[] ivec) : IDisposable
 		{
-			readonly ICryptoTransform _encryptor;
-			readonly byte[] _ivec;
+			readonly ICryptoTransform _encryptor = AesECB.CreateEncryptor(key, null);
 			readonly byte[] _ecount = new byte[16];
 			int _num;
-
-			public AesCtr(byte[] key, byte[] iv)
-			{
-				_encryptor = AesECB.CreateEncryptor(key, null);
-				_ivec = iv;
-			}
 
 			public void Dispose() => _encryptor.Dispose();
 
@@ -340,9 +333,9 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 				{
 					if (_num == 0)
 					{
-						_encryptor.TransformBlock(_ivec, 0, 16, _ecount, 0);
+						_encryptor.TransformBlock(ivec, 0, 16, _ecount, 0);
 						for (int n = 15; n >= 0; n--) // increment big-endian counter
-							if (++_ivec[n] != 0) break;
+							if (++ivec[n] != 0) break;
 					}
 					buffer[i] ^= _ecount[_num];
 					_num = (_num + 1) % 16;
