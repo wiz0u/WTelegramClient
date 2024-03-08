@@ -1670,7 +1670,7 @@ namespace TL
 		public override Peer Peer => peer_id;
 	}
 	/// <summary>A message		<para>See <a href="https://corefork.telegram.org/constructor/message"/></para></summary>
-	[TLDef(0x1E4C8A69)]
+	[TLDef(0xA66C7EFC)]
 	public partial class Message : MessageBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1718,6 +1718,7 @@ namespace TL
 		[IfFlag(22)] public RestrictionReason[] restriction_reason;
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
 		[IfFlag(25)] public int ttl_period;
+		[IfFlag(30)] public int quick_reply_shortcut_id;
 
 		[Flags] public enum Flags : uint
 		{
@@ -1777,6 +1778,8 @@ namespace TL
 			has_saved_peer_id = 0x10000000,
 			/// <summary>Field <see cref="from_boosts_applied"/> has a value</summary>
 			has_from_boosts_applied = 0x20000000,
+			/// <summary>Field <see cref="quick_reply_shortcut_id"/> has a value</summary>
+			has_quick_reply_shortcut_id = 0x40000000,
 		}
 
 		/// <summary>ID of the message</summary>
@@ -3195,11 +3198,12 @@ namespace TL
 	}
 
 	/// <summary>Extended user info		<para>See <a href="https://corefork.telegram.org/constructor/userFull"/></para></summary>
-	[TLDef(0xB9B12C6C)]
+	[TLDef(0x22FF3E85)]
 	public class UserFull : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		public Flags2 flags2;
 		/// <summary>User ID</summary>
 		public long id;
 		/// <summary>Bio of the user</summary>
@@ -3238,6 +3242,10 @@ namespace TL
 		[IfFlag(24)] public WallPaperBase wallpaper;
 		/// <summary>Active <a href="https://corefork.telegram.org/api/stories">stories »</a></summary>
 		[IfFlag(25)] public PeerStories stories;
+		[IfFlag(32)] public BusinessWorkHours business_work_hours;
+		[IfFlag(33)] public BusinessLocation business_location;
+		[IfFlag(34)] public BusinessGreetingMessage business_greeting_message;
+		[IfFlag(35)] public BusinessAwayMessage business_away_message;
 
 		[Flags] public enum Flags : uint
 		{
@@ -3295,6 +3303,18 @@ namespace TL
 			wallpaper_overridden = 0x10000000,
 			contact_require_premium = 0x20000000,
 			read_dates_private = 0x40000000,
+		}
+
+		[Flags] public enum Flags2 : uint
+		{
+			/// <summary>Field <see cref="business_work_hours"/> has a value</summary>
+			has_business_work_hours = 0x1,
+			/// <summary>Field <see cref="business_location"/> has a value</summary>
+			has_business_location = 0x2,
+			/// <summary>Field <see cref="business_greeting_message"/> has a value</summary>
+			has_business_greeting_message = 0x4,
+			/// <summary>Field <see cref="business_away_message"/> has a value</summary>
+			has_business_away_message = 0x8,
 		}
 	}
 
@@ -5145,6 +5165,42 @@ namespace TL
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSavedReactionTags"/></para></summary>
 	[TLDef(0x39C67432)]
 	public class UpdateSavedReactionTags : Update { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSmsJob"/></para></summary>
+	[TLDef(0xF16269D4)]
+	public class UpdateSmsJob : Update
+	{
+		public string job_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateQuickReplies"/></para></summary>
+	[TLDef(0xF9470AB2)]
+	public class UpdateQuickReplies : Update
+	{
+		public QuickReply[] quick_replies;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateNewQuickReply"/></para></summary>
+	[TLDef(0xF53DA717)]
+	public class UpdateNewQuickReply : Update
+	{
+		public QuickReply quick_reply;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateDeleteQuickReply"/></para></summary>
+	[TLDef(0x53E6F1EC)]
+	public class UpdateDeleteQuickReply : Update
+	{
+		public int shortcut_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateQuickReplyMessage"/></para></summary>
+	[TLDef(0x3E050D0F)]
+	public class UpdateQuickReplyMessage : Update
+	{
+		public MessageBase message;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateDeleteQuickReplyMessages"/></para></summary>
+	[TLDef(0x566FE7CD, inheritBefore = true)]
+	public class UpdateDeleteQuickReplyMessages : UpdateDeleteQuickReply
+	{
+		public int[] messages;
+	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]
@@ -13043,13 +13099,14 @@ namespace TL
 		public virtual string Title => default;
 		/// <summary>Emoji to use as icon for the folder.</summary>
 		public virtual string Emoticon => default;
+		public virtual int Color => default;
 		/// <summary>Pinned chats, <a href="https://corefork.telegram.org/api/folders">folders</a> can have unlimited pinned chats</summary>
 		public virtual InputPeer[] PinnedPeers => default;
 		/// <summary>Include the following chats in this <a href="https://corefork.telegram.org/api/folders">folder</a></summary>
 		public virtual InputPeer[] IncludePeers => default;
 	}
 	/// <summary>Dialog filter AKA <a href="https://corefork.telegram.org/api/folders">folder</a>		<para>See <a href="https://corefork.telegram.org/constructor/dialogFilter"/></para></summary>
-	[TLDef(0x7438F7E8)]
+	[TLDef(0x5FB5523B)]
 	public class DialogFilter : DialogFilterBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -13060,6 +13117,7 @@ namespace TL
 		public string title;
 		/// <summary>Emoji to use as icon for the folder.</summary>
 		[IfFlag(25)] public string emoticon;
+		[IfFlag(27)] public int color;
 		/// <summary>Pinned chats, <a href="https://corefork.telegram.org/api/folders">folders</a> can have unlimited pinned chats</summary>
 		public InputPeer[] pinned_peers;
 		/// <summary>Include the following chats in this <a href="https://corefork.telegram.org/api/folders">folder</a></summary>
@@ -13087,6 +13145,8 @@ namespace TL
 			exclude_archived = 0x2000,
 			/// <summary>Field <see cref="emoticon"/> has a value</summary>
 			has_emoticon = 0x2000000,
+			/// <summary>Field <see cref="color"/> has a value</summary>
+			has_color = 0x8000000,
 		}
 
 		/// <summary><a href="https://corefork.telegram.org/api/folders">Folder</a> ID</summary>
@@ -13095,13 +13155,14 @@ namespace TL
 		public override string Title => title;
 		/// <summary>Emoji to use as icon for the folder.</summary>
 		public override string Emoticon => emoticon;
+		public override int Color => color;
 		/// <summary>Pinned chats, <a href="https://corefork.telegram.org/api/folders">folders</a> can have unlimited pinned chats</summary>
 		public override InputPeer[] PinnedPeers => pinned_peers;
 		/// <summary>Include the following chats in this <a href="https://corefork.telegram.org/api/folders">folder</a></summary>
 		public override InputPeer[] IncludePeers => include_peers;
 	}
 	/// <summary>A folder imported using a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/dialogFilterChatlist"/></para></summary>
-	[TLDef(0xD64A04A8)]
+	[TLDef(0x9FE28EA4)]
 	public class DialogFilterChatlist : DialogFilterBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -13112,6 +13173,7 @@ namespace TL
 		public string title;
 		/// <summary>Emoji to use as icon for the folder.</summary>
 		[IfFlag(25)] public string emoticon;
+		[IfFlag(27)] public int color;
 		/// <summary>Pinned chats, <a href="https://corefork.telegram.org/api/folders">folders</a> can have unlimited pinned chats</summary>
 		public InputPeer[] pinned_peers;
 		/// <summary>Chats to include in the folder</summary>
@@ -13123,6 +13185,8 @@ namespace TL
 			has_emoticon = 0x2000000,
 			/// <summary>Whether the current user has created some <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep links »</a> to share the folder as well.</summary>
 			has_my_invites = 0x4000000,
+			/// <summary>Field <see cref="color"/> has a value</summary>
+			has_color = 0x8000000,
 		}
 
 		/// <summary>ID of the folder</summary>
@@ -13131,6 +13195,7 @@ namespace TL
 		public override string Title => title;
 		/// <summary>Emoji to use as icon for the folder.</summary>
 		public override string Emoticon => emoticon;
+		public override int Color => color;
 		/// <summary>Pinned chats, <a href="https://corefork.telegram.org/api/folders">folders</a> can have unlimited pinned chats</summary>
 		public override InputPeer[] PinnedPeers => pinned_peers;
 		/// <summary>Chats to include in the folder</summary>
@@ -16987,5 +17052,271 @@ namespace TL
 	public class OutboxReadDate : IObject
 	{
 		public DateTime date;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/smsjobs.EligibilityToJoin"/></para></summary>
+	public abstract class Smsjobs_EligibilityToJoin : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/smsjobs.eligibleToJoin"/></para></summary>
+	[TLDef(0xDC8B44CF)]
+	public class Smsjobs_EligibleToJoin : Smsjobs_EligibilityToJoin
+	{
+		public string terms_url;
+		public int monthly_sent_sms;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/smsjobs.status"/></para></summary>
+	[TLDef(0x2AEE9191)]
+	public class Smsjobs_Status : IObject
+	{
+		public Flags flags;
+		public int recent_sent;
+		public int recent_since;
+		public int recent_remains;
+		public int total_sent;
+		public int total_since;
+		[IfFlag(1)] public string last_gift_slug;
+		public string terms_url;
+
+		[Flags] public enum Flags : uint
+		{
+			allow_international = 0x1,
+			has_last_gift_slug = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/smsJob"/></para></summary>
+	[TLDef(0xE6A1EEB8)]
+	public class SmsJob : IObject
+	{
+		public string job_id;
+		public string phone_number;
+		public string text;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessWeeklyOpen"/></para></summary>
+	[TLDef(0x120B1AB9)]
+	public class BusinessWeeklyOpen : IObject
+	{
+		public int start_minute;
+		public int end_minute;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessWorkHours"/></para></summary>
+	[TLDef(0x8C92B098)]
+	public class BusinessWorkHours : IObject
+	{
+		public Flags flags;
+		public string timezone_id;
+		public BusinessWeeklyOpen[] weekly_open;
+
+		[Flags] public enum Flags : uint
+		{
+			open_now = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessLocation"/></para></summary>
+	[TLDef(0xAC5C1AF7)]
+	public class BusinessLocation : IObject
+	{
+		public Flags flags;
+		[IfFlag(0)] public GeoPoint geo_point;
+		public string address;
+
+		[Flags] public enum Flags : uint
+		{
+			has_geo_point = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputBusinessRecipients"/></para></summary>
+	[TLDef(0x6F8B32AA)]
+	public class InputBusinessRecipients : IObject
+	{
+		public Flags flags;
+		[IfFlag(4)] public InputUserBase[] users;
+
+		[Flags] public enum Flags : uint
+		{
+			existing_chats = 0x1,
+			new_chats = 0x2,
+			contacts = 0x4,
+			non_contacts = 0x8,
+			has_users = 0x10,
+			exclude_selected = 0x20,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessRecipients"/></para></summary>
+	[TLDef(0x21108FF7)]
+	public class BusinessRecipients : IObject
+	{
+		public Flags flags;
+		[IfFlag(4)] public long[] users;
+
+		[Flags] public enum Flags : uint
+		{
+			existing_chats = 0x1,
+			new_chats = 0x2,
+			contacts = 0x4,
+			non_contacts = 0x8,
+			has_users = 0x10,
+			exclude_selected = 0x20,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/BusinessAwayMessageSchedule"/></para></summary>
+	public abstract class BusinessAwayMessageSchedule : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessAwayMessageScheduleAlways"/></para></summary>
+	[TLDef(0xC9B9E2B9)]
+	public class BusinessAwayMessageScheduleAlways : BusinessAwayMessageSchedule { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessAwayMessageScheduleOutsideWorkHours"/></para></summary>
+	[TLDef(0xC3F2F501)]
+	public class BusinessAwayMessageScheduleOutsideWorkHours : BusinessAwayMessageSchedule { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessAwayMessageScheduleCustom"/></para></summary>
+	[TLDef(0xCC4D9ECC)]
+	public class BusinessAwayMessageScheduleCustom : BusinessAwayMessageSchedule
+	{
+		public DateTime start_date;
+		public DateTime end_date;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputBusinessGreetingMessage"/></para></summary>
+	[TLDef(0x0194CB3B)]
+	public class InputBusinessGreetingMessage : IObject
+	{
+		public int shortcut_id;
+		public InputBusinessRecipients recipients;
+		public int no_activity_days;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessGreetingMessage"/></para></summary>
+	[TLDef(0xE519ABAB)]
+	public class BusinessGreetingMessage : IObject
+	{
+		public int shortcut_id;
+		public BusinessRecipients recipients;
+		public int no_activity_days;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputBusinessAwayMessage"/></para></summary>
+	[TLDef(0x832175E0)]
+	public class InputBusinessAwayMessage : IObject
+	{
+		public Flags flags;
+		public int shortcut_id;
+		public BusinessAwayMessageSchedule schedule;
+		public InputBusinessRecipients recipients;
+
+		[Flags] public enum Flags : uint
+		{
+			offline_only = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessAwayMessage"/></para></summary>
+	[TLDef(0xEF156A5C)]
+	public class BusinessAwayMessage : IObject
+	{
+		public Flags flags;
+		public int shortcut_id;
+		public BusinessAwayMessageSchedule schedule;
+		public BusinessRecipients recipients;
+
+		[Flags] public enum Flags : uint
+		{
+			offline_only = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/timezone"/></para></summary>
+	[TLDef(0xFF9289F5)]
+	public class Timezone : IObject
+	{
+		public string id;
+		public string name;
+		public int utc_offset;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/help.timezonesList"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/help.timezonesListNotModified">help.timezonesListNotModified</a></remarks>
+	[TLDef(0x7B74ED71)]
+	public class Help_TimezonesList : IObject
+	{
+		public Timezone[] timezones;
+		public int hash;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/quickReply"/></para></summary>
+	[TLDef(0x0697102B)]
+	public class QuickReply : IObject
+	{
+		public int shortcut_id;
+		public string shortcut;
+		public int top_message;
+		public int count;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputQuickReplyShortcut"/></para></summary>
+	public abstract class InputQuickReplyShortcutBase : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputQuickReplyShortcut"/></para></summary>
+	[TLDef(0x24596D41)]
+	public class InputQuickReplyShortcut : InputQuickReplyShortcutBase
+	{
+		public string shortcut;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputQuickReplyShortcutId"/></para></summary>
+	[TLDef(0x01190CF1)]
+	public class InputQuickReplyShortcutId : InputQuickReplyShortcutBase
+	{
+		public int shortcut_id;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.quickReplies"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/messages.quickRepliesNotModified">messages.quickRepliesNotModified</a></remarks>
+	[TLDef(0xC68D6695)]
+	public class Messages_QuickReplies : IObject, IPeerResolver
+	{
+		public QuickReply[] quick_replies;
+		public MessageBase[] messages;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/connectedBot"/></para></summary>
+	[TLDef(0xE7E999E7)]
+	public class ConnectedBot : IObject
+	{
+		public Flags flags;
+		public long bot_id;
+		public BusinessRecipients recipients;
+
+		[Flags] public enum Flags : uint
+		{
+			can_reply = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.connectedBots"/></para></summary>
+	[TLDef(0x17D7F87B)]
+	public class Account_ConnectedBots : IObject
+	{
+		public ConnectedBot[] connected_bots;
+		public Dictionary<long, User> users;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.dialogFilters"/></para></summary>
+	[TLDef(0x2AD93719)]
+	public class Messages_DialogFilters : IObject
+	{
+		public Flags flags;
+		public DialogFilterBase[] filters;
+
+		[Flags] public enum Flags : uint
+		{
+			tags_enabled = 0x1,
+		}
 	}
 }

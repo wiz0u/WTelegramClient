@@ -1194,6 +1194,54 @@ namespace TL
 				hash = hash,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateBusinessWorkHours"/></para></summary>
+		public static Task<bool> Account_UpdateBusinessWorkHours(this Client client, BusinessWorkHours business_work_hours = null)
+			=> client.Invoke(new Account_UpdateBusinessWorkHours
+			{
+				flags = (Account_UpdateBusinessWorkHours.Flags)(business_work_hours != null ? 0x1 : 0),
+				business_work_hours = business_work_hours,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateBusinessLocation"/></para></summary>
+		public static Task<bool> Account_UpdateBusinessLocation(this Client client, string address = null, InputGeoPoint geo_point = null)
+			=> client.Invoke(new Account_UpdateBusinessLocation
+			{
+				flags = (Account_UpdateBusinessLocation.Flags)((address != null ? 0x1 : 0) | (geo_point != null ? 0x2 : 0)),
+				geo_point = geo_point,
+				address = address,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateBusinessGreetingMessage"/></para></summary>
+		public static Task<bool> Account_UpdateBusinessGreetingMessage(this Client client, InputBusinessGreetingMessage message = null)
+			=> client.Invoke(new Account_UpdateBusinessGreetingMessage
+			{
+				flags = (Account_UpdateBusinessGreetingMessage.Flags)(message != null ? 0x1 : 0),
+				message = message,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateBusinessAwayMessage"/></para></summary>
+		public static Task<bool> Account_UpdateBusinessAwayMessage(this Client client, InputBusinessAwayMessage message = null)
+			=> client.Invoke(new Account_UpdateBusinessAwayMessage
+			{
+				flags = (Account_UpdateBusinessAwayMessage.Flags)(message != null ? 0x1 : 0),
+				message = message,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateConnectedBot"/></para></summary>
+		public static Task<UpdatesBase> Account_UpdateConnectedBot(this Client client, InputUserBase bot, InputBusinessRecipients recipients, bool can_reply = false, bool deleted = false)
+			=> client.Invoke(new Account_UpdateConnectedBot
+			{
+				flags = (Account_UpdateConnectedBot.Flags)((can_reply ? 0x1 : 0) | (deleted ? 0x2 : 0)),
+				bot = bot,
+				recipients = recipients,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getConnectedBots"/></para></summary>
+		public static Task<Account_ConnectedBots> Account_GetConnectedBots(this Client client)
+			=> client.Invoke(new Account_GetConnectedBots
+			{
+			});
+
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, params InputUserBase[] id)
@@ -1626,10 +1674,10 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
+		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMessage
 			{
-				flags = (Messages_SendMessage.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
+				flags = (Messages_SendMessage.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				message = message,
@@ -1638,6 +1686,7 @@ namespace TL
 				entities = entities,
 				schedule_date = schedule_date.GetValueOrDefault(),
 				send_as = send_as,
+				quick_reply_shortcut = quick_reply_shortcut,
 			});
 
 		/// <summary>Send a media		<para>See <a href="https://corefork.telegram.org/method/messages.sendMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,420,500 (<a href="https://corefork.telegram.org/method/messages.sendMedia#possible-errors">details</a>)</para></summary>
@@ -1656,10 +1705,10 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
+		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMedia
 			{
-				flags = (Messages_SendMedia.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
+				flags = (Messages_SendMedia.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				media = media,
@@ -1669,6 +1718,7 @@ namespace TL
 				entities = entities,
 				schedule_date = schedule_date.GetValueOrDefault(),
 				send_as = send_as,
+				quick_reply_shortcut = quick_reply_shortcut,
 			});
 
 		/// <summary>Forwards messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.forwardMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,420,500 (<a href="https://corefork.telegram.org/method/messages.forwardMessages#possible-errors">details</a>)</para></summary>
@@ -1685,10 +1735,10 @@ namespace TL
 		/// <param name="top_msg_id">Destination <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Forward the messages as the specified peer</param>
-		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false)
+		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false)
 			=> client.Invoke(new Messages_ForwardMessages
 			{
-				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0)),
+				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0)),
 				from_peer = from_peer,
 				id = id,
 				random_id = random_id,
@@ -1696,6 +1746,7 @@ namespace TL
 				top_msg_id = top_msg_id.GetValueOrDefault(),
 				schedule_date = schedule_date.GetValueOrDefault(),
 				send_as = send_as,
+				quick_reply_shortcut = quick_reply_shortcut,
 			});
 
 		/// <summary>Report a new incoming chat for spam, if the <see cref="PeerSettings"/> of the chat allow us to do that		<para>See <a href="https://corefork.telegram.org/method/messages.reportSpam"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.reportSpam#possible-errors">details</a>)</para></summary>
@@ -2188,10 +2239,10 @@ namespace TL
 		/// <param name="id">Result ID from <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see></param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false)
+		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false)
 			=> client.Invoke(new Messages_SendInlineBotResult
 			{
-				flags = (Messages_SendInlineBotResult.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0)),
+				flags = (Messages_SendInlineBotResult.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				random_id = random_id,
@@ -2199,6 +2250,7 @@ namespace TL
 				id = id,
 				schedule_date = schedule_date.GetValueOrDefault(),
 				send_as = send_as,
+				quick_reply_shortcut = quick_reply_shortcut,
 			});
 
 		/// <summary>Find out if a media message's caption can be edited		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageEditData"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.getMessageEditData#possible-errors">details</a>)</para></summary>
@@ -2221,10 +2273,10 @@ namespace TL
 		/// <param name="reply_markup">Reply markup for inline keyboards</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
-		public static Task<UpdatesBase> Messages_EditMessage(this Client client, InputPeer peer, int id, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, bool no_webpage = false, bool invert_media = false)
+		public static Task<UpdatesBase> Messages_EditMessage(this Client client, InputPeer peer, int id, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, int? quick_reply_shortcut_id = null, bool no_webpage = false, bool invert_media = false)
 			=> client.Invoke(new Messages_EditMessage
 			{
-				flags = (Messages_EditMessage.Flags)((message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x8000 : 0) | (no_webpage ? 0x2 : 0) | (invert_media ? 0x10000 : 0)),
+				flags = (Messages_EditMessage.Flags)((message != null ? 0x800 : 0) | (media != null ? 0x4000 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x8000 : 0) | (quick_reply_shortcut_id != null ? 0x20000 : 0) | (no_webpage ? 0x2 : 0) | (invert_media ? 0x10000 : 0)),
 				peer = peer,
 				id = id,
 				message = message,
@@ -2232,6 +2284,7 @@ namespace TL
 				reply_markup = reply_markup,
 				entities = entities,
 				schedule_date = schedule_date.GetValueOrDefault(),
+				quick_reply_shortcut_id = quick_reply_shortcut_id.GetValueOrDefault(),
 			});
 
 		/// <summary>Edit an inline bot message		<para>See <a href="https://corefork.telegram.org/method/messages.editInlineBotMessage"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editInlineBotMessage#possible-errors">details</a>)</para></summary>
@@ -2624,15 +2677,16 @@ namespace TL
 		/// <param name="multi_media">The medias to send: note that they must be separately uploaded using <see cref="Messages_UploadMedia">Messages_UploadMedia</see> first, using raw <c>inputMediaUploaded*</c> constructors is not supported.</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
+		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
-				flags = (Messages_SendMultiMedia.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
+				flags = (Messages_SendMultiMedia.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				multi_media = multi_media,
 				schedule_date = schedule_date.GetValueOrDefault(),
 				send_as = send_as,
+				quick_reply_shortcut = quick_reply_shortcut,
 			});
 
 		/// <summary>Upload encrypted file and associate it to a secret chat		<para>See <a href="https://corefork.telegram.org/method/messages.uploadEncryptedFile"/></para></summary>
@@ -2911,7 +2965,7 @@ namespace TL
 			});
 
 		/// <summary>Get <a href="https://corefork.telegram.org/api/folders">folders</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogFilters"/></para></summary>
-		public static Task<DialogFilterBase[]> Messages_GetDialogFilters(this Client client)
+		public static Task<Messages_DialogFilters> Messages_GetDialogFilters(this Client client)
 			=> client.Invoke(new Messages_GetDialogFilters
 			{
 			});
@@ -3875,6 +3929,76 @@ namespace TL
 				msg_id = msg_id,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getQuickReplies"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.quickRepliesNotModified">messages.quickRepliesNotModified</a></returns>
+		public static Task<Messages_QuickReplies> Messages_GetQuickReplies(this Client client, long hash = default)
+			=> client.Invoke(new Messages_GetQuickReplies
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.reorderQuickReplies"/></para></summary>
+		public static Task<bool> Messages_ReorderQuickReplies(this Client client, params int[] order)
+			=> client.Invoke(new Messages_ReorderQuickReplies
+			{
+				order = order,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.checkQuickReplyShortcut"/></para></summary>
+		public static Task<bool> Messages_CheckQuickReplyShortcut(this Client client, string shortcut)
+			=> client.Invoke(new Messages_CheckQuickReplyShortcut
+			{
+				shortcut = shortcut,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.editQuickReplyShortcut"/></para></summary>
+		public static Task<bool> Messages_EditQuickReplyShortcut(this Client client, int shortcut_id, string shortcut)
+			=> client.Invoke(new Messages_EditQuickReplyShortcut
+			{
+				shortcut_id = shortcut_id,
+				shortcut = shortcut,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.deleteQuickReplyShortcut"/></para></summary>
+		public static Task<bool> Messages_DeleteQuickReplyShortcut(this Client client, int shortcut_id)
+			=> client.Invoke(new Messages_DeleteQuickReplyShortcut
+			{
+				shortcut_id = shortcut_id,
+			});
+
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		<para>See <a href="https://corefork.telegram.org/method/messages.getQuickReplyMessages"/></para></summary>
+		public static Task<Messages_MessagesBase> Messages_GetQuickReplyMessages(this Client client, int shortcut_id, long hash = default, int[] id = null)
+			=> client.Invoke(new Messages_GetQuickReplyMessages
+			{
+				flags = (Messages_GetQuickReplyMessages.Flags)(id != null ? 0x1 : 0),
+				shortcut_id = shortcut_id,
+				id = id,
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.sendQuickReplyMessages"/></para></summary>
+		public static Task<UpdatesBase> Messages_SendQuickReplyMessages(this Client client, InputPeer peer, int shortcut_id)
+			=> client.Invoke(new Messages_SendQuickReplyMessages
+			{
+				peer = peer,
+				shortcut_id = shortcut_id,
+			});
+
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteQuickReplyMessages"/></para></summary>
+		public static Task<UpdatesBase> Messages_DeleteQuickReplyMessages(this Client client, int shortcut_id, params int[] id)
+			=> client.Invoke(new Messages_DeleteQuickReplyMessages
+			{
+				shortcut_id = shortcut_id,
+				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleDialogFilterTags"/></para></summary>
+		public static Task<bool> Messages_ToggleDialogFilterTags(this Client client, bool enabled)
+			=> client.Invoke(new Messages_ToggleDialogFilterTags
+			{
+				enabled = enabled,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -4271,6 +4395,14 @@ namespace TL
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.peerColorsNotModified">help.peerColorsNotModified</a></returns>
 		public static Task<Help_PeerColors> Help_GetPeerProfileColors(this Client client, int hash = default)
 			=> client.Invoke(new Help_GetPeerProfileColors
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/help.getTimezonesList"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.timezonesListNotModified">help.timezonesListNotModified</a></returns>
+		public static Task<Help_TimezonesList> Help_GetTimezonesList(this Client client, int hash = default)
+			=> client.Invoke(new Help_GetTimezonesList
 			{
 				hash = hash,
 			});
@@ -6328,6 +6460,53 @@ namespace TL
 				peer = peer,
 				user_id = user_id,
 			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.isEligibleToJoin"/></para></summary>
+		public static Task<Smsjobs_EligibilityToJoin> Smsjobs_IsEligibleToJoin(this Client client)
+			=> client.Invoke(new Smsjobs_IsEligibleToJoin
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.join"/></para></summary>
+		public static Task<bool> Smsjobs_Join(this Client client)
+			=> client.Invoke(new Smsjobs_Join
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.leave"/></para></summary>
+		public static Task<bool> Smsjobs_Leave(this Client client)
+			=> client.Invoke(new Smsjobs_Leave
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.updateSettings"/></para></summary>
+		public static Task<bool> Smsjobs_UpdateSettings(this Client client, bool allow_international = false)
+			=> client.Invoke(new Smsjobs_UpdateSettings
+			{
+				flags = (Smsjobs_UpdateSettings.Flags)(allow_international ? 0x1 : 0),
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.getStatus"/></para></summary>
+		public static Task<Smsjobs_Status> Smsjobs_GetStatus(this Client client)
+			=> client.Invoke(new Smsjobs_GetStatus
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.getSmsJob"/></para></summary>
+		public static Task<SmsJob> Smsjobs_GetSmsJob(this Client client, string job_id)
+			=> client.Invoke(new Smsjobs_GetSmsJob
+			{
+				job_id = job_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.finishJob"/></para></summary>
+		public static Task<bool> Smsjobs_FinishJob(this Client client, string job_id, string error = null)
+			=> client.Invoke(new Smsjobs_FinishJob
+			{
+				flags = (Smsjobs_FinishJob.Flags)(error != null ? 0x1 : 0),
+				job_id = job_id,
+				error = error,
+			});
 	}
 }
 
@@ -7250,6 +7429,73 @@ namespace TL.Methods
 		public long hash;
 	}
 
+	[TLDef(0x4B00E066)]
+	public class Account_UpdateBusinessWorkHours : IMethod<bool>
+	{
+		public Flags flags;
+		[IfFlag(0)] public BusinessWorkHours business_work_hours;
+
+		[Flags] public enum Flags : uint
+		{
+			has_business_work_hours = 0x1,
+		}
+	}
+
+	[TLDef(0x9E6B131A)]
+	public class Account_UpdateBusinessLocation : IMethod<bool>
+	{
+		public Flags flags;
+		[IfFlag(1)] public InputGeoPoint geo_point;
+		[IfFlag(0)] public string address;
+
+		[Flags] public enum Flags : uint
+		{
+			has_address = 0x1,
+			has_geo_point = 0x2,
+		}
+	}
+
+	[TLDef(0x66CDAFC4)]
+	public class Account_UpdateBusinessGreetingMessage : IMethod<bool>
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputBusinessGreetingMessage message;
+
+		[Flags] public enum Flags : uint
+		{
+			has_message = 0x1,
+		}
+	}
+
+	[TLDef(0xA26A7FA5)]
+	public class Account_UpdateBusinessAwayMessage : IMethod<bool>
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputBusinessAwayMessage message;
+
+		[Flags] public enum Flags : uint
+		{
+			has_message = 0x1,
+		}
+	}
+
+	[TLDef(0x9C2D527D)]
+	public class Account_UpdateConnectedBot : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputUserBase bot;
+		public InputBusinessRecipients recipients;
+
+		[Flags] public enum Flags : uint
+		{
+			can_reply = 0x1,
+			deleted = 0x2,
+		}
+	}
+
+	[TLDef(0x4EA4C80F)]
+	public class Account_GetConnectedBots : IMethod<Account_ConnectedBots> { }
+
 	[TLDef(0x0D91A548)]
 	public class Users_GetUsers : IMethod<UserBase[]>
 	{
@@ -7604,7 +7850,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x280D096F)]
+	[TLDef(0xDFF8042C)]
 	public class Messages_SendMessage : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -7616,6 +7862,7 @@ namespace TL.Methods
 		[IfFlag(3)] public MessageEntity[] entities;
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
+		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
 
 		[Flags] public enum Flags : uint
 		{
@@ -7631,10 +7878,11 @@ namespace TL.Methods
 			noforwards = 0x4000,
 			update_stickersets_order = 0x8000,
 			invert_media = 0x10000,
+			has_quick_reply_shortcut = 0x20000,
 		}
 	}
 
-	[TLDef(0x72CCC23D)]
+	[TLDef(0x7BD66041)]
 	public class Messages_SendMedia : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -7647,6 +7895,7 @@ namespace TL.Methods
 		[IfFlag(3)] public MessageEntity[] entities;
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
+		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
 
 		[Flags] public enum Flags : uint
 		{
@@ -7661,10 +7910,11 @@ namespace TL.Methods
 			noforwards = 0x4000,
 			update_stickersets_order = 0x8000,
 			invert_media = 0x10000,
+			has_quick_reply_shortcut = 0x20000,
 		}
 	}
 
-	[TLDef(0xC661BBC4)]
+	[TLDef(0xD5039208)]
 	public class Messages_ForwardMessages : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -7675,6 +7925,7 @@ namespace TL.Methods
 		[IfFlag(9)] public int top_msg_id;
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
+		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
 
 		[Flags] public enum Flags : uint
 		{
@@ -7687,6 +7938,7 @@ namespace TL.Methods
 			drop_media_captions = 0x1000,
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
+			has_quick_reply_shortcut = 0x20000,
 		}
 	}
 
@@ -8075,7 +8327,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xF7BC68BA)]
+	[TLDef(0x3EBEE86A)]
 	public class Messages_SendInlineBotResult : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -8086,6 +8338,7 @@ namespace TL.Methods
 		public string id;
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
+		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
 
 		[Flags] public enum Flags : uint
 		{
@@ -8096,6 +8349,7 @@ namespace TL.Methods
 			has_schedule_date = 0x400,
 			hide_via = 0x800,
 			has_send_as = 0x2000,
+			has_quick_reply_shortcut = 0x20000,
 		}
 	}
 
@@ -8106,7 +8360,7 @@ namespace TL.Methods
 		public int id;
 	}
 
-	[TLDef(0x48F71778)]
+	[TLDef(0xDFD14005)]
 	public class Messages_EditMessage : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -8117,6 +8371,7 @@ namespace TL.Methods
 		[IfFlag(2)] public ReplyMarkup reply_markup;
 		[IfFlag(3)] public MessageEntity[] entities;
 		[IfFlag(15)] public DateTime schedule_date;
+		[IfFlag(17)] public int quick_reply_shortcut_id;
 
 		[Flags] public enum Flags : uint
 		{
@@ -8127,6 +8382,7 @@ namespace TL.Methods
 			has_media = 0x4000,
 			has_schedule_date = 0x8000,
 			invert_media = 0x10000,
+			has_quick_reply_shortcut_id = 0x20000,
 		}
 	}
 
@@ -8476,7 +8732,7 @@ namespace TL.Methods
 		public long hash;
 	}
 
-	[TLDef(0x456E8987)]
+	[TLDef(0x0C964709)]
 	public class Messages_SendMultiMedia : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -8485,6 +8741,7 @@ namespace TL.Methods
 		public InputSingleMedia[] multi_media;
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
+		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
 
 		[Flags] public enum Flags : uint
 		{
@@ -8497,6 +8754,7 @@ namespace TL.Methods
 			noforwards = 0x4000,
 			update_stickersets_order = 0x8000,
 			invert_media = 0x10000,
+			has_quick_reply_shortcut = 0x20000,
 		}
 	}
 
@@ -8730,8 +8988,8 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xF19ED96D)]
-	public class Messages_GetDialogFilters : IMethod<DialogFilterBase[]> { }
+	[TLDef(0xEFD48C89)]
+	public class Messages_GetDialogFilters : IMethod<Messages_DialogFilters> { }
 
 	[TLDef(0xA29CD42C)]
 	public class Messages_GetSuggestedDialogFilters : IMethod<DialogFilterSuggested[]> { }
@@ -9543,6 +9801,71 @@ namespace TL.Methods
 		public int msg_id;
 	}
 
+	[TLDef(0xD483F2A8)]
+	public class Messages_GetQuickReplies : IMethod<Messages_QuickReplies>
+	{
+		public long hash;
+	}
+
+	[TLDef(0x60331907)]
+	public class Messages_ReorderQuickReplies : IMethod<bool>
+	{
+		public int[] order;
+	}
+
+	[TLDef(0xF1D0FBD3)]
+	public class Messages_CheckQuickReplyShortcut : IMethod<bool>
+	{
+		public string shortcut;
+	}
+
+	[TLDef(0x5C003CEF)]
+	public class Messages_EditQuickReplyShortcut : IMethod<bool>
+	{
+		public int shortcut_id;
+		public string shortcut;
+	}
+
+	[TLDef(0x3CC04740)]
+	public class Messages_DeleteQuickReplyShortcut : IMethod<bool>
+	{
+		public int shortcut_id;
+	}
+
+	[TLDef(0x94A495C3)]
+	public class Messages_GetQuickReplyMessages : IMethod<Messages_MessagesBase>
+	{
+		public Flags flags;
+		public int shortcut_id;
+		[IfFlag(0)] public int[] id;
+		public long hash;
+
+		[Flags] public enum Flags : uint
+		{
+			has_id = 0x1,
+		}
+	}
+
+	[TLDef(0x33153AD4)]
+	public class Messages_SendQuickReplyMessages : IMethod<UpdatesBase>
+	{
+		public InputPeer peer;
+		public int shortcut_id;
+	}
+
+	[TLDef(0xE105E910)]
+	public class Messages_DeleteQuickReplyMessages : IMethod<UpdatesBase>
+	{
+		public int shortcut_id;
+		public int[] id;
+	}
+
+	[TLDef(0xFD2DDA49)]
+	public class Messages_ToggleDialogFilterTags : IMethod<bool>
+	{
+		public bool enabled;
+	}
+
 	[TLDef(0xEDD4882A)]
 	public class Updates_GetState : IMethod<Updates_State> { }
 
@@ -9838,6 +10161,12 @@ namespace TL.Methods
 
 	[TLDef(0xABCFA9FD)]
 	public class Help_GetPeerProfileColors : IMethod<Help_PeerColors>
+	{
+		public int hash;
+	}
+
+	[TLDef(0x49B30240)]
+	public class Help_GetTimezonesList : IMethod<Help_TimezonesList>
 	{
 		public int hash;
 	}
@@ -11506,5 +11835,47 @@ namespace TL.Methods
 	{
 		public InputPeer peer;
 		public InputUserBase user_id;
+	}
+
+	[TLDef(0x0EDC39D0)]
+	public class Smsjobs_IsEligibleToJoin : IMethod<Smsjobs_EligibilityToJoin> { }
+
+	[TLDef(0xA74ECE2D)]
+	public class Smsjobs_Join : IMethod<bool> { }
+
+	[TLDef(0x9898AD73)]
+	public class Smsjobs_Leave : IMethod<bool> { }
+
+	[TLDef(0x093FA0BF)]
+	public class Smsjobs_UpdateSettings : IMethod<bool>
+	{
+		public Flags flags;
+
+		[Flags] public enum Flags : uint
+		{
+			allow_international = 0x1,
+		}
+	}
+
+	[TLDef(0x10A698E8)]
+	public class Smsjobs_GetStatus : IMethod<Smsjobs_Status> { }
+
+	[TLDef(0x778D902F)]
+	public class Smsjobs_GetSmsJob : IMethod<SmsJob>
+	{
+		public string job_id;
+	}
+
+	[TLDef(0x4F1EBF24)]
+	public class Smsjobs_FinishJob : IMethod<bool>
+	{
+		public Flags flags;
+		public string job_id;
+		[IfFlag(0)] public string error;
+
+		[Flags] public enum Flags : uint
+		{
+			has_error = 0x1,
+		}
 	}
 }

@@ -6,7 +6,7 @@ namespace TL
 {
 	public static class Layer
 	{
-		public const int Version = 174;					// fetched 18/02/2024 15:53:49
+		public const int Version = 176;					// fetched 08/03/2024 11:12:00
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -145,7 +145,7 @@ namespace TL
 			[0x37C1011C] = null,//ChatPhotoEmpty
 			[0x1C6E1C11] = typeof(ChatPhoto),
 			[0x90A6CA84] = typeof(MessageEmpty),
-			[0x1E4C8A69] = typeof(Message),
+			[0xA66C7EFC] = typeof(Message),
 			[0x2B085862] = typeof(MessageService),
 			[0x3DED6320] = null,//MessageMediaEmpty
 			[0x695150D7] = typeof(MessageMediaPhoto),
@@ -232,7 +232,7 @@ namespace TL
 			[0xA518110D] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0xB9B12C6C] = typeof(UserFull),
+			[0x22FF3E85] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -394,6 +394,12 @@ namespace TL
 			[0xAEAF9E74] = typeof(UpdateSavedDialogPinned),
 			[0x686C85A6] = typeof(UpdatePinnedSavedDialogs),
 			[0x39C67432] = typeof(UpdateSavedReactionTags),
+			[0xF16269D4] = typeof(UpdateSmsJob),
+			[0xF9470AB2] = typeof(UpdateQuickReplies),
+			[0xF53DA717] = typeof(UpdateNewQuickReply),
+			[0x53E6F1EC] = typeof(UpdateDeleteQuickReply),
+			[0x3E050D0F] = typeof(UpdateQuickReplyMessage),
+			[0x566FE7CD] = typeof(UpdateDeleteQuickReplyMessages),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -945,9 +951,9 @@ namespace TL
 			[0x4899484E] = typeof(Messages_VotesList),
 			[0xF568028A] = typeof(BankCardOpenUrl),
 			[0x3E24E573] = typeof(Payments_BankCardData),
-			[0x7438F7E8] = typeof(DialogFilter),
+			[0x5FB5523B] = typeof(DialogFilter),
 			[0x363293AE] = null,//DialogFilterDefault
-			[0xD64A04A8] = typeof(DialogFilterChatlist),
+			[0x9FE28EA4] = typeof(DialogFilterChatlist),
 			[0x77744D4A] = typeof(DialogFilterSuggested),
 			[0xB637EDAF] = typeof(StatsDateRangeDays),
 			[0xCB43ACDE] = typeof(StatsAbsValueAndPrev),
@@ -1191,6 +1197,32 @@ namespace TL
 			[0x889B59EF] = null,//Messages_SavedReactionTagsNotModified
 			[0x3259950A] = typeof(Messages_SavedReactionTags),
 			[0x3BB842AC] = typeof(OutboxReadDate),
+			[0xDC8B44CF] = typeof(Smsjobs_EligibleToJoin),
+			[0x2AEE9191] = typeof(Smsjobs_Status),
+			[0xE6A1EEB8] = typeof(SmsJob),
+			[0x120B1AB9] = typeof(BusinessWeeklyOpen),
+			[0x8C92B098] = typeof(BusinessWorkHours),
+			[0xAC5C1AF7] = typeof(BusinessLocation),
+			[0x6F8B32AA] = typeof(InputBusinessRecipients),
+			[0x21108FF7] = typeof(BusinessRecipients),
+			[0xC9B9E2B9] = typeof(BusinessAwayMessageScheduleAlways),
+			[0xC3F2F501] = typeof(BusinessAwayMessageScheduleOutsideWorkHours),
+			[0xCC4D9ECC] = typeof(BusinessAwayMessageScheduleCustom),
+			[0x0194CB3B] = typeof(InputBusinessGreetingMessage),
+			[0xE519ABAB] = typeof(BusinessGreetingMessage),
+			[0x832175E0] = typeof(InputBusinessAwayMessage),
+			[0xEF156A5C] = typeof(BusinessAwayMessage),
+			[0xFF9289F5] = typeof(Timezone),
+			[0x970708CC] = null,//Help_TimezonesListNotModified
+			[0x7B74ED71] = typeof(Help_TimezonesList),
+			[0x0697102B] = typeof(QuickReply),
+			[0x24596D41] = typeof(InputQuickReplyShortcut),
+			[0x01190CF1] = typeof(InputQuickReplyShortcutId),
+			[0xC68D6695] = typeof(Messages_QuickReplies),
+			[0x5F91EB5B] = null,//Messages_QuickRepliesNotModified
+			[0xE7E999E7] = typeof(ConnectedBot),
+			[0x17D7F87B] = typeof(Account_ConnectedBots),
+			[0x2AD93719] = typeof(Messages_DialogFilters),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),
@@ -1315,6 +1347,8 @@ namespace TL
 			[typeof(BotApp)]                         = 0x5DA674B7, //botAppNotModified
 			[typeof(Help_PeerColors)]                = 0x2BA1F5CE, //help.peerColorsNotModified
 			[typeof(Messages_SavedReactionTags)]     = 0x889B59EF, //messages.savedReactionTagsNotModified
+			[typeof(Help_TimezonesList)]             = 0x970708CC, //help.timezonesListNotModified
+			[typeof(Messages_QuickReplies)]          = 0x5F91EB5B, //messages.quickRepliesNotModified
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}
