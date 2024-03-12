@@ -16,26 +16,23 @@ namespace TL
 	public interface IPeerResolver { IPeerInfo UserOrChat(Peer peer); }
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class TLDefAttribute : Attribute
+	public class TLDefAttribute(uint ctorNb) : Attribute
 	{
-		public readonly uint CtorNb;
-		public TLDefAttribute(uint ctorNb) => CtorNb = ctorNb;
+		public readonly uint CtorNb = ctorNb;
 		public bool inheritBefore;
 	}
 
 	[AttributeUsage(AttributeTargets.Field)]
-	public class IfFlagAttribute : Attribute
+	public class IfFlagAttribute(int bit) : Attribute
 	{
-		public readonly int Bit;
-		public IfFlagAttribute(int bit) => Bit = bit;
+		public readonly int Bit = bit;
 	}
 
-	public class RpcException : WTelegram.WTException
+	public class RpcException(int code, string message, int x = -1) : WTelegram.WTException(message)
 	{
-		public readonly int Code;
+		public readonly int Code = code;
 		/// <summary>The value of X in the message, -1 if no variable X was found</summary>
-		public readonly int X;
-		public RpcException(int code, string message, int x = -1) : base(message) { Code = code; X = x; }
+		public readonly int X = x;
 		public override string ToString() { var str = base.ToString(); return str.Insert(str.IndexOf(':') + 1, " " + Code); }
 	}
 
@@ -372,13 +369,12 @@ namespace TL
 	}
 
 	[TLDef(0x5BB8E511)] //message#5bb8e511 msg_id:long seqno:int bytes:int body:Object = Message
-	public class _Message : IObject
+	public class _Message(long msgId, int seqNo, IObject obj) : IObject
 	{
-		public _Message(long msgId, int seqNo, IObject obj) { msg_id = msgId; seq_no = seqNo; body = obj; }
-		public long msg_id;
-		public int seq_no;
+		public long msg_id = msgId;
+		public int seq_no = seqNo;
 		public int bytes;
-		public IObject body;
+		public IObject body = obj;
 	}
 
 	[TLDef(0x73F1F8DC)] //msg_container#73f1f8dc messages:vector<%Message> = MessageContainer

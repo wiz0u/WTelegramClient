@@ -235,11 +235,10 @@ namespace WTelegram
 		internal static string GetAppVersion()
 			=> (Assembly.GetEntryAssembly() ?? Array.Find(AppDomain.CurrentDomain.GetAssemblies(), a => a.EntryPoint != null))?.GetName().Version.ToString() ?? "0.0";
 
-		public class IndirectStream : Stream
+		public class IndirectStream(Stream innerStream) : Stream
 		{
-			public IndirectStream(Stream innerStream) => _innerStream = innerStream;
 			public long? ContentLength;
-			protected readonly Stream _innerStream;
+			protected readonly Stream _innerStream = innerStream;
 			public override bool CanRead => _innerStream.CanRead;
 			public override bool CanSeek => ContentLength.HasValue || _innerStream.CanSeek;
 			public override bool CanWrite => _innerStream.CanWrite;

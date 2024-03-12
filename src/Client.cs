@@ -815,7 +815,7 @@ namespace WTelegram
 					_paddedMode = true;
 					secret = secret[1..17];
 				}
-				else if (secret.Length != 16) throw new ArgumentException("Invalid/unsupported secret", nameof(secret));
+				else if (secret.Length != 16) throw new ArgumentException("Invalid/unsupported secret");
 				Helpers.Log(2, $"Connecting to DC {dcId} via MTProxy {server}:{port}...");
 				_tcpClient = await TcpHandler(server, port);
 				_networkStream = _tcpClient.GetStream();
