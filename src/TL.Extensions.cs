@@ -24,13 +24,51 @@ namespace TL
 							if (user != null)
 								if (!user.flags.HasFlag(User.Flags.min) || !_users.TryGetValue(user.id, out var prevUser) || prevUser.flags.HasFlag(User.Flags.min))
 									_users[user.id] = user;
+								else
+								{
+									const User.Flags good_min_flags = (User.Flags)0x55A2201E;
+									const User.Flags2 good_min_flags2 = (User.Flags2)0x701;
+									prevUser.flags = (prevUser.flags & ~good_min_flags) | (user.flags & good_min_flags);
+									prevUser.flags2 = (prevUser.flags2 & ~good_min_flags2) | (user.flags2 & good_min_flags2);
+									prevUser.first_name = user.first_name;
+									prevUser.last_name = user.last_name;
+									prevUser.username = user.username;
+									prevUser.phone = user.phone;
+									if (prevUser.flags.HasFlag(User.Flags.apply_min_photo) && user.phone != null)
+									{
+										prevUser.photo = user.photo;
+										prevUser.flags |= User.Flags.has_photo;
+									}
+									prevUser.emoji_status = user.emoji_status;
+									prevUser.usernames = user.usernames;
+									prevUser.color = user.color;
+									prevUser.profile_color = user.profile_color;
+									_users[user.id] = prevUser;
+								}
 				if (_chats != null)
 					lock (_chats)
 						foreach (var kvp in chats)
 							if (kvp.Value is not Channel channel)
 								_chats[kvp.Key] = kvp.Value;
-							else if (!channel.flags.HasFlag(Channel.Flags.min) || !_chats.TryGetValue(channel.id, out var prevChat) || prevChat is not Channel prevChannel || prevChannel.flags.HasFlag(Channel.Flags.min))
+							else if (!channel.flags.HasFlag(Channel.Flags.min) || !_chats.TryGetValue(kvp.Key, out var prevChat) || prevChat is not Channel prevChannel || prevChannel.flags.HasFlag(Channel.Flags.min))
 								_chats[kvp.Key] = channel;
+							else
+							{
+								const Channel.Flags good_min_flags = (Channel.Flags)0x7FDC09E0;
+								const Channel.Flags2 good_min_flags2 = (Channel.Flags2)0x781;
+								prevChannel.flags = (prevChannel.flags & ~good_min_flags) | (channel.flags & good_min_flags);
+								prevChannel.flags2 = (prevChannel.flags2 & ~good_min_flags2) | (channel.flags2 & good_min_flags2);
+								prevChannel.title = channel.title;
+								prevChannel.username = channel.username;
+								prevChannel.photo = channel.photo;
+								prevChannel.default_banned_rights = channel.default_banned_rights;
+								prevChannel.usernames = channel.usernames;
+								prevChannel.color = channel.color;
+								prevChannel.profile_color = channel.profile_color;
+								prevChannel.emoji_status = channel.emoji_status;
+								prevChannel.level = channel.level;
+								_chats[kvp.Key] = prevChannel;
+							}
 				return null;
 			}
 		}

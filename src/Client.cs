@@ -1079,6 +1079,7 @@ namespace WTelegram
 						self.phone == string.Concat((phone_number = Config("phone_number")).Where(char.IsDigit)))
 					{
 						_session.UserId = _dcSession.UserId = self.id;
+						RaiseUpdate(self);
 						return User = self;
 					}
 					var mismatch = $"Current logged user {self.id} mismatched user_id or phone_number";
@@ -1242,11 +1243,12 @@ namespace WTelegram
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public User LoginAlreadyDone(Auth_AuthorizationBase authorization)
 		{
-			if (authorization is not Auth_Authorization { user: User user })
+			if (authorization is not Auth_Authorization { user: User self })
 				throw new WTException("Failed to get Authorization: " + authorization.GetType().Name);
-			_session.UserId = _dcSession.UserId = user.id;
+			_session.UserId = _dcSession.UserId = self.id;
 			lock (_session) _session.Save();
-			return User = user;
+			RaiseUpdate(self);
+			return User = self;
 		}
 
 		private MsgsAck CheckMsgsToAck()
