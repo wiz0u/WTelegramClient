@@ -157,7 +157,6 @@ namespace WTelegram
 			else
 				updates = await this.Messages_SendMedia(peer, media, text, random_id, entities: entities,
 					reply_to: reply_to_msg_id == 0 ? null : new InputReplyToMessage { reply_to_msg_id = reply_to_msg_id }, schedule_date: schedule_date == default ? null : schedule_date);
-			int msgId = -1;
 			if (updates is UpdateShortSentMessage sent)
 				return new Message
 				{
@@ -167,6 +166,7 @@ namespace WTelegram
 					from_id = peer is InputPeerSelf ? null : new PeerUser { user_id = _session.UserId },
 					peer_id = InputToPeer(peer)
 				};
+			int msgId = -1;
 			foreach (var update in updates.UpdateList)
 			{
 				switch (update)
