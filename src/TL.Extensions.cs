@@ -25,24 +25,35 @@ namespace TL
 								if (!user.flags.HasFlag(User.Flags.min) || !_users.TryGetValue(user.id, out var prevUser) || prevUser.flags.HasFlag(User.Flags.min))
 									_users[user.id] = user;
 								else
-								{
-									const User.Flags good_min_flags = (User.Flags)0x55A2201E;
-									const User.Flags2 good_min_flags2 = (User.Flags2)0x701;
-									prevUser.flags = (prevUser.flags & ~good_min_flags) | (user.flags & good_min_flags);
-									prevUser.flags2 = (prevUser.flags2 & ~good_min_flags2) | (user.flags2 & good_min_flags2);
-									prevUser.first_name = user.first_name;
-									prevUser.last_name = user.last_name;
-									prevUser.username = user.username;
-									prevUser.phone = user.phone;
-									if (prevUser.flags.HasFlag(User.Flags.apply_min_photo) && user.phone != null)
+								{	// update previously full user from min user:
+									const User.Flags updated_flags = (User.Flags)0x5DAFE000;
+									const User.Flags2 updated_flags2 = (User.Flags2)0x711;
+									// tdlib updated flags: deleted | bot | bot_chat_history | bot_nochats | verified | bot_inline_geo
+									//  | support | scam | fake | bot_attach_menu | premium
+									// tdesktop non-updated flags:    bot | bot_chat_history | bot_nochats | bot_attach_menu
+									// updated flags2:    stories_unavailable (tdlib) | contact_require_premium (tdesktop)
+									prevUser.flags = (prevUser.flags & ~updated_flags) | (user.flags & updated_flags);
+									prevUser.flags2 = (prevUser.flags2 & ~updated_flags2) | (user.flags2 & updated_flags2);
+									prevUser.first_name ??= user.first_name;				// tdlib: not updated ; tdesktop: updated only if unknown
+									prevUser.last_name ??= user.last_name;					// tdlib: not updated ; tdesktop: updated only if unknown
+									//prevUser.username ??= user.username;					// tdlib/tdesktop: not updated
+									prevUser.phone ??= user.phone;							// tdlib: updated only if unknown ; tdesktop: not updated
+									if (prevUser.flags.HasFlag(User.Flags.apply_min_photo) && user.photo != null)
 									{
-										prevUser.photo = user.photo;
+										prevUser.photo = user.photo;						// tdlib/tdesktop: updated on apply_min_photo
 										prevUser.flags |= User.Flags.has_photo;
 									}
-									prevUser.emoji_status = user.emoji_status;
-									prevUser.usernames = user.usernames;
-									prevUser.color = user.color;
-									prevUser.profile_color = user.profile_color;
+									prevUser.bot_info_version = user.bot_info_version;		// tdlib: updated ; tdesktop: not updated
+									prevUser.restriction_reason = user.restriction_reason;	// tdlib: updated ; tdesktop: not updated
+									prevUser.bot_inline_placeholder = user.bot_inline_placeholder;// tdlib: updated ; tdesktop: ignored
+									if (user.lang_code != null)
+										prevUser.lang_code = user.lang_code;				// tdlib: updated if present ; tdesktop: ignored
+									prevUser.emoji_status = user.emoji_status;				// tdlib/tdesktop: updated
+									prevUser.usernames = user.usernames;					// tdlib: not updated ; tdesktop: updated
+									if (user.stories_max_id > 0)
+										prevUser.stories_max_id = user.stories_max_id;		// tdlib: updated if > 0 ; tdesktop: not updated
+									prevUser.color = user.color;							// tdlib/tdesktop: updated
+									prevUser.profile_color = user.profile_color;			// tdlib/tdesktop: unimplemented yet
 									_users[user.id] = prevUser;
 								}
 				if (_chats != null)
@@ -53,20 +64,26 @@ namespace TL
 							else if (!channel.flags.HasFlag(Channel.Flags.min) || !_chats.TryGetValue(kvp.Key, out var prevChat) || prevChat is not Channel prevChannel || prevChannel.flags.HasFlag(Channel.Flags.min))
 								_chats[kvp.Key] = channel;
 							else
-							{
-								const Channel.Flags good_min_flags = (Channel.Flags)0x7FDC09E0;
-								const Channel.Flags2 good_min_flags2 = (Channel.Flags2)0x781;
-								prevChannel.flags = (prevChannel.flags & ~good_min_flags) | (channel.flags & good_min_flags);
-								prevChannel.flags2 = (prevChannel.flags2 & ~good_min_flags2) | (channel.flags2 & good_min_flags2);
-								prevChannel.title = channel.title;
-								prevChannel.username = channel.username;
-								prevChannel.photo = channel.photo;
-								prevChannel.default_banned_rights = channel.default_banned_rights;
-								prevChannel.usernames = channel.usernames;
-								prevChannel.color = channel.color;
-								prevChannel.profile_color = channel.profile_color;
-								prevChannel.emoji_status = channel.emoji_status;
-								prevChannel.level = channel.level;
+							{   // update previously full channel from min channel:
+								const Channel.Flags updated_flags = (Channel.Flags)0x7FDC0BE0;
+								const Channel.Flags2 updated_flags2 = (Channel.Flags2)0x781;
+								// tdesktop updated flags: broadcast | verified | megagroup | signatures | scam | has_link | slowmode_enabled
+								//	| call_active | call_not_empty | fake | gigagroup | noforwards | join_to_send | join_request | forum
+								// tdlib nonupdated flags: broadcast | signatures | call_active | call_not_empty | noforwards
+								prevChannel.flags = (prevChannel.flags & ~updated_flags) | (channel.flags & updated_flags);
+								prevChannel.flags2 = (prevChannel.flags2 & ~updated_flags2) | (channel.flags2 & updated_flags2);
+								prevChannel.title = channel.title;									// tdlib/tdesktop: updated
+								prevChannel.username = channel.username;							// tdlib/tdesktop: updated
+								prevChannel.photo = channel.photo;									// tdlib: updated if not banned ; tdesktop: updated
+								prevChannel.restriction_reason = channel.restriction_reason;		// tdlib: updated ; tdesktop: not updated
+								prevChannel.default_banned_rights = channel.default_banned_rights;  // tdlib/tdesktop: updated
+								if (channel.participants_count > 0)
+									prevChannel.participants_count = channel.participants_count;	// tdlib/tdesktop: updated if present
+								prevChannel.usernames = channel.usernames;							// tdlib/tdesktop: updated
+								prevChannel.color = channel.color;									// tdlib: not updated ; tdesktop: updated
+								prevChannel.profile_color = channel.profile_color;					// tdlib/tdesktop: ignored
+								prevChannel.emoji_status = channel.emoji_status;					// tdlib: not updated ; tdesktop: updated
+								prevChannel.level = channel.level;									// tdlib: not updated ; tdesktop: updated
 								_chats[kvp.Key] = prevChannel;
 							}
 				return null;

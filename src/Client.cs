@@ -1041,6 +1041,7 @@ namespace WTelegram
 					if (self.id == long.Parse(botToken.Split(':')[0]))
 					{
 						_session.UserId = _dcSession.UserId = self.id;
+						RaiseUpdate(self);
 						return User = self;
 					}
 					Helpers.Log(3, $"Current logged user {self.id} mismatched bot_token. Logging out and in...");
