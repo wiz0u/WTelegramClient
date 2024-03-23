@@ -383,7 +383,7 @@ namespace WTelegram
 				if (((dml.out_seq_no ^ dml.in_seq_no) & 1) != 1 || ((dml.out_seq_no ^ chat.in_seq_no) & 1) != 0) throw new WTException("Invalid seq_no parities");
 				if (dml.layer > chat.remoteLayer) chat.remoteLayer = dml.layer;
 				//Debug.WriteLine($"<\t{dml.in_seq_no}\t{dml.out_seq_no}\t\t\t\t\t\texpected:{chat.out_seq_no}/{chat.in_seq_no + 2}");
-				if (dml.out_seq_no <= chat.in_seq_no) return Array.Empty<DecryptedMessageBase>(); // already received message
+				if (dml.out_seq_no <= chat.in_seq_no) return []; // already received message
 				var pendingMsgSeqNo = chat.pendingMsgs.Keys;
 				if (fillGaps && dml.out_seq_no > chat.in_seq_no + 2)
 				{
@@ -393,12 +393,12 @@ namespace WTelegram
 					if (dml.out_seq_no > lastPending + 2) // send request to resend missing gap asynchronously
 						_ = SendMessage(chat.ChatId, new TL.Layer23.DecryptedMessageService { random_id = Helpers.RandomLong(),
 							action = new TL.Layer23.DecryptedMessageActionResend { start_seq_no = lastPending + 2, end_seq_no = dml.out_seq_no - 2 } });
-					return Array.Empty<DecryptedMessageBase>(); 
+					return []; 
 				}
 				chat.in_seq_no = dml.out_seq_no;
 				if (pendingMsgSeqNo.Count == 0 || pendingMsgSeqNo[0] != dml.out_seq_no + 2)
-					if (HandleAction(chat, dml.message.Action)) return Array.Empty<DecryptedMessageBase>(); 
-					else return new[] { dml.message };
+					if (HandleAction(chat, dml.message.Action)) return []; 
+					else return [dml.message];
 				else // we have pendingMsgs completing the sequence in order
 				{
 					var list = new List<DecryptedMessageBase>();
