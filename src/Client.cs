@@ -76,6 +76,7 @@ namespace WTelegram
 		private CancellationTokenSource _cts;
 		private int _reactorReconnects = 0;
 		private const string ConnectionShutDown = "Could not read payload length : Connection shut down";
+		private const long Ticks5Secs = 5 * TimeSpan.TicksPerSecond;
 		private readonly SemaphoreSlim _parallelTransfers = new(10); // max parallel part uploads/downloads
 		private readonly SHA256 _sha256 = SHA256.Create();
 		private readonly SHA256 _sha256Recv = SHA256.Create();
@@ -440,7 +441,12 @@ namespace WTelegram
 				if (_lastRecvMsgId == 0) // resync ServerTicksOffset on first message
 					_dcSession.ServerTicksOffset = (msgId >> 32) * 10000000 - utcNow.Ticks + 621355968000000000L;
 				var msgStamp = MsgIdToStamp(_lastRecvMsgId = msgId);
-
+				long deltaTicks = (msgStamp - utcNow).Ticks;
+				if (deltaTicks is > 0)
+					if (deltaTicks < Ticks5Secs) // resync if next message is less than 5 seconds in the future
+						_dcSession.ServerTicksOffset += deltaTicks;
+					else if (_dcSession.ServerTicksOffset < -Ticks5Secs && deltaTicks + _dcSession.ServerTicksOffset < 0)
+						_dcSession.ServerTicksOffset += deltaTicks;
 				if (serverSalt != _dcSession.Salt && serverSalt != _dcSession.OldSalt && serverSalt != _dcSession.Salts?.Values.ElementAtOrDefault(1))
 				{
 					Helpers.Log(3, $"{_dcSession.DcID}>Server salt has changed: {_dcSession.Salt:X} -> {serverSalt:X}");
@@ -453,7 +459,7 @@ namespace WTelegram
 				if ((seqno & 1) != 0) lock (_msgsToAck) _msgsToAck.Add(msgId);
 
 				var ctorNb = reader.ReadUInt32();
-				if (ctorNb != Layer.BadMsgCtor && (msgStamp - utcNow).Ticks / TimeSpan.TicksPerSecond is > 30 or < -300)
+				if (ctorNb != Layer.BadMsgCtor && deltaTicks / TimeSpan.TicksPerSecond is > 30 or < -300)
 				{   // msg_id values that belong over 30 seconds in the future or over 300 seconds in the past are to be ignored.
 					Helpers.Log(1, $"{_dcSession.DcID}>Ignoring  0x{ctorNb:X8} because of wrong timestamp    {msgStamp:u} - {utcNow:u} Δ={new TimeSpan(_dcSession.ServerTicksOffset):c}");
 					return null;
