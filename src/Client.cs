@@ -578,8 +578,11 @@ namespace WTelegram
 					else
 					{
 						Helpers.Log(1, $"             → {result?.GetType().Name,-37} #{(short)msgId.GetHashCode():X4}");
-						if (OnOwnUpdate != null && result is UpdatesBase updates)
-							RaiseOwnUpdate(updates);
+						if (OnOwnUpdate != null)
+							if (result is UpdatesBase updates)
+								RaiseOwnUpdate(updates);
+							else if (result is Messages_AffectedMessages affected)
+								RaiseOwnUpdate(new UpdateShort { update = new UpdateAffectedMessages { affected = affected }, date = MsgIdToStamp(_lastRecvMsgId) });
 					}
 
 					rpc.tcs.SetResult(result);
@@ -665,6 +668,7 @@ namespace WTelegram
 					break;
 				case Pong pong:
 					SetResult(pong.msg_id, pong);
+					RaiseUpdate(pong);
 					break;
 				case FutureSalts futureSalts:
 					SetResult(futureSalts.req_msg_id, futureSalts);
@@ -724,7 +728,7 @@ namespace WTelegram
 						rpc.tcs.SetException(new WTException($"BadMsgNotification {badMsgNotification.error_code}"));
 					}
 					else
-						RaiseUpdate(obj);
+						RaiseUpdate(badMsgNotification);
 					break;
 				default:
 					RaiseUpdate(obj);

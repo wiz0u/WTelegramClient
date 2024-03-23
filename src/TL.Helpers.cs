@@ -577,6 +577,7 @@ namespace TL
 		public abstract Update[] OtherUpdates { get; }
 		public abstract bool Final { get; }
 		public abstract int Timeout { get; }
+		public abstract int Pts { get; }
 	}
 	partial class Updates_ChannelDifferenceEmpty
 	{
@@ -584,6 +585,7 @@ namespace TL
 		public override Update[] OtherUpdates => [];
 		public override bool Final => flags.HasFlag(Flags.final);
 		public override int Timeout => timeout;
+		public override int Pts => pts;
 	}
 	partial class Updates_ChannelDifference
 	{
@@ -591,6 +593,7 @@ namespace TL
 		public override Update[] OtherUpdates => other_updates;
 		public override bool Final => flags.HasFlag(Flags.final);
 		public override int Timeout => timeout;
+		public override int Pts => pts;
 	}
 	partial class Updates_ChannelDifferenceTooLong
 	{
@@ -598,6 +601,7 @@ namespace TL
 		public override Update[] OtherUpdates => null;
 		public override bool Final => flags.HasFlag(Flags.final);
 		public override int Timeout => timeout;
+		public override int Pts => dialog is Dialog d ? d.pts : 0;
 	}
 
 	partial class ChannelParticipantBase
