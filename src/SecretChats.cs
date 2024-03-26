@@ -21,6 +21,35 @@ namespace WTelegram
 		int RemoteLayer { get; }
 	}
 
+	[TLDef(0xFEFEFEFE)]
+	internal sealed partial class SecretChat : IObject, ISecretChat
+	{
+		[Flags] public enum Flags : uint { requestChat = 1, renewKey = 2, acceptKey = 4, originator = 8, commitKey = 16 }
+		public Flags flags;
+		public InputEncryptedChat peer = new();
+		public byte[] salt;             // contains future/discarded authKey during acceptKey/commitKey
+		public byte[] authKey;
+		public DateTime key_created;
+		public int key_useCount;
+		public long participant_id;
+		public int remoteLayer = 46;
+		public int in_seq_no = -2, out_seq_no = 0;
+		public long exchange_id;
+
+		public int ChatId => peer.chat_id;
+		public long RemoteUserId => participant_id;
+		public InputEncryptedChat Peer => peer;
+		public int RemoteLayer => remoteLayer;
+
+		internal long key_fingerprint;
+		internal SortedList<int, TL.Layer23.DecryptedMessageLayer> pendingMsgs = [];
+		internal void Discarded() // clear out fields for more security
+		{
+			Array.Clear(authKey, 0, authKey.Length);
+			key_fingerprint = participant_id = peer.access_hash = peer.chat_id = in_seq_no = out_seq_no = remoteLayer = 0;
+		}
+	}
+
 	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles")]
 	public sealed class SecretChats : IDisposable
 	{
@@ -35,35 +64,6 @@ namespace WTelegram
 		private readonly SHA1 sha1 = SHA1.Create();
 		private readonly Random random = new();
 		private const int ThresholdPFS = 100;
-		
-		[TLDef(0xFEFEFEFE)]
-		internal sealed class SecretChat : IObject, ISecretChat
-		{
-			[Flags] public enum Flags : uint { requestChat = 1, renewKey = 2, acceptKey = 4, originator = 8, commitKey = 16 }
-			public Flags flags;
-			public InputEncryptedChat peer = new();
-			public byte[] salt;				// contains future/discarded authKey during acceptKey/commitKey
-			public byte[] authKey;
-			public DateTime key_created;
-			public int key_useCount;
-			public long participant_id;
-			public int remoteLayer = 46;
-			public int in_seq_no = -2, out_seq_no = 0;
-			public long exchange_id;
-
-			public int ChatId => peer.chat_id;
-			public long RemoteUserId => participant_id;
-			public InputEncryptedChat Peer => peer;
-			public int RemoteLayer => remoteLayer;
-
-			internal long key_fingerprint;
-			internal SortedList<int, TL.Layer23.DecryptedMessageLayer> pendingMsgs = [];
-			internal void Discarded() // clear out fields for more security
-			{
-				Array.Clear(authKey, 0, authKey.Length);
-				key_fingerprint = participant_id = peer.access_hash = peer.chat_id = in_seq_no = out_seq_no = remoteLayer = 0;
-			}
-		}
 
 		/// <summary>Instantiate a Secret Chats manager</summary>
 		/// <param name="client">The Telegram client</param>

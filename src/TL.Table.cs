@@ -25,7 +25,7 @@ namespace TL
 			[0x73F1F8DC] = typeof(MsgContainer),
 			[0xE06046B2] = typeof(MsgCopy),
 			[0x3072CFA1] = typeof(GzipPacked),
-			[0xFEFEFEFE] = typeof(WTelegram.SecretChats.SecretChat),
+			[0xFEFEFEFE] = typeof(WTelegram.SecretChat),
 			// from TL.MTProto:
 			[0x05162463] = typeof(ResPQ),
 			[0x83C95AEC] = typeof(PQInnerData),
