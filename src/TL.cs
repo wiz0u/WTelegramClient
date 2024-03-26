@@ -16,19 +16,19 @@ namespace TL
 	public interface IPeerResolver { IPeerInfo UserOrChat(Peer peer); }
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class TLDefAttribute(uint ctorNb) : Attribute
+	public sealed class TLDefAttribute(uint ctorNb) : Attribute
 	{
 		public readonly uint CtorNb = ctorNb;
 		public bool inheritBefore;
 	}
 
 	[AttributeUsage(AttributeTargets.Field)]
-	public class IfFlagAttribute(int bit) : Attribute
+	public sealed class IfFlagAttribute(int bit) : Attribute
 	{
 		public readonly int Bit = bit;
 	}
 
-	public class RpcException(int code, string message, int x = -1) : WTelegram.WTException(message)
+	public sealed class RpcException(int code, string message, int x = -1) : WTelegram.WTException(message)
 	{
 		public readonly int Code = code;
 		/// <summary>The value of X in the message, -1 if no variable X was found</summary>
@@ -36,7 +36,7 @@ namespace TL
 		public override string ToString() { var str = base.ToString(); return str.Insert(str.IndexOf(':') + 1, " " + Code); }
 	}
 
-	public class ReactorError : IObject
+	public sealed partial class ReactorError : IObject
 	{
 		public Exception Exception;
 	}
@@ -352,7 +352,7 @@ namespace TL
 		public static implicit operator byte[](Int256 int256) => int256.raw;
 	}
 
-	public class UpdateAffectedMessages : Update // auto-generated for OnOwnUpdate in case of such API call result
+	public sealed partial class UpdateAffectedMessages : Update // auto-generated for OnOwnUpdate in case of such API call result
 	{
 		public Messages_AffectedMessages affected;
 		public override (long, int, int) GetMBox() => (0, affected.pts, affected.pts_count);
@@ -361,21 +361,21 @@ namespace TL
 	// Below TL types are commented "parsed manually" from https://github.com/telegramdesktop/tdesktop/blob/dev/Telegram/Resources/tl/mtproto.tl
 
 	[TLDef(0x7A19CB76)] //RSA_public_key#7a19cb76 n:bytes e:bytes = RSAPublicKey
-	public class RSAPublicKey : IObject
+	public sealed partial class RSAPublicKey : IObject
 	{
 		public byte[] n;
 		public byte[] e;
 	}
 
 	[TLDef(0xF35C6D01)] //rpc_result#f35c6d01 req_msg_id:long result:Object = RpcResult
-	public class RpcResult : IObject
+	public sealed partial class RpcResult : IObject
 	{
 		public long req_msg_id;
 		public object result;
 	}
 
 	[TLDef(0x5BB8E511)] //message#5bb8e511 msg_id:long seqno:int bytes:int body:Object = Message
-	public class _Message(long msgId, int seqNo, IObject obj) : IObject
+	public sealed partial class _Message(long msgId, int seqNo, IObject obj) : IObject
 	{
 		public long msg_id = msgId;
 		public int seq_no = seqNo;
@@ -384,10 +384,10 @@ namespace TL
 	}
 
 	[TLDef(0x73F1F8DC)] //msg_container#73f1f8dc messages:vector<%Message> = MessageContainer
-	public class MsgContainer : IObject { public _Message[] messages; }
+	public sealed partial class MsgContainer : IObject { public _Message[] messages; }
 	[TLDef(0xE06046B2)] //msg_copy#e06046b2 orig_message:Message = MessageCopy
-	public class MsgCopy : IObject { public _Message orig_message; }
+	public sealed partial class MsgCopy : IObject { public _Message orig_message; }
 
 	[TLDef(0x3072CFA1)] //gzip_packed#3072cfa1 packed_data:bytes = Object
-	public class GzipPacked : IObject { public byte[] packed_data; }
+	public sealed partial class GzipPacked : IObject { public byte[] packed_data; }
 }

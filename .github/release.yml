@@ -1,7 +1,7 @@
 pr: none
 trigger: none
 
-name: 3.7.$(Rev:r)
+name: 4.0.0
 
 pool:
   vmImage: ubuntu-latest

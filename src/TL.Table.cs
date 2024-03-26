@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace TL
 {
-	public static class Layer
+	public static partial class Layer
 	{
 		public const int Version = 176;					// fetched 08/03/2024 11:12:00
 		internal const int SecretChats = 144;
@@ -1325,7 +1325,7 @@ namespace TL
 			[typeof(UrlAuthResult)]                  = 0xA9D6DB1F, //urlAuthResultDefault
 			[typeof(ChannelLocation)]                = 0xBFB5AD8B, //channelLocationEmpty
 			[typeof(Account_Themes)]                 = 0xF41EB622, //account.themesNotModified
-			[typeof(DialogFilter)]                   = 0x363293AE, //dialogFilterDefault
+			[typeof(DialogFilterBase)]               = 0x363293AE, //dialogFilterDefault
 			[typeof(Help_CountriesList)]             = 0x93CC1F32, //help.countriesListNotModified
 			[typeof(BotCommandScope)]                = 0x2F6CB2AB, //botCommandScopeDefault
 			[typeof(Messages_SponsoredMessages)]     = 0x1839490F, //messages.sponsoredMessagesEmpty
@@ -1340,7 +1340,6 @@ namespace TL
 			[typeof(ChatReactions)]                  = 0xEAFC32BC, //chatReactionsNone
 			[typeof(Messages_Reactions)]             = 0xB06FDBDF, //messages.reactionsNotModified
 			// from TL.Secret:
-			[typeof(DialogFilterBase)]               = 0x363293AE, //dialogFilterDefault
 			[typeof(EmojiList)]                      = 0x481EADFA, //emojiListNotModified
 			[typeof(Messages_EmojiGroups)]           = 0x6FB4AD87, //messages.emojiGroupsNotModified
 			[typeof(Help_AppConfig)]                 = 0x7CDE641D, //help.appConfigNotModified

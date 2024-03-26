@@ -37,7 +37,7 @@ namespace WTelegram
 		private const int ThresholdPFS = 100;
 		
 		[TLDef(0xFEFEFEFE)]
-		internal class SecretChat : IObject, ISecretChat
+		internal sealed class SecretChat : IObject, ISecretChat
 		{
 			[Flags] public enum Flags : uint { requestChat = 1, renewKey = 2, acceptKey = 4, originator = 8, commitKey = 16 }
 			public Flags flags;

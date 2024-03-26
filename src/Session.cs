@@ -11,7 +11,7 @@ using System.Text.Json;
 
 namespace WTelegram
 {
-	internal class Session : IDisposable
+	internal sealed partial class Session : IDisposable
 	{
 		public int ApiId;
 		public long UserId;
@@ -19,7 +19,7 @@ namespace WTelegram
 		public Dictionary<int, DCSession> DCSessions = [];
 		public TL.DcOption[] DcOptions;
 
-		public class DCSession
+		public sealed class DCSession
 		{
 			public long Id;
 			public long AuthKeyID;
@@ -158,7 +158,7 @@ namespace WTelegram
 		}
 	}
 
-	internal class SessionStore : FileStream // This class is designed to be high-performance and failure-resilient with Writes                  (but when you're Andrei, you can't understand that)
+	internal sealed class SessionStore : FileStream // This class is designed to be high-performance and failure-resilient with Writes                  (but when you're Andrei, you can't understand that)
 	{
 		public override long Length { get; }
 		public override long Position { get => base.Position; set { } }
@@ -192,7 +192,7 @@ namespace WTelegram
 		}
 	}
 
-	internal class ActionStore(byte[] initial, Action<byte[]> save) : MemoryStream(initial ?? [])
+	internal sealed class ActionStore(byte[] initial, Action<byte[]> save) : MemoryStream(initial ?? [])
 	{
 		public override void Write(byte[] buffer, int offset, int count) => save(buffer[offset..(offset + count)]);
 		public override void SetLength(long value) { }

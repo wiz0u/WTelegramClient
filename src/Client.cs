@@ -625,7 +625,7 @@ namespace WTelegram
 			return new RpcResult { req_msg_id = msgId, result = result };
 		}
 
-		class Rpc
+		private sealed class Rpc
 		{
 			internal Type type;
 			internal TaskCompletionSource<object> tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);

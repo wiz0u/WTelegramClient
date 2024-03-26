@@ -319,7 +319,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 		}
 
 #if OBFUSCATION
-		internal class AesCtr(byte[] key, byte[] ivec) : IDisposable
+		internal sealed class AesCtr(byte[] key, byte[] ivec) : IDisposable
 		{
 			readonly ICryptoTransform _encryptor = AesECB.CreateEncryptor(key, null);
 			readonly byte[] _ecount = new byte[16];
@@ -518,7 +518,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 #endif
 	}
 
-	internal class AES_IGE_Stream : Helpers.IndirectStream
+	internal sealed class AES_IGE_Stream : Helpers.IndirectStream
 	{
 		private readonly ICryptoTransform _aesCrypto;
 		private readonly byte[] _prevBytes;

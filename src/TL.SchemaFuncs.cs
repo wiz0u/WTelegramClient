@@ -6514,21 +6514,21 @@ namespace TL.Methods
 {
 	#pragma warning disable IDE1006
 	[TLDef(0xCB9F372D)]
-	public class InvokeAfterMsg<X> : IMethod<X>
+	public sealed partial class InvokeAfterMsg<X> : IMethod<X>
 	{
 		public long msg_id;
 		public IMethod<X> query;
 	}
 
 	[TLDef(0x3DC4B4F0)]
-	public class InvokeAfterMsgs<X> : IMethod<X>
+	public sealed partial class InvokeAfterMsgs<X> : IMethod<X>
 	{
 		public long[] msg_ids;
 		public IMethod<X> query;
 	}
 
 	[TLDef(0xC1CD5EA9)]
-	public class InitConnection<X> : IMethod<X>
+	public sealed partial class InitConnection<X> : IMethod<X>
 	{
 		public Flags flags;
 		public int api_id;
@@ -6550,34 +6550,34 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xDA9B0D0D)]
-	public class InvokeWithLayer<X> : IMethod<X>
+	public sealed partial class InvokeWithLayer<X> : IMethod<X>
 	{
 		public int layer;
 		public IMethod<X> query;
 	}
 
 	[TLDef(0xBF9459B7)]
-	public class InvokeWithoutUpdates<X> : IMethod<X>
+	public sealed partial class InvokeWithoutUpdates<X> : IMethod<X>
 	{
 		public IMethod<X> query;
 	}
 
 	[TLDef(0x365275F2)]
-	public class InvokeWithMessagesRange<X> : IMethod<X>
+	public sealed partial class InvokeWithMessagesRange<X> : IMethod<X>
 	{
 		public MessageRange range;
 		public IMethod<X> query;
 	}
 
 	[TLDef(0xACA9FD2E)]
-	public class InvokeWithTakeout<X> : IMethod<X>
+	public sealed partial class InvokeWithTakeout<X> : IMethod<X>
 	{
 		public long takeout_id;
 		public IMethod<X> query;
 	}
 
 	[TLDef(0xA677244F)]
-	public class Auth_SendCode : IMethod<Auth_SentCodeBase>
+	public sealed partial class Auth_SendCode : IMethod<Auth_SentCodeBase>
 	{
 		public string phone_number;
 		public int api_id;
@@ -6586,7 +6586,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xAAC7B717)]
-	public class Auth_SignUp : IMethod<Auth_AuthorizationBase>
+	public sealed partial class Auth_SignUp : IMethod<Auth_AuthorizationBase>
 	{
 		public Flags flags;
 		public string phone_number;
@@ -6601,7 +6601,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x8D52A951)]
-	public class Auth_SignIn : IMethod<Auth_AuthorizationBase>
+	public sealed partial class Auth_SignIn : IMethod<Auth_AuthorizationBase>
 	{
 		public Flags flags;
 		public string phone_number;
@@ -6617,26 +6617,26 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3E72BA19)]
-	public class Auth_LogOut : IMethod<Auth_LoggedOut> { }
+	public sealed partial class Auth_LogOut : IMethod<Auth_LoggedOut> { }
 
 	[TLDef(0x9FAB0D1A)]
-	public class Auth_ResetAuthorizations : IMethod<bool> { }
+	public sealed partial class Auth_ResetAuthorizations : IMethod<bool> { }
 
 	[TLDef(0xE5BFFFCD)]
-	public class Auth_ExportAuthorization : IMethod<Auth_ExportedAuthorization>
+	public sealed partial class Auth_ExportAuthorization : IMethod<Auth_ExportedAuthorization>
 	{
 		public int dc_id;
 	}
 
 	[TLDef(0xA57A7DAD)]
-	public class Auth_ImportAuthorization : IMethod<Auth_AuthorizationBase>
+	public sealed partial class Auth_ImportAuthorization : IMethod<Auth_AuthorizationBase>
 	{
 		public long id;
 		public byte[] bytes;
 	}
 
 	[TLDef(0xCDD42A05)]
-	public class Auth_BindTempAuthKey : IMethod<bool>
+	public sealed partial class Auth_BindTempAuthKey : IMethod<bool>
 	{
 		public long perm_auth_key_id;
 		public long nonce;
@@ -6645,7 +6645,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x67A3FF2C)]
-	public class Auth_ImportBotAuthorization : IMethod<Auth_AuthorizationBase>
+	public sealed partial class Auth_ImportBotAuthorization : IMethod<Auth_AuthorizationBase>
 	{
 		public int flags;
 		public int api_id;
@@ -6654,16 +6654,16 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xD18B4D16)]
-	public class Auth_CheckPassword : IMethod<Auth_AuthorizationBase>
+	public sealed partial class Auth_CheckPassword : IMethod<Auth_AuthorizationBase>
 	{
 		public InputCheckPasswordSRP password;
 	}
 
 	[TLDef(0xD897BC66)]
-	public class Auth_RequestPasswordRecovery : IMethod<Auth_PasswordRecovery> { }
+	public sealed partial class Auth_RequestPasswordRecovery : IMethod<Auth_PasswordRecovery> { }
 
 	[TLDef(0x37096C70)]
-	public class Auth_RecoverPassword : IMethod<Auth_AuthorizationBase>
+	public sealed partial class Auth_RecoverPassword : IMethod<Auth_AuthorizationBase>
 	{
 		public Flags flags;
 		public string code;
@@ -6676,27 +6676,27 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3EF1A9BF)]
-	public class Auth_ResendCode : IMethod<Auth_SentCodeBase>
+	public sealed partial class Auth_ResendCode : IMethod<Auth_SentCodeBase>
 	{
 		public string phone_number;
 		public string phone_code_hash;
 	}
 
 	[TLDef(0x1F040578)]
-	public class Auth_CancelCode : IMethod<bool>
+	public sealed partial class Auth_CancelCode : IMethod<bool>
 	{
 		public string phone_number;
 		public string phone_code_hash;
 	}
 
 	[TLDef(0x8E48A188)]
-	public class Auth_DropTempAuthKeys : IMethod<bool>
+	public sealed partial class Auth_DropTempAuthKeys : IMethod<bool>
 	{
 		public long[] except_auth_keys;
 	}
 
 	[TLDef(0xB7E085FE)]
-	public class Auth_ExportLoginToken : IMethod<Auth_LoginTokenBase>
+	public sealed partial class Auth_ExportLoginToken : IMethod<Auth_LoginTokenBase>
 	{
 		public int api_id;
 		public string api_hash;
@@ -6704,25 +6704,25 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x95AC5CE4)]
-	public class Auth_ImportLoginToken : IMethod<Auth_LoginTokenBase>
+	public sealed partial class Auth_ImportLoginToken : IMethod<Auth_LoginTokenBase>
 	{
 		public byte[] token;
 	}
 
 	[TLDef(0xE894AD4D)]
-	public class Auth_AcceptLoginToken : IMethod<Authorization>
+	public sealed partial class Auth_AcceptLoginToken : IMethod<Authorization>
 	{
 		public byte[] token;
 	}
 
 	[TLDef(0x0D36BF79)]
-	public class Auth_CheckRecoveryPassword : IMethod<bool>
+	public sealed partial class Auth_CheckRecoveryPassword : IMethod<bool>
 	{
 		public string code;
 	}
 
 	[TLDef(0x2DB873A9)]
-	public class Auth_ImportWebTokenAuthorization : IMethod<Auth_AuthorizationBase>
+	public sealed partial class Auth_ImportWebTokenAuthorization : IMethod<Auth_AuthorizationBase>
 	{
 		public int api_id;
 		public string api_hash;
@@ -6730,7 +6730,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x89464B50)]
-	public class Auth_RequestFirebaseSms : IMethod<bool>
+	public sealed partial class Auth_RequestFirebaseSms : IMethod<bool>
 	{
 		public Flags flags;
 		public string phone_number;
@@ -6746,14 +6746,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x7E960193)]
-	public class Auth_ResetLoginEmail : IMethod<Auth_SentCodeBase>
+	public sealed partial class Auth_ResetLoginEmail : IMethod<Auth_SentCodeBase>
 	{
 		public string phone_number;
 		public string phone_code_hash;
 	}
 
 	[TLDef(0xEC86017A)]
-	public class Account_RegisterDevice : IMethod<bool>
+	public sealed partial class Account_RegisterDevice : IMethod<bool>
 	{
 		public Flags flags;
 		public int token_type;
@@ -6769,7 +6769,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x6A0D3206)]
-	public class Account_UnregisterDevice : IMethod<bool>
+	public sealed partial class Account_UnregisterDevice : IMethod<bool>
 	{
 		public int token_type;
 		public string token;
@@ -6777,23 +6777,23 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x84BE5B93)]
-	public class Account_UpdateNotifySettings : IMethod<bool>
+	public sealed partial class Account_UpdateNotifySettings : IMethod<bool>
 	{
 		public InputNotifyPeerBase peer;
 		public InputPeerNotifySettings settings;
 	}
 
 	[TLDef(0x12B3AD31)]
-	public class Account_GetNotifySettings : IMethod<PeerNotifySettings>
+	public sealed partial class Account_GetNotifySettings : IMethod<PeerNotifySettings>
 	{
 		public InputNotifyPeerBase peer;
 	}
 
 	[TLDef(0xDB7E1747)]
-	public class Account_ResetNotifySettings : IMethod<bool> { }
+	public sealed partial class Account_ResetNotifySettings : IMethod<bool> { }
 
 	[TLDef(0x78515775)]
-	public class Account_UpdateProfile : IMethod<UserBase>
+	public sealed partial class Account_UpdateProfile : IMethod<UserBase>
 	{
 		public Flags flags;
 		[IfFlag(0)] public string first_name;
@@ -6809,19 +6809,19 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x6628562C)]
-	public class Account_UpdateStatus : IMethod<bool>
+	public sealed partial class Account_UpdateStatus : IMethod<bool>
 	{
 		public bool offline;
 	}
 
 	[TLDef(0x07967D36)]
-	public class Account_GetWallPapers : IMethod<Account_WallPapers>
+	public sealed partial class Account_GetWallPapers : IMethod<Account_WallPapers>
 	{
 		public long hash;
 	}
 
 	[TLDef(0xC5BA3D86)]
-	public class Account_ReportPeer : IMethod<bool>
+	public sealed partial class Account_ReportPeer : IMethod<bool>
 	{
 		public InputPeer peer;
 		public ReportReason reason;
@@ -6829,32 +6829,32 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x2714D86C)]
-	public class Account_CheckUsername : IMethod<bool>
+	public sealed partial class Account_CheckUsername : IMethod<bool>
 	{
 		public string username;
 	}
 
 	[TLDef(0x3E0BDD7C)]
-	public class Account_UpdateUsername : IMethod<UserBase>
+	public sealed partial class Account_UpdateUsername : IMethod<UserBase>
 	{
 		public string username;
 	}
 
 	[TLDef(0xDADBC950)]
-	public class Account_GetPrivacy : IMethod<Account_PrivacyRules>
+	public sealed partial class Account_GetPrivacy : IMethod<Account_PrivacyRules>
 	{
 		public InputPrivacyKey key;
 	}
 
 	[TLDef(0xC9F81CE8)]
-	public class Account_SetPrivacy : IMethod<Account_PrivacyRules>
+	public sealed partial class Account_SetPrivacy : IMethod<Account_PrivacyRules>
 	{
 		public InputPrivacyKey key;
 		public InputPrivacyRule[] rules;
 	}
 
 	[TLDef(0xA2C0CF74)]
-	public class Account_DeleteAccount : IMethod<bool>
+	public sealed partial class Account_DeleteAccount : IMethod<bool>
 	{
 		public Flags flags;
 		public string reason;
@@ -6867,23 +6867,23 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x08FC711D)]
-	public class Account_GetAccountTTL : IMethod<AccountDaysTTL> { }
+	public sealed partial class Account_GetAccountTTL : IMethod<AccountDaysTTL> { }
 
 	[TLDef(0x2442485E)]
-	public class Account_SetAccountTTL : IMethod<bool>
+	public sealed partial class Account_SetAccountTTL : IMethod<bool>
 	{
 		public AccountDaysTTL ttl;
 	}
 
 	[TLDef(0x82574AE5)]
-	public class Account_SendChangePhoneCode : IMethod<Auth_SentCodeBase>
+	public sealed partial class Account_SendChangePhoneCode : IMethod<Auth_SentCodeBase>
 	{
 		public string phone_number;
 		public CodeSettings settings;
 	}
 
 	[TLDef(0x70C32EDB)]
-	public class Account_ChangePhone : IMethod<UserBase>
+	public sealed partial class Account_ChangePhone : IMethod<UserBase>
 	{
 		public string phone_number;
 		public string phone_code_hash;
@@ -6891,93 +6891,93 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x38DF3532)]
-	public class Account_UpdateDeviceLocked : IMethod<bool>
+	public sealed partial class Account_UpdateDeviceLocked : IMethod<bool>
 	{
 		public int period;
 	}
 
 	[TLDef(0xE320C158)]
-	public class Account_GetAuthorizations : IMethod<Account_Authorizations> { }
+	public sealed partial class Account_GetAuthorizations : IMethod<Account_Authorizations> { }
 
 	[TLDef(0xDF77F3BC)]
-	public class Account_ResetAuthorization : IMethod<bool>
+	public sealed partial class Account_ResetAuthorization : IMethod<bool>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x548A30F5)]
-	public class Account_GetPassword : IMethod<Account_Password> { }
+	public sealed partial class Account_GetPassword : IMethod<Account_Password> { }
 
 	[TLDef(0x9CD4EAF9)]
-	public class Account_GetPasswordSettings : IMethod<Account_PasswordSettings>
+	public sealed partial class Account_GetPasswordSettings : IMethod<Account_PasswordSettings>
 	{
 		public InputCheckPasswordSRP password;
 	}
 
 	[TLDef(0xA59B102F)]
-	public class Account_UpdatePasswordSettings : IMethod<bool>
+	public sealed partial class Account_UpdatePasswordSettings : IMethod<bool>
 	{
 		public InputCheckPasswordSRP password;
 		public Account_PasswordInputSettings new_settings;
 	}
 
 	[TLDef(0x1B3FAA88)]
-	public class Account_SendConfirmPhoneCode : IMethod<Auth_SentCodeBase>
+	public sealed partial class Account_SendConfirmPhoneCode : IMethod<Auth_SentCodeBase>
 	{
 		public string hash;
 		public CodeSettings settings;
 	}
 
 	[TLDef(0x5F2178C3)]
-	public class Account_ConfirmPhone : IMethod<bool>
+	public sealed partial class Account_ConfirmPhone : IMethod<bool>
 	{
 		public string phone_code_hash;
 		public string phone_code;
 	}
 
 	[TLDef(0x449E0B51)]
-	public class Account_GetTmpPassword : IMethod<Account_TmpPassword>
+	public sealed partial class Account_GetTmpPassword : IMethod<Account_TmpPassword>
 	{
 		public InputCheckPasswordSRP password;
 		public int period;
 	}
 
 	[TLDef(0x182E6D6F)]
-	public class Account_GetWebAuthorizations : IMethod<Account_WebAuthorizations> { }
+	public sealed partial class Account_GetWebAuthorizations : IMethod<Account_WebAuthorizations> { }
 
 	[TLDef(0x2D01B9EF)]
-	public class Account_ResetWebAuthorization : IMethod<bool>
+	public sealed partial class Account_ResetWebAuthorization : IMethod<bool>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x682D2594)]
-	public class Account_ResetWebAuthorizations : IMethod<bool> { }
+	public sealed partial class Account_ResetWebAuthorizations : IMethod<bool> { }
 
 	[TLDef(0xB288BC7D)]
-	public class Account_GetAllSecureValues : IMethod<SecureValue[]> { }
+	public sealed partial class Account_GetAllSecureValues : IMethod<SecureValue[]> { }
 
 	[TLDef(0x73665BC2)]
-	public class Account_GetSecureValue : IMethod<SecureValue[]>
+	public sealed partial class Account_GetSecureValue : IMethod<SecureValue[]>
 	{
 		public SecureValueType[] types;
 	}
 
 	[TLDef(0x899FE31D)]
-	public class Account_SaveSecureValue : IMethod<SecureValue>
+	public sealed partial class Account_SaveSecureValue : IMethod<SecureValue>
 	{
 		public InputSecureValue value;
 		public long secure_secret_id;
 	}
 
 	[TLDef(0xB880BC4B)]
-	public class Account_DeleteSecureValue : IMethod<bool>
+	public sealed partial class Account_DeleteSecureValue : IMethod<bool>
 	{
 		public SecureValueType[] types;
 	}
 
 	[TLDef(0xA929597A)]
-	public class Account_GetAuthorizationForm : IMethod<Account_AuthorizationForm>
+	public sealed partial class Account_GetAuthorizationForm : IMethod<Account_AuthorizationForm>
 	{
 		public long bot_id;
 		public string scope;
@@ -6985,7 +6985,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xF3ED4C73)]
-	public class Account_AcceptAuthorization : IMethod<bool>
+	public sealed partial class Account_AcceptAuthorization : IMethod<bool>
 	{
 		public long bot_id;
 		public string scope;
@@ -6995,14 +6995,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA5A356F9)]
-	public class Account_SendVerifyPhoneCode : IMethod<Auth_SentCodeBase>
+	public sealed partial class Account_SendVerifyPhoneCode : IMethod<Auth_SentCodeBase>
 	{
 		public string phone_number;
 		public CodeSettings settings;
 	}
 
 	[TLDef(0x4DD3A7F6)]
-	public class Account_VerifyPhone : IMethod<bool>
+	public sealed partial class Account_VerifyPhone : IMethod<bool>
 	{
 		public string phone_number;
 		public string phone_code_hash;
@@ -7010,21 +7010,21 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x98E037BB)]
-	public class Account_SendVerifyEmailCode : IMethod<Account_SentEmailCode>
+	public sealed partial class Account_SendVerifyEmailCode : IMethod<Account_SentEmailCode>
 	{
 		public EmailVerifyPurpose purpose;
 		public string email;
 	}
 
 	[TLDef(0x032DA4CF)]
-	public class Account_VerifyEmail : IMethod<Account_EmailVerified>
+	public sealed partial class Account_VerifyEmail : IMethod<Account_EmailVerified>
 	{
 		public EmailVerifyPurpose purpose;
 		public EmailVerification verification;
 	}
 
 	[TLDef(0x8EF3EAB0)]
-	public class Account_InitTakeoutSession : IMethod<Account_Takeout>
+	public sealed partial class Account_InitTakeoutSession : IMethod<Account_Takeout>
 	{
 		public Flags flags;
 		[IfFlag(5)] public long file_max_size;
@@ -7041,7 +7041,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x1D2652EE)]
-	public class Account_FinishTakeoutSession : IMethod<bool>
+	public sealed partial class Account_FinishTakeoutSession : IMethod<bool>
 	{
 		public Flags flags;
 
@@ -7052,28 +7052,28 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x8FDF1920)]
-	public class Account_ConfirmPasswordEmail : IMethod<bool>
+	public sealed partial class Account_ConfirmPasswordEmail : IMethod<bool>
 	{
 		public string code;
 	}
 
 	[TLDef(0x7A7F2A15)]
-	public class Account_ResendPasswordEmail : IMethod<bool> { }
+	public sealed partial class Account_ResendPasswordEmail : IMethod<bool> { }
 
 	[TLDef(0xC1CBD5B6)]
-	public class Account_CancelPasswordEmail : IMethod<bool> { }
+	public sealed partial class Account_CancelPasswordEmail : IMethod<bool> { }
 
 	[TLDef(0x9F07C728)]
-	public class Account_GetContactSignUpNotification : IMethod<bool> { }
+	public sealed partial class Account_GetContactSignUpNotification : IMethod<bool> { }
 
 	[TLDef(0xCFF43F61)]
-	public class Account_SetContactSignUpNotification : IMethod<bool>
+	public sealed partial class Account_SetContactSignUpNotification : IMethod<bool>
 	{
 		public bool silent;
 	}
 
 	[TLDef(0x53577479)]
-	public class Account_GetNotifyExceptions : IMethod<UpdatesBase>
+	public sealed partial class Account_GetNotifyExceptions : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		[IfFlag(0)] public InputNotifyPeerBase peer;
@@ -7087,13 +7087,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xFC8DDBEA)]
-	public class Account_GetWallPaper : IMethod<WallPaperBase>
+	public sealed partial class Account_GetWallPaper : IMethod<WallPaperBase>
 	{
 		public InputWallPaperBase wallpaper;
 	}
 
 	[TLDef(0xE39A8F03)]
-	public class Account_UploadWallPaper : IMethod<WallPaperBase>
+	public sealed partial class Account_UploadWallPaper : IMethod<WallPaperBase>
 	{
 		public Flags flags;
 		public InputFileBase file;
@@ -7107,7 +7107,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x6C5A5B37)]
-	public class Account_SaveWallPaper : IMethod<bool>
+	public sealed partial class Account_SaveWallPaper : IMethod<bool>
 	{
 		public InputWallPaperBase wallpaper;
 		public bool unsave;
@@ -7115,20 +7115,20 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xFEED5769)]
-	public class Account_InstallWallPaper : IMethod<bool>
+	public sealed partial class Account_InstallWallPaper : IMethod<bool>
 	{
 		public InputWallPaperBase wallpaper;
 		public WallPaperSettings settings;
 	}
 
 	[TLDef(0xBB3B9804)]
-	public class Account_ResetWallPapers : IMethod<bool> { }
+	public sealed partial class Account_ResetWallPapers : IMethod<bool> { }
 
 	[TLDef(0x56DA0B3F)]
-	public class Account_GetAutoDownloadSettings : IMethod<Account_AutoDownloadSettings> { }
+	public sealed partial class Account_GetAutoDownloadSettings : IMethod<Account_AutoDownloadSettings> { }
 
 	[TLDef(0x76F36233)]
-	public class Account_SaveAutoDownloadSettings : IMethod<bool>
+	public sealed partial class Account_SaveAutoDownloadSettings : IMethod<bool>
 	{
 		public Flags flags;
 		public AutoDownloadSettings settings;
@@ -7141,7 +7141,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x1C3DB333)]
-	public class Account_UploadTheme : IMethod<DocumentBase>
+	public sealed partial class Account_UploadTheme : IMethod<DocumentBase>
 	{
 		public Flags flags;
 		public InputFileBase file;
@@ -7156,7 +7156,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x652E4400)]
-	public class Account_CreateTheme : IMethod<Theme>
+	public sealed partial class Account_CreateTheme : IMethod<Theme>
 	{
 		public Flags flags;
 		public string slug;
@@ -7172,7 +7172,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x2BF40CCC)]
-	public class Account_UpdateTheme : IMethod<Theme>
+	public sealed partial class Account_UpdateTheme : IMethod<Theme>
 	{
 		public Flags flags;
 		public string format;
@@ -7192,14 +7192,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xF257106C)]
-	public class Account_SaveTheme : IMethod<bool>
+	public sealed partial class Account_SaveTheme : IMethod<bool>
 	{
 		public InputThemeBase theme;
 		public bool unsave;
 	}
 
 	[TLDef(0xC727BB3B)]
-	public class Account_InstallTheme : IMethod<bool>
+	public sealed partial class Account_InstallTheme : IMethod<bool>
 	{
 		public Flags flags;
 		[IfFlag(1)] public InputThemeBase theme;
@@ -7216,21 +7216,21 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3A5869EC)]
-	public class Account_GetTheme : IMethod<Theme>
+	public sealed partial class Account_GetTheme : IMethod<Theme>
 	{
 		public string format;
 		public InputThemeBase theme;
 	}
 
 	[TLDef(0x7206E458)]
-	public class Account_GetThemes : IMethod<Account_Themes>
+	public sealed partial class Account_GetThemes : IMethod<Account_Themes>
 	{
 		public string format;
 		public long hash;
 	}
 
 	[TLDef(0xB574B16B)]
-	public class Account_SetContentSettings : IMethod<bool>
+	public sealed partial class Account_SetContentSettings : IMethod<bool>
 	{
 		public Flags flags;
 
@@ -7241,25 +7241,25 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x8B9B4DAE)]
-	public class Account_GetContentSettings : IMethod<Account_ContentSettings> { }
+	public sealed partial class Account_GetContentSettings : IMethod<Account_ContentSettings> { }
 
 	[TLDef(0x65AD71DC)]
-	public class Account_GetMultiWallPapers : IMethod<WallPaperBase[]>
+	public sealed partial class Account_GetMultiWallPapers : IMethod<WallPaperBase[]>
 	{
 		public InputWallPaperBase[] wallpapers;
 	}
 
 	[TLDef(0xEB2B4CF6)]
-	public class Account_GetGlobalPrivacySettings : IMethod<GlobalPrivacySettings> { }
+	public sealed partial class Account_GetGlobalPrivacySettings : IMethod<GlobalPrivacySettings> { }
 
 	[TLDef(0x1EDAAAC2)]
-	public class Account_SetGlobalPrivacySettings : IMethod<GlobalPrivacySettings>
+	public sealed partial class Account_SetGlobalPrivacySettings : IMethod<GlobalPrivacySettings>
 	{
 		public GlobalPrivacySettings settings;
 	}
 
 	[TLDef(0xFA8CC6F5)]
-	public class Account_ReportProfilePhoto : IMethod<bool>
+	public sealed partial class Account_ReportProfilePhoto : IMethod<bool>
 	{
 		public InputPeer peer;
 		public InputPhoto photo_id;
@@ -7268,25 +7268,25 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x9308CE1B)]
-	public class Account_ResetPassword : IMethod<Account_ResetPasswordResult> { }
+	public sealed partial class Account_ResetPassword : IMethod<Account_ResetPasswordResult> { }
 
 	[TLDef(0x4C9409F6)]
-	public class Account_DeclinePasswordReset : IMethod<bool> { }
+	public sealed partial class Account_DeclinePasswordReset : IMethod<bool> { }
 
 	[TLDef(0xD638DE89)]
-	public class Account_GetChatThemes : IMethod<Account_Themes>
+	public sealed partial class Account_GetChatThemes : IMethod<Account_Themes>
 	{
 		public long hash;
 	}
 
 	[TLDef(0xBF899AA0)]
-	public class Account_SetAuthorizationTTL : IMethod<bool>
+	public sealed partial class Account_SetAuthorizationTTL : IMethod<bool>
 	{
 		public int authorization_ttl_days;
 	}
 
 	[TLDef(0x40F48462)]
-	public class Account_ChangeAuthorizationSettings : IMethod<bool>
+	public sealed partial class Account_ChangeAuthorizationSettings : IMethod<bool>
 	{
 		public Flags flags;
 		public long hash;
@@ -7302,20 +7302,20 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xE1902288)]
-	public class Account_GetSavedRingtones : IMethod<Account_SavedRingtones>
+	public sealed partial class Account_GetSavedRingtones : IMethod<Account_SavedRingtones>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x3DEA5B03)]
-	public class Account_SaveRingtone : IMethod<Account_SavedRingtone>
+	public sealed partial class Account_SaveRingtone : IMethod<Account_SavedRingtone>
 	{
 		public InputDocument id;
 		public bool unsave;
 	}
 
 	[TLDef(0x831A83A2)]
-	public class Account_UploadRingtone : IMethod<DocumentBase>
+	public sealed partial class Account_UploadRingtone : IMethod<DocumentBase>
 	{
 		public InputFileBase file;
 		public string file_name;
@@ -7323,56 +7323,56 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xFBD3DE6B)]
-	public class Account_UpdateEmojiStatus : IMethod<bool>
+	public sealed partial class Account_UpdateEmojiStatus : IMethod<bool>
 	{
 		public EmojiStatus emoji_status;
 	}
 
 	[TLDef(0xD6753386)]
-	public class Account_GetDefaultEmojiStatuses : IMethod<Account_EmojiStatuses>
+	public sealed partial class Account_GetDefaultEmojiStatuses : IMethod<Account_EmojiStatuses>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x0F578105)]
-	public class Account_GetRecentEmojiStatuses : IMethod<Account_EmojiStatuses>
+	public sealed partial class Account_GetRecentEmojiStatuses : IMethod<Account_EmojiStatuses>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x18201AAE)]
-	public class Account_ClearRecentEmojiStatuses : IMethod<bool> { }
+	public sealed partial class Account_ClearRecentEmojiStatuses : IMethod<bool> { }
 
 	[TLDef(0xEF500EAB)]
-	public class Account_ReorderUsernames : IMethod<bool>
+	public sealed partial class Account_ReorderUsernames : IMethod<bool>
 	{
 		public string[] order;
 	}
 
 	[TLDef(0x58D6B376)]
-	public class Account_ToggleUsername : IMethod<bool>
+	public sealed partial class Account_ToggleUsername : IMethod<bool>
 	{
 		public string username;
 		public bool active;
 	}
 
 	[TLDef(0xE2750328)]
-	public class Account_GetDefaultProfilePhotoEmojis : IMethod<EmojiList>
+	public sealed partial class Account_GetDefaultProfilePhotoEmojis : IMethod<EmojiList>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x915860AE)]
-	public class Account_GetDefaultGroupPhotoEmojis : IMethod<EmojiList>
+	public sealed partial class Account_GetDefaultGroupPhotoEmojis : IMethod<EmojiList>
 	{
 		public long hash;
 	}
 
 	[TLDef(0xADCBBCDA)]
-	public class Account_GetAutoSaveSettings : IMethod<Account_AutoSaveSettings> { }
+	public sealed partial class Account_GetAutoSaveSettings : IMethod<Account_AutoSaveSettings> { }
 
 	[TLDef(0xD69B8361)]
-	public class Account_SaveAutoSaveSettings : IMethod<bool>
+	public sealed partial class Account_SaveAutoSaveSettings : IMethod<bool>
 	{
 		public Flags flags;
 		[IfFlag(3)] public InputPeer peer;
@@ -7388,16 +7388,16 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x53BC0020)]
-	public class Account_DeleteAutoSaveExceptions : IMethod<bool> { }
+	public sealed partial class Account_DeleteAutoSaveExceptions : IMethod<bool> { }
 
 	[TLDef(0xCA8AE8BA)]
-	public class Account_InvalidateSignInCodes : IMethod<bool>
+	public sealed partial class Account_InvalidateSignInCodes : IMethod<bool>
 	{
 		public string[] codes;
 	}
 
 	[TLDef(0x7CEFA15D)]
-	public class Account_UpdateColor : IMethod<bool>
+	public sealed partial class Account_UpdateColor : IMethod<bool>
 	{
 		public Flags flags;
 		[IfFlag(2)] public int color;
@@ -7412,25 +7412,25 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA60AB9CE)]
-	public class Account_GetDefaultBackgroundEmojis : IMethod<EmojiList>
+	public sealed partial class Account_GetDefaultBackgroundEmojis : IMethod<EmojiList>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x7727A7D5)]
-	public class Account_GetChannelDefaultEmojiStatuses : IMethod<Account_EmojiStatuses>
+	public sealed partial class Account_GetChannelDefaultEmojiStatuses : IMethod<Account_EmojiStatuses>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x35A9E0D5)]
-	public class Account_GetChannelRestrictedStatusEmojis : IMethod<EmojiList>
+	public sealed partial class Account_GetChannelRestrictedStatusEmojis : IMethod<EmojiList>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x4B00E066)]
-	public class Account_UpdateBusinessWorkHours : IMethod<bool>
+	public sealed partial class Account_UpdateBusinessWorkHours : IMethod<bool>
 	{
 		public Flags flags;
 		[IfFlag(0)] public BusinessWorkHours business_work_hours;
@@ -7442,7 +7442,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x9E6B131A)]
-	public class Account_UpdateBusinessLocation : IMethod<bool>
+	public sealed partial class Account_UpdateBusinessLocation : IMethod<bool>
 	{
 		public Flags flags;
 		[IfFlag(1)] public InputGeoPoint geo_point;
@@ -7456,7 +7456,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x66CDAFC4)]
-	public class Account_UpdateBusinessGreetingMessage : IMethod<bool>
+	public sealed partial class Account_UpdateBusinessGreetingMessage : IMethod<bool>
 	{
 		public Flags flags;
 		[IfFlag(0)] public InputBusinessGreetingMessage message;
@@ -7468,7 +7468,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA26A7FA5)]
-	public class Account_UpdateBusinessAwayMessage : IMethod<bool>
+	public sealed partial class Account_UpdateBusinessAwayMessage : IMethod<bool>
 	{
 		public Flags flags;
 		[IfFlag(0)] public InputBusinessAwayMessage message;
@@ -7480,7 +7480,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x9C2D527D)]
-	public class Account_UpdateConnectedBot : IMethod<UpdatesBase>
+	public sealed partial class Account_UpdateConnectedBot : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputUserBase bot;
@@ -7494,68 +7494,68 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x4EA4C80F)]
-	public class Account_GetConnectedBots : IMethod<Account_ConnectedBots> { }
+	public sealed partial class Account_GetConnectedBots : IMethod<Account_ConnectedBots> { }
 
 	[TLDef(0x0D91A548)]
-	public class Users_GetUsers : IMethod<UserBase[]>
+	public sealed partial class Users_GetUsers : IMethod<UserBase[]>
 	{
 		public InputUserBase[] id;
 	}
 
 	[TLDef(0xB60F5918)]
-	public class Users_GetFullUser : IMethod<Users_UserFull>
+	public sealed partial class Users_GetFullUser : IMethod<Users_UserFull>
 	{
 		public InputUserBase id;
 	}
 
 	[TLDef(0x90C894B5)]
-	public class Users_SetSecureValueErrors : IMethod<bool>
+	public sealed partial class Users_SetSecureValueErrors : IMethod<bool>
 	{
 		public InputUserBase id;
 		public SecureValueErrorBase[] errors;
 	}
 
 	[TLDef(0xA622AA10)]
-	public class Users_GetIsPremiumRequiredToContact : IMethod<bool[]>
+	public sealed partial class Users_GetIsPremiumRequiredToContact : IMethod<bool[]>
 	{
 		public InputUserBase[] id;
 	}
 
 	[TLDef(0x7ADC669D)]
-	public class Contacts_GetContactIDs : IMethod<int[]>
+	public sealed partial class Contacts_GetContactIDs : IMethod<int[]>
 	{
 		public long hash;
 	}
 
 	[TLDef(0xC4A353EE)]
-	public class Contacts_GetStatuses : IMethod<ContactStatus[]> { }
+	public sealed partial class Contacts_GetStatuses : IMethod<ContactStatus[]> { }
 
 	[TLDef(0x5DD69E12)]
-	public class Contacts_GetContacts : IMethod<Contacts_Contacts>
+	public sealed partial class Contacts_GetContacts : IMethod<Contacts_Contacts>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x2C800BE5)]
-	public class Contacts_ImportContacts : IMethod<Contacts_ImportedContacts>
+	public sealed partial class Contacts_ImportContacts : IMethod<Contacts_ImportedContacts>
 	{
 		public InputContact[] contacts;
 	}
 
 	[TLDef(0x096A0E00)]
-	public class Contacts_DeleteContacts : IMethod<UpdatesBase>
+	public sealed partial class Contacts_DeleteContacts : IMethod<UpdatesBase>
 	{
 		public InputUserBase[] id;
 	}
 
 	[TLDef(0x1013FD9E)]
-	public class Contacts_DeleteByPhones : IMethod<bool>
+	public sealed partial class Contacts_DeleteByPhones : IMethod<bool>
 	{
 		public string[] phones;
 	}
 
 	[TLDef(0x2E2E8734)]
-	public class Contacts_Block : IMethod<bool>
+	public sealed partial class Contacts_Block : IMethod<bool>
 	{
 		public Flags flags;
 		public InputPeer id;
@@ -7567,7 +7567,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB550D328)]
-	public class Contacts_Unblock : IMethod<bool>
+	public sealed partial class Contacts_Unblock : IMethod<bool>
 	{
 		public Flags flags;
 		public InputPeer id;
@@ -7579,7 +7579,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x9A868F80)]
-	public class Contacts_GetBlocked : IMethod<Contacts_Blocked>
+	public sealed partial class Contacts_GetBlocked : IMethod<Contacts_Blocked>
 	{
 		public Flags flags;
 		public int offset;
@@ -7592,20 +7592,20 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x11F812D8)]
-	public class Contacts_Search : IMethod<Contacts_Found>
+	public sealed partial class Contacts_Search : IMethod<Contacts_Found>
 	{
 		public string q;
 		public int limit;
 	}
 
 	[TLDef(0xF93CCBA3)]
-	public class Contacts_ResolveUsername : IMethod<Contacts_ResolvedPeer>
+	public sealed partial class Contacts_ResolveUsername : IMethod<Contacts_ResolvedPeer>
 	{
 		public string username;
 	}
 
 	[TLDef(0x973478B6)]
-	public class Contacts_GetTopPeers : IMethod<Contacts_TopPeersBase>
+	public sealed partial class Contacts_GetTopPeers : IMethod<Contacts_TopPeersBase>
 	{
 		public Flags flags;
 		public int offset;
@@ -7626,26 +7626,26 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x1AE373AC)]
-	public class Contacts_ResetTopPeerRating : IMethod<bool>
+	public sealed partial class Contacts_ResetTopPeerRating : IMethod<bool>
 	{
 		public TopPeerCategory category;
 		public InputPeer peer;
 	}
 
 	[TLDef(0x879537F1)]
-	public class Contacts_ResetSaved : IMethod<bool> { }
+	public sealed partial class Contacts_ResetSaved : IMethod<bool> { }
 
 	[TLDef(0x82F1E39F)]
-	public class Contacts_GetSaved : IMethod<SavedContact[]> { }
+	public sealed partial class Contacts_GetSaved : IMethod<SavedContact[]> { }
 
 	[TLDef(0x8514BDDA)]
-	public class Contacts_ToggleTopPeers : IMethod<bool>
+	public sealed partial class Contacts_ToggleTopPeers : IMethod<bool>
 	{
 		public bool enabled;
 	}
 
 	[TLDef(0xE8F463D0)]
-	public class Contacts_AddContact : IMethod<UpdatesBase>
+	public sealed partial class Contacts_AddContact : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputUserBase id;
@@ -7660,13 +7660,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xF831A20F)]
-	public class Contacts_AcceptContact : IMethod<UpdatesBase>
+	public sealed partial class Contacts_AcceptContact : IMethod<UpdatesBase>
 	{
 		public InputUserBase id;
 	}
 
 	[TLDef(0xD348BC44)]
-	public class Contacts_GetLocated : IMethod<UpdatesBase>
+	public sealed partial class Contacts_GetLocated : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputGeoPoint geo_point;
@@ -7680,7 +7680,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x29A8962C)]
-	public class Contacts_BlockFromReplies : IMethod<UpdatesBase>
+	public sealed partial class Contacts_BlockFromReplies : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public int msg_id;
@@ -7694,28 +7694,28 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x8AF94344)]
-	public class Contacts_ResolvePhone : IMethod<Contacts_ResolvedPeer>
+	public sealed partial class Contacts_ResolvePhone : IMethod<Contacts_ResolvedPeer>
 	{
 		public string phone;
 	}
 
 	[TLDef(0xF8654027)]
-	public class Contacts_ExportContactToken : IMethod<ExportedContactToken> { }
+	public sealed partial class Contacts_ExportContactToken : IMethod<ExportedContactToken> { }
 
 	[TLDef(0x13005788)]
-	public class Contacts_ImportContactToken : IMethod<UserBase>
+	public sealed partial class Contacts_ImportContactToken : IMethod<UserBase>
 	{
 		public string token;
 	}
 
 	[TLDef(0xBA6705F0)]
-	public class Contacts_EditCloseFriends : IMethod<bool>
+	public sealed partial class Contacts_EditCloseFriends : IMethod<bool>
 	{
 		public long[] id;
 	}
 
 	[TLDef(0x94C65C76)]
-	public class Contacts_SetBlocked : IMethod<bool>
+	public sealed partial class Contacts_SetBlocked : IMethod<bool>
 	{
 		public Flags flags;
 		public InputPeer[] id;
@@ -7728,13 +7728,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x63C66506)]
-	public class Messages_GetMessages : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_GetMessages : IMethod<Messages_MessagesBase>
 	{
 		public InputMessage[] id;
 	}
 
 	[TLDef(0xA0F4CB4F)]
-	public class Messages_GetDialogs : IMethod<Messages_DialogsBase>
+	public sealed partial class Messages_GetDialogs : IMethod<Messages_DialogsBase>
 	{
 		public Flags flags;
 		[IfFlag(1)] public int folder_id;
@@ -7752,7 +7752,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x4423E6C5)]
-	public class Messages_GetHistory : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_GetHistory : IMethod<Messages_MessagesBase>
 	{
 		public InputPeer peer;
 		public int offset_id;
@@ -7765,7 +7765,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x29EE847A)]
-	public class Messages_Search : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_Search : IMethod<Messages_MessagesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -7794,14 +7794,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x0E306D3A)]
-	public class Messages_ReadHistory : IMethod<Messages_AffectedMessages>
+	public sealed partial class Messages_ReadHistory : IMethod<Messages_AffectedMessages>
 	{
 		public InputPeer peer;
 		public int max_id;
 	}
 
 	[TLDef(0xB08F922A)]
-	public class Messages_DeleteHistory : IMethod<Messages_AffectedHistory>
+	public sealed partial class Messages_DeleteHistory : IMethod<Messages_AffectedHistory>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -7819,7 +7819,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xE58E95D2)]
-	public class Messages_DeleteMessages : IMethod<Messages_AffectedMessages>
+	public sealed partial class Messages_DeleteMessages : IMethod<Messages_AffectedMessages>
 	{
 		public Flags flags;
 		public int[] id;
@@ -7831,13 +7831,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x05A954C0)]
-	public class Messages_ReceivedMessages : IMethod<ReceivedNotifyMessage[]>
+	public sealed partial class Messages_ReceivedMessages : IMethod<ReceivedNotifyMessage[]>
 	{
 		public int max_id;
 	}
 
 	[TLDef(0x58943EE2)]
-	public class Messages_SetTyping : IMethod<bool>
+	public sealed partial class Messages_SetTyping : IMethod<bool>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -7851,7 +7851,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xDFF8042C)]
-	public class Messages_SendMessage : IMethod<UpdatesBase>
+	public sealed partial class Messages_SendMessage : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -7883,7 +7883,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x7BD66041)]
-	public class Messages_SendMedia : IMethod<UpdatesBase>
+	public sealed partial class Messages_SendMedia : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -7915,7 +7915,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xD5039208)]
-	public class Messages_ForwardMessages : IMethod<UpdatesBase>
+	public sealed partial class Messages_ForwardMessages : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer from_peer;
@@ -7943,19 +7943,19 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xCF1592DB)]
-	public class Messages_ReportSpam : IMethod<bool>
+	public sealed partial class Messages_ReportSpam : IMethod<bool>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0xEFD9A6A2)]
-	public class Messages_GetPeerSettings : IMethod<Messages_PeerSettings>
+	public sealed partial class Messages_GetPeerSettings : IMethod<Messages_PeerSettings>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0x8953AB4E)]
-	public class Messages_Report : IMethod<bool>
+	public sealed partial class Messages_Report : IMethod<bool>
 	{
 		public InputPeer peer;
 		public int[] id;
@@ -7964,33 +7964,33 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x49E9528F)]
-	public class Messages_GetChats : IMethod<Messages_Chats>
+	public sealed partial class Messages_GetChats : IMethod<Messages_Chats>
 	{
 		public long[] id;
 	}
 
 	[TLDef(0xAEB00B34)]
-	public class Messages_GetFullChat : IMethod<Messages_ChatFull>
+	public sealed partial class Messages_GetFullChat : IMethod<Messages_ChatFull>
 	{
 		public long chat_id;
 	}
 
 	[TLDef(0x73783FFD)]
-	public class Messages_EditChatTitle : IMethod<UpdatesBase>
+	public sealed partial class Messages_EditChatTitle : IMethod<UpdatesBase>
 	{
 		public long chat_id;
 		public string title;
 	}
 
 	[TLDef(0x35DDD674)]
-	public class Messages_EditChatPhoto : IMethod<UpdatesBase>
+	public sealed partial class Messages_EditChatPhoto : IMethod<UpdatesBase>
 	{
 		public long chat_id;
 		public InputChatPhotoBase photo;
 	}
 
 	[TLDef(0xF24753E3)]
-	public class Messages_AddChatUser : IMethod<UpdatesBase>
+	public sealed partial class Messages_AddChatUser : IMethod<UpdatesBase>
 	{
 		public long chat_id;
 		public InputUserBase user_id;
@@ -7998,7 +7998,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA2185CAB)]
-	public class Messages_DeleteChatUser : IMethod<UpdatesBase>
+	public sealed partial class Messages_DeleteChatUser : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public long chat_id;
@@ -8011,7 +8011,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x0034A818)]
-	public class Messages_CreateChat : IMethod<UpdatesBase>
+	public sealed partial class Messages_CreateChat : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputUserBase[] users;
@@ -8025,14 +8025,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x26CF8950)]
-	public class Messages_GetDhConfig : IMethod<Messages_DhConfigBase>
+	public sealed partial class Messages_GetDhConfig : IMethod<Messages_DhConfigBase>
 	{
 		public int version;
 		public int random_length;
 	}
 
 	[TLDef(0xF64DAF43)]
-	public class Messages_RequestEncryption : IMethod<EncryptedChatBase>
+	public sealed partial class Messages_RequestEncryption : IMethod<EncryptedChatBase>
 	{
 		public InputUserBase user_id;
 		public int random_id;
@@ -8040,7 +8040,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3DBC0415)]
-	public class Messages_AcceptEncryption : IMethod<EncryptedChatBase>
+	public sealed partial class Messages_AcceptEncryption : IMethod<EncryptedChatBase>
 	{
 		public InputEncryptedChat peer;
 		public byte[] g_b;
@@ -8048,7 +8048,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xF393AEA0)]
-	public class Messages_DiscardEncryption : IMethod<bool>
+	public sealed partial class Messages_DiscardEncryption : IMethod<bool>
 	{
 		public Flags flags;
 		public int chat_id;
@@ -8060,21 +8060,21 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x791451ED)]
-	public class Messages_SetEncryptedTyping : IMethod<bool>
+	public sealed partial class Messages_SetEncryptedTyping : IMethod<bool>
 	{
 		public InputEncryptedChat peer;
 		public bool typing;
 	}
 
 	[TLDef(0x7F4B690A)]
-	public class Messages_ReadEncryptedHistory : IMethod<bool>
+	public sealed partial class Messages_ReadEncryptedHistory : IMethod<bool>
 	{
 		public InputEncryptedChat peer;
 		public DateTime max_date;
 	}
 
 	[TLDef(0x44FA7A15)]
-	public class Messages_SendEncrypted : IMethod<Messages_SentEncryptedMessage>
+	public sealed partial class Messages_SendEncrypted : IMethod<Messages_SentEncryptedMessage>
 	{
 		public Flags flags;
 		public InputEncryptedChat peer;
@@ -8088,7 +8088,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x5559481D)]
-	public class Messages_SendEncryptedFile : IMethod<Messages_SentEncryptedMessage>
+	public sealed partial class Messages_SendEncryptedFile : IMethod<Messages_SentEncryptedMessage>
 	{
 		public Flags flags;
 		public InputEncryptedChat peer;
@@ -8103,7 +8103,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x32D439A4)]
-	public class Messages_SendEncryptedService : IMethod<Messages_SentEncryptedMessage>
+	public sealed partial class Messages_SendEncryptedService : IMethod<Messages_SentEncryptedMessage>
 	{
 		public InputEncryptedChat peer;
 		public long random_id;
@@ -8111,38 +8111,38 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x55A5BB66)]
-	public class Messages_ReceivedQueue : IMethod<long[]>
+	public sealed partial class Messages_ReceivedQueue : IMethod<long[]>
 	{
 		public int max_qts;
 	}
 
 	[TLDef(0x4B0C8C0F)]
-	public class Messages_ReportEncryptedSpam : IMethod<bool>
+	public sealed partial class Messages_ReportEncryptedSpam : IMethod<bool>
 	{
 		public InputEncryptedChat peer;
 	}
 
 	[TLDef(0x36A73F77)]
-	public class Messages_ReadMessageContents : IMethod<Messages_AffectedMessages>
+	public sealed partial class Messages_ReadMessageContents : IMethod<Messages_AffectedMessages>
 	{
 		public int[] id;
 	}
 
 	[TLDef(0xD5A5D3A1)]
-	public class Messages_GetStickers : IMethod<Messages_Stickers>
+	public sealed partial class Messages_GetStickers : IMethod<Messages_Stickers>
 	{
 		public string emoticon;
 		public long hash;
 	}
 
 	[TLDef(0xB8A0A1A8)]
-	public class Messages_GetAllStickers : IMethod<Messages_AllStickers>
+	public sealed partial class Messages_GetAllStickers : IMethod<Messages_AllStickers>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x8B68B0CC)]
-	public class Messages_GetWebPagePreview : IMethod<MessageMedia>
+	public sealed partial class Messages_GetWebPagePreview : IMethod<MessageMedia>
 	{
 		public Flags flags;
 		public string message;
@@ -8155,7 +8155,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA02CE5D5)]
-	public class Messages_ExportChatInvite : IMethod<ExportedChatInvite>
+	public sealed partial class Messages_ExportChatInvite : IMethod<ExportedChatInvite>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -8174,39 +8174,39 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3EADB1BB)]
-	public class Messages_CheckChatInvite : IMethod<ChatInviteBase>
+	public sealed partial class Messages_CheckChatInvite : IMethod<ChatInviteBase>
 	{
 		public string hash;
 	}
 
 	[TLDef(0x6C50051C)]
-	public class Messages_ImportChatInvite : IMethod<UpdatesBase>
+	public sealed partial class Messages_ImportChatInvite : IMethod<UpdatesBase>
 	{
 		public string hash;
 	}
 
 	[TLDef(0xC8A0EC74)]
-	public class Messages_GetStickerSet : IMethod<Messages_StickerSet>
+	public sealed partial class Messages_GetStickerSet : IMethod<Messages_StickerSet>
 	{
 		public InputStickerSet stickerset;
 		public int hash;
 	}
 
 	[TLDef(0xC78FE460)]
-	public class Messages_InstallStickerSet : IMethod<Messages_StickerSetInstallResult>
+	public sealed partial class Messages_InstallStickerSet : IMethod<Messages_StickerSetInstallResult>
 	{
 		public InputStickerSet stickerset;
 		public bool archived;
 	}
 
 	[TLDef(0xF96E55DE)]
-	public class Messages_UninstallStickerSet : IMethod<bool>
+	public sealed partial class Messages_UninstallStickerSet : IMethod<bool>
 	{
 		public InputStickerSet stickerset;
 	}
 
 	[TLDef(0xE6DF7378)]
-	public class Messages_StartBot : IMethod<UpdatesBase>
+	public sealed partial class Messages_StartBot : IMethod<UpdatesBase>
 	{
 		public InputUserBase bot;
 		public InputPeer peer;
@@ -8215,7 +8215,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x5784D3E1)]
-	public class Messages_GetMessagesViews : IMethod<Messages_MessageViews>
+	public sealed partial class Messages_GetMessagesViews : IMethod<Messages_MessageViews>
 	{
 		public InputPeer peer;
 		public int[] id;
@@ -8223,7 +8223,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA85BD1C2)]
-	public class Messages_EditChatAdmin : IMethod<bool>
+	public sealed partial class Messages_EditChatAdmin : IMethod<bool>
 	{
 		public long chat_id;
 		public InputUserBase user_id;
@@ -8231,13 +8231,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA2875319)]
-	public class Messages_MigrateChat : IMethod<UpdatesBase>
+	public sealed partial class Messages_MigrateChat : IMethod<UpdatesBase>
 	{
 		public long chat_id;
 	}
 
 	[TLDef(0x4BC6589A)]
-	public class Messages_SearchGlobal : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_SearchGlobal : IMethod<Messages_MessagesBase>
 	{
 		public Flags flags;
 		[IfFlag(0)] public int folder_id;
@@ -8257,7 +8257,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x78337739)]
-	public class Messages_ReorderStickerSets : IMethod<bool>
+	public sealed partial class Messages_ReorderStickerSets : IMethod<bool>
 	{
 		public Flags flags;
 		public long[] order;
@@ -8270,7 +8270,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB1F2061F)]
-	public class Messages_GetDocumentByHash : IMethod<DocumentBase>
+	public sealed partial class Messages_GetDocumentByHash : IMethod<DocumentBase>
 	{
 		public byte[] sha256;
 		public long size;
@@ -8278,20 +8278,20 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x5CF09635)]
-	public class Messages_GetSavedGifs : IMethod<Messages_SavedGifs>
+	public sealed partial class Messages_GetSavedGifs : IMethod<Messages_SavedGifs>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x327A30CB)]
-	public class Messages_SaveGif : IMethod<bool>
+	public sealed partial class Messages_SaveGif : IMethod<bool>
 	{
 		public InputDocument id;
 		public bool unsave;
 	}
 
 	[TLDef(0x514E999D)]
-	public class Messages_GetInlineBotResults : IMethod<Messages_BotResults>
+	public sealed partial class Messages_GetInlineBotResults : IMethod<Messages_BotResults>
 	{
 		public Flags flags;
 		public InputUserBase bot;
@@ -8307,7 +8307,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xBB12A419)]
-	public class Messages_SetInlineBotResults : IMethod<bool>
+	public sealed partial class Messages_SetInlineBotResults : IMethod<bool>
 	{
 		public Flags flags;
 		public long query_id;
@@ -8328,7 +8328,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3EBEE86A)]
-	public class Messages_SendInlineBotResult : IMethod<UpdatesBase>
+	public sealed partial class Messages_SendInlineBotResult : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -8354,14 +8354,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xFDA68D36)]
-	public class Messages_GetMessageEditData : IMethod<Messages_MessageEditData>
+	public sealed partial class Messages_GetMessageEditData : IMethod<Messages_MessageEditData>
 	{
 		public InputPeer peer;
 		public int id;
 	}
 
 	[TLDef(0xDFD14005)]
-	public class Messages_EditMessage : IMethod<UpdatesBase>
+	public sealed partial class Messages_EditMessage : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -8387,7 +8387,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x83557DBA)]
-	public class Messages_EditInlineBotMessage : IMethod<bool>
+	public sealed partial class Messages_EditInlineBotMessage : IMethod<bool>
 	{
 		public Flags flags;
 		public InputBotInlineMessageIDBase id;
@@ -8408,7 +8408,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x9342CA07)]
-	public class Messages_GetBotCallbackAnswer : IMethod<Messages_BotCallbackAnswer>
+	public sealed partial class Messages_GetBotCallbackAnswer : IMethod<Messages_BotCallbackAnswer>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -8425,7 +8425,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xD58F130A)]
-	public class Messages_SetBotCallbackAnswer : IMethod<bool>
+	public sealed partial class Messages_SetBotCallbackAnswer : IMethod<bool>
 	{
 		public Flags flags;
 		public long query_id;
@@ -8442,13 +8442,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xE470BCFD)]
-	public class Messages_GetPeerDialogs : IMethod<Messages_PeerDialogs>
+	public sealed partial class Messages_GetPeerDialogs : IMethod<Messages_PeerDialogs>
 	{
 		public InputDialogPeerBase[] peers;
 	}
 
 	[TLDef(0x7FF3B806)]
-	public class Messages_SaveDraft : IMethod<bool>
+	public sealed partial class Messages_SaveDraft : IMethod<bool>
 	{
 		public Flags flags;
 		[IfFlag(4)] public InputReplyTo reply_to;
@@ -8468,22 +8468,22 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x6A3F8D65)]
-	public class Messages_GetAllDrafts : IMethod<UpdatesBase> { }
+	public sealed partial class Messages_GetAllDrafts : IMethod<UpdatesBase> { }
 
 	[TLDef(0x64780B14)]
-	public class Messages_GetFeaturedStickers : IMethod<Messages_FeaturedStickersBase>
+	public sealed partial class Messages_GetFeaturedStickers : IMethod<Messages_FeaturedStickersBase>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x5B118126)]
-	public class Messages_ReadFeaturedStickers : IMethod<bool>
+	public sealed partial class Messages_ReadFeaturedStickers : IMethod<bool>
 	{
 		public long[] id;
 	}
 
 	[TLDef(0x9DA9403B)]
-	public class Messages_GetRecentStickers : IMethod<Messages_RecentStickers>
+	public sealed partial class Messages_GetRecentStickers : IMethod<Messages_RecentStickers>
 	{
 		public Flags flags;
 		public long hash;
@@ -8495,7 +8495,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x392718F8)]
-	public class Messages_SaveRecentSticker : IMethod<bool>
+	public sealed partial class Messages_SaveRecentSticker : IMethod<bool>
 	{
 		public Flags flags;
 		public InputDocument id;
@@ -8508,7 +8508,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x8999602D)]
-	public class Messages_ClearRecentStickers : IMethod<bool>
+	public sealed partial class Messages_ClearRecentStickers : IMethod<bool>
 	{
 		public Flags flags;
 
@@ -8519,7 +8519,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x57F17692)]
-	public class Messages_GetArchivedStickers : IMethod<Messages_ArchivedStickers>
+	public sealed partial class Messages_GetArchivedStickers : IMethod<Messages_ArchivedStickers>
 	{
 		public Flags flags;
 		public long offset_id;
@@ -8533,19 +8533,19 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x640F82B8)]
-	public class Messages_GetMaskStickers : IMethod<Messages_AllStickers>
+	public sealed partial class Messages_GetMaskStickers : IMethod<Messages_AllStickers>
 	{
 		public long hash;
 	}
 
 	[TLDef(0xCC5B67CC)]
-	public class Messages_GetAttachedStickers : IMethod<StickerSetCoveredBase[]>
+	public sealed partial class Messages_GetAttachedStickers : IMethod<StickerSetCoveredBase[]>
 	{
 		public InputStickeredMedia media;
 	}
 
 	[TLDef(0x8EF8ECC0)]
-	public class Messages_SetGameScore : IMethod<UpdatesBase>
+	public sealed partial class Messages_SetGameScore : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -8561,7 +8561,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x15AD9F64)]
-	public class Messages_SetInlineGameScore : IMethod<bool>
+	public sealed partial class Messages_SetInlineGameScore : IMethod<bool>
 	{
 		public Flags flags;
 		public InputBotInlineMessageIDBase id;
@@ -8576,7 +8576,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xE822649D)]
-	public class Messages_GetGameHighScores : IMethod<Messages_HighScores>
+	public sealed partial class Messages_GetGameHighScores : IMethod<Messages_HighScores>
 	{
 		public InputPeer peer;
 		public int id;
@@ -8584,14 +8584,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x0F635E1B)]
-	public class Messages_GetInlineGameHighScores : IMethod<Messages_HighScores>
+	public sealed partial class Messages_GetInlineGameHighScores : IMethod<Messages_HighScores>
 	{
 		public InputBotInlineMessageIDBase id;
 		public InputUserBase user_id;
 	}
 
 	[TLDef(0xE40CA104)]
-	public class Messages_GetCommonChats : IMethod<Messages_Chats>
+	public sealed partial class Messages_GetCommonChats : IMethod<Messages_Chats>
 	{
 		public InputUserBase user_id;
 		public long max_id;
@@ -8599,14 +8599,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x8D9692A3)]
-	public class Messages_GetWebPage : IMethod<Messages_WebPage>
+	public sealed partial class Messages_GetWebPage : IMethod<Messages_WebPage>
 	{
 		public string url;
 		public int hash;
 	}
 
 	[TLDef(0xA731E257)]
-	public class Messages_ToggleDialogPin : IMethod<bool>
+	public sealed partial class Messages_ToggleDialogPin : IMethod<bool>
 	{
 		public Flags flags;
 		public InputDialogPeerBase peer;
@@ -8618,7 +8618,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3B1ADF37)]
-	public class Messages_ReorderPinnedDialogs : IMethod<bool>
+	public sealed partial class Messages_ReorderPinnedDialogs : IMethod<bool>
 	{
 		public Flags flags;
 		public int folder_id;
@@ -8631,13 +8631,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xD6B94DF2)]
-	public class Messages_GetPinnedDialogs : IMethod<Messages_PeerDialogs>
+	public sealed partial class Messages_GetPinnedDialogs : IMethod<Messages_PeerDialogs>
 	{
 		public int folder_id;
 	}
 
 	[TLDef(0xE5F672FA)]
-	public class Messages_SetBotShippingResults : IMethod<bool>
+	public sealed partial class Messages_SetBotShippingResults : IMethod<bool>
 	{
 		public Flags flags;
 		public long query_id;
@@ -8652,7 +8652,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x09C2DD95)]
-	public class Messages_SetBotPrecheckoutResults : IMethod<bool>
+	public sealed partial class Messages_SetBotPrecheckoutResults : IMethod<bool>
 	{
 		public Flags flags;
 		public long query_id;
@@ -8666,14 +8666,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x519BC2B1)]
-	public class Messages_UploadMedia : IMethod<MessageMedia>
+	public sealed partial class Messages_UploadMedia : IMethod<MessageMedia>
 	{
 		public InputPeer peer;
 		public InputMedia media;
 	}
 
 	[TLDef(0xA1405817)]
-	public class Messages_SendScreenshotNotification : IMethod<UpdatesBase>
+	public sealed partial class Messages_SendScreenshotNotification : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public InputReplyTo reply_to;
@@ -8681,20 +8681,20 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x04F1AAA9)]
-	public class Messages_GetFavedStickers : IMethod<Messages_FavedStickers>
+	public sealed partial class Messages_GetFavedStickers : IMethod<Messages_FavedStickers>
 	{
 		public long hash;
 	}
 
 	[TLDef(0xB9FFC55B)]
-	public class Messages_FaveSticker : IMethod<bool>
+	public sealed partial class Messages_FaveSticker : IMethod<bool>
 	{
 		public InputDocument id;
 		public bool unfave;
 	}
 
 	[TLDef(0xF107E790)]
-	public class Messages_GetUnreadMentions : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_GetUnreadMentions : IMethod<Messages_MessagesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -8712,7 +8712,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x36E5BF4D)]
-	public class Messages_ReadMentions : IMethod<Messages_AffectedHistory>
+	public sealed partial class Messages_ReadMentions : IMethod<Messages_AffectedHistory>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -8725,7 +8725,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x702A40E0)]
-	public class Messages_GetRecentLocations : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_GetRecentLocations : IMethod<Messages_MessagesBase>
 	{
 		public InputPeer peer;
 		public int limit;
@@ -8733,7 +8733,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x0C964709)]
-	public class Messages_SendMultiMedia : IMethod<UpdatesBase>
+	public sealed partial class Messages_SendMultiMedia : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -8759,14 +8759,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x5057C497)]
-	public class Messages_UploadEncryptedFile : IMethod<EncryptedFile>
+	public sealed partial class Messages_UploadEncryptedFile : IMethod<EncryptedFile>
 	{
 		public InputEncryptedChat peer;
 		public InputEncryptedFileBase file;
 	}
 
 	[TLDef(0x35705B8A)]
-	public class Messages_SearchStickerSets : IMethod<Messages_FoundStickerSets>
+	public sealed partial class Messages_SearchStickerSets : IMethod<Messages_FoundStickerSets>
 	{
 		public Flags flags;
 		public string q;
@@ -8779,10 +8779,10 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x1CFF7E08)]
-	public class Messages_GetSplitRanges : IMethod<MessageRange[]> { }
+	public sealed partial class Messages_GetSplitRanges : IMethod<MessageRange[]> { }
 
 	[TLDef(0xC286D98F)]
-	public class Messages_MarkDialogUnread : IMethod<bool>
+	public sealed partial class Messages_MarkDialogUnread : IMethod<bool>
 	{
 		public Flags flags;
 		public InputDialogPeerBase peer;
@@ -8794,13 +8794,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x22E24E22)]
-	public class Messages_GetDialogUnreadMarks : IMethod<DialogPeerBase[]> { }
+	public sealed partial class Messages_GetDialogUnreadMarks : IMethod<DialogPeerBase[]> { }
 
 	[TLDef(0x7E58EE9C)]
-	public class Messages_ClearAllDrafts : IMethod<bool> { }
+	public sealed partial class Messages_ClearAllDrafts : IMethod<bool> { }
 
 	[TLDef(0xD2AAF7EC)]
-	public class Messages_UpdatePinnedMessage : IMethod<UpdatesBase>
+	public sealed partial class Messages_UpdatePinnedMessage : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -8815,7 +8815,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x10EA6184)]
-	public class Messages_SendVote : IMethod<UpdatesBase>
+	public sealed partial class Messages_SendVote : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public int msg_id;
@@ -8823,59 +8823,59 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x73BB643B)]
-	public class Messages_GetPollResults : IMethod<UpdatesBase>
+	public sealed partial class Messages_GetPollResults : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public int msg_id;
 	}
 
 	[TLDef(0x6E2BE050)]
-	public class Messages_GetOnlines : IMethod<ChatOnlines>
+	public sealed partial class Messages_GetOnlines : IMethod<ChatOnlines>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0xDEF60797)]
-	public class Messages_EditChatAbout : IMethod<bool>
+	public sealed partial class Messages_EditChatAbout : IMethod<bool>
 	{
 		public InputPeer peer;
 		public string about;
 	}
 
 	[TLDef(0xA5866B41)]
-	public class Messages_EditChatDefaultBannedRights : IMethod<UpdatesBase>
+	public sealed partial class Messages_EditChatDefaultBannedRights : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public ChatBannedRights banned_rights;
 	}
 
 	[TLDef(0x35A0E062)]
-	public class Messages_GetEmojiKeywords : IMethod<EmojiKeywordsDifference>
+	public sealed partial class Messages_GetEmojiKeywords : IMethod<EmojiKeywordsDifference>
 	{
 		public string lang_code;
 	}
 
 	[TLDef(0x1508B6AF)]
-	public class Messages_GetEmojiKeywordsDifference : IMethod<EmojiKeywordsDifference>
+	public sealed partial class Messages_GetEmojiKeywordsDifference : IMethod<EmojiKeywordsDifference>
 	{
 		public string lang_code;
 		public int from_version;
 	}
 
 	[TLDef(0x4E9963B2)]
-	public class Messages_GetEmojiKeywordsLanguages : IMethod<EmojiLanguage[]>
+	public sealed partial class Messages_GetEmojiKeywordsLanguages : IMethod<EmojiLanguage[]>
 	{
 		public string[] lang_codes;
 	}
 
 	[TLDef(0xD5B10C26)]
-	public class Messages_GetEmojiURL : IMethod<EmojiURL>
+	public sealed partial class Messages_GetEmojiURL : IMethod<EmojiURL>
 	{
 		public string lang_code;
 	}
 
 	[TLDef(0x1BBCF300)]
-	public class Messages_GetSearchCounters : IMethod<Messages_SearchCounter[]>
+	public sealed partial class Messages_GetSearchCounters : IMethod<Messages_SearchCounter[]>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -8891,7 +8891,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x198FB446)]
-	public class Messages_RequestUrlAuth : IMethod<UrlAuthResult>
+	public sealed partial class Messages_RequestUrlAuth : IMethod<UrlAuthResult>
 	{
 		public Flags flags;
 		[IfFlag(1)] public InputPeer peer;
@@ -8907,7 +8907,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB12C7125)]
-	public class Messages_AcceptUrlAuth : IMethod<UrlAuthResult>
+	public sealed partial class Messages_AcceptUrlAuth : IMethod<UrlAuthResult>
 	{
 		public Flags flags;
 		[IfFlag(1)] public InputPeer peer;
@@ -8924,41 +8924,41 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x4FACB138)]
-	public class Messages_HidePeerSettingsBar : IMethod<bool>
+	public sealed partial class Messages_HidePeerSettingsBar : IMethod<bool>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0xF516760B)]
-	public class Messages_GetScheduledHistory : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_GetScheduledHistory : IMethod<Messages_MessagesBase>
 	{
 		public InputPeer peer;
 		public long hash;
 	}
 
 	[TLDef(0xBDBB0464)]
-	public class Messages_GetScheduledMessages : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_GetScheduledMessages : IMethod<Messages_MessagesBase>
 	{
 		public InputPeer peer;
 		public int[] id;
 	}
 
 	[TLDef(0xBD38850A)]
-	public class Messages_SendScheduledMessages : IMethod<UpdatesBase>
+	public sealed partial class Messages_SendScheduledMessages : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public int[] id;
 	}
 
 	[TLDef(0x59AE2B16)]
-	public class Messages_DeleteScheduledMessages : IMethod<UpdatesBase>
+	public sealed partial class Messages_DeleteScheduledMessages : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public int[] id;
 	}
 
 	[TLDef(0xB86E380E)]
-	public class Messages_GetPollVotes : IMethod<Messages_VotesList>
+	public sealed partial class Messages_GetPollVotes : IMethod<Messages_VotesList>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -8975,7 +8975,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB5052FEA)]
-	public class Messages_ToggleStickerSets : IMethod<bool>
+	public sealed partial class Messages_ToggleStickerSets : IMethod<bool>
 	{
 		public Flags flags;
 		public InputStickerSet[] stickersets;
@@ -8989,13 +8989,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xEFD48C89)]
-	public class Messages_GetDialogFilters : IMethod<Messages_DialogFilters> { }
+	public sealed partial class Messages_GetDialogFilters : IMethod<Messages_DialogFilters> { }
 
 	[TLDef(0xA29CD42C)]
-	public class Messages_GetSuggestedDialogFilters : IMethod<DialogFilterSuggested[]> { }
+	public sealed partial class Messages_GetSuggestedDialogFilters : IMethod<DialogFilterSuggested[]> { }
 
 	[TLDef(0x1AD4A04A)]
-	public class Messages_UpdateDialogFilter : IMethod<bool>
+	public sealed partial class Messages_UpdateDialogFilter : IMethod<bool>
 	{
 		public Flags flags;
 		public int id;
@@ -9008,13 +9008,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xC563C1E4)]
-	public class Messages_UpdateDialogFiltersOrder : IMethod<bool>
+	public sealed partial class Messages_UpdateDialogFiltersOrder : IMethod<bool>
 	{
 		public int[] order;
 	}
 
 	[TLDef(0x7ED094A1)]
-	public class Messages_GetOldFeaturedStickers : IMethod<Messages_FeaturedStickersBase>
+	public sealed partial class Messages_GetOldFeaturedStickers : IMethod<Messages_FeaturedStickersBase>
 	{
 		public int offset;
 		public int limit;
@@ -9022,7 +9022,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x22DDD30C)]
-	public class Messages_GetReplies : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_GetReplies : IMethod<Messages_MessagesBase>
 	{
 		public InputPeer peer;
 		public int msg_id;
@@ -9036,14 +9036,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x446972FD)]
-	public class Messages_GetDiscussionMessage : IMethod<Messages_DiscussionMessage>
+	public sealed partial class Messages_GetDiscussionMessage : IMethod<Messages_DiscussionMessage>
 	{
 		public InputPeer peer;
 		public int msg_id;
 	}
 
 	[TLDef(0xF731A9F4)]
-	public class Messages_ReadDiscussion : IMethod<bool>
+	public sealed partial class Messages_ReadDiscussion : IMethod<bool>
 	{
 		public InputPeer peer;
 		public int msg_id;
@@ -9051,7 +9051,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xEE22B9A8)]
-	public class Messages_UnpinAllMessages : IMethod<Messages_AffectedHistory>
+	public sealed partial class Messages_UnpinAllMessages : IMethod<Messages_AffectedHistory>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9064,13 +9064,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x5BD0EE50)]
-	public class Messages_DeleteChat : IMethod<bool>
+	public sealed partial class Messages_DeleteChat : IMethod<bool>
 	{
 		public long chat_id;
 	}
 
 	[TLDef(0xF9CBE409)]
-	public class Messages_DeletePhoneCallHistory : IMethod<Messages_AffectedFoundMessages>
+	public sealed partial class Messages_DeletePhoneCallHistory : IMethod<Messages_AffectedFoundMessages>
 	{
 		public Flags flags;
 
@@ -9081,13 +9081,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x43FE19F3)]
-	public class Messages_CheckHistoryImport : IMethod<Messages_HistoryImportParsed>
+	public sealed partial class Messages_CheckHistoryImport : IMethod<Messages_HistoryImportParsed>
 	{
 		public string import_head;
 	}
 
 	[TLDef(0x34090C3B)]
-	public class Messages_InitHistoryImport : IMethod<Messages_HistoryImport>
+	public sealed partial class Messages_InitHistoryImport : IMethod<Messages_HistoryImport>
 	{
 		public InputPeer peer;
 		public InputFileBase file;
@@ -9095,7 +9095,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x2A862092)]
-	public class Messages_UploadImportedMedia : IMethod<MessageMedia>
+	public sealed partial class Messages_UploadImportedMedia : IMethod<MessageMedia>
 	{
 		public InputPeer peer;
 		public long import_id;
@@ -9104,14 +9104,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB43DF344)]
-	public class Messages_StartHistoryImport : IMethod<bool>
+	public sealed partial class Messages_StartHistoryImport : IMethod<bool>
 	{
 		public InputPeer peer;
 		public long import_id;
 	}
 
 	[TLDef(0xA2B5A3F6)]
-	public class Messages_GetExportedChatInvites : IMethod<Messages_ExportedChatInvites>
+	public sealed partial class Messages_GetExportedChatInvites : IMethod<Messages_ExportedChatInvites>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9128,14 +9128,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x73746F5C)]
-	public class Messages_GetExportedChatInvite : IMethod<Messages_ExportedChatInviteBase>
+	public sealed partial class Messages_GetExportedChatInvite : IMethod<Messages_ExportedChatInviteBase>
 	{
 		public InputPeer peer;
 		public string link;
 	}
 
 	[TLDef(0xBDCA2F75)]
-	public class Messages_EditExportedChatInvite : IMethod<Messages_ExportedChatInviteBase>
+	public sealed partial class Messages_EditExportedChatInvite : IMethod<Messages_ExportedChatInviteBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9156,27 +9156,27 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x56987BD5)]
-	public class Messages_DeleteRevokedExportedChatInvites : IMethod<bool>
+	public sealed partial class Messages_DeleteRevokedExportedChatInvites : IMethod<bool>
 	{
 		public InputPeer peer;
 		public InputUserBase admin_id;
 	}
 
 	[TLDef(0xD464A42B)]
-	public class Messages_DeleteExportedChatInvite : IMethod<bool>
+	public sealed partial class Messages_DeleteExportedChatInvite : IMethod<bool>
 	{
 		public InputPeer peer;
 		public string link;
 	}
 
 	[TLDef(0x3920E6EF)]
-	public class Messages_GetAdminsWithInvites : IMethod<Messages_ChatAdminsWithInvites>
+	public sealed partial class Messages_GetAdminsWithInvites : IMethod<Messages_ChatAdminsWithInvites>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0xDF04DD4E)]
-	public class Messages_GetChatInviteImporters : IMethod<Messages_ChatInviteImporters>
+	public sealed partial class Messages_GetChatInviteImporters : IMethod<Messages_ChatInviteImporters>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9195,34 +9195,34 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB80E5FE4)]
-	public class Messages_SetHistoryTTL : IMethod<UpdatesBase>
+	public sealed partial class Messages_SetHistoryTTL : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public int period;
 	}
 
 	[TLDef(0x5DC60F03)]
-	public class Messages_CheckHistoryImportPeer : IMethod<Messages_CheckedHistoryImportPeer>
+	public sealed partial class Messages_CheckHistoryImportPeer : IMethod<Messages_CheckedHistoryImportPeer>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0xE63BE13F)]
-	public class Messages_SetChatTheme : IMethod<UpdatesBase>
+	public sealed partial class Messages_SetChatTheme : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public string emoticon;
 	}
 
 	[TLDef(0x31C1C44F)]
-	public class Messages_GetMessageReadParticipants : IMethod<ReadParticipantDate[]>
+	public sealed partial class Messages_GetMessageReadParticipants : IMethod<ReadParticipantDate[]>
 	{
 		public InputPeer peer;
 		public int msg_id;
 	}
 
 	[TLDef(0x6AA3F6BD)]
-	public class Messages_GetSearchResultsCalendar : IMethod<Messages_SearchResultsCalendar>
+	public sealed partial class Messages_GetSearchResultsCalendar : IMethod<Messages_SearchResultsCalendar>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9238,7 +9238,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x9C7F2F10)]
-	public class Messages_GetSearchResultsPositions : IMethod<Messages_SearchResultsPositions>
+	public sealed partial class Messages_GetSearchResultsPositions : IMethod<Messages_SearchResultsPositions>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9254,7 +9254,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x7FE7E815)]
-	public class Messages_HideChatJoinRequest : IMethod<UpdatesBase>
+	public sealed partial class Messages_HideChatJoinRequest : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9267,7 +9267,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xE085F4EA)]
-	public class Messages_HideAllChatJoinRequests : IMethod<UpdatesBase>
+	public sealed partial class Messages_HideAllChatJoinRequests : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9281,21 +9281,21 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB11EAFA2)]
-	public class Messages_ToggleNoForwards : IMethod<UpdatesBase>
+	public sealed partial class Messages_ToggleNoForwards : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public bool enabled;
 	}
 
 	[TLDef(0xCCFDDF96)]
-	public class Messages_SaveDefaultSendAs : IMethod<bool>
+	public sealed partial class Messages_SaveDefaultSendAs : IMethod<bool>
 	{
 		public InputPeer peer;
 		public InputPeer send_as;
 	}
 
 	[TLDef(0xD30D78D4)]
-	public class Messages_SendReaction : IMethod<UpdatesBase>
+	public sealed partial class Messages_SendReaction : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9311,14 +9311,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x8BBA90E6)]
-	public class Messages_GetMessagesReactions : IMethod<UpdatesBase>
+	public sealed partial class Messages_GetMessagesReactions : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public int[] id;
 	}
 
 	[TLDef(0x461B3F48)]
-	public class Messages_GetMessageReactionsList : IMethod<Messages_MessageReactionsList>
+	public sealed partial class Messages_GetMessageReactionsList : IMethod<Messages_MessageReactionsList>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9335,26 +9335,26 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xFEB16771)]
-	public class Messages_SetChatAvailableReactions : IMethod<UpdatesBase>
+	public sealed partial class Messages_SetChatAvailableReactions : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public ChatReactions available_reactions;
 	}
 
 	[TLDef(0x18DEA0AC)]
-	public class Messages_GetAvailableReactions : IMethod<Messages_AvailableReactions>
+	public sealed partial class Messages_GetAvailableReactions : IMethod<Messages_AvailableReactions>
 	{
 		public int hash;
 	}
 
 	[TLDef(0x4F47A016)]
-	public class Messages_SetDefaultReaction : IMethod<bool>
+	public sealed partial class Messages_SetDefaultReaction : IMethod<bool>
 	{
 		public Reaction reaction;
 	}
 
 	[TLDef(0x63183030)]
-	public class Messages_TranslateText : IMethod<Messages_TranslatedText>
+	public sealed partial class Messages_TranslateText : IMethod<Messages_TranslatedText>
 	{
 		public Flags flags;
 		[IfFlag(0)] public InputPeer peer;
@@ -9370,7 +9370,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3223495B)]
-	public class Messages_GetUnreadReactions : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_GetUnreadReactions : IMethod<Messages_MessagesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9388,7 +9388,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x54AA7F8E)]
-	public class Messages_ReadReactions : IMethod<Messages_AffectedHistory>
+	public sealed partial class Messages_ReadReactions : IMethod<Messages_AffectedHistory>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9401,7 +9401,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x107E31A0)]
-	public class Messages_SearchSentMedia : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_SearchSentMedia : IMethod<Messages_MessagesBase>
 	{
 		public string q;
 		public MessagesFilter filter;
@@ -9409,19 +9409,19 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x16FCC2CB)]
-	public class Messages_GetAttachMenuBots : IMethod<AttachMenuBots>
+	public sealed partial class Messages_GetAttachMenuBots : IMethod<AttachMenuBots>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x77216192)]
-	public class Messages_GetAttachMenuBot : IMethod<AttachMenuBotsBot>
+	public sealed partial class Messages_GetAttachMenuBot : IMethod<AttachMenuBotsBot>
 	{
 		public InputUserBase bot;
 	}
 
 	[TLDef(0x69F59D69)]
-	public class Messages_ToggleBotInAttachMenu : IMethod<bool>
+	public sealed partial class Messages_ToggleBotInAttachMenu : IMethod<bool>
 	{
 		public Flags flags;
 		public InputUserBase bot;
@@ -9434,7 +9434,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x269DC2C1)]
-	public class Messages_RequestWebView : IMethod<WebViewResult>
+	public sealed partial class Messages_RequestWebView : IMethod<WebViewResult>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9459,7 +9459,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB0D81A83)]
-	public class Messages_ProlongWebView : IMethod<bool>
+	public sealed partial class Messages_ProlongWebView : IMethod<bool>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9477,7 +9477,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x1A46500A)]
-	public class Messages_RequestSimpleWebView : IMethod<SimpleWebViewResult>
+	public sealed partial class Messages_RequestSimpleWebView : IMethod<SimpleWebViewResult>
 	{
 		public Flags flags;
 		public InputUserBase bot;
@@ -9497,14 +9497,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x0A4314F5)]
-	public class Messages_SendWebViewResultMessage : IMethod<WebViewMessageSent>
+	public sealed partial class Messages_SendWebViewResultMessage : IMethod<WebViewMessageSent>
 	{
 		public string bot_query_id;
 		public InputBotInlineResultBase result;
 	}
 
 	[TLDef(0xDC0242C8)]
-	public class Messages_SendWebViewData : IMethod<UpdatesBase>
+	public sealed partial class Messages_SendWebViewData : IMethod<UpdatesBase>
 	{
 		public InputUserBase bot;
 		public long random_id;
@@ -9513,14 +9513,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x269E9A49)]
-	public class Messages_TranscribeAudio : IMethod<Messages_TranscribedAudio>
+	public sealed partial class Messages_TranscribeAudio : IMethod<Messages_TranscribedAudio>
 	{
 		public InputPeer peer;
 		public int msg_id;
 	}
 
 	[TLDef(0x7F1D072F)]
-	public class Messages_RateTranscribedAudio : IMethod<bool>
+	public sealed partial class Messages_RateTranscribedAudio : IMethod<bool>
 	{
 		public InputPeer peer;
 		public int msg_id;
@@ -9529,25 +9529,25 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xD9AB0F54)]
-	public class Messages_GetCustomEmojiDocuments : IMethod<DocumentBase[]>
+	public sealed partial class Messages_GetCustomEmojiDocuments : IMethod<DocumentBase[]>
 	{
 		public long[] document_id;
 	}
 
 	[TLDef(0xFBFCA18F)]
-	public class Messages_GetEmojiStickers : IMethod<Messages_AllStickers>
+	public sealed partial class Messages_GetEmojiStickers : IMethod<Messages_AllStickers>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x0ECF6736)]
-	public class Messages_GetFeaturedEmojiStickers : IMethod<Messages_FeaturedStickersBase>
+	public sealed partial class Messages_GetFeaturedEmojiStickers : IMethod<Messages_FeaturedStickersBase>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x3F64C076)]
-	public class Messages_ReportReaction : IMethod<bool>
+	public sealed partial class Messages_ReportReaction : IMethod<bool>
 	{
 		public InputPeer peer;
 		public int id;
@@ -9555,40 +9555,40 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xBB8125BA)]
-	public class Messages_GetTopReactions : IMethod<Messages_Reactions>
+	public sealed partial class Messages_GetTopReactions : IMethod<Messages_Reactions>
 	{
 		public int limit;
 		public long hash;
 	}
 
 	[TLDef(0x39461DB2)]
-	public class Messages_GetRecentReactions : IMethod<Messages_Reactions>
+	public sealed partial class Messages_GetRecentReactions : IMethod<Messages_Reactions>
 	{
 		public int limit;
 		public long hash;
 	}
 
 	[TLDef(0x9DFEEFB4)]
-	public class Messages_ClearRecentReactions : IMethod<bool> { }
+	public sealed partial class Messages_ClearRecentReactions : IMethod<bool> { }
 
 	[TLDef(0x84F80814)]
-	public class Messages_GetExtendedMedia : IMethod<UpdatesBase>
+	public sealed partial class Messages_GetExtendedMedia : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public int[] id;
 	}
 
 	[TLDef(0x9EB51445)]
-	public class Messages_SetDefaultHistoryTTL : IMethod<bool>
+	public sealed partial class Messages_SetDefaultHistoryTTL : IMethod<bool>
 	{
 		public int period;
 	}
 
 	[TLDef(0x658B7188)]
-	public class Messages_GetDefaultHistoryTTL : IMethod<DefaultHistoryTTL> { }
+	public sealed partial class Messages_GetDefaultHistoryTTL : IMethod<DefaultHistoryTTL> { }
 
 	[TLDef(0x91B2D060)]
-	public class Messages_SendBotRequestedPeer : IMethod<UpdatesBase>
+	public sealed partial class Messages_SendBotRequestedPeer : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public int msg_id;
@@ -9597,32 +9597,32 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x7488CE5B)]
-	public class Messages_GetEmojiGroups : IMethod<Messages_EmojiGroups>
+	public sealed partial class Messages_GetEmojiGroups : IMethod<Messages_EmojiGroups>
 	{
 		public int hash;
 	}
 
 	[TLDef(0x2ECD56CD)]
-	public class Messages_GetEmojiStatusGroups : IMethod<Messages_EmojiGroups>
+	public sealed partial class Messages_GetEmojiStatusGroups : IMethod<Messages_EmojiGroups>
 	{
 		public int hash;
 	}
 
 	[TLDef(0x21A548F3)]
-	public class Messages_GetEmojiProfilePhotoGroups : IMethod<Messages_EmojiGroups>
+	public sealed partial class Messages_GetEmojiProfilePhotoGroups : IMethod<Messages_EmojiGroups>
 	{
 		public int hash;
 	}
 
 	[TLDef(0x2C11C0D7)]
-	public class Messages_SearchCustomEmoji : IMethod<EmojiList>
+	public sealed partial class Messages_SearchCustomEmoji : IMethod<EmojiList>
 	{
 		public string emoticon;
 		public long hash;
 	}
 
 	[TLDef(0xE47CB579)]
-	public class Messages_TogglePeerTranslations : IMethod<bool>
+	public sealed partial class Messages_TogglePeerTranslations : IMethod<bool>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9634,14 +9634,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x34FDC5C3)]
-	public class Messages_GetBotApp : IMethod<Messages_BotApp>
+	public sealed partial class Messages_GetBotApp : IMethod<Messages_BotApp>
 	{
 		public InputBotApp app;
 		public long hash;
 	}
 
 	[TLDef(0x8C5A3B3C)]
-	public class Messages_RequestAppWebView : IMethod<AppWebViewResult>
+	public sealed partial class Messages_RequestAppWebView : IMethod<AppWebViewResult>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9659,7 +9659,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x8FFACAE1)]
-	public class Messages_SetChatWallPaper : IMethod<UpdatesBase>
+	public sealed partial class Messages_SetChatWallPaper : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9678,7 +9678,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x92B4494C)]
-	public class Messages_SearchEmojiStickerSets : IMethod<Messages_FoundStickerSets>
+	public sealed partial class Messages_SearchEmojiStickerSets : IMethod<Messages_FoundStickerSets>
 	{
 		public Flags flags;
 		public string q;
@@ -9691,7 +9691,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x5381D21A)]
-	public class Messages_GetSavedDialogs : IMethod<Messages_SavedDialogsBase>
+	public sealed partial class Messages_GetSavedDialogs : IMethod<Messages_SavedDialogsBase>
 	{
 		public Flags flags;
 		public DateTime offset_date;
@@ -9707,7 +9707,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3D9A414D)]
-	public class Messages_GetSavedHistory : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_GetSavedHistory : IMethod<Messages_MessagesBase>
 	{
 		public InputPeer peer;
 		public int offset_id;
@@ -9720,7 +9720,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x6E98102B)]
-	public class Messages_DeleteSavedHistory : IMethod<Messages_AffectedHistory>
+	public sealed partial class Messages_DeleteSavedHistory : IMethod<Messages_AffectedHistory>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -9736,10 +9736,10 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xD63D94E0)]
-	public class Messages_GetPinnedSavedDialogs : IMethod<Messages_SavedDialogsBase> { }
+	public sealed partial class Messages_GetPinnedSavedDialogs : IMethod<Messages_SavedDialogsBase> { }
 
 	[TLDef(0xAC81BBDE)]
-	public class Messages_ToggleSavedDialogPin : IMethod<bool>
+	public sealed partial class Messages_ToggleSavedDialogPin : IMethod<bool>
 	{
 		public Flags flags;
 		public InputDialogPeerBase peer;
@@ -9751,7 +9751,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x8B716587)]
-	public class Messages_ReorderPinnedSavedDialogs : IMethod<bool>
+	public sealed partial class Messages_ReorderPinnedSavedDialogs : IMethod<bool>
 	{
 		public Flags flags;
 		public InputDialogPeerBase[] order;
@@ -9763,7 +9763,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3637E05B)]
-	public class Messages_GetSavedReactionTags : IMethod<Messages_SavedReactionTags>
+	public sealed partial class Messages_GetSavedReactionTags : IMethod<Messages_SavedReactionTags>
 	{
 		public Flags flags;
 		[IfFlag(0)] public InputPeer peer;
@@ -9776,7 +9776,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x60297DEC)]
-	public class Messages_UpdateSavedReactionTag : IMethod<bool>
+	public sealed partial class Messages_UpdateSavedReactionTag : IMethod<bool>
 	{
 		public Flags flags;
 		public Reaction reaction;
@@ -9789,51 +9789,51 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xBDF93428)]
-	public class Messages_GetDefaultTagReactions : IMethod<Messages_Reactions>
+	public sealed partial class Messages_GetDefaultTagReactions : IMethod<Messages_Reactions>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x8C4BFE5D)]
-	public class Messages_GetOutboxReadDate : IMethod<OutboxReadDate>
+	public sealed partial class Messages_GetOutboxReadDate : IMethod<OutboxReadDate>
 	{
 		public InputPeer peer;
 		public int msg_id;
 	}
 
 	[TLDef(0xD483F2A8)]
-	public class Messages_GetQuickReplies : IMethod<Messages_QuickReplies>
+	public sealed partial class Messages_GetQuickReplies : IMethod<Messages_QuickReplies>
 	{
 		public long hash;
 	}
 
 	[TLDef(0x60331907)]
-	public class Messages_ReorderQuickReplies : IMethod<bool>
+	public sealed partial class Messages_ReorderQuickReplies : IMethod<bool>
 	{
 		public int[] order;
 	}
 
 	[TLDef(0xF1D0FBD3)]
-	public class Messages_CheckQuickReplyShortcut : IMethod<bool>
+	public sealed partial class Messages_CheckQuickReplyShortcut : IMethod<bool>
 	{
 		public string shortcut;
 	}
 
 	[TLDef(0x5C003CEF)]
-	public class Messages_EditQuickReplyShortcut : IMethod<bool>
+	public sealed partial class Messages_EditQuickReplyShortcut : IMethod<bool>
 	{
 		public int shortcut_id;
 		public string shortcut;
 	}
 
 	[TLDef(0x3CC04740)]
-	public class Messages_DeleteQuickReplyShortcut : IMethod<bool>
+	public sealed partial class Messages_DeleteQuickReplyShortcut : IMethod<bool>
 	{
 		public int shortcut_id;
 	}
 
 	[TLDef(0x94A495C3)]
-	public class Messages_GetQuickReplyMessages : IMethod<Messages_MessagesBase>
+	public sealed partial class Messages_GetQuickReplyMessages : IMethod<Messages_MessagesBase>
 	{
 		public Flags flags;
 		public int shortcut_id;
@@ -9847,30 +9847,30 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x33153AD4)]
-	public class Messages_SendQuickReplyMessages : IMethod<UpdatesBase>
+	public sealed partial class Messages_SendQuickReplyMessages : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public int shortcut_id;
 	}
 
 	[TLDef(0xE105E910)]
-	public class Messages_DeleteQuickReplyMessages : IMethod<UpdatesBase>
+	public sealed partial class Messages_DeleteQuickReplyMessages : IMethod<UpdatesBase>
 	{
 		public int shortcut_id;
 		public int[] id;
 	}
 
 	[TLDef(0xFD2DDA49)]
-	public class Messages_ToggleDialogFilterTags : IMethod<bool>
+	public sealed partial class Messages_ToggleDialogFilterTags : IMethod<bool>
 	{
 		public bool enabled;
 	}
 
 	[TLDef(0xEDD4882A)]
-	public class Updates_GetState : IMethod<Updates_State> { }
+	public sealed partial class Updates_GetState : IMethod<Updates_State> { }
 
 	[TLDef(0x19C2F763)]
-	public class Updates_GetDifference : IMethod<Updates_DifferenceBase>
+	public sealed partial class Updates_GetDifference : IMethod<Updates_DifferenceBase>
 	{
 		public Flags flags;
 		public int pts;
@@ -9889,7 +9889,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x03173D78)]
-	public class Updates_GetChannelDifference : IMethod<Updates_ChannelDifferenceBase>
+	public sealed partial class Updates_GetChannelDifference : IMethod<Updates_ChannelDifferenceBase>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -9904,7 +9904,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x09E82039)]
-	public class Photos_UpdateProfilePhoto : IMethod<Photos_Photo>
+	public sealed partial class Photos_UpdateProfilePhoto : IMethod<Photos_Photo>
 	{
 		public Flags flags;
 		[IfFlag(1)] public InputUserBase bot;
@@ -9918,7 +9918,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x0388A3B5)]
-	public class Photos_UploadProfilePhoto : IMethod<Photos_Photo>
+	public sealed partial class Photos_UploadProfilePhoto : IMethod<Photos_Photo>
 	{
 		public Flags flags;
 		[IfFlag(5)] public InputUserBase bot;
@@ -9939,13 +9939,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x87CF7F2F)]
-	public class Photos_DeletePhotos : IMethod<long[]>
+	public sealed partial class Photos_DeletePhotos : IMethod<long[]>
 	{
 		public InputPhoto[] id;
 	}
 
 	[TLDef(0x91CD32A8)]
-	public class Photos_GetUserPhotos : IMethod<Photos_Photos>
+	public sealed partial class Photos_GetUserPhotos : IMethod<Photos_Photos>
 	{
 		public InputUserBase user_id;
 		public int offset;
@@ -9954,7 +9954,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xE14C4A71)]
-	public class Photos_UploadContactProfilePhoto : IMethod<Photos_Photo>
+	public sealed partial class Photos_UploadContactProfilePhoto : IMethod<Photos_Photo>
 	{
 		public Flags flags;
 		public InputUserBase user_id;
@@ -9975,7 +9975,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB304A621)]
-	public class Upload_SaveFilePart : IMethod<bool>
+	public sealed partial class Upload_SaveFilePart : IMethod<bool>
 	{
 		public long file_id;
 		public int file_part;
@@ -9983,7 +9983,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xBE5335BE)]
-	public class Upload_GetFile : IMethod<Upload_FileBase>
+	public sealed partial class Upload_GetFile : IMethod<Upload_FileBase>
 	{
 		public Flags flags;
 		public InputFileLocationBase location;
@@ -9998,7 +9998,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xDE7B673D)]
-	public class Upload_SaveBigFilePart : IMethod<bool>
+	public sealed partial class Upload_SaveBigFilePart : IMethod<bool>
 	{
 		public long file_id;
 		public int file_part;
@@ -10007,7 +10007,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x24E6818D)]
-	public class Upload_GetWebFile : IMethod<Upload_WebFile>
+	public sealed partial class Upload_GetWebFile : IMethod<Upload_WebFile>
 	{
 		public InputWebFileLocationBase location;
 		public int offset;
@@ -10015,7 +10015,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x395F69DA)]
-	public class Upload_GetCdnFile : IMethod<Upload_CdnFileBase>
+	public sealed partial class Upload_GetCdnFile : IMethod<Upload_CdnFileBase>
 	{
 		public byte[] file_token;
 		public long offset;
@@ -10023,104 +10023,104 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x9B2754A8)]
-	public class Upload_ReuploadCdnFile : IMethod<FileHash[]>
+	public sealed partial class Upload_ReuploadCdnFile : IMethod<FileHash[]>
 	{
 		public byte[] file_token;
 		public byte[] request_token;
 	}
 
 	[TLDef(0x91DC3F31)]
-	public class Upload_GetCdnFileHashes : IMethod<FileHash[]>
+	public sealed partial class Upload_GetCdnFileHashes : IMethod<FileHash[]>
 	{
 		public byte[] file_token;
 		public long offset;
 	}
 
 	[TLDef(0x9156982A)]
-	public class Upload_GetFileHashes : IMethod<FileHash[]>
+	public sealed partial class Upload_GetFileHashes : IMethod<FileHash[]>
 	{
 		public InputFileLocationBase location;
 		public long offset;
 	}
 
 	[TLDef(0xC4F9186B)]
-	public class Help_GetConfig : IMethod<Config> { }
+	public sealed partial class Help_GetConfig : IMethod<Config> { }
 
 	[TLDef(0x1FB33026)]
-	public class Help_GetNearestDc : IMethod<NearestDc> { }
+	public sealed partial class Help_GetNearestDc : IMethod<NearestDc> { }
 
 	[TLDef(0x522D5A7D)]
-	public class Help_GetAppUpdate : IMethod<Help_AppUpdate>
+	public sealed partial class Help_GetAppUpdate : IMethod<Help_AppUpdate>
 	{
 		public string source;
 	}
 
 	[TLDef(0x4D392343)]
-	public class Help_GetInviteText : IMethod<Help_InviteText> { }
+	public sealed partial class Help_GetInviteText : IMethod<Help_InviteText> { }
 
 	[TLDef(0x9CDF08CD)]
-	public class Help_GetSupport : IMethod<Help_Support> { }
+	public sealed partial class Help_GetSupport : IMethod<Help_Support> { }
 
 	[TLDef(0xEC22CFCD)]
-	public class Help_SetBotUpdatesStatus : IMethod<bool>
+	public sealed partial class Help_SetBotUpdatesStatus : IMethod<bool>
 	{
 		public int pending_updates_count;
 		public string message;
 	}
 
 	[TLDef(0x52029342)]
-	public class Help_GetCdnConfig : IMethod<CdnConfig> { }
+	public sealed partial class Help_GetCdnConfig : IMethod<CdnConfig> { }
 
 	[TLDef(0x3DC0F114)]
-	public class Help_GetRecentMeUrls : IMethod<Help_RecentMeUrls>
+	public sealed partial class Help_GetRecentMeUrls : IMethod<Help_RecentMeUrls>
 	{
 		public string referer;
 	}
 
 	[TLDef(0x2CA51FD1)]
-	public class Help_GetTermsOfServiceUpdate : IMethod<Help_TermsOfServiceUpdateBase> { }
+	public sealed partial class Help_GetTermsOfServiceUpdate : IMethod<Help_TermsOfServiceUpdateBase> { }
 
 	[TLDef(0xEE72F79A)]
-	public class Help_AcceptTermsOfService : IMethod<bool>
+	public sealed partial class Help_AcceptTermsOfService : IMethod<bool>
 	{
 		public DataJSON id;
 	}
 
 	[TLDef(0x3FEDC75F)]
-	public class Help_GetDeepLinkInfo : IMethod<Help_DeepLinkInfo>
+	public sealed partial class Help_GetDeepLinkInfo : IMethod<Help_DeepLinkInfo>
 	{
 		public string path;
 	}
 
 	[TLDef(0x61E3F854)]
-	public class Help_GetAppConfig : IMethod<Help_AppConfig>
+	public sealed partial class Help_GetAppConfig : IMethod<Help_AppConfig>
 	{
 		public int hash;
 	}
 
 	[TLDef(0x6F02F748)]
-	public class Help_SaveAppLog : IMethod<bool>
+	public sealed partial class Help_SaveAppLog : IMethod<bool>
 	{
 		public InputAppEvent[] events;
 	}
 
 	[TLDef(0xC661AD08)]
-	public class Help_GetPassportConfig : IMethod<Help_PassportConfig>
+	public sealed partial class Help_GetPassportConfig : IMethod<Help_PassportConfig>
 	{
 		public int hash;
 	}
 
 	[TLDef(0xD360E72C)]
-	public class Help_GetSupportName : IMethod<Help_SupportName> { }
+	public sealed partial class Help_GetSupportName : IMethod<Help_SupportName> { }
 
 	[TLDef(0x038A08D3)]
-	public class Help_GetUserInfo : IMethod<Help_UserInfo>
+	public sealed partial class Help_GetUserInfo : IMethod<Help_UserInfo>
 	{
 		public InputUserBase user_id;
 	}
 
 	[TLDef(0x66B91B70)]
-	public class Help_EditUserInfo : IMethod<Help_UserInfo>
+	public sealed partial class Help_EditUserInfo : IMethod<Help_UserInfo>
 	{
 		public InputUserBase user_id;
 		public string message;
@@ -10128,65 +10128,65 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xC0977421)]
-	public class Help_GetPromoData : IMethod<Help_PromoDataBase> { }
+	public sealed partial class Help_GetPromoData : IMethod<Help_PromoDataBase> { }
 
 	[TLDef(0x1E251C95)]
-	public class Help_HidePromoData : IMethod<bool>
+	public sealed partial class Help_HidePromoData : IMethod<bool>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0xF50DBAA1)]
-	public class Help_DismissSuggestion : IMethod<bool>
+	public sealed partial class Help_DismissSuggestion : IMethod<bool>
 	{
 		public InputPeer peer;
 		public string suggestion;
 	}
 
 	[TLDef(0x735787A8)]
-	public class Help_GetCountriesList : IMethod<Help_CountriesList>
+	public sealed partial class Help_GetCountriesList : IMethod<Help_CountriesList>
 	{
 		public string lang_code;
 		public int hash;
 	}
 
 	[TLDef(0xB81B93D4)]
-	public class Help_GetPremiumPromo : IMethod<Help_PremiumPromo> { }
+	public sealed partial class Help_GetPremiumPromo : IMethod<Help_PremiumPromo> { }
 
 	[TLDef(0xDA80F42F)]
-	public class Help_GetPeerColors : IMethod<Help_PeerColors>
+	public sealed partial class Help_GetPeerColors : IMethod<Help_PeerColors>
 	{
 		public int hash;
 	}
 
 	[TLDef(0xABCFA9FD)]
-	public class Help_GetPeerProfileColors : IMethod<Help_PeerColors>
+	public sealed partial class Help_GetPeerProfileColors : IMethod<Help_PeerColors>
 	{
 		public int hash;
 	}
 
 	[TLDef(0x49B30240)]
-	public class Help_GetTimezonesList : IMethod<Help_TimezonesList>
+	public sealed partial class Help_GetTimezonesList : IMethod<Help_TimezonesList>
 	{
 		public int hash;
 	}
 
 	[TLDef(0xCC104937)]
-	public class Channels_ReadHistory : IMethod<bool>
+	public sealed partial class Channels_ReadHistory : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public int max_id;
 	}
 
 	[TLDef(0x84C1FD4E)]
-	public class Channels_DeleteMessages : IMethod<Messages_AffectedMessages>
+	public sealed partial class Channels_DeleteMessages : IMethod<Messages_AffectedMessages>
 	{
 		public InputChannelBase channel;
 		public int[] id;
 	}
 
 	[TLDef(0xF44A8315)]
-	public class Channels_ReportSpam : IMethod<bool>
+	public sealed partial class Channels_ReportSpam : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public InputPeer participant;
@@ -10194,14 +10194,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xAD8C9A23)]
-	public class Channels_GetMessages : IMethod<Messages_MessagesBase>
+	public sealed partial class Channels_GetMessages : IMethod<Messages_MessagesBase>
 	{
 		public InputChannelBase channel;
 		public InputMessage[] id;
 	}
 
 	[TLDef(0x77CED9D0)]
-	public class Channels_GetParticipants : IMethod<Channels_ChannelParticipants>
+	public sealed partial class Channels_GetParticipants : IMethod<Channels_ChannelParticipants>
 	{
 		public InputChannelBase channel;
 		public ChannelParticipantsFilter filter;
@@ -10211,26 +10211,26 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA0AB6CC6)]
-	public class Channels_GetParticipant : IMethod<Channels_ChannelParticipant>
+	public sealed partial class Channels_GetParticipant : IMethod<Channels_ChannelParticipant>
 	{
 		public InputChannelBase channel;
 		public InputPeer participant;
 	}
 
 	[TLDef(0x0A7F6BBB)]
-	public class Channels_GetChannels : IMethod<Messages_Chats>
+	public sealed partial class Channels_GetChannels : IMethod<Messages_Chats>
 	{
 		public InputChannelBase[] id;
 	}
 
 	[TLDef(0x08736A09)]
-	public class Channels_GetFullChannel : IMethod<Messages_ChatFull>
+	public sealed partial class Channels_GetFullChannel : IMethod<Messages_ChatFull>
 	{
 		public InputChannelBase channel;
 	}
 
 	[TLDef(0x91006707)]
-	public class Channels_CreateChannel : IMethod<UpdatesBase>
+	public sealed partial class Channels_CreateChannel : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public string title;
@@ -10251,7 +10251,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xD33C8902)]
-	public class Channels_EditAdmin : IMethod<UpdatesBase>
+	public sealed partial class Channels_EditAdmin : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public InputUserBase user_id;
@@ -10260,60 +10260,60 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x566DECD0)]
-	public class Channels_EditTitle : IMethod<UpdatesBase>
+	public sealed partial class Channels_EditTitle : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public string title;
 	}
 
 	[TLDef(0xF12E57C9)]
-	public class Channels_EditPhoto : IMethod<UpdatesBase>
+	public sealed partial class Channels_EditPhoto : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public InputChatPhotoBase photo;
 	}
 
 	[TLDef(0x10E6BD2C)]
-	public class Channels_CheckUsername : IMethod<bool>
+	public sealed partial class Channels_CheckUsername : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public string username;
 	}
 
 	[TLDef(0x3514B3DE)]
-	public class Channels_UpdateUsername : IMethod<bool>
+	public sealed partial class Channels_UpdateUsername : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public string username;
 	}
 
 	[TLDef(0x24B524C5)]
-	public class Channels_JoinChannel : IMethod<UpdatesBase>
+	public sealed partial class Channels_JoinChannel : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 	}
 
 	[TLDef(0xF836AA95)]
-	public class Channels_LeaveChannel : IMethod<UpdatesBase>
+	public sealed partial class Channels_LeaveChannel : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 	}
 
 	[TLDef(0x199F3A6C)]
-	public class Channels_InviteToChannel : IMethod<UpdatesBase>
+	public sealed partial class Channels_InviteToChannel : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public InputUserBase[] users;
 	}
 
 	[TLDef(0xC0111FE3)]
-	public class Channels_DeleteChannel : IMethod<UpdatesBase>
+	public sealed partial class Channels_DeleteChannel : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 	}
 
 	[TLDef(0xE63FADEB)]
-	public class Channels_ExportMessageLink : IMethod<ExportedMessageLink>
+	public sealed partial class Channels_ExportMessageLink : IMethod<ExportedMessageLink>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -10327,14 +10327,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x1F69B606)]
-	public class Channels_ToggleSignatures : IMethod<UpdatesBase>
+	public sealed partial class Channels_ToggleSignatures : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public bool enabled;
 	}
 
 	[TLDef(0xF8B036AF)]
-	public class Channels_GetAdminedPublicChannels : IMethod<Messages_Chats>
+	public sealed partial class Channels_GetAdminedPublicChannels : IMethod<Messages_Chats>
 	{
 		public Flags flags;
 
@@ -10346,7 +10346,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x96E6CD81)]
-	public class Channels_EditBanned : IMethod<UpdatesBase>
+	public sealed partial class Channels_EditBanned : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public InputPeer participant;
@@ -10354,7 +10354,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x33DDF480)]
-	public class Channels_GetAdminLog : IMethod<Channels_AdminLogResults>
+	public sealed partial class Channels_GetAdminLog : IMethod<Channels_AdminLogResults>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -10373,21 +10373,21 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xEA8CA4F9)]
-	public class Channels_SetStickers : IMethod<bool>
+	public sealed partial class Channels_SetStickers : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public InputStickerSet stickerset;
 	}
 
 	[TLDef(0xEAB5DC38)]
-	public class Channels_ReadMessageContents : IMethod<bool>
+	public sealed partial class Channels_ReadMessageContents : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public int[] id;
 	}
 
 	[TLDef(0x9BAA9647)]
-	public class Channels_DeleteHistory : IMethod<UpdatesBase>
+	public sealed partial class Channels_DeleteHistory : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -10400,30 +10400,30 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xEABBB94C)]
-	public class Channels_TogglePreHistoryHidden : IMethod<UpdatesBase>
+	public sealed partial class Channels_TogglePreHistoryHidden : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public bool enabled;
 	}
 
 	[TLDef(0x8341ECC0)]
-	public class Channels_GetLeftChannels : IMethod<Messages_Chats>
+	public sealed partial class Channels_GetLeftChannels : IMethod<Messages_Chats>
 	{
 		public int offset;
 	}
 
 	[TLDef(0xF5DAD378)]
-	public class Channels_GetGroupsForDiscussion : IMethod<Messages_Chats> { }
+	public sealed partial class Channels_GetGroupsForDiscussion : IMethod<Messages_Chats> { }
 
 	[TLDef(0x40582BB2)]
-	public class Channels_SetDiscussionGroup : IMethod<bool>
+	public sealed partial class Channels_SetDiscussionGroup : IMethod<bool>
 	{
 		public InputChannelBase broadcast;
 		public InputChannelBase group;
 	}
 
 	[TLDef(0x8F38CD1F)]
-	public class Channels_EditCreator : IMethod<UpdatesBase>
+	public sealed partial class Channels_EditCreator : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public InputUserBase user_id;
@@ -10431,7 +10431,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x58E63F6D)]
-	public class Channels_EditLocation : IMethod<bool>
+	public sealed partial class Channels_EditLocation : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public InputGeoPoint geo_point;
@@ -10439,70 +10439,70 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xEDD49EF0)]
-	public class Channels_ToggleSlowMode : IMethod<UpdatesBase>
+	public sealed partial class Channels_ToggleSlowMode : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public int seconds;
 	}
 
 	[TLDef(0x11E831EE)]
-	public class Channels_GetInactiveChannels : IMethod<Messages_InactiveChats> { }
+	public sealed partial class Channels_GetInactiveChannels : IMethod<Messages_InactiveChats> { }
 
 	[TLDef(0x0B290C69)]
-	public class Channels_ConvertToGigagroup : IMethod<UpdatesBase>
+	public sealed partial class Channels_ConvertToGigagroup : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 	}
 
 	[TLDef(0xBEAEDB94)]
-	public class Channels_ViewSponsoredMessage : IMethod<bool>
+	public sealed partial class Channels_ViewSponsoredMessage : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public byte[] random_id;
 	}
 
 	[TLDef(0xEC210FBF)]
-	public class Channels_GetSponsoredMessages : IMethod<Messages_SponsoredMessages>
+	public sealed partial class Channels_GetSponsoredMessages : IMethod<Messages_SponsoredMessages>
 	{
 		public InputChannelBase channel;
 	}
 
 	[TLDef(0x0DC770EE)]
-	public class Channels_GetSendAs : IMethod<Channels_SendAsPeers>
+	public sealed partial class Channels_GetSendAs : IMethod<Channels_SendAsPeers>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0x367544DB)]
-	public class Channels_DeleteParticipantHistory : IMethod<Messages_AffectedHistory>
+	public sealed partial class Channels_DeleteParticipantHistory : IMethod<Messages_AffectedHistory>
 	{
 		public InputChannelBase channel;
 		public InputPeer participant;
 	}
 
 	[TLDef(0xE4CB9580)]
-	public class Channels_ToggleJoinToSend : IMethod<UpdatesBase>
+	public sealed partial class Channels_ToggleJoinToSend : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public bool enabled;
 	}
 
 	[TLDef(0x4C2985B6)]
-	public class Channels_ToggleJoinRequest : IMethod<UpdatesBase>
+	public sealed partial class Channels_ToggleJoinRequest : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public bool enabled;
 	}
 
 	[TLDef(0xB45CED1D)]
-	public class Channels_ReorderUsernames : IMethod<bool>
+	public sealed partial class Channels_ReorderUsernames : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public string[] order;
 	}
 
 	[TLDef(0x50F24105)]
-	public class Channels_ToggleUsername : IMethod<bool>
+	public sealed partial class Channels_ToggleUsername : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public string username;
@@ -10510,20 +10510,20 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x0A245DD3)]
-	public class Channels_DeactivateAllUsernames : IMethod<bool>
+	public sealed partial class Channels_DeactivateAllUsernames : IMethod<bool>
 	{
 		public InputChannelBase channel;
 	}
 
 	[TLDef(0xA4298B29)]
-	public class Channels_ToggleForum : IMethod<UpdatesBase>
+	public sealed partial class Channels_ToggleForum : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public bool enabled;
 	}
 
 	[TLDef(0xF40C0224)]
-	public class Channels_CreateForumTopic : IMethod<UpdatesBase>
+	public sealed partial class Channels_CreateForumTopic : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -10542,7 +10542,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x0DE560D1)]
-	public class Channels_GetForumTopics : IMethod<Messages_ForumTopics>
+	public sealed partial class Channels_GetForumTopics : IMethod<Messages_ForumTopics>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -10559,14 +10559,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB0831EB9)]
-	public class Channels_GetForumTopicsByID : IMethod<Messages_ForumTopics>
+	public sealed partial class Channels_GetForumTopicsByID : IMethod<Messages_ForumTopics>
 	{
 		public InputChannelBase channel;
 		public int[] topics;
 	}
 
 	[TLDef(0xF4DFA185)]
-	public class Channels_EditForumTopic : IMethod<UpdatesBase>
+	public sealed partial class Channels_EditForumTopic : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -10586,7 +10586,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x6C2D9026)]
-	public class Channels_UpdatePinnedForumTopic : IMethod<UpdatesBase>
+	public sealed partial class Channels_UpdatePinnedForumTopic : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public int topic_id;
@@ -10594,14 +10594,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x34435F2D)]
-	public class Channels_DeleteTopicHistory : IMethod<Messages_AffectedHistory>
+	public sealed partial class Channels_DeleteTopicHistory : IMethod<Messages_AffectedHistory>
 	{
 		public InputChannelBase channel;
 		public int top_msg_id;
 	}
 
 	[TLDef(0x2950A18F)]
-	public class Channels_ReorderPinnedForumTopics : IMethod<UpdatesBase>
+	public sealed partial class Channels_ReorderPinnedForumTopics : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -10614,35 +10614,35 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x68F3E4EB)]
-	public class Channels_ToggleAntiSpam : IMethod<UpdatesBase>
+	public sealed partial class Channels_ToggleAntiSpam : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public bool enabled;
 	}
 
 	[TLDef(0xA850A693)]
-	public class Channels_ReportAntiSpamFalsePositive : IMethod<bool>
+	public sealed partial class Channels_ReportAntiSpamFalsePositive : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public int msg_id;
 	}
 
 	[TLDef(0x6A6E7854)]
-	public class Channels_ToggleParticipantsHidden : IMethod<UpdatesBase>
+	public sealed partial class Channels_ToggleParticipantsHidden : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public bool enabled;
 	}
 
 	[TLDef(0x18AFBC93)]
-	public class Channels_ClickSponsoredMessage : IMethod<bool>
+	public sealed partial class Channels_ClickSponsoredMessage : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public byte[] random_id;
 	}
 
 	[TLDef(0xD8AA3671)]
-	public class Channels_UpdateColor : IMethod<UpdatesBase>
+	public sealed partial class Channels_UpdateColor : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -10658,55 +10658,55 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x9738BB15)]
-	public class Channels_ToggleViewForumAsMessages : IMethod<UpdatesBase>
+	public sealed partial class Channels_ToggleViewForumAsMessages : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public bool enabled;
 	}
 
 	[TLDef(0x83B70D97)]
-	public class Channels_GetChannelRecommendations : IMethod<Messages_Chats>
+	public sealed partial class Channels_GetChannelRecommendations : IMethod<Messages_Chats>
 	{
 		public InputChannelBase channel;
 	}
 
 	[TLDef(0xF0D3E6A8)]
-	public class Channels_UpdateEmojiStatus : IMethod<UpdatesBase>
+	public sealed partial class Channels_UpdateEmojiStatus : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public EmojiStatus emoji_status;
 	}
 
 	[TLDef(0xAD399CEE)]
-	public class Channels_SetBoostsToUnblockRestrictions : IMethod<UpdatesBase>
+	public sealed partial class Channels_SetBoostsToUnblockRestrictions : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public int boosts;
 	}
 
 	[TLDef(0x3CD930B7)]
-	public class Channels_SetEmojiStickers : IMethod<bool>
+	public sealed partial class Channels_SetEmojiStickers : IMethod<bool>
 	{
 		public InputChannelBase channel;
 		public InputStickerSet stickerset;
 	}
 
 	[TLDef(0xAA2769ED)]
-	public class Bots_SendCustomRequest : IMethod<DataJSON>
+	public sealed partial class Bots_SendCustomRequest : IMethod<DataJSON>
 	{
 		public string custom_method;
 		public DataJSON params_;
 	}
 
 	[TLDef(0xE6213F4D)]
-	public class Bots_AnswerWebhookJSONQuery : IMethod<bool>
+	public sealed partial class Bots_AnswerWebhookJSONQuery : IMethod<bool>
 	{
 		public long query_id;
 		public DataJSON data;
 	}
 
 	[TLDef(0x0517165A)]
-	public class Bots_SetBotCommands : IMethod<bool>
+	public sealed partial class Bots_SetBotCommands : IMethod<bool>
 	{
 		public BotCommandScope scope;
 		public string lang_code;
@@ -10714,46 +10714,46 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3D8DE0F9)]
-	public class Bots_ResetBotCommands : IMethod<bool>
+	public sealed partial class Bots_ResetBotCommands : IMethod<bool>
 	{
 		public BotCommandScope scope;
 		public string lang_code;
 	}
 
 	[TLDef(0xE34C0DD6)]
-	public class Bots_GetBotCommands : IMethod<BotCommand[]>
+	public sealed partial class Bots_GetBotCommands : IMethod<BotCommand[]>
 	{
 		public BotCommandScope scope;
 		public string lang_code;
 	}
 
 	[TLDef(0x4504D54F)]
-	public class Bots_SetBotMenuButton : IMethod<bool>
+	public sealed partial class Bots_SetBotMenuButton : IMethod<bool>
 	{
 		public InputUserBase user_id;
 		public BotMenuButtonBase button;
 	}
 
 	[TLDef(0x9C60EB28)]
-	public class Bots_GetBotMenuButton : IMethod<BotMenuButtonBase>
+	public sealed partial class Bots_GetBotMenuButton : IMethod<BotMenuButtonBase>
 	{
 		public InputUserBase user_id;
 	}
 
 	[TLDef(0x788464E1)]
-	public class Bots_SetBotBroadcastDefaultAdminRights : IMethod<bool>
+	public sealed partial class Bots_SetBotBroadcastDefaultAdminRights : IMethod<bool>
 	{
 		public ChatAdminRights admin_rights;
 	}
 
 	[TLDef(0x925EC9EA)]
-	public class Bots_SetBotGroupDefaultAdminRights : IMethod<bool>
+	public sealed partial class Bots_SetBotGroupDefaultAdminRights : IMethod<bool>
 	{
 		public ChatAdminRights admin_rights;
 	}
 
 	[TLDef(0x10CF3123)]
-	public class Bots_SetBotInfo : IMethod<bool>
+	public sealed partial class Bots_SetBotInfo : IMethod<bool>
 	{
 		public Flags flags;
 		[IfFlag(2)] public InputUserBase bot;
@@ -10772,7 +10772,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xDCD914FD)]
-	public class Bots_GetBotInfo : IMethod<Bots_BotInfo>
+	public sealed partial class Bots_GetBotInfo : IMethod<Bots_BotInfo>
 	{
 		public Flags flags;
 		[IfFlag(0)] public InputUserBase bot;
@@ -10785,14 +10785,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x9709B1C2)]
-	public class Bots_ReorderUsernames : IMethod<bool>
+	public sealed partial class Bots_ReorderUsernames : IMethod<bool>
 	{
 		public InputUserBase bot;
 		public string[] order;
 	}
 
 	[TLDef(0x053CA973)]
-	public class Bots_ToggleUsername : IMethod<bool>
+	public sealed partial class Bots_ToggleUsername : IMethod<bool>
 	{
 		public InputUserBase bot;
 		public string username;
@@ -10800,19 +10800,19 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x1359F4E6)]
-	public class Bots_CanSendMessage : IMethod<bool>
+	public sealed partial class Bots_CanSendMessage : IMethod<bool>
 	{
 		public InputUserBase bot;
 	}
 
 	[TLDef(0xF132E3EF)]
-	public class Bots_AllowSendMessage : IMethod<UpdatesBase>
+	public sealed partial class Bots_AllowSendMessage : IMethod<UpdatesBase>
 	{
 		public InputUserBase bot;
 	}
 
 	[TLDef(0x087FC5E7)]
-	public class Bots_InvokeWebViewCustomMethod : IMethod<DataJSON>
+	public sealed partial class Bots_InvokeWebViewCustomMethod : IMethod<DataJSON>
 	{
 		public InputUserBase bot;
 		public string custom_method;
@@ -10820,7 +10820,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x37148DBB)]
-	public class Payments_GetPaymentForm : IMethod<Payments_PaymentForm>
+	public sealed partial class Payments_GetPaymentForm : IMethod<Payments_PaymentForm>
 	{
 		public Flags flags;
 		public InputInvoice invoice;
@@ -10833,14 +10833,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x2478D1CC)]
-	public class Payments_GetPaymentReceipt : IMethod<Payments_PaymentReceipt>
+	public sealed partial class Payments_GetPaymentReceipt : IMethod<Payments_PaymentReceipt>
 	{
 		public InputPeer peer;
 		public int msg_id;
 	}
 
 	[TLDef(0xB6C8F12B)]
-	public class Payments_ValidateRequestedInfo : IMethod<Payments_ValidatedRequestedInfo>
+	public sealed partial class Payments_ValidateRequestedInfo : IMethod<Payments_ValidatedRequestedInfo>
 	{
 		public Flags flags;
 		public InputInvoice invoice;
@@ -10853,7 +10853,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x2D03522F)]
-	public class Payments_SendPaymentForm : IMethod<Payments_PaymentResultBase>
+	public sealed partial class Payments_SendPaymentForm : IMethod<Payments_PaymentResultBase>
 	{
 		public Flags flags;
 		public long form_id;
@@ -10872,10 +10872,10 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x227D824B)]
-	public class Payments_GetSavedInfo : IMethod<Payments_SavedInfo> { }
+	public sealed partial class Payments_GetSavedInfo : IMethod<Payments_SavedInfo> { }
 
 	[TLDef(0xD83D70C1)]
-	public class Payments_ClearSavedInfo : IMethod<bool>
+	public sealed partial class Payments_ClearSavedInfo : IMethod<bool>
 	{
 		public Flags flags;
 
@@ -10887,39 +10887,39 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x2E79D779)]
-	public class Payments_GetBankCardData : IMethod<Payments_BankCardData>
+	public sealed partial class Payments_GetBankCardData : IMethod<Payments_BankCardData>
 	{
 		public string number;
 	}
 
 	[TLDef(0x0F91B065)]
-	public class Payments_ExportInvoice : IMethod<Payments_ExportedInvoice>
+	public sealed partial class Payments_ExportInvoice : IMethod<Payments_ExportedInvoice>
 	{
 		public InputMedia invoice_media;
 	}
 
 	[TLDef(0x80ED747D)]
-	public class Payments_AssignAppStoreTransaction : IMethod<UpdatesBase>
+	public sealed partial class Payments_AssignAppStoreTransaction : IMethod<UpdatesBase>
 	{
 		public byte[] receipt;
 		public InputStorePaymentPurpose purpose;
 	}
 
 	[TLDef(0xDFFD50D3)]
-	public class Payments_AssignPlayMarketTransaction : IMethod<UpdatesBase>
+	public sealed partial class Payments_AssignPlayMarketTransaction : IMethod<UpdatesBase>
 	{
 		public DataJSON receipt;
 		public InputStorePaymentPurpose purpose;
 	}
 
 	[TLDef(0x9FC19EB6)]
-	public class Payments_CanPurchasePremium : IMethod<bool>
+	public sealed partial class Payments_CanPurchasePremium : IMethod<bool>
 	{
 		public InputStorePaymentPurpose purpose;
 	}
 
 	[TLDef(0x2757BA54)]
-	public class Payments_GetPremiumGiftCodeOptions : IMethod<PremiumGiftCodeOption[]>
+	public sealed partial class Payments_GetPremiumGiftCodeOptions : IMethod<PremiumGiftCodeOption[]>
 	{
 		public Flags flags;
 		[IfFlag(0)] public InputPeer boost_peer;
@@ -10931,26 +10931,26 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x8E51B4C1)]
-	public class Payments_CheckGiftCode : IMethod<Payments_CheckedGiftCode>
+	public sealed partial class Payments_CheckGiftCode : IMethod<Payments_CheckedGiftCode>
 	{
 		public string slug;
 	}
 
 	[TLDef(0xF6E26854)]
-	public class Payments_ApplyGiftCode : IMethod<UpdatesBase>
+	public sealed partial class Payments_ApplyGiftCode : IMethod<UpdatesBase>
 	{
 		public string slug;
 	}
 
 	[TLDef(0xF4239425)]
-	public class Payments_GetGiveawayInfo : IMethod<Payments_GiveawayInfoBase>
+	public sealed partial class Payments_GetGiveawayInfo : IMethod<Payments_GiveawayInfoBase>
 	{
 		public InputPeer peer;
 		public int msg_id;
 	}
 
 	[TLDef(0x5FF58F20)]
-	public class Payments_LaunchPrepaidGiveaway : IMethod<UpdatesBase>
+	public sealed partial class Payments_LaunchPrepaidGiveaway : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public long giveaway_id;
@@ -10958,7 +10958,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x9021AB67)]
-	public class Stickers_CreateStickerSet : IMethod<Messages_StickerSet>
+	public sealed partial class Stickers_CreateStickerSet : IMethod<Messages_StickerSet>
 	{
 		public Flags flags;
 		public InputUserBase user_id;
@@ -10981,27 +10981,27 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xF7760F51)]
-	public class Stickers_RemoveStickerFromSet : IMethod<Messages_StickerSet>
+	public sealed partial class Stickers_RemoveStickerFromSet : IMethod<Messages_StickerSet>
 	{
 		public InputDocument sticker;
 	}
 
 	[TLDef(0xFFB6D4CA)]
-	public class Stickers_ChangeStickerPosition : IMethod<Messages_StickerSet>
+	public sealed partial class Stickers_ChangeStickerPosition : IMethod<Messages_StickerSet>
 	{
 		public InputDocument sticker;
 		public int position;
 	}
 
 	[TLDef(0x8653FEBE)]
-	public class Stickers_AddStickerToSet : IMethod<Messages_StickerSet>
+	public sealed partial class Stickers_AddStickerToSet : IMethod<Messages_StickerSet>
 	{
 		public InputStickerSet stickerset;
 		public InputStickerSetItem sticker;
 	}
 
 	[TLDef(0xA76A5392)]
-	public class Stickers_SetStickerSetThumb : IMethod<Messages_StickerSet>
+	public sealed partial class Stickers_SetStickerSetThumb : IMethod<Messages_StickerSet>
 	{
 		public Flags flags;
 		public InputStickerSet stickerset;
@@ -11016,19 +11016,19 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x284B3639)]
-	public class Stickers_CheckShortName : IMethod<bool>
+	public sealed partial class Stickers_CheckShortName : IMethod<bool>
 	{
 		public string short_name;
 	}
 
 	[TLDef(0x4DAFC503)]
-	public class Stickers_SuggestShortName : IMethod<Stickers_SuggestedShortName>
+	public sealed partial class Stickers_SuggestShortName : IMethod<Stickers_SuggestedShortName>
 	{
 		public string title;
 	}
 
 	[TLDef(0xF5537EBC)]
-	public class Stickers_ChangeSticker : IMethod<Messages_StickerSet>
+	public sealed partial class Stickers_ChangeSticker : IMethod<Messages_StickerSet>
 	{
 		public Flags flags;
 		public InputDocument sticker;
@@ -11045,23 +11045,23 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x124B1C00)]
-	public class Stickers_RenameStickerSet : IMethod<Messages_StickerSet>
+	public sealed partial class Stickers_RenameStickerSet : IMethod<Messages_StickerSet>
 	{
 		public InputStickerSet stickerset;
 		public string title;
 	}
 
 	[TLDef(0x87704394)]
-	public class Stickers_DeleteStickerSet : IMethod<bool>
+	public sealed partial class Stickers_DeleteStickerSet : IMethod<bool>
 	{
 		public InputStickerSet stickerset;
 	}
 
 	[TLDef(0x55451FA9)]
-	public class Phone_GetCallConfig : IMethod<DataJSON> { }
+	public sealed partial class Phone_GetCallConfig : IMethod<DataJSON> { }
 
 	[TLDef(0x42FF96ED)]
-	public class Phone_RequestCall : IMethod<Phone_PhoneCall>
+	public sealed partial class Phone_RequestCall : IMethod<Phone_PhoneCall>
 	{
 		public Flags flags;
 		public InputUserBase user_id;
@@ -11076,7 +11076,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x3BD2B4A0)]
-	public class Phone_AcceptCall : IMethod<Phone_PhoneCall>
+	public sealed partial class Phone_AcceptCall : IMethod<Phone_PhoneCall>
 	{
 		public InputPhoneCall peer;
 		public byte[] g_b;
@@ -11084,7 +11084,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x2EFE1722)]
-	public class Phone_ConfirmCall : IMethod<Phone_PhoneCall>
+	public sealed partial class Phone_ConfirmCall : IMethod<Phone_PhoneCall>
 	{
 		public InputPhoneCall peer;
 		public byte[] g_a;
@@ -11093,13 +11093,13 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x17D54F61)]
-	public class Phone_ReceivedCall : IMethod<bool>
+	public sealed partial class Phone_ReceivedCall : IMethod<bool>
 	{
 		public InputPhoneCall peer;
 	}
 
 	[TLDef(0xB2CBC1C0)]
-	public class Phone_DiscardCall : IMethod<UpdatesBase>
+	public sealed partial class Phone_DiscardCall : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPhoneCall peer;
@@ -11114,7 +11114,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x59EAD627)]
-	public class Phone_SetCallRating : IMethod<UpdatesBase>
+	public sealed partial class Phone_SetCallRating : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPhoneCall peer;
@@ -11128,21 +11128,21 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x277ADD7E)]
-	public class Phone_SaveCallDebug : IMethod<bool>
+	public sealed partial class Phone_SaveCallDebug : IMethod<bool>
 	{
 		public InputPhoneCall peer;
 		public DataJSON debug;
 	}
 
 	[TLDef(0xFF7A9383)]
-	public class Phone_SendSignalingData : IMethod<bool>
+	public sealed partial class Phone_SendSignalingData : IMethod<bool>
 	{
 		public InputPhoneCall peer;
 		public byte[] data;
 	}
 
 	[TLDef(0x48CDC6D8)]
-	public class Phone_CreateGroupCall : IMethod<UpdatesBase>
+	public sealed partial class Phone_CreateGroupCall : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -11159,7 +11159,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB132FF7B)]
-	public class Phone_JoinGroupCall : IMethod<UpdatesBase>
+	public sealed partial class Phone_JoinGroupCall : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputGroupCall call;
@@ -11176,27 +11176,27 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x500377F9)]
-	public class Phone_LeaveGroupCall : IMethod<UpdatesBase>
+	public sealed partial class Phone_LeaveGroupCall : IMethod<UpdatesBase>
 	{
 		public InputGroupCall call;
 		public int source;
 	}
 
 	[TLDef(0x7B393160)]
-	public class Phone_InviteToGroupCall : IMethod<UpdatesBase>
+	public sealed partial class Phone_InviteToGroupCall : IMethod<UpdatesBase>
 	{
 		public InputGroupCall call;
 		public InputUserBase[] users;
 	}
 
 	[TLDef(0x7A777135)]
-	public class Phone_DiscardGroupCall : IMethod<UpdatesBase>
+	public sealed partial class Phone_DiscardGroupCall : IMethod<UpdatesBase>
 	{
 		public InputGroupCall call;
 	}
 
 	[TLDef(0x74BBB43D)]
-	public class Phone_ToggleGroupCallSettings : IMethod<UpdatesBase>
+	public sealed partial class Phone_ToggleGroupCallSettings : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputGroupCall call;
@@ -11210,14 +11210,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x041845DB)]
-	public class Phone_GetGroupCall : IMethod<Phone_GroupCall>
+	public sealed partial class Phone_GetGroupCall : IMethod<Phone_GroupCall>
 	{
 		public InputGroupCall call;
 		public int limit;
 	}
 
 	[TLDef(0xC558D8AB)]
-	public class Phone_GetGroupParticipants : IMethod<Phone_GroupParticipants>
+	public sealed partial class Phone_GetGroupParticipants : IMethod<Phone_GroupParticipants>
 	{
 		public InputGroupCall call;
 		public InputPeer[] ids;
@@ -11227,14 +11227,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB59CF977)]
-	public class Phone_CheckGroupCall : IMethod<int[]>
+	public sealed partial class Phone_CheckGroupCall : IMethod<int[]>
 	{
 		public InputGroupCall call;
 		public int[] sources;
 	}
 
 	[TLDef(0xF128C708)]
-	public class Phone_ToggleGroupCallRecord : IMethod<UpdatesBase>
+	public sealed partial class Phone_ToggleGroupCallRecord : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputGroupCall call;
@@ -11250,7 +11250,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA5273ABF)]
-	public class Phone_EditGroupCallParticipant : IMethod<UpdatesBase>
+	public sealed partial class Phone_EditGroupCallParticipant : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputGroupCall call;
@@ -11274,20 +11274,20 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x1CA6AC0A)]
-	public class Phone_EditGroupCallTitle : IMethod<UpdatesBase>
+	public sealed partial class Phone_EditGroupCallTitle : IMethod<UpdatesBase>
 	{
 		public InputGroupCall call;
 		public string title;
 	}
 
 	[TLDef(0xEF7C213A)]
-	public class Phone_GetGroupCallJoinAs : IMethod<Phone_JoinAsPeers>
+	public sealed partial class Phone_GetGroupCallJoinAs : IMethod<Phone_JoinAsPeers>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0xE6AA647F)]
-	public class Phone_ExportGroupCallInvite : IMethod<Phone_ExportedGroupCallInvite>
+	public sealed partial class Phone_ExportGroupCallInvite : IMethod<Phone_ExportedGroupCallInvite>
 	{
 		public Flags flags;
 		public InputGroupCall call;
@@ -11299,67 +11299,67 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x219C34E6)]
-	public class Phone_ToggleGroupCallStartSubscription : IMethod<UpdatesBase>
+	public sealed partial class Phone_ToggleGroupCallStartSubscription : IMethod<UpdatesBase>
 	{
 		public InputGroupCall call;
 		public bool subscribed;
 	}
 
 	[TLDef(0x5680E342)]
-	public class Phone_StartScheduledGroupCall : IMethod<UpdatesBase>
+	public sealed partial class Phone_StartScheduledGroupCall : IMethod<UpdatesBase>
 	{
 		public InputGroupCall call;
 	}
 
 	[TLDef(0x575E1F8C)]
-	public class Phone_SaveDefaultGroupCallJoinAs : IMethod<bool>
+	public sealed partial class Phone_SaveDefaultGroupCallJoinAs : IMethod<bool>
 	{
 		public InputPeer peer;
 		public InputPeer join_as;
 	}
 
 	[TLDef(0xCBEA6BC4)]
-	public class Phone_JoinGroupCallPresentation : IMethod<UpdatesBase>
+	public sealed partial class Phone_JoinGroupCallPresentation : IMethod<UpdatesBase>
 	{
 		public InputGroupCall call;
 		public DataJSON params_;
 	}
 
 	[TLDef(0x1C50D144)]
-	public class Phone_LeaveGroupCallPresentation : IMethod<UpdatesBase>
+	public sealed partial class Phone_LeaveGroupCallPresentation : IMethod<UpdatesBase>
 	{
 		public InputGroupCall call;
 	}
 
 	[TLDef(0x1AB21940)]
-	public class Phone_GetGroupCallStreamChannels : IMethod<Phone_GroupCallStreamChannels>
+	public sealed partial class Phone_GetGroupCallStreamChannels : IMethod<Phone_GroupCallStreamChannels>
 	{
 		public InputGroupCall call;
 	}
 
 	[TLDef(0xDEB3ABBF)]
-	public class Phone_GetGroupCallStreamRtmpUrl : IMethod<Phone_GroupCallStreamRtmpUrl>
+	public sealed partial class Phone_GetGroupCallStreamRtmpUrl : IMethod<Phone_GroupCallStreamRtmpUrl>
 	{
 		public InputPeer peer;
 		public bool revoke;
 	}
 
 	[TLDef(0x41248786)]
-	public class Phone_SaveCallLog : IMethod<bool>
+	public sealed partial class Phone_SaveCallLog : IMethod<bool>
 	{
 		public InputPhoneCall peer;
 		public InputFileBase file;
 	}
 
 	[TLDef(0xF2F2330A)]
-	public class Langpack_GetLangPack : IMethod<LangPackDifference>
+	public sealed partial class Langpack_GetLangPack : IMethod<LangPackDifference>
 	{
 		public string lang_pack;
 		public string lang_code;
 	}
 
 	[TLDef(0xEFEA3803)]
-	public class Langpack_GetStrings : IMethod<LangPackStringBase[]>
+	public sealed partial class Langpack_GetStrings : IMethod<LangPackStringBase[]>
 	{
 		public string lang_pack;
 		public string lang_code;
@@ -11367,7 +11367,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xCD984AA5)]
-	public class Langpack_GetDifference : IMethod<LangPackDifference>
+	public sealed partial class Langpack_GetDifference : IMethod<LangPackDifference>
 	{
 		public string lang_pack;
 		public string lang_code;
@@ -11375,26 +11375,26 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x42C6978F)]
-	public class Langpack_GetLanguages : IMethod<LangPackLanguage[]>
+	public sealed partial class Langpack_GetLanguages : IMethod<LangPackLanguage[]>
 	{
 		public string lang_pack;
 	}
 
 	[TLDef(0x6A596502)]
-	public class Langpack_GetLanguage : IMethod<LangPackLanguage>
+	public sealed partial class Langpack_GetLanguage : IMethod<LangPackLanguage>
 	{
 		public string lang_pack;
 		public string lang_code;
 	}
 
 	[TLDef(0x6847D0AB)]
-	public class Folders_EditPeerFolders : IMethod<UpdatesBase>
+	public sealed partial class Folders_EditPeerFolders : IMethod<UpdatesBase>
 	{
 		public InputFolderPeer[] folder_peers;
 	}
 
 	[TLDef(0xAB42441A)]
-	public class Stats_GetBroadcastStats : IMethod<Stats_BroadcastStats>
+	public sealed partial class Stats_GetBroadcastStats : IMethod<Stats_BroadcastStats>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -11406,7 +11406,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x621D5FA0)]
-	public class Stats_LoadAsyncGraph : IMethod<StatsGraphBase>
+	public sealed partial class Stats_LoadAsyncGraph : IMethod<StatsGraphBase>
 	{
 		public Flags flags;
 		public string token;
@@ -11419,7 +11419,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xDCDF8607)]
-	public class Stats_GetMegagroupStats : IMethod<Stats_MegagroupStats>
+	public sealed partial class Stats_GetMegagroupStats : IMethod<Stats_MegagroupStats>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -11431,7 +11431,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x5F150144)]
-	public class Stats_GetMessagePublicForwards : IMethod<Stats_PublicForwards>
+	public sealed partial class Stats_GetMessagePublicForwards : IMethod<Stats_PublicForwards>
 	{
 		public InputChannelBase channel;
 		public int msg_id;
@@ -11440,7 +11440,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB6E0A3F5)]
-	public class Stats_GetMessageStats : IMethod<Stats_MessageStats>
+	public sealed partial class Stats_GetMessageStats : IMethod<Stats_MessageStats>
 	{
 		public Flags flags;
 		public InputChannelBase channel;
@@ -11453,7 +11453,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x374FEF40)]
-	public class Stats_GetStoryStats : IMethod<Stats_StoryStats>
+	public sealed partial class Stats_GetStoryStats : IMethod<Stats_StoryStats>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -11466,7 +11466,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xA6437EF6)]
-	public class Stats_GetStoryPublicForwards : IMethod<Stats_PublicForwards>
+	public sealed partial class Stats_GetStoryPublicForwards : IMethod<Stats_PublicForwards>
 	{
 		public InputPeer peer;
 		public int id;
@@ -11475,7 +11475,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x8472478E)]
-	public class Chatlists_ExportChatlistInvite : IMethod<Chatlists_ExportedChatlistInvite>
+	public sealed partial class Chatlists_ExportChatlistInvite : IMethod<Chatlists_ExportedChatlistInvite>
 	{
 		public InputChatlist chatlist;
 		public string title;
@@ -11483,14 +11483,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x719C5C5E)]
-	public class Chatlists_DeleteExportedInvite : IMethod<bool>
+	public sealed partial class Chatlists_DeleteExportedInvite : IMethod<bool>
 	{
 		public InputChatlist chatlist;
 		public string slug;
 	}
 
 	[TLDef(0x653DB63D)]
-	public class Chatlists_EditExportedInvite : IMethod<ExportedChatlistInvite>
+	public sealed partial class Chatlists_EditExportedInvite : IMethod<ExportedChatlistInvite>
 	{
 		public Flags flags;
 		public InputChatlist chatlist;
@@ -11506,64 +11506,64 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xCE03DA83)]
-	public class Chatlists_GetExportedInvites : IMethod<Chatlists_ExportedInvites>
+	public sealed partial class Chatlists_GetExportedInvites : IMethod<Chatlists_ExportedInvites>
 	{
 		public InputChatlist chatlist;
 	}
 
 	[TLDef(0x41C10FFF)]
-	public class Chatlists_CheckChatlistInvite : IMethod<Chatlists_ChatlistInviteBase>
+	public sealed partial class Chatlists_CheckChatlistInvite : IMethod<Chatlists_ChatlistInviteBase>
 	{
 		public string slug;
 	}
 
 	[TLDef(0xA6B1E39A)]
-	public class Chatlists_JoinChatlistInvite : IMethod<UpdatesBase>
+	public sealed partial class Chatlists_JoinChatlistInvite : IMethod<UpdatesBase>
 	{
 		public string slug;
 		public InputPeer[] peers;
 	}
 
 	[TLDef(0x89419521)]
-	public class Chatlists_GetChatlistUpdates : IMethod<Chatlists_ChatlistUpdates>
+	public sealed partial class Chatlists_GetChatlistUpdates : IMethod<Chatlists_ChatlistUpdates>
 	{
 		public InputChatlist chatlist;
 	}
 
 	[TLDef(0xE089F8F5)]
-	public class Chatlists_JoinChatlistUpdates : IMethod<UpdatesBase>
+	public sealed partial class Chatlists_JoinChatlistUpdates : IMethod<UpdatesBase>
 	{
 		public InputChatlist chatlist;
 		public InputPeer[] peers;
 	}
 
 	[TLDef(0x66E486FB)]
-	public class Chatlists_HideChatlistUpdates : IMethod<bool>
+	public sealed partial class Chatlists_HideChatlistUpdates : IMethod<bool>
 	{
 		public InputChatlist chatlist;
 	}
 
 	[TLDef(0xFDBCD714)]
-	public class Chatlists_GetLeaveChatlistSuggestions : IMethod<Peer[]>
+	public sealed partial class Chatlists_GetLeaveChatlistSuggestions : IMethod<Peer[]>
 	{
 		public InputChatlist chatlist;
 	}
 
 	[TLDef(0x74FAE13A)]
-	public class Chatlists_LeaveChatlist : IMethod<UpdatesBase>
+	public sealed partial class Chatlists_LeaveChatlist : IMethod<UpdatesBase>
 	{
 		public InputChatlist chatlist;
 		public InputPeer[] peers;
 	}
 
 	[TLDef(0xC7DFDFDD)]
-	public class Stories_CanSendStory : IMethod<bool>
+	public sealed partial class Stories_CanSendStory : IMethod<bool>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0xE4E6694B)]
-	public class Stories_SendStory : IMethod<UpdatesBase>
+	public sealed partial class Stories_SendStory : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -11591,7 +11591,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB583BA46)]
-	public class Stories_EditStory : IMethod<UpdatesBase>
+	public sealed partial class Stories_EditStory : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -11612,14 +11612,14 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xAE59DB5F)]
-	public class Stories_DeleteStories : IMethod<int[]>
+	public sealed partial class Stories_DeleteStories : IMethod<int[]>
 	{
 		public InputPeer peer;
 		public int[] id;
 	}
 
 	[TLDef(0x9A75A1EF)]
-	public class Stories_TogglePinned : IMethod<int[]>
+	public sealed partial class Stories_TogglePinned : IMethod<int[]>
 	{
 		public InputPeer peer;
 		public int[] id;
@@ -11627,7 +11627,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xEEB0D625)]
-	public class Stories_GetAllStories : IMethod<Stories_AllStoriesBase>
+	public sealed partial class Stories_GetAllStories : IMethod<Stories_AllStoriesBase>
 	{
 		public Flags flags;
 		[IfFlag(0)] public string state;
@@ -11641,7 +11641,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x5821A5DC)]
-	public class Stories_GetPinnedStories : IMethod<Stories_Stories>
+	public sealed partial class Stories_GetPinnedStories : IMethod<Stories_Stories>
 	{
 		public InputPeer peer;
 		public int offset_id;
@@ -11649,7 +11649,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0xB4352016)]
-	public class Stories_GetStoriesArchive : IMethod<Stories_Stories>
+	public sealed partial class Stories_GetStoriesArchive : IMethod<Stories_Stories>
 	{
 		public InputPeer peer;
 		public int offset_id;
@@ -11657,34 +11657,34 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x5774CA74)]
-	public class Stories_GetStoriesByID : IMethod<Stories_Stories>
+	public sealed partial class Stories_GetStoriesByID : IMethod<Stories_Stories>
 	{
 		public InputPeer peer;
 		public int[] id;
 	}
 
 	[TLDef(0x7C2557C4)]
-	public class Stories_ToggleAllStoriesHidden : IMethod<bool>
+	public sealed partial class Stories_ToggleAllStoriesHidden : IMethod<bool>
 	{
 		public bool hidden;
 	}
 
 	[TLDef(0xA556DAC8)]
-	public class Stories_ReadStories : IMethod<int[]>
+	public sealed partial class Stories_ReadStories : IMethod<int[]>
 	{
 		public InputPeer peer;
 		public int max_id;
 	}
 
 	[TLDef(0xB2028AFB)]
-	public class Stories_IncrementStoryViews : IMethod<bool>
+	public sealed partial class Stories_IncrementStoryViews : IMethod<bool>
 	{
 		public InputPeer peer;
 		public int[] id;
 	}
 
 	[TLDef(0x7ED23C57)]
-	public class Stories_GetStoryViewsList : IMethod<Stories_StoryViewsList>
+	public sealed partial class Stories_GetStoryViewsList : IMethod<Stories_StoryViewsList>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -11703,21 +11703,21 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x28E16CC8)]
-	public class Stories_GetStoriesViews : IMethod<Stories_StoryViews>
+	public sealed partial class Stories_GetStoriesViews : IMethod<Stories_StoryViews>
 	{
 		public InputPeer peer;
 		public int[] id;
 	}
 
 	[TLDef(0x7B8DEF20)]
-	public class Stories_ExportStoryLink : IMethod<ExportedStoryLink>
+	public sealed partial class Stories_ExportStoryLink : IMethod<ExportedStoryLink>
 	{
 		public InputPeer peer;
 		public int id;
 	}
 
 	[TLDef(0x1923FA8C)]
-	public class Stories_Report : IMethod<bool>
+	public sealed partial class Stories_Report : IMethod<bool>
 	{
 		public InputPeer peer;
 		public int[] id;
@@ -11726,7 +11726,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x57BBD166)]
-	public class Stories_ActivateStealthMode : IMethod<UpdatesBase>
+	public sealed partial class Stories_ActivateStealthMode : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 
@@ -11738,7 +11738,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x7FD736B2)]
-	public class Stories_SendReaction : IMethod<UpdatesBase>
+	public sealed partial class Stories_SendReaction : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -11752,32 +11752,32 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x2C4ADA50)]
-	public class Stories_GetPeerStories : IMethod<Stories_PeerStories>
+	public sealed partial class Stories_GetPeerStories : IMethod<Stories_PeerStories>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0x9B5AE7F9)]
-	public class Stories_GetAllReadPeerStories : IMethod<UpdatesBase> { }
+	public sealed partial class Stories_GetAllReadPeerStories : IMethod<UpdatesBase> { }
 
 	[TLDef(0x535983C3)]
-	public class Stories_GetPeerMaxIDs : IMethod<int[]>
+	public sealed partial class Stories_GetPeerMaxIDs : IMethod<int[]>
 	{
 		public InputPeer[] id;
 	}
 
 	[TLDef(0xA56A8B60)]
-	public class Stories_GetChatsToSend : IMethod<Messages_Chats> { }
+	public sealed partial class Stories_GetChatsToSend : IMethod<Messages_Chats> { }
 
 	[TLDef(0xBD0415C4)]
-	public class Stories_TogglePeerStoriesHidden : IMethod<bool>
+	public sealed partial class Stories_TogglePeerStoriesHidden : IMethod<bool>
 	{
 		public InputPeer peer;
 		public bool hidden;
 	}
 
 	[TLDef(0xB9B2881F)]
-	public class Stories_GetStoryReactionsList : IMethod<Stories_StoryReactionsList>
+	public sealed partial class Stories_GetStoryReactionsList : IMethod<Stories_StoryReactionsList>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -11795,7 +11795,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x60F67660)]
-	public class Premium_GetBoostsList : IMethod<Premium_BoostsList>
+	public sealed partial class Premium_GetBoostsList : IMethod<Premium_BoostsList>
 	{
 		public Flags flags;
 		public InputPeer peer;
@@ -11809,10 +11809,10 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x0BE77B4A)]
-	public class Premium_GetMyBoosts : IMethod<Premium_MyBoosts> { }
+	public sealed partial class Premium_GetMyBoosts : IMethod<Premium_MyBoosts> { }
 
 	[TLDef(0x6B7DA746)]
-	public class Premium_ApplyBoost : IMethod<Premium_MyBoosts>
+	public sealed partial class Premium_ApplyBoost : IMethod<Premium_MyBoosts>
 	{
 		public Flags flags;
 		[IfFlag(0)] public int[] slots;
@@ -11825,29 +11825,29 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x042F1F61)]
-	public class Premium_GetBoostsStatus : IMethod<Premium_BoostsStatus>
+	public sealed partial class Premium_GetBoostsStatus : IMethod<Premium_BoostsStatus>
 	{
 		public InputPeer peer;
 	}
 
 	[TLDef(0x39854D1F)]
-	public class Premium_GetUserBoosts : IMethod<Premium_BoostsList>
+	public sealed partial class Premium_GetUserBoosts : IMethod<Premium_BoostsList>
 	{
 		public InputPeer peer;
 		public InputUserBase user_id;
 	}
 
 	[TLDef(0x0EDC39D0)]
-	public class Smsjobs_IsEligibleToJoin : IMethod<Smsjobs_EligibilityToJoin> { }
+	public sealed partial class Smsjobs_IsEligibleToJoin : IMethod<Smsjobs_EligibilityToJoin> { }
 
 	[TLDef(0xA74ECE2D)]
-	public class Smsjobs_Join : IMethod<bool> { }
+	public sealed partial class Smsjobs_Join : IMethod<bool> { }
 
 	[TLDef(0x9898AD73)]
-	public class Smsjobs_Leave : IMethod<bool> { }
+	public sealed partial class Smsjobs_Leave : IMethod<bool> { }
 
 	[TLDef(0x093FA0BF)]
-	public class Smsjobs_UpdateSettings : IMethod<bool>
+	public sealed partial class Smsjobs_UpdateSettings : IMethod<bool>
 	{
 		public Flags flags;
 
@@ -11858,16 +11858,16 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x10A698E8)]
-	public class Smsjobs_GetStatus : IMethod<Smsjobs_Status> { }
+	public sealed partial class Smsjobs_GetStatus : IMethod<Smsjobs_Status> { }
 
 	[TLDef(0x778D902F)]
-	public class Smsjobs_GetSmsJob : IMethod<SmsJob>
+	public sealed partial class Smsjobs_GetSmsJob : IMethod<SmsJob>
 	{
 		public string job_id;
 	}
 
 	[TLDef(0x4F1EBF24)]
-	public class Smsjobs_FinishJob : IMethod<bool>
+	public sealed partial class Smsjobs_FinishJob : IMethod<bool>
 	{
 		public Flags flags;
 		public string job_id;

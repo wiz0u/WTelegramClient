@@ -11,7 +11,7 @@ namespace TL
 {
 	public static class Extensions
 	{
-		internal class CollectorPeer : Peer
+		internal sealed partial class CollectorPeer : Peer
 		{
 			public override long ID => 0;
 			internal IDictionary<long, User> _users;
