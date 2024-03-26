@@ -328,8 +328,8 @@ namespace TL
 	{
 		public byte[] raw;
 
-		public Int128(System.IO.BinaryReader reader) => raw = reader.ReadBytes(16);
-		public Int128(RNGCryptoServiceProvider rng) => rng.GetBytes(raw = new byte[16]);
+		public Int128(BinaryReader reader) => raw = reader.ReadBytes(16);
+		public Int128(RandomNumberGenerator rng) => rng.GetBytes(raw = new byte[16]);
 		public static bool operator ==(Int128 left, Int128 right) { for (int i = 0; i < 16; i++) if (left.raw[i] != right.raw[i]) return false; return true; }
 		public static bool operator !=(Int128 left, Int128 right) { for (int i = 0; i < 16; i++) if (left.raw[i] != right.raw[i]) return true; return false; }
 		public override readonly bool Equals(object obj) => obj is Int128 other && this == other;
@@ -342,8 +342,8 @@ namespace TL
 	{
 		public byte[] raw;
 
-		public Int256(System.IO.BinaryReader reader) => raw = reader.ReadBytes(32);
-		public Int256(RNGCryptoServiceProvider rng) => rng.GetBytes(raw = new byte[32]);
+		public Int256(BinaryReader reader) => raw = reader.ReadBytes(32);
+		public Int256(RandomNumberGenerator rng) => rng.GetBytes(raw = new byte[32]);
 		public static bool operator ==(Int256 left, Int256 right) { for (int i = 0; i < 32; i++) if (left.raw[i] != right.raw[i]) return false; return true; }
 		public static bool operator !=(Int256 left, Int256 right) { for (int i = 0; i < 32; i++) if (left.raw[i] != right.raw[i]) return true; return false; }
 		public override readonly bool Equals(object obj) => obj is Int256 other && this == other;

@@ -918,7 +918,7 @@ namespace WTelegram
 					TLConfig = new Config { this_dc = _session.MainDC, dc_options = _session.DcOptions };
 				else
 				{
-					var initParams = JSONValue.FromJsonElement(System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(Config("init_params")));
+					var initParams = JSONValue.FromJsonElement(System.Text.Json.JsonDocument.Parse(Config("init_params")).RootElement);
 					TLConfig = await this.InvokeWithLayer(Layer.Version,
 						new TL.Methods.InitConnection<Config>
 						{

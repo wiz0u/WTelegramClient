@@ -76,6 +76,13 @@ static class Convert
 	internal static string ToHexString(byte[] data) => BitConverter.ToString(data).Replace("-", "");
 	internal static byte[] FromHexString(string hex) => Enumerable.Range(0, hex.Length / 2).Select(i => System.Convert.ToByte(hex.Substring(i * 2, 2), 16)).ToArray();
 }
+public class RandomNumberGenerator
+{
+	internal static readonly RNGCryptoServiceProvider RNG = new();
+	public static RandomNumberGenerator Create() => new();
+	public void GetBytes(byte[] data) => RNG.GetBytes(data);
+	public void GetBytes(byte[] data, int offset, int count) => RNG.GetBytes(data, offset, count);
+}
 #endif
 
 #if NETSTANDARD2_0

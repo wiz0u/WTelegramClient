@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net5.0;net8.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <RootNamespace>WTelegram</RootNamespace>
     <Deterministic>true</Deterministic>
@@ -26,6 +26,7 @@
     <PackageReleaseNotes>$(ReleaseNotes.Replace("|", "%0D%0A").Replace(" - ","%0D%0A- ").Replace("  ", "%0D%0A%0D%0A"))</PackageReleaseNotes>
     <NoWarn>0419;1573;1591;NETSDK1138</NoWarn>
     <DefineConstants>TRACE;OBFUSCATION</DefineConstants>
+    <!--<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>-->
   </PropertyGroup>
 
   <ItemGroup>

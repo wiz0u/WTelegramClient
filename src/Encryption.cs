@@ -16,7 +16,7 @@ namespace WTelegram
 	internal static class Encryption
 	{
 		private static readonly Dictionary<long, RSAPublicKey> PublicKeys = [];
-		internal static readonly RNGCryptoServiceProvider RNG = new();
+		internal static readonly RandomNumberGenerator RNG = RandomNumberGenerator.Create();
 		internal static readonly Aes AesECB = Aes.Create();
 
 		static Encryption()
@@ -33,7 +33,7 @@ namespace WTelegram
 			var sha256 = SHA256.Create();
 
 			//1)
-			var nonce = new Int128(RNG);
+			var nonce = new TL.Int128(RNG);
 			var resPQ = await client.ReqPqMulti(nonce);
 			//2)
 			if (resPQ.nonce != nonce) throw new WTException("Nonce mismatch");
@@ -164,7 +164,7 @@ namespace WTelegram
 			session.Salt = BinaryPrimitives.ReadInt64LittleEndian(pqInnerData.new_nonce.raw) ^ BinaryPrimitives.ReadInt64LittleEndian(resPQ.server_nonce.raw);
 			session.OldSalt = session.Salt;
 
-			(byte[] key, byte[] iv) ConstructTmpAESKeyIV(Int128 server_nonce, Int256 new_nonce)
+			(byte[] key, byte[] iv) ConstructTmpAESKeyIV(TL.Int128 server_nonce, Int256 new_nonce)
 			{
 				byte[] tmp_aes_key = new byte[32], tmp_aes_iv = new byte[32];
 				sha1.TransformBlock(new_nonce, 0, 32, null, 0);
