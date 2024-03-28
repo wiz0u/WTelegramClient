@@ -28,7 +28,7 @@ stages:
       - task: DotNetCoreCLI@2
         inputs:
           command: 'pack'
-          packagesToPack: '**/*.csproj'
+          packagesToPack: 'src/WTelegramClient.csproj'
           includesymbols: true
           versioningScheme: 'byEnvVar'
           versionEnvVar: 'Build.BuildNumber'
