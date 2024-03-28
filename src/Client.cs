@@ -570,12 +570,11 @@ namespace WTelegram
 						if (peek == Layer.RpcErrorCtor)
 							result = reader.ReadTLObject(Layer.RpcErrorCtor);
 						else if (peek == Layer.GZipedCtor)
-							using (var gzipReader = new BinaryReader(new GZipStream(new MemoryStream(reader.ReadTLBytes()), CompressionMode.Decompress)))
-								result = gzipReader.ReadTLValue(rpc.type);
+							result = reader.ReadTLGzipped();
 						else
 						{
 							reader.BaseStream.Position -= 4;
-							result = reader.ReadTLValue(rpc.type);
+							result = reader.ReadTLVector(rpc.type);
 						}
 					}
 					if (rpc.type.IsEnum) result = Enum.ToObject(rpc.type, result);

@@ -11,7 +11,11 @@ using System.Text;
 
 namespace TL
 {
+#if MTPG
+	public interface IObject { void WriteTL(BinaryWriter writer); }
+#else
 	public interface IObject { }
+#endif
 	public interface IMethod<ReturnType> : IObject { }
 	public interface IPeerResolver { IPeerInfo UserOrChat(Peer peer); }
 
@@ -39,6 +43,7 @@ namespace TL
 	public sealed partial class ReactorError : IObject
 	{
 		public Exception Exception;
+		public void WriteTL(BinaryWriter writer) => throw new NotSupportedException();
 	}
 
 	public static class Serialization
@@ -46,6 +51,9 @@ namespace TL
 		public static void WriteTLObject<T>(this BinaryWriter writer, T obj) where T : IObject
 		{
 			if (obj == null) { writer.WriteTLNull(typeof(T)); return; }
+#if MTPG
+			obj.WriteTL(writer);
+#else
 			var type = obj.GetType();
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var ctorNb = tlDef.CtorNb;
@@ -63,14 +71,16 @@ namespace TL
 					if (field.Name == "flags") flags = (uint)value;
 					else if (field.Name == "flags2") flags |= (ulong)(uint)value << 32;
 			}
+#endif
 		}
 
 		public static IObject ReadTLObject(this BinaryReader reader, uint ctorNb = 0)
 		{
+#if MTPG
+			return reader.ReadTL(ctorNb);
+#else
 			if (ctorNb == 0) ctorNb = reader.ReadUInt32();
-			if (ctorNb == Layer.GZipedCtor)
-				using (var gzipReader = new BinaryReader(new GZipStream(new MemoryStream(reader.ReadTLBytes()), CompressionMode.Decompress)))
-					return ReadTLObject(gzipReader);
+			if (ctorNb == Layer.GZipedCtor) return reader.ReadTLGzipped();
 			if (!Layer.Table.TryGetValue(ctorNb, out var type))
 				throw new WTelegram.WTException($"Cannot find type for ctor #{ctorNb:x}");
 			if (type == null) return null; // nullable ctor (class meaning is associated with null)
@@ -90,6 +100,7 @@ namespace TL
 					else if (field.Name == "flags2") flags |= (ulong)(uint)value << 32;
 			}
 			return (IObject)obj;
+#endif
 		}
 
 		internal static void WriteTLValue(this BinaryWriter writer, object value, Type valueType)
@@ -178,17 +189,6 @@ namespace TL
 			}
 		}
 
-		internal static void WriteTLVector(this BinaryWriter writer, Array array)
-		{
-			writer.Write(Layer.VectorCtor);
-			if (array == null) { writer.Write(0); return; }
-			int count = array.Length;
-			writer.Write(count);
-			var elementType = array.GetType().GetElementType();
-			for (int i = 0; i < count; i++)
-				writer.WriteTLValue(array.GetValue(i), elementType);
-		}
-
 		internal static void WriteTLMessages(this BinaryWriter writer, _Message[] messages)
 		{
 			writer.Write(messages.Length);
@@ -207,6 +207,38 @@ namespace TL
 				writer.Write((int)(writer.BaseStream.Length - patchPos - 4)); // patch bytes field
 				writer.Seek(0, SeekOrigin.End);
 			}
+		}
+
+		internal static void WriteTLVector(this BinaryWriter writer, Array array)
+		{
+			writer.Write(Layer.VectorCtor);
+			if (array == null) { writer.Write(0); return; }
+			int count = array.Length;
+			writer.Write(count);
+			var elementType = array.GetType().GetElementType();
+			for (int i = 0; i < count; i++)
+				writer.WriteTLValue(array.GetValue(i), elementType);
+		}
+
+		internal static T[] ReadTLRawVector<T>(this BinaryReader reader, uint ctorNb)
+		{
+			int count = reader.ReadInt32();
+			var array = new T[count];
+			for (int i = 0; i < count; i++)
+				array[i] = (T)reader.ReadTLObject(ctorNb);
+			return array;
+		}
+
+		internal static T[] ReadTLVector<T>(this BinaryReader reader)
+		{
+			var elementType = typeof(T);
+			if (reader.ReadUInt32() is not Layer.VectorCtor and uint ctorNb)
+				throw new WTelegram.WTException($"Cannot deserialize {elementType.Name}[] with ctor #{ctorNb:x}");
+			int count = reader.ReadInt32();
+			var array = new T[count];
+			for (int i = 0; i < count; i++)
+				array[i] = (T)reader.ReadTLValue(elementType);
+			return array;
 		}
 
 		internal static Array ReadTLVector(this BinaryReader reader, Type type)
@@ -240,14 +272,13 @@ namespace TL
 		internal static Dictionary<long, T> ReadTLDictionary<T>(this BinaryReader reader) where T : class, IPeerInfo
 		{
 			uint ctorNb = reader.ReadUInt32();
-			var elementType = typeof(T);
 			if (ctorNb != Layer.VectorCtor)
-				throw new WTelegram.WTException($"Cannot deserialize Vector<{elementType.Name}> with ctor #{ctorNb:x}");
+				throw new WTelegram.WTException($"Cannot deserialize Vector<{typeof(T).Name}> with ctor #{ctorNb:x}");
 			int count = reader.ReadInt32();
 			var dict = new Dictionary<long, T>(count);
 			for (int i = 0; i < count; i++)
 			{
-				var value = (T)reader.ReadTLValue(elementType);
+				var value = (T)reader.ReadTLObject();
 				dict[value.ID] = value is UserEmpty ? null : value;
 			}
 			return dict;
@@ -317,6 +348,19 @@ namespace TL
 			writer.Write(0);    // null arrays/strings are serialized as empty
 		}
 
+		internal static IObject ReadTLGzipped(this BinaryReader reader)
+		{
+			using var gzipReader = new BinaryReader(new GZipStream(new MemoryStream(reader.ReadTLBytes()), CompressionMode.Decompress));
+			return ReadTLObject(gzipReader);
+		}
+
+		internal static bool ReadTLBool(this BinaryReader reader) => reader.ReadUInt32() switch
+		{
+			0x997275b5 => true,
+			0xbc799737 => false,
+			var value => throw new WTelegram.WTException($"Invalid boolean value #{value:x}")
+		};
+
 #if DEBUG
 		private static void ShouldntBeHere() => System.Diagnostics.Debugger.Break();
 #else
@@ -356,6 +400,9 @@ namespace TL
 	{
 		public Messages_AffectedMessages affected;
 		public override (long, int, int) GetMBox() => (0, affected.pts, affected.pts_count);
+#if MTPG
+		public override void WriteTL(BinaryWriter writer) => throw new NotSupportedException();
+#endif
 	}
 
 	// Below TL types are commented "parsed manually" from https://github.com/telegramdesktop/tdesktop/blob/dev/Telegram/Resources/tl/mtproto.tl

@@ -4,12 +4,11 @@ using System.IO;
 using System.Numerics;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
 #if NET8_0_OR_GREATER
-using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
 [JsonSerializable(typeof(WTelegram.Session))]
 internal partial class WTelegramContext : JsonSerializerContext { }
 #endif
@@ -24,9 +23,9 @@ namespace WTelegram
 		/// <summary>For serializing indented Json with fields included</summary>
 		public static readonly JsonSerializerOptions JsonOptions = new() { IncludeFields = true, WriteIndented = true,
 #if NET8_0_OR_GREATER
-			TypeInfoResolver = JsonSerializer.IsReflectionEnabledByDefault ? new DefaultJsonTypeInfoResolver() : WTelegramContext.Default,
+			TypeInfoResolver = JsonSerializer.IsReflectionEnabledByDefault ? null : WTelegramContext.Default,
 #endif
-			IgnoreReadOnlyProperties = true, DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull };
+			IgnoreReadOnlyProperties = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
 
 		private static readonly ConsoleColor[] LogLevelToColor = [ ConsoleColor.DarkGray, ConsoleColor.DarkCyan,
 			ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.DarkBlue ];

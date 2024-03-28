@@ -88,6 +88,9 @@ namespace TL
 							}
 				return null;
 			}
+#if MTPG
+			public override void WriteTL(System.IO.BinaryWriter writer) => throw new NotImplementedException();
+#endif
 		}
 
 		/// <summary>Accumulate users/chats found in this structure in your dictionaries, ignoring <see href="https://core.telegram.org/api/min">Min constructors</see> when the full object is already stored</summary>
