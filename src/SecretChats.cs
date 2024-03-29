@@ -21,7 +21,7 @@ namespace WTelegram
 		int RemoteLayer { get; }
 	}
 
-	[TLDef(0xFEFEFEFE)]
+	[TLDef(0xFEFEFEFE)] [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles")]
 	internal sealed partial class SecretChat : IObject, ISecretChat
 	{
 		[Flags] public enum Flags : uint { requestChat = 1, renewKey = 2, acceptKey = 4, originator = 8, commitKey = 16 }
@@ -170,7 +170,7 @@ namespace WTelegram
 			return chat_id;
 		}
 
-		/// <summary>Processes the <see cref="UpdateEncryption"/> you received from Telegram (<see cref="Client.OnUpdate"/>).</summary>
+		/// <summary>Processes the <see cref="UpdateEncryption"/> you received from Telegram (<see cref="Client.OnUpdates"/>).</summary>
 		/// <param name="update">If update.chat is <see cref="EncryptedChatRequested"/>, you might want to first make sure you want to accept this secret chat initiated by user <see cref="EncryptedChatRequested.admin_id"/></param>
 		/// <param name="acceptChatRequests">Incoming requests for secret chats are automatically: accepted (<see langword="true"/>), rejected (<see langword="false"/>) or ignored (<see langword="null"/>)</param>
 		/// <returns><see langword="true"/> if the update was handled successfully</returns>

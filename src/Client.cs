@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -25,11 +24,13 @@ namespace WTelegram
 	{
 		/// <summary>This event will be called when unsollicited updates/messages are sent by Telegram servers</summary>
 		/// <remarks>Make your handler <see langword="async"/>, or return <see cref="Task.CompletedTask"/> or <see langword="null"/><br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
-		public event Func<UpdatesBase, Task> OnUpdate;
+		public event Func<UpdatesBase, Task> OnUpdates;
+		[Obsolete("This event was renamed OnUpdates (plural)")]
+		public event Func<UpdatesBase, Task> OnUpdate { add { OnUpdates += value; } remove { OnUpdates -= value; } }
 		/// <summary>This event is called for other types of notifications (login states, reactor errors, ...)</summary>
 		public event Func<IObject, Task> OnOther;
 		/// <summary>Use this handler to intercept Updates that resulted from your own API calls</summary>
-		public event Func<UpdatesBase, Task> OnOwnUpdate;
+		public event Func<UpdatesBase, Task> OnOwnUpdates;
 		/// <summary>Used to create a TcpClient connected to the given address/port, or throw an exception on failure</summary>
 		public TcpFactory TcpHandler { get; set; } = DefaultTcpHandler;
 		public delegate Task<TcpClient> TcpFactory(string host, int port);
@@ -355,13 +356,13 @@ namespace WTelegram
 						if (IsMainDC)
 						{
 							var updatesState = await this.Updates_GetState(); // this call reenables incoming Updates
-							RaiseUpdate(updatesState);
+							RaiseUpdates(updatesState);
 						}
 					}
 					catch
 					{
 						if (IsMainDC)
-							RaiseUpdate(reactorError);
+							RaiseUpdates(reactorError);
 						lock (_pendingRpcs) // abort all pending requests
 						{
 							foreach (var rpc in _pendingRpcs.Values)
@@ -583,11 +584,11 @@ namespace WTelegram
 					else
 					{
 						Helpers.Log(1, $"             → {result?.GetType().Name,-37} #{(short)msgId.GetHashCode():X4}");
-						if (OnOwnUpdate != null)
+						if (OnOwnUpdates != null)
 							if (result is UpdatesBase updates)
-								RaiseOwnUpdate(updates);
+								RaiseOwnUpdates(updates);
 							else if (result is Messages_AffectedMessages affected)
-								RaiseOwnUpdate(new UpdateShort { update = new UpdateAffectedMessages { affected = affected }, date = MsgIdToStamp(_lastRecvMsgId) });
+								RaiseOwnUpdates(new UpdateShort { update = new UpdateAffectedMessages { affected = affected }, date = MsgIdToStamp(_lastRecvMsgId) });
 					}
 
 					rpc.tcs.SetResult(result);
@@ -611,8 +612,8 @@ namespace WTelegram
 				else
 				{
 					result = reader.ReadTLObject(ctorNb);
-					if (OnOwnUpdate != null && result is UpdatesBase updates)
-						RaiseOwnUpdate(updates);
+					if (OnOwnUpdates != null && result is UpdatesBase updates)
+						RaiseOwnUpdates(updates);
 				}
 
 				var typeName = result?.GetType().Name;
@@ -673,7 +674,7 @@ namespace WTelegram
 					break;
 				case Pong pong:
 					SetResult(pong.msg_id, pong);
-					RaiseUpdate(pong);
+					RaiseUpdates(pong);
 					break;
 				case FutureSalts futureSalts:
 					SetResult(futureSalts.req_msg_id, futureSalts);
@@ -733,10 +734,10 @@ namespace WTelegram
 						rpc.tcs.SetException(new WTException($"BadMsgNotification {badMsgNotification.error_code}"));
 					}
 					else
-						RaiseUpdate(badMsgNotification);
+						RaiseUpdates(badMsgNotification);
 					break;
 				default:
-					RaiseUpdate(obj);
+					RaiseUpdates(obj);
 					break;
 			}
 
@@ -746,32 +747,32 @@ namespace WTelegram
 				if (rpc != null)
 					rpc.tcs.SetResult(result);
 				else
-					RaiseUpdate(obj);
+					RaiseUpdates(obj);
 			}
 		}
 
-		private async void RaiseUpdate(IObject obj)
+		private async void RaiseUpdates(IObject obj)
 		{
 			try
 			{
-				var task = obj is UpdatesBase updates ? OnUpdate?.Invoke(updates) : OnOther?.Invoke(obj);
+				var task = obj is UpdatesBase updates ? OnUpdates?.Invoke(updates) : OnOther?.Invoke(obj);
 				if (task != null) await task;
 			}
 			catch (Exception ex)
 			{
-				Helpers.Log(4, $"{nameof(OnUpdate)}({obj?.GetType().Name}) raised {ex}");
+				Helpers.Log(4, $"{nameof(OnUpdates)}({obj?.GetType().Name}) raised {ex}");
 			}
 		}
 
-		private async void RaiseOwnUpdate(UpdatesBase updates)
+		private async void RaiseOwnUpdates(UpdatesBase updates)
 		{
 			try
 			{
-				await OnOwnUpdate(updates);
+				await OnOwnUpdates(updates);
 			}
 			catch (Exception ex)
 			{
-				Helpers.Log(4, $"{nameof(OnOwnUpdate)}({updates.GetType().Name}) raised {ex}");
+				Helpers.Log(4, $"{nameof(OnOwnUpdates)}({updates.GetType().Name}) raised {ex}");
 			}
 		}
 
@@ -1050,7 +1051,7 @@ namespace WTelegram
 					if (self.id == long.Parse(botToken.Split(':')[0]))
 					{
 						_session.UserId = _dcSession.UserId = self.id;
-						RaiseUpdate(self);
+						RaiseUpdates(self);
 						return User = self;
 					}
 					Helpers.Log(3, $"Current logged user {self.id} mismatched bot_token. Logging out and in...");
@@ -1089,7 +1090,7 @@ namespace WTelegram
 						self.phone == string.Concat((phone_number = Config("phone_number")).Where(char.IsDigit)))
 					{
 						_session.UserId = _dcSession.UserId = self.id;
-						RaiseUpdate(self);
+						RaiseUpdates(self);
 						return User = self;
 					}
 					var mismatch = $"Current logged user {self.id} mismatched user_id or phone_number";
@@ -1124,7 +1125,7 @@ namespace WTelegram
 				{
 					phone_code_hash = setupSentCode.phone_code_hash;
 					Helpers.Log(3, "A login email is required");
-					RaiseUpdate(sentCodeBase);
+					RaiseUpdates(sentCodeBase);
 					var email = _config("email");
 					if (string.IsNullOrEmpty(email))
 						sentCodeBase = await this.Auth_ResendCode(phone_number, phone_code_hash);
@@ -1135,7 +1136,7 @@ namespace WTelegram
 						{
 							var sentEmail = await this.Account_SendVerifyEmailCode(purpose, email);
 							Helpers.Log(3, "An email verification code has been sent to " + sentEmail.email_pattern);
-							RaiseUpdate(sentEmail);
+							RaiseUpdates(sentEmail);
 						}
 						Account_EmailVerified verified = null;
 						for (int retry = 1; verified == null; retry++)
@@ -1166,7 +1167,7 @@ namespace WTelegram
 					phone_code_hash = sentCode.phone_code_hash;
 					var timeout = DateTime.UtcNow + TimeSpan.FromSeconds(sentCode.timeout);
 					Helpers.Log(3, $"A verification code has been sent via {sentCode.type.GetType().Name[17..]}");
-					RaiseUpdate(sentCode);
+					RaiseUpdates(sentCode);
 					if (sentCode.type is Auth_SentCodeTypeFirebaseSms firebaseSms)
 					{
 						var token = await ConfigAsync("firebase");
@@ -1210,7 +1211,7 @@ namespace WTelegram
 								try
 								{
 									var accountPassword = await this.Account_GetPassword();
-									RaiseUpdate(accountPassword);
+									RaiseUpdates(accountPassword);
 									var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
 									authorization = await this.Auth_CheckPassword(checkPasswordSRP);
 								}
@@ -1230,7 +1231,7 @@ namespace WTelegram
 			if (authorization is Auth_AuthorizationSignUpRequired signUpRequired)
 			{
 				var waitUntil = DateTime.UtcNow.AddSeconds(3);
-				RaiseUpdate(signUpRequired); // give caller the possibility to read and accept TOS
+				RaiseUpdates(signUpRequired); // give caller the possibility to read and accept TOS
 				var first_name = Config("first_name");
 				var last_name = Config("last_name");
 				var wait = waitUntil - DateTime.UtcNow;
@@ -1257,7 +1258,7 @@ namespace WTelegram
 				throw new WTException("Failed to get Authorization: " + authorization.GetType().Name);
 			_session.UserId = _dcSession.UserId = self.id;
 			lock (_session) _session.Save();
-			RaiseUpdate(self);
+			RaiseUpdates(self);
 			return User = self;
 		}
 

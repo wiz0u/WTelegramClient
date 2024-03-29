@@ -143,7 +143,7 @@ Here are some advices from [another similar library](https://github.com/gotd/td/
 
 Some additional advices from me:
 
-5. Avoid repetitive polling or repetitive sequence of actions/requests: Save the initial results of your queries, and update those results when you're informed of a change through `OnUpdate` events.
+5. Avoid repetitive polling or repetitive sequence of actions/requests: Save the initial results of your queries, and update those results when you're informed of a change through `OnUpdates` events.
 6. Don't buy fake user accounts/sessions and don't extract api_id/hash/authkey/sessions from official clients, this is [specifically forbidden by API TOS](https://core.telegram.org/api/terms#2-transparency). You must use your own api_id and create your own sessions associated with it.
 7. If a phone number is brand new, it will be closely monitored by Telegram for abuse, and it can even already be considered a bad user due to bad behavior from the previous owner of that phone number (which may happen often with VoIP or other easy-to-buy-online numbers, so expect fast ban)
 8. You may want to use your new phone number account with an official Telegram client and act like a normal user for some time (some weeks/months), before using it for automation with WTelegramClient.
@@ -261,7 +261,7 @@ The following choices were made while implementing Secret Chats in WTelegramClie
 If for some reason, we received them in incorrect order, messages are kept in memory until the requested missing messages are obtained.  
 If those missing messages are never obtained during the session, incoming messages might get stuck and lost.
 - SecretChats file data is only valid for the current user, so make sure to pick the right file *(or a new file name)* if you change logged-in user.
-- If you want to accept incoming Secret Chats request only from specific user, you must check it in OnUpdate before:  
+- If you want to accept incoming Secret Chats request only from specific user, you must check it in OnUpdates before:  
 `await Secrets.HandleUpdate(ue, ue.chat is EncryptedChatRequested ecr && ecr.admin_id == EXPECTED_USER_ID);`
 - As recommended, new encryption keys are negotiated every 100 sent/received messages or after one week.  
 If remote client doesn't complete this negotiation before reaching 200 messages, the Secret Chat is aborted.

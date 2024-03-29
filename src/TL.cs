@@ -396,7 +396,7 @@ namespace TL
 		public static implicit operator byte[](Int256 int256) => int256.raw;
 	}
 
-	public sealed partial class UpdateAffectedMessages : Update // auto-generated for OnOwnUpdate in case of such API call result
+	public sealed partial class UpdateAffectedMessages : Update // auto-generated for OnOwnUpdates in case of such API call result
 	{
 		public Messages_AffectedMessages affected;
 		public override (long, int, int) GetMBox() => (0, affected.pts, affected.pts_count);

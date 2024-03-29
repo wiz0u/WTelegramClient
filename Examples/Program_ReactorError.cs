@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
 using TL;
 
 namespace WTelegramClientTest
@@ -28,7 +27,7 @@ namespace WTelegramClientTest
 		private static async Task CreateAndConnect()
 		{
 			Client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-			Client.OnUpdate += Client_OnUpdate;
+			Client.OnUpdates += Client_OnUpdates;
 			Client.OnOther += Client_OnOther;
 			var my = await Client.LoginUserIfNeeded();
 			Console.WriteLine($"We are logged-in as " + my);
@@ -61,7 +60,7 @@ namespace WTelegramClientTest
 				Console.WriteLine("Other: " + arg.GetType().Name);
 		}
 
-		private static Task Client_OnUpdate(UpdatesBase updates)
+		private static Task Client_OnUpdates(UpdatesBase updates)
 		{
 			foreach (var update in updates.UpdateList)
 				Console.WriteLine(update.GetType().Name);

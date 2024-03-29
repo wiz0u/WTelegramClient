@@ -25,7 +25,7 @@ namespace WTelegramClientTest
 			AppDomain.CurrentDomain.ProcessExit += (s, e) => { Secrets.Dispose(); Client.Dispose(); };
 			SelectActiveChat();
 
-			Client.OnUpdate += Client_OnUpdate;
+			Client.OnUpdates += Client_OnUpdates;
 			var myself = await Client.LoginUserIfNeeded();
 			Users[myself.id] = myself;
 			Console.WriteLine($"We are logged-in as {myself}");
@@ -76,7 +76,7 @@ Type a command, or a message to send to the active secret chat:");
 			} while (true);
 		}
 
-		private static async Task Client_OnUpdate(UpdatesBase updates)
+		private static async Task Client_OnUpdates(UpdatesBase updates)
 		{
 			updates.CollectUsersChats(Users, Chats);
 			foreach (var update in updates.UpdateList)

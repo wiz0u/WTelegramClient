@@ -20,7 +20,7 @@ namespace WTelegramClientTest
 			Client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 			using (Client)
 			{
-				Client.OnUpdate += Client_OnUpdate;
+				Client.OnUpdates += Client_OnUpdates;
 				My = await Client.LoginUserIfNeeded();
 				Users[My.id] = My;
 				// Note: on login, Telegram may sends a bunch of updates/messages that happened in the past and were not acknowledged
@@ -33,7 +33,7 @@ namespace WTelegramClientTest
 		}
 
 		// if not using async/await, we could just return Task.CompletedTask
-		private static async Task Client_OnUpdate(UpdatesBase updates)
+		private static async Task Client_OnUpdates(UpdatesBase updates)
 		{
 			updates.CollectUsersChats(Users, Chats);
 			if (updates is UpdateShortMessage usm && !Users.ContainsKey(usm.user_id))

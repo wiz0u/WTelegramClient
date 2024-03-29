@@ -187,7 +187,7 @@ Notes:
 <a name="updates"></a>
 ## Monitor all Telegram events happening for the user
 
-This is done through the `client.OnUpdate` callback event.  
+This is done through the `client.OnUpdates` callback event.  
 Your event handler implementation can either return `Task.CompletedTask` or be an `async Task` method.
 
 See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23).
@@ -195,7 +195,7 @@ See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient
 <a name="monitor-msg"></a>
 ## Monitor new messages being posted in chats in real-time
 
-You have to handle `client.OnUpdate` events containing an `UpdateNewMessage`.
+You have to handle `client.OnUpdates` events containing an `UpdateNewMessage`.
 
 See the `HandleMessage` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23).
 
@@ -453,7 +453,7 @@ finally
 ## Collect Users/Chats description structures and access hash
 
 Many API calls return a structure with a `users` and a `chats` field at the root of the structure.
-This is also the case for updates passed to `client.OnUpdate`.
+This is also the case for updates passed to `client.OnUpdates`.
 
 These two dictionaries give details *(including access hash)* about the various users/chats that will be typically referenced in subobjects deeper in the structure,
 typically in the form of a `Peer` object or a `user_id`/`chat_id` field.
@@ -473,7 +473,7 @@ private Dictionary<long, ChatBase> _chats = new();
 var dialogs = await client.Messages_GetAllDialogs();
 dialogs.CollectUsersChats(_users, _chats);
 
-private async Task OnUpdate(UpdatesBase updates)
+private async Task OnUpdates(UpdatesBase updates)
 {
     updates.CollectUsersChats(_users, _chats);
     ...
