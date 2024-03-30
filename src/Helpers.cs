@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 #if NET8_0_OR_GREATER
 [JsonSerializable(typeof(WTelegram.Session))]
+[JsonSerializable(typeof(Dictionary<long, WTelegram.UpdateManager.MBoxState>))]
+[JsonSerializable(typeof(IDictionary<long, WTelegram.UpdateManager.MBoxState>))]
+[JsonSerializable(typeof(System.Collections.Immutable.ImmutableDictionary<long, WTelegram.UpdateManager.MBoxState>))]
 internal partial class WTelegramContext : JsonSerializerContext { }
 #endif
 

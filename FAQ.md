@@ -329,3 +329,35 @@ For a console program, this is typical done by waiting for a key or some close e
 5) Is every Telegram API call rejected? (typically with an exception message like `AUTH_RESTART`)  
 The user authentification might have failed at some point (or the user revoked the authorization).
 It is therefore necessary to go through the authentification again. This can be done by deleting the WTelegram.session file, or at runtime by calling `client.Reset()`
+
+<a name="manager"></a>
+# About the UpdateManager
+
+The UpdateManager does the following:
+- ensure the correct sequential order of receiving updates (Telegram may send them in wrong order)
+- fetch the missing updates if there was a gap (missing update) in the flow of incoming updates
+- resume the flow of updates where you left off if you stopped your program (with saved state)
+- collect the users & chats from updates automatically for you _(by default)_
+- simplifies the handling of the various containers of update (UpdatesBase)
+
+To use the UpdateManager, instead of setting `client.OnUpdates`, you call:
+```csharp
+// if you don't care about missed updates while your program was down:
+var manager = client.WithUpdateManager(OnUpdate);
+
+// if you want to recover missed updates using the state saved on the last run of your program
+var manager = client.WithUpdateManager(OnUpdate, "Updates.state");
+// to save the state later, preferably after disposing the client:
+manager.SaveState("Updates.state")
+
+// (WithUpdateManager has other parameters for advanced use)
+```
+
+Your `OnUpdate` method will directly take a single `Update` as parameter, instead of a container of updates.
+The `manager.Users` and `manager.Chats` dictionaries will collect the users/chats data from updates.
+You can also feed them manually from result of your API calls by calling `result.CollectUsersChats(manager.Users, manager.Chats);` and  resolve Peer fields via `manager.UserOrChat(peer)`
+See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L21) for an example of implementation.
+
+Notes:
+- set `manager.Log` if you want different logger settings than the client
+- `WithUpdateManager()` has other parameters for advanced use

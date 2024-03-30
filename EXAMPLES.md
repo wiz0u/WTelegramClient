@@ -95,7 +95,7 @@ foreach (Dialog dialog in dialogs.dialogs)
 
 Notes:
 - The lists returned by Messages_GetAllDialogs contains the `access_hash` for those chats and users.
-- See also the `Main` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L20).  
+- See also the `Main` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L18).  
 - To retrieve the dialog information about a specific [peer](README.md#terminology), use `client.Messages_GetPeerDialogs(inputPeer)`
 
 <a name="list-chats"></a>
@@ -114,7 +114,7 @@ Notes:
 - The list returned by Messages_GetAllChats contains the `access_hash` for those chats. Read [FAQ #4](FAQ.md#access-hash) about this.
 - If a basic chat group has been migrated to a supergroup, you may find both the old `Chat` and a `Channel` with different IDs in the `chats.chats` result,
 but the old `Chat` will be marked with flag [deactivated] and should not be used anymore. See [Terminology in ReadMe](README.md#terminology).
-- You can find a longer version of this method call in [Examples/Program_GetAllChats.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_GetAllChats.cs?ts=4#L32)
+- You can find a longer version of this method call in [Examples/Program_GetAllChats.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_GetAllChats.cs?ts=4#L31)
 
 <a name="list-members"></a>
 ## List the members from a chat
@@ -187,17 +187,17 @@ Notes:
 <a name="updates"></a>
 ## Monitor all Telegram events happening for the user
 
-This is done through the `client.OnUpdates` callback event.  
-Your event handler implementation can either return `Task.CompletedTask` or be an `async Task` method.
+This is done through the `client.OnUpdates` callback event, or via the [UpdateManager class](FAQ.md#manager) that simplifies the handling of updates.
 
-See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23).
+See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L21).
 
 <a name="monitor-msg"></a>
 ## Monitor new messages being posted in chats in real-time
 
-You have to handle `client.OnUpdates` events containing an `UpdateNewMessage`.
+You have to handle update events containing an `UpdateNewMessage`.
+This can be done through the `client.OnUpdates` callback event, or via the [UpdateManager class](FAQ.md#manager) that simplifies the handling of updates.
 
-See the `HandleMessage` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23).
+See the `HandleMessage` method in [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L21).
 
 You can filter specific chats the message are posted in, by looking at the `Message.peer_id` field.  
 See also [explanation below](#message-user) to extract user/chat info from messages.
@@ -208,7 +208,7 @@ See also [explanation below](#message-user) to extract user/chat info from messa
 This is done using the helper method `client.DownloadFileAsync(file, outputStream)`
 that simplifies the download of a photo/document/file once you get a reference to its location *(through updates or API calls)*.
 
-See [Examples/Program_DownloadSavedMedia.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_DownloadSavedMedia.cs?ts=4#L31) that download all media files you forward to yourself (Saved Messages)
+See [Examples/Program_DownloadSavedMedia.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_DownloadSavedMedia.cs?ts=4#L28) that download all media files you forward to yourself (Saved Messages)
 
 <a name="upload"></a>
 ## Upload a media file and post it with caption to a chat
@@ -498,6 +498,8 @@ A message contains those two fields/properties:
 These two fields derive from class `Peer` and can be of type `PeerChat`, `PeerChannel` or `PeerUser` depending on the nature of WHERE & WHO
 (private chat with a user? message posted BY a channel IN a chat? ...)
 
+> ✳️ It is recommended that you use the [UpdateManager class](FAQ.md#manager), as it handles automatically all of the details below, and you just need to use `Manager.UserOrChat(peer)` or Manager.Users/Chats dictionaries
+
 The root structure where you obtained the message (typically `UpdatesBase` or `Messages_MessagesBase`) inherits from `IPeerResolver`.
 This allows you to call `.UserOrChat(peer)` on the root structure, in order to resolve those fields into a `User` class, or a `ChatBase`-derived class
 (typically `Chat` or `Channel`) which will give you details about the peer, instead of just the ID.
@@ -506,7 +508,7 @@ However, in some case _(typically when dealing with updates)_, Telegram might ch
 because it expects you to already know about it (`UserOrChat` returns `null`).
 That's why you should collect users/chats details each time you're dealing with Updates or other API results inheriting from `IPeerResolver`,
 and use the collected dictionaries to find details about users/chats
-([see previous section](#collect-users-chats) and [Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23) example)
+([see previous section](#collect-users-chats) and [Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L21) example)
 
 And finally, it may happen that you receive updates of type `UpdateShortMessage` or `UpdateShortChatMessage` with totally unknown peers (even in your collected dictionaries).
 In this case, [Telegram recommends](https://core.telegram.org/api/updates#recovering-gaps) that you use the [`Updates_GetDifference`](https://corefork.telegram.org/method/updates.getDifference) method to retrieve the full information associated with the short message.

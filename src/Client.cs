@@ -23,9 +23,9 @@ namespace WTelegram
 	public partial class Client : IDisposable
 	{
 		/// <summary>This event will be called when unsollicited updates/messages are sent by Telegram servers</summary>
-		/// <remarks>Make your handler <see langword="async"/>, or return <see cref="Task.CompletedTask"/> or <see langword="null"/><br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L23">Examples/Program_ListenUpdate.cs</see> for how to use this</remarks>
+		/// <remarks>Make your handler <see langword="async"/>, or return <see cref="Task.CompletedTask"/> or <see langword="null"/><br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ReactorError.cs?ts=4#L30">Examples/Program_ReactorError.cs</see> for how to use this<br/>or <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L21">Examples/Program_ListenUpdate.cs</see> using the UpdateManager class instead</remarks>
 		public event Func<UpdatesBase, Task> OnUpdates;
-		[Obsolete("This event was renamed OnUpdates (plural)")]
+		[Obsolete("This event was renamed OnUpdates (plural). You may also want to consider using our new UpdateManager class instead (see FAQ)")]
 		public event Func<UpdatesBase, Task> OnUpdate { add { OnUpdates += value; } remove { OnUpdates -= value; } }
 		/// <summary>This event is called for other types of notifications (login states, reactor errors, ...)</summary>
 		public event Func<IObject, Task> OnOther;
@@ -352,7 +352,6 @@ namespace WTelegram
 							_pendingRpcs.Clear();
 							_bareRpc = null;
 						}
-						// TODO: implement an Updates gaps handling system? https://core.telegram.org/api/updates
 						if (IsMainDC)
 						{
 							var updatesState = await this.Updates_GetState(); // this call reenables incoming Updates
