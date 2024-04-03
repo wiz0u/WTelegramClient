@@ -349,13 +349,11 @@ var manager = client.WithUpdateManager(OnUpdate);
 var manager = client.WithUpdateManager(OnUpdate, "Updates.state");
 // to save the state later, preferably after disposing the client:
 manager.SaveState("Updates.state")
-
-// (WithUpdateManager has other parameters for advanced use)
 ```
 
-Your `OnUpdate` method will directly take a single `Update` as parameter, instead of a container of updates.
-The `manager.Users` and `manager.Chats` dictionaries will collect the users/chats data from updates.
-You can also feed them manually from result of your API calls by calling `result.CollectUsersChats(manager.Users, manager.Chats);` and  resolve Peer fields via `manager.UserOrChat(peer)`
+Your `OnUpdate` method will directly take a single `Update` as parameter, instead of a container of updates.  
+The `manager.Users` and `manager.Chats` dictionaries will collect the users/chats data from updates.  
+You can also feed them manually from result of your API calls by calling `result.CollectUsersChats(manager.Users, manager.Chats);` and  resolve Peer fields via `manager.UserOrChat(peer)`  
 See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L21) for an example of implementation.
 
 Notes:

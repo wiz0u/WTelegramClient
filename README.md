@@ -164,14 +164,14 @@ See [FAQ #4](https://wiz0u.github.io/WTelegramClient/FAQ#access-hash) to learn m
 
 # Other things to know
 
-The Client class offers `OnUpdates` and `OnOther` events that are triggered when Telegram servers sends Updates (like new messages or status) or other notifications, independently of your API requests.
-You can also use the [UpdateManager class](https://wiz0u.github.io/WTelegramClient/FAQ#manager) to simplify the handling of such updates.
+The Client class offers `OnUpdates` and `OnOther` events that are triggered when Telegram servers sends Updates (like new messages or status) or other notifications, independently of your API requests.  
+You can also use the [UpdateManager class](https://wiz0u.github.io/WTelegramClient/FAQ#manager) to simplify the handling of such updates.  
 See [Examples/Program_ListenUpdates.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L21) and [Examples/Program_ReactorError.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ReactorError.cs?ts=4#L30)
 
 An invalid API request can result in a `RpcException` being raised, reflecting the [error code and status text](https://revgram.github.io/errors.html) of the problem.
 
 To [prevent getting banned](https://wiz0u.github.io/WTelegramClient/FAQ#prevent-ban) during dev, you can connect to [test servers](https://docs.pyrogram.org/topics/test-servers), by adding this line in your Config callback:  
-`case "server_address": return "149.154.167.40:443"; // test DC`
+`case "server_address": return "2>149.154.167.40:443"; // test DC`
 
 The other configuration items that you can provide include: **session_pathname, email, email_verification_code, session_key, device_model, system_version, app_version, system_lang_code, lang_pack, lang_code, firebase, user_id, bot_token**
 

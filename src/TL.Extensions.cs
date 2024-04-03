@@ -5,98 +5,104 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using WTelegram; // for GetValueOrDefault
+using WTelegram;
 
 namespace TL
 {
 	public static class Extensions
 	{
-		internal sealed partial class CollectorPeer : Peer
+		public sealed partial class CollectorPeer(IDictionary<long, User> _users, IDictionary<long, ChatBase> _chats) : Peer, IPeerCollector
 		{
 			public override long ID => 0;
-			internal IDictionary<long, User> _users;
-			internal IDictionary<long, ChatBase> _chats;
 			protected internal override IPeerInfo UserOrChat(Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
 			{
-				if (_users != null)
-					lock (_users)
-						foreach (var user in users.Values)
-							if (user != null)
-								if (!user.flags.HasFlag(User.Flags.min) || !_users.TryGetValue(user.id, out var prevUser) || prevUser.flags.HasFlag(User.Flags.min))
-									_users[user.id] = user;
-								else
-								{	// update previously full user from min user:
-									const User.Flags updated_flags = (User.Flags)0x5DAFE000;
-									const User.Flags2 updated_flags2 = (User.Flags2)0x711;
-									// tdlib updated flags: deleted | bot | bot_chat_history | bot_nochats | verified | bot_inline_geo
-									//  | support | scam | fake | bot_attach_menu | premium
-									// tdesktop non-updated flags:    bot | bot_chat_history | bot_nochats | bot_attach_menu
-									// updated flags2:    stories_unavailable (tdlib) | contact_require_premium (tdesktop)
-									prevUser.flags = (prevUser.flags & ~updated_flags) | (user.flags & updated_flags);
-									prevUser.flags2 = (prevUser.flags2 & ~updated_flags2) | (user.flags2 & updated_flags2);
-									prevUser.first_name ??= user.first_name;				// tdlib: not updated ; tdesktop: updated only if unknown
-									prevUser.last_name ??= user.last_name;					// tdlib: not updated ; tdesktop: updated only if unknown
-									//prevUser.username ??= user.username;					// tdlib/tdesktop: not updated
-									prevUser.phone ??= user.phone;							// tdlib: updated only if unknown ; tdesktop: not updated
-									if (prevUser.flags.HasFlag(User.Flags.apply_min_photo) && user.photo != null)
-									{
-										prevUser.photo = user.photo;						// tdlib/tdesktop: updated on apply_min_photo
-										prevUser.flags |= User.Flags.has_photo;
-									}
-									prevUser.bot_info_version = user.bot_info_version;		// tdlib: updated ; tdesktop: not updated
-									prevUser.restriction_reason = user.restriction_reason;	// tdlib: updated ; tdesktop: not updated
-									prevUser.bot_inline_placeholder = user.bot_inline_placeholder;// tdlib: updated ; tdesktop: ignored
-									if (user.lang_code != null)
-										prevUser.lang_code = user.lang_code;				// tdlib: updated if present ; tdesktop: ignored
-									prevUser.emoji_status = user.emoji_status;				// tdlib/tdesktop: updated
-									prevUser.usernames = user.usernames;					// tdlib: not updated ; tdesktop: updated
-									if (user.stories_max_id > 0)
-										prevUser.stories_max_id = user.stories_max_id;		// tdlib: updated if > 0 ; tdesktop: not updated
-									prevUser.color = user.color;							// tdlib/tdesktop: updated
-									prevUser.profile_color = user.profile_color;			// tdlib/tdesktop: unimplemented yet
-									_users[user.id] = prevUser;
-								}
-				if (_chats != null)
-					lock (_chats)
-						foreach (var kvp in chats)
-							if (kvp.Value is not Channel channel)
-								_chats[kvp.Key] = kvp.Value;
-							else if (!channel.flags.HasFlag(Channel.Flags.min) || !_chats.TryGetValue(kvp.Key, out var prevChat) || prevChat is not Channel prevChannel || prevChannel.flags.HasFlag(Channel.Flags.min))
-								_chats[kvp.Key] = channel;
-							else
-							{   // update previously full channel from min channel:
-								const Channel.Flags updated_flags = (Channel.Flags)0x7FDC0BE0;
-								const Channel.Flags2 updated_flags2 = (Channel.Flags2)0x781;
-								// tdesktop updated flags: broadcast | verified | megagroup | signatures | scam | has_link | slowmode_enabled
-								//	| call_active | call_not_empty | fake | gigagroup | noforwards | join_to_send | join_request | forum
-								// tdlib nonupdated flags: broadcast | signatures | call_active | call_not_empty | noforwards
-								prevChannel.flags = (prevChannel.flags & ~updated_flags) | (channel.flags & updated_flags);
-								prevChannel.flags2 = (prevChannel.flags2 & ~updated_flags2) | (channel.flags2 & updated_flags2);
-								prevChannel.title = channel.title;									// tdlib/tdesktop: updated
-								prevChannel.username = channel.username;							// tdlib/tdesktop: updated
-								prevChannel.photo = channel.photo;									// tdlib: updated if not banned ; tdesktop: updated
-								prevChannel.restriction_reason = channel.restriction_reason;		// tdlib: updated ; tdesktop: not updated
-								prevChannel.default_banned_rights = channel.default_banned_rights;  // tdlib/tdesktop: updated
-								if (channel.participants_count > 0)
-									prevChannel.participants_count = channel.participants_count;	// tdlib/tdesktop: updated if present
-								prevChannel.usernames = channel.usernames;							// tdlib/tdesktop: updated
-								prevChannel.color = channel.color;									// tdlib: not updated ; tdesktop: updated
-								prevChannel.profile_color = channel.profile_color;					// tdlib/tdesktop: ignored
-								prevChannel.emoji_status = channel.emoji_status;					// tdlib: not updated ; tdesktop: updated
-								prevChannel.level = channel.level;									// tdlib: not updated ; tdesktop: updated
-								_chats[kvp.Key] = prevChannel;
-							}
+				if (users != null) Collect(users.Values);
+				if (chats != null) Collect(chats.Values);
 				return null;
 			}
-#if MTPG
-			public override void WriteTL(System.IO.BinaryWriter writer) => throw new NotImplementedException();
-#endif
+
+			public void Collect(IEnumerable<TL.User> users)
+			{
+				lock (_users)
+					foreach (var user in users)
+						if (user != null)
+							if (!user.flags.HasFlag(User.Flags.min) || !_users.TryGetValue(user.id, out var prevUser) || prevUser.flags.HasFlag(User.Flags.min))
+								_users[user.id] = user;
+							else
+							{	// update previously full user from min user:
+								const User.Flags updated_flags = (User.Flags)0x5DAFE000;
+								const User.Flags2 updated_flags2 = (User.Flags2)0x711;
+								// tdlib updated flags: deleted | bot | bot_chat_history | bot_nochats | verified | bot_inline_geo
+								//  | support | scam | fake | bot_attach_menu | premium
+								// tdesktop non-updated flags:    bot | bot_chat_history | bot_nochats | bot_attach_menu
+								// updated flags2:    stories_unavailable (tdlib) | contact_require_premium (tdesktop)
+								prevUser.flags = (prevUser.flags & ~updated_flags) | (user.flags & updated_flags);
+								prevUser.flags2 = (prevUser.flags2 & ~updated_flags2) | (user.flags2 & updated_flags2);
+								prevUser.first_name ??= user.first_name;				// tdlib: not updated ; tdesktop: updated only if unknown
+								prevUser.last_name ??= user.last_name;					// tdlib: not updated ; tdesktop: updated only if unknown
+								//prevUser.username ??= user.username;					// tdlib/tdesktop: not updated
+								prevUser.phone ??= user.phone;							// tdlib: updated only if unknown ; tdesktop: not updated
+								if (prevUser.flags.HasFlag(User.Flags.apply_min_photo) && user.photo != null)
+								{
+									prevUser.photo = user.photo;						// tdlib/tdesktop: updated on apply_min_photo
+									prevUser.flags |= User.Flags.has_photo;
+								}
+								prevUser.bot_info_version = user.bot_info_version;		// tdlib: updated ; tdesktop: not updated
+								prevUser.restriction_reason = user.restriction_reason;	// tdlib: updated ; tdesktop: not updated
+								prevUser.bot_inline_placeholder = user.bot_inline_placeholder;// tdlib: updated ; tdesktop: ignored
+								if (user.lang_code != null)
+									prevUser.lang_code = user.lang_code;				// tdlib: updated if present ; tdesktop: ignored
+								prevUser.emoji_status = user.emoji_status;				// tdlib/tdesktop: updated
+								prevUser.usernames = user.usernames;					// tdlib: not updated ; tdesktop: updated
+								if (user.stories_max_id > 0)
+									prevUser.stories_max_id = user.stories_max_id;		// tdlib: updated if > 0 ; tdesktop: not updated
+								prevUser.color = user.color;							// tdlib/tdesktop: updated
+								prevUser.profile_color = user.profile_color;			// tdlib/tdesktop: unimplemented yet
+								_users[user.id] = prevUser;
+							}
+			}
+
+			public void Collect(IEnumerable<ChatBase> chats)
+			{
+				lock (_chats)
+					foreach (var chat in chats)
+						if (chat is not Channel channel)
+							_chats[chat.ID] = chat;
+						else if (!channel.flags.HasFlag(Channel.Flags.min) || !_chats.TryGetValue(channel.id, out var prevChat) || prevChat is not Channel prevChannel || prevChannel.flags.HasFlag(Channel.Flags.min))
+							_chats[channel.id] = channel;
+						else
+						{   // update previously full channel from min channel:
+							const Channel.Flags updated_flags = (Channel.Flags)0x7FDC0BE0;
+							const Channel.Flags2 updated_flags2 = (Channel.Flags2)0x781;
+							// tdesktop updated flags: broadcast | verified | megagroup | signatures | scam | has_link | slowmode_enabled
+							//	| call_active | call_not_empty | fake | gigagroup | noforwards | join_to_send | join_request | forum
+							// tdlib nonupdated flags: broadcast | signatures | call_active | call_not_empty | noforwards
+							prevChannel.flags = (prevChannel.flags & ~updated_flags) | (channel.flags & updated_flags);
+							prevChannel.flags2 = (prevChannel.flags2 & ~updated_flags2) | (channel.flags2 & updated_flags2);
+							prevChannel.title = channel.title;                                  // tdlib/tdesktop: updated
+							prevChannel.username = channel.username;                            // tdlib/tdesktop: updated
+							prevChannel.photo = channel.photo;                                  // tdlib: updated if not banned ; tdesktop: updated
+							prevChannel.restriction_reason = channel.restriction_reason;        // tdlib: updated ; tdesktop: not updated
+							prevChannel.default_banned_rights = channel.default_banned_rights;  // tdlib/tdesktop: updated
+							if (channel.participants_count > 0)
+								prevChannel.participants_count = channel.participants_count;    // tdlib/tdesktop: updated if present
+							prevChannel.usernames = channel.usernames;                          // tdlib/tdesktop: updated
+							prevChannel.color = channel.color;                                  // tdlib: not updated ; tdesktop: updated
+							prevChannel.profile_color = channel.profile_color;                  // tdlib/tdesktop: ignored
+							prevChannel.emoji_status = channel.emoji_status;                    // tdlib: not updated ; tdesktop: updated
+							prevChannel.level = channel.level;                                  // tdlib: not updated ; tdesktop: updated
+							_chats[channel.id] = prevChannel;
+						}
+			}
+
+			public bool HasUser(long id) { lock (_users) return _users.ContainsKey(id); }
+			public bool HasChat(long id) { lock (_chats) return _chats.ContainsKey(id); }
 		}
 
 		/// <summary>Accumulate users/chats found in this structure in your dictionaries, ignoring <see href="https://core.telegram.org/api/min">Min constructors</see> when the full object is already stored</summary>
 		/// <param name="structure">The structure having a <c>users</c></param>
 		public static void CollectUsersChats(this IPeerResolver structure, IDictionary<long, User> users, IDictionary<long, ChatBase> chats)
-			=>  structure.UserOrChat(new CollectorPeer { _users = users, _chats = chats });
+			=>  structure.UserOrChat(new CollectorPeer(users, chats));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Messages_Chats> Messages_GetChats(this Client _) => throw new WTException("The method you're looking for is Messages_GetAllChats");
@@ -120,6 +126,7 @@ namespace TL
 		{
 			var entities = new List<MessageEntity>();
 			MessageEntityBlockquote lastBlockQuote = null;
+			int inCode = 0;
 			var sb = new StringBuilder(text);
 			for (int offset = 0; offset < sb.Length;)
 			{
@@ -127,9 +134,9 @@ namespace TL
 				{
 					case '\r': sb.Remove(offset, 1); break;
 					case '\\': sb.Remove(offset++, 1); break;
-					case '*': ProcessEntity<MessageEntityBold>(); break;
-					case '~': ProcessEntity<MessageEntityStrike>(); break;
-					case '_':
+					case '*' when inCode == 0: ProcessEntity<MessageEntityBold>(); break;
+					case '~' when inCode == 0: ProcessEntity<MessageEntityStrike>(); break;
+					case '_' when inCode == 0:
 						if (offset + 1 < sb.Length && sb[offset + 1] == '_')
 						{
 							sb.Remove(offset, 1);
@@ -139,7 +146,7 @@ namespace TL
 							ProcessEntity<MessageEntityItalic>();
 						break;
 					case '|':
-						if (offset + 1 < sb.Length && sb[offset + 1] == '|')
+						if (inCode == 0 && offset + 1 < sb.Length && sb[offset + 1] == '|')
 						{
 							sb.Remove(offset, 1);
 							ProcessEntity<MessageEntitySpoiler>();
@@ -148,6 +155,7 @@ namespace TL
 							offset++;
 						break;
 					case '`':
+						int count = entities.Count;
 						if (offset + 2 < sb.Length && sb[offset + 1] == '`' && sb[offset + 2] == '`')
 						{
 							int len = 3;
@@ -164,8 +172,9 @@ namespace TL
 						}
 						else
 							ProcessEntity<MessageEntityCode>();
+						if (entities.Count > count) inCode++; else inCode--;
 						break;
-					case '>' when offset == 0 || sb[offset - 1] == '\n':
+					case '>' when inCode == 0 && offset == 0 || sb[offset - 1] == '\n':
 						sb.Remove(offset, 1);
 						if (lastBlockQuote is null || lastBlockQuote.length < offset - lastBlockQuote.offset)
 							entities.Add(lastBlockQuote = new MessageEntityBlockquote { offset = offset, length = -1 });
@@ -175,15 +184,15 @@ namespace TL
 					case '\n' when lastBlockQuote is { length: -1 }:
 						lastBlockQuote.length = ++offset - lastBlockQuote.offset;
 						break;
-					case '!' when offset + 1 < sb.Length && sb[offset + 1] == '[':
+					case '!' when inCode == 0 && offset + 1 < sb.Length && sb[offset + 1] == '[':
 						sb.Remove(offset, 1);
-						goto case '[';
-					case '[':
+						break;
+					case '[' when inCode == 0:
 						entities.Add(new MessageEntityTextUrl { offset = offset, length = -1 });
 						sb.Remove(offset, 1);
 						break;
 					case ']':
-						if (offset + 2 < sb.Length && sb[offset + 1] == '(')
+						if (inCode == 0 && offset + 2 < sb.Length && sb[offset + 1] == '(')
 						{
 							var lastIndex = entities.FindLastIndex(e => e.length == -1);
 							if (lastIndex >= 0 && entities[lastIndex] is MessageEntityTextUrl textUrl)
@@ -213,11 +222,14 @@ namespace TL
 
 				void ProcessEntity<T>() where T : MessageEntity, new()
 				{
+					sb.Remove(offset, 1);
 					if (entities.LastOrDefault(e => e.length == -1) is T prevEntity)
-						prevEntity.length = offset - prevEntity.offset;
+						if (offset == prevEntity.offset)
+							entities.Remove(prevEntity);
+						else
+							prevEntity.length = offset - prevEntity.offset;
 					else
 						entities.Add(new T { offset = offset, length = -1 });
-					sb.Remove(offset, 1);
 				}
 			}
 			if (lastBlockQuote is { length: -1 })

@@ -44,7 +44,7 @@
   </ItemGroup>-->
 
   <ItemGroup Condition="$(DefineConstants.Contains('MTPG'))" >
-    <ProjectReference Include="..\generator\MTProtoGenerator.csproj" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\generator\MTProtoGenerator.csproj" OutputItemType="Analyzer" PrivateAssets="All" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

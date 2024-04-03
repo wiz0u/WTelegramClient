@@ -586,8 +586,6 @@ namespace WTelegram
 						if (OnOwnUpdates != null)
 							if (result is UpdatesBase updates)
 								RaiseOwnUpdates(updates);
-							else if (result is Messages_AffectedMessages affected)
-								RaiseOwnUpdates(new UpdateShort { update = new UpdateAffectedMessages { affected = affected }, date = MsgIdToStamp(_lastRecvMsgId) });
 					}
 
 					rpc.tcs.SetResult(result);
@@ -1453,6 +1451,17 @@ namespace WTelegram
 				default:
 					throw new WTException($"{query.GetType().Name} call got a result of type {result.GetType().Name} instead of {typeof(T).Name}");
 			}
+		}
+
+		public async Task<T> InvokeAffected<T>(IMethod<T> query, long peerId) where T : Messages_AffectedMessages
+		{
+			var result = await Invoke(query);
+			RaiseOwnUpdates(new UpdateShort
+			{
+				update = new UpdateAffectedMessages { mbox_id = peerId, pts = result.pts, pts_count = result.pts_count}, 
+				date = MsgIdToStamp(_lastRecvMsgId)
+			});
+			return result;
 		}
 	}
 }

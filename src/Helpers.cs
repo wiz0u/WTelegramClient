@@ -267,7 +267,9 @@ namespace WTelegram
 
 	public class WTException : ApplicationException
 	{
+		public readonly int ErrorCode;
 		public WTException(string message) : base(message) { }
+		public WTException(string message, int code) : base(message) => ErrorCode = code;
 		public WTException(string message, Exception innerException) : base(message, innerException) { }
 	}
 }

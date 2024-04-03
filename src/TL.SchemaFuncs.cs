@@ -1604,11 +1604,11 @@ namespace TL
 		/// <param name="peer">Target user or group</param>
 		/// <param name="max_id">If a positive value is passed, only messages with identifiers less or equal than the given one will be read</param>
 		public static Task<Messages_AffectedMessages> Messages_ReadHistory(this Client client, InputPeer peer, int max_id = default)
-			=> client.Invoke(new Messages_ReadHistory
+			=> client.InvokeAffected(new Messages_ReadHistory
 			{
 				peer = peer,
 				max_id = max_id,
-			});
+			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary>Deletes communication history.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="just_clear">Just clear history for the current user, without actually removing messages for every chat user</param>
@@ -1618,24 +1618,24 @@ namespace TL
 		/// <param name="min_date">Delete all messages newer than this UNIX timestamp</param>
 		/// <param name="max_date">Delete all messages older than this UNIX timestamp</param>
 		public static Task<Messages_AffectedHistory> Messages_DeleteHistory(this Client client, InputPeer peer, int max_id = default, DateTime? min_date = null, DateTime? max_date = null, bool just_clear = false, bool revoke = false)
-			=> client.Invoke(new Messages_DeleteHistory
+			=> client.InvokeAffected(new Messages_DeleteHistory
 			{
 				flags = (Messages_DeleteHistory.Flags)((min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0) | (just_clear ? 0x1 : 0) | (revoke ? 0x2 : 0)),
 				peer = peer,
 				max_id = max_id,
 				min_date = min_date.GetValueOrDefault(),
 				max_date = max_date.GetValueOrDefault(),
-			});
+			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Deletes messages by their identifiers.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.deleteMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="revoke">Whether to delete messages for all participants of the chat</param>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_AffectedMessages> Messages_DeleteMessages(this Client client, int[] id, bool revoke = false)
-			=> client.Invoke(new Messages_DeleteMessages
+			=> client.InvokeAffected(new Messages_DeleteMessages
 			{
 				flags = (Messages_DeleteMessages.Flags)(revoke ? 0x1 : 0),
 				id = id,
-			});
+			}, 0);
 
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Confirms receipt of messages by a client, cancels PUSH-notification sending.		<para>See <a href="https://corefork.telegram.org/method/messages.receivedMessages"/></para></summary>
 		/// <param name="max_id">Maximum message ID available in a client.</param>
@@ -1977,10 +1977,10 @@ namespace TL
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Notifies the sender about the recipient having listened a voice message or watched a video.		<para>See <a href="https://corefork.telegram.org/method/messages.readMessageContents"/></para></summary>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_AffectedMessages> Messages_ReadMessageContents(this Client client, params int[] id)
-			=> client.Invoke(new Messages_ReadMessageContents
+			=> client.InvokeAffected(new Messages_ReadMessageContents
 			{
 				id = id,
-			});
+			}, 0);
 
 		/// <summary>Get stickers by emoji		<para>See <a href="https://corefork.telegram.org/method/messages.getStickers"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getStickers#possible-errors">details</a>)</para></summary>
 		/// <param name="emoticon">The emoji</param>
@@ -2646,12 +2646,12 @@ namespace TL
 		/// <param name="peer">Dialog</param>
 		/// <param name="top_msg_id">Mark as read only mentions within the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		public static Task<Messages_AffectedHistory> Messages_ReadMentions(this Client client, InputPeer peer, int? top_msg_id = null)
-			=> client.Invoke(new Messages_ReadMentions
+			=> client.InvokeAffected(new Messages_ReadMentions
 			{
 				flags = (Messages_ReadMentions.Flags)(top_msg_id != null ? 0x1 : 0),
 				peer = peer,
 				top_msg_id = top_msg_id.GetValueOrDefault(),
-			});
+			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary>Get live location history of a certain user		<para>See <a href="https://corefork.telegram.org/method/messages.getRecentLocations"/></para></summary>
 		/// <param name="peer">User</param>
@@ -3057,12 +3057,12 @@ namespace TL
 		/// <param name="peer">Chat where to unpin</param>
 		/// <param name="top_msg_id"><a href="https://corefork.telegram.org/api/forum#forum-topics">Forum topic</a> where to unpin</param>
 		public static Task<Messages_AffectedHistory> Messages_UnpinAllMessages(this Client client, InputPeer peer, int? top_msg_id = null)
-			=> client.Invoke(new Messages_UnpinAllMessages
+			=> client.InvokeAffected(new Messages_UnpinAllMessages
 			{
 				flags = (Messages_UnpinAllMessages.Flags)(top_msg_id != null ? 0x1 : 0),
 				peer = peer,
 				top_msg_id = top_msg_id.GetValueOrDefault(),
-			});
+			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Delete a <a href="https://corefork.telegram.org/api/channel">chat</a>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChat#possible-errors">details</a>)</para></summary>
 		/// <param name="chat_id">Chat ID</param>
@@ -3075,10 +3075,10 @@ namespace TL
 		/// <summary>Delete the entire phone call history.		<para>See <a href="https://corefork.telegram.org/method/messages.deletePhoneCallHistory"/></para></summary>
 		/// <param name="revoke">Whether to remove phone call history for participants as well</param>
 		public static Task<Messages_AffectedFoundMessages> Messages_DeletePhoneCallHistory(this Client client, bool revoke = false)
-			=> client.Invoke(new Messages_DeletePhoneCallHistory
+			=> client.InvokeAffected(new Messages_DeletePhoneCallHistory
 			{
 				flags = (Messages_DeletePhoneCallHistory.Flags)(revoke ? 0x1 : 0),
-			});
+			}, 0);
 
 		/// <summary>Obtains information about a chat export file, generated by a foreign chat app, <a href="https://corefork.telegram.org/api/import">click here for more info about imported chats »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.checkHistoryImport"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.checkHistoryImport#possible-errors">details</a>)</para></summary>
 		/// <param name="import_head">Beginning of the message file; up to 100 lines.</param>
@@ -3446,12 +3446,12 @@ namespace TL
 		/// <param name="peer">Peer</param>
 		/// <param name="top_msg_id">Mark as read only reactions to messages within the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		public static Task<Messages_AffectedHistory> Messages_ReadReactions(this Client client, InputPeer peer, int? top_msg_id = null)
-			=> client.Invoke(new Messages_ReadReactions
+			=> client.InvokeAffected(new Messages_ReadReactions
 			{
 				flags = (Messages_ReadReactions.Flags)(top_msg_id != null ? 0x1 : 0),
 				peer = peer,
 				top_msg_id = top_msg_id.GetValueOrDefault(),
-			});
+			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary>View and search recently sent media.<br/>This method does not support pagination.		<para>See <a href="https://corefork.telegram.org/method/messages.searchSentMedia"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.searchSentMedia#possible-errors">details</a>)</para></summary>
 		/// <param name="q">Optional search query</param>
@@ -3859,14 +3859,14 @@ namespace TL
 		/// <param name="min_date">Delete all messages newer than this UNIX timestamp</param>
 		/// <param name="max_date">Delete all messages older than this UNIX timestamp</param>
 		public static Task<Messages_AffectedHistory> Messages_DeleteSavedHistory(this Client client, InputPeer peer, int max_id = default, DateTime? min_date = null, DateTime? max_date = null)
-			=> client.Invoke(new Messages_DeleteSavedHistory
+			=> client.InvokeAffected(new Messages_DeleteSavedHistory
 			{
 				flags = (Messages_DeleteSavedHistory.Flags)((min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0)),
 				peer = peer,
 				max_id = max_id,
 				min_date = min_date.GetValueOrDefault(),
 				max_date = max_date.GetValueOrDefault(),
-			});
+			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary>Get pinned <a href="https://corefork.telegram.org/api/saved-messages">saved dialogs, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/messages.getPinnedSavedDialogs"/></para></summary>
 		public static Task<Messages_SavedDialogsBase> Messages_GetPinnedSavedDialogs(this Client client)
@@ -4421,11 +4421,11 @@ namespace TL
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a></param>
 		/// <param name="id">IDs of messages to delete</param>
 		public static Task<Messages_AffectedMessages> Channels_DeleteMessages(this Client client, InputChannelBase channel, params int[] id)
-			=> client.Invoke(new Channels_DeleteMessages
+			=> client.InvokeAffected(new Channels_DeleteMessages
 			{
 				channel = channel,
 				id = id,
-			});
+			}, channel.ChannelId);
 
 		/// <summary>Reports some messages from a user in a supergroup as spam; requires administrator rights in the supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.reportSpam"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.reportSpam#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Supergroup</param>
@@ -4811,11 +4811,11 @@ namespace TL
 		/// <param name="channel">Supergroup</param>
 		/// <param name="participant">The participant whose messages should be deleted</param>
 		public static Task<Messages_AffectedHistory> Channels_DeleteParticipantHistory(this Client client, InputChannelBase channel, InputPeer participant)
-			=> client.Invoke(new Channels_DeleteParticipantHistory
+			=> client.InvokeAffected(new Channels_DeleteParticipantHistory
 			{
 				channel = channel,
 				participant = participant,
-			});
+			}, channel.ChannelId);
 
 		/// <summary>Set whether all users <a href="https://corefork.telegram.org/api/discussion#requiring-users-to-join-the-group">should join a discussion group in order to comment on a post »</a>		<para>See <a href="https://corefork.telegram.org/method/channels.toggleJoinToSend"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleJoinToSend#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Discussion group</param>
@@ -4960,11 +4960,11 @@ namespace TL
 		/// <param name="channel">Forum</param>
 		/// <param name="top_msg_id">Topic ID</param>
 		public static Task<Messages_AffectedHistory> Channels_DeleteTopicHistory(this Client client, InputChannelBase channel, int top_msg_id)
-			=> client.Invoke(new Channels_DeleteTopicHistory
+			=> client.InvokeAffected(new Channels_DeleteTopicHistory
 			{
 				channel = channel,
 				top_msg_id = top_msg_id,
-			});
+			}, channel.ChannelId);
 
 		/// <summary>Reorder pinned forum topics		<para>See <a href="https://corefork.telegram.org/method/channels.reorderPinnedForumTopics"/> [bots: ✓]</para></summary>
 		/// <param name="force">If not set, the order of only the topics present both server-side and in <c>order</c> will be changed (i.e. mentioning topics not pinned server-side in <c>order</c> will not pin them, and not mentioning topics pinned server-side will not unpin them).  <br/>If set, the entire server-side pinned topic list will be replaced with <c>order</c> (i.e. mentioning topics not pinned server-side in <c>order</c> will pin them, and not mentioning topics pinned server-side will unpin them)</param>

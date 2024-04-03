@@ -32,9 +32,9 @@ namespace TL
 		public readonly int Bit = bit;
 	}
 
-	public sealed class RpcException(int code, string message, int x = -1) : WTelegram.WTException(message)
+	public sealed class RpcException(int code, string message, int x = -1) : WTelegram.WTException(message, code)
 	{
-		public readonly int Code = code;
+		public int Code => ErrorCode;
 		/// <summary>The value of X in the message, -1 if no variable X was found</summary>
 		public readonly int X = x;
 		public override string ToString() { var str = base.ToString(); return str.Insert(str.IndexOf(':') + 1, " " + Code); }
@@ -398,8 +398,10 @@ namespace TL
 
 	public sealed partial class UpdateAffectedMessages : Update // auto-generated for OnOwnUpdates in case of such API call result
 	{
-		public Messages_AffectedMessages affected;
-		public override (long, int, int) GetMBox() => (0, affected.pts, affected.pts_count);
+		public long mbox_id;
+		public int pts;
+		public int pts_count;
+		public override (long, int, int) GetMBox() => (mbox_id, pts, pts_count);
 #if MTPG
 		public override void WriteTL(BinaryWriter writer) => throw new NotSupportedException();
 #endif

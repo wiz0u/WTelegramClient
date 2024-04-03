@@ -9,8 +9,6 @@ using TL;
 
 namespace WTelegram
 {
-	public delegate IPeerInfo UserChatCollector(Dictionary<long, User> users, Dictionary<long, ChatBase> chats);
-
 	public class UpdateManager : IPeerResolver
 	{
 		/// <summary>Collected info about Users <i>(only if using the default collector)</i></summary>
@@ -37,10 +35,9 @@ namespace WTelegram
 
 		private readonly Client _client;
 		private readonly Func<Update, Task> _onUpdate;
-		private readonly UserChatCollector _onCollect;
+		private readonly IPeerCollector _collector;
 		private readonly bool _reentrant;
 		private readonly SemaphoreSlim _sem = new(1);
-		private readonly Extensions.CollectorPeer _collector;
 		private readonly List<(Update update, UpdatesBase updates, bool own, DateTime stamp)> _pending = [];
 		private readonly Dictionary<long, MBoxState> _local; // -2 for seq/date, -1 for qts, 0 for common pts, >0 for channel pts
 		private const int L_SEQ = -2, L_QTS = -1, L_PTS = 0;
@@ -55,17 +52,11 @@ namespace WTelegram
 		/// <param name="state">(optional) Resume session by recovering all updates that occured since this state</param>
 		/// <param name="collector">Custom users/chats collector. By default, those are collected in properties Users/Chats</param>
 		/// <param name="reentrant"><see langword="true"/> if your <paramref name="onUpdate"/> method can be called again even when last async call didn't return yet</param>
-		public UpdateManager(Client client, Func<Update, Task> onUpdate, IDictionary<long, MBoxState> state = null, UserChatCollector collector = null, bool reentrant = false)
+		public UpdateManager(Client client, Func<Update, Task> onUpdate, IDictionary<long, MBoxState> state = null, IPeerCollector collector = null, bool reentrant = false)
 		{
 			_client = client;
 			_onUpdate = onUpdate;
-			if (collector != null)
-				_onCollect = collector;
-			else
-			{
-				_collector = new() { _users = Users = [], _chats = Chats = [] };
-				_onCollect = _collector.UserOrChat;
-			}
+			_collector = collector ?? new Extensions.CollectorPeer(Users = [], Chats = []);
 
 			if (state == null)
 				_local = new() { [L_SEQ] = new() { access_hash = UndefinedSeqDate }, [L_QTS] = new(), [L_PTS] = new() };
@@ -85,7 +76,7 @@ namespace WTelegram
 					if (_local[L_PTS].pts != 0) await ResyncState();
 					break;
 				case User user when user.flags.HasFlag(User.Flags.self):
-					if (Users != null) Users[user.id] = user;
+					_collector.Collect([user]);
 					goto newSession;
 				case NewSessionCreated when _client.User != null:
 				newSession:
@@ -130,15 +121,14 @@ namespace WTelegram
 			var now = _lastUpdateStamp = DateTime.UtcNow;
 			var updateList = updates.UpdateList;
 			if (updates is UpdateShortSentMessage sent)
-				updateList = new[] { new UpdateNewMessage { pts = sent.pts, pts_count = sent.pts_count, message = new Message {
-				flags = (Message.Flags)sent.flags,
-				id = sent.id, date = sent.date, entities = sent.entities, media = sent.media, ttl_period = sent.ttl_period,
-			} } };
-			else if (Users != null)
-				if (updates is UpdateShortMessage usm && !Users.ContainsKey(usm.user_id))
-					(await _client.Updates_GetDifference(usm.pts - usm.pts_count, usm.date, 0)).UserOrChat(_collector);
-				else if (updates is UpdateShortChatMessage uscm && (!Users.ContainsKey(uscm.from_id) || !Chats.ContainsKey(uscm.chat_id)))
-					(await _client.Updates_GetDifference(uscm.pts - uscm.pts_count, uscm.date, 0)).UserOrChat(_collector);
+				updateList = [new UpdateNewMessage { pts = sent.pts, pts_count = sent.pts_count, message = new Message {
+					flags = (Message.Flags)sent.flags,
+					id = sent.id, date = sent.date, entities = sent.entities, media = sent.media, ttl_period = sent.ttl_period,
+				} }];
+			else if (updates is UpdateShortMessage usm && !_collector.HasUser(usm.user_id))
+				RaiseCollect(await _client.Updates_GetDifference(usm.pts - usm.pts_count, usm.date, 0));
+			else if (updates is UpdateShortChatMessage uscm && (!_collector.HasUser(uscm.from_id) || !_collector.HasChat(uscm.chat_id)))
+				RaiseCollect(await _client.Updates_GetDifference(uscm.pts - uscm.pts_count, uscm.date, 0));
 
 			bool ptsChanged = false, gotUPts = false;
 			int seq = 0;
@@ -261,10 +251,12 @@ namespace WTelegram
 						Log?.Invoke(2, $"({mbox_id,10},  new  +{pts_count}->{pts,-6}) {update,-30} First appearance of MBox {ExtendedLog(update)}");
 					else if (local.access_hash == -1) // no valid access_hash for this channel, so just raise this update
 						Log?.Invoke(3, $"({mbox_id,10}, {local.pts,6}+{pts_count}->{pts,-6}) {update,-30} No access_hash to recover {ExtendedLog(update)}");
+					else if (local.pts + pts_count - pts >= 0)
+						getDiffSuccess = true;
 					else
 					{
 						Log?.Invoke(1, $"({mbox_id,10}, {local.pts,6}+{pts_count}->{pts,-6}) {update,-30} Calling GetDifference {ExtendedLog(update)}");
-						getDiffSuccess = await GetDifference(mbox_id, pts - pts_count, local);
+						getDiffSuccess = await GetDifference(mbox_id, pts, local);
 					}
 					if (!getDiffSuccess) // no getDiff => just raise received pending updates in order
 					{
@@ -382,6 +374,11 @@ namespace WTelegram
 			catch (Exception ex)
 			{
 				Log?.Invoke(4, $"GetDifference({mbox_id}, {local.pts}->{expected_pts}) raised {ex}");
+				if (ex.Message == "PERSISTENT_TIMESTAMP_INVALID") // oh boy, we're lost!
+					if (mbox_id <= 0)
+						await HandleDifference(null, null, await _client.Updates_GetState(), null);
+					else if ((await _client.Channels_GetFullChannel(await GetInputChannel(mbox_id, local))).full_chat is ChannelFull full)
+						local.pts = full.pts;
 			}
 			finally
 			{
@@ -441,6 +438,14 @@ namespace WTelegram
 			}
 		}
 
+		private void RaiseCollect(Updates_DifferenceBase diff)
+		{
+			if (diff is Updates_DifferenceSlice uds)
+				RaiseCollect(uds.users, uds.chats);
+			else if (diff is Updates_Difference ud)
+				RaiseCollect(ud.users, ud.chats);
+		}
+
 		private void RaiseCollect(Dictionary<long, User> users, Dictionary<long, ChatBase> chats)
 		{
 			try
@@ -449,11 +454,12 @@ namespace WTelegram
 					if (chat is Channel channel && !channel.flags.HasFlag(Channel.Flags.min))
 						if (_local.TryGetValue(channel.id, out var local))
 							local.access_hash = channel.access_hash;
-				_onCollect(users, chats);
+				_collector.Collect(users.Values);
+				_collector.Collect(chats.Values);
 			}
 			catch (Exception ex)
 			{
-				Log?.Invoke(4, $"onCollect({users?.Count},{chats?.Count}) raised {ex}");
+				Log?.Invoke(4, $"Collect({users?.Count},{chats?.Count}) raised {ex}");
 			}
 		}
 
@@ -516,6 +522,14 @@ namespace WTelegram
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(Users, Chats);
 	}
+
+	public interface IPeerCollector
+	{
+		void Collect(IEnumerable<User> users);
+		void Collect(IEnumerable<ChatBase> chats);
+		bool HasUser(long id);
+		bool HasChat(long id);
+	}
 }
 
 namespace TL
@@ -530,7 +544,7 @@ namespace TL
 		/// <param name="statePath">Resume session by recovering all updates that occured since the state saved in this file</param>
 		/// <param name="collector">Custom users/chats collector. By default, those are collected in properties Users/Chats</param>
 		/// <param name="reentrant"><see langword="true"/> if your <paramref name="onUpdate"/> method can be called again even when last async call didn't return yet</param>
-		public static UpdateManager WithUpdateManager(this Client client, Func<TL.Update, Task> onUpdate, string statePath, UserChatCollector collector = null, bool reentrant = false)
+		public static UpdateManager WithUpdateManager(this Client client, Func<TL.Update, Task> onUpdate, string statePath, IPeerCollector collector = null, bool reentrant = false)
 			=> new(client, onUpdate, UpdateManager.LoadState(statePath), collector, reentrant);
 
 		/// <summary>Manager ensuring that you receive Telegram updates in correct order, without missing any</summary>
@@ -538,7 +552,7 @@ namespace TL
 		/// <param name="state">(optional) Resume session by recovering all updates that occured since this state</param>
 		/// <param name="collector">Custom users/chats collector. By default, those are collected in properties Users/Chats</param>
 		/// <param name="reentrant"><see langword="true"/> if your <paramref name="onUpdate"/> method can be called again even when last async call didn't return yet</param>
-		public static UpdateManager WithUpdateManager(this Client client, Func<TL.Update, Task> onUpdate, IDictionary<long, UpdateManager.MBoxState> state = null, UserChatCollector collector = null, bool reentrant = false)
+		public static UpdateManager WithUpdateManager(this Client client, Func<TL.Update, Task> onUpdate, IDictionary<long, UpdateManager.MBoxState> state = null, IPeerCollector collector = null, bool reentrant = false)
 			=> new(client, onUpdate, state, collector, reentrant);
 	}
 }
