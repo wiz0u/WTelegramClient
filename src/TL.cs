@@ -32,9 +32,9 @@ namespace TL
 		public readonly int Bit = bit;
 	}
 
-	public sealed class RpcException(int code, string message, int x = -1) : WTelegram.WTException(message, code)
+	public sealed class RpcException(int code, string message, int x = -1) : WTelegram.WTException(message)
 	{
-		public int Code => ErrorCode;
+		public readonly int Code = code;
 		/// <summary>The value of X in the message, -1 if no variable X was found</summary>
 		public readonly int X = x;
 		public override string ToString() { var str = base.ToString(); return str.Insert(str.IndexOf(':') + 1, " " + Code); }
@@ -278,8 +278,10 @@ namespace TL
 			var dict = new Dictionary<long, T>(count);
 			for (int i = 0; i < count; i++)
 			{
-				var value = (T)reader.ReadTLObject();
-				dict[value.ID] = value is UserEmpty ? null : value;
+				var obj = reader.ReadTLObject();
+				if (obj is T value) dict[value.ID] = value;
+				else if (obj is UserEmpty ue) dict[ue.id] = null;
+				else throw new InvalidCastException($"ReadTLDictionary got '{obj?.GetType().Name}' instead of '{typeof(T).Name}'");
 			}
 			return dict;
 		}

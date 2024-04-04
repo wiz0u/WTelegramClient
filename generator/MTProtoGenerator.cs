@@ -208,7 +208,7 @@ public class MTProtoGenerator : IIncrementalGenerator
 
 		foreach (var nullable in nullables)
 			makeTL.AppendLine($"\t\t\t0x{nullable.Value:X8} => null,");
-		makeTL.AppendLine("\t\t\tvar ctorNb => throw new Exception($\"Cannot find type for ctor #{ctorNb:x}\")");
+		makeTL.AppendLine("\t\t\tvar ctorNb => throw new WTelegram.WTException($\"Cannot find type for ctor #{ctorNb:x}\")");
 		makeTL.AppendLine("\t\t};");
 		namespaces["TL"]["Layer"] = makeTL.ToString();
 		foreach (var namesp in namespaces)
