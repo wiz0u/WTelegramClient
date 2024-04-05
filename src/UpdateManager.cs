@@ -56,7 +56,7 @@ namespace WTelegram
 		{
 			_client = client;
 			_onUpdate = onUpdate;
-			_collector = collector ?? new Extensions.CollectorPeer(Users = [], Chats = []);
+			_collector = collector ?? new Services.CollectorPeer(Users = [], Chats = []);
 
 			if (state == null)
 				_local = new() { [L_SEQ] = new() { access_hash = UndefinedSeqDate }, [L_QTS] = new(), [L_PTS] = new() };

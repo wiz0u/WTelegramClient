@@ -9,7 +9,7 @@ using WTelegram;
 
 namespace TL
 {
-	public static class Extensions
+	public static class Services
 	{
 		public sealed partial class CollectorPeer(IDictionary<long, User> _users, IDictionary<long, ChatBase> _chats) : Peer, IPeerCollector
 		{
@@ -104,13 +104,13 @@ namespace TL
 		public static void CollectUsersChats(this IPeerResolver structure, IDictionary<long, User> users, IDictionary<long, ChatBase> chats)
 			=>  structure.UserOrChat(new CollectorPeer(users, chats));
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
+		[EditorBrowsable(EditorBrowsableState.Never)][Obsolete("The method you're looking for is Messages_GetAllChats", true)]
 		public static Task<Messages_Chats> Messages_GetChats(this Client _) => throw new WTException("The method you're looking for is Messages_GetAllChats");
-		[EditorBrowsable(EditorBrowsableState.Never)]
+		[EditorBrowsable(EditorBrowsableState.Never)][Obsolete("The method you're looking for is Messages_GetAllChats", true)]
 		public static Task<Messages_Chats> Channels_GetChannels(this Client _) => throw new WTException("The method you're looking for is Messages_GetAllChats");
-		[EditorBrowsable(EditorBrowsableState.Never)]
+		[EditorBrowsable(EditorBrowsableState.Never)][Obsolete("The method you're looking for is Messages_GetAllDialogs", true)]
 		public static Task<UserBase[]> Users_GetUsers(this Client _) => throw new WTException("The method you're looking for is Messages_GetAllDialogs");
-		[EditorBrowsable(EditorBrowsableState.Never)]
+		[EditorBrowsable(EditorBrowsableState.Never)][Obsolete("If you want to get all messages from a chat, use method Messages_GetHistory", true)]
 		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client _) => throw new WTException("If you want to get all messages from a chat, use method Messages_GetHistory");
 	}
 
