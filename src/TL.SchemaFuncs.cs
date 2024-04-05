@@ -92,6 +92,14 @@ namespace TL
 				query = query,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/invokeWithBusinessConnection"/></para></summary>
+		public static Task<X> InvokeWithBusinessConnection<X>(this Client client, string connection_id, IMethod<X> query)
+			=> client.Invoke(new InvokeWithBusinessConnection<X>
+			{
+				connection_id = connection_id,
+				query = query,
+			});
+
 		/// <summary>Send the verification code for login		<para>See <a href="https://corefork.telegram.org/method/auth.sendCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406,500 (<a href="https://corefork.telegram.org/method/auth.sendCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">Phone number in international format</param>
 		/// <param name="api_id">Application identifier (see <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
@@ -1228,7 +1236,7 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateConnectedBot"/></para></summary>
-		public static Task<UpdatesBase> Account_UpdateConnectedBot(this Client client, InputUserBase bot, InputBusinessRecipients recipients, bool can_reply = false, bool deleted = false)
+		public static Task<UpdatesBase> Account_UpdateConnectedBot(this Client client, InputUserBase bot, InputBusinessBotRecipients recipients, bool can_reply = false, bool deleted = false)
 			=> client.Invoke(new Account_UpdateConnectedBot
 			{
 				flags = (Account_UpdateConnectedBot.Flags)((can_reply ? 0x1 : 0) | (deleted ? 0x2 : 0)),
@@ -1240,6 +1248,86 @@ namespace TL
 		public static Task<Account_ConnectedBots> Account_GetConnectedBots(this Client client)
 			=> client.Invoke(new Account_GetConnectedBots
 			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getBotBusinessConnection"/></para></summary>
+		public static Task<UpdatesBase> Account_GetBotBusinessConnection(this Client client, string connection_id)
+			=> client.Invoke(new Account_GetBotBusinessConnection
+			{
+				connection_id = connection_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateBusinessIntro"/></para></summary>
+		public static Task<bool> Account_UpdateBusinessIntro(this Client client, InputBusinessIntro intro = null)
+			=> client.Invoke(new Account_UpdateBusinessIntro
+			{
+				flags = (Account_UpdateBusinessIntro.Flags)(intro != null ? 0x1 : 0),
+				intro = intro,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.toggleConnectedBotPaused"/></para></summary>
+		public static Task<bool> Account_ToggleConnectedBotPaused(this Client client, InputPeer peer, bool paused)
+			=> client.Invoke(new Account_ToggleConnectedBotPaused
+			{
+				peer = peer,
+				paused = paused,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.disablePeerConnectedBot"/></para></summary>
+		public static Task<bool> Account_DisablePeerConnectedBot(this Client client, InputPeer peer)
+			=> client.Invoke(new Account_DisablePeerConnectedBot
+			{
+				peer = peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateBirthday"/></para></summary>
+		public static Task<bool> Account_UpdateBirthday(this Client client, Birthday birthday = null)
+			=> client.Invoke(new Account_UpdateBirthday
+			{
+				flags = (Account_UpdateBirthday.Flags)(birthday != null ? 0x1 : 0),
+				birthday = birthday,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.createBusinessChatLink"/></para></summary>
+		public static Task<BusinessChatLink> Account_CreateBusinessChatLink(this Client client, InputBusinessChatLink link)
+			=> client.Invoke(new Account_CreateBusinessChatLink
+			{
+				link = link,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.editBusinessChatLink"/></para></summary>
+		public static Task<BusinessChatLink> Account_EditBusinessChatLink(this Client client, string slug, InputBusinessChatLink link)
+			=> client.Invoke(new Account_EditBusinessChatLink
+			{
+				slug = slug,
+				link = link,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.deleteBusinessChatLink"/></para></summary>
+		public static Task<bool> Account_DeleteBusinessChatLink(this Client client, string slug)
+			=> client.Invoke(new Account_DeleteBusinessChatLink
+			{
+				slug = slug,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getBusinessChatLinks"/></para></summary>
+		public static Task<Account_BusinessChatLinks> Account_GetBusinessChatLinks(this Client client)
+			=> client.Invoke(new Account_GetBusinessChatLinks
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.resolveBusinessChatLink"/></para></summary>
+		public static Task<Account_ResolvedBusinessChatLinks> Account_ResolveBusinessChatLink(this Client client, string slug)
+			=> client.Invoke(new Account_ResolveBusinessChatLink
+			{
+				slug = slug,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updatePersonalChannel"/></para></summary>
+		public static Task<bool> Account_UpdatePersonalChannel(this Client client, InputChannelBase channel)
+			=> client.Invoke(new Account_UpdatePersonalChannel
+			{
+				channel = channel,
 			});
 
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
@@ -1512,6 +1600,12 @@ namespace TL
 				flags = (Contacts_SetBlocked.Flags)(my_stories_from ? 0x1 : 0),
 				id = id,
 				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.getBirthdays"/></para></summary>
+		public static Task<Contacts_ContactBirthdays> Contacts_GetBirthdays(this Client client)
+			=> client.Invoke(new Contacts_GetBirthdays
+			{
 			});
 
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para></summary>
@@ -1819,7 +1913,7 @@ namespace TL
 		/// <param name="chat_id">Chat ID</param>
 		/// <param name="user_id">User ID to be added</param>
 		/// <param name="fwd_limit">Number of last messages to be forwarded</param>
-		public static Task<UpdatesBase> Messages_AddChatUser(this Client client, long chat_id, InputUserBase user_id, int fwd_limit)
+		public static Task<Messages_InvitedUsers> Messages_AddChatUser(this Client client, long chat_id, InputUserBase user_id, int fwd_limit)
 			=> client.Invoke(new Messages_AddChatUser
 			{
 				chat_id = chat_id,
@@ -1843,7 +1937,7 @@ namespace TL
 		/// <param name="users">List of user IDs to be invited</param>
 		/// <param name="title">Chat name</param>
 		/// <param name="ttl_period">Time-to-live of all messages that will be sent in the chat: once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well. You can use <see cref="Messages_SetDefaultHistoryTTL">Messages_SetDefaultHistoryTTL</see> to edit this value later.</param>
-		public static Task<UpdatesBase> Messages_CreateChat(this Client client, InputUserBase[] users, string title, int? ttl_period = null)
+		public static Task<Messages_InvitedUsers> Messages_CreateChat(this Client client, InputUserBase[] users, string title, int? ttl_period = null)
 			=> client.Invoke(new Messages_CreateChat
 			{
 				flags = (Messages_CreateChat.Flags)(ttl_period != null ? 0x1 : 0),
@@ -2583,9 +2677,11 @@ namespace TL
 		/// <param name="peer">The chat, can be <see langword="null"/> for bots and <see cref="InputPeerSelf"/> for users.</param>
 		/// <param name="media">File uploaded in chunks as described in <a href="https://corefork.telegram.org/api/files">files »</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messageMediaEmpty">messageMediaEmpty</a></returns>
-		public static Task<MessageMedia> Messages_UploadMedia(this Client client, InputPeer peer, InputMedia media)
+		public static Task<MessageMedia> Messages_UploadMedia(this Client client, InputPeer peer, InputMedia media, string business_connection_id = null)
 			=> client.Invoke(new Messages_UploadMedia
 			{
+				flags = (Messages_UploadMedia.Flags)(business_connection_id != null ? 0x1 : 0),
+				business_connection_id = business_connection_id,
 				peer = peer,
 				media = media,
 			});
@@ -3977,11 +4073,13 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.sendQuickReplyMessages"/></para></summary>
-		public static Task<UpdatesBase> Messages_SendQuickReplyMessages(this Client client, InputPeer peer, int shortcut_id)
+		public static Task<UpdatesBase> Messages_SendQuickReplyMessages(this Client client, InputPeer peer, int shortcut_id, int[] id, params long[] random_id)
 			=> client.Invoke(new Messages_SendQuickReplyMessages
 			{
 				peer = peer,
 				shortcut_id = shortcut_id,
+				id = id,
+				random_id = random_id,
 			});
 
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteQuickReplyMessages"/></para></summary>
@@ -3997,6 +4095,14 @@ namespace TL
 			=> client.Invoke(new Messages_ToggleDialogFilterTags
 			{
 				enabled = enabled,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getMyStickers"/></para></summary>
+		public static Task<Messages_MyStickers> Messages_GetMyStickers(this Client client, long offset_id = default, int limit = int.MaxValue)
+			=> client.Invoke(new Messages_GetMyStickers
+			{
+				offset_id = offset_id,
+				limit = limit,
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -4586,7 +4692,7 @@ namespace TL
 		/// <summary>Invite users to a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.inviteToChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/channels.inviteToChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup</param>
 		/// <param name="users">Users to invite</param>
-		public static Task<UpdatesBase> Channels_InviteToChannel(this Client client, InputChannelBase channel, params InputUserBase[] users)
+		public static Task<Messages_InvitedUsers> Channels_InviteToChannel(this Client client, InputChannelBase channel, params InputUserBase[] users)
 			=> client.Invoke(new Channels_InviteToChannel
 			{
 				channel = channel,
@@ -4627,10 +4733,10 @@ namespace TL
 		/// <summary>Get <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a> we're admin in. Usually called when the user exceeds the <see cref="Config">limit</see> for owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, and the user is given the choice to remove one of his channels/supergroups/geogroups.		<para>See <a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels#possible-errors">details</a>)</para></summary>
 		/// <param name="by_location">Get geogroups</param>
 		/// <param name="check_limit">If set and the user has reached the limit of owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, instead of returning the channel list one of the specified <a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels#possible-errors">errors</a> will be returned.<br/>Useful to check if a new public channel can indeed be created, even before asking the user to enter a channel username to use in <see cref="Channels_CheckUsername">Channels_CheckUsername</see>/<see cref="Channels_UpdateUsername">Channels_UpdateUsername</see>.</param>
-		public static Task<Messages_Chats> Channels_GetAdminedPublicChannels(this Client client, bool by_location = false, bool check_limit = false)
+		public static Task<Messages_Chats> Channels_GetAdminedPublicChannels(this Client client, bool by_location = false, bool check_limit = false, bool for_personal = false)
 			=> client.Invoke(new Channels_GetAdminedPublicChannels
 			{
-				flags = (Channels_GetAdminedPublicChannels.Flags)((by_location ? 0x1 : 0) | (check_limit ? 0x2 : 0)),
+				flags = (Channels_GetAdminedPublicChannels.Flags)((by_location ? 0x1 : 0) | (check_limit ? 0x2 : 0) | (for_personal ? 0x4 : 0)),
 			});
 
 		/// <summary>Ban/unban/kick a user in a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.editBanned"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/channels.editBanned#possible-errors">details</a>)</para></summary>
@@ -5076,6 +5182,23 @@ namespace TL
 				stickerset = stickerset,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.reportSponsoredMessage"/></para></summary>
+		public static Task<Channels_SponsoredMessageReportResult> Channels_ReportSponsoredMessage(this Client client, InputChannelBase channel, byte[] random_id, byte[] option)
+			=> client.Invoke(new Channels_ReportSponsoredMessage
+			{
+				channel = channel,
+				random_id = random_id,
+				option = option,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.restrictSponsoredMessages"/></para></summary>
+		public static Task<UpdatesBase> Channels_RestrictSponsoredMessages(this Client client, InputChannelBase channel, bool restricted)
+			=> client.Invoke(new Channels_RestrictSponsoredMessages
+			{
+				channel = channel,
+				restricted = restricted,
+			});
+
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
 		/// <param name="custom_method">The method name</param>
 		/// <param name="params_">JSON-serialized method parameters</param>
@@ -5401,8 +5524,6 @@ namespace TL
 
 		/// <summary>Create a stickerset, bots only.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
 		/// <param name="masks">Whether this is a mask stickerset</param>
-		/// <param name="animated">Whether this is an animated stickerset</param>
-		/// <param name="videos">Whether this is a video stickerset</param>
 		/// <param name="emojis">Whether this is a <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> stickerset.</param>
 		/// <param name="text_color">Whether the color of TGS custom emojis contained in this set should be changed to the text color when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context. For custom emoji stickersets only.</param>
 		/// <param name="user_id">Stickerset owner</param>
@@ -5412,10 +5533,10 @@ namespace TL
 		/// <param name="stickers">Stickers</param>
 		/// <param name="software">Used when <a href="https://corefork.telegram.org/import-stickers">importing stickers using the sticker import SDKs</a>, specifies the name of the software that created the stickers</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
-		public static Task<Messages_StickerSet> Stickers_CreateStickerSet(this Client client, InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, InputDocument thumb = null, string software = null, bool masks = false, bool animated = false, bool videos = false, bool emojis = false, bool text_color = false)
+		public static Task<Messages_StickerSet> Stickers_CreateStickerSet(this Client client, InputUserBase user_id, string title, string short_name, InputStickerSetItem[] stickers, InputDocument thumb = null, string software = null, bool masks = false, bool emojis = false, bool text_color = false)
 			=> client.Invoke(new Stickers_CreateStickerSet
 			{
-				flags = (Stickers_CreateStickerSet.Flags)((thumb != null ? 0x4 : 0) | (software != null ? 0x8 : 0) | (masks ? 0x1 : 0) | (animated ? 0x2 : 0) | (videos ? 0x10 : 0) | (emojis ? 0x20 : 0) | (text_color ? 0x40 : 0)),
+				flags = (Stickers_CreateStickerSet.Flags)((thumb != null ? 0x4 : 0) | (software != null ? 0x8 : 0) | (masks ? 0x1 : 0) | (emojis ? 0x20 : 0) | (text_color ? 0x40 : 0)),
 				user_id = user_id,
 				title = title,
 				short_name = short_name,
@@ -5518,6 +5639,15 @@ namespace TL
 			=> client.Invoke(new Stickers_DeleteStickerSet
 			{
 				stickerset = stickerset,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stickers.replaceSticker"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
+		public static Task<Messages_StickerSet> Stickers_ReplaceSticker(this Client client, InputDocument sticker, InputStickerSetItem new_sticker)
+			=> client.Invoke(new Stickers_ReplaceSticker
+			{
+				sticker = sticker,
+				new_sticker = new_sticker,
 			});
 
 		/// <summary>Get phone call configuration to be passed to libtgvoip's shared config		<para>See <a href="https://corefork.telegram.org/method/phone.getCallConfig"/></para></summary>
@@ -6018,6 +6148,31 @@ namespace TL
 				limit = limit,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueStats"/></para></summary>
+		public static Task<Stats_BroadcastRevenueStats> Stats_GetBroadcastRevenueStats(this Client client, InputChannelBase channel, bool dark = false)
+			=> client.Invoke(new Stats_GetBroadcastRevenueStats
+			{
+				flags = (Stats_GetBroadcastRevenueStats.Flags)(dark ? 0x1 : 0),
+				channel = channel,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueWithdrawalUrl"/></para></summary>
+		public static Task<Stats_BroadcastRevenueWithdrawalUrl> Stats_GetBroadcastRevenueWithdrawalUrl(this Client client, InputChannelBase channel, InputCheckPasswordSRP password)
+			=> client.Invoke(new Stats_GetBroadcastRevenueWithdrawalUrl
+			{
+				channel = channel,
+				password = password,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueTransactions"/></para></summary>
+		public static Task<Stats_BroadcastRevenueTransactions> Stats_GetBroadcastRevenueTransactions(this Client client, InputChannelBase channel, int offset = default, int limit = int.MaxValue)
+			=> client.Invoke(new Stats_GetBroadcastRevenueTransactions
+			{
+				channel = channel,
+				offset = offset,
+				limit = limit,
+			});
+
 		/// <summary>Export a <a href="https://corefork.telegram.org/api/folders">folder »</a>, creating a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/chatlists.exportChatlistInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/chatlists.exportChatlistInvite#possible-errors">details</a>)</para></summary>
 		/// <param name="chatlist">The folder to export</param>
 		/// <param name="title">An optional name for the link</param>
@@ -6507,6 +6662,13 @@ namespace TL
 				job_id = job_id,
 				error = error,
 			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/fragment.getCollectibleInfo"/></para></summary>
+		public static Task<Fragment_CollectibleInfo> Fragment_GetCollectibleInfo(this Client client, InputCollectible collectible)
+			=> client.Invoke(new Fragment_GetCollectibleInfo
+			{
+				collectible = collectible,
+			});
 	}
 }
 
@@ -6573,6 +6735,13 @@ namespace TL.Methods
 	public sealed partial class InvokeWithTakeout<X> : IMethod<X>
 	{
 		public long takeout_id;
+		public IMethod<X> query;
+	}
+
+	[TLDef(0xDD289F8E)]
+	public sealed partial class InvokeWithBusinessConnection<X> : IMethod<X>
+	{
+		public string connection_id;
 		public IMethod<X> query;
 	}
 
@@ -7479,12 +7648,12 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x9C2D527D)]
+	[TLDef(0x43D8521D)]
 	public sealed partial class Account_UpdateConnectedBot : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputUserBase bot;
-		public InputBusinessRecipients recipients;
+		public InputBusinessBotRecipients recipients;
 
 		[Flags] public enum Flags : uint
 		{
@@ -7495,6 +7664,83 @@ namespace TL.Methods
 
 	[TLDef(0x4EA4C80F)]
 	public sealed partial class Account_GetConnectedBots : IMethod<Account_ConnectedBots> { }
+
+	[TLDef(0x76A86270)]
+	public sealed partial class Account_GetBotBusinessConnection : IMethod<UpdatesBase>
+	{
+		public string connection_id;
+	}
+
+	[TLDef(0xA614D034)]
+	public sealed partial class Account_UpdateBusinessIntro : IMethod<bool>
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputBusinessIntro intro;
+
+		[Flags] public enum Flags : uint
+		{
+			has_intro = 0x1,
+		}
+	}
+
+	[TLDef(0x646E1097)]
+	public sealed partial class Account_ToggleConnectedBotPaused : IMethod<bool>
+	{
+		public InputPeer peer;
+		public bool paused;
+	}
+
+	[TLDef(0x5E437ED9)]
+	public sealed partial class Account_DisablePeerConnectedBot : IMethod<bool>
+	{
+		public InputPeer peer;
+	}
+
+	[TLDef(0xCC6E0C11)]
+	public sealed partial class Account_UpdateBirthday : IMethod<bool>
+	{
+		public Flags flags;
+		[IfFlag(0)] public Birthday birthday;
+
+		[Flags] public enum Flags : uint
+		{
+			has_birthday = 0x1,
+		}
+	}
+
+	[TLDef(0x8851E68E)]
+	public sealed partial class Account_CreateBusinessChatLink : IMethod<BusinessChatLink>
+	{
+		public InputBusinessChatLink link;
+	}
+
+	[TLDef(0x8C3410AF)]
+	public sealed partial class Account_EditBusinessChatLink : IMethod<BusinessChatLink>
+	{
+		public string slug;
+		public InputBusinessChatLink link;
+	}
+
+	[TLDef(0x60073674)]
+	public sealed partial class Account_DeleteBusinessChatLink : IMethod<bool>
+	{
+		public string slug;
+	}
+
+	[TLDef(0x6F70DDE1)]
+	public sealed partial class Account_GetBusinessChatLinks : IMethod<Account_BusinessChatLinks> { }
+
+	[TLDef(0x5492E5EE)]
+	public sealed partial class Account_ResolveBusinessChatLink : IMethod<Account_ResolvedBusinessChatLinks>
+	{
+		public string slug;
+	}
+
+	[TLDef(0xD94305E0)]
+	public sealed partial class Account_UpdatePersonalChannel : IMethod<bool>
+	{
+		public InputChannelBase channel;
+	}
 
 	[TLDef(0x0D91A548)]
 	public sealed partial class Users_GetUsers : IMethod<UserBase[]>
@@ -7726,6 +7972,9 @@ namespace TL.Methods
 			my_stories_from = 0x1,
 		}
 	}
+
+	[TLDef(0xDAEDA864)]
+	public sealed partial class Contacts_GetBirthdays : IMethod<Contacts_ContactBirthdays> { }
 
 	[TLDef(0x63C66506)]
 	public sealed partial class Messages_GetMessages : IMethod<Messages_MessagesBase>
@@ -7989,8 +8238,8 @@ namespace TL.Methods
 		public InputChatPhotoBase photo;
 	}
 
-	[TLDef(0xF24753E3)]
-	public sealed partial class Messages_AddChatUser : IMethod<UpdatesBase>
+	[TLDef(0xCBC6D107)]
+	public sealed partial class Messages_AddChatUser : IMethod<Messages_InvitedUsers>
 	{
 		public long chat_id;
 		public InputUserBase user_id;
@@ -8010,8 +8259,8 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x0034A818)]
-	public sealed partial class Messages_CreateChat : IMethod<UpdatesBase>
+	[TLDef(0x92CEDDD4)]
+	public sealed partial class Messages_CreateChat : IMethod<Messages_InvitedUsers>
 	{
 		public Flags flags;
 		public InputUserBase[] users;
@@ -8665,11 +8914,18 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x519BC2B1)]
+	[TLDef(0x14967978)]
 	public sealed partial class Messages_UploadMedia : IMethod<MessageMedia>
 	{
+		public Flags flags;
+		[IfFlag(0)] public string business_connection_id;
 		public InputPeer peer;
 		public InputMedia media;
+
+		[Flags] public enum Flags : uint
+		{
+			has_business_connection_id = 0x1,
+		}
 	}
 
 	[TLDef(0xA1405817)]
@@ -9846,11 +10102,13 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x33153AD4)]
+	[TLDef(0x6C750DE1)]
 	public sealed partial class Messages_SendQuickReplyMessages : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
 		public int shortcut_id;
+		public int[] id;
+		public long[] random_id;
 	}
 
 	[TLDef(0xE105E910)]
@@ -9864,6 +10122,13 @@ namespace TL.Methods
 	public sealed partial class Messages_ToggleDialogFilterTags : IMethod<bool>
 	{
 		public bool enabled;
+	}
+
+	[TLDef(0xD0B5E1FC)]
+	public sealed partial class Messages_GetMyStickers : IMethod<Messages_MyStickers>
+	{
+		public long offset_id;
+		public int limit;
 	}
 
 	[TLDef(0xEDD4882A)]
@@ -10299,8 +10564,8 @@ namespace TL.Methods
 		public InputChannelBase channel;
 	}
 
-	[TLDef(0x199F3A6C)]
-	public sealed partial class Channels_InviteToChannel : IMethod<UpdatesBase>
+	[TLDef(0xC9E33D54)]
+	public sealed partial class Channels_InviteToChannel : IMethod<Messages_InvitedUsers>
 	{
 		public InputChannelBase channel;
 		public InputUserBase[] users;
@@ -10342,6 +10607,7 @@ namespace TL.Methods
 		{
 			by_location = 0x1,
 			check_limit = 0x2,
+			for_personal = 0x4,
 		}
 	}
 
@@ -10691,6 +10957,21 @@ namespace TL.Methods
 		public InputStickerSet stickerset;
 	}
 
+	[TLDef(0xAF8FF6B9)]
+	public sealed partial class Channels_ReportSponsoredMessage : IMethod<Channels_SponsoredMessageReportResult>
+	{
+		public InputChannelBase channel;
+		public byte[] random_id;
+		public byte[] option;
+	}
+
+	[TLDef(0x9AE91519)]
+	public sealed partial class Channels_RestrictSponsoredMessages : IMethod<UpdatesBase>
+	{
+		public InputChannelBase channel;
+		public bool restricted;
+	}
+
 	[TLDef(0xAA2769ED)]
 	public sealed partial class Bots_SendCustomRequest : IMethod<DataJSON>
 	{
@@ -10971,10 +11252,8 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			masks = 0x1,
-			animated = 0x2,
 			has_thumb = 0x4,
 			has_software = 0x8,
-			videos = 0x10,
 			emojis = 0x20,
 			text_color = 0x40,
 		}
@@ -11055,6 +11334,13 @@ namespace TL.Methods
 	public sealed partial class Stickers_DeleteStickerSet : IMethod<bool>
 	{
 		public InputStickerSet stickerset;
+	}
+
+	[TLDef(0x4696459A)]
+	public sealed partial class Stickers_ReplaceSticker : IMethod<Messages_StickerSet>
+	{
+		public InputDocument sticker;
+		public InputStickerSetItem new_sticker;
 	}
 
 	[TLDef(0x55451FA9)]
@@ -11474,6 +11760,33 @@ namespace TL.Methods
 		public int limit;
 	}
 
+	[TLDef(0x75DFB671)]
+	public sealed partial class Stats_GetBroadcastRevenueStats : IMethod<Stats_BroadcastRevenueStats>
+	{
+		public Flags flags;
+		public InputChannelBase channel;
+
+		[Flags] public enum Flags : uint
+		{
+			dark = 0x1,
+		}
+	}
+
+	[TLDef(0x2A65EF73)]
+	public sealed partial class Stats_GetBroadcastRevenueWithdrawalUrl : IMethod<Stats_BroadcastRevenueWithdrawalUrl>
+	{
+		public InputChannelBase channel;
+		public InputCheckPasswordSRP password;
+	}
+
+	[TLDef(0x0069280F)]
+	public sealed partial class Stats_GetBroadcastRevenueTransactions : IMethod<Stats_BroadcastRevenueTransactions>
+	{
+		public InputChannelBase channel;
+		public int offset;
+		public int limit;
+	}
+
 	[TLDef(0x8472478E)]
 	public sealed partial class Chatlists_ExportChatlistInvite : IMethod<Chatlists_ExportedChatlistInvite>
 	{
@@ -11877,5 +12190,11 @@ namespace TL.Methods
 		{
 			has_error = 0x1,
 		}
+	}
+
+	[TLDef(0xBE1E85BA)]
+	public sealed partial class Fragment_GetCollectibleInfo : IMethod<Fragment_CollectibleInfo>
+	{
+		public InputCollectible collectible;
 	}
 }

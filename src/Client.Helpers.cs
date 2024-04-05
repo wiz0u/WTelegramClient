@@ -580,7 +580,7 @@ namespace WTelegram
 		/// <summary>Generic helper: Adds a single user to a Chat or Channel		<para>See <a href="https://corefork.telegram.org/method/messages.addChatUser"/><br/> and <a href="https://corefork.telegram.org/method/channels.inviteToChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403</para></summary>
 		/// <param name="peer">Chat/Channel</param>
 		/// <param name="user">User to be added</param>
-		public Task<UpdatesBase> AddChatUser(InputPeer peer, InputUserBase user) => peer switch
+		public Task<Messages_InvitedUsers> AddChatUser(InputPeer peer, InputUserBase user) => peer switch
 		{
 			InputPeerChat chat => this.Messages_AddChatUser(chat.chat_id, user, int.MaxValue),
 			InputPeerChannel channel => this.Channels_InviteToChannel(channel, user),
