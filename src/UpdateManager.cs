@@ -177,7 +177,7 @@ namespace WTelegram
 						else if (pts_count != 0)
 							local.pts = pts;
 					}
-					await RaiseUpdate(update, own);
+					if (!own) await RaiseUpdate(update);
 				}
 			}
 			finally
@@ -218,7 +218,7 @@ namespace WTelegram
 						// the update can be applied.
 						local.pts = pts;
 						if (mbox_id == L_SEQ) local.access_hash = updates.Date.Ticks;
-						await RaiseUpdate(update, own);
+						if (!own) await RaiseUpdate(update);
 						i = 0; // rescan pending updates from start
 					}
 				}
@@ -275,7 +275,7 @@ namespace WTelegram
 						Log?.Invoke(3, $"({mbox_id,10}, {local.pts,6}+{pts_count}->{pts,-6}) {update,-30} forcibly removed!");
 						_pending.RemoveAt(0);
 						local.pts = pts;
-						await RaiseUpdate(update, own);
+						if (!own) await RaiseUpdate(update);
 					}
 				}
 			}
@@ -393,14 +393,16 @@ namespace WTelegram
 				RaiseCollect(updates.users, updates.chats);
 			try
 			{
-				if (updates?.updates != null)
+				int updatesCount = updates?.updates.Length ?? 0;
+				if (updatesCount != 0)
 					for (int i = 0; i < updates.updates.Length; i++)
 					{
 						var update = updates.updates[i];
 						if (update is UpdateMessageID or UpdateStoryID)
 						{
-							await RaiseUpdate(update, false);
+							await RaiseUpdate(update);
 							updates.updates[i] = null;
+							--updatesCount;
 						}
 					}
 				if (new_messages?.Length > 0)
@@ -408,8 +410,11 @@ namespace WTelegram
 					var update = state == null ? new UpdateNewChannelMessage() : new UpdateNewMessage() { pts = state.pts, pts_count = 1 };
 					foreach (var msg in new_messages)
 					{
+						if (_pending.Any(p => p is { own: true, update: UpdateNewMessage { message: { Peer.ID: var peer_id, ID: var msg_id } } }
+							&& peer_id == msg.Peer.ID && msg_id == msg.ID))
+							continue;
 						update.message = msg;
-						await RaiseUpdate(update, false);
+						await RaiseUpdate(update);
 					}
 				}
 				if (enc_messages?.Length > 0)
@@ -418,12 +423,44 @@ namespace WTelegram
 					if (state != null) update.qts = state.qts;
 					foreach (var msg in enc_messages)
 					{
+						if (_pending.Any(p => p is { own: true, update: UpdateNewEncryptedMessage { message: { ChatId: var chat_id, RandomId: var random_id } } }
+							&& chat_id == msg.ChatId && random_id == msg.RandomId))
+							continue;
 						update.message = msg;
-						await RaiseUpdate(update, false);
+						await RaiseUpdate(update);
 					}
 				}
-				if (updates?.updates != null)
-					await HandleUpdates(updates, false);
+				if (updatesCount != 0)
+				{
+					// try to remove matching pending OwnUpdates from this updates list (starting from most-recent)
+					for (int p = _pending.Count - 1, u = updates.updates.Length; p >= 0 && u > 0; p--)
+					{
+						if (_pending[p].own == false) continue;
+						var updateP = _pending[p].update;
+						var (mbox_idP, ptsP, pts_countP) = updateP.GetMBox();
+						if (ptsP == 0) (mbox_idP, ptsP, pts_countP) = _pending[p].updates.GetMBox();
+						Type updatePtype = null;
+						while (--u >= 0)
+						{
+							var update = updates.updates[u];
+							if (update == null) continue;
+							var (mbox_id, pts, pts_count) = update.GetMBox();
+							if (pts == 0) (mbox_id, pts, pts_count) = updates.GetMBox();
+							if (mbox_idP == mbox_id && ptsP <= pts)
+							{
+								updatePtype ??= updateP.GetType();
+								if (updatePtype == (update is UpdateDeleteMessages ? typeof(UpdateAffectedMessages) : update.GetType()))
+								{
+									updates.updates[u] = null;
+									--updatesCount;
+									break;
+								}
+							}
+						}
+					}
+					if (updatesCount != 0)
+						await HandleUpdates(updates, false);
+				}
 			}
 			finally
 			{
@@ -463,9 +500,8 @@ namespace WTelegram
 			}
 		}
 
-		private async Task RaiseUpdate(Update update, bool own)
+		private async Task RaiseUpdate(Update update)
 		{
-			if (own) return;
 			try
 			{
 				var task = _onUpdate(update);
@@ -519,7 +555,7 @@ namespace WTelegram
 			=> System.IO.File.WriteAllText(statePath, System.Text.Json.JsonSerializer.Serialize(State, Helpers.JsonOptions));
 		public static Dictionary<long, MBoxState> LoadState(string statePath) => !System.IO.File.Exists(statePath) ? null
 			: System.Text.Json.JsonSerializer.Deserialize<Dictionary<long, MBoxState>>(System.IO.File.ReadAllText(statePath), Helpers.JsonOptions);
-		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer <i>(only if using the default collector)</i></summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(Users, Chats);
 	}
 
