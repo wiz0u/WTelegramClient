@@ -327,6 +327,7 @@ namespace TL
 		protected override InputPhoto ToInputPhoto() => new() { id = id, access_hash = access_hash, file_reference = file_reference };
 		public InputPhotoFileLocation ToFileLocation() => ToFileLocation(LargestPhotoSize);
 		public InputPhotoFileLocation ToFileLocation(PhotoSizeBase photoSize) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = photoSize.Type };
+		public InputDocumentFileLocation ToFileLocation(VideoSize videoSize) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = videoSize.type };
 		public PhotoSizeBase LargestPhotoSize => sizes.Aggregate((agg, next) => (long)next.Width * next.Height > (long)agg.Width * agg.Height ? next : agg);
 	}
 
@@ -507,6 +508,7 @@ namespace TL
 		public string Filename => GetAttribute<DocumentAttributeFilename>()?.file_name;
 		protected override InputDocument ToInputDocument() => new() { id = id, access_hash = access_hash, file_reference = file_reference };
 		public InputDocumentFileLocation ToFileLocation(PhotoSizeBase thumbSize = null) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = thumbSize?.Type };
+		public InputDocumentFileLocation ToFileLocation(VideoSize videoSize) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = videoSize.type };
 		public PhotoSizeBase LargestThumbSize => thumbs?.Aggregate((agg, next) => (long)next.Width * next.Height > (long)agg.Width * agg.Height ? next : agg);
 		public T GetAttribute<T>() where T : DocumentAttribute => attributes.OfType<T>().FirstOrDefault();
 	}
@@ -733,4 +735,10 @@ namespace TL
 
 	partial class Theme				{ public static implicit operator InputTheme(Theme theme) => new() { id = theme.id, access_hash = theme.access_hash }; }
 	partial class GroupCallBase		{ public static implicit operator InputGroupCall(GroupCallBase call) => new() { id = call.ID, access_hash = call.AccessHash }; }
+
+	partial class RequestedPeer			{ public abstract long ID { get; } }
+	partial class RequestedPeerUser		{ public override long ID => user_id; }
+	partial class RequestedPeerChat		{ public override long ID => chat_id; }
+	partial class RequestedPeerChannel	{ public override long ID => channel_id; }
+
 }
