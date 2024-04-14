@@ -25,8 +25,10 @@ namespace WTelegramClientTest
 				// We collect all infos about the users/chats so that updates can be printed with their names
 				var dialogs = await Client.Messages_GetAllDialogs(); // dialogs = groups/channels/users
 				dialogs.CollectUsersChats(Manager.Users, Manager.Chats);
+				
 				Console.ReadKey();
-			}
+			} // WTelegram.Client gets disposed when exiting this scope
+
 			//Manager.SaveState("Updates.state"); // if you want to resume missed updates on the next run (see WithUpdateManager above)
 		}
 

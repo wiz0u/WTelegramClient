@@ -570,7 +570,7 @@ namespace WTelegram
 						if (peek == Layer.RpcErrorCtor)
 							result = reader.ReadTLObject(Layer.RpcErrorCtor);
 						else if (peek == Layer.GZipedCtor)
-							result = reader.ReadTLGzipped();
+							result = reader.ReadTLGzipped(rpc.type);
 						else
 						{
 							reader.BaseStream.Position -= 4;

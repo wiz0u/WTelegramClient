@@ -85,7 +85,7 @@ public class MTProtoGenerator : IIncrementalGenerator
 				continue;
 			}
 			if (id == 0x3072CFA1) // GzipPacked
-				makeTL.AppendLine($"\t\t\t0x{id:X8} => reader.ReadTLGzipped(),");
+				makeTL.AppendLine($"\t\t\t0x{id:X8} => (IObject)reader.ReadTLGzipped(typeof(IObject)),");
 			else if (name != "Null" && (ns != "TL.Methods" || name == "Ping"))
 				makeTL.AppendLine($"\t\t\t0x{id:X8} => new {(ns == "TL" ? "" : ns + '.')}{name}().ReadTL(reader),");
 			var override_ = symbol.BaseType == object_ ? "" : "override ";

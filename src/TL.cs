@@ -350,10 +350,10 @@ namespace TL
 			writer.Write(0);    // null arrays/strings are serialized as empty
 		}
 
-		internal static IObject ReadTLGzipped(this BinaryReader reader)
+		internal static object ReadTLGzipped(this BinaryReader reader, Type type)
 		{
 			using var gzipReader = new BinaryReader(new GZipStream(new MemoryStream(reader.ReadTLBytes()), CompressionMode.Decompress));
-			return ReadTLObject(gzipReader);
+			return gzipReader.ReadTLValue(type);
 		}
 
 		internal static bool ReadTLBool(this BinaryReader reader) => reader.ReadUInt32() switch
