@@ -9,7 +9,7 @@ namespace WTelegramClientTest
 		// This code is similar to what you should have obtained if you followed the README introduction
 		// I've just added a few comments to explain further what's going on
 
-		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
+		// go to Project Properties > Debug > Launch Profiles > Environment variables and add at least these: api_id, api_hash, phone_number
 		static string Config(string what)
 		{
 			if (what == "api_id") return Environment.GetEnvironmentVariable("api_id");

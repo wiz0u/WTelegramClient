@@ -8,7 +8,7 @@ namespace WTelegramClientTest
 	{
 		static WTelegram.Client Client;
 
-		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
+		// go to Project Properties > Debug > Launch Profiles > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main(string[] _)
 		{
 			Console.WriteLine("The program demonstrate how to handle ReactorError. Press any key to terminate");

@@ -7,7 +7,7 @@ namespace WTelegramClientTest
 {
 	static class Program_DownloadSavedMedia
 	{
-		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
+		// go to Project Properties > Debug > Launch Profiles > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main(string[] _)
 		{
 			Console.WriteLine("The program will download photos/medias from messages you send/forward to yourself (Saved Messages)");

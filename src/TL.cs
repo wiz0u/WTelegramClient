@@ -80,7 +80,7 @@ namespace TL
 			return reader.ReadTL(ctorNb);
 #else
 			if (ctorNb == 0) ctorNb = reader.ReadUInt32();
-			if (ctorNb == Layer.GZipedCtor) return reader.ReadTLGzipped();
+			if (ctorNb == Layer.GZipedCtor) return (IObject)reader.ReadTLGzipped(typeof(IObject));
 			if (!Layer.Table.TryGetValue(ctorNb, out var type))
 				throw new WTelegram.WTException($"Cannot find type for ctor #{ctorNb:x}");
 			if (type == null) return null; // nullable ctor (class meaning is associated with null)

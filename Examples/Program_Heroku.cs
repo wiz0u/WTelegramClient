@@ -75,7 +75,7 @@ namespace WTelegramClientTest
 			var parts = databaseUrl.Split(':', '/', '@');
 			_sql = new NpgsqlConnection($"User ID={parts[3]};Password={parts[4]};Host={parts[5]};Port={parts[6]};Database={parts[7]};Pooling=true;SSL Mode=Require;Trust Server Certificate=True;");
 			_sql.Open();
-			using (var create = new NpgsqlCommand($"CREATE TABLE IF NOT EXISTS WTelegram_sessions (name text NOT NULL PRIMARY KEY, data bytea)", _sql))
+			using (var create = new NpgsqlCommand("CREATE TABLE IF NOT EXISTS WTelegram_sessions (name text NOT NULL PRIMARY KEY, data bytea)", _sql))
 				create.ExecuteNonQuery();
 			using var cmd = new NpgsqlCommand($"SELECT data FROM WTelegram_sessions WHERE name = '{_sessionName}'", _sql);
 			using var rdr = cmd.ExecuteReader();
@@ -134,7 +134,7 @@ HOW TO USE AND DEPLOY THIS EXAMPLE HEROKU USERBOT:
 - In Visual Studio, Clone the Heroku git repository and add some standard .gitignore .gitattributes files
 - In this repository folder, create a new .NET Console project with this Program.cs file
 - Add these Nuget packages: WTelegramClient and Npgsql
-- In Project properties > Debug > Environment variables, configure the same values for DATABASE_URL, api_hash, phone_number
+- In Project properties > Debug > Launch Profiles > Environment variables, configure the same values for DATABASE_URL, api_hash, phone_number
 - Run the project in Visual Studio. The first time, it should ask you interactively for elements to complete the connection
 - On the following runs, the PostgreSQL database contains the session data and it should connect automatically
 - You can test the userbot by sending him "Ping" in private message (or saved messages). It should respond with "Pong"

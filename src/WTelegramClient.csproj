@@ -43,14 +43,17 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>-->
 
-  <ItemGroup Condition="$(DefineConstants.Contains('MTPG'))" >
+  <ItemGroup Condition="$(DefineConstants.Contains('MTPG'))">
     <ProjectReference Include="..\generator\MTProtoGenerator.csproj" OutputItemType="Analyzer" PrivateAssets="All" />
   </ItemGroup>
-  
+
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="IndexRange" Version="1.0.2" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Text.Json" Version="6.0.5" />
+    <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
   </ItemGroup>
 

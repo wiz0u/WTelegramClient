@@ -16,7 +16,7 @@ namespace WTelegramClientTest
 		static readonly Dictionary<long, User> Users = [];
 		static readonly Dictionary<long, ChatBase> Chats = [];
 
-		// go to Project Properties > Debug > Environment variables and add at least these: api_id, api_hash, phone_number
+		// go to Project Properties > Debug > Launch Profiles > Environment variables and add at least these: api_id, api_hash, phone_number
 		static async Task Main()
 		{
 			Helpers.Log = (l, s) => System.Diagnostics.Debug.WriteLine(s);

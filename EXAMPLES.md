@@ -11,7 +11,7 @@ await client.LoginUserIfNeeded();
 ```
 
 In this case, environment variables are used for configuration so make sure to
-go to your **Project Properties > Debug > Environment variables**
+go to your **Project Properties > Debug > Launch Profiles > Environment variables**
 and add at least these variables with adequate values: **api_id, api_hash, phone_number**
 
 Remember that these are just simple example codes that you should adjust to your needs.
@@ -389,9 +389,9 @@ var chat = chats.chats[1234567890]; // the target chat
 After the above code, once you [have obtained](FAQ.md#access-hash) an `InputUser` or `User`, you can:
 ```csharp
 // • Directly add the user to a Chat/Channel/group:
-await client.AddChatUser(chat, user);
-// You may get exception USER_PRIVACY_RESTRICTED if the user has denied the right to be added to a chat
-//          or exception USER_NOT_MUTUAL_CONTACT if the user left the chat previously and you want to add him again
+var miu = await client.AddChatUser(chat, user);
+// You may get exception USER_NOT_MUTUAL_CONTACT if the user left the chat previously and you want to add him again
+//      or a result with miu.missing_invitees listing users that denied the right to be added to a chat
 
 // • Obtain the main invite link for the chat, and send it to the user:
 var mcf = await client.GetFullChat(chat);

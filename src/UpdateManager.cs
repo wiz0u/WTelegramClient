@@ -58,7 +58,7 @@ namespace WTelegram
 			_onUpdate = onUpdate;
 			_collector = collector ?? new Services.CollectorPeer(Users = [], Chats = []);
 
-			if (state == null)
+			if (state == null || state.Count < 3)
 				_local = new() { [L_SEQ] = new() { access_hash = UndefinedSeqDate }, [L_QTS] = new(), [L_PTS] = new() };
 			else
 				_local = state as Dictionary<long, MBoxState> ?? new Dictionary<long, MBoxState>(state);
