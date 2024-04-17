@@ -1115,7 +1115,7 @@ namespace WTelegram
 				sentCodeBase = await this.Auth_SendCode(phone_number, _session.ApiId, _apiHash, settings);
 			}
 			Auth_AuthorizationBase authorization = null;
-			string phone_code_hash = null;
+			string phone_code_hash = null, email = null;
 			try
 			{
 				if (sentCodeBase is Auth_SentCode { type: Auth_SentCodeTypeSetUpEmailRequired setupEmail } setupSentCode)
@@ -1123,7 +1123,7 @@ namespace WTelegram
 					phone_code_hash = setupSentCode.phone_code_hash;
 					Helpers.Log(3, "A login email is required");
 					RaiseUpdates(sentCodeBase);
-					var email = _config("email");
+					email = _config("email");
 					if (string.IsNullOrEmpty(email))
 						sentCodeBase = await this.Auth_ResendCode(phone_number, phone_code_hash);
 					else
@@ -1140,12 +1140,7 @@ namespace WTelegram
 							try
 							{
 								var code = await ConfigAsync("email_verification_code");
-								if (email is "Google")
-									verified = await this.Account_VerifyEmail(purpose, new EmailVerificationGoogle { token = code });
-								else if (email is "Apple")
-									verified = await this.Account_VerifyEmail(purpose, new EmailVerificationApple { token = code });
-								else
-									verified = await this.Account_VerifyEmail(purpose, new EmailVerificationCode { code = code });
+								verified = await this.Account_VerifyEmail(purpose, EmailVerification(email, code));
 							}
 							catch (RpcException e) when (e.Code == 400 && e.Message is "CODE_INVALID" or "EMAIL_TOKEN_INVALID")
 							{
@@ -1195,7 +1190,10 @@ namespace WTelegram
 								sentCodeBase = await this.Auth_ResendCode(phone_number, phone_code_hash);
 								goto resent;
 							}
-							authorization = await this.Auth_SignIn(phone_number, phone_code_hash, verification_code);
+							if (sentCode.type is Auth_SentCodeTypeEmailCode)
+								authorization = await this.Auth_SignIn(phone_number, phone_code_hash, null, EmailVerification(email ??= _config("email"), verification_code));
+							else
+								authorization = await this.Auth_SignIn(phone_number, phone_code_hash, verification_code);
 						}
 						catch (RpcException e) when (e.Code == 400 && e.Message == "PHONE_CODE_INVALID")
 						{
@@ -1219,6 +1217,13 @@ namespace WTelegram
 								}
 						}
 				}
+
+				static EmailVerification EmailVerification(string email, string code) => email switch
+				{
+					"Google" => new EmailVerificationGoogle { token = code },
+					"Apple" => new EmailVerificationApple { token = code },
+					_ => new EmailVerificationCode { code = code }
+				};
 			}
 			catch (Exception ex) when (ex is not RpcException { Message: "FLOOD_WAIT_X" })
 			{
