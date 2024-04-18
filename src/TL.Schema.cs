@@ -2995,7 +2995,7 @@ namespace TL
 		/// <summary>Peer was muted?</summary>
 		[IfFlag(1)] public bool silent;
 		/// <summary>Date until which all notifications shall be switched off</summary>
-		[IfFlag(2)] public int mute_until;
+		[IfFlag(2)] public DateTime mute_until;
 		/// <summary>Identifier of an audio file to play for notifications.</summary>
 		[IfFlag(3)] public NotificationSound sound;
 		/// <summary>Whether story notifications should be disabled.</summary>
@@ -3035,7 +3035,7 @@ namespace TL
 		/// <summary>(Ternary value) If set, indicates whether to mute or unmute the peer; otherwise the default behavior should be used.</summary>
 		[IfFlag(1)] public bool silent;
 		/// <summary>Mute all notifications until this date</summary>
-		[IfFlag(2)] public int mute_until;
+		[IfFlag(2)] public DateTime mute_until;
 		/// <summary>Notification sound for the official iOS application</summary>
 		[IfFlag(3)] public NotificationSound ios_sound;
 		/// <summary>Notification sound for the official android application</summary>
@@ -15143,7 +15143,7 @@ namespace TL
 	public sealed partial class EmojiStatusUntil : EmojiStatus
 	{
 		/// <summary>This status is valid until this date</summary>
-		public int until;
+		public DateTime until;
 	}
 
 	/// <summary>A list of <a href="https://corefork.telegram.org/api/emoji-status">emoji statuses</a>		<para>See <a href="https://corefork.telegram.org/constructor/account.emojiStatuses"/></para></summary>
