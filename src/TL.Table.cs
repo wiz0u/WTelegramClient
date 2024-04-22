@@ -17,6 +17,7 @@ namespace TL
 		internal const uint BadMsgCtor = 0xA7EFF811;
 		internal const uint GZipedCtor = 0x3072CFA1;
 
+#if !MTPG
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public readonly static Dictionary<uint, Type> Table = new()
 		{
@@ -1315,6 +1316,7 @@ namespace TL
 			[0xAA48327D] = typeof(Layer8.DecryptedMessageService),
 			[0x1F814F1F] = typeof(Layer8.DecryptedMessage),
 		};
+#endif
 
 		internal readonly static Dictionary<Type, uint> Nullables = new()
 		{

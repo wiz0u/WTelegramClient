@@ -548,7 +548,10 @@ namespace TL
 
 	partial class MessageEntity
 	{
-		public string Type { get { var name = GetType().Name; return name[(name.IndexOf("MessageEntity") + 13)..]; } }
+		public string Type {
+			get { var name = GetType().Name; return name[(name.IndexOf("MessageEntity") + 13)..]; }
+			set { if (value != Type) throw new NotSupportedException("Can't change Type. You need to create a new instance of the right TL.MessageEntity* subclass"); }
+		}
 		public int Offset { get => offset; set => offset = value; }
 		public int Length { get => length; set => length = value; }
 	}
