@@ -1330,6 +1330,26 @@ namespace TL
 				channel = channel,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.toggleSponsoredMessages"/></para></summary>
+		public static Task<bool> Account_ToggleSponsoredMessages(this Client client, bool enabled)
+			=> client.Invoke(new Account_ToggleSponsoredMessages
+			{
+				enabled = enabled,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getReactionsNotifySettings"/></para></summary>
+		public static Task<ReactionsNotifySettings> Account_GetReactionsNotifySettings(this Client client)
+			=> client.Invoke(new Account_GetReactionsNotifySettings
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.setReactionsNotifySettings"/></para></summary>
+		public static Task<ReactionsNotifySettings> Account_SetReactionsNotifySettings(this Client client, ReactionsNotifySettings settings)
+			=> client.Invoke(new Account_SetReactionsNotifySettings
+			{
+				settings = settings,
+			});
+
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, params InputUserBase[] id)
@@ -2226,10 +2246,10 @@ namespace TL
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
-		public static Task<Messages_MessagesBase> Messages_SearchGlobal(this Client client, string q, MessagesFilter filter = null, DateTime min_date = default, DateTime max_date = default, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue, int? folder_id = null)
+		public static Task<Messages_MessagesBase> Messages_SearchGlobal(this Client client, string q, MessagesFilter filter = null, DateTime min_date = default, DateTime max_date = default, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue, int? folder_id = null, bool broadcasts_only = false)
 			=> client.Invoke(new Messages_SearchGlobal
 			{
-				flags = (Messages_SearchGlobal.Flags)(folder_id != null ? 0x1 : 0),
+				flags = (Messages_SearchGlobal.Flags)((folder_id != null ? 0x1 : 0) | (broadcasts_only ? 0x2 : 0)),
 				folder_id = folder_id.GetValueOrDefault(),
 				q = q,
 				filter = filter,
@@ -3478,11 +3498,13 @@ namespace TL
 		/// <summary>Change the set of <a href="https://corefork.telegram.org/api/reactions">message reactions »</a> that can be used in a certain group, supergroup or channel		<para>See <a href="https://corefork.telegram.org/method/messages.setChatAvailableReactions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setChatAvailableReactions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Group where to apply changes</param>
 		/// <param name="available_reactions">Allowed reaction emojis</param>
-		public static Task<UpdatesBase> Messages_SetChatAvailableReactions(this Client client, InputPeer peer, ChatReactions available_reactions)
+		public static Task<UpdatesBase> Messages_SetChatAvailableReactions(this Client client, InputPeer peer, ChatReactions available_reactions, int? reactions_limit = null)
 			=> client.Invoke(new Messages_SetChatAvailableReactions
 			{
+				flags = (Messages_SetChatAvailableReactions.Flags)(reactions_limit != null ? 0x1 : 0),
 				peer = peer,
 				available_reactions = available_reactions,
+				reactions_limit = reactions_limit.GetValueOrDefault(),
 			});
 
 		/// <summary>Obtain available <a href="https://corefork.telegram.org/api/reactions">message reactions »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getAvailableReactions"/></para></summary>
@@ -5150,9 +5172,10 @@ namespace TL
 
 		/// <summary>Obtain a list of similarly themed public channels, selected based on similarities in their <strong>subscriber bases</strong>.		<para>See <a href="https://corefork.telegram.org/method/channels.getChannelRecommendations"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getChannelRecommendations#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">The method will return channels related to the passed <c>channel</c>.</param>
-		public static Task<Messages_Chats> Channels_GetChannelRecommendations(this Client client, InputChannelBase channel)
+		public static Task<Messages_Chats> Channels_GetChannelRecommendations(this Client client, InputChannelBase channel = null)
 			=> client.Invoke(new Channels_GetChannelRecommendations
 			{
+				flags = (Channels_GetChannelRecommendations.Flags)(channel != null ? 0x1 : 0),
 				channel = channel,
 			});
 
@@ -6567,6 +6590,14 @@ namespace TL
 				limit = limit,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.togglePinnedToTop"/></para></summary>
+		public static Task<bool> Stories_TogglePinnedToTop(this Client client, InputPeer peer, params int[] id)
+			=> client.Invoke(new Stories_TogglePinnedToTop
+			{
+				peer = peer,
+				id = id,
+			});
+
 		/// <summary>Obtains info about the boosts that were applied to a certain channel (admins only)		<para>See <a href="https://corefork.telegram.org/method/premium.getBoostsList"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/premium.getBoostsList#possible-errors">details</a>)</para></summary>
 		/// <param name="gifts">Whether to return only info about boosts received from <a href="https://corefork.telegram.org/api/giveaways">gift codes and giveaways created by the channel »</a></param>
 		/// <param name="peer">The channel</param>
@@ -7742,6 +7773,21 @@ namespace TL.Methods
 		public InputChannelBase channel;
 	}
 
+	[TLDef(0xB9D9A38D)]
+	public sealed partial class Account_ToggleSponsoredMessages : IMethod<bool>
+	{
+		public bool enabled;
+	}
+
+	[TLDef(0x06DD654C)]
+	public sealed partial class Account_GetReactionsNotifySettings : IMethod<ReactionsNotifySettings> { }
+
+	[TLDef(0x316CE548)]
+	public sealed partial class Account_SetReactionsNotifySettings : IMethod<ReactionsNotifySettings>
+	{
+		public ReactionsNotifySettings settings;
+	}
+
 	[TLDef(0x0D91A548)]
 	public sealed partial class Users_GetUsers : IMethod<UserBase[]>
 	{
@@ -8502,6 +8548,7 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			has_folder_id = 0x1,
+			broadcasts_only = 0x2,
 		}
 	}
 
@@ -9590,11 +9637,18 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xFEB16771)]
+	[TLDef(0x5A150BD4)]
 	public sealed partial class Messages_SetChatAvailableReactions : IMethod<UpdatesBase>
 	{
+		public Flags flags;
 		public InputPeer peer;
 		public ChatReactions available_reactions;
+		[IfFlag(0)] public int reactions_limit;
+
+		[Flags] public enum Flags : uint
+		{
+			has_reactions_limit = 0x1,
+		}
 	}
 
 	[TLDef(0x18DEA0AC)]
@@ -10930,10 +10984,16 @@ namespace TL.Methods
 		public bool enabled;
 	}
 
-	[TLDef(0x83B70D97)]
+	[TLDef(0x25A71742)]
 	public sealed partial class Channels_GetChannelRecommendations : IMethod<Messages_Chats>
 	{
-		public InputChannelBase channel;
+		public Flags flags;
+		[IfFlag(0)] public InputChannelBase channel;
+
+		[Flags] public enum Flags : uint
+		{
+			has_channel = 0x1,
+		}
 	}
 
 	[TLDef(0xF0D3E6A8)]
@@ -12105,6 +12165,13 @@ namespace TL.Methods
 			has_offset = 0x2,
 			forwards_first = 0x4,
 		}
+	}
+
+	[TLDef(0x0B297E9B)]
+	public sealed partial class Stories_TogglePinnedToTop : IMethod<bool>
+	{
+		public InputPeer peer;
+		public int[] id;
 	}
 
 	[TLDef(0x60F67660)]

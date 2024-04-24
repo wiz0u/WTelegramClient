@@ -1,4 +1,4 @@
-﻿[![API Layer](https://img.shields.io/badge/API_Layer-177-blueviolet)](https://corefork.telegram.org/methods)
+﻿[![API Layer](https://img.shields.io/badge/API_Layer-178-blueviolet)](https://corefork.telegram.org/methods)
 [![NuGet version](https://img.shields.io/nuget/v/WTelegramClient?color=00508F)](https://www.nuget.org/packages/WTelegramClient/)
 [![NuGet prerelease](https://img.shields.io/nuget/vpre/WTelegramClient?color=C09030&label=dev+nuget)](https://www.nuget.org/packages/WTelegramClient/absoluteLatest)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](https://www.buymeacoffee.com/wizou)
@@ -203,3 +203,5 @@ If you read all this ReadMe, the [Frequently Asked Questions](https://wiz0u.gith
 the [Examples codes](https://wiz0u.github.io/WTelegramClient/EXAMPLES) and still have questions, feedback is welcome in our Telegram group [@WTelegramClient](https://t.me/WTelegramClient)
 
 If you like this library, you can [buy me a coffee](https://www.buymeacoffee.com/wizou) ❤ This will help the project keep going.
+
+© 2024 Olivier Marcoux

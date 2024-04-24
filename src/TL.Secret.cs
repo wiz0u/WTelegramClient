@@ -2,7 +2,7 @@
 
 namespace TL
 {
-	#pragma warning disable IDE1006
+	#pragma warning disable IDE1006, CS1574
 	/// <summary>Object describes the contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessage"/></para></summary>
 	public abstract partial class DecryptedMessageBase : IObject
 	{

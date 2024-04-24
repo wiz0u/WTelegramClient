@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 177;					// fetched 03/04/2024 02:27:33
+		public const int Version = 178;					// fetched 24/04/2024 15:26:10
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -136,8 +136,8 @@ namespace TL
 			[0x6592A1A7] = typeof(ChatForbidden),
 			[0x0AADFC8F] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
-			[0xC9D31138] = typeof(ChatFull),
-			[0x44C054A7] = typeof(ChannelFull),
+			[0x2633421B] = typeof(ChatFull),
+			[0xBBAB348D] = typeof(ChannelFull),
 			[0xC02D4007] = typeof(ChatParticipant),
 			[0xE46BCEE4] = typeof(ChatParticipantCreator),
 			[0xA0933F5B] = typeof(ChatParticipantAdmin),
@@ -405,6 +405,7 @@ namespace TL
 			[0x9DDB347C] = typeof(UpdateBotNewBusinessMessage),
 			[0x07DF587C] = typeof(UpdateBotEditBusinessMessage),
 			[0xA02A982E] = typeof(UpdateBotDeleteBusinessMessage),
+			[0x1824E40B] = typeof(UpdateNewStoryReaction),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -956,6 +957,7 @@ namespace TL
 			[0xFA58B6D4] = typeof(ThemeSettings),
 			[0x54B56617] = typeof(WebPageAttributeTheme),
 			[0x2E94C3E7] = typeof(WebPageAttributeStory),
+			[0x50CC03D3] = typeof(WebPageAttributeStickerSet),
 			[0x4899484E] = typeof(Messages_VotesList),
 			[0xF568028A] = typeof(BankCardOpenUrl),
 			[0x3E24E573] = typeof(Payments_BankCardData),
@@ -1024,7 +1026,7 @@ namespace TL
 			[0xE3779861] = typeof(Account_ResetPasswordFailedWait),
 			[0xE9EFFC7D] = typeof(Account_ResetPasswordRequestedWait),
 			[0xE926D63E] = typeof(Account_ResetPasswordOk),
-			[0xED5383F7] = typeof(SponsoredMessage),
+			[0xBDEDF566] = typeof(SponsoredMessage),
 			[0xC9EE1D87] = typeof(Messages_SponsoredMessages),
 			[0x1839490F] = null,//Messages_SponsoredMessagesEmpty
 			[0xC9B0539F] = typeof(SearchResultsCalendarPeriod),
@@ -1143,14 +1145,13 @@ namespace TL
 			[0xB6CC2D5C] = typeof(MessagePeerVote),
 			[0x74CDA504] = typeof(MessagePeerVoteInputOption),
 			[0x4628F6E6] = typeof(MessagePeerVoteMultiple),
-			[0x3DB8EC63] = typeof(SponsoredWebPage),
 			[0x8D595CD6] = typeof(StoryViews),
 			[0x51E6EE4F] = typeof(StoryItemDeleted),
 			[0xFFADC913] = typeof(StoryItemSkipped),
 			[0x79B26A24] = typeof(StoryItem),
 			[0x1158FE3E] = typeof(Stories_AllStoriesNotModified),
 			[0x6EFC5E81] = typeof(Stories_AllStories),
-			[0x5DD8C3C8] = typeof(Stories_Stories),
+			[0x63C3DD0A] = typeof(Stories_Stories),
 			[0xB0BDEAC5] = typeof(StoryView),
 			[0x9083670B] = typeof(StoryViewPublicForward),
 			[0xBD74CF49] = typeof(StoryViewPublicRepost),
@@ -1262,6 +1263,7 @@ namespace TL
 			[0x5A590978] = typeof(BroadcastRevenueTransactionWithdrawal),
 			[0x42D30D2E] = typeof(BroadcastRevenueTransactionRefund),
 			[0x87158466] = typeof(Stats_BroadcastRevenueTransactions),
+			[0x56E34970] = typeof(ReactionsNotifySettings),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),
