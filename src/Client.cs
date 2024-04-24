@@ -185,6 +185,7 @@ namespace WTelegram
 			lock (_pendingRpcs) // abort all pending requests
 				foreach (var rpc in _pendingRpcs.Values)
 					rpc.tcs.TrySetException(ex);
+			_sendSemaphore.Dispose();
 			_networkStream = null;
 			if (IsMainDC) _session.Dispose();
 			GC.SuppressFinalize(this);
@@ -1304,7 +1305,7 @@ namespace WTelegram
 				await SendAsync(container, false);
 				return;
 			}
-			await _sendSemaphore.WaitAsync();
+			await _sendSemaphore.WaitAsync(_cts.Token);
 			try
 			{
 				using var memStream = new MemoryStream(1024);
