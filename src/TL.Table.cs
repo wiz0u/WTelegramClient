@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 178;					// fetched 24/04/2024 15:26:10
+		public const int Version = 179;					// fetched 27/04/2024 11:14:23
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -650,6 +650,8 @@ namespace TL
 			[0xA5491DEA] = typeof(Auth_SentCodeTypeSetUpEmailRequired),
 			[0xD9565C39] = typeof(Auth_SentCodeTypeFragmentSms),
 			[0xE57B1432] = typeof(Auth_SentCodeTypeFirebaseSms),
+			[0xA416AC81] = typeof(Auth_SentCodeTypeSmsWord),
+			[0xB37794AF] = typeof(Auth_SentCodeTypeSmsPhrase),
 			[0x36585EA4] = typeof(Messages_BotCallbackAnswer),
 			[0x26B5DDE6] = typeof(Messages_MessageEditData),
 			[0x890C3D89] = typeof(InputBotInlineMessageID),
@@ -909,8 +911,8 @@ namespace TL
 			[0x8C05F1C9] = typeof(Help_SupportName),
 			[0xF3AE2EED] = null,//Help_UserInfoEmpty
 			[0x01EB3758] = typeof(Help_UserInfo),
-			[0x6CA9C2E9] = typeof(PollAnswer),
-			[0x86E18161] = typeof(Poll),
+			[0xFF16E2CA] = typeof(PollAnswer),
+			[0x58747131] = typeof(Poll),
 			[0x3B6DDAD2] = typeof(PollAnswerVoters),
 			[0x7ADF2420] = typeof(PollResults),
 			[0xF041E250] = typeof(ChatOnlines),

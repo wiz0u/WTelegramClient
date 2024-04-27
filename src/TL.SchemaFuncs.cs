@@ -333,6 +333,15 @@ namespace TL
 				phone_code_hash = phone_code_hash,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.reportMissingCode"/></para></summary>
+		public static Task<bool> Auth_ReportMissingCode(this Client client, string phone_number, string phone_code_hash, string mnc)
+			=> client.Invoke(new Auth_ReportMissingCode
+			{
+				phone_number = phone_number,
+				phone_code_hash = phone_code_hash,
+				mnc = mnc,
+			});
+
 		/// <summary>Register device to receive <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>		<para>See <a href="https://corefork.telegram.org/method/account.registerDevice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.registerDevice#possible-errors">details</a>)</para></summary>
 		/// <param name="no_muted">Avoid receiving (silent and invisible background) notifications. Useful to save battery.</param>
 		/// <param name="token_type">Device token type, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
@@ -6950,6 +6959,14 @@ namespace TL.Methods
 	{
 		public string phone_number;
 		public string phone_code_hash;
+	}
+
+	[TLDef(0xCB9DEFF6)]
+	public sealed partial class Auth_ReportMissingCode : IMethod<bool>
+	{
+		public string phone_number;
+		public string phone_code_hash;
+		public string mnc;
 	}
 
 	[TLDef(0xEC86017A)]

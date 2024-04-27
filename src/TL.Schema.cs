@@ -8965,6 +8965,30 @@ namespace TL
 			has_receipt = 0x2,
 		}
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSmsWord"/></para></summary>
+	[TLDef(0xA416AC81)]
+	public sealed partial class Auth_SentCodeTypeSmsWord : Auth_SentCodeType
+	{
+		public Flags flags;
+		[IfFlag(0)] public string beginning;
+
+		[Flags] public enum Flags : uint
+		{
+			has_beginning = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSmsPhrase"/></para></summary>
+	[TLDef(0xB37794AF)]
+	public sealed partial class Auth_SentCodeTypeSmsPhrase : Auth_SentCodeType
+	{
+		public Flags flags;
+		[IfFlag(0)] public string beginning;
+
+		[Flags] public enum Flags : uint
+		{
+			has_beginning = 0x1,
+		}
+	}
 
 	/// <summary>Callback answer sent by the bot in response to a button press		<para>See <a href="https://corefork.telegram.org/constructor/messages.botCallbackAnswer"/></para></summary>
 	[TLDef(0x36585EA4)]
@@ -12371,17 +12395,17 @@ namespace TL
 	}
 
 	/// <summary>A possible answer of a poll		<para>See <a href="https://corefork.telegram.org/constructor/pollAnswer"/></para></summary>
-	[TLDef(0x6CA9C2E9)]
+	[TLDef(0xFF16E2CA)]
 	public sealed partial class PollAnswer : IObject
 	{
 		/// <summary>Textual representation of the answer</summary>
-		public string text;
+		public TextWithEntities text;
 		/// <summary>The param that has to be passed to <see cref="SchemaExtensions.Messages_SendVote">Messages_SendVote</see>.</summary>
 		public byte[] option;
 	}
 
 	/// <summary>Poll		<para>See <a href="https://corefork.telegram.org/constructor/poll"/></para></summary>
-	[TLDef(0x86E18161)]
+	[TLDef(0x58747131)]
 	public sealed partial class Poll : IObject
 	{
 		/// <summary>ID of the poll</summary>
@@ -12389,7 +12413,7 @@ namespace TL
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The question of the poll</summary>
-		public string question;
+		public TextWithEntities question;
 		/// <summary>The possible answers, vote using <see cref="SchemaExtensions.Messages_SendVote">Messages_SendVote</see>.</summary>
 		public PollAnswer[] answers;
 		/// <summary>Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.</summary>
