@@ -1203,19 +1203,7 @@ namespace WTelegram
 						}
 						catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
 						{
-							for (int pwdRetry = 1; authorization == null; pwdRetry++)
-								try
-								{
-									var accountPassword = await this.Account_GetPassword();
-									RaiseUpdates(accountPassword);
-									var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
-									authorization = await this.Auth_CheckPassword(checkPasswordSRP);
-								}
-								catch (RpcException pe) when (pe.Code == 400 && pe.Message == "PASSWORD_HASH_INVALID")
-								{
-									Helpers.Log(4, "Wrong password!");
-									if (pwdRetry >= MaxCodePwdAttempts) throw;
-								}
+							authorization = await LoginPasswordNeeded();
 						}
 				}
 
@@ -1246,6 +1234,83 @@ namespace WTelegram
 			if (User.phone != string.Concat(phone_number.Where(char.IsDigit)))
 				Helpers.Log(3, $"Mismatched phone_number (+{User.phone} != {phone_number}). Fix this to avoid verification code each time");
 			return User;
+		}
+
+		/// <summary>Login via QR code</summary>
+		/// <param name="qrDisplay">Callback to display the login url as QR code to the user (<a href="https://www.nuget.org/packages/QRCoder/">QRCoder library</a> can help you)</param>
+		/// <param name="except_ids">(optional) To prevent logging as these user ids</param>
+		/// <param name="logoutFirst">If session is already connected to a user, this method will first log out.<br/>You can also check property <see cref="UserId"/> before calling this method.</param>
+		/// <param name="ct">If you need to abort the method before login is completed</param>
+		/// <returns>Detail about the logged-in user</returns>
+		public async Task<User> LoginWithQRCode(Action<string> qrDisplay, long[] except_ids = null, bool logoutFirst = true, CancellationToken ct = default)
+		{
+			await ConnectAsync();
+			if (logoutFirst && _session.UserId != 0) // a user is already logged-in
+			{
+				await this.Auth_LogOut();
+				_session.UserId = _dcSession.UserId = 0;
+				User = null;
+			}
+			var tcs = new TaskCompletionSource<bool>();
+			OnUpdates += CatchQRUpdate;
+			try
+			{
+				while (!ct.IsCancellationRequested)
+				{
+					var ltb = await this.Auth_ExportLoginToken(_session.ApiId, _apiHash ??= Config("api_hash"), except_ids);
+				retry:
+					switch (ltb)
+					{
+						case Auth_LoginToken lt:
+							var url = "tg://login?token=" + System.Convert.ToBase64String(lt.token).Replace('/', '_').Replace('+', '-');
+							Helpers.Log(3, $"Waiting for this QR code login to be accepted: " + url);
+							qrDisplay(url);
+							if (lt.expires - DateTime.UtcNow is { Ticks: >= 0 } delay)
+								await Task.WhenAny(Task.Delay(delay, ct), tcs.Task);
+							break;
+						case Auth_LoginTokenMigrateTo ltmt:
+							await MigrateToDC(ltmt.dc_id);
+							ltb = await this.Auth_ImportLoginToken(ltmt.token);
+							goto retry;
+						case Auth_LoginTokenSuccess lts:
+							return LoginAlreadyDone(lts.authorization);
+					}
+				}
+				ct.ThrowIfCancellationRequested();
+				return null;
+			}
+			catch (RpcException e) when (e.Code == 401 && e.Message == "SESSION_PASSWORD_NEEDED")
+			{
+				return LoginAlreadyDone(await LoginPasswordNeeded());
+			}
+			finally
+			{
+				OnUpdates -= CatchQRUpdate;
+			}
+
+			Task CatchQRUpdate(UpdatesBase updates)
+			{
+				if (updates.UpdateList.OfType<UpdateLoginToken>().Any())
+					tcs.TrySetResult(true);
+				return Task.CompletedTask;
+			}
+		}
+
+		private async Task<Auth_AuthorizationBase> LoginPasswordNeeded()
+		{
+			for (int pwdRetry = 1; ; pwdRetry++)
+				try
+				{
+					var accountPassword = await this.Account_GetPassword();
+					RaiseUpdates(accountPassword);
+					var checkPasswordSRP = await Check2FA(accountPassword, () => ConfigAsync("password"));
+					return await this.Auth_CheckPassword(checkPasswordSRP);
+				}
+				catch (RpcException pe) when (pe.Code == 400 && pe.Message == "PASSWORD_HASH_INVALID")
+				{
+					Helpers.Log(4, "Wrong password!");
+					if (pwdRetry >= MaxCodePwdAttempts) throw;
+				}
 		}
 
 		/// <summary><b>[Not recommended]</b> You can use this if you have already obtained a login authorization manually</summary>
@@ -1418,16 +1483,7 @@ namespace WTelegram
 					{
 						if (message != "FILE_MIGRATE_X")
 						{
-							// this is a hack to migrate _dcSession in-place (staying in same Client):
-							Session.DCSession dcSession;
-							lock (_session)
-								dcSession = GetOrCreateDCSession(x, _dcSession.DataCenter.flags);
-							Reset(false, false);
-							_session.MainDC = x;
-							_dcSession.Client = null;
-							_dcSession = dcSession;
-							_dcSession.Client = this;
-							await ConnectAsync();
+							await MigrateToDC(x);
 							goto retry;
 						}
 					}
@@ -1457,6 +1513,20 @@ namespace WTelegram
 				default:
 					throw new WTException($"{query.GetType().Name} call got a result of type {result.GetType().Name} instead of {typeof(T).Name}");
 			}
+		}
+
+		private async Task MigrateToDC(int dcId)
+		{
+			// this is a hack to migrate _dcSession in-place (staying in same Client):
+			Session.DCSession dcSession;
+			lock (_session)
+				dcSession = GetOrCreateDCSession(dcId, _dcSession.DataCenter.flags);
+			Reset(false, false);
+			_session.MainDC = dcId;
+			_dcSession.Client = null;
+			_dcSession = dcSession;
+			_dcSession.Client = this;
+			await ConnectAsync();
 		}
 
 		public async Task<T> InvokeAffected<T>(IMethod<T> query, long peerId) where T : Messages_AffectedMessages
