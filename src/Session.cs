@@ -149,9 +149,16 @@ namespace WTelegram
 				if (!_encryptor.CanReuseTransform) // under Mono, AES encryptor is not reusable
 					using (var aes = Aes.Create())
 						_encryptor = aes.CreateEncryptor(_reuseKey, _encrypted[0..16]);
-				_store.Position = 0;
-				_store.Write(_encrypted, 0, encryptedLen);
-				_store.SetLength(encryptedLen);
+				try
+				{
+					_store.Position = 0;
+					_store.Write(_encrypted, 0, encryptedLen);
+					_store.SetLength(encryptedLen);
+				}
+				catch (Exception ex)
+				{
+					Helpers.Log(4, $"{_store} raised {ex}");
+				}
 			}
 			_jsonStream.Position = 0;
 			_jsonWriter.Reset();

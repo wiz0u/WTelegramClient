@@ -24,7 +24,7 @@
     <PackageTags>Telegram;MTProto;Client;Api;UserBot</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>$(ReleaseNotes.Replace("|", "%0D%0A").Replace(" - ","%0D%0A- ").Replace("  ", "%0D%0A%0D%0A"))</PackageReleaseNotes>
-    <NoWarn>0419;1573;1591;NETSDK1138</NoWarn>
+    <NoWarn>NETSDK1138;CS0419;CS1573;CS1591</NoWarn>
     <DefineConstants>TRACE;OBFUSCATION;MTPG</DefineConstants>
     <!--<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>-->
   </PropertyGroup>
