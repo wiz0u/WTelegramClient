@@ -4136,6 +4136,14 @@ namespace TL
 				limit = limit,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStickerGroups"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></returns>
+		public static Task<Messages_EmojiGroups> Messages_GetEmojiStickerGroups(this Client client, int hash = default)
+			=> client.Invoke(new Messages_GetEmojiStickerGroups
+			{
+				hash = hash,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -10200,6 +10208,12 @@ namespace TL.Methods
 	{
 		public long offset_id;
 		public int limit;
+	}
+
+	[TLDef(0x1DD840F5)]
+	public sealed partial class Messages_GetEmojiStickerGroups : IMethod<Messages_EmojiGroups>
+	{
+		public int hash;
 	}
 
 	[TLDef(0xEDD4882A)]

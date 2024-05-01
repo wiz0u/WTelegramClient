@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 179;					// fetched 27/04/2024 11:14:23
+		public const int Version = 179;					// fetched 01/05/2024 09:06:44
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -1119,6 +1119,8 @@ namespace TL
 			[0x481EADFA] = null,//EmojiListNotModified
 			[0x7A1E11D1] = typeof(EmojiList),
 			[0x7A9ABDA9] = typeof(EmojiGroup),
+			[0x80D26CC7] = typeof(EmojiGroupGreeting),
+			[0x093BCF34] = typeof(EmojiGroupPremium),
 			[0x6FB4AD87] = null,//Messages_EmojiGroupsNotModified
 			[0x881FB94B] = typeof(Messages_EmojiGroups),
 			[0x751F3146] = typeof(TextWithEntities),
@@ -1259,13 +1261,14 @@ namespace TL
 			[0x846F9E42] = typeof(Channels_SponsoredMessageReportResultChooseOption),
 			[0x3E3BCF2F] = typeof(Channels_SponsoredMessageReportResultAdsHidden),
 			[0xAD798849] = typeof(Channels_SponsoredMessageReportResultReported),
-			[0xD07B4BAD] = typeof(Stats_BroadcastRevenueStats),
+			[0x5407E297] = typeof(Stats_BroadcastRevenueStats),
 			[0xEC659737] = typeof(Stats_BroadcastRevenueWithdrawalUrl),
 			[0x557E2CC4] = typeof(BroadcastRevenueTransactionProceeds),
 			[0x5A590978] = typeof(BroadcastRevenueTransactionWithdrawal),
 			[0x42D30D2E] = typeof(BroadcastRevenueTransactionRefund),
 			[0x87158466] = typeof(Stats_BroadcastRevenueTransactions),
 			[0x56E34970] = typeof(ReactionsNotifySettings),
+			[0x8438F1C6] = typeof(BroadcastRevenueBalances),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x91CC4674] = typeof(Layer73.DecryptedMessage),

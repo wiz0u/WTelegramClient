@@ -15620,9 +15620,17 @@ namespace TL
 		public long[] document_id;
 	}
 
+	/// <summary>Represents an <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji category</a>.		<para>See <a href="https://corefork.telegram.org/type/EmojiGroup"/></para>		<para>Derived classes: <see cref="EmojiGroup"/></para></summary>
+	public abstract partial class EmojiGroupBase : IObject
+	{
+		/// <summary>Category name, i.e. "Animals", "Flags", "Faces" and so on...</summary>
+		public virtual string Title => default;
+		/// <summary>A single custom emoji used as preview for the category.</summary>
+		public virtual long IconEmojiId => default;
+	}
 	/// <summary>Represents an <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji category</a>.		<para>See <a href="https://corefork.telegram.org/constructor/emojiGroup"/></para></summary>
 	[TLDef(0x7A9ABDA9)]
-	public sealed partial class EmojiGroup : IObject
+	public partial class EmojiGroup : EmojiGroupBase
 	{
 		/// <summary>Category name, i.e. "Animals", "Flags", "Faces" and so on...</summary>
 		public string title;
@@ -15630,6 +15638,26 @@ namespace TL
 		public long icon_emoji_id;
 		/// <summary>A list of UTF-8 emojis, matching the category.</summary>
 		public string[] emoticons;
+
+		/// <summary>Category name, i.e. "Animals", "Flags", "Faces" and so on...</summary>
+		public override string Title => title;
+		/// <summary>A single custom emoji used as preview for the category.</summary>
+		public override long IconEmojiId => icon_emoji_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emojiGroupGreeting"/></para></summary>
+	[TLDef(0x80D26CC7)]
+	public sealed partial class EmojiGroupGreeting : EmojiGroup
+	{
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emojiGroupPremium"/></para></summary>
+	[TLDef(0x093BCF34)]
+	public sealed partial class EmojiGroupPremium : EmojiGroupBase
+	{
+		public string title;
+		public long icon_emoji_id;
+
+		public override string Title => title;
+		public override long IconEmojiId => icon_emoji_id;
 	}
 
 	/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messages.emojiGroups"/></para></summary>
@@ -15640,7 +15668,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public int hash;
 		/// <summary>A list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>.</summary>
-		public EmojiGroup[] groups;
+		public EmojiGroupBase[] groups;
 	}
 
 	/// <summary>Styled text with <a href="https://corefork.telegram.org/api/entities">message entities</a>		<para>See <a href="https://corefork.telegram.org/constructor/textWithEntities"/></para></summary>
@@ -17771,14 +17799,12 @@ namespace TL
 	public sealed partial class Channels_SponsoredMessageReportResultReported : Channels_SponsoredMessageReportResult { }
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stats.broadcastRevenueStats"/></para></summary>
-	[TLDef(0xD07B4BAD)]
+	[TLDef(0x5407E297)]
 	public sealed partial class Stats_BroadcastRevenueStats : IObject
 	{
 		public StatsGraphBase top_hours_graph;
 		public StatsGraphBase revenue_graph;
-		public long current_balance;
-		public long available_balance;
-		public long overall_revenue;
+		public BroadcastRevenueBalances balances;
 		public double usd_rate;
 	}
 
@@ -17858,5 +17884,14 @@ namespace TL
 			has_messages_notify_from = 0x1,
 			has_stories_notify_from = 0x2,
 		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/broadcastRevenueBalances"/></para></summary>
+	[TLDef(0x8438F1C6)]
+	public sealed partial class BroadcastRevenueBalances : IObject
+	{
+		public long current_balance;
+		public long available_balance;
+		public long overall_revenue;
 	}
 }

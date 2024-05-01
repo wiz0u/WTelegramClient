@@ -3,7 +3,7 @@
 [![NuGet prerelease](https://img.shields.io/nuget/vpre/WTelegramClient?color=C09030&label=dev+nuget)](https://www.nuget.org/packages/WTelegramClient/absoluteLatest)
 [![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](https://www.buymeacoffee.com/wizou)
 
-## _Telegram Client API library written 100% in C# and .NET_
+## *_Telegram Client API library written 100% in C# and .NET_*
 
 This library allows you to connect to Telegram and control a user programmatically (or a bot, but [Telegram.Bot](https://github.com/TelegramBots/Telegram.Bot) is much easier for that).
 All the Telegram Client APIs (MTProto) are supported so you can do everything the user could do with a full Telegram GUI client.
