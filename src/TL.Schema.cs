@@ -5301,6 +5301,12 @@ namespace TL
 		public Peer peer;
 		public Reaction reaction;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBroadcastRevenueTransactions"/></para></summary>
+	[TLDef(0x5C65D358)]
+	public sealed partial class UpdateBroadcastRevenueTransactions : Update
+	{
+		public BroadcastRevenueBalances balances;
+	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]
