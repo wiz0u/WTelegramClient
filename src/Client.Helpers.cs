@@ -620,7 +620,7 @@ namespace WTelegram
 						chats = (await this.Messages_GetChats(chat.chat_id)).chats };
 				case InputPeerChannel channel:
 					return await this.Channels_EditAdmin(channel, user,
-						new ChatAdminRights { flags = is_admin ? (ChatAdminRights.Flags)0x8BF : 0 }, null);
+						new ChatAdminRights { flags = is_admin ? (ChatAdminRights.Flags)0x1E8BF : 0 }, null);
 				default:
 					throw new ArgumentException(OnlyChatChannel);
 			}

@@ -16,7 +16,7 @@
     <Description>Telegram Client API (MTProto) library written 100% in C# and .NET Standard | Latest API layer: 179&#10;&#10;Release Notes:&#10;$(ReleaseNotes.Replace("|", "%0D%0A").Replace(" - ","%0D%0A- ").Replace("  ", "%0D%0A%0D%0A"))</Description>
     <Copyright>Copyright © Olivier Marcoux 2021-2024</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/wiz0u/WTelegramClient</PackageProjectUrl>
+    <PackageProjectUrl>https://wiz0u.github.io/WTelegramClient</PackageProjectUrl>
     <PackageIcon>logo.png</PackageIcon>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/wiz0u/WTelegramClient.git</RepositoryUrl>

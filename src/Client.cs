@@ -366,7 +366,7 @@ namespace WTelegram
 						lock (_pendingRpcs) // abort all pending requests
 						{
 							foreach (var rpc in _pendingRpcs.Values)
-								rpc.tcs.SetException(ex);
+								rpc.tcs.TrySetException(ex);
 							_pendingRpcs.Clear();
 							_bareRpc = null;
 						}
@@ -879,9 +879,9 @@ namespace WTelegram
 							if (defaultDc != 0) _dcSession ??= _session.DCSessions.GetValueOrDefault(defaultDc);
 							_dcSession ??= new() { Id = Helpers.RandomLong() };
 							_dcSession.Client = this;
+							_dcSession.DataCenter = null;
 							Helpers.Log(2, $"Connecting to {endpoint}...");
 							tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
-							_dcSession.DataCenter = null;
 						}
 					}
 				}
