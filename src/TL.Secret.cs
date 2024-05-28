@@ -825,7 +825,11 @@ namespace TL
 	}
 
 	namespace Layer101
-	{	}
+	{
+		/// <summary>Message entity representing a block quote.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityBlockquote"/></para></summary>
+		[TLDef(0x020DF5D0)]
+		public sealed partial class MessageEntityBlockquote : MessageEntity { }
+	}
 
 	namespace Layer143
 	{

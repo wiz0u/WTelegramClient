@@ -364,7 +364,7 @@ namespace TL
 		public InputGame id;
 	}
 	/// <summary>Generated invoice of a <a href="https://corefork.telegram.org/bots/payments">bot payment</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputMediaInvoice"/></para></summary>
-	[TLDef(0x8EB5A6D5)]
+	[TLDef(0x405FEF0D)]
 	public sealed partial class InputMediaInvoice : InputMedia
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -380,7 +380,7 @@ namespace TL
 		/// <summary>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.</summary>
 		public byte[] payload;
 		/// <summary>Payments provider token, obtained via <a href="https://t.me/botfather">Botfather</a></summary>
-		public string provider;
+		[IfFlag(3)] public string provider;
 		/// <summary>JSON-encoded data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.</summary>
 		public DataJSON provider_data;
 		/// <summary>Unique <a href="https://corefork.telegram.org/api/links#bot-links">bot deep links start parameter</a>. If present, forwarded copies of the sent message will have a URL button with a <a href="https://corefork.telegram.org/api/links#bot-links">deep link</a> to the bot (instead of a Pay button), with the value used as the start parameter. If absent, forwarded copies of the sent message will have a Pay button, allowing multiple users to pay directly from the forwarded message, using the same invoice.</summary>
@@ -396,6 +396,8 @@ namespace TL
 			has_start_param = 0x2,
 			/// <summary>Field <see cref="extended_media"/> has a value</summary>
 			has_extended_media = 0x4,
+			/// <summary>Field <see cref="provider"/> has a value</summary>
+			has_provider = 0x8,
 		}
 	}
 	/// <summary><a href="https://corefork.telegram.org/api/live-location">Live geolocation</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputMediaGeoLive"/></para></summary>
@@ -1682,7 +1684,7 @@ namespace TL
 		public override Peer Peer => peer_id;
 	}
 	/// <summary>A message		<para>See <a href="https://corefork.telegram.org/constructor/message"/></para></summary>
-	[TLDef(0x2357BF25)]
+	[TLDef(0x94345242)]
 	public sealed partial class Message : MessageBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1733,6 +1735,8 @@ namespace TL
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
 		[IfFlag(25)] public int ttl_period;
 		[IfFlag(30)] public int quick_reply_shortcut_id;
+		[IfFlag(34)] public long effect;
+		[IfFlag(35)] public FactCheck factcheck;
 
 		[Flags] public enum Flags : uint
 		{
@@ -1801,6 +1805,10 @@ namespace TL
 			/// <summary>Field <see cref="via_business_bot_id"/> has a value</summary>
 			has_via_business_bot_id = 0x1,
 			offline = 0x2,
+			/// <summary>Field <see cref="effect"/> has a value</summary>
+			has_effect = 0x4,
+			/// <summary>Field <see cref="factcheck"/> has a value</summary>
+			has_factcheck = 0x8,
 		}
 
 		/// <summary>ID of the message</summary>
@@ -5302,10 +5310,17 @@ namespace TL
 		public Reaction reaction;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBroadcastRevenueTransactions"/></para></summary>
-	[TLDef(0x5C65D358)]
+	[TLDef(0xDFD961F5)]
 	public sealed partial class UpdateBroadcastRevenueTransactions : Update
 	{
+		public Peer peer;
 		public BroadcastRevenueBalances balances;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateStarsBalance"/></para></summary>
+	[TLDef(0x0FB85198)]
+	public sealed partial class UpdateStarsBalance : Update
+	{
+		public long balance;
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -7730,8 +7745,16 @@ namespace TL
 		public long document_id;
 	}
 	/// <summary>Message entity representing a block quote.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityBlockquote"/></para></summary>
-	[TLDef(0x020DF5D0)]
-	public sealed partial class MessageEntityBlockquote : MessageEntity { }
+	[TLDef(0xF1CCAAAC)]
+	public sealed partial class MessageEntityBlockquote : MessageEntity
+	{
+		public Flags flags;
+
+		[Flags] public enum Flags : uint
+		{
+			collapsed = 0x1,
+		}
+	}
 
 	/// <summary>Represents a channel		<para>See <a href="https://corefork.telegram.org/type/InputChannel"/></para>		<para>Derived classes: <see cref="InputChannel"/>, <see cref="InputChannelFromMessage"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/inputChannelEmpty">inputChannelEmpty</a></remarks>
@@ -8951,13 +8974,14 @@ namespace TL
 		public string url;
 	}
 	/// <summary>An authentication code should be delivered via SMS after Firebase attestation, as described in the <a href="https://corefork.telegram.org/api/auth">auth documentation »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeFirebaseSms"/></para></summary>
-	[TLDef(0xE57B1432)]
+	[TLDef(0x13C90F17)]
 	public sealed partial class Auth_SentCodeTypeFirebaseSms : Auth_SentCodeTypeSms
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>On Android, the nonce to be used as described in the <a href="https://corefork.telegram.org/api/auth">auth documentation »</a></summary>
 		[IfFlag(0)] public byte[] nonce;
+		[IfFlag(2)] public byte[] play_integrity_nonce;
 		/// <summary>On iOS, must be compared with the <c>receipt</c> extracted from the received push notification.</summary>
 		[IfFlag(1)] public string receipt;
 		/// <summary>On iOS: if a push notification with the <c>ios_push_secret</c> isn't received within <c>push_timeout</c> seconds, the <c>next_type</c> authentication method must be used, with <see cref="SchemaExtensions.Auth_ResendCode">Auth_ResendCode</see>.</summary>
@@ -8969,6 +8993,8 @@ namespace TL
 			has_nonce = 0x1,
 			/// <summary>Fields <see cref="receipt"/> and <see cref="push_timeout"/> have a value</summary>
 			has_receipt = 0x2,
+			/// <summary>Field <see cref="play_integrity_nonce"/> has a value</summary>
+			has_play_integrity_nonce = 0x4,
 		}
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSmsWord"/></para></summary>
@@ -10166,9 +10192,27 @@ namespace TL
 		public byte[] bytes;
 	}
 
+	/// <summary>Payment form		<para>See <a href="https://corefork.telegram.org/type/payments.PaymentForm"/></para>		<para>Derived classes: <see cref="Payments_PaymentForm"/></para></summary>
+	public abstract partial class Payments_PaymentFormBase : IObject
+	{
+		/// <summary>Form ID</summary>
+		public virtual long FormId => default;
+		/// <summary>Bot ID</summary>
+		public virtual long BotId => default;
+		/// <summary>Form title</summary>
+		public virtual string Title => default;
+		/// <summary>Description</summary>
+		public virtual string Description => default;
+		/// <summary>Product photo</summary>
+		public virtual WebDocumentBase Photo => default;
+		/// <summary>Invoice</summary>
+		public virtual Invoice Invoice => default;
+		/// <summary>Users</summary>
+		public virtual Dictionary<long, User> Users => default;
+	}
 	/// <summary>Payment form		<para>See <a href="https://corefork.telegram.org/constructor/payments.paymentForm"/></para></summary>
 	[TLDef(0xA0058751)]
-	public sealed partial class Payments_PaymentForm : IObject
+	public sealed partial class Payments_PaymentForm : Payments_PaymentFormBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
@@ -10218,6 +10262,47 @@ namespace TL
 			/// <summary>Field <see cref="additional_methods"/> has a value</summary>
 			has_additional_methods = 0x40,
 		}
+
+		/// <summary>Form ID</summary>
+		public override long FormId => form_id;
+		/// <summary>Bot ID</summary>
+		public override long BotId => bot_id;
+		/// <summary>Form title</summary>
+		public override string Title => title;
+		/// <summary>Description</summary>
+		public override string Description => description;
+		/// <summary>Product photo</summary>
+		public override WebDocumentBase Photo => photo;
+		/// <summary>Invoice</summary>
+		public override Invoice Invoice => invoice;
+		/// <summary>Users</summary>
+		public override Dictionary<long, User> Users => users;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.paymentFormStars"/></para></summary>
+	[TLDef(0x7BF6B15C)]
+	public sealed partial class Payments_PaymentFormStars : Payments_PaymentFormBase
+	{
+		public Flags flags;
+		public long form_id;
+		public long bot_id;
+		public string title;
+		public string description;
+		[IfFlag(5)] public WebDocumentBase photo;
+		public Invoice invoice;
+		public Dictionary<long, User> users;
+
+		[Flags] public enum Flags : uint
+		{
+			has_photo = 0x20,
+		}
+
+		public override long FormId => form_id;
+		public override long BotId => bot_id;
+		public override string Title => title;
+		public override string Description => description;
+		public override WebDocumentBase Photo => photo;
+		public override Invoice Invoice => invoice;
+		public override Dictionary<long, User> Users => users;
 	}
 
 	/// <summary>Validated user-provided info		<para>See <a href="https://corefork.telegram.org/constructor/payments.validatedRequestedInfo"/></para></summary>
@@ -10257,9 +10342,31 @@ namespace TL
 		public string url;
 	}
 
+	/// <summary>Payment receipt		<para>See <a href="https://corefork.telegram.org/type/payments.PaymentReceipt"/></para>		<para>Derived classes: <see cref="Payments_PaymentReceipt"/></para></summary>
+	public abstract partial class Payments_PaymentReceiptBase : IObject
+	{
+		/// <summary>Date of generation</summary>
+		public virtual DateTime Date => default;
+		/// <summary>Bot ID</summary>
+		public virtual long BotId => default;
+		/// <summary>Title</summary>
+		public virtual string Title => default;
+		/// <summary>Description</summary>
+		public virtual string Description => default;
+		/// <summary>Photo</summary>
+		public virtual WebDocumentBase Photo => default;
+		/// <summary>Invoice</summary>
+		public virtual Invoice Invoice => default;
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
+		public virtual string Currency => default;
+		/// <summary>Total amount in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
+		public virtual long TotalAmount => default;
+		/// <summary>Users</summary>
+		public virtual Dictionary<long, User> Users => default;
+	}
 	/// <summary>Receipt		<para>See <a href="https://corefork.telegram.org/constructor/payments.paymentReceipt"/></para></summary>
 	[TLDef(0x70C4FE03)]
-	public sealed partial class Payments_PaymentReceipt : IObject
+	public sealed partial class Payments_PaymentReceipt : Payments_PaymentReceiptBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
@@ -10303,6 +10410,56 @@ namespace TL
 			/// <summary>Field <see cref="tip_amount"/> has a value</summary>
 			has_tip_amount = 0x8,
 		}
+
+		/// <summary>Date of generation</summary>
+		public override DateTime Date => date;
+		/// <summary>Bot ID</summary>
+		public override long BotId => bot_id;
+		/// <summary>Title</summary>
+		public override string Title => title;
+		/// <summary>Description</summary>
+		public override string Description => description;
+		/// <summary>Photo</summary>
+		public override WebDocumentBase Photo => photo;
+		/// <summary>Invoice</summary>
+		public override Invoice Invoice => invoice;
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
+		public override string Currency => currency;
+		/// <summary>Total amount in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
+		public override long TotalAmount => total_amount;
+		/// <summary>Users</summary>
+		public override Dictionary<long, User> Users => users;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.paymentReceiptStars"/></para></summary>
+	[TLDef(0xDABBF83A)]
+	public sealed partial class Payments_PaymentReceiptStars : Payments_PaymentReceiptBase
+	{
+		public Flags flags;
+		public DateTime date;
+		public long bot_id;
+		public string title;
+		public string description;
+		[IfFlag(2)] public WebDocumentBase photo;
+		public Invoice invoice;
+		public string currency;
+		public long total_amount;
+		public string transaction_id;
+		public Dictionary<long, User> users;
+
+		[Flags] public enum Flags : uint
+		{
+			has_photo = 0x4,
+		}
+
+		public override DateTime Date => date;
+		public override long BotId => bot_id;
+		public override string Title => title;
+		public override string Description => description;
+		public override WebDocumentBase Photo => photo;
+		public override Invoice Invoice => invoice;
+		public override string Currency => currency;
+		public override long TotalAmount => total_amount;
+		public override Dictionary<long, User> Users => users;
 	}
 
 	/// <summary>Saved server-side order information		<para>See <a href="https://corefork.telegram.org/constructor/payments.savedInfo"/></para></summary>
@@ -14998,6 +15155,12 @@ namespace TL
 		/// <summary>Should be populated with one of the giveaway options returned by <see cref="SchemaExtensions.Payments_GetPremiumGiftCodeOptions">Payments_GetPremiumGiftCodeOptions</see>, see the <a href="https://corefork.telegram.org/api/giveaways">giveaways »</a> documentation for more info.</summary>
 		public PremiumGiftCodeOption option;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceStars"/></para></summary>
+	[TLDef(0x1DA33AD8)]
+	public sealed partial class InputInvoiceStars : InputInvoice
+	{
+		public StarsTopupOption option;
+	}
 
 	/// <summary>Exported <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a>		<para>See <a href="https://corefork.telegram.org/constructor/payments.exportedInvoice"/></para></summary>
 	[TLDef(0xAED0CBD9)]
@@ -15133,6 +15296,19 @@ namespace TL
 			winners_are_visible = 0x8,
 			/// <summary>Field <see cref="prize_description"/> has a value</summary>
 			has_prize_description = 0x10,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentStars"/></para></summary>
+	[TLDef(0x4F0EE8DF)]
+	public sealed partial class InputStorePaymentStars : InputStorePaymentPurpose
+	{
+		public Flags flags;
+		public long stars;
+		public string currency;
+		public long amount;
+
+		[Flags] public enum Flags : uint
+		{
 		}
 	}
 
@@ -17899,5 +18075,132 @@ namespace TL
 		public long current_balance;
 		public long available_balance;
 		public long overall_revenue;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/availableEffect"/></para></summary>
+	[TLDef(0x93C3E27E)]
+	public sealed partial class AvailableEffect : IObject
+	{
+		public Flags flags;
+		public long id;
+		public string emoticon;
+		[IfFlag(0)] public long static_icon_id;
+		public long effect_sticker_id;
+		[IfFlag(1)] public long effect_animation_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_static_icon_id = 0x1,
+			has_effect_animation_id = 0x2,
+			premium_required = 0x4,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.availableEffects"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/messages.availableEffectsNotModified">messages.availableEffectsNotModified</a></remarks>
+	[TLDef(0xBDDB616E)]
+	public sealed partial class Messages_AvailableEffects : IObject
+	{
+		public int hash;
+		public AvailableEffect[] effects;
+		public DocumentBase[] documents;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/factCheck"/></para></summary>
+	[TLDef(0xB89BFCCF)]
+	public sealed partial class FactCheck : IObject
+	{
+		public Flags flags;
+		[IfFlag(1)] public string country;
+		[IfFlag(1)] public TextWithEntities text;
+		public long hash;
+
+		[Flags] public enum Flags : uint
+		{
+			need_check = 0x1,
+			has_country = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/StarsTransactionPeer"/></para></summary>
+	public abstract partial class StarsTransactionPeerBase : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerUnsupported"/></para></summary>
+	[TLDef(0x95F2BFE4)]
+	public sealed partial class StarsTransactionPeerUnsupported : StarsTransactionPeerBase { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerAppStore"/></para></summary>
+	[TLDef(0xB457B375)]
+	public sealed partial class StarsTransactionPeerAppStore : StarsTransactionPeerBase { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerPlayMarket"/></para></summary>
+	[TLDef(0x7B560A0B)]
+	public sealed partial class StarsTransactionPeerPlayMarket : StarsTransactionPeerBase { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerPremiumBot"/></para></summary>
+	[TLDef(0x250DBAF8)]
+	public sealed partial class StarsTransactionPeerPremiumBot : StarsTransactionPeerBase { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerFragment"/></para></summary>
+	[TLDef(0xE92FD902)]
+	public sealed partial class StarsTransactionPeerFragment : StarsTransactionPeerBase { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeer"/></para></summary>
+	[TLDef(0xD80DA15D)]
+	public sealed partial class StarsTransactionPeer : StarsTransactionPeerBase
+	{
+		public Peer peer;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTopupOption"/></para></summary>
+	[TLDef(0x0BD915C0)]
+	public sealed partial class StarsTopupOption : IObject
+	{
+		public Flags flags;
+		public long stars;
+		[IfFlag(0)] public string store_product;
+		public string currency;
+		public long amount;
+
+		[Flags] public enum Flags : uint
+		{
+			has_store_product = 0x1,
+			extended = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransaction"/></para></summary>
+	[TLDef(0xCC7079B2)]
+	public sealed partial class StarsTransaction : IObject
+	{
+		public Flags flags;
+		public string id;
+		public long stars;
+		public DateTime date;
+		public StarsTransactionPeerBase peer;
+		[IfFlag(0)] public string title;
+		[IfFlag(1)] public string description;
+		[IfFlag(2)] public WebDocumentBase photo;
+
+		[Flags] public enum Flags : uint
+		{
+			has_title = 0x1,
+			has_description = 0x2,
+			has_photo = 0x4,
+			refund = 0x8,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.starsStatus"/></para></summary>
+	[TLDef(0x8CF4EE60)]
+	public sealed partial class Payments_StarsStatus : IObject, IPeerResolver
+	{
+		public Flags flags;
+		public long balance;
+		public StarsTransaction[] history;
+		[IfFlag(0)] public string next_offset;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, User> users;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
+		}
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 }

@@ -100,6 +100,24 @@ namespace TL
 				query = query,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/invokeWithGooglePlayIntegrity"/></para></summary>
+		public static Task<X> InvokeWithGooglePlayIntegrity<X>(this Client client, string nonce, string token, IMethod<X> query)
+			=> client.Invoke(new InvokeWithGooglePlayIntegrity<X>
+			{
+				nonce = nonce,
+				token = token,
+				query = query,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/invokeWithApnsSecret"/></para></summary>
+		public static Task<X> InvokeWithApnsSecret<X>(this Client client, string nonce, string secret, IMethod<X> query)
+			=> client.Invoke(new InvokeWithApnsSecret<X>
+			{
+				nonce = nonce,
+				secret = secret,
+				query = query,
+			});
+
 		/// <summary>Send the verification code for login		<para>See <a href="https://corefork.telegram.org/method/auth.sendCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406,500 (<a href="https://corefork.telegram.org/method/auth.sendCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">Phone number in international format</param>
 		/// <param name="api_id">Application identifier (see <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
@@ -234,11 +252,13 @@ namespace TL
 		/// <param name="phone_number">The phone number</param>
 		/// <param name="phone_code_hash">The phone code hash obtained from <see cref="Auth_SendCode">Auth_SendCode</see></param>
 		[Obsolete("Use LoginUserIfNeeded instead of this method. See https://wiz0u.github.io/WTelegramClient/FAQ#tlsharp")]
-		public static Task<Auth_SentCodeBase> Auth_ResendCode(this Client client, string phone_number, string phone_code_hash)
+		public static Task<Auth_SentCodeBase> Auth_ResendCode(this Client client, string phone_number, string phone_code_hash, string reason = null)
 			=> client.Invoke(new Auth_ResendCode
 			{
+				flags = (Auth_ResendCode.Flags)(reason != null ? 0x1 : 0),
 				phone_number = phone_number,
 				phone_code_hash = phone_code_hash,
+				reason = reason,
 			});
 
 		/// <summary>Cancel the login verification code		<para>See <a href="https://corefork.telegram.org/method/auth.cancelCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/auth.cancelCode#possible-errors">details</a>)</para></summary>
@@ -313,13 +333,14 @@ namespace TL
 		/// <param name="phone_code_hash">Phone code hash returned by <see cref="Auth_SendCode">Auth_SendCode</see></param>
 		/// <param name="safety_net_token">On Android, a JWS object obtained as described in the <a href="https://corefork.telegram.org/api/auth">auth documentation »</a></param>
 		/// <param name="ios_push_secret">Secret token received via an apple push notification</param>
-		public static Task<bool> Auth_RequestFirebaseSms(this Client client, string phone_number, string phone_code_hash, string safety_net_token = null, string ios_push_secret = null)
+		public static Task<bool> Auth_RequestFirebaseSms(this Client client, string phone_number, string phone_code_hash, string safety_net_token = null, string ios_push_secret = null, string play_integrity_token = null)
 			=> client.Invoke(new Auth_RequestFirebaseSms
 			{
-				flags = (Auth_RequestFirebaseSms.Flags)((safety_net_token != null ? 0x1 : 0) | (ios_push_secret != null ? 0x2 : 0)),
+				flags = (Auth_RequestFirebaseSms.Flags)((safety_net_token != null ? 0x1 : 0) | (ios_push_secret != null ? 0x2 : 0) | (play_integrity_token != null ? 0x4 : 0)),
 				phone_number = phone_number,
 				phone_code_hash = phone_code_hash,
 				safety_net_token = safety_net_token,
+				play_integrity_token = play_integrity_token,
 				ios_push_secret = ios_push_secret,
 			});
 
@@ -1797,10 +1818,10 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
+		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMessage
 			{
-				flags = (Messages_SendMessage.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
+				flags = (Messages_SendMessage.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				message = message,
@@ -1810,6 +1831,7 @@ namespace TL
 				schedule_date = schedule_date.GetValueOrDefault(),
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
+				effect = effect.GetValueOrDefault(),
 			});
 
 		/// <summary>Send a media		<para>See <a href="https://corefork.telegram.org/method/messages.sendMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,420,500 (<a href="https://corefork.telegram.org/method/messages.sendMedia#possible-errors">details</a>)</para></summary>
@@ -1828,10 +1850,10 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
+		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMedia
 			{
-				flags = (Messages_SendMedia.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
+				flags = (Messages_SendMedia.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				media = media,
@@ -1842,6 +1864,7 @@ namespace TL
 				schedule_date = schedule_date.GetValueOrDefault(),
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
+				effect = effect.GetValueOrDefault(),
 			});
 
 		/// <summary>Forwards messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.forwardMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,420,500 (<a href="https://corefork.telegram.org/method/messages.forwardMessages#possible-errors">details</a>)</para></summary>
@@ -2802,16 +2825,17 @@ namespace TL
 		/// <param name="multi_media">The medias to send: note that they must be separately uploaded using <see cref="Messages_UploadMedia">Messages_UploadMedia</see> first, using raw <c>inputMediaUploaded*</c> constructors is not supported.</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
-		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
+		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
-				flags = (Messages_SendMultiMedia.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
+				flags = (Messages_SendMultiMedia.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				multi_media = multi_media,
 				schedule_date = schedule_date.GetValueOrDefault(),
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
+				effect = effect.GetValueOrDefault(),
 			});
 
 		/// <summary>Upload encrypted file and associate it to a secret chat		<para>See <a href="https://corefork.telegram.org/method/messages.uploadEncryptedFile"/></para></summary>
@@ -4144,6 +4168,39 @@ namespace TL
 				hash = hash,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getAvailableEffects"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.availableEffectsNotModified">messages.availableEffectsNotModified</a></returns>
+		public static Task<Messages_AvailableEffects> Messages_GetAvailableEffects(this Client client, int hash = default)
+			=> client.Invoke(new Messages_GetAvailableEffects
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.editFactCheck"/></para></summary>
+		public static Task<UpdatesBase> Messages_EditFactCheck(this Client client, InputPeer peer, int msg_id, TextWithEntities text)
+			=> client.Invoke(new Messages_EditFactCheck
+			{
+				peer = peer,
+				msg_id = msg_id,
+				text = text,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.deleteFactCheck"/></para></summary>
+		public static Task<UpdatesBase> Messages_DeleteFactCheck(this Client client, InputPeer peer, int msg_id)
+			=> client.Invoke(new Messages_DeleteFactCheck
+			{
+				peer = peer,
+				msg_id = msg_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getFactCheck"/></para></summary>
+		public static Task<FactCheck[]> Messages_GetFactCheck(this Client client, InputPeer peer, params int[] msg_id)
+			=> client.Invoke(new Messages_GetFactCheck
+			{
+				peer = peer,
+				msg_id = msg_id,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -5239,6 +5296,17 @@ namespace TL
 				restricted = restricted,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.searchPosts"/></para></summary>
+		public static Task<Messages_MessagesBase> Channels_SearchPosts(this Client client, string hashtag, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue)
+			=> client.Invoke(new Channels_SearchPosts
+			{
+				hashtag = hashtag,
+				offset_rate = offset_rate,
+				offset_peer = offset_peer,
+				offset_id = offset_id,
+				limit = limit,
+			});
+
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
 		/// <param name="custom_method">The method name</param>
 		/// <param name="params_">JSON-serialized method parameters</param>
@@ -5407,7 +5475,7 @@ namespace TL
 		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
 		/// <param name="invoice">Invoice</param>
 		/// <param name="theme_params">A JSON object with the following keys, containing color theme information (integers, RGB24) to pass to the payment provider, to apply in eventual verification pages: <br/><c>bg_color</c> - Background color <br/><c>text_color</c> - Text color <br/><c>hint_color</c> - Hint text color <br/><c>link_color</c> - Link color <br/><c>button_color</c> - Button color <br/><c>button_text_color</c> - Button text color</param>
-		public static Task<Payments_PaymentForm> Payments_GetPaymentForm(this Client client, InputInvoice invoice, DataJSON theme_params = null)
+		public static Task<Payments_PaymentFormBase> Payments_GetPaymentForm(this Client client, InputInvoice invoice, DataJSON theme_params = null)
 			=> client.Invoke(new Payments_GetPaymentForm
 			{
 				flags = (Payments_GetPaymentForm.Flags)(theme_params != null ? 0x1 : 0),
@@ -5418,7 +5486,7 @@ namespace TL
 		/// <summary>Get payment receipt		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentReceipt"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentReceipt#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The peer where the payment receipt was sent</param>
 		/// <param name="msg_id">Message ID of receipt</param>
-		public static Task<Payments_PaymentReceipt> Payments_GetPaymentReceipt(this Client client, InputPeer peer, int msg_id)
+		public static Task<Payments_PaymentReceiptBase> Payments_GetPaymentReceipt(this Client client, InputPeer peer, int msg_id)
 			=> client.Invoke(new Payments_GetPaymentReceipt
 			{
 				peer = peer,
@@ -5560,6 +5628,45 @@ namespace TL
 				peer = peer,
 				giveaway_id = giveaway_id,
 				purpose = purpose,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsTopupOptions"/></para></summary>
+		public static Task<StarsTopupOption[]> Payments_GetStarsTopupOptions(this Client client)
+			=> client.Invoke(new Payments_GetStarsTopupOptions
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsStatus"/></para></summary>
+		public static Task<Payments_StarsStatus> Payments_GetStarsStatus(this Client client, InputPeer peer)
+			=> client.Invoke(new Payments_GetStarsStatus
+			{
+				peer = peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsTransactions"/></para></summary>
+		public static Task<Payments_StarsStatus> Payments_GetStarsTransactions(this Client client, InputPeer peer, string offset, bool inbound = false, bool outbound = false)
+			=> client.Invoke(new Payments_GetStarsTransactions
+			{
+				flags = (Payments_GetStarsTransactions.Flags)((inbound ? 0x1 : 0) | (outbound ? 0x2 : 0)),
+				peer = peer,
+				offset = offset,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.sendStarsForm"/></para></summary>
+		public static Task<Payments_PaymentResultBase> Payments_SendStarsForm(this Client client, long form_id, InputInvoice invoice)
+			=> client.Invoke(new Payments_SendStarsForm
+			{
+				flags = 0,
+				form_id = form_id,
+				invoice = invoice,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.refundStarsCharge"/></para></summary>
+		public static Task<UpdatesBase> Payments_RefundStarsCharge(this Client client, InputUserBase user_id, string charge_id)
+			=> client.Invoke(new Payments_RefundStarsCharge
+			{
+				user_id = user_id,
+				charge_id = charge_id,
 			});
 
 		/// <summary>Create a stickerset, bots only.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -6793,6 +6900,22 @@ namespace TL.Methods
 		public IMethod<X> query;
 	}
 
+	[TLDef(0x1DF92984)]
+	public sealed partial class InvokeWithGooglePlayIntegrity<X> : IMethod<X>
+	{
+		public string nonce;
+		public string token;
+		public IMethod<X> query;
+	}
+
+	[TLDef(0x0DAE54F8)]
+	public sealed partial class InvokeWithApnsSecret<X> : IMethod<X>
+	{
+		public string nonce;
+		public string secret;
+		public IMethod<X> query;
+	}
+
 	[TLDef(0xA677244F)]
 	public sealed partial class Auth_SendCode : IMethod<Auth_SentCodeBase>
 	{
@@ -6892,11 +7015,18 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x3EF1A9BF)]
+	[TLDef(0xCAE47523)]
 	public sealed partial class Auth_ResendCode : IMethod<Auth_SentCodeBase>
 	{
+		public Flags flags;
 		public string phone_number;
 		public string phone_code_hash;
+		[IfFlag(0)] public string reason;
+
+		[Flags] public enum Flags : uint
+		{
+			has_reason = 0x1,
+		}
 	}
 
 	[TLDef(0x1F040578)]
@@ -6946,19 +7076,21 @@ namespace TL.Methods
 		public string web_auth_token;
 	}
 
-	[TLDef(0x89464B50)]
+	[TLDef(0x8E39261E)]
 	public sealed partial class Auth_RequestFirebaseSms : IMethod<bool>
 	{
 		public Flags flags;
 		public string phone_number;
 		public string phone_code_hash;
 		[IfFlag(0)] public string safety_net_token;
+		[IfFlag(2)] public string play_integrity_token;
 		[IfFlag(1)] public string ios_push_secret;
 
 		[Flags] public enum Flags : uint
 		{
 			has_safety_net_token = 0x1,
 			has_ios_push_secret = 0x2,
+			has_play_integrity_token = 0x4,
 		}
 	}
 
@@ -8170,7 +8302,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xDFF8042C)]
+	[TLDef(0x983F9745)]
 	public sealed partial class Messages_SendMessage : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -8183,6 +8315,7 @@ namespace TL.Methods
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
+		[IfFlag(18)] public long effect;
 
 		[Flags] public enum Flags : uint
 		{
@@ -8199,10 +8332,11 @@ namespace TL.Methods
 			update_stickersets_order = 0x8000,
 			invert_media = 0x10000,
 			has_quick_reply_shortcut = 0x20000,
+			has_effect = 0x40000,
 		}
 	}
 
-	[TLDef(0x7BD66041)]
+	[TLDef(0x7852834E)]
 	public sealed partial class Messages_SendMedia : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -8216,6 +8350,7 @@ namespace TL.Methods
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
+		[IfFlag(18)] public long effect;
 
 		[Flags] public enum Flags : uint
 		{
@@ -8231,6 +8366,7 @@ namespace TL.Methods
 			update_stickersets_order = 0x8000,
 			invert_media = 0x10000,
 			has_quick_reply_shortcut = 0x20000,
+			has_effect = 0x40000,
 		}
 	}
 
@@ -9060,7 +9196,7 @@ namespace TL.Methods
 		public long hash;
 	}
 
-	[TLDef(0x0C964709)]
+	[TLDef(0x37B74355)]
 	public sealed partial class Messages_SendMultiMedia : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -9070,6 +9206,7 @@ namespace TL.Methods
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
+		[IfFlag(18)] public long effect;
 
 		[Flags] public enum Flags : uint
 		{
@@ -9083,6 +9220,7 @@ namespace TL.Methods
 			update_stickersets_order = 0x8000,
 			invert_media = 0x10000,
 			has_quick_reply_shortcut = 0x20000,
+			has_effect = 0x40000,
 		}
 	}
 
@@ -10216,6 +10354,34 @@ namespace TL.Methods
 		public int hash;
 	}
 
+	[TLDef(0xDEA20A39)]
+	public sealed partial class Messages_GetAvailableEffects : IMethod<Messages_AvailableEffects>
+	{
+		public int hash;
+	}
+
+	[TLDef(0x0589EE75)]
+	public sealed partial class Messages_EditFactCheck : IMethod<UpdatesBase>
+	{
+		public InputPeer peer;
+		public int msg_id;
+		public TextWithEntities text;
+	}
+
+	[TLDef(0xD1DA940C)]
+	public sealed partial class Messages_DeleteFactCheck : IMethod<UpdatesBase>
+	{
+		public InputPeer peer;
+		public int msg_id;
+	}
+
+	[TLDef(0xB9CDC5EE)]
+	public sealed partial class Messages_GetFactCheck : IMethod<FactCheck[]>
+	{
+		public InputPeer peer;
+		public int[] msg_id;
+	}
+
 	[TLDef(0xEDD4882A)]
 	public sealed partial class Updates_GetState : IMethod<Updates_State> { }
 
@@ -11063,6 +11229,16 @@ namespace TL.Methods
 		public bool restricted;
 	}
 
+	[TLDef(0xD19F987B)]
+	public sealed partial class Channels_SearchPosts : IMethod<Messages_MessagesBase>
+	{
+		public string hashtag;
+		public int offset_rate;
+		public InputPeer offset_peer;
+		public int offset_id;
+		public int limit;
+	}
+
 	[TLDef(0xAA2769ED)]
 	public sealed partial class Bots_SendCustomRequest : IMethod<DataJSON>
 	{
@@ -11192,7 +11368,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x37148DBB)]
-	public sealed partial class Payments_GetPaymentForm : IMethod<Payments_PaymentForm>
+	public sealed partial class Payments_GetPaymentForm : IMethod<Payments_PaymentFormBase>
 	{
 		public Flags flags;
 		public InputInvoice invoice;
@@ -11205,7 +11381,7 @@ namespace TL.Methods
 	}
 
 	[TLDef(0x2478D1CC)]
-	public sealed partial class Payments_GetPaymentReceipt : IMethod<Payments_PaymentReceipt>
+	public sealed partial class Payments_GetPaymentReceipt : IMethod<Payments_PaymentReceiptBase>
 	{
 		public InputPeer peer;
 		public int msg_id;
@@ -11327,6 +11503,48 @@ namespace TL.Methods
 		public InputPeer peer;
 		public long giveaway_id;
 		public InputStorePaymentPurpose purpose;
+	}
+
+	[TLDef(0xC00EC7D3)]
+	public sealed partial class Payments_GetStarsTopupOptions : IMethod<StarsTopupOption[]> { }
+
+	[TLDef(0x104FCFA7)]
+	public sealed partial class Payments_GetStarsStatus : IMethod<Payments_StarsStatus>
+	{
+		public InputPeer peer;
+	}
+
+	[TLDef(0x673AC2F9)]
+	public sealed partial class Payments_GetStarsTransactions : IMethod<Payments_StarsStatus>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public string offset;
+
+		[Flags] public enum Flags : uint
+		{
+			inbound = 0x1,
+			outbound = 0x2,
+		}
+	}
+
+	[TLDef(0x02BB731D)]
+	public sealed partial class Payments_SendStarsForm : IMethod<Payments_PaymentResultBase>
+	{
+		public Flags flags;
+		public long form_id;
+		public InputInvoice invoice;
+
+		[Flags] public enum Flags : uint
+		{
+		}
+	}
+
+	[TLDef(0x25AE8F4A)]
+	public sealed partial class Payments_RefundStarsCharge : IMethod<UpdatesBase>
+	{
+		public InputUserBase user_id;
+		public string charge_id;
 	}
 
 	[TLDef(0x9021AB67)]
