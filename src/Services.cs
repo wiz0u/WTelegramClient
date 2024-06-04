@@ -234,6 +234,7 @@ namespace TL
 			}
 			if (lastBlockQuote is { length: -1 })
 				lastBlockQuote.length = sb.Length - lastBlockQuote.offset;
+			HtmlText.FixUps(sb, entities);
 			text = sb.ToString();
 			return entities.Count == 0 ? null : [.. entities];
 		}
@@ -431,8 +432,20 @@ namespace TL
 				else
 					offset++;
 			}
+			FixUps(sb, entities);
 			text = sb.ToString();
 			return entities.Count == 0 ? null : [.. entities];
+		}
+
+		internal static void FixUps(StringBuilder sb, List<MessageEntity> entities)
+		{
+			int truncate = 0;
+			while (char.IsWhiteSpace(sb[^++truncate]));
+			if (truncate == 1) return;
+			var len = sb.Length -= --truncate;
+			foreach (var entity in entities)
+				if (entity.offset + entity.length > len)
+					entity.length = len - entity.offset;
 		}
 
 		/// <summary>Converts the (plain text + entities) format used by Telegram messages into an <a href="https://core.telegram.org/bots/api/#html-style">HTML-formatted text</a></summary>

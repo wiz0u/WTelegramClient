@@ -4079,15 +4079,25 @@ namespace TL
 		public Messages_StickerSet stickerset;
 	}
 	/// <summary>The order of stickersets was changed		<para>See <a href="https://corefork.telegram.org/constructor/updateStickerSetsOrder"/></para></summary>
-	[TLDef(0x0BB2D201, inheritBefore = true)]
-	public sealed partial class UpdateStickerSetsOrder : UpdateStickerSets
+	[TLDef(0x0BB2D201)]
+	public sealed partial class UpdateStickerSetsOrder : Update
 	{
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
+		public Flags flags;
 		/// <summary>New sticker order by sticker ID</summary>
 		public long[] order;
+
+		[Flags] public enum Flags : uint
+		{
+			/// <summary>Whether the updated stickers are mask stickers</summary>
+			masks = 0x1,
+			/// <summary>Whether the updated stickers are custom emoji stickers</summary>
+			emojis = 0x2,
+		}
 	}
 	/// <summary>Installed stickersets have changed, the client should refetch them as <a href="https://corefork.telegram.org/api/stickers#installing-stickersets">described in the docs</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateStickerSets"/></para></summary>
 	[TLDef(0x31C24808)]
-	public partial class UpdateStickerSets : Update
+	public sealed partial class UpdateStickerSets : Update
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
