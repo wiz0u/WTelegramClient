@@ -465,21 +465,29 @@ namespace WTelegram
 					Helpers.Log(1, $"{_dcSession.DcID}>Ignoring  0x{ctorNb:X8} because of wrong timestamp    {msgStamp:u} - {utcNow:u} Δ={new TimeSpan(_dcSession.ServerTicksOffset):c}");
 					return null;
 				}
-				if (ctorNb == Layer.MsgContainerCtor)
+				try
 				{
-					Helpers.Log(1, $"{_dcSession.DcID}>Receiving {"MsgContainer",-40} {msgStamp:u} (svc)");
-					return ReadMsgContainer(reader);
+					if (ctorNb == Layer.MsgContainerCtor)
+					{
+						Helpers.Log(1, $"{_dcSession.DcID}>Receiving {"MsgContainer",-40} {msgStamp:u} (svc)");
+						return ReadMsgContainer(reader);
+					}
+					else if (ctorNb == Layer.RpcResultCtor)
+					{
+						Helpers.Log(1, $"{_dcSession.DcID}>Receiving {"RpcResult",-40} {msgStamp:u}");
+						return ReadRpcResult(reader);
+					}
+					else
+					{
+						var obj = reader.ReadTLObject(ctorNb);
+						Helpers.Log(1, $"{_dcSession.DcID}>Receiving {obj.GetType().Name,-40} {msgStamp:u} {((seqno & 1) != 0 ? "" : "(svc)")} {((msgId & 2) == 0 ? "" : "NAR")}");
+						return obj;
+					}
 				}
-				else if (ctorNb == Layer.RpcResultCtor)
+				catch (Exception ex)
 				{
-					Helpers.Log(1, $"{_dcSession.DcID}>Receiving {"RpcResult",-40} {msgStamp:u}");
-					return ReadRpcResult(reader);
-				}
-				else
-				{
-					var obj = reader.ReadTLObject(ctorNb);
-					Helpers.Log(1, $"{_dcSession.DcID}>Receiving {obj.GetType().Name,-40} {msgStamp:u} {((seqno & 1) != 0 ? "" : "(svc)")} {((msgId & 2) == 0 ? "" : "NAR")}");
-					return obj;
+					Helpers.Log(4, $"While deserializing frame #{ctorNb:x}: " + ex.ToString());
+					return null;
 				}
 			}
 
@@ -916,6 +924,7 @@ namespace WTelegram
 					TLConfig = new Config { this_dc = _session.MainDC, dc_options = _session.DcOptions };
 				else
 				{
+					if (_dcSession.Layer != 0 && _dcSession.Layer != Layer.Version) _dcSession.Renew();
 					var initParams = JSONValue.FromJsonElement(System.Text.Json.JsonDocument.Parse(Config("init_params")).RootElement);
 					TLConfig = await this.InvokeWithLayer(Layer.Version,
 						new TL.Methods.InitConnection<Config>

@@ -50,7 +50,7 @@ namespace WTelegramClientTest
 						await CreateAndConnect();
 						break;
 					}
-					catch (Exception ex)
+					catch (Exception ex) when (ex is not ObjectDisposedException)
 					{
 						Console.WriteLine("Connection still failing: " + ex.Message);
 					}
