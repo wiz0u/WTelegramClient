@@ -59,7 +59,7 @@ You also need to obtain their `access_hash` which is specific to the resource yo
 This serves as a proof that the logged-in user is entitled to access that channel/user/photo/document/...
 (otherwise, anybody with the ID could access it)
 
-> A small private `Chat` don't need an access_hash and can be queried using their `chat_id` only.
+> A small private group `Chat` don't need an access_hash and can be queried using their `chat_id` only.
 However most common chat groups are not `Chat` but a `Channel` supergroup (without the `broadcast` flag). See [Terminology in ReadMe](README.md#terminology).  
 Some TL methods only applies to private `Chat`, some only applies to `Channel` and some to both.
 

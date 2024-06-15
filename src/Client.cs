@@ -181,7 +181,7 @@ namespace WTelegram
 		{
 			Helpers.Log(2, $"{_dcSession.DcID}>Disposing the client");
 			Reset(false, IsMainDC);
-			var ex = new TaskCanceledException("WTelegram.Client was disposed");
+			var ex = new ObjectDisposedException("WTelegram.Client was disposed");
 			lock (_pendingRpcs) // abort all pending requests
 				foreach (var rpc in _pendingRpcs.Values)
 					rpc.tcs.TrySetException(ex);
@@ -349,7 +349,7 @@ namespace WTelegram
 						lock (_pendingRpcs) // retry all pending requests
 						{
 							foreach (var rpc in _pendingRpcs.Values)
-								rpc.tcs.SetResult(reactorError); // this leads to a retry (see Invoke<T> method)
+								rpc.tcs.TrySetResult(reactorError); // this leads to a retry (see Invoke<T> method)
 							_pendingRpcs.Clear();
 							_bareRpc = null;
 						}
@@ -359,7 +359,7 @@ namespace WTelegram
 							RaiseUpdates(updatesState);
 						}
 					}
-					catch
+					catch (Exception e) when (e is not ObjectDisposedException)
 					{
 						if (IsMainDC)
 							RaiseUpdates(reactorError);
@@ -947,7 +947,8 @@ namespace WTelegram
 			}
 			finally
 			{
-				lock (_session) _session.Save();
+				if (_reactorTask != null) // client not disposed
+					lock (_session) _session.Save();
 			}
 			Helpers.Log(2, $"Connected to {(TLConfig.test_mode ? "Test DC" : "DC")} {TLConfig.this_dc}... {TLConfig.flags & (Config.Flags)~0x18E00U}");
 		}

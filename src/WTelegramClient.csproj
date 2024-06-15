@@ -13,7 +13,10 @@
     <PackageId>WTelegramClient</PackageId>
     <Version>0.0.0</Version>
     <Authors>Wizou</Authors>
-    <Description>Telegram Client API (MTProto) library written 100% in C# and .NET Standard | Latest API layer: 181&#10;&#10;Release Notes:&#10;$(ReleaseNotes.Replace("|", "%0D%0A").Replace(" - ","%0D%0A- ").Replace("  ", "%0D%0A%0D%0A"))</Description>
+    <Description>Telegram Client API (MTProto) library written 100% in C# and .NET Standard | Latest API layer: 181
+
+Release Notes:
+$(ReleaseNotes.Replace("|", "%0D%0A").Replace(" - ","%0D%0A- ").Replace("  ", "%0D%0A%0D%0A"))</Description>
     <Copyright>Copyright © Olivier Marcoux 2021-2024</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://wiz0u.github.io/WTelegramClient</PackageProjectUrl>
@@ -48,7 +51,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="IndexRange" Version="1.0.2" />
+    <PackageReference Include="IndexRange" Version="1.0.3" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Text.Json" Version="6.0.5" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
