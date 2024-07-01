@@ -54,11 +54,6 @@ stages:
             {
               "status": "success",
               "complete": true,
-              "message": "{
-                \"commitId\": \"$(Build.SourceVersion)\",
-                \"buildNumber\": \"$(Build.BuildNumber)\",
-                \"teamProjectName\": \"$(System.TeamProject)\",
-                \"commitMessage\": \"$(Release_Notes)\"
-              }"
+              "message": "{ \"commitId\": \"$(Build.SourceVersion)\", \"buildNumber\": \"$(Build.BuildNumber)\", \"teamProjectName\": \"$(System.TeamProject)\", \"commitMessage\": \"$(Release_Notes)\" }"
             }
           waitForCompletion: 'false'

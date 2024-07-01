@@ -16,8 +16,13 @@ jobs:
         with:
           support-label: 'telegram api'
           issue-comment: >
-            Please note that **Github Issues** should be used only for problems with the library code itself.
-            
-            For questions about Telegram API usage, you can search the [API official documentation](https://core.telegram.org/api#getting-started)
-            or [click here to ask your question on **StackOverflow**](https://stackoverflow.com/questions/ask?tags=c%23+wtelegramclient+telegram-api) so the whole community can help and benefit.
+            Please note that **Github issues** should be used only for problems with the library code itself.
+
+
+            For questions about Telegram API usage, you can search the [API official documentation](https://core.telegram.org/api#getting-started) and the [full list of methods](https://core.telegram.org/methods).
+
+            WTelegramClient covers 100% of the API and let you do anything you can do in an official client.
+
+
+            If the above links didn't answer your problem, [click here to ask your question on **StackOverflow**](https://stackoverflow.com/questions/ask?tags=c%23+wtelegramclient+telegram-api) so the whole community can help and benefit.
           close-issue: true
