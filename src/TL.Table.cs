@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 181;					// fetched 28/05/2024 13:03:09
+		public const int Version = 183;					// fetched 01/07/2024 23:00:22
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -101,6 +101,7 @@ namespace TL
 			[0xE66FBF7B] = typeof(InputMediaDice),
 			[0x89FDD778] = typeof(InputMediaStory),
 			[0xC21B8849] = typeof(InputMediaWebPage),
+			[0xAA661FC3] = typeof(InputMediaPaidMedia),
 			[0x1CA48F57] = null,//InputChatPhotoEmpty
 			[0xBDCDAEC0] = typeof(InputChatUploadedPhoto),
 			[0x8953AD37] = typeof(InputChatPhoto),
@@ -164,6 +165,7 @@ namespace TL
 			[0x68CB6283] = typeof(MessageMediaStory),
 			[0xDAAD85B0] = typeof(MessageMediaGiveaway),
 			[0xC6991068] = typeof(MessageMediaGiveawayResults),
+			[0xA8852491] = typeof(MessageMediaPaidMedia),
 			[0xB6AEF7B0] = null,//MessageActionEmpty
 			[0xBD47CBAD] = typeof(MessageActionChatCreate),
 			[0xB5A1CE5A] = typeof(MessageActionChatEditTitle),
@@ -377,7 +379,7 @@ namespace TL
 			[0x30F443DB] = typeof(UpdateRecentEmojiStatuses),
 			[0x6F7863F4] = typeof(UpdateRecentReactions),
 			[0x86FCCF85] = typeof(UpdateMoveStickerSetToTop),
-			[0x5A73A98C] = typeof(UpdateMessageExtendedMedia),
+			[0xD5A41724] = typeof(UpdateMessageExtendedMedia),
 			[0x192EFBE3] = typeof(UpdateChannelPinnedTopic),
 			[0xFE198602] = typeof(UpdateChannelPinnedTopics),
 			[0x20529438] = typeof(UpdateUser),
@@ -408,6 +410,8 @@ namespace TL
 			[0x1824E40B] = typeof(UpdateNewStoryReaction),
 			[0xDFD961F5] = typeof(UpdateBroadcastRevenueTransactions),
 			[0x0FB85198] = typeof(UpdateStarsBalance),
+			[0x1EA2FDA7] = typeof(UpdateBusinessBotCallbackQuery),
+			[0xA584B019] = typeof(UpdateStarsRevenueStatus),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -651,7 +655,7 @@ namespace TL
 			[0xF450F59B] = typeof(Auth_SentCodeTypeEmailCode),
 			[0xA5491DEA] = typeof(Auth_SentCodeTypeSetUpEmailRequired),
 			[0xD9565C39] = typeof(Auth_SentCodeTypeFragmentSms),
-			[0x13C90F17] = typeof(Auth_SentCodeTypeFirebaseSms),
+			[0x009FD736] = typeof(Auth_SentCodeTypeFirebaseSms),
 			[0xA416AC81] = typeof(Auth_SentCodeTypeSmsWord),
 			[0xB37794AF] = typeof(Auth_SentCodeTypeSmsPhrase),
 			[0x36585EA4] = typeof(Messages_BotCallbackAnswer),
@@ -666,7 +670,7 @@ namespace TL
 			[0x70B772A8] = typeof(Contacts_TopPeers),
 			[0xB52C939D] = typeof(Contacts_TopPeersDisabled),
 			[0x1B0C841A] = typeof(DraftMessageEmpty),
-			[0x3FCCF7EF] = typeof(DraftMessage),
+			[0x2D65321F] = typeof(DraftMessage),
 			[0xC6DC0C66] = typeof(Messages_FeaturedStickersNotModified),
 			[0xBE382906] = typeof(Messages_FeaturedStickers),
 			[0x0B17F890] = null,//Messages_RecentStickersNotModified
@@ -1059,8 +1063,7 @@ namespace TL
 			[0xF1D88A5C] = null,//AttachMenuBotsNotModified
 			[0x3C4301C0] = typeof(AttachMenuBots),
 			[0x93BF667F] = typeof(AttachMenuBotsBot),
-			[0x0C14557C] = typeof(WebViewResultUrl),
-			[0x882F76BB] = typeof(SimpleWebViewResultUrl),
+			[0x4D22FF98] = typeof(WebViewResultUrl),
 			[0x0C94511C] = typeof(WebViewMessageSent),
 			[0x7533A588] = null,//BotMenuButtonDefault
 			[0x4258C205] = typeof(BotMenuButtonCommands),
@@ -1141,7 +1144,6 @@ namespace TL
 			[0x5DA674B7] = null,//BotAppNotModified
 			[0x95FCD1D6] = typeof(BotApp),
 			[0xEB50ADF5] = typeof(Messages_BotApp),
-			[0x3C1B4F0D] = typeof(AppWebViewResultUrl),
 			[0xB57295D5] = typeof(InlineBotWebView),
 			[0x4A4FF172] = typeof(ReadParticipantDate),
 			[0xF3E0DA33] = typeof(InputChatlistDialogFilter),
@@ -1171,13 +1173,14 @@ namespace TL
 			[0x5881323A] = typeof(InputReplyToStory),
 			[0x3FC9053B] = typeof(ExportedStoryLink),
 			[0x712E27FD] = typeof(StoriesStealthMode),
-			[0x03D1EA4E] = typeof(MediaAreaCoordinates),
+			[0xCFC9E002] = typeof(MediaAreaCoordinates),
 			[0xBE82DB9C] = typeof(MediaAreaVenue),
 			[0xB282217F] = typeof(InputMediaAreaVenue),
-			[0xDF8B3B22] = typeof(MediaAreaGeoPoint),
+			[0xCAD5452D] = typeof(MediaAreaGeoPoint),
 			[0x14455871] = typeof(MediaAreaSuggestedReaction),
 			[0x770416AF] = typeof(MediaAreaChannelPost),
 			[0x2271F2BF] = typeof(InputMediaAreaChannelPost),
+			[0x37381085] = typeof(MediaAreaUrl),
 			[0x9A35E999] = typeof(PeerStories),
 			[0xCAE68768] = typeof(Stories_PeerStories),
 			[0xFD5E12BD] = typeof(Messages_WebPage),
@@ -1285,9 +1288,18 @@ namespace TL
 			[0x250DBAF8] = typeof(StarsTransactionPeerPremiumBot),
 			[0xE92FD902] = typeof(StarsTransactionPeerFragment),
 			[0xD80DA15D] = typeof(StarsTransactionPeer),
+			[0x60682812] = typeof(StarsTransactionPeerAds),
 			[0x0BD915C0] = typeof(StarsTopupOption),
-			[0xCC7079B2] = typeof(StarsTransaction),
+			[0x2DB5418F] = typeof(StarsTransaction),
 			[0x8CF4EE60] = typeof(Payments_StarsStatus),
+			[0xE87ACBC0] = typeof(FoundStory),
+			[0xE2DE7737] = typeof(Stories_FoundStories),
+			[0xDE4C5D93] = typeof(GeoPointAddress),
+			[0x79342946] = typeof(StarsRevenueStatus),
+			[0xC92BB73B] = typeof(Payments_StarsRevenueStats),
+			[0x1DAB80B7] = typeof(Payments_StarsRevenueWithdrawalUrl),
+			[0x394E7F21] = typeof(Payments_StarsRevenueAdsAccountUrl),
+			[0x206AE6D1] = typeof(InputStarsTransaction),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
