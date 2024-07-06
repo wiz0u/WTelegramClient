@@ -403,7 +403,7 @@ namespace TL
 										prevEntity.length = offset - prevEntity.offset;
 								}
 							}
-							else if (tag.StartsWith("a href=\"") && tag.EndsWith("\""))
+							else if (tag.StartsWith("a href=\"") && tag[^1] == '"')
 							{
 								tag = tag[8..^1];
 								if (tag.StartsWith("tg://user?id=") && long.TryParse(tag[13..], out var user_id) && users?.GetValueOrDefault(user_id)?.access_hash is long hash)
@@ -411,7 +411,7 @@ namespace TL
 								else
 									entities.Add(new MessageEntityTextUrl { offset = offset, length = -1, url = tag });
 							}
-							else if (tag.StartsWith("code class=\"language-") && tag.EndsWith("\""))
+							else if (tag.StartsWith("code class=\"language-") && tag[^1] == '"')
 							{
 								if (entities.LastOrDefault(e => e.length == -1) is MessageEntityPre prevEntity)
 									prevEntity.language = tag[21..^1];
@@ -439,13 +439,13 @@ namespace TL
 
 		internal static void FixUps(StringBuilder sb, List<MessageEntity> entities)
 		{
-			int truncate = 0;
-			while (char.IsWhiteSpace(sb[^++truncate]));
-			if (truncate == 1) return;
-			var len = sb.Length -= --truncate;
+			int newlen = sb.Length;
+			while (--newlen >= 0 && char.IsWhiteSpace(sb[newlen]));
+			if (++newlen == sb.Length) return;
+			sb.Length = newlen;
 			foreach (var entity in entities)
-				if (entity.offset + entity.length > len)
-					entity.length = len - entity.offset;
+				if (entity.offset + entity.length > newlen)
+					entity.length = newlen - entity.offset;
 		}
 
 		/// <summary>Converts the (plain text + entities) format used by Telegram messages into an <a href="https://core.telegram.org/bots/api/#html-style">HTML-formatted text</a></summary>

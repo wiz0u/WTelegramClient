@@ -62,7 +62,6 @@ stages:
             {
               "status": "success",
               "complete": true,
-              "message": "{ \"commitId\": \"$(Build.SourceVersion)\", \"buildNumber\": \"$(Build.BuildNumber)\", \"teamProjectName\": \"$(System.TeamProject)\"
-              }"
+              "message": "{ \"commitId\": \"$(Build.SourceVersion)\", \"buildNumber\": \"$(Build.BuildNumber)\", \"teamProjectName\": \"$(System.TeamProject)\"}"
             }
           waitForCompletion: 'false'
