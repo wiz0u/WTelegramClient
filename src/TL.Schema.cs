@@ -1523,6 +1523,7 @@ namespace TL
 			/// <summary>Field <see cref="reactions_limit"/> has a value</summary>
 			has_reactions_limit = 0x2000,
 			paid_media_allowed = 0x4000,
+			can_view_stars_revenue = 0x8000,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -1702,6 +1703,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Extra bits of information, use <c>flags2.HasFlag(...)</c> to test for those</summary>
 		public Flags2 flags2;
 		/// <summary>ID of the message</summary>
 		public int id;
@@ -1717,6 +1719,7 @@ namespace TL
 		[IfFlag(2)] public MessageFwdHeader fwd_from;
 		/// <summary>ID of the inline bot that generated the message</summary>
 		[IfFlag(11)] public long via_bot_id;
+		/// <summary>Whether the message was sent by the <a href="https://corefork.telegram.org/api/business#connected-bots">business bot</a> specified in <c>via_bot_id</c> on behalf of the user.</summary>
 		[IfFlag(32)] public long via_business_bot_id;
 		/// <summary>Reply information</summary>
 		[IfFlag(3)] public MessageReplyHeaderBase reply_to;
@@ -1748,6 +1751,7 @@ namespace TL
 		[IfFlag(22)] public RestrictionReason[] restriction_reason;
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
 		[IfFlag(25)] public int ttl_period;
+		/// <summary>If set, this message is a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcut">quick reply shortcut message »</a> (note that quick reply shortcut messages <em>sent</em> to a private chat will <em>not</em> have this field set).</summary>
 		[IfFlag(30)] public int quick_reply_shortcut_id;
 		[IfFlag(34)] public long effect;
 		[IfFlag(35)] public FactCheck factcheck;
@@ -2648,10 +2652,11 @@ namespace TL
 		/// <summary>Number of undistributed prizes</summary>
 		public int unclaimed_count;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionBoostApply"/></para></summary>
+	/// <summary>Some <a href="https://corefork.telegram.org/api/boost">boosts »</a> were applied to the channel or supergroup.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionBoostApply"/></para></summary>
 	[TLDef(0xCC02AA6D)]
 	public sealed partial class MessageActionBoostApply : MessageAction
 	{
+		/// <summary>Number of applied <a href="https://corefork.telegram.org/api/boost">boosts</a>.</summary>
 		public int boosts;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionRequestedPeerSentMe"/></para></summary>
@@ -2660,6 +2665,22 @@ namespace TL
 	{
 		public int button_id;
 		public RequestedPeer[] peers;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionPaymentRefunded"/></para></summary>
+	[TLDef(0x41B3E202)]
+	public sealed partial class MessageActionPaymentRefunded : MessageAction
+	{
+		public Flags flags;
+		public Peer peer;
+		public string currency;
+		public long total_amount;
+		[IfFlag(0)] public byte[] payload;
+		public PaymentCharge charge;
+
+		[Flags] public enum Flags : uint
+		{
+			has_payload = 0x1,
+		}
 	}
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
@@ -3130,7 +3151,9 @@ namespace TL
 		[IfFlag(9)] public string request_chat_title;
 		/// <summary>If set, this is a private chat with an administrator of a chat or channel to which the user sent a join request, and this field contains the timestamp when the <a href="https://corefork.telegram.org/api/invites#join-requests">join request »</a> was sent.</summary>
 		[IfFlag(9)] public DateTime request_chat_date;
+		/// <summary>Contains the ID of the <a href="https://corefork.telegram.org/api/business#connected-bots">business bot »</a> managing this chat, used to display info about the bot in the action bar.</summary>
 		[IfFlag(13)] public long business_bot_id;
+		/// <summary>Contains a <a href="https://corefork.telegram.org/api/links">deep link »</a>, used to open a management menu in the business bot. This flag is set if and only if <c>business_bot_id</c> is set.</summary>
 		[IfFlag(13)] public string business_bot_manage_url;
 
 		[Flags] public enum Flags : uint
@@ -3157,7 +3180,9 @@ namespace TL
 			has_request_chat_title = 0x200,
 			/// <summary>This flag is set if <c>request_chat_title</c> and <c>request_chat_date</c> fields are set and the <a href="https://corefork.telegram.org/api/invites#join-requests">join request »</a> is related to a channel (otherwise if only the request fields are set, the <a href="https://corefork.telegram.org/api/invites#join-requests">join request »</a> is related to a chat).</summary>
 			request_chat_broadcast = 0x400,
+			/// <summary>This flag is set if both <c>business_bot_id</c> and <c>business_bot_manage_url</c> are set and all <a href="https://corefork.telegram.org/api/business#connected-business-bots">connected business bots »</a> were paused in this chat using <see cref="SchemaExtensions.Account_ToggleConnectedBotPaused">Account_ToggleConnectedBotPaused</see>.</summary>
 			business_bot_paused = 0x800,
+			/// <summary>This flag is set if both <c>business_bot_id</c> and <c>business_bot_manage_url</c> are set and <a href="https://corefork.telegram.org/api/business#connected-business-bots">connected business bots »</a> can reply to messages in this chat, as specified by the settings during <a href="https://corefork.telegram.org/api/business#connected-bots">initial configuration</a>.</summary>
 			business_bot_can_reply = 0x1000,
 			/// <summary>Fields <see cref="business_bot_id"/> and <see cref="business_bot_manage_url"/> have a value</summary>
 			has_business_bot_id = 0x2000,
@@ -3312,7 +3337,9 @@ namespace TL
 		[IfFlag(35)] public BusinessAwayMessage business_away_message;
 		[IfFlag(36)] public BusinessIntro business_intro;
 		[IfFlag(37)] public Birthday birthday;
+		/// <summary>ID of the associated personal <a href="https://corefork.telegram.org/api/channel">channel »</a>, that should be shown in the <a href="https://corefork.telegram.org/api/profile#personal-channel">profile page</a>.</summary>
 		[IfFlag(38)] public long personal_channel_id;
+		/// <summary>ID of the latest message of the associated personal <a href="https://corefork.telegram.org/api/channel">channel »</a>, that should be previewed in the <a href="https://corefork.telegram.org/api/profile#personal-channel">profile page</a>.</summary>
 		[IfFlag(38)] public int personal_channel_message;
 
 		[Flags] public enum Flags : uint
@@ -5080,7 +5107,7 @@ namespace TL
 			has_order = 0x1,
 		}
 	}
-	/// <summary>User information was updated, it must be refetched using <see cref="SchemaExtensions.Users_GetFullUser">Users_GetFullUser</see>.		<para>See <a href="https://corefork.telegram.org/constructor/updateUser"/></para></summary>
+	/// <summary>User (<see cref="User"/> and/or <see cref="UserFull"/>) information was updated, it must be refetched using <see cref="SchemaExtensions.Users_GetFullUser">Users_GetFullUser</see>.		<para>See <a href="https://corefork.telegram.org/constructor/updateUser"/></para></summary>
 	[TLDef(0x20529438)]
 	public partial class UpdateUser : Update
 	{
@@ -5242,7 +5269,7 @@ namespace TL
 			has_order = 0x1,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSavedReactionTags"/></para></summary>
+	/// <summary>The list of <a href="https://corefork.telegram.org/api/saved-messages#tags">reaction tag »</a> names assigned by the user has changed and should be refetched using <see cref="SchemaExtensions.Messages_GetSavedReactionTags">Messages_GetSavedReactionTags</see>.		<para>See <a href="https://corefork.telegram.org/constructor/updateSavedReactionTags"/></para></summary>
 	[TLDef(0x39C67432)]
 	public sealed partial class UpdateSavedReactionTags : Update { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSmsJob"/></para></summary>
@@ -5251,34 +5278,39 @@ namespace TL
 	{
 		public string job_id;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateQuickReplies"/></para></summary>
+	/// <summary>Info about or the order of <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcuts »</a> was changed.		<para>See <a href="https://corefork.telegram.org/constructor/updateQuickReplies"/></para></summary>
 	[TLDef(0xF9470AB2)]
 	public sealed partial class UpdateQuickReplies : Update
 	{
+		/// <summary>New quick reply shortcut order and information.</summary>
 		public QuickReply[] quick_replies;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateNewQuickReply"/></para></summary>
+	/// <summary>A new <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a> was created.		<para>See <a href="https://corefork.telegram.org/constructor/updateNewQuickReply"/></para></summary>
 	[TLDef(0xF53DA717)]
 	public sealed partial class UpdateNewQuickReply : Update
 	{
+		/// <summary>Quick reply shortcut.</summary>
 		public QuickReply quick_reply;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateDeleteQuickReply"/></para></summary>
+	/// <summary>A <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a> was deleted. This will <strong>not</strong> emit <see cref="UpdateDeleteQuickReplyMessages"/> updates, even if all the messages in the shortcut are also deleted by this update.		<para>See <a href="https://corefork.telegram.org/constructor/updateDeleteQuickReply"/></para></summary>
 	[TLDef(0x53E6F1EC)]
 	public partial class UpdateDeleteQuickReply : Update
 	{
+		/// <summary>ID of the quick reply shortcut that was deleted.</summary>
 		public int shortcut_id;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateQuickReplyMessage"/></para></summary>
+	/// <summary>A new message was added to a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateQuickReplyMessage"/></para></summary>
 	[TLDef(0x3E050D0F)]
 	public sealed partial class UpdateQuickReplyMessage : Update
 	{
+		/// <summary>The message that was added (the <see cref="Message"/>.<c>quick_reply_shortcut_id</c> field will contain the shortcut ID).</summary>
 		public MessageBase message;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateDeleteQuickReplyMessages"/></para></summary>
+	/// <summary>One or more messages in a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a> were deleted.		<para>See <a href="https://corefork.telegram.org/constructor/updateDeleteQuickReplyMessages"/></para></summary>
 	[TLDef(0x566FE7CD, inheritBefore = true)]
 	public sealed partial class UpdateDeleteQuickReplyMessages : UpdateDeleteQuickReply
 	{
+		/// <summary>IDs of the deleted messages.</summary>
 		public int[] messages;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBotBusinessConnect"/></para></summary>
@@ -6524,7 +6556,7 @@ namespace TL
 		VoiceMessages = 0xAEE69D68,
 		///<summary>Whether people can see your bio</summary>
 		About = 0x3823CC40,
-		///<summary>See <a href="https://corefork.telegram.org/constructor/inputPrivacyKeyBirthday"/></summary>
+		///<summary>Whether the user can see our birthday.</summary>
 		Birthday = 0xD65A11CC,
 	}
 
@@ -6551,7 +6583,7 @@ namespace TL
 		VoiceMessages = 0x0697F414,
 		///<summary>Whether people can see your bio</summary>
 		About = 0xA486B761,
-		///<summary>See <a href="https://corefork.telegram.org/constructor/privacyKeyBirthday"/></summary>
+		///<summary>Whether the user can see our birthday.</summary>
 		Birthday = 0x2000A518,
 	}
 
@@ -7366,6 +7398,7 @@ namespace TL
 			text_color = 0x200,
 			/// <summary>If set, this custom emoji stickerset can be used in <a href="https://corefork.telegram.org/api/emoji-status">channel/supergroup emoji statuses</a>.</summary>
 			channel_emoji_status = 0x400,
+			/// <summary>Whether we created this stickerset</summary>
 			creator = 0x800,
 		}
 	}
@@ -7818,6 +7851,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether the quote is collapsed by default.</summary>
 			collapsed = 0x1,
 		}
 	}
@@ -9064,12 +9098,13 @@ namespace TL
 			has_play_integrity_project_id = 0x4,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSmsWord"/></para></summary>
+	/// <summary>The code was sent via SMS as a secret word, starting with the letter specified in <c>beginning</c>		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSmsWord"/></para></summary>
 	[TLDef(0xA416AC81)]
 	public sealed partial class Auth_SentCodeTypeSmsWord : Auth_SentCodeType
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>The secret word in the sent SMS (which may contain multiple words) starts with this letter.</summary>
 		[IfFlag(0)] public string beginning;
 
 		[Flags] public enum Flags : uint
@@ -9078,12 +9113,13 @@ namespace TL
 			has_beginning = 0x1,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSmsPhrase"/></para></summary>
+	/// <summary>The code was sent via SMS as a secret phrase starting with the word specified in <c>beginning</c>,		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSmsPhrase"/></para></summary>
 	[TLDef(0xB37794AF)]
 	public sealed partial class Auth_SentCodeTypeSmsPhrase : Auth_SentCodeType
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>The secret phrase (and the SMS) starts with this word.</summary>
 		[IfFlag(0)] public string beginning;
 
 		[Flags] public enum Flags : uint
@@ -11531,7 +11567,7 @@ namespace TL
 		/// <summary>New emoji status</summary>
 		public EmojiStatus new_value;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionChangeEmojiStickerSet"/></para></summary>
+	/// <summary>The supergroup's <a href="https://corefork.telegram.org/api/boost#setting-a-custom-emoji-stickerset-for-supergroups">custom emoji stickerset</a> was changed.		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionChangeEmojiStickerSet"/></para></summary>
 	[TLDef(0x46D840AB)]
 	public sealed partial class ChannelAdminLogEventActionChangeEmojiStickerSet : ChannelAdminLogEventActionChangeStickerSet { }
 
@@ -14104,6 +14140,7 @@ namespace TL
 	[TLDef(0x0E5AF939)]
 	public sealed partial class MessageReplyStoryHeader : MessageReplyHeaderBase
 	{
+		/// <summary>Sender of the story.</summary>
 		public Peer peer;
 		/// <summary>Story ID</summary>
 		public int story_id;
@@ -14879,6 +14916,7 @@ namespace TL
 			has_recent_reactions = 0x2,
 			/// <summary>Whether <see cref="SchemaExtensions.Messages_GetMessageReactionsList">Messages_GetMessageReactionsList</see> can be used to see how each specific peer reacted to the message</summary>
 			can_see_list = 0x4,
+			/// <summary>If set or if there are no reactions, all present and future reactions should be treated as <a href="https://corefork.telegram.org/api/saved-messages#tags">message tags, see here » for more info</a>.</summary>
 			reactions_as_tags = 0x8,
 		}
 	}
@@ -16380,6 +16418,7 @@ namespace TL
 		public int id;
 		/// <summary>When was the story posted.</summary>
 		public DateTime date;
+		/// <summary>Sender of the story.</summary>
 		[IfFlag(18)] public Peer from_id;
 		/// <summary>For <a href="https://corefork.telegram.org/api/stories#reposting-stories">reposted stories »</a>, contains info about the original story.</summary>
 		[IfFlag(17)] public StoryFwdHeader fwd_from;
@@ -16497,6 +16536,7 @@ namespace TL
 		public int count;
 		/// <summary>Stories</summary>
 		public StoryItemBase[] stories;
+		/// <summary>IDs of pinned stories.</summary>
 		[IfFlag(0)] public int[] pinned_to_top;
 		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
@@ -16655,6 +16695,7 @@ namespace TL
 	[TLDef(0x5881323A)]
 	public sealed partial class InputReplyToStory : InputReplyTo
 	{
+		/// <summary>Sender of the story</summary>
 		public InputPeer peer;
 		/// <summary>ID of the story to reply to.</summary>
 		public int story_id;
@@ -17462,14 +17503,17 @@ namespace TL
 		public int count;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/savedReactionTag"/></para></summary>
+	/// <summary>Info about a <a href="https://corefork.telegram.org/api/saved-messages#tags">saved message reaction tag »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/savedReactionTag"/></para></summary>
 	[TLDef(0xCB6FF828)]
 	public sealed partial class SavedReactionTag : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary><a href="https://corefork.telegram.org/api/reactions">Reaction</a> associated to the tag.</summary>
 		public Reaction reaction;
+		/// <summary>Custom tag name assigned by the user (max 12 UTF-8 chars).</summary>
 		[IfFlag(0)] public string title;
+		/// <summary>Number of messages tagged with this tag.</summary>
 		public int count;
 
 		[Flags] public enum Flags : uint
@@ -17479,11 +17523,12 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.savedReactionTags"/></para></summary>
+	/// <summary>List of <a href="https://corefork.telegram.org/api/saved-messages#tags">reaction tag »</a> names assigned by the user.		<para>See <a href="https://corefork.telegram.org/constructor/messages.savedReactionTags"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/messages.savedReactionTagsNotModified">messages.savedReactionTagsNotModified</a></remarks>
 	[TLDef(0x3259950A)]
 	public sealed partial class Messages_SavedReactionTags : IObject
 	{
+		/// <summary>Saved reaction tags.</summary>
 		public SavedReactionTag[] tags;
 		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public long hash;
@@ -17498,42 +17543,55 @@ namespace TL
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/type/smsjobs.EligibilityToJoin"/></para>		<para>Derived classes: <see cref="Smsjobs_EligibleToJoin"/></para></summary>
 	public abstract partial class Smsjobs_EligibilityToJoin : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/smsjobs.eligibleToJoin"/></para></summary>
+	/// <summary>SMS jobs eligibility		<para>See <a href="https://corefork.telegram.org/constructor/smsjobs.eligibleToJoin"/></para></summary>
 	[TLDef(0xDC8B44CF)]
 	public sealed partial class Smsjobs_EligibleToJoin : Smsjobs_EligibilityToJoin
 	{
+		/// <summary>Terms of service URL</summary>
 		public string terms_url;
+		/// <summary>Monthly sent SMSes</summary>
 		public int monthly_sent_sms;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/smsjobs.status"/></para></summary>
+	/// <summary>Status		<para>See <a href="https://corefork.telegram.org/constructor/smsjobs.status"/></para></summary>
 	[TLDef(0x2AEE9191)]
 	public sealed partial class Smsjobs_Status : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Recently sent</summary>
 		public int recent_sent;
+		/// <summary>Since</summary>
 		public int recent_since;
+		/// <summary>Remaining</summary>
 		public int recent_remains;
+		/// <summary>Total sent</summary>
 		public int total_sent;
+		/// <summary>Total since</summary>
 		public int total_since;
+		/// <summary>Last gift deep link</summary>
 		[IfFlag(1)] public string last_gift_slug;
+		/// <summary>Terms of service URL</summary>
 		public string terms_url;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Allow international numbers</summary>
 			allow_international = 0x1,
 			/// <summary>Field <see cref="last_gift_slug"/> has a value</summary>
 			has_last_gift_slug = 0x2,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/smsJob"/></para></summary>
+	/// <summary>Info about an SMS job.		<para>See <a href="https://corefork.telegram.org/constructor/smsJob"/></para></summary>
 	[TLDef(0xE6A1EEB8)]
 	public sealed partial class SmsJob : IObject
 	{
+		/// <summary>Job ID</summary>
 		public string job_id;
+		/// <summary>Destination phone number</summary>
 		public string phone_number;
+		/// <summary>Text</summary>
 		public string text;
 	}
 
@@ -17565,13 +17623,15 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessLocation"/></para></summary>
+	/// <summary>Represents the location of a <a href="https://corefork.telegram.org/api/business#location">Telegram Business »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/businessLocation"/></para></summary>
 	[TLDef(0xAC5C1AF7)]
 	public sealed partial class BusinessLocation : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Geographical coordinates (optional).</summary>
 		[IfFlag(0)] public GeoPoint geo_point;
+		/// <summary>Textual description of the address (mandatory).</summary>
 		public string address;
 
 		[Flags] public enum Flags : uint
@@ -17715,83 +17775,102 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/timezone"/></para></summary>
+	/// <summary>Timezone information.		<para>See <a href="https://corefork.telegram.org/constructor/timezone"/></para></summary>
 	[TLDef(0xFF9289F5)]
 	public sealed partial class Timezone : IObject
 	{
+		/// <summary>Unique timezone ID.</summary>
 		public string id;
+		/// <summary>Human-readable and localized timezone name.</summary>
 		public string name;
+		/// <summary>UTC offset in seconds, which may be displayed in hh:mm format by the client together with the human-readable name (i.e. <c>$name UTC -01:00</c>).</summary>
 		public int utc_offset;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/help.timezonesList"/></para></summary>
+	/// <summary>Timezone information that may be used elsewhere in the API, such as to set <a href="https://corefork.telegram.org/api/business#opening-hours">Telegram Business opening hours »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/help.timezonesList"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/help.timezonesListNotModified">help.timezonesListNotModified</a></remarks>
 	[TLDef(0x7B74ED71)]
 	public sealed partial class Help_TimezonesList : IObject
 	{
+		/// <summary>Timezones</summary>
 		public Timezone[] timezones;
 		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
 		public int hash;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/quickReply"/></para></summary>
+	/// <summary>A <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut</a>.		<para>See <a href="https://corefork.telegram.org/constructor/quickReply"/></para></summary>
 	[TLDef(0x0697102B)]
 	public sealed partial class QuickReply : IObject
 	{
+		/// <summary>Unique shortcut ID.</summary>
 		public int shortcut_id;
+		/// <summary>Shortcut name.</summary>
 		public string shortcut;
+		/// <summary>ID of the last message in the shortcut.</summary>
 		public int top_message;
+		/// <summary>Total number of messages in the shortcut.</summary>
 		public int count;
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputQuickReplyShortcut"/></para>		<para>Derived classes: <see cref="InputQuickReplyShortcut"/>, <see cref="InputQuickReplyShortcutId"/></para></summary>
 	public abstract partial class InputQuickReplyShortcutBase : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputQuickReplyShortcut"/></para></summary>
+	/// <summary>Selects a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcut">quick reply shortcut</a> by name.		<para>See <a href="https://corefork.telegram.org/constructor/inputQuickReplyShortcut"/></para></summary>
 	[TLDef(0x24596D41)]
 	public sealed partial class InputQuickReplyShortcut : InputQuickReplyShortcutBase
 	{
+		/// <summary>Shortcut name.</summary>
 		public string shortcut;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputQuickReplyShortcutId"/></para></summary>
+	/// <summary>Selects a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcut">quick reply shortcut</a> by its numeric ID.		<para>See <a href="https://corefork.telegram.org/constructor/inputQuickReplyShortcutId"/></para></summary>
 	[TLDef(0x01190CF1)]
 	public sealed partial class InputQuickReplyShortcutId : InputQuickReplyShortcutBase
 	{
+		/// <summary>Shortcut ID.</summary>
 		public int shortcut_id;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.quickReplies"/></para></summary>
+	/// <summary>Info about <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcuts »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messages.quickReplies"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/messages.quickRepliesNotModified">messages.quickRepliesNotModified</a></remarks>
 	[TLDef(0xC68D6695)]
 	public sealed partial class Messages_QuickReplies : IObject, IPeerResolver
 	{
+		/// <summary>Quick reply shortcuts.</summary>
 		public QuickReply[] quick_replies;
+		/// <summary>Messages mentioned in <c>quick_replies</c>.</summary>
 		public MessageBase[] messages;
+		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
+		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/connectedBot"/></para></summary>
+	/// <summary>Contains info about a <a href="https://corefork.telegram.org/api/business#connected-bots">connected business bot »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/connectedBot"/></para></summary>
 	[TLDef(0xBD068601)]
 	public sealed partial class ConnectedBot : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>ID of the connected bot</summary>
 		public long bot_id;
+		/// <summary>Specifies the private chats that a <a href="https://corefork.telegram.org/api/business#connected-bots">connected business bot »</a> may receive messages and interact with.<br/></summary>
 		public BusinessBotRecipients recipients;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether the the bot can reply to messages it receives through the connection</summary>
 			can_reply = 0x1,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.connectedBots"/></para></summary>
+	/// <summary>Info about currently connected <a href="https://corefork.telegram.org/api/business#connected-bots">business bots</a>.		<para>See <a href="https://corefork.telegram.org/constructor/account.connectedBots"/></para></summary>
 	[TLDef(0x17D7F87B)]
 	public sealed partial class Account_ConnectedBots : IObject
 	{
+		/// <summary>Info about the connected bots</summary>
 		public ConnectedBot[] connected_bots;
+		/// <summary>Bot information</summary>
 		public Dictionary<long, User> users;
 	}
 
@@ -17809,14 +17888,17 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/birthday"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/profile#birthday">Birthday</a> information for a user.		<para>See <a href="https://corefork.telegram.org/constructor/birthday"/></para></summary>
 	[TLDef(0x6C8E1E06)]
 	public sealed partial class Birthday : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Birth day</summary>
 		public int day;
+		/// <summary>Birth month</summary>
 		public int month;
+		/// <summary>(Optional) birth year.</summary>
 		[IfFlag(0)] public int year;
 
 		[Flags] public enum Flags : uint
@@ -17826,20 +17908,26 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/botBusinessConnection"/></para></summary>
+	/// <summary>Contains info about a <a href="https://corefork.telegram.org/api/business#connected-bots">bot business connection</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botBusinessConnection"/></para></summary>
 	[TLDef(0x896433B4)]
 	public sealed partial class BotBusinessConnection : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Business connection ID, used to identify messages coming from the connection and to reply to them as specified <a href="https://corefork.telegram.org/api/business#connected-bots">here »</a>.</summary>
 		public string connection_id;
+		/// <summary>ID of the user that the bot is connected to via this connection.</summary>
 		public long user_id;
+		/// <summary>ID of the datacenter where to send queries wrapped in a <see cref="SchemaExtensions.InvokeWithBusinessConnection">InvokeWithBusinessConnection</see> as specified <a href="https://corefork.telegram.org/api/business#connected-bots">here »</a>.</summary>
 		public int dc_id;
+		/// <summary>When was the connection created.</summary>
 		public DateTime date;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether the bot can reply on behalf of the user to messages it receives through the business connection</summary>
 			can_reply = 0x1,
+			/// <summary>Whether this business connection is currently disabled</summary>
 			disabled = 0x2,
 		}
 	}
@@ -17913,100 +18001,125 @@ namespace TL
 		public string url;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputBusinessBotRecipients"/></para></summary>
+	/// <summary>Specifies the private chats that a <a href="https://corefork.telegram.org/api/business#connected-bots">connected business bot »</a> may interact with.		<para>See <a href="https://corefork.telegram.org/constructor/inputBusinessBotRecipients"/></para></summary>
 	[TLDef(0xC4E5921E)]
 	public sealed partial class InputBusinessBotRecipients : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Explicitly selected private chats.</summary>
 		[IfFlag(4)] public InputUserBase[] users;
+		/// <summary>Identifiers of private chats that are always excluded.</summary>
 		[IfFlag(6)] public InputUserBase[] exclude_users;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Selects all existing private chats.</summary>
 			existing_chats = 0x1,
+			/// <summary>Selects all new private chats.</summary>
 			new_chats = 0x2,
+			/// <summary>Selects all private chats with contacts.</summary>
 			contacts = 0x4,
+			/// <summary>Selects all private chats with non-contacts.</summary>
 			non_contacts = 0x8,
 			/// <summary>Field <see cref="users"/> has a value</summary>
 			has_users = 0x10,
+			/// <summary>If set, then all private chats <em>except</em> the ones selected by <c>existing_chats</c>, <c>new_chats</c>, <c>contacts</c>, <c>non_contacts</c> and <c>users</c> are chosen. <br/>Note that if this flag is set, any values passed in <c>exclude_users</c> will be merged and moved into <c>users</c> by the server.</summary>
 			exclude_selected = 0x20,
 			/// <summary>Field <see cref="exclude_users"/> has a value</summary>
 			has_exclude_users = 0x40,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessBotRecipients"/></para></summary>
+	/// <summary>Specifies the private chats that a <a href="https://corefork.telegram.org/api/business#connected-bots">connected business bot »</a> may receive messages and interact with.		<para>See <a href="https://corefork.telegram.org/constructor/businessBotRecipients"/></para></summary>
 	[TLDef(0xB88CF373)]
 	public sealed partial class BusinessBotRecipients : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Explicitly selected private chats.</summary>
 		[IfFlag(4)] public long[] users;
+		/// <summary>Identifiers of private chats that are always excluded.</summary>
 		[IfFlag(6)] public long[] exclude_users;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Selects all existing private chats.</summary>
 			existing_chats = 0x1,
+			/// <summary>Selects all new private chats.</summary>
 			new_chats = 0x2,
+			/// <summary>Selects all private chats with contacts.</summary>
 			contacts = 0x4,
+			/// <summary>Selects all private chats with non-contacts.</summary>
 			non_contacts = 0x8,
 			/// <summary>Field <see cref="users"/> has a value</summary>
 			has_users = 0x10,
+			/// <summary>If set, then all private chats <em>except</em> the ones selected by <c>existing_chats</c>, <c>new_chats</c>, <c>contacts</c>, <c>non_contacts</c> and <c>users</c> are chosen. <br/>Note that if this flag is set, any values passed in <c>exclude_users</c> will be merged and moved into <c>users</c> by the server, thus <c>exclude_users</c> will always be empty.</summary>
 			exclude_selected = 0x20,
 			/// <summary>Field <see cref="exclude_users"/> has a value</summary>
 			has_exclude_users = 0x40,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/contactBirthday"/></para></summary>
+	/// <summary>Birthday information of a contact.		<para>See <a href="https://corefork.telegram.org/constructor/contactBirthday"/></para></summary>
 	[TLDef(0x1D998733)]
 	public sealed partial class ContactBirthday : IObject
 	{
+		/// <summary>User ID.</summary>
 		public long contact_id;
+		/// <summary>Birthday information.</summary>
 		public Birthday birthday;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/contacts.contactBirthdays"/></para></summary>
+	/// <summary>Birthday information of our contacts.		<para>See <a href="https://corefork.telegram.org/constructor/contacts.contactBirthdays"/></para></summary>
 	[TLDef(0x114FF30D)]
 	public sealed partial class Contacts_ContactBirthdays : IObject
 	{
+		/// <summary>Birthday info</summary>
 		public ContactBirthday[] contacts;
+		/// <summary>User information</summary>
 		public Dictionary<long, User> users;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/missingInvitee"/></para></summary>
+	/// <summary>Info about why a specific user could not be <a href="https://corefork.telegram.org/api/invites#direct-invites">invited »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/missingInvitee"/></para></summary>
 	[TLDef(0x628C9224)]
 	public sealed partial class MissingInvitee : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>ID of the user. If neither of the flags below are set, we could not add the user because of their privacy settings, and we can create and directly share an <a href="https://corefork.telegram.org/constructor/missingInvitee#invite-links">invite link</a> with them using a normal message, instead.</summary>
 		public long user_id;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>If set, we could not add the user <em>only because</em> the current account needs to purchase a <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a> subscription to complete the operation.</summary>
 			premium_would_allow_invite = 0x1,
+			/// <summary>If set, we could not add the user because of their privacy settings, and additionally, the current account needs to purchase a <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a> subscription to directly share an invite link with the user via a private message.</summary>
 			premium_required_for_pm = 0x2,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.invitedUsers"/></para></summary>
+	/// <summary>Contains info about successfully or unsuccessfully <a href="https://corefork.telegram.org/api/invites#direct-invites">invited »</a> users.		<para>See <a href="https://corefork.telegram.org/constructor/messages.invitedUsers"/></para></summary>
 	[TLDef(0x7F5DEFA6)]
 	public sealed partial class Messages_InvitedUsers : IObject
 	{
+		/// <summary>List of updates about successfully invited users (and eventually info about the created group)</summary>
 		public UpdatesBase updates;
+		/// <summary>A list of users that could not be invited, along with the reason why they couldn't be invited.</summary>
 		public MissingInvitee[] missing_invitees;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputBusinessChatLink"/></para></summary>
+	/// <summary>Contains info about a <a href="https://corefork.telegram.org/api/business#business-chat-links">business chat deep link »</a> to be created by the current account.		<para>See <a href="https://corefork.telegram.org/constructor/inputBusinessChatLink"/></para></summary>
 	[TLDef(0x11679FA7)]
 	public sealed partial class InputBusinessChatLink : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Message to pre-fill in the message input field.</summary>
 		public string message;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
 		[IfFlag(0)] public MessageEntity[] entities;
+		/// <summary>Human-readable name of the link, to simplify management in the UI (only visible to the creator of the link).</summary>
 		[IfFlag(1)] public string title;
 
 		[Flags] public enum Flags : uint
@@ -18018,17 +18131,21 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessChatLink"/></para></summary>
+	/// <summary>Contains info about a <a href="https://corefork.telegram.org/api/business#business-chat-links">business chat deep link »</a> created by the current account.		<para>See <a href="https://corefork.telegram.org/constructor/businessChatLink"/></para></summary>
 	[TLDef(0xB4AE666F)]
 	public sealed partial class BusinessChatLink : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary><a href="https://corefork.telegram.org/api/links#business-chat-links">Business chat deep link</a>.</summary>
 		public string link;
+		/// <summary>Message to pre-fill in the message input field.</summary>
 		public string message;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
 		[IfFlag(0)] public MessageEntity[] entities;
+		/// <summary>Human-readable name of the link, to simplify management in the UI (only visible to the creator of the link).</summary>
 		[IfFlag(1)] public string title;
+		/// <summary>Number of times the link was resolved (clicked/scanned/etc...).</summary>
 		public int views;
 
 		[Flags] public enum Flags : uint
@@ -18040,28 +18157,35 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.businessChatLinks"/></para></summary>
+	/// <summary>Contains info about <a href="https://corefork.telegram.org/api/business#business-chat-links">business chat deep links »</a> created by the current account.		<para>See <a href="https://corefork.telegram.org/constructor/account.businessChatLinks"/></para></summary>
 	[TLDef(0xEC43A2D1)]
 	public sealed partial class Account_BusinessChatLinks : IObject, IPeerResolver
 	{
+		/// <summary>Links</summary>
 		public BusinessChatLink[] links;
+		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
+		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.resolvedBusinessChatLinks"/></para></summary>
+	/// <summary>Contains info about a single resolved <a href="https://corefork.telegram.org/api/business#business-chat-links">business chat deep link »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/account.resolvedBusinessChatLinks"/></para></summary>
 	[TLDef(0x9A23AF21)]
 	public sealed partial class Account_ResolvedBusinessChatLinks : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Destination peer</summary>
 		public Peer peer;
+		/// <summary>Message to pre-fill in the message input field.</summary>
 		public string message;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
 		[IfFlag(0)] public MessageEntity[] entities;
+		/// <summary>Mentioned chats</summary>
 		public Dictionary<long, ChatBase> chats;
+		/// <summary>Mentioned users</summary>
 		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags : uint

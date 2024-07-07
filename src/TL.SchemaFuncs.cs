@@ -92,7 +92,9 @@ namespace TL
 				query = query,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/invokeWithBusinessConnection"/></para></summary>
+		/// <summary>Invoke a method using a <a href="https://corefork.telegram.org/api/business#connected-bots">Telegram Business Bot connection, see here » for more info, including a list of the methods that can be wrapped in this constructor</a>.		<para>See <a href="https://corefork.telegram.org/method/invokeWithBusinessConnection"/></para></summary>
+		/// <param name="connection_id">Business connection ID.</param>
+		/// <param name="query">The actual query.</param>
 		public static Task<X> InvokeWithBusinessConnection<X>(this Client client, string connection_id, IMethod<X> query)
 			=> client.Invoke(new InvokeWithBusinessConnection<X>
 			{
@@ -332,6 +334,7 @@ namespace TL
 		/// <param name="phone_number">Phone number</param>
 		/// <param name="phone_code_hash">Phone code hash returned by <see cref="Auth_SendCode">Auth_SendCode</see></param>
 		/// <param name="safety_net_token">On Android, a JWS object obtained as described in the <a href="https://corefork.telegram.org/api/auth">auth documentation »</a></param>
+		/// <param name="play_integrity_token">On Android, an object obtained as described in the <a href="https://corefork.telegram.org/api/auth">auth documentation »</a></param>
 		/// <param name="ios_push_secret">Secret token received via an apple push notification</param>
 		public static Task<bool> Auth_RequestFirebaseSms(this Client client, string phone_number, string phone_code_hash, string safety_net_token = null, string ios_push_secret = null, string play_integrity_token = null)
 			=> client.Invoke(new Auth_RequestFirebaseSms
@@ -1252,7 +1255,8 @@ namespace TL
 				address = address,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateBusinessGreetingMessage"/></para></summary>
+		/// <summary>Set a list of <a href="https://corefork.telegram.org/api/business#greeting-messages">Telegram Business greeting messages</a>.		<para>See <a href="https://corefork.telegram.org/method/account.updateBusinessGreetingMessage"/></para></summary>
+		/// <param name="message">Greeting message configuration and contents.</param>
 		public static Task<bool> Account_UpdateBusinessGreetingMessage(this Client client, InputBusinessGreetingMessage message = null)
 			=> client.Invoke(new Account_UpdateBusinessGreetingMessage
 			{
@@ -1260,7 +1264,8 @@ namespace TL
 				message = message,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateBusinessAwayMessage"/></para></summary>
+		/// <summary>Set a list of <a href="https://corefork.telegram.org/api/business#away-messages">Telegram Business away messages</a>.		<para>See <a href="https://corefork.telegram.org/method/account.updateBusinessAwayMessage"/></para></summary>
+		/// <param name="message">Away message configuration and contents.</param>
 		public static Task<bool> Account_UpdateBusinessAwayMessage(this Client client, InputBusinessAwayMessage message = null)
 			=> client.Invoke(new Account_UpdateBusinessAwayMessage
 			{
@@ -1268,7 +1273,11 @@ namespace TL
 				message = message,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateConnectedBot"/></para></summary>
+		/// <summary>Connect a <a href="https://corefork.telegram.org/api/business#connected-bots">business bot »</a> to the current account, or to change the current connection settings.		<para>See <a href="https://corefork.telegram.org/method/account.updateConnectedBot"/></para></summary>
+		/// <param name="can_reply">Whether the bot can reply to messages it receives from us, on behalf of us using the <a href="https://corefork.telegram.org/api/business#connected-bots">business connection</a>.</param>
+		/// <param name="deleted">Whether to fully disconnect the bot from the current account.</param>
+		/// <param name="bot">The bot to connect or disconnect</param>
+		/// <param name="recipients">Configuration for the business connection</param>
 		public static Task<UpdatesBase> Account_UpdateConnectedBot(this Client client, InputUserBase bot, InputBusinessBotRecipients recipients, bool can_reply = false, bool deleted = false)
 			=> client.Invoke(new Account_UpdateConnectedBot
 			{
@@ -1277,13 +1286,14 @@ namespace TL
 				recipients = recipients,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getConnectedBots"/></para></summary>
+		/// <summary>List all currently connected <a href="https://corefork.telegram.org/api/business#connected-bots">business bots »</a>		<para>See <a href="https://corefork.telegram.org/method/account.getConnectedBots"/></para></summary>
 		public static Task<Account_ConnectedBots> Account_GetConnectedBots(this Client client)
 			=> client.Invoke(new Account_GetConnectedBots
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getBotBusinessConnection"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.getBotBusinessConnection#possible-errors">details</a>)</para></summary>
+		/// <summary>Bots may invoke this method to re-fetch the <see cref="UpdateBotBusinessConnect"/> associated with a specific <a href="https://corefork.telegram.org/api/business#connected-bots">business <c>connection_id</c>, see here »</a> for more info on connected business bots.<br/>This is needed for example for freshly logged in bots that are receiving some <see cref="UpdateBotNewBusinessMessage"/>, etc. updates because some users have already connected to the bot before it could login.<br/>In this case, the bot is receiving messages from the business connection, but it hasn't cached the associated <see cref="UpdateBotBusinessConnect"/> with info about the connection (can it reply to messages? etc.) yet, and cannot receive the old ones because they were sent when the bot wasn't logged into the session yet.<br/>This method can be used to fetch info about a not-yet-cached business connection, and should not be invoked if the info is already cached or to fetch changes, as eventual changes will automatically be sent as new <see cref="UpdateBotBusinessConnect"/> updates to the bot using the usual <a href="https://corefork.telegram.org/api/updates">update delivery methods »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getBotBusinessConnection"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.getBotBusinessConnection#possible-errors">details</a>)</para></summary>
+		/// <param name="connection_id"><a href="https://corefork.telegram.org/api/business#connected-bots">Business connection ID »</a>.</param>
 		public static Task<UpdatesBase> Account_GetBotBusinessConnection(this Client client, string connection_id)
 			=> client.Invoke(new Account_GetBotBusinessConnection
 			{
@@ -1298,7 +1308,9 @@ namespace TL
 				intro = intro,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.toggleConnectedBotPaused"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.toggleConnectedBotPaused#possible-errors">details</a>)</para></summary>
+		/// <summary>Pause or unpause a specific chat, temporarily disconnecting it from all <a href="https://corefork.telegram.org/api/business#connected-bots">business bots »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.toggleConnectedBotPaused"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.toggleConnectedBotPaused#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">The chat to pause</param>
+		/// <param name="paused">Whether to pause or unpause the chat</param>
 		public static Task<bool> Account_ToggleConnectedBotPaused(this Client client, InputPeer peer, bool paused)
 			=> client.Invoke(new Account_ToggleConnectedBotPaused
 			{
@@ -1306,14 +1318,16 @@ namespace TL
 				paused = paused,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.disablePeerConnectedBot"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.disablePeerConnectedBot#possible-errors">details</a>)</para></summary>
+		/// <summary>Permanently disconnect a specific chat from all <a href="https://corefork.telegram.org/api/business#connected-bots">business bots »</a> (equivalent to specifying it in <c>recipients.exclude_users</c> during initial configuration with <see cref="Account_UpdateConnectedBot">Account_UpdateConnectedBot</see>); to reconnect of a chat disconnected using this method the user must reconnect the entire bot by invoking <see cref="Account_UpdateConnectedBot">Account_UpdateConnectedBot</see>.		<para>See <a href="https://corefork.telegram.org/method/account.disablePeerConnectedBot"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.disablePeerConnectedBot#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">The chat to disconnect</param>
 		public static Task<bool> Account_DisablePeerConnectedBot(this Client client, InputPeer peer)
 			=> client.Invoke(new Account_DisablePeerConnectedBot
 			{
 				peer = peer,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateBirthday"/></para></summary>
+		/// <summary>Update our <a href="https://corefork.telegram.org/api/profile#birthday">birthday, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/account.updateBirthday"/></para></summary>
+		/// <param name="birthday">Birthday.</param>
 		public static Task<bool> Account_UpdateBirthday(this Client client, Birthday birthday = null)
 			=> client.Invoke(new Account_UpdateBirthday
 			{
@@ -1321,14 +1335,17 @@ namespace TL
 				birthday = birthday,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.createBusinessChatLink"/></para></summary>
+		/// <summary>Create a <a href="https://corefork.telegram.org/api/business#business-chat-links">business chat deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.createBusinessChatLink"/></para></summary>
+		/// <param name="link">Info about the link to create.</param>
 		public static Task<BusinessChatLink> Account_CreateBusinessChatLink(this Client client, InputBusinessChatLink link)
 			=> client.Invoke(new Account_CreateBusinessChatLink
 			{
 				link = link,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.editBusinessChatLink"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.editBusinessChatLink#possible-errors">details</a>)</para></summary>
+		/// <summary>Edit a created <a href="https://corefork.telegram.org/api/business#business-chat-links">business chat deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.editBusinessChatLink"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.editBusinessChatLink#possible-errors">details</a>)</para></summary>
+		/// <param name="slug">Slug of the link, obtained as specified <a href="https://corefork.telegram.org/api/links#business-chat-links">here »</a>.</param>
+		/// <param name="link">New link information.</param>
 		public static Task<BusinessChatLink> Account_EditBusinessChatLink(this Client client, string slug, InputBusinessChatLink link)
 			=> client.Invoke(new Account_EditBusinessChatLink
 			{
@@ -1336,27 +1353,30 @@ namespace TL
 				link = link,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.deleteBusinessChatLink"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.deleteBusinessChatLink#possible-errors">details</a>)</para></summary>
+		/// <summary>Delete a <a href="https://corefork.telegram.org/api/business#business-chat-links">business chat deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.deleteBusinessChatLink"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.deleteBusinessChatLink#possible-errors">details</a>)</para></summary>
+		/// <param name="slug">Slug of the link, obtained as specified <a href="https://corefork.telegram.org/api/links#business-chat-links">here »</a>.</param>
 		public static Task<bool> Account_DeleteBusinessChatLink(this Client client, string slug)
 			=> client.Invoke(new Account_DeleteBusinessChatLink
 			{
 				slug = slug,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getBusinessChatLinks"/></para></summary>
+		/// <summary>List all created <a href="https://corefork.telegram.org/api/business#business-chat-links">business chat deep links »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getBusinessChatLinks"/></para></summary>
 		public static Task<Account_BusinessChatLinks> Account_GetBusinessChatLinks(this Client client)
 			=> client.Invoke(new Account_GetBusinessChatLinks
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.resolveBusinessChatLink"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.resolveBusinessChatLink#possible-errors">details</a>)</para></summary>
+		/// <summary>Resolve a <a href="https://corefork.telegram.org/api/business#business-chat-links">business chat deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.resolveBusinessChatLink"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.resolveBusinessChatLink#possible-errors">details</a>)</para></summary>
+		/// <param name="slug">Slug of the link, obtained as specified <a href="https://corefork.telegram.org/api/links#business-chat-links">here »</a>.</param>
 		public static Task<Account_ResolvedBusinessChatLinks> Account_ResolveBusinessChatLink(this Client client, string slug)
 			=> client.Invoke(new Account_ResolveBusinessChatLink
 			{
 				slug = slug,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updatePersonalChannel"/></para></summary>
+		/// <summary>Associate (or remove) a personal <a href="https://corefork.telegram.org/api/channel">channel »</a>, that will be listed on our personal <a href="https://corefork.telegram.org/api/profile#personal-channel">profile page »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.updatePersonalChannel"/></para></summary>
+		/// <param name="channel">The channel, pass <see langword="null"/> to remove it.</param>
 		public static Task<bool> Account_UpdatePersonalChannel(this Client client, InputChannelBase channel)
 			=> client.Invoke(new Account_UpdatePersonalChannel
 			{
@@ -1656,7 +1676,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.getBirthdays"/></para></summary>
+		/// <summary>Fetch all users with birthdays that fall within +1/-1 days, relative to the current day: this method should be invoked by clients every 6-8 hours, and if the result is non-empty, it should be used to appropriately update locally cached birthday information in <see cref="User"/>.<c>birthday</c>.		<para>See <a href="https://corefork.telegram.org/method/contacts.getBirthdays"/></para></summary>
 		public static Task<Contacts_ContactBirthdays> Contacts_GetBirthdays(this Client client)
 			=> client.Invoke(new Contacts_GetBirthdays
 			{
@@ -1822,6 +1842,7 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for sending styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
+		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMessage
 			{
@@ -1854,6 +1875,7 @@ namespace TL
 		/// <param name="entities">Message <a href="https://corefork.telegram.org/api/entities">entities</a> for styled text</param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
+		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMedia
 			{
@@ -1885,6 +1907,7 @@ namespace TL
 		/// <param name="top_msg_id">Destination <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Forward the messages as the specified peer</param>
+		/// <param name="quick_reply_shortcut">Add the messages to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false)
 			=> client.Invoke(new Messages_ForwardMessages
 			{
@@ -2389,6 +2412,7 @@ namespace TL
 		/// <param name="id">Result ID from <see cref="Messages_GetInlineBotResults">Messages_GetInlineBotResults</see></param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
+		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false)
 			=> client.Invoke(new Messages_SendInlineBotResult
 			{
@@ -2423,6 +2447,7 @@ namespace TL
 		/// <param name="reply_markup">Reply markup for inline keyboards</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
+		/// <param name="quick_reply_shortcut_id">If specified, edits a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut message, instead »</a>.</param>
 		public static Task<UpdatesBase> Messages_EditMessage(this Client client, InputPeer peer, int id, string message = null, InputMedia media = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, int? quick_reply_shortcut_id = null, bool no_webpage = false, bool invert_media = false)
 			=> client.Invoke(new Messages_EditMessage
 			{
@@ -2731,6 +2756,7 @@ namespace TL
 			});
 
 		/// <summary>Upload a file and associate it to a chat (without actually sending it to the chat)		<para>See <a href="https://corefork.telegram.org/method/messages.uploadMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.uploadMedia#possible-errors">details</a>)</para></summary>
+		/// <param name="business_connection_id">Whether the media will be used only in the specified <a href="https://corefork.telegram.org/api/business#connected-bots">business connection »</a>, and not directly by the bot.</param>
 		/// <param name="peer">The chat, can be <see langword="null"/> for bots and <see cref="InputPeerSelf"/> for users.</param>
 		/// <param name="media">File uploaded in chunks as described in <a href="https://corefork.telegram.org/api/files">files »</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messageMediaEmpty">messageMediaEmpty</a></returns>
@@ -2830,6 +2856,7 @@ namespace TL
 		/// <param name="multi_media">The medias to send: note that they must be separately uploaded using <see cref="Messages_UploadMedia">Messages_UploadMedia</see> first, using raw <c>inputMediaUploaded*</c> constructors is not supported.</param>
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
+		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
@@ -4133,7 +4160,9 @@ namespace TL
 				shortcut_id = shortcut_id,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		<para>See <a href="https://corefork.telegram.org/method/messages.getQuickReplyMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getQuickReplyMessages#possible-errors">details</a>)</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Fetch (a subset or all) messages in a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getQuickReplyMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getQuickReplyMessages#possible-errors">details</a>)</para></summary>
+		/// <param name="shortcut_id">Quick reply shortcut ID.</param>
+		/// <param name="id">IDs of the messages to fetch, if empty fetches all of them.</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
 		public static Task<Messages_MessagesBase> Messages_GetQuickReplyMessages(this Client client, int shortcut_id, long hash = default, int[] id = null)
 			=> client.Invoke(new Messages_GetQuickReplyMessages
@@ -4144,8 +4173,11 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.sendQuickReplyMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendQuickReplyMessages#possible-errors">details</a>)</para></summary>
-		/// <param name="random_id"> <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
+		/// <summary>Send a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.sendQuickReplyMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendQuickReplyMessages#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">The peer where to send the shortcut (users only, for now).</param>
+		/// <param name="shortcut_id">The ID of the quick reply shortcut to send.</param>
+		/// <param name="id">Specify a subset of messages from the shortcut to send; if empty, defaults to all of them.</param>
+		/// <param name="random_id">Unique client IDs required to prevent message resending, one for each message we're sending, may be empty (but not recommended). <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		public static Task<UpdatesBase> Messages_SendQuickReplyMessages(this Client client, InputPeer peer, int shortcut_id, int[] id, params long[] random_id)
 			=> client.Invoke(new Messages_SendQuickReplyMessages
 			{
@@ -4625,7 +4657,7 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/help.getTimezonesList"/></para></summary>
+		/// <summary>Returns timezone information that may be used elsewhere in the API, such as to set <a href="https://corefork.telegram.org/api/business#opening-hours">Telegram Business opening hours »</a>.		<para>See <a href="https://corefork.telegram.org/method/help.getTimezonesList"/></para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_TimezonesList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.timezonesListNotModified">help.timezonesListNotModified</a></returns>
 		public static Task<Help_TimezonesList> Help_GetTimezonesList(this Client client, int hash = default)
@@ -5296,7 +5328,9 @@ namespace TL
 				boosts = boosts,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.setEmojiStickers"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.setEmojiStickers#possible-errors">details</a>)</para></summary>
+		/// <summary>Set a <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickerset</a> for supergroups. Only usable after reaching at least the <a href="https://corefork.telegram.org/api/boost">boost level »</a> specified in the <a href="https://corefork.telegram.org/api/config#group-emoji-stickers-level-min"><c>group_emoji_stickers_level_min</c> »</a> config parameter.		<para>See <a href="https://corefork.telegram.org/method/channels.setEmojiStickers"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.setEmojiStickers#possible-errors">details</a>)</para></summary>
+		/// <param name="channel">The supergroup</param>
+		/// <param name="stickerset">The custom emoji stickerset to associate to the supergroup</param>
 		public static Task<bool> Channels_SetEmojiStickers(this Client client, InputChannelBase channel, InputStickerSet stickerset)
 			=> client.Invoke(new Channels_SetEmojiStickers
 			{
@@ -5848,7 +5882,9 @@ namespace TL
 				stickerset = stickerset,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stickers.replaceSticker"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.replaceSticker#possible-errors">details</a>)</para></summary>
+		/// <summary>Replace a sticker in a <a href="https://corefork.telegram.org/api/stickers">stickerset »</a>.		<para>See <a href="https://corefork.telegram.org/method/stickers.replaceSticker"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.replaceSticker#possible-errors">details</a>)</para></summary>
+		/// <param name="sticker">Old sticker document.</param>
+		/// <param name="new_sticker">New sticker.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
 		public static Task<Messages_StickerSet> Stickers_ReplaceSticker(this Client client, InputDocument sticker, InputStickerSetItem new_sticker)
 			=> client.Invoke(new Stickers_ReplaceSticker
@@ -6843,45 +6879,48 @@ namespace TL
 				user_id = user_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.isEligibleToJoin"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/smsjobs.isEligibleToJoin#possible-errors">details</a>)</para></summary>
+		/// <summary>Check if we can process SMS jobs (official clients only).		<para>See <a href="https://corefork.telegram.org/method/smsjobs.isEligibleToJoin"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/smsjobs.isEligibleToJoin#possible-errors">details</a>)</para></summary>
 		public static Task<Smsjobs_EligibilityToJoin> Smsjobs_IsEligibleToJoin(this Client client)
 			=> client.Invoke(new Smsjobs_IsEligibleToJoin
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.join"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.join#possible-errors">details</a>)</para></summary>
+		/// <summary>Enable SMS jobs (official clients only).		<para>See <a href="https://corefork.telegram.org/method/smsjobs.join"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.join#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Smsjobs_Join(this Client client)
 			=> client.Invoke(new Smsjobs_Join
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.leave"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.leave#possible-errors">details</a>)</para></summary>
+		/// <summary>Disable SMS jobs (official clients only).		<para>See <a href="https://corefork.telegram.org/method/smsjobs.leave"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.leave#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Smsjobs_Leave(this Client client)
 			=> client.Invoke(new Smsjobs_Leave
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.updateSettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.updateSettings#possible-errors">details</a>)</para></summary>
+		/// <summary>Update SMS job settings (official clients only).		<para>See <a href="https://corefork.telegram.org/method/smsjobs.updateSettings"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.updateSettings#possible-errors">details</a>)</para></summary>
+		/// <param name="allow_international">Allow international numbers?</param>
 		public static Task<bool> Smsjobs_UpdateSettings(this Client client, bool allow_international = false)
 			=> client.Invoke(new Smsjobs_UpdateSettings
 			{
 				flags = (Smsjobs_UpdateSettings.Flags)(allow_international ? 0x1 : 0),
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.getStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.getStatus#possible-errors">details</a>)</para></summary>
+		/// <summary>Get SMS jobs status (official clients only).		<para>See <a href="https://corefork.telegram.org/method/smsjobs.getStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.getStatus#possible-errors">details</a>)</para></summary>
 		public static Task<Smsjobs_Status> Smsjobs_GetStatus(this Client client)
 			=> client.Invoke(new Smsjobs_GetStatus
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.getSmsJob"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.getSmsJob#possible-errors">details</a>)</para></summary>
+		/// <summary>Get info about an SMS job (official clients only).		<para>See <a href="https://corefork.telegram.org/method/smsjobs.getSmsJob"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.getSmsJob#possible-errors">details</a>)</para></summary>
 		public static Task<SmsJob> Smsjobs_GetSmsJob(this Client client, string job_id)
 			=> client.Invoke(new Smsjobs_GetSmsJob
 			{
 				job_id = job_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/smsjobs.finishJob"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.finishJob#possible-errors">details</a>)</para></summary>
+		/// <summary>Finish an SMS job (official clients only).		<para>See <a href="https://corefork.telegram.org/method/smsjobs.finishJob"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.finishJob#possible-errors">details</a>)</para></summary>
+		/// <param name="job_id">Job ID.</param>
+		/// <param name="error">If failed, the error.</param>
 		public static Task<bool> Smsjobs_FinishJob(this Client client, string job_id, string error = null)
 			=> client.Invoke(new Smsjobs_FinishJob
 			{
