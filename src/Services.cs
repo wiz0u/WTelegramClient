@@ -297,7 +297,8 @@ namespace TL
 				{
 					case '_': case '*': case '~': case '`': case '#': case '+': case '-': case '=': case '.': case '!':
 					case '[': case ']': case '(': case ')': case '{': case '}': case '>': case '|': case '\\':
-						sb.Insert(i++, '\\');
+	                    if (closings.Count == 0 || closings[0].md[0] != '`')
+							sb.Insert(i++, '\\');
 						break;
 				}
 			}

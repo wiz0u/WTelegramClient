@@ -9,7 +9,7 @@ using TL;
 
 namespace WTelegram
 {
-	public class UpdateManager : IPeerResolver
+	public class UpdateManager
 	{
 		/// <summary>Collected info about Users <i>(only if using the default collector)</i></summary>
 		public readonly Dictionary<long, User> Users;
