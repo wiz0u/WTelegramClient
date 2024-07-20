@@ -10,8 +10,7 @@ All the Telegram Client APIs (MTProto) are supported so you can do everything th
 
 This ReadMe is a **quick but important tutorial** to learn the fundamentals about this library. Please read it all.
 
-> [!IMPORTANT]  
-> This library requires understanding advanced C# techniques such as **asynchronous programming** or **subclass pattern matching**...  
+> ⚠️ This library requires understanding advanced C# techniques such as **asynchronous programming** or **subclass pattern matching**...  
 > If you are a beginner in C#, starting a project based on this library might not be a great idea.
 
 # How to use
@@ -115,7 +114,6 @@ See [WinForms example](https://wiz0u.github.io/WTelegramClient/Examples/WinForms
 
 # Example of API call
 
-> [!NOTE]  
 > The Telegram API makes extensive usage of base and derived classes, so be ready to use the various C# syntaxes
 to check/cast base classes into the more useful derived classes (`is`, `as`, `case DerivedType` )
 
