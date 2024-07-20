@@ -240,13 +240,24 @@ namespace WTelegram
 
 		private Session.DCSession GetOrCreateDCSession(int dcId, DcOption.Flags flags)
 		{
-			if (_session.DCSessions.TryGetValue(dcId, out var dcSession))
+			if (_session.DCSessions.TryGetValue(dcId, out var dcSession) && dcSession.AuthKey != null)
 				if (dcSession.Client != null || dcSession.DataCenter.flags == flags)
 					return dcSession; // if we have already a session with this DC and we are connected or it is a perfect match, use it
+			if (dcSession == null && _session.DCSessions.TryGetValue(-dcId, out dcSession) && dcSession.AuthKey != null)
+			{
+				if (dcSession.DataCenter.flags == flags && _session.DCSessions.Remove(-dcId))
+					return _session.DCSessions[dcId] = dcSession; // we found a misclassed DC, change its sign
+				dcSession = new Session.DCSession { Id = Helpers.RandomLong(), // clone AuthKey for a session on the matching media_only DC
+					AuthKeyID = dcSession.AuthKeyID, AuthKey = dcSession.AuthKey, UserId = dcSession.UserId };
+			}
 			// try to find the most appropriate DcOption for this DC
-			if ((dcSession?.AuthKeyID ?? 0) == 0) // we will need to negociate an AuthKey => can't use media_only DC
+			if (dcSession?.AuthKey == null) // we'll need to negociate an AuthKey => can't use media_only DC
+			{
 				flags &= ~DcOption.Flags.media_only;
-			var dcOptions = _session.DcOptions.Where(dc => dc.id == dcId).OrderBy(dc => dc.flags ^ flags);
+				dcId = Math.Abs(dcId);
+			}
+			var dcOptions = _session.DcOptions.Where(dc => dc.id == Math.Abs(dcId))
+				.OrderBy(dc => dc.flags.HasFlag(DcOption.Flags.media_only) ^ (dcId < 0)).ThenBy(dc => dc.flags ^ flags);
 			var dcOption = dcOptions.FirstOrDefault() ?? throw new WTException($"Could not find adequate dc_option for DC {dcId}");
 			dcSession ??= new Session.DCSession { Id = Helpers.RandomLong() }; // create new session only if not already existing
 			dcSession.DataCenter = dcOption;
@@ -254,17 +265,18 @@ namespace WTelegram
 		}
 
 		/// <summary>Obtain/create a Client for a secondary session on a specific Data Center</summary>
-		/// <param name="dcId">ID of the Data Center</param>
-		/// <param name="media_only">Session will be used only for transferring media</param>
+		/// <param name="dcId">ID of the Data Center (use negative values for media_only)</param>
 		/// <param name="connect">Connect immediately</param>
 		/// <returns>Client connected to the selected DC</returns>
-		public async Task<Client> GetClientForDC(int dcId, bool media_only = true, bool connect = true)
+		public async Task<Client> GetClientForDC(int dcId, bool connect = true)
 		{
 			if (_dcSession.DataCenter?.id == dcId) return this;
 			Session.DCSession altSession;
 			lock (_session)
 			{
-				altSession = GetOrCreateDCSession(dcId, _dcSession.DataCenter.flags | (media_only ? DcOption.Flags.media_only : 0));
+				var flags = _dcSession.DataCenter.flags;
+				if (dcId < 0) flags = (flags & DcOption.Flags.ipv6) | DcOption.Flags.media_only;
+				altSession = GetOrCreateDCSession(dcId, flags);
 				if (altSession.Client?.Disconnected ?? false) { altSession.Client.Dispose(); altSession.Client = null; }
 				altSession.Client ??= new Client(this, altSession);
 			}
@@ -276,7 +288,7 @@ namespace WTelegram
 				{
 					Auth_ExportedAuthorization exported = null;
 					if (_session.UserId != 0 && IsMainDC && altSession.UserId != _session.UserId)
-						exported = await this.Auth_ExportAuthorization(dcId);
+						exported = await this.Auth_ExportAuthorization(Math.Abs(dcId));
 					await altSession.Client.ConnectAsync();
 					if (exported != null)
 					{

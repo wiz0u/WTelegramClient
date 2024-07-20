@@ -314,7 +314,7 @@ namespace WTelegram
 		public async Task<Storage_FileType> DownloadFileAsync(InputFileLocationBase fileLocation, Stream outputStream, int dc_id = 0, long fileSize = 0, ProgressCallback progress = null)
 		{
 			Storage_FileType fileType = Storage_FileType.unknown;
-			var client = dc_id == 0 ? this : await GetClientForDC(dc_id, true);
+			var client = dc_id == 0 ? this : await GetClientForDC(-dc_id, true);
 			using var writeSem = new SemaphoreSlim(1);
 			bool canSeek = outputStream.CanSeek;
 			long streamStartPos = canSeek ? outputStream.Position : 0;
@@ -347,7 +347,7 @@ namespace WTelegram
 					}
 					catch (RpcException ex) when (ex.Code == 303 && ex.Message == "FILE_MIGRATE_X")
 					{
-						client = await GetClientForDC(ex.X, true);
+						client = await GetClientForDC(-ex.X, true);
 						fileBase = await client.Upload_GetFile(fileLocation, offset, FilePartSize);
 					}
 					catch (RpcException ex) when (ex.Code == 400 && ex.Message == "OFFSET_INVALID")
