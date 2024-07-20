@@ -694,7 +694,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>Chat partner or group.		<para>See <a href="https://corefork.telegram.org/type/Peer"/></para>		<para>Derived classes: <see cref="PeerUser"/>, <see cref="PeerChat"/>, <see cref="PeerChannel"/></para></summary>
+	/// <summary>Identifier of a private chat, basic group, group or channel (see <a href="https://corefork.telegram.org/api/peers">here »</a> for more info).		<para>See <a href="https://corefork.telegram.org/type/Peer"/></para>		<para>Derived classes: <see cref="PeerUser"/>, <see cref="PeerChat"/>, <see cref="PeerChannel"/></para></summary>
 	public abstract partial class Peer : IObject { }
 	/// <summary>Chat partner		<para>See <a href="https://corefork.telegram.org/constructor/peerUser"/></para></summary>
 	[TLDef(0x59511722)]
@@ -873,7 +873,9 @@ namespace TL
 			has_color = 0x100,
 			/// <summary>Field <see cref="profile_color"/> has a value</summary>
 			has_profile_color = 0x200,
+			/// <summary>If set, we can only write to this user if they have already sent some messages to us, if we are subscribed to <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a>, or if they're a mutual contact (<see cref="User"/>.<c>mutual_contact</c>).  <br/>All the secondary conditions listed above must be checked separately to verify whether we can still write to the user, even if this flag is set (i.e. a mutual contact will have this flag set even if we can still write to them, and so on...); to avoid doing these extra checks if we haven't yet cached all the required information (for example while displaying the chat list in the sharing UI) the <see cref="SchemaExtensions.Users_GetIsPremiumRequiredToContact">Users_GetIsPremiumRequiredToContact</see> method may be invoked instead, passing the list of users currently visible in the UI, returning a list of booleans that directly specify whether we can or cannot write to each user. <br/>To set this flag for ourselves invoke <see cref="SchemaExtensions.Account_SetGlobalPrivacySettings">Account_SetGlobalPrivacySettings</see>, setting the <c>settings.new_noncontact_peers_require_premium</c> flag.</summary>
 			contact_require_premium = 0x400,
+			/// <summary>Whether this bot can be <a href="https://corefork.telegram.org/api/business#connected-bots">connected to a user as specified here »</a>.</summary>
 			bot_business = 0x800,
 		}
 	}
@@ -1231,6 +1233,7 @@ namespace TL
 		public virtual long[] RecentRequesters => default;
 		/// <summary>Allowed <a href="https://corefork.telegram.org/api/reactions">message reactions »</a></summary>
 		public virtual ChatReactions AvailableReactions => default;
+		/// <summary>This flag may be used to impose a custom limit of unique reactions (i.e. a customizable version of <a href="https://corefork.telegram.org/api/config#reactions-uniq-max">appConfig.reactions_uniq_max</a>).</summary>
 		public virtual int ReactionsLimit => default;
 	}
 	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel#basic-groups">basic group</a>.		<para>See <a href="https://corefork.telegram.org/constructor/chatFull"/></para></summary>
@@ -1271,6 +1274,7 @@ namespace TL
 		[IfFlag(17)] public long[] recent_requesters;
 		/// <summary>Allowed <a href="https://corefork.telegram.org/api/reactions">message reactions »</a></summary>
 		[IfFlag(18)] public ChatReactions available_reactions;
+		/// <summary>This flag may be used to impose a custom limit of unique reactions (i.e. a customizable version of <a href="https://corefork.telegram.org/api/config#reactions-uniq-max">appConfig.reactions_uniq_max</a>).</summary>
 		[IfFlag(20)] public int reactions_limit;
 
 		[Flags] public enum Flags : uint
@@ -1337,6 +1341,7 @@ namespace TL
 		public override long[] RecentRequesters => recent_requesters;
 		/// <summary>Allowed <a href="https://corefork.telegram.org/api/reactions">message reactions »</a></summary>
 		public override ChatReactions AvailableReactions => available_reactions;
+		/// <summary>This flag may be used to impose a custom limit of unique reactions (i.e. a customizable version of <a href="https://corefork.telegram.org/api/config#reactions-uniq-max">appConfig.reactions_uniq_max</a>).</summary>
 		public override int ReactionsLimit => reactions_limit;
 	}
 	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel#channels">channel</a>, <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a> or <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a>.		<para>See <a href="https://corefork.telegram.org/constructor/channelFull"/></para></summary>
@@ -1417,6 +1422,7 @@ namespace TL
 		[IfFlag(29)] public Peer default_send_as;
 		/// <summary>Allowed <a href="https://corefork.telegram.org/api/reactions">message reactions »</a></summary>
 		[IfFlag(30)] public ChatReactions available_reactions;
+		/// <summary>This flag may be used to impose a custom limit of unique reactions (i.e. a customizable version of <a href="https://corefork.telegram.org/api/config#reactions-uniq-max">appConfig.reactions_uniq_max</a>).</summary>
 		[IfFlag(45)] public int reactions_limit;
 		/// <summary>Channel <a href="https://corefork.telegram.org/api/stories">stories</a></summary>
 		[IfFlag(36)] public PeerStories stories;
@@ -1424,6 +1430,7 @@ namespace TL
 		[IfFlag(39)] public WallPaperBase wallpaper;
 		/// <summary>The number of <a href="https://corefork.telegram.org/api/boost">boosts</a> the current user has applied to the current <em>supergroup</em>.</summary>
 		[IfFlag(40)] public int boosts_applied;
+		/// <summary>The number of <a href="https://corefork.telegram.org/api/boost">boosts</a> this <em>supergroup</em> requires to bypass slowmode and other restrictions, see <a href="https://corefork.telegram.org/api/boost#bypass-slowmode-and-chat-restrictions">here »</a> for more info.</summary>
 		[IfFlag(41)] public int boosts_unrestrict;
 		/// <summary><a href="https://corefork.telegram.org/api/custom-emoji">Custom emoji stickerset</a> associated to the current <em>supergroup</em>, set using <see cref="SchemaExtensions.Channels_SetEmojiStickers">Channels_SetEmojiStickers</see> after reaching the appropriate boost level, see <a href="https://corefork.telegram.org/api/boost#setting-a-custom-emoji-stickerset-for-supergroups">here »</a> for more info.</summary>
 		[IfFlag(42)] public StickerSet emojiset;
@@ -1518,7 +1525,9 @@ namespace TL
 			has_boosts_unrestrict = 0x200,
 			/// <summary>Field <see cref="emojiset"/> has a value</summary>
 			has_emojiset = 0x400,
+			/// <summary>Whether ads on this channel were <a href="https://corefork.telegram.org/api/boost#disable-ads-on-the-channel">disabled as specified here »</a> (this flag is only visible to the owner of the channel).</summary>
 			restricted_sponsored = 0x800,
+			/// <summary>If set, this user can view <a href="https://corefork.telegram.org/api/revenue">ad revenue statistics »</a> for this channel.</summary>
 			can_view_revenue = 0x1000,
 			/// <summary>Field <see cref="reactions_limit"/> has a value</summary>
 			has_reactions_limit = 0x2000,
@@ -1556,6 +1565,7 @@ namespace TL
 		public override long[] RecentRequesters => recent_requesters;
 		/// <summary>Allowed <a href="https://corefork.telegram.org/api/reactions">message reactions »</a></summary>
 		public override ChatReactions AvailableReactions => available_reactions;
+		/// <summary>This flag may be used to impose a custom limit of unique reactions (i.e. a customizable version of <a href="https://corefork.telegram.org/api/config#reactions-uniq-max">appConfig.reactions_uniq_max</a>).</summary>
 		public override int ReactionsLimit => reactions_limit;
 	}
 
@@ -1751,9 +1761,11 @@ namespace TL
 		[IfFlag(22)] public RestrictionReason[] restriction_reason;
 		/// <summary>Time To Live of the message, once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well.</summary>
 		[IfFlag(25)] public int ttl_period;
-		/// <summary>If set, this message is a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcut">quick reply shortcut message »</a> (note that quick reply shortcut messages <em>sent</em> to a private chat will <em>not</em> have this field set).</summary>
+		/// <summary>If set, this message is a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut message »</a> (note that quick reply shortcut messages <em>sent</em> to a private chat will <em>not</em> have this field set).</summary>
 		[IfFlag(30)] public int quick_reply_shortcut_id;
+		/// <summary>A <a href="https://corefork.telegram.org/api/effects">message effect that should be played as specified here »</a>.</summary>
 		[IfFlag(34)] public long effect;
+		/// <summary>Represents a <a href="https://corefork.telegram.org/api/factcheck">fact-check »</a>.</summary>
 		[IfFlag(35)] public FactCheck factcheck;
 
 		[Flags] public enum Flags : uint
@@ -1822,6 +1834,7 @@ namespace TL
 		{
 			/// <summary>Field <see cref="via_business_bot_id"/> has a value</summary>
 			has_via_business_bot_id = 0x1,
+			/// <summary>If set, the message was sent because of a scheduled action by the message sender, for example, as away, or a greeting service message.</summary>
 			offline = 0x2,
 			/// <summary>Field <see cref="effect"/> has a value</summary>
 			has_effect = 0x4,
@@ -2581,7 +2594,7 @@ namespace TL
 		/// <summary>The photo that the user suggested we set as profile picture.</summary>
 		public PhotoBase photo;
 	}
-	/// <summary>Contains info about one or more peers that the user shared with the bot after clicking on a <see cref="KeyboardButtonRequestPeer"/> button.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionRequestedPeer"/></para></summary>
+	/// <summary>Contains info about one or more peers that the we (the user) shared with the bot after clicking on a <see cref="KeyboardButtonRequestPeer"/> button (service message sent by the user).		<para>See <a href="https://corefork.telegram.org/constructor/messageActionRequestedPeer"/></para></summary>
 	[TLDef(0x31518E9B)]
 	public sealed partial class MessageActionRequestedPeer : MessageAction
 	{
@@ -2659,11 +2672,13 @@ namespace TL
 		/// <summary>Number of applied <a href="https://corefork.telegram.org/api/boost">boosts</a>.</summary>
 		public int boosts;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionRequestedPeerSentMe"/></para></summary>
+	/// <summary>Contains info about one or more peers that the a user shared with the me (the bot) after clicking on a <see cref="KeyboardButtonRequestPeer"/> button (service message received by the bot).		<para>See <a href="https://corefork.telegram.org/constructor/messageActionRequestedPeerSentMe"/></para></summary>
 	[TLDef(0x93B31848)]
 	public sealed partial class MessageActionRequestedPeerSentMe : MessageAction
 	{
+		/// <summary><c>button_id</c> contained in the <see cref="KeyboardButtonRequestPeer"/></summary>
 		public int button_id;
+		/// <summary>Info about the shared peers.</summary>
 		public RequestedPeer[] peers;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionPaymentRefunded"/></para></summary>
@@ -3180,9 +3195,9 @@ namespace TL
 			has_request_chat_title = 0x200,
 			/// <summary>This flag is set if <c>request_chat_title</c> and <c>request_chat_date</c> fields are set and the <a href="https://corefork.telegram.org/api/invites#join-requests">join request »</a> is related to a channel (otherwise if only the request fields are set, the <a href="https://corefork.telegram.org/api/invites#join-requests">join request »</a> is related to a chat).</summary>
 			request_chat_broadcast = 0x400,
-			/// <summary>This flag is set if both <c>business_bot_id</c> and <c>business_bot_manage_url</c> are set and all <a href="https://corefork.telegram.org/api/business#connected-business-bots">connected business bots »</a> were paused in this chat using <see cref="SchemaExtensions.Account_ToggleConnectedBotPaused">Account_ToggleConnectedBotPaused</see>.</summary>
+			/// <summary>This flag is set if both <c>business_bot_id</c> and <c>business_bot_manage_url</c> are set and all <a href="https://corefork.telegram.org/api/business#connected-bots">connected business bots »</a> were paused in this chat using <see cref="SchemaExtensions.Account_ToggleConnectedBotPaused">Account_ToggleConnectedBotPaused</see>.</summary>
 			business_bot_paused = 0x800,
-			/// <summary>This flag is set if both <c>business_bot_id</c> and <c>business_bot_manage_url</c> are set and <a href="https://corefork.telegram.org/api/business#connected-business-bots">connected business bots »</a> can reply to messages in this chat, as specified by the settings during <a href="https://corefork.telegram.org/api/business#connected-bots">initial configuration</a>.</summary>
+			/// <summary>This flag is set if both <c>business_bot_id</c> and <c>business_bot_manage_url</c> are set and <a href="https://corefork.telegram.org/api/business#connected-bots">connected business bots »</a> can reply to messages in this chat, as specified by the settings during <a href="https://corefork.telegram.org/api/business#connected-bots">initial configuration</a>.</summary>
 			business_bot_can_reply = 0x1000,
 			/// <summary>Fields <see cref="business_bot_id"/> and <see cref="business_bot_manage_url"/> have a value</summary>
 			has_business_bot_id = 0x2000,
@@ -3331,11 +3346,17 @@ namespace TL
 		[IfFlag(24)] public WallPaperBase wallpaper;
 		/// <summary>Active <a href="https://corefork.telegram.org/api/stories">stories »</a></summary>
 		[IfFlag(25)] public PeerStories stories;
+		/// <summary><a href="https://corefork.telegram.org/api/business#opening-hours">Telegram Business working hours »</a>.</summary>
 		[IfFlag(32)] public BusinessWorkHours business_work_hours;
+		/// <summary><a href="https://corefork.telegram.org/api/business#location">Telegram Business location »</a>.</summary>
 		[IfFlag(33)] public BusinessLocation business_location;
+		/// <summary><a href="https://corefork.telegram.org/api/business#greeting-messages">Telegram Business greeting message »</a>.</summary>
 		[IfFlag(34)] public BusinessGreetingMessage business_greeting_message;
+		/// <summary><a href="https://corefork.telegram.org/api/business#away-messages">Telegram Business away message »</a>.</summary>
 		[IfFlag(35)] public BusinessAwayMessage business_away_message;
+		/// <summary>Specifies a custom <a href="https://corefork.telegram.org/api/business#business-introduction">Telegram Business profile introduction »</a>.</summary>
 		[IfFlag(36)] public BusinessIntro business_intro;
+		/// <summary>Contains info about the user's <a href="https://corefork.telegram.org/api/profile#birthday">birthday »</a>.</summary>
 		[IfFlag(37)] public Birthday birthday;
 		/// <summary>ID of the associated personal <a href="https://corefork.telegram.org/api/channel">channel »</a>, that should be shown in the <a href="https://corefork.telegram.org/api/profile#personal-channel">profile page</a>.</summary>
 		[IfFlag(38)] public long personal_channel_id;
@@ -3398,7 +3419,7 @@ namespace TL
 			wallpaper_overridden = 0x10000000,
 			/// <summary>If set, we can only write to this user if they have already sent some messages to us, if we are subscribed to <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a>, or if they're a mutual contact (<see cref="User"/>.<c>mutual_contact</c>).  <br/>All the secondary conditions listed above must be checked separately to verify whether we can still write to the user, even if this flag is set (i.e. a mutual contact will have this flag set even if we can still write to them, and so on...); to avoid doing these extra checks if we haven't yet cached all the required information (for example while displaying the chat list in the sharing UI) the <see cref="SchemaExtensions.Users_GetIsPremiumRequiredToContact">Users_GetIsPremiumRequiredToContact</see> method may be invoked instead, passing the list of users currently visible in the UI, returning a list of booleans that directly specify whether we can or cannot write to each user. <br/>To set this flag for ourselves invoke <see cref="SchemaExtensions.Account_SetGlobalPrivacySettings">Account_SetGlobalPrivacySettings</see>, setting the <c>settings.new_noncontact_peers_require_premium</c> flag.</summary>
 			contact_require_premium = 0x20000000,
-			/// <summary>If set, we cannot fetch the exact read date of messages we send to this user using <see cref="SchemaExtensions.Messages_GetOutboxReadDate">Messages_GetOutboxReadDate</see>.  <br/>The exact read date of messages might still be unavailable for other reasons, see <see cref="GlobalPrivacySettings">here »</see> for more info.  <br/>To set this flag for ourselves invoke <see cref="SchemaExtensions.Account_SetGlobalPrivacySettings">Account_SetGlobalPrivacySettings</see>, setting the <c>settings.hide_read_marks</c> flag.</summary>
+			/// <summary>If set, we cannot fetch the exact read date of messages we send to this user using <see cref="SchemaExtensions.Messages_GetOutboxReadDate">Messages_GetOutboxReadDate</see>.  <br/>The exact read date of messages might still be unavailable for other reasons, see <see cref="SchemaExtensions.Messages_GetOutboxReadDate">Messages_GetOutboxReadDate</see> for more info.  <br/>To set this flag for ourselves invoke <see cref="SchemaExtensions.Account_SetGlobalPrivacySettings">Account_SetGlobalPrivacySettings</see>, setting the <c>settings.hide_read_marks</c> flag.</summary>
 			read_dates_private = 0x40000000,
 		}
 
@@ -3418,6 +3439,7 @@ namespace TL
 			has_birthday = 0x20,
 			/// <summary>Fields <see cref="personal_channel_id"/> and <see cref="personal_channel_message"/> have a value</summary>
 			has_personal_channel_id = 0x40,
+			/// <summary>Whether ads were re-enabled for the current account (only accessible to the currently logged-in user), see <a href="https://corefork.telegram.org/api/business#re-enable-ads">here »</a> for more info.</summary>
 			sponsored_enabled = 0x80,
 		}
 	}
@@ -3824,7 +3846,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>Authorization date</summary>
 		[IfFlag(0)] public DateTime date;
@@ -4325,7 +4347,7 @@ namespace TL
 	/// <summary>The recent sticker list was updated		<para>See <a href="https://corefork.telegram.org/constructor/updateRecentStickers"/></para></summary>
 	[TLDef(0x9A422C20)]
 	public sealed partial class UpdateRecentStickers : Update { }
-	/// <summary>The server-side configuration has changed; the client should re-fetch the config using <see cref="SchemaExtensions.Help_GetConfig">Help_GetConfig</see>		<para>See <a href="https://corefork.telegram.org/constructor/updateConfig"/></para></summary>
+	/// <summary>The server-side configuration has changed; the client should re-fetch the config using <see cref="SchemaExtensions.Help_GetConfig">Help_GetConfig</see> and <see cref="SchemaExtensions.Help_GetAppConfig">Help_GetAppConfig</see>.		<para>See <a href="https://corefork.telegram.org/constructor/updateConfig"/></para></summary>
 	[TLDef(0xA229DD06)]
 	public sealed partial class UpdateConfig : Update { }
 	/// <summary><a href="https://corefork.telegram.org/api/updates">Common message box sequence PTS</a> has changed, <a href="https://corefork.telegram.org/api/updates#fetching-state">state has to be refetched using updates.getState</a>		<para>See <a href="https://corefork.telegram.org/constructor/updatePtsChanged"/></para></summary>
@@ -5272,10 +5294,11 @@ namespace TL
 	/// <summary>The list of <a href="https://corefork.telegram.org/api/saved-messages#tags">reaction tag »</a> names assigned by the user has changed and should be refetched using <see cref="SchemaExtensions.Messages_GetSavedReactionTags">Messages_GetSavedReactionTags</see>.		<para>See <a href="https://corefork.telegram.org/constructor/updateSavedReactionTags"/></para></summary>
 	[TLDef(0x39C67432)]
 	public sealed partial class UpdateSavedReactionTags : Update { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSmsJob"/></para></summary>
+	/// <summary>A new SMS job was received		<para>See <a href="https://corefork.telegram.org/constructor/updateSmsJob"/></para></summary>
 	[TLDef(0xF16269D4)]
 	public sealed partial class UpdateSmsJob : Update
 	{
+		/// <summary>SMS job ID</summary>
 		public string job_id;
 	}
 	/// <summary>Info about or the order of <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcuts »</a> was changed.		<para>See <a href="https://corefork.telegram.org/constructor/updateQuickReplies"/></para></summary>
@@ -5313,24 +5336,30 @@ namespace TL
 		/// <summary>IDs of the deleted messages.</summary>
 		public int[] messages;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBotBusinessConnect"/></para></summary>
+	/// <summary>Connecting or disconnecting a <a href="https://corefork.telegram.org/api/business#connected-bots">business bot</a> or changing the connection settings will emit an <see cref="UpdateBotBusinessConnect"/> update to the bot, with the new settings and a <c>connection_id</c> that will be used by the bot to handle updates from and send messages as the user.		<para>See <a href="https://corefork.telegram.org/constructor/updateBotBusinessConnect"/></para></summary>
 	[TLDef(0x8AE5C97A)]
 	public sealed partial class UpdateBotBusinessConnect : Update
 	{
+		/// <summary>Business connection settings</summary>
 		public BotBusinessConnection connection;
+		/// <summary>New <strong>qts</strong> value, see <a href="https://corefork.telegram.org/api/updates">updates »</a> for more info.</summary>
 		public int qts;
 
 		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBotNewBusinessMessage"/></para></summary>
+	/// <summary>A message was received via a <a href="https://corefork.telegram.org/api/business#connected-bots">connected business chat »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateBotNewBusinessMessage"/></para></summary>
 	[TLDef(0x9DDB347C)]
 	public sealed partial class UpdateBotNewBusinessMessage : Update
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Connection ID.</summary>
 		public string connection_id;
+		/// <summary>New message.</summary>
 		public MessageBase message;
+		/// <summary>The message that <c>message</c> is replying to.</summary>
 		[IfFlag(0)] public MessageBase reply_to_message;
+		/// <summary>New <strong>qts</strong> value, see <a href="https://corefork.telegram.org/api/updates">updates »</a> for more info.</summary>
 		public int qts;
 
 		[Flags] public enum Flags : uint
@@ -5341,15 +5370,19 @@ namespace TL
 
 		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBotEditBusinessMessage"/></para></summary>
+	/// <summary>A message was edited in a <a href="https://corefork.telegram.org/api/business#connected-bots">connected business chat »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateBotEditBusinessMessage"/></para></summary>
 	[TLDef(0x07DF587C)]
 	public sealed partial class UpdateBotEditBusinessMessage : Update
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Business connection ID</summary>
 		public string connection_id;
+		/// <summary>New message.</summary>
 		public MessageBase message;
+		/// <summary>The message that <c>message</c> is replying to.</summary>
 		[IfFlag(0)] public MessageBase reply_to_message;
+		/// <summary>New <strong>qts</strong> value, see <a href="https://corefork.telegram.org/api/updates">updates »</a> for more info.</summary>
 		public int qts;
 
 		[Flags] public enum Flags : uint
@@ -5360,36 +5393,45 @@ namespace TL
 
 		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBotDeleteBusinessMessage"/></para></summary>
+	/// <summary>A message was deleted in a <a href="https://corefork.telegram.org/api/business#connected-bots">connected business chat »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateBotDeleteBusinessMessage"/></para></summary>
 	[TLDef(0xA02A982E)]
 	public sealed partial class UpdateBotDeleteBusinessMessage : Update
 	{
+		/// <summary>Business connection ID.</summary>
 		public string connection_id;
+		/// <summary><a href="https://corefork.telegram.org/api/peers">Peer</a> where the messages were deleted.</summary>
 		public Peer peer;
+		/// <summary>IDs of the messages that were deleted.</summary>
 		public int[] messages;
+		/// <summary>New <strong>qts</strong> value, see <a href="https://corefork.telegram.org/api/updates">updates »</a> for more info.</summary>
 		public int qts;
 
 		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateNewStoryReaction"/></para></summary>
+	/// <summary>Represents a new <a href="https://corefork.telegram.org/api/reactions#notifications-about-reactions">reaction to a story</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateNewStoryReaction"/></para></summary>
 	[TLDef(0x1824E40B)]
 	public sealed partial class UpdateNewStoryReaction : Update
 	{
+		/// <summary><a href="https://corefork.telegram.org/api/stories">Story ID</a>.</summary>
 		public int story_id;
 		public Peer peer;
+		/// <summary>The <a href="https://corefork.telegram.org/api/reactions">reaction</a>.</summary>
 		public Reaction reaction;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBroadcastRevenueTransactions"/></para></summary>
+	/// <summary>A new <a href="https://corefork.telegram.org/api/revenue#revenue-statistics">channel ad revenue transaction was made, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/updateBroadcastRevenueTransactions"/></para></summary>
 	[TLDef(0xDFD961F5)]
 	public sealed partial class UpdateBroadcastRevenueTransactions : Update
 	{
+		/// <summary>Channel</summary>
 		public Peer peer;
+		/// <summary>New ad revenue balance.</summary>
 		public BroadcastRevenueBalances balances;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateStarsBalance"/></para></summary>
+	/// <summary>The current account's <a href="https://corefork.telegram.org/api/stars">Telegram Stars balance »</a> has changed.		<para>See <a href="https://corefork.telegram.org/constructor/updateStarsBalance"/></para></summary>
 	[TLDef(0x0FB85198)]
 	public sealed partial class UpdateStarsBalance : Update
 	{
+		/// <summary>New balance.</summary>
 		public long balance;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBusinessBotCallbackQuery"/></para></summary>
@@ -6632,7 +6674,7 @@ namespace TL
 	/// <summary>Allow only <a href="https://corefork.telegram.org/api/privacy">close friends »</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputPrivacyValueAllowCloseFriends"/></para></summary>
 	[TLDef(0x2F453E49)]
 	public sealed partial class InputPrivacyValueAllowCloseFriends : InputPrivacyRule { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputPrivacyValueAllowPremium"/></para></summary>
+	/// <summary>Allow only users with a <a href="https://corefork.telegram.org/api/premium">Premium subscription »</a>, currently only usable for <see cref="InputPrivacyKey.ChatInvite"/>.		<para>See <a href="https://corefork.telegram.org/constructor/inputPrivacyValueAllowPremium"/></para></summary>
 	[TLDef(0x77CDC9F1)]
 	public sealed partial class InputPrivacyValueAllowPremium : InputPrivacyRule { }
 
@@ -6681,7 +6723,7 @@ namespace TL
 	/// <summary>Allow only <a href="https://corefork.telegram.org/api/privacy">close friends »</a>		<para>See <a href="https://corefork.telegram.org/constructor/privacyValueAllowCloseFriends"/></para></summary>
 	[TLDef(0xF7E8D89B)]
 	public sealed partial class PrivacyValueAllowCloseFriends : PrivacyRule { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/privacyValueAllowPremium"/></para></summary>
+	/// <summary>Allow only users with a <a href="https://corefork.telegram.org/api/premium">Premium subscription »</a>, currently only usable for <see cref="InputPrivacyKey.ChatInvite"/>.		<para>See <a href="https://corefork.telegram.org/constructor/privacyValueAllowPremium"/></para></summary>
 	[TLDef(0xECE9814B)]
 	public sealed partial class PrivacyValueAllowPremium : PrivacyRule { }
 
@@ -6831,7 +6873,7 @@ namespace TL
 	[TLDef(0x30A6EC7E)]
 	public sealed partial class Messages_Stickers : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>Stickers</summary>
 		public DocumentBase[] stickers;
@@ -6852,7 +6894,7 @@ namespace TL
 	[TLDef(0xCDBBCEBB)]
 	public sealed partial class Messages_AllStickers : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>All stickersets</summary>
 		public StickerSet[] sets;
@@ -6934,9 +6976,9 @@ namespace TL
 		public string url;
 		/// <summary>Webpage URL to be displayed to the user</summary>
 		public string display_url;
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public int hash;
-		/// <summary>Type of the web page. Can be: article, photo, audio, video, document, profile, app, or something else</summary>
+		/// <summary>Type of the web page. Can be: article, photo, audio, video, document, profile, app, or something else, see <a href="https://github.com/telegramdesktop/tdesktop/blob/4f7a124f3e85f3f61d862b94fb5a45236976f38f/Telegram/SourceFiles/data/data_web_page.cpp#L127">here »</a> for a full list.</summary>
 		[IfFlag(0)] public string type;
 		/// <summary>Short name of the site (e.g., Google Docs, App Store)</summary>
 		[IfFlag(1)] public string site_name;
@@ -7655,27 +7697,35 @@ namespace TL
 		public int button_id;
 		/// <summary>Filtering criteria to use for the peer selection list shown to the user. <br/>The list should display all existing peers of the specified type, and should also offer an option for the user to create and immediately use one or more (up to <c>max_quantity</c>) peers of the specified type, if needed.</summary>
 		public RequestPeerType peer_type;
-		/// <summary>Maximum number of peers that can be chosne.</summary>
+		/// <summary>Maximum number of peers that can be chosen.</summary>
 		public int max_quantity;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputKeyboardButtonRequestPeer"/></para></summary>
+	/// <summary>Prompts the user to select and share one or more peers with the bot using <see cref="SchemaExtensions.Messages_SendBotRequestedPeer">Messages_SendBotRequestedPeer</see>.		<para>See <a href="https://corefork.telegram.org/constructor/inputKeyboardButtonRequestPeer"/></para></summary>
 	[TLDef(0xC9662D05)]
 	public sealed partial class InputKeyboardButtonRequestPeer : KeyboardButtonBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Button text</summary>
 		public string text;
+		/// <summary>Button ID, to be passed to <see cref="SchemaExtensions.Messages_SendBotRequestedPeer">Messages_SendBotRequestedPeer</see>.</summary>
 		public int button_id;
+		/// <summary>Filtering criteria to use for the peer selection list shown to the user. <br/>The list should display all existing peers of the specified type, and should also offer an option for the user to create and immediately use one or more (up to <c>max_quantity</c>) peers of the specified type, if needed.</summary>
 		public RequestPeerType peer_type;
+		/// <summary>Maximum number of peers that can be chosen.</summary>
 		public int max_quantity;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Set this flag to request the peer's name.</summary>
 			name_requested = 0x1,
+			/// <summary>Set this flag to request the peer's <c>@username</c> (if any).</summary>
 			username_requested = 0x2,
+			/// <summary>Set this flag to request the peer's photo (if any).</summary>
 			photo_requested = 0x4,
 		}
 
+		/// <summary>Button text</summary>
 		public override string Text => text;
 	}
 
@@ -8241,7 +8291,7 @@ namespace TL
 	[TLDef(0x84A02A0D)]
 	public sealed partial class Messages_SavedGifs : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>List of saved gifs</summary>
 		public DocumentBase[] gifs;
@@ -9082,6 +9132,7 @@ namespace TL
 		/// <summary>On Android, the nonce to be used as described in the <a href="https://corefork.telegram.org/api/auth">auth documentation »</a></summary>
 		[IfFlag(0)] public byte[] nonce;
 		[IfFlag(2)] public long play_integrity_project_id;
+		/// <summary>Play Integrity API nonce</summary>
 		[IfFlag(2)] public byte[] play_integrity_nonce;
 		/// <summary>On iOS, must be compared with the <c>receipt</c> extracted from the received push notification.</summary>
 		[IfFlag(1)] public string receipt;
@@ -9104,7 +9155,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>The secret word in the sent SMS (which may contain multiple words) starts with this letter.</summary>
+		/// <summary>If set, the secret word in the sent SMS (which may contain multiple words) starts with this letter.</summary>
 		[IfFlag(0)] public string beginning;
 
 		[Flags] public enum Flags : uint
@@ -9113,13 +9164,13 @@ namespace TL
 			has_beginning = 0x1,
 		}
 	}
-	/// <summary>The code was sent via SMS as a secret phrase starting with the word specified in <c>beginning</c>,		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSmsPhrase"/></para></summary>
+	/// <summary>The code was sent via SMS as a secret phrase starting with the word specified in <c>beginning</c>		<para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodeTypeSmsPhrase"/></para></summary>
 	[TLDef(0xB37794AF)]
 	public sealed partial class Auth_SentCodeTypeSmsPhrase : Auth_SentCodeType
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>The secret phrase (and the SMS) starts with this word.</summary>
+		/// <summary>If set, the secret phrase (and the SMS) starts with this word.</summary>
 		[IfFlag(0)] public string beginning;
 
 		[Flags] public enum Flags : uint
@@ -9372,7 +9423,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>Total number of featured stickers</summary>
 		public int count;
@@ -9393,7 +9444,7 @@ namespace TL
 	[TLDef(0x88D37C56)]
 	public sealed partial class Messages_RecentStickers : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>Emojis associated to stickers</summary>
 		public StickerPack[] packs;
@@ -10388,18 +10439,25 @@ namespace TL
 		/// <summary>Users</summary>
 		public override Dictionary<long, User> Users => users;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.paymentFormStars"/></para></summary>
+	/// <summary>Represents a payment form, for payments to be using <a href="https://corefork.telegram.org/api/stars">Telegram Stars, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/payments.paymentFormStars"/></para></summary>
 	[TLDef(0x7BF6B15C)]
 	public sealed partial class Payments_PaymentFormStars : Payments_PaymentFormBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Form ID.</summary>
 		public long form_id;
+		/// <summary>Bot ID.</summary>
 		public long bot_id;
+		/// <summary>Form title</summary>
 		public string title;
+		/// <summary>Description</summary>
 		public string description;
+		/// <summary>Product photo</summary>
 		[IfFlag(5)] public WebDocumentBase photo;
+		/// <summary>Invoice</summary>
 		public Invoice invoice;
+		/// <summary>Info about users mentioned in the other fields.</summary>
 		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags : uint
@@ -10408,12 +10466,19 @@ namespace TL
 			has_photo = 0x20,
 		}
 
+		/// <summary>Form ID.</summary>
 		public override long FormId => form_id;
+		/// <summary>Bot ID.</summary>
 		public override long BotId => bot_id;
+		/// <summary>Form title</summary>
 		public override string Title => title;
+		/// <summary>Description</summary>
 		public override string Description => description;
+		/// <summary>Product photo</summary>
 		public override WebDocumentBase Photo => photo;
+		/// <summary>Invoice</summary>
 		public override Invoice Invoice => invoice;
+		/// <summary>Info about users mentioned in the other fields.</summary>
 		public override Dictionary<long, User> Users => users;
 	}
 
@@ -10542,21 +10607,29 @@ namespace TL
 		/// <summary>Users</summary>
 		public override Dictionary<long, User> Users => users;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.paymentReceiptStars"/></para></summary>
+	/// <summary>Receipt for <a href="https://corefork.telegram.org/api/stars">payment made using Telegram Stars</a>.		<para>See <a href="https://corefork.telegram.org/constructor/payments.paymentReceiptStars"/></para></summary>
 	[TLDef(0xDABBF83A)]
 	public sealed partial class Payments_PaymentReceiptStars : Payments_PaymentReceiptBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Date of generation</summary>
 		public DateTime date;
+		/// <summary>Bot ID</summary>
 		public long bot_id;
+		/// <summary>Title</summary>
 		public string title;
+		/// <summary>Description</summary>
 		public string description;
+		/// <summary>Product photo</summary>
 		[IfFlag(2)] public WebDocumentBase photo;
+		/// <summary>Invoice</summary>
 		public Invoice invoice;
 		public string currency;
 		public long total_amount;
+		/// <summary>Transaction ID</summary>
 		public string transaction_id;
+		/// <summary>Info about users mentioned in the other fields.</summary>
 		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags : uint
@@ -10565,14 +10638,21 @@ namespace TL
 			has_photo = 0x4,
 		}
 
+		/// <summary>Date of generation</summary>
 		public override DateTime Date => date;
+		/// <summary>Bot ID</summary>
 		public override long BotId => bot_id;
+		/// <summary>Title</summary>
 		public override string Title => title;
+		/// <summary>Description</summary>
 		public override string Description => description;
+		/// <summary>Product photo</summary>
 		public override WebDocumentBase Photo => photo;
+		/// <summary>Invoice</summary>
 		public override Invoice Invoice => invoice;
 		public override string Currency => currency;
 		public override long TotalAmount => total_amount;
+		/// <summary>Info about users mentioned in the other fields.</summary>
 		public override Dictionary<long, User> Users => users;
 	}
 
@@ -10865,6 +10945,7 @@ namespace TL
 		public PhoneConnectionBase[] connections;
 		/// <summary>When was the call actually started</summary>
 		public DateTime start_date;
+		/// <summary>Custom JSON-encoded call parameters to be passed to tgcalls.</summary>
 		[IfFlag(7)] public DataJSON custom_parameters;
 
 		[Flags] public enum Flags : uint
@@ -11662,7 +11743,7 @@ namespace TL
 	[TLDef(0x2CB51097)]
 	public sealed partial class Messages_FavedStickers : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>Emojis associated to stickers</summary>
 		public StickerPack[] packs;
@@ -11846,7 +11927,7 @@ namespace TL
 	[TLDef(0x8AF09DD2)]
 	public sealed partial class Messages_FoundStickerSets : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>Found stickersets</summary>
 		public StickerSetCoveredBase[] sets;
@@ -12421,7 +12502,7 @@ namespace TL
 	[TLDef(0xA098D6AF)]
 	public sealed partial class Help_PassportConfig : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public int hash;
 		/// <summary>Localization</summary>
 		public DataJSON countries_langs;
@@ -12675,7 +12756,7 @@ namespace TL
 	[TLDef(0xFF16E2CA)]
 	public sealed partial class PollAnswer : IObject
 	{
-		/// <summary>Textual representation of the answer</summary>
+		/// <summary>Textual representation of the answer (<a href="https://corefork.telegram.org/api/premium">Premium</a> users only, only <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji entities</a> are supported).</summary>
 		public TextWithEntities text;
 		/// <summary>The param that has to be passed to <see cref="SchemaExtensions.Messages_SendVote">Messages_SendVote</see>.</summary>
 		public byte[] option;
@@ -12689,7 +12770,7 @@ namespace TL
 		public long id;
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>The question of the poll</summary>
+		/// <summary>The question of the poll (<a href="https://corefork.telegram.org/api/premium">Premium</a> users only, only <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji entities</a> are supported).</summary>
 		public TextWithEntities question;
 		/// <summary>The possible answers, vote using <see cref="SchemaExtensions.Messages_SendVote">Messages_SendVote</see>.</summary>
 		public PollAnswer[] answers;
@@ -12910,7 +12991,7 @@ namespace TL
 	[TLDef(0xCDC3858C)]
 	public sealed partial class Account_WallPapers : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary><a href="https://corefork.telegram.org/api/wallpapers">Wallpapers</a></summary>
 		public WallPaperBase[] wallpapers;
@@ -12945,6 +13026,7 @@ namespace TL
 			allow_firebase = 0x80,
 			/// <summary>Fields <see cref="token"/> and <see cref="app_sandbox"/> have a value</summary>
 			has_token = 0x100,
+			/// <summary>Set this flag if there is a SIM card in the current device, but it is not possible to check whether the specified phone number matches the SIM's phone number.</summary>
 			unknown_number = 0x200,
 		}
 	}
@@ -13292,7 +13374,7 @@ namespace TL
 	[TLDef(0x9A3D8C6D)]
 	public sealed partial class Account_Themes : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>Themes</summary>
 		public Theme[] themes;
@@ -13473,17 +13555,20 @@ namespace TL
 			has_story = 0x1,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/webPageAttributeStickerSet"/></para></summary>
+	/// <summary>Contains info about a <a href="https://corefork.telegram.org/api/stickers">stickerset »</a>, for a <see cref="WebPage"/> preview of a <a href="https://corefork.telegram.org/api/links#stickerset-links">stickerset deep link »</a> (the <see cref="WebPage"/> will have a <c>type</c> of <c>telegram_stickerset</c>).		<para>See <a href="https://corefork.telegram.org/constructor/webPageAttributeStickerSet"/></para></summary>
 	[TLDef(0x50CC03D3)]
 	public sealed partial class WebPageAttributeStickerSet : WebPageAttribute
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>A subset of the stickerset in the stickerset.</summary>
 		public DocumentBase[] stickers;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether this i s a <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickerset</a>.</summary>
 			emojis = 0x1,
+			/// <summary>Whether the color of this TGS custom emoji stickerset should be changed to the text color when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context.</summary>
 			text_color = 0x2,
 		}
 	}
@@ -13544,6 +13629,7 @@ namespace TL
 		public virtual string Title => default;
 		/// <summary>Emoji to use as icon for the folder.</summary>
 		public virtual string Emoticon => default;
+		/// <summary>A color ID for the <a href="https://corefork.telegram.org/api/folders#folder-tags">folder tag associated to this folder, see here »</a> for more info.</summary>
 		public virtual int Color => default;
 		/// <summary>Pinned chats, <a href="https://corefork.telegram.org/api/folders">folders</a> can have unlimited pinned chats</summary>
 		public virtual InputPeer[] PinnedPeers => default;
@@ -13562,6 +13648,7 @@ namespace TL
 		public string title;
 		/// <summary>Emoji to use as icon for the folder.</summary>
 		[IfFlag(25)] public string emoticon;
+		/// <summary>A color ID for the <a href="https://corefork.telegram.org/api/folders#folder-tags">folder tag associated to this folder, see here »</a> for more info.</summary>
 		[IfFlag(27)] public int color;
 		/// <summary>Pinned chats, <a href="https://corefork.telegram.org/api/folders">folders</a> can have unlimited pinned chats</summary>
 		public InputPeer[] pinned_peers;
@@ -13600,6 +13687,7 @@ namespace TL
 		public override string Title => title;
 		/// <summary>Emoji to use as icon for the folder.</summary>
 		public override string Emoticon => emoticon;
+		/// <summary>A color ID for the <a href="https://corefork.telegram.org/api/folders#folder-tags">folder tag associated to this folder, see here »</a> for more info.</summary>
 		public override int Color => color;
 		/// <summary>Pinned chats, <a href="https://corefork.telegram.org/api/folders">folders</a> can have unlimited pinned chats</summary>
 		public override InputPeer[] PinnedPeers => pinned_peers;
@@ -13618,6 +13706,7 @@ namespace TL
 		public string title;
 		/// <summary>Emoji to use as icon for the folder.</summary>
 		[IfFlag(25)] public string emoticon;
+		/// <summary>A color ID for the <a href="https://corefork.telegram.org/api/folders#folder-tags">folder tag associated to this folder, see here »</a> for more info.</summary>
 		[IfFlag(27)] public int color;
 		/// <summary>Pinned chats, <a href="https://corefork.telegram.org/api/folders">folders</a> can have unlimited pinned chats</summary>
 		public InputPeer[] pinned_peers;
@@ -13640,6 +13729,7 @@ namespace TL
 		public override string Title => title;
 		/// <summary>Emoji to use as icon for the folder.</summary>
 		public override string Emoticon => emoticon;
+		/// <summary>A color ID for the <a href="https://corefork.telegram.org/api/folders#folder-tags">folder tag associated to this folder, see here »</a> for more info.</summary>
 		public override int Color => color;
 		/// <summary>Pinned chats, <a href="https://corefork.telegram.org/api/folders">folders</a> can have unlimited pinned chats</summary>
 		public override InputPeer[] PinnedPeers => pinned_peers;
@@ -13949,7 +14039,7 @@ namespace TL
 			keep_archived_unmuted = 0x2,
 			/// <summary>Whether unmuted chats that are always included or pinned in a <a href="https://corefork.telegram.org/api/folders">folder</a>, will be kept in the Archive chat list when they get a new message. Ignored if <c>keep_archived_unmuted</c> is set.</summary>
 			keep_archived_folders = 0x4,
-			/// <summary>If set, (only) users that cannot see <em>our</em> exact last online date due to the current value of the <see cref="InputPrivacyKey.StatusTimestamp"/> key will receive a <c>403 USER_PRIVACY_RESTRICTED</c> error when invoking <see cref="SchemaExtensions.Messages_GetOutboxReadDate">Messages_GetOutboxReadDate</see> to fetch the exact read date of one of their messages. <br/>The <see cref="UserFull"/>.<c>read_dates_private</c> flag will be set for users that have this flag enabled.</summary>
+			/// <summary>If this flag is set, the <see cref="InputPrivacyKey.StatusTimestamp"/> key will also apply to the ability to use <see cref="SchemaExtensions.Messages_GetOutboxReadDate">Messages_GetOutboxReadDate</see> on messages sent to us. <br/>Meaning, users that cannot see <em>our</em> exact last online date due to the current value of the <see cref="InputPrivacyKey.StatusTimestamp"/> key will receive a <c>403 USER_PRIVACY_RESTRICTED</c> error when invoking <see cref="SchemaExtensions.Messages_GetOutboxReadDate">Messages_GetOutboxReadDate</see> to fetch the exact read date of a message they sent to us. <br/>The <see cref="UserFull"/>.<c>read_dates_private</c> flag will be set for users that have this flag enabled.</summary>
 			hide_read_marks = 0x8,
 			/// <summary>If set, only users that have a premium account, are in our contact list, or already have a private chat with us can write to us; a <c>403 PRIVACY_PREMIUM_REQUIRED</c> error will be emitted otherwise.  <br/>The <see cref="UserFull"/>.<c>contact_require_premium</c> flag will be set for users that have this flag enabled.  <br/>To check whether we can write to a user with this flag enabled, if we haven't yet cached all the required information (for example we don't have the <see cref="UserFull"/> or history of all users while displaying the chat list in the sharing UI) the <see cref="SchemaExtensions.Users_GetIsPremiumRequiredToContact">Users_GetIsPremiumRequiredToContact</see> method may be invoked, passing the list of users currently visible in the UI, returning a list of booleans that directly specify whether we can or cannot write to each user. <br/><a href="https://corefork.telegram.org/api/premium">Premium</a> users only, non-Premium users will receive a <c>PREMIUM_ACCOUNT_REQUIRED</c> error when trying to enable this flag.</summary>
 			new_noncontact_peers_require_premium = 0x10,
@@ -14009,7 +14099,7 @@ namespace TL
 	{
 		/// <summary>Name, ISO code, localized name and phone codes/patterns of all available countries</summary>
 		public Help_Country[] countries;
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public int hash;
 	}
 
@@ -14689,13 +14779,17 @@ namespace TL
 		public Flags flags;
 		/// <summary>Message ID</summary>
 		public byte[] random_id;
+		/// <summary>If set, contains a URL to open when the user clicks on the sponsored message.</summary>
 		public string url;
+		/// <summary>If set, contains a custom sender name should be displayed for the sponsored message, like for messages sent in groups.</summary>
 		public string title;
 		/// <summary>Sponsored message</summary>
 		public string message;
 		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
 		[IfFlag(1)] public MessageEntity[] entities;
+		/// <summary>If set, contains a custom profile photo bubble that should be displayed for the sponsored message, like for messages sent in groups.</summary>
 		[IfFlag(6)] public PhotoBase photo;
+		/// <summary>If set, the sponsored message should use the <a href="https://corefork.telegram.org/api/colors">message accent color »</a> specified in <c>color</c>.</summary>
 		[IfFlag(13)] public PeerColor color;
 		/// <summary>Text of the sponsored message button.</summary>
 		public string button_text;
@@ -14716,6 +14810,7 @@ namespace TL
 			has_sponsor_info = 0x80,
 			/// <summary>Field <see cref="additional_info"/> has a value</summary>
 			has_additional_info = 0x100,
+			/// <summary>Whether this message can be <a href="https://corefork.telegram.org/api/sponsored-message#reporting-sponsored-messages">reported as specified here »</a>.</summary>
 			can_report = 0x1000,
 			/// <summary>Field <see cref="color"/> has a value</summary>
 			has_color = 0x2000,
@@ -14988,7 +15083,7 @@ namespace TL
 	[TLDef(0x768E3AAD)]
 	public sealed partial class Messages_AvailableReactions : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public int hash;
 		/// <summary>Animations and metadata associated with <a href="https://corefork.telegram.org/api/reactions">message reactions »</a></summary>
 		public AvailableReaction[] reactions;
@@ -15115,7 +15210,7 @@ namespace TL
 	[TLDef(0x3C4301C0)]
 	public sealed partial class AttachMenuBots : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>List of <a href="https://corefork.telegram.org/api/bots/attach">bot mini apps that can be launched from the attachment menu »</a></summary>
 		public AttachMenuBot[] bots;
@@ -15190,7 +15285,7 @@ namespace TL
 	[TLDef(0xC1E92CC5)]
 	public sealed partial class Account_SavedRingtones : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>Saved notification sounds</summary>
 		public DocumentBase[] ringtones;
@@ -15272,10 +15367,11 @@ namespace TL
 		/// <summary>Should be populated with one of the giveaway options returned by <see cref="SchemaExtensions.Payments_GetPremiumGiftCodeOptions">Payments_GetPremiumGiftCodeOptions</see>, see the <a href="https://corefork.telegram.org/api/giveaways">giveaways »</a> documentation for more info.</summary>
 		public PremiumGiftCodeOption option;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceStars"/></para></summary>
+	/// <summary>Used to top up the current account's <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> balance.		<para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceStars"/></para></summary>
 	[TLDef(0x1DA33AD8)]
 	public sealed partial class InputInvoiceStars : InputInvoice
 	{
+		/// <summary>Top up option, obtained as described <a href="https://corefork.telegram.org/api/stars#buying-stars">here »</a>.</summary>
 		public StarsTopupOption option;
 	}
 
@@ -15415,14 +15511,17 @@ namespace TL
 			has_prize_description = 0x10,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentStars"/></para></summary>
+	/// <summary>Used to top up the <a href="https://corefork.telegram.org/api/stars">Telegram Stars balance</a> using the Play Store/App Store flow (official apps only).		<para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentStars"/></para></summary>
 	[TLDef(0x4F0EE8DF)]
 	public sealed partial class InputStorePaymentStars : InputStorePaymentPurpose
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Amount of stars to topup</summary>
 		public long stars;
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
 		public string currency;
+		/// <summary>Total price in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long amount;
 
 		[Flags] public enum Flags : uint
@@ -15485,7 +15584,7 @@ namespace TL
 	[TLDef(0x90C467D1)]
 	public sealed partial class Account_EmojiStatuses : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary><a href="https://corefork.telegram.org/api/emoji-status">Emoji statuses</a></summary>
 		public EmojiStatus[] statuses;
@@ -15538,7 +15637,7 @@ namespace TL
 	[TLDef(0xEAFDF716)]
 	public sealed partial class Messages_Reactions : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>Reactions</summary>
 		public Reaction[] reactions;
@@ -15914,13 +16013,13 @@ namespace TL
 	[TLDef(0x7A1E11D1)]
 	public sealed partial class EmojiList : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 		/// <summary>Custom emoji IDs</summary>
 		public long[] document_id;
 	}
 
-	/// <summary>Represents an <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji category</a>.		<para>See <a href="https://corefork.telegram.org/type/EmojiGroup"/></para>		<para>Derived classes: <see cref="EmojiGroup"/>, <see cref="EmojiGroupGreeting"/>, <see cref="EmojiGroupPremium"/></para></summary>
+	/// <summary>Represents an <a href="https://corefork.telegram.org/api/emoji-categories">emoji category</a>.		<para>See <a href="https://corefork.telegram.org/type/EmojiGroup"/></para>		<para>Derived classes: <see cref="EmojiGroup"/>, <see cref="EmojiGroupGreeting"/>, <see cref="EmojiGroupPremium"/></para></summary>
 	public abstract partial class EmojiGroupBase : IObject
 	{
 		/// <summary>Category name, i.e. "Animals", "Flags", "Faces" and so on...</summary>
@@ -15928,7 +16027,7 @@ namespace TL
 		/// <summary>A single custom emoji used as preview for the category.</summary>
 		public virtual long IconEmojiId => default;
 	}
-	/// <summary>Represents an <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji category</a>.		<para>See <a href="https://corefork.telegram.org/constructor/emojiGroup"/></para></summary>
+	/// <summary>Represents an <a href="https://corefork.telegram.org/api/emoji-categories">emoji category</a>.		<para>See <a href="https://corefork.telegram.org/constructor/emojiGroup"/></para></summary>
 	[TLDef(0x7A9ABDA9)]
 	public partial class EmojiGroup : EmojiGroupBase
 	{
@@ -15944,30 +16043,34 @@ namespace TL
 		/// <summary>A single custom emoji used as preview for the category.</summary>
 		public override long IconEmojiId => icon_emoji_id;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emojiGroupGreeting"/></para></summary>
+	/// <summary>Represents an <a href="https://corefork.telegram.org/api/emoji-categories">emoji category</a>, that should be moved to the top of the list when choosing a sticker for a <a href="https://corefork.telegram.org/api/business#business-introduction">business introduction</a>		<para>See <a href="https://corefork.telegram.org/constructor/emojiGroupGreeting"/></para></summary>
 	[TLDef(0x80D26CC7)]
 	public sealed partial class EmojiGroupGreeting : EmojiGroup
 	{
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/emojiGroupPremium"/></para></summary>
+	/// <summary>An <a href="https://corefork.telegram.org/api/emoji-categories">emoji category</a>, used to select all <a href="https://corefork.telegram.org/api/premium">Premium</a>-only stickers (i.e. those with a <a href="https://corefork.telegram.org/api/stickers#premium-animated-sticker-effects">Premium effect »</a>)/<a href="https://corefork.telegram.org/api/premium">Premium</a>-only <a href="https://corefork.telegram.org/api/custom-emoji">custom emojis</a> (i.e. those where the <see cref="DocumentAttributeCustomEmoji"/>.<c>free</c> flag is <strong>not</strong> set)		<para>See <a href="https://corefork.telegram.org/constructor/emojiGroupPremium"/></para></summary>
 	[TLDef(0x093BCF34)]
 	public sealed partial class EmojiGroupPremium : EmojiGroupBase
 	{
+		/// <summary>Category name, i.e. "Animals", "Flags", "Faces" and so on...</summary>
 		public string title;
+		/// <summary>A single custom emoji used as preview for the category.</summary>
 		public long icon_emoji_id;
 
+		/// <summary>Category name, i.e. "Animals", "Flags", "Faces" and so on...</summary>
 		public override string Title => title;
+		/// <summary>A single custom emoji used as preview for the category.</summary>
 		public override long IconEmojiId => icon_emoji_id;
 	}
 
-	/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messages.emojiGroups"/></para></summary>
+	/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/emoji-categories">emoji categories</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messages.emojiGroups"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></remarks>
 	[TLDef(0x881FB94B)]
 	public sealed partial class Messages_EmojiGroups : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public int hash;
-		/// <summary>A list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>.</summary>
+		/// <summary>A list of <a href="https://corefork.telegram.org/api/emoji-categories">emoji categories</a>.</summary>
 		public EmojiGroupBase[] groups;
 	}
 
@@ -16046,7 +16149,7 @@ namespace TL
 	[TLDef(0xDD18782E)]
 	public sealed partial class Help_AppConfig : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public int hash;
 		/// <summary><a href="https://corefork.telegram.org/api/config#client-configuration">Client configuration parameters</a></summary>
 		public JsonObject config;
@@ -17343,7 +17446,7 @@ namespace TL
 		public Flags flags;
 		/// <summary>Palette ID.</summary>
 		public int color_id;
-		/// <summary>Light mode palette. <br/>Will be empty for IDs <c>0</c> to <c>6</c> inclusive, in which case a palette containing a single color from the following colors should be used: red, orange, violet, green, cyan, blue, pink for indexes 0 to 6.</summary>
+		/// <summary>Light mode palette. <br/>Will be empty for IDs <c>0</c> to <c>6</c> inclusive, in which case a palette containing a single color from the following colors should be used: red, orange, violet, green, cyan, blue, pink for indexes 0 to 6 (i.e. the same colors used for randomized fallback <a href="https://corefork.telegram.org/api/colors">message accent colors</a>).</summary>
 		[IfFlag(1)] public Help_PeerColorSetBase colors;
 		/// <summary>Dark mode palette. Optional, defaults to the palette in <c>colors</c> (or the autogenerated palette for IDs <c>0</c> to <c>6</c>) if absent.</summary>
 		[IfFlag(2)] public Help_PeerColorSetBase dark_colors;
@@ -17372,7 +17475,7 @@ namespace TL
 	[TLDef(0x00F8ED08)]
 	public sealed partial class Help_PeerColors : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public int hash;
 		/// <summary>Usable <a href="https://corefork.telegram.org/api/colors">color palettes</a>.</summary>
 		public Help_PeerColorOption[] colors;
@@ -17530,18 +17633,19 @@ namespace TL
 	{
 		/// <summary>Saved reaction tags.</summary>
 		public SavedReactionTag[] tags;
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/outboxReadDate"/></para></summary>
+	/// <summary>Exact read date of a private message we sent to another user.		<para>See <a href="https://corefork.telegram.org/constructor/outboxReadDate"/></para></summary>
 	[TLDef(0x3BB842AC)]
 	public sealed partial class OutboxReadDate : IObject
 	{
+		/// <summary>UNIX timestamp with the read date.</summary>
 		public DateTime date;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/smsjobs.EligibilityToJoin"/></para>		<para>Derived classes: <see cref="Smsjobs_EligibleToJoin"/></para></summary>
+	/// <summary>SMS jobs eligibility		<para>See <a href="https://corefork.telegram.org/type/smsjobs.EligibilityToJoin"/></para>		<para>Derived classes: <see cref="Smsjobs_EligibleToJoin"/></para></summary>
 	public abstract partial class Smsjobs_EligibilityToJoin : IObject { }
 	/// <summary>SMS jobs eligibility		<para>See <a href="https://corefork.telegram.org/constructor/smsjobs.eligibleToJoin"/></para></summary>
 	[TLDef(0xDC8B44CF)]
@@ -17641,7 +17745,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>Specifies the chats that <strong>can</strong> receive Telegram Business <a href="https://corefork.telegram.org/api/business#away-message">away »</a> and <a href="https://corefork.telegram.org/api/business#greeting-message">greeting »</a> messages.		<para>See <a href="https://corefork.telegram.org/constructor/inputBusinessRecipients"/></para></summary>
+	/// <summary>Specifies the chats that <strong>can</strong> receive Telegram Business <a href="https://corefork.telegram.org/api/business#away-messages">away »</a> and <a href="https://corefork.telegram.org/api/business#greeting-messages">greeting »</a> messages.		<para>See <a href="https://corefork.telegram.org/constructor/inputBusinessRecipients"/></para></summary>
 	[TLDef(0x6F8B32AA)]
 	public sealed partial class InputBusinessRecipients : IObject
 	{
@@ -17667,7 +17771,7 @@ namespace TL
 		}
 	}
 
-	/// <summary>Specifies the chats that <strong>can</strong> receive Telegram Business <a href="https://corefork.telegram.org/api/business#away-message">away »</a> and <a href="https://corefork.telegram.org/api/business#greeting-message">greeting »</a> messages.		<para>See <a href="https://corefork.telegram.org/constructor/businessRecipients"/></para></summary>
+	/// <summary>Specifies the chats that <strong>can</strong> receive Telegram Business <a href="https://corefork.telegram.org/api/business#away-messages">away »</a> and <a href="https://corefork.telegram.org/api/business#greeting-messages">greeting »</a> messages.		<para>See <a href="https://corefork.telegram.org/constructor/businessRecipients"/></para></summary>
 	[TLDef(0x21108FF7)]
 	public sealed partial class BusinessRecipients : IObject
 	{
@@ -17693,7 +17797,7 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/BusinessAwayMessageSchedule"/></para>		<para>Derived classes: <see cref="BusinessAwayMessageScheduleAlways"/>, <see cref="BusinessAwayMessageScheduleOutsideWorkHours"/>, <see cref="BusinessAwayMessageScheduleCustom"/></para></summary>
+	/// <summary>Specifies when should the <a href="https://corefork.telegram.org/api/business#away-messages">Telegram Business away messages</a> be sent.		<para>See <a href="https://corefork.telegram.org/type/BusinessAwayMessageSchedule"/></para>		<para>Derived classes: <see cref="BusinessAwayMessageScheduleAlways"/>, <see cref="BusinessAwayMessageScheduleOutsideWorkHours"/>, <see cref="BusinessAwayMessageScheduleCustom"/></para></summary>
 	public abstract partial class BusinessAwayMessageSchedule : IObject { }
 	/// <summary>Always send <a href="https://corefork.telegram.org/api/business#away-messages">Telegram Business away messages</a> to users writing to us in private.		<para>See <a href="https://corefork.telegram.org/constructor/businessAwayMessageScheduleAlways"/></para></summary>
 	[TLDef(0xC9B9E2B9)]
@@ -17794,7 +17898,7 @@ namespace TL
 	{
 		/// <summary>Timezones</summary>
 		public Timezone[] timezones;
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public int hash;
 	}
 
@@ -17812,16 +17916,16 @@ namespace TL
 		public int count;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputQuickReplyShortcut"/></para>		<para>Derived classes: <see cref="InputQuickReplyShortcut"/>, <see cref="InputQuickReplyShortcutId"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>.		<para>See <a href="https://corefork.telegram.org/type/InputQuickReplyShortcut"/></para>		<para>Derived classes: <see cref="InputQuickReplyShortcut"/>, <see cref="InputQuickReplyShortcutId"/></para></summary>
 	public abstract partial class InputQuickReplyShortcutBase : IObject { }
-	/// <summary>Selects a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcut">quick reply shortcut</a> by name.		<para>See <a href="https://corefork.telegram.org/constructor/inputQuickReplyShortcut"/></para></summary>
+	/// <summary>Selects a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut</a> by name.		<para>See <a href="https://corefork.telegram.org/constructor/inputQuickReplyShortcut"/></para></summary>
 	[TLDef(0x24596D41)]
 	public sealed partial class InputQuickReplyShortcut : InputQuickReplyShortcutBase
 	{
 		/// <summary>Shortcut name.</summary>
 		public string shortcut;
 	}
-	/// <summary>Selects a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcut">quick reply shortcut</a> by its numeric ID.		<para>See <a href="https://corefork.telegram.org/constructor/inputQuickReplyShortcutId"/></para></summary>
+	/// <summary>Selects a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut</a> by its numeric ID.		<para>See <a href="https://corefork.telegram.org/constructor/inputQuickReplyShortcutId"/></para></summary>
 	[TLDef(0x01190CF1)]
 	public sealed partial class InputQuickReplyShortcutId : InputQuickReplyShortcutBase
 	{
@@ -17874,16 +17978,18 @@ namespace TL
 		public Dictionary<long, User> users;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.dialogFilters"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/folders">Folder and folder tags</a> information		<para>See <a href="https://corefork.telegram.org/constructor/messages.dialogFilters"/></para></summary>
 	[TLDef(0x2AD93719)]
 	public sealed partial class Messages_DialogFilters : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Folders.</summary>
 		public DialogFilterBase[] filters;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether <a href="https://corefork.telegram.org/api/folders#folder-tags">folder tags</a> are enabled.</summary>
 			tags_enabled = 0x1,
 		}
 	}
@@ -17932,14 +18038,17 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputBusinessIntro"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/business#business-introduction">Telegram Business introduction »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/inputBusinessIntro"/></para></summary>
 	[TLDef(0x09C469CD)]
 	public sealed partial class InputBusinessIntro : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Title of the introduction message</summary>
 		public string title;
+		/// <summary>Profile introduction</summary>
 		public string description;
+		/// <summary>Optional introduction <a href="https://corefork.telegram.org/api/stickers">sticker</a>.</summary>
 		[IfFlag(0)] public InputDocument sticker;
 
 		[Flags] public enum Flags : uint
@@ -17949,14 +18058,17 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessIntro"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/business#business-introduction">Telegram Business introduction »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/businessIntro"/></para></summary>
 	[TLDef(0x5A0A066D)]
 	public sealed partial class BusinessIntro : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Title of the introduction message</summary>
 		public string title;
+		/// <summary>Profile introduction</summary>
 		public string description;
+		/// <summary>Optional introduction <a href="https://corefork.telegram.org/api/stickers">sticker</a>.</summary>
 		[IfFlag(0)] public DocumentBase sticker;
 
 		[Flags] public enum Flags : uint
@@ -17966,38 +18078,48 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.myStickers"/></para></summary>
+	/// <summary>The list of <a href="https://corefork.telegram.org/api/stickers">stickersets owned by the current account »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messages.myStickers"/></para></summary>
 	[TLDef(0xFAFF629D)]
 	public sealed partial class Messages_MyStickers : IObject
 	{
+		/// <summary>Total number of owned stickersets.</summary>
 		public int count;
+		/// <summary>Stickersets</summary>
 		public StickerSetCoveredBase[] sets;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputCollectible"/></para>		<para>Derived classes: <see cref="InputCollectibleUsername"/>, <see cref="InputCollectiblePhone"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/fragment">Fragment collectible »</a>.		<para>See <a href="https://corefork.telegram.org/type/InputCollectible"/></para>		<para>Derived classes: <see cref="InputCollectibleUsername"/>, <see cref="InputCollectiblePhone"/></para></summary>
 	public abstract partial class InputCollectible : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputCollectibleUsername"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/fragment">username fragment collectible</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputCollectibleUsername"/></para></summary>
 	[TLDef(0xE39460A9)]
 	public sealed partial class InputCollectibleUsername : InputCollectible
 	{
+		/// <summary>Username</summary>
 		public string username;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputCollectiblePhone"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/fragment">phone number fragment collectible</a>		<para>See <a href="https://corefork.telegram.org/constructor/inputCollectiblePhone"/></para></summary>
 	[TLDef(0xA2E214A4)]
 	public sealed partial class InputCollectiblePhone : InputCollectible
 	{
+		/// <summary>Phone number</summary>
 		public string phone;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/fragment.collectibleInfo"/></para></summary>
+	/// <summary>Info about a <a href="https://corefork.telegram.org/api/fragment">fragment collectible</a>.		<para>See <a href="https://corefork.telegram.org/constructor/fragment.collectibleInfo"/></para></summary>
 	[TLDef(0x6EBDFF91)]
 	public sealed partial class Fragment_CollectibleInfo : IObject
 	{
+		/// <summary>Purchase date (unixtime)</summary>
 		public DateTime purchase_date;
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code for <c>amount</c></summary>
 		public string currency;
+		/// <summary>Total price in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long amount;
+		/// <summary>Cryptocurrency name.</summary>
 		public string crypto_currency;
+		/// <summary>Price, in the smallest units of the cryptocurrency.</summary>
 		public long crypto_amount;
+		/// <summary><a href="https://fragment.com">Fragment</a> URL with more info about the collectible</summary>
 		public string url;
 	}
 
@@ -18197,18 +18319,23 @@ namespace TL
 		public IPeerInfo UserOrChat => peer?.UserOrChat(users, chats);
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/RequestedPeer"/></para>		<para>Derived classes: <see cref="RequestedPeerUser"/>, <see cref="RequestedPeerChat"/>, <see cref="RequestedPeerChannel"/></para></summary>
+	/// <summary>Info about a peer, shared by a user with the currently logged in bot using <see cref="SchemaExtensions.Messages_SendBotRequestedPeer">Messages_SendBotRequestedPeer</see>.		<para>See <a href="https://corefork.telegram.org/type/RequestedPeer"/></para>		<para>Derived classes: <see cref="RequestedPeerUser"/>, <see cref="RequestedPeerChat"/>, <see cref="RequestedPeerChannel"/></para></summary>
 	public abstract partial class RequestedPeer : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/requestedPeerUser"/></para></summary>
+	/// <summary>Info about a user, shared by a user with the currently logged in bot using <see cref="SchemaExtensions.Messages_SendBotRequestedPeer">Messages_SendBotRequestedPeer</see>.		<para>See <a href="https://corefork.telegram.org/constructor/requestedPeerUser"/></para></summary>
 	[TLDef(0xD62FF46A)]
 	public sealed partial class RequestedPeerUser : RequestedPeer
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>User ID.</summary>
 		public long user_id;
+		/// <summary>First name.</summary>
 		[IfFlag(0)] public string first_name;
+		/// <summary>Last name.</summary>
 		[IfFlag(0)] public string last_name;
+		/// <summary>Username.</summary>
 		[IfFlag(1)] public string username;
+		/// <summary>Profile photo.</summary>
 		[IfFlag(2)] public PhotoBase photo;
 
 		[Flags] public enum Flags : uint
@@ -18221,14 +18348,17 @@ namespace TL
 			has_photo = 0x4,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/requestedPeerChat"/></para></summary>
+	/// <summary>Info about a <a href="https://corefork.telegram.org/api/channel">chat</a>, shared by a user with the currently logged in bot using <see cref="SchemaExtensions.Messages_SendBotRequestedPeer">Messages_SendBotRequestedPeer</see>.		<para>See <a href="https://corefork.telegram.org/constructor/requestedPeerChat"/></para></summary>
 	[TLDef(0x7307544F)]
 	public sealed partial class RequestedPeerChat : RequestedPeer
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Chat ID.</summary>
 		public long chat_id;
+		/// <summary>Chat title.</summary>
 		[IfFlag(0)] public string title;
+		/// <summary>Chat photo.</summary>
 		[IfFlag(2)] public PhotoBase photo;
 
 		[Flags] public enum Flags : uint
@@ -18239,15 +18369,19 @@ namespace TL
 			has_photo = 0x4,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/requestedPeerChannel"/></para></summary>
+	/// <summary>Info about a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>, shared by a user with the currently logged in bot using <see cref="SchemaExtensions.Messages_SendBotRequestedPeer">Messages_SendBotRequestedPeer</see>.		<para>See <a href="https://corefork.telegram.org/constructor/requestedPeerChannel"/></para></summary>
 	[TLDef(0x8BA403E4)]
 	public sealed partial class RequestedPeerChannel : RequestedPeer
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Channel/supergroup ID.</summary>
 		public long channel_id;
+		/// <summary>Channel/supergroup title.</summary>
 		[IfFlag(0)] public string title;
+		/// <summary>Channel/supergroup username.</summary>
 		[IfFlag(1)] public string username;
+		/// <summary>Channel/supergroup photo.</summary>
 		[IfFlag(2)] public PhotoBase photo;
 
 		[Flags] public enum Flags : uint
@@ -18261,112 +18395,140 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/sponsoredMessageReportOption"/></para></summary>
+	/// <summary>A <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">report option for a sponsored message »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/sponsoredMessageReportOption"/></para></summary>
 	[TLDef(0x430D3150)]
 	public sealed partial class SponsoredMessageReportOption : IObject
 	{
+		/// <summary>Localized description of the option.</summary>
 		public string text;
+		/// <summary>Option identifier to pass to <see cref="SchemaExtensions.Channels_ReportSponsoredMessage">Channels_ReportSponsoredMessage</see>.</summary>
 		public byte[] option;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/channels.SponsoredMessageReportResult"/></para>		<para>Derived classes: <see cref="Channels_SponsoredMessageReportResultChooseOption"/>, <see cref="Channels_SponsoredMessageReportResultAdsHidden"/>, <see cref="Channels_SponsoredMessageReportResultReported"/></para></summary>
+	/// <summary>Status of the method call used to report a <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message »</a>.		<para>See <a href="https://corefork.telegram.org/type/channels.SponsoredMessageReportResult"/></para>		<para>Derived classes: <see cref="Channels_SponsoredMessageReportResultChooseOption"/>, <see cref="Channels_SponsoredMessageReportResultAdsHidden"/>, <see cref="Channels_SponsoredMessageReportResultReported"/></para></summary>
 	public abstract partial class Channels_SponsoredMessageReportResult : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channels.sponsoredMessageReportResultChooseOption"/></para></summary>
+	/// <summary>The user must choose a report option from the localized options available in <c>options</c>, and after selection, <see cref="SchemaExtensions.Channels_ReportSponsoredMessage">Channels_ReportSponsoredMessage</see> must be invoked again, passing the option's <c>option</c> field to the <c>option</c> param of the method.		<para>See <a href="https://corefork.telegram.org/constructor/channels.sponsoredMessageReportResultChooseOption"/></para></summary>
 	[TLDef(0x846F9E42)]
 	public sealed partial class Channels_SponsoredMessageReportResultChooseOption : Channels_SponsoredMessageReportResult
 	{
+		/// <summary>Title of the option selection popup.</summary>
 		public string title;
+		/// <summary>Localized list of options.</summary>
 		public SponsoredMessageReportOption[] options;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channels.sponsoredMessageReportResultAdsHidden"/></para></summary>
+	/// <summary>Sponsored messages were hidden for the user in all chats.		<para>See <a href="https://corefork.telegram.org/constructor/channels.sponsoredMessageReportResultAdsHidden"/></para></summary>
 	[TLDef(0x3E3BCF2F)]
 	public sealed partial class Channels_SponsoredMessageReportResultAdsHidden : Channels_SponsoredMessageReportResult { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channels.sponsoredMessageReportResultReported"/></para></summary>
+	/// <summary>The sponsored message was reported successfully.		<para>See <a href="https://corefork.telegram.org/constructor/channels.sponsoredMessageReportResultReported"/></para></summary>
 	[TLDef(0xAD798849)]
 	public sealed partial class Channels_SponsoredMessageReportResultReported : Channels_SponsoredMessageReportResult { }
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stats.broadcastRevenueStats"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/revenue">Channel revenue ad statistics, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/stats.broadcastRevenueStats"/></para></summary>
 	[TLDef(0x5407E297)]
 	public sealed partial class Stats_BroadcastRevenueStats : IObject
 	{
+		/// <summary>Ad impressions graph</summary>
 		public StatsGraphBase top_hours_graph;
+		/// <summary>Ad revenue graph (in the smallest unit of the cryptocurrency in which revenue is calculated)</summary>
 		public StatsGraphBase revenue_graph;
+		/// <summary>Current balance, current withdrawable balance and overall revenue</summary>
 		public BroadcastRevenueBalances balances;
+		/// <summary>Current conversion rate of the cryptocurrency (<strong>not</strong> in the smallest unit) in which revenue is calculated to USD</summary>
 		public double usd_rate;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stats.broadcastRevenueWithdrawalUrl"/></para></summary>
+	/// <summary>Contains the URL to use to <a href="https://corefork.telegram.org/api/revenue#withdrawing-funds">withdraw channel ad revenue</a>.		<para>See <a href="https://corefork.telegram.org/constructor/stats.broadcastRevenueWithdrawalUrl"/></para></summary>
 	[TLDef(0xEC659737)]
 	public sealed partial class Stats_BroadcastRevenueWithdrawalUrl : IObject
 	{
+		/// <summary>A unique URL to a Fragment page where the user will be able to specify and submit the address of the TON wallet where the funds will be sent.</summary>
 		public string url;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/BroadcastRevenueTransaction"/></para>		<para>Derived classes: <see cref="BroadcastRevenueTransactionProceeds"/>, <see cref="BroadcastRevenueTransactionWithdrawal"/>, <see cref="BroadcastRevenueTransactionRefund"/></para></summary>
+	/// <summary>A <a href="https://corefork.telegram.org/api/revenue">channel ad revenue »</a> transaction.		<para>See <a href="https://corefork.telegram.org/type/BroadcastRevenueTransaction"/></para>		<para>Derived classes: <see cref="BroadcastRevenueTransactionProceeds"/>, <see cref="BroadcastRevenueTransactionWithdrawal"/>, <see cref="BroadcastRevenueTransactionRefund"/></para></summary>
 	public abstract partial class BroadcastRevenueTransaction : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/broadcastRevenueTransactionProceeds"/></para></summary>
+	/// <summary>Describes earnings from sponsored messages in a channel in some time frame, see <a href="https://corefork.telegram.org/api/revenue">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/broadcastRevenueTransactionProceeds"/></para></summary>
 	[TLDef(0x557E2CC4)]
 	public sealed partial class BroadcastRevenueTransactionProceeds : BroadcastRevenueTransaction
 	{
+		/// <summary>Amount in the smallest unit of the cryptocurrency.</summary>
 		public long amount;
+		/// <summary>Start unixtime for the timeframe.</summary>
 		public DateTime from_date;
+		/// <summary>End unixtime for the timeframe.</summary>
 		public DateTime to_date;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/broadcastRevenueTransactionWithdrawal"/></para></summary>
+	/// <summary>Describes a <a href="https://corefork.telegram.org/api/revenue#withdrawing-funds">withdrawal of ad earnings »</a>		<para>See <a href="https://corefork.telegram.org/constructor/broadcastRevenueTransactionWithdrawal"/></para></summary>
 	[TLDef(0x5A590978)]
 	public sealed partial class BroadcastRevenueTransactionWithdrawal : BroadcastRevenueTransaction
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Amount withdrawn</summary>
 		public long amount;
+		/// <summary>Withdrawal date</summary>
 		public DateTime date;
+		/// <summary>Payment provider name</summary>
 		public string provider;
+		/// <summary>If neither <c>pending</c> nor <c>failed</c> are set, the transaction was completed successfully, and this field will contain the point in time (Unix timestamp) when the withdrawal was completed successfully.</summary>
 		[IfFlag(1)] public DateTime transaction_date;
+		/// <summary>If neither <c>pending</c> nor <c>failed</c> are set, the transaction was completed successfully, and this field will contain a URL where the withdrawal transaction can be viewed.</summary>
 		[IfFlag(1)] public string transaction_url;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Whether the withdrawal is currently pending</summary>
 			pending = 0x1,
 			/// <summary>Fields <see cref="transaction_date"/> and <see cref="transaction_url"/> have a value</summary>
 			has_transaction_date = 0x2,
+			/// <summary>Whether the withdrawal has failed</summary>
 			failed = 0x4,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/broadcastRevenueTransactionRefund"/></para></summary>
+	/// <summary>Describes a <a href="https://corefork.telegram.org/api/revenue#withdrawing-funds">refund for failed withdrawal of ad earnings »</a>		<para>See <a href="https://corefork.telegram.org/constructor/broadcastRevenueTransactionRefund"/></para></summary>
 	[TLDef(0x42D30D2E)]
 	public sealed partial class BroadcastRevenueTransactionRefund : BroadcastRevenueTransaction
 	{
+		/// <summary>Amount refunded.</summary>
 		public long amount;
+		/// <summary>Date of refund.</summary>
 		public DateTime date;
+		/// <summary>Payment provider name.</summary>
 		public string provider;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stats.broadcastRevenueTransactions"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/revenue">Channel ad revenue transactions »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/stats.broadcastRevenueTransactions"/></para></summary>
 	[TLDef(0x87158466)]
 	public sealed partial class Stats_BroadcastRevenueTransactions : IObject
 	{
+		/// <summary>Total number of transactions.</summary>
 		public int count;
+		/// <summary>Transactions</summary>
 		public BroadcastRevenueTransaction[] transactions;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/ReactionNotificationsFrom"/></para></summary>
+	/// <summary>Reaction notification settings		<para>See <a href="https://corefork.telegram.org/type/ReactionNotificationsFrom"/></para></summary>
 	public enum ReactionNotificationsFrom : uint
 	{
-		///<summary>See <a href="https://corefork.telegram.org/constructor/reactionNotificationsFromContacts"/></summary>
+		///<summary>Receive notifications about reactions made only by our contacts.</summary>
 		Contacts = 0xBAC3A61A,
-		///<summary>See <a href="https://corefork.telegram.org/constructor/reactionNotificationsFromAll"/></summary>
+		///<summary>Receive notifications about reactions made by any user.</summary>
 		All = 0x4B9E22A0,
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/reactionsNotifySettings"/></para></summary>
+	/// <summary>Reaction notification settings, see <a href="https://corefork.telegram.org/api/reactions#notifications-about-reactions">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/reactionsNotifySettings"/></para></summary>
 	[TLDef(0x56E34970)]
 	public sealed partial class ReactionsNotifySettings : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Message reaction notification settings, if not set completely disables notifications/updates about message reactions.</summary>
 		[IfFlag(0)] public ReactionNotificationsFrom messages_notify_from;
+		/// <summary>Story reaction notification settings, if not set completely disables notifications/updates about reactions to stories.</summary>
 		[IfFlag(1)] public ReactionNotificationsFrom stories_notify_from;
+		/// <summary><a href="https://corefork.telegram.org/api/ringtones">Notification sound for reactions »</a></summary>
 		public NotificationSound sound;
+		/// <summary>If false, <a href="https://corefork.telegram.org/api/push-updates">push notifications »</a> about message/story reactions will only be of type <c>REACT_HIDDEN</c>/<c>REACT_STORY_HIDDEN</c>, without any information about the reacted-to story or the reaction itself.</summary>
 		public bool show_previews;
 
 		[Flags] public enum Flags : uint
@@ -18378,25 +18540,33 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/broadcastRevenueBalances"/></para></summary>
+	/// <summary>Describes <a href="https://corefork.telegram.org/api/revenue">channel ad revenue balances »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/broadcastRevenueBalances"/></para></summary>
 	[TLDef(0x8438F1C6)]
 	public sealed partial class BroadcastRevenueBalances : IObject
 	{
+		/// <summary>Amount of not-yet-withdrawn cryptocurrency.</summary>
 		public long current_balance;
+		/// <summary>Amount of withdrawable cryptocurrency, out of the currently available balance (<c>available_balance &lt;= current_balance</c>).</summary>
 		public long available_balance;
+		/// <summary>Total amount of earned cryptocurrency.</summary>
 		public long overall_revenue;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/availableEffect"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/effects">message effect »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/availableEffect"/></para></summary>
 	[TLDef(0x93C3E27E)]
 	public sealed partial class AvailableEffect : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Unique effect ID.</summary>
 		public long id;
+		/// <summary>Emoji corresponding to the effect, to be used as icon for the effect if <c>static_icon_id</c> is not set.</summary>
 		public string emoticon;
+		/// <summary>ID of the document containing the static icon (WEBP) of the effect.</summary>
 		[IfFlag(0)] public long static_icon_id;
+		/// <summary>Contains the preview <a href="https://corefork.telegram.org/api/stickers#animated-stickers">animation (TGS format »)</a>, used for the effect selection menu.</summary>
 		public long effect_sticker_id;
+		/// <summary>If set, contains the actual animated effect <a href="https://corefork.telegram.org/api/stickers#animated-stickers">(TGS format »)</a>. If not set, the animated effect must be set equal to the <a href="https://corefork.telegram.org/api/stickers#premium-animated-sticker-effects">premium animated sticker effect</a> associated to the animated sticker specified in <c>effect_sticker_id</c> (always different from the preview animation, fetched thanks to the <see cref="VideoSize"/> of type <c>f</c> as specified <a href="https://corefork.telegram.org/api/stickers#premium-animated-sticker-effects">here »</a>).</summary>
 		[IfFlag(1)] public long effect_animation_id;
 
 		[Flags] public enum Flags : uint
@@ -18405,30 +18575,35 @@ namespace TL
 			has_static_icon_id = 0x1,
 			/// <summary>Field <see cref="effect_animation_id"/> has a value</summary>
 			has_effect_animation_id = 0x2,
+			/// <summary>Whether a <a href="https://corefork.telegram.org/api/premium">Premium</a> subscription is required to use this effect.</summary>
 			premium_required = 0x4,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.availableEffects"/></para></summary>
+	/// <summary>The full list of usable <a href="https://corefork.telegram.org/api/effects">animated message effects »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messages.availableEffects"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/messages.availableEffectsNotModified">messages.availableEffectsNotModified</a></remarks>
 	[TLDef(0xBDDB616E)]
 	public sealed partial class Messages_AvailableEffects : IObject
 	{
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public int hash;
+		/// <summary>Message effects</summary>
 		public AvailableEffect[] effects;
+		/// <summary>Documents specified in the <c>effects</c> constructors.</summary>
 		public DocumentBase[] documents;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/factCheck"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/factcheck">fact-check »</a> created by an independent fact-checker.		<para>See <a href="https://corefork.telegram.org/constructor/factCheck"/></para></summary>
 	[TLDef(0xB89BFCCF)]
 	public sealed partial class FactCheck : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>A two-letter ISO 3166-1 alpha-2 country code of the country for which the fact-check should be shown.</summary>
 		[IfFlag(1)] public string country;
+		/// <summary>The fact-check.</summary>
 		[IfFlag(1)] public TextWithEntities text;
-		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public long hash;
 
 		[Flags] public enum Flags : uint
@@ -18439,64 +18614,77 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/StarsTransactionPeer"/></para>		<para>Derived classes: <see cref="StarsTransactionPeerUnsupported"/>, <see cref="StarsTransactionPeerAppStore"/>, <see cref="StarsTransactionPeerPlayMarket"/>, <see cref="StarsTransactionPeerPremiumBot"/>, <see cref="StarsTransactionPeerFragment"/>, <see cref="StarsTransactionPeer"/></para></summary>
+	/// <summary>Source of an incoming <a href="https://corefork.telegram.org/api/stars">Telegram Star transaction</a>, or its recipient for outgoing <a href="https://corefork.telegram.org/api/stars">Telegram Star transactions</a>.		<para>See <a href="https://corefork.telegram.org/type/StarsTransactionPeer"/></para>		<para>Derived classes: <see cref="StarsTransactionPeerUnsupported"/>, <see cref="StarsTransactionPeerAppStore"/>, <see cref="StarsTransactionPeerPlayMarket"/>, <see cref="StarsTransactionPeerPremiumBot"/>, <see cref="StarsTransactionPeerFragment"/>, <see cref="StarsTransactionPeer"/></para></summary>
 	public abstract partial class StarsTransactionPeerBase : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerUnsupported"/></para></summary>
+	/// <summary>Describes a <a href="https://corefork.telegram.org/api/stars">Telegram Star</a> transaction that cannot be described using the current layer.		<para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerUnsupported"/></para></summary>
 	[TLDef(0x95F2BFE4)]
 	public sealed partial class StarsTransactionPeerUnsupported : StarsTransactionPeerBase { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerAppStore"/></para></summary>
+	/// <summary>Describes a <a href="https://corefork.telegram.org/api/stars">Telegram Star</a> transaction with the App Store, used when purchasing Telegram Stars through the App Store.		<para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerAppStore"/></para></summary>
 	[TLDef(0xB457B375)]
 	public sealed partial class StarsTransactionPeerAppStore : StarsTransactionPeerBase { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerPlayMarket"/></para></summary>
+	/// <summary>Describes a <a href="https://corefork.telegram.org/api/stars">Telegram Star</a> transaction with the Play Store, used when purchasing Telegram Stars through the Play Store.		<para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerPlayMarket"/></para></summary>
 	[TLDef(0x7B560A0B)]
 	public sealed partial class StarsTransactionPeerPlayMarket : StarsTransactionPeerBase { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerPremiumBot"/></para></summary>
 	[TLDef(0x250DBAF8)]
 	public sealed partial class StarsTransactionPeerPremiumBot : StarsTransactionPeerBase { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerFragment"/></para></summary>
+	/// <summary>Describes a <a href="https://corefork.telegram.org/api/stars">Telegram Star</a> transaction with <a href="https://fragment.com">Fragment</a>, used when purchasing Telegram Stars through <a href="https://fragment.com">Fragment</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerFragment"/></para></summary>
 	[TLDef(0xE92FD902)]
 	public sealed partial class StarsTransactionPeerFragment : StarsTransactionPeerBase { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeer"/></para></summary>
+	/// <summary>Describes a <a href="https://corefork.telegram.org/api/stars">Telegram Star</a> transaction with another peer (usually a bot or a channel).		<para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeer"/></para></summary>
 	[TLDef(0xD80DA15D)]
 	public sealed partial class StarsTransactionPeer : StarsTransactionPeerBase
 	{
+		/// <summary>The peer.</summary>
 		public Peer peer;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerAds"/></para></summary>
 	[TLDef(0x60682812)]
 	public sealed partial class StarsTransactionPeerAds : StarsTransactionPeerBase { }
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTopupOption"/></para></summary>
+	/// <summary><a href="https://corefork.telegram.org/api/stars">Telegram Stars topup option</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starsTopupOption"/></para></summary>
 	[TLDef(0x0BD915C0)]
 	public sealed partial class StarsTopupOption : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Amount of Telegram stars.</summary>
 		public long stars;
+		/// <summary>Identifier of the store product associated with the option, official apps only.</summary>
 		[IfFlag(0)] public string store_product;
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
 		public string currency;
+		/// <summary>Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long amount;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="store_product"/> has a value</summary>
 			has_store_product = 0x1,
+			/// <summary>If set, the option must only be shown in the full list of topup options.</summary>
 			extended = 0x2,
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransaction"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/stars">Telegram Stars transaction »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starsTransaction"/></para></summary>
 	[TLDef(0x2DB5418F)]
 	public sealed partial class StarsTransaction : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Transaction ID.</summary>
 		public string id;
+		/// <summary>Amount of Stars (negative for outgoing transactions).</summary>
 		public long stars;
+		/// <summary>Date of the transaction (unixtime).</summary>
 		public DateTime date;
+		/// <summary>Source of the incoming transaction, or its recipient for outgoing transactions.</summary>
 		public StarsTransactionPeerBase peer;
+		/// <summary>For transactions with bots, title of the bought product.</summary>
 		[IfFlag(0)] public string title;
+		/// <summary>For transactions with bots, description of the bought product.</summary>
 		[IfFlag(1)] public string description;
+		/// <summary>For transactions with bots, photo of the bought product.</summary>
 		[IfFlag(2)] public WebDocumentBase photo;
 		[IfFlag(5)] public DateTime transaction_date;
 		[IfFlag(5)] public string transaction_url;
@@ -18512,6 +18700,7 @@ namespace TL
 			has_description = 0x2,
 			/// <summary>Field <see cref="photo"/> has a value</summary>
 			has_photo = 0x4,
+			/// <summary>Whether this transaction is a refund.</summary>
 			refund = 0x8,
 			pending = 0x10,
 			/// <summary>Fields <see cref="transaction_date"/> and <see cref="transaction_url"/> have a value</summary>
@@ -18526,16 +18715,21 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.starsStatus"/></para></summary>
+	/// <summary>Info about the current <a href="https://corefork.telegram.org/api/stars#balance-and-transaction-history">Telegram Star balance and transaction history »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/payments.starsStatus"/></para></summary>
 	[TLDef(0x8CF4EE60)]
 	public sealed partial class Payments_StarsStatus : IObject, IPeerResolver
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Current Telegram Star balance.</summary>
 		public long balance;
+		/// <summary>List of Telegram Star transactions (partial if <c>next_offset</c> is set).</summary>
 		public StarsTransaction[] history;
+		/// <summary>Offset to use to fetch more transactions from the transaction history using <see cref="SchemaExtensions.Payments_GetStarsTransactions">Payments_GetStarsTransactions</see>.</summary>
 		[IfFlag(0)] public string next_offset;
+		/// <summary>Chats mentioned in <c>history</c>.</summary>
 		public Dictionary<long, ChatBase> chats;
+		/// <summary>Users mentioned in <c>history</c>.</summary>
 		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags : uint

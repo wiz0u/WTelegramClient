@@ -102,7 +102,10 @@ namespace TL
 				query = query,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/invokeWithGooglePlayIntegrity"/></para></summary>
+		/// <summary>Official clients only, invoke with Google Play Integrity token.		<para>See <a href="https://corefork.telegram.org/method/invokeWithGooglePlayIntegrity"/></para></summary>
+		/// <param name="nonce">Nonce.</param>
+		/// <param name="token">Token.</param>
+		/// <param name="query">Query.</param>
 		public static Task<X> InvokeWithGooglePlayIntegrity<X>(this Client client, string nonce, string token, IMethod<X> query)
 			=> client.Invoke(new InvokeWithGooglePlayIntegrity<X>
 			{
@@ -111,7 +114,10 @@ namespace TL
 				query = query,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/invokeWithApnsSecret"/></para></summary>
+		/// <summary>Official clients only, invoke with Apple push verification.		<para>See <a href="https://corefork.telegram.org/method/invokeWithApnsSecret"/></para></summary>
+		/// <param name="nonce">Nonce.</param>
+		/// <param name="secret">Secret.</param>
+		/// <param name="query">Query.</param>
 		public static Task<X> InvokeWithApnsSecret<X>(this Client client, string nonce, string secret, IMethod<X> query)
 			=> client.Invoke(new InvokeWithApnsSecret<X>
 			{
@@ -442,7 +448,7 @@ namespace TL
 			});
 
 		/// <summary>Returns a list of available <a href="https://corefork.telegram.org/api/wallpapers">wallpapers</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getWallPapers"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_WallPapers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_WallPapers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.wallPapersNotModified">account.wallPapersNotModified</a></returns>
 		public static Task<Account_WallPapers> Account_GetWallPapers(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetWallPapers
@@ -961,7 +967,7 @@ namespace TL
 
 		/// <summary>Get installed themes		<para>See <a href="https://corefork.telegram.org/method/account.getThemes"/></para></summary>
 		/// <param name="format">Theme format, a string that identifies the theming engines supported by the client</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_Themes"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_Themes"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.themesNotModified">account.themesNotModified</a></returns>
 		public static Task<Account_Themes> Account_GetThemes(this Client client, string format, long hash = default)
 			=> client.Invoke(new Account_GetThemes
@@ -1033,7 +1039,7 @@ namespace TL
 			});
 
 		/// <summary>Get all available chat <a href="https://corefork.telegram.org/api/themes">themes »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getChatThemes"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_Themes"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_Themes"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.themesNotModified">account.themesNotModified</a></returns>
 		public static Task<Account_Themes> Account_GetChatThemes(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetChatThemes
@@ -1064,7 +1070,7 @@ namespace TL
 			});
 
 		/// <summary>Fetch saved notification sounds		<para>See <a href="https://corefork.telegram.org/method/account.getSavedRingtones"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_SavedRingtones"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_SavedRingtones"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.savedRingtonesNotModified">account.savedRingtonesNotModified</a></returns>
 		public static Task<Account_SavedRingtones> Account_GetSavedRingtones(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetSavedRingtones
@@ -1103,7 +1109,7 @@ namespace TL
 			});
 
 		/// <summary>Get a list of default suggested <a href="https://corefork.telegram.org/api/emoji-status">emoji statuses</a>		<para>See <a href="https://corefork.telegram.org/method/account.getDefaultEmojiStatuses"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_EmojiStatuses"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_EmojiStatuses"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.emojiStatusesNotModified">account.emojiStatusesNotModified</a></returns>
 		public static Task<Account_EmojiStatuses> Account_GetDefaultEmojiStatuses(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetDefaultEmojiStatuses
@@ -1112,7 +1118,7 @@ namespace TL
 			});
 
 		/// <summary>Get recently used <a href="https://corefork.telegram.org/api/emoji-status">emoji statuses</a>		<para>See <a href="https://corefork.telegram.org/method/account.getRecentEmojiStatuses"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_EmojiStatuses"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_EmojiStatuses"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.emojiStatusesNotModified">account.emojiStatusesNotModified</a></returns>
 		public static Task<Account_EmojiStatuses> Account_GetRecentEmojiStatuses(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetRecentEmojiStatuses
@@ -1145,7 +1151,7 @@ namespace TL
 			});
 
 		/// <summary>Get a set of suggested <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickers</a> that can be <a href="https://corefork.telegram.org/api/files#sticker-profile-pictures">used as profile picture</a>		<para>See <a href="https://corefork.telegram.org/method/account.getDefaultProfilePhotoEmojis"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="EmojiList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="EmojiList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
 		public static Task<EmojiList> Account_GetDefaultProfilePhotoEmojis(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetDefaultProfilePhotoEmojis
@@ -1154,7 +1160,7 @@ namespace TL
 			});
 
 		/// <summary>Get a set of suggested <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickers</a> that can be <a href="https://corefork.telegram.org/api/files#sticker-profile-pictures">used as group picture</a>		<para>See <a href="https://corefork.telegram.org/method/account.getDefaultGroupPhotoEmojis"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="EmojiList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="EmojiList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
 		public static Task<EmojiList> Account_GetDefaultGroupPhotoEmojis(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetDefaultGroupPhotoEmojis
@@ -1209,7 +1215,7 @@ namespace TL
 			});
 
 		/// <summary>Get a set of suggested <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickers</a> that can be used in an <a href="https://corefork.telegram.org/api/colors">accent color pattern</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getDefaultBackgroundEmojis"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="EmojiList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="EmojiList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
 		public static Task<EmojiList> Account_GetDefaultBackgroundEmojis(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetDefaultBackgroundEmojis
@@ -1218,7 +1224,7 @@ namespace TL
 			});
 
 		/// <summary>Get a list of default suggested <a href="https://corefork.telegram.org/api/emoji-status">channel emoji statuses</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getChannelDefaultEmojiStatuses"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_EmojiStatuses"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Account_EmojiStatuses"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.emojiStatusesNotModified">account.emojiStatusesNotModified</a></returns>
 		public static Task<Account_EmojiStatuses> Account_GetChannelDefaultEmojiStatuses(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetChannelDefaultEmojiStatuses
@@ -1227,7 +1233,7 @@ namespace TL
 			});
 
 		/// <summary>Returns fetch the full list of <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji IDs »</a> that cannot be used in <a href="https://corefork.telegram.org/api/emoji-status">channel emoji statuses »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getChannelRestrictedStatusEmojis"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="EmojiList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="EmojiList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
 		public static Task<EmojiList> Account_GetChannelRestrictedStatusEmojis(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetChannelRestrictedStatusEmojis
@@ -1300,7 +1306,8 @@ namespace TL
 				connection_id = connection_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.updateBusinessIntro"/></para></summary>
+		/// <summary>Set or remove the <a href="https://corefork.telegram.org/api/business#business-introduction">Telegram Business introduction »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.updateBusinessIntro"/></para></summary>
+		/// <param name="intro">Telegram Business introduction, to remove it call the method without setting this flag.</param>
 		public static Task<bool> Account_UpdateBusinessIntro(this Client client, InputBusinessIntro intro = null)
 			=> client.Invoke(new Account_UpdateBusinessIntro
 			{
@@ -1383,20 +1390,22 @@ namespace TL
 				channel = channel,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.toggleSponsoredMessages"/></para></summary>
+		/// <summary>Disable or re-enable Telegram ads for the current <a href="https://corefork.telegram.org/api/premium">Premium</a> account.		<para>See <a href="https://corefork.telegram.org/method/account.toggleSponsoredMessages"/></para></summary>
+		/// <param name="enabled">Enable or disable ads.</param>
 		public static Task<bool> Account_ToggleSponsoredMessages(this Client client, bool enabled)
 			=> client.Invoke(new Account_ToggleSponsoredMessages
 			{
 				enabled = enabled,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getReactionsNotifySettings"/></para></summary>
+		/// <summary>Get the current <a href="https://corefork.telegram.org/api/reactions#notifications-about-reactions">reaction notification settings »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getReactionsNotifySettings"/></para></summary>
 		public static Task<ReactionsNotifySettings> Account_GetReactionsNotifySettings(this Client client)
 			=> client.Invoke(new Account_GetReactionsNotifySettings
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.setReactionsNotifySettings"/></para></summary>
+		/// <summary>Change the <a href="https://corefork.telegram.org/api/reactions#notifications-about-reactions">reaction notification settings »</a>.		<para>See <a href="https://corefork.telegram.org/method/account.setReactionsNotifySettings"/></para></summary>
+		/// <param name="settings">New reaction notification settings.</param>
 		public static Task<ReactionsNotifySettings> Account_SetReactionsNotifySettings(this Client client, ReactionsNotifySettings settings)
 			=> client.Invoke(new Account_SetReactionsNotifySettings
 			{
@@ -1429,7 +1438,7 @@ namespace TL
 				errors = errors,
 			});
 
-		/// <summary>Check whether we can write to the specified user (non-<a href="https://corefork.telegram.org/api/premium">Premium</a> users only).		<para>See <a href="https://corefork.telegram.org/method/users.getIsPremiumRequiredToContact"/></para></summary>
+		/// <summary>Check whether we can write to the specified user (non-<a href="https://corefork.telegram.org/api/premium">Premium</a> users only), see <a href="https://corefork.telegram.org/api/privacy#require-premium-for-new-non-contact-users">here »</a> for more info on the full flow.		<para>See <a href="https://corefork.telegram.org/method/users.getIsPremiumRequiredToContact"/></para></summary>
 		/// <param name="id">Users to fetch info about.</param>
 		public static Task<bool[]> Users_GetIsPremiumRequiredToContact(this Client client, params InputUserBase[] id)
 			=> client.Invoke(new Users_GetIsPremiumRequiredToContact
@@ -1438,7 +1447,7 @@ namespace TL
 			});
 
 		/// <summary>Get the telegram IDs of all contacts.<br/>Returns an array of Telegram user IDs for all contacts (0 if a contact does not have an associated Telegram account or have hidden their account using privacy settings).		<para>See <a href="https://corefork.telegram.org/method/contacts.getContactIDs"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		public static Task<int[]> Contacts_GetContactIDs(this Client client, long hash = default)
 			=> client.Invoke(new Contacts_GetContactIDs
 			{
@@ -1452,7 +1461,7 @@ namespace TL
 			});
 
 		/// <summary>Returns the current user's contact list.		<para>See <a href="https://corefork.telegram.org/method/contacts.getContacts"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/>Note that the hash is computed <a href="https://corefork.telegram.org/api/offsets#hash-generation">using the usual algorithm</a>, passing to the algorithm first the previously returned <see cref="Contacts_Contacts"/>.<c>saved_count</c> field, then max <c>100000</c> sorted user IDs from the contact list, including the ID of the currently logged in user if it is saved as a contact. <br/>Example: <a href="https://github.com/tdlib/td/blob/63c7d0301825b78c30dc7307f1f1466be049eb79/td/telegram/UserManager.cpp#L5754">tdlib implementation</a>.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/>Note that the hash is computed <a href="https://corefork.telegram.org/api/offsets#hash-generation">using the usual algorithm</a>, passing to the algorithm first the previously returned <see cref="Contacts_Contacts"/>.<c>saved_count</c> field, then max <c>100000</c> sorted user IDs from the contact list, including the ID of the currently logged in user if it is saved as a contact. <br/>Example: <a href="https://github.com/tdlib/td/blob/63c7d0301825b78c30dc7307f1f1466be049eb79/td/telegram/UserManager.cpp#L5754">tdlib implementation</a>.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/contacts.contactsNotModified">contacts.contactsNotModified</a></returns>
 		public static Task<Contacts_Contacts> Contacts_GetContacts(this Client client, long hash = default)
 			=> client.Invoke(new Contacts_GetContacts
@@ -1545,7 +1554,7 @@ namespace TL
 		/// <param name="channels">Most frequently visited channels</param>
 		/// <param name="offset">Offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/contacts.topPeersNotModified">contacts.topPeersNotModified</a></returns>
 		public static Task<Contacts_TopPeersBase> Contacts_GetTopPeers(this Client client, int offset = default, int limit = int.MaxValue, long hash = default, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false)
 			=> client.Invoke(new Contacts_GetTopPeers
@@ -1697,7 +1706,7 @@ namespace TL
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a> (<c>top_message</c> ID used for pagination)</param>
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offset peer for pagination</a></param>
 		/// <param name="limit">Number of list elements to be returned</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		public static Task<Messages_DialogsBase> Messages_GetDialogs(this Client client, DateTime offset_date = default, int offset_id = default, InputPeer offset_peer = null, int limit = int.MaxValue, long hash = default, int? folder_id = null, bool exclude_pinned = false)
 			=> client.Invoke(new Messages_GetDialogs
 			{
@@ -1737,6 +1746,7 @@ namespace TL
 		/// <param name="q">Text search request</param>
 		/// <param name="from_id">Only return messages sent by the specified user ID</param>
 		/// <param name="saved_peer_id">Search within the <a href="https://corefork.telegram.org/api/saved-messages">saved message dialog »</a> with this ID.</param>
+		/// <param name="saved_reaction">You may search for <a href="https://corefork.telegram.org/api/saved-messages#tags">saved messages tagged »</a> with one or more reactions using this flag.</param>
 		/// <param name="top_msg_id"><a href="https://corefork.telegram.org/api/threads">Thread ID</a></param>
 		/// <param name="filter">Filter to return only specified message types</param>
 		/// <param name="min_date">If a positive value was transferred, only messages with a sending date bigger than the transferred one will be returned</param>
@@ -1843,6 +1853,7 @@ namespace TL
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
+		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
 		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMessage
 			{
@@ -1876,6 +1887,7 @@ namespace TL
 		/// <param name="schedule_date">Scheduled message date for <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a></param>
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
+		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
 		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMedia
 			{
@@ -2157,7 +2169,7 @@ namespace TL
 
 		/// <summary>Get stickers by emoji		<para>See <a href="https://corefork.telegram.org/method/messages.getStickers"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getStickers#possible-errors">details</a>)</para></summary>
 		/// <param name="emoticon">The emoji</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_Stickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_Stickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickersNotModified">messages.stickersNotModified</a></returns>
 		public static Task<Messages_Stickers> Messages_GetStickers(this Client client, string emoticon, long hash = default)
 			=> client.Invoke(new Messages_GetStickers
@@ -2167,7 +2179,7 @@ namespace TL
 			});
 
 		/// <summary>Get all installed stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getAllStickers"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_AllStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_AllStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.allStickersNotModified">messages.allStickersNotModified</a></returns>
 		public static Task<Messages_AllStickers> Messages_GetAllStickers(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetAllStickers
@@ -2222,7 +2234,7 @@ namespace TL
 
 		/// <summary>Get info about a stickerset		<para>See <a href="https://corefork.telegram.org/method/messages.getStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/messages.getStickerSet#possible-errors">details</a>)</para></summary>
 		/// <param name="stickerset">Stickerset</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.stickerSetNotModified">messages.stickerSetNotModified</a></returns>
 		public static Task<Messages_StickerSet> Messages_GetStickerSet(this Client client, InputStickerSet stickerset, int hash = default)
 			=> client.Invoke(new Messages_GetStickerSet
@@ -2296,6 +2308,7 @@ namespace TL
 			});
 
 		/// <summary>Search for messages and peers globally		<para>See <a href="https://corefork.telegram.org/method/messages.searchGlobal"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.searchGlobal#possible-errors">details</a>)</para></summary>
+		/// <param name="broadcasts_only">If set, only returns results from channels (used in the <a href="https://corefork.telegram.org/api/search#global-search">global channel search tab »</a>).</param>
 		/// <param name="folder_id"><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></param>
 		/// <param name="q">Query</param>
 		/// <param name="filter">Global search filter</param>
@@ -2344,7 +2357,7 @@ namespace TL
 			});
 
 		/// <summary>Get saved GIFs.		<para>See <a href="https://corefork.telegram.org/method/messages.getSavedGifs"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_SavedGifs"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_SavedGifs"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.savedGifsNotModified">messages.savedGifsNotModified</a></returns>
 		public static Task<Messages_SavedGifs> Messages_GetSavedGifs(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetSavedGifs
@@ -2548,7 +2561,7 @@ namespace TL
 			});
 
 		/// <summary>Get featured stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getFeaturedStickers"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FeaturedStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FeaturedStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		public static Task<Messages_FeaturedStickersBase> Messages_GetFeaturedStickers(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetFeaturedStickers
 			{
@@ -2565,7 +2578,7 @@ namespace TL
 
 		/// <summary>Get recent stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getRecentStickers"/></para></summary>
 		/// <param name="attached">Get stickers recently attached to photo or video files</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_RecentStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_RecentStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.recentStickersNotModified">messages.recentStickersNotModified</a></returns>
 		public static Task<Messages_RecentStickers> Messages_GetRecentStickers(this Client client, long hash = default, bool attached = false)
 			=> client.Invoke(new Messages_GetRecentStickers
@@ -2608,7 +2621,7 @@ namespace TL
 			});
 
 		/// <summary>Get installed mask stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getMaskStickers"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_AllStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_AllStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.allStickersNotModified">messages.allStickersNotModified</a></returns>
 		public static Task<Messages_AllStickers> Messages_GetMaskStickers(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetMaskStickers
@@ -2692,7 +2705,7 @@ namespace TL
 
 		/// <summary>Get <a href="https://instantview.telegram.org">instant view</a> page		<para>See <a href="https://corefork.telegram.org/method/messages.getWebPage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getWebPage#possible-errors">details</a>)</para></summary>
 		/// <param name="url">URL of IV page to fetch</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		public static Task<Messages_WebPage> Messages_GetWebPage(this Client client, string url, int hash = default)
 			=> client.Invoke(new Messages_GetWebPage
 			{
@@ -2782,7 +2795,7 @@ namespace TL
 			});
 
 		/// <summary>Get faved stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getFavedStickers"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FavedStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FavedStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.favedStickersNotModified">messages.favedStickersNotModified</a></returns>
 		public static Task<Messages_FavedStickers> Messages_GetFavedStickers(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetFavedStickers
@@ -2835,7 +2848,7 @@ namespace TL
 		/// <summary>Get live location history of a certain user		<para>See <a href="https://corefork.telegram.org/method/messages.getRecentLocations"/></para></summary>
 		/// <param name="peer">User</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		public static Task<Messages_MessagesBase> Messages_GetRecentLocations(this Client client, InputPeer peer, int limit = int.MaxValue, long hash = default)
 			=> client.Invoke(new Messages_GetRecentLocations
 			{
@@ -2857,6 +2870,7 @@ namespace TL
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
+		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
 		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
@@ -2884,7 +2898,7 @@ namespace TL
 		/// <summary>Search for stickersets		<para>See <a href="https://corefork.telegram.org/method/messages.searchStickerSets"/></para></summary>
 		/// <param name="exclude_featured">Exclude featured stickersets from results</param>
 		/// <param name="q">Query string</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FoundStickerSets"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FoundStickerSets"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.foundStickerSetsNotModified">messages.foundStickerSetsNotModified</a></returns>
 		public static Task<Messages_FoundStickerSets> Messages_SearchStickerSets(this Client client, string q, long hash = default, bool exclude_featured = false)
 			=> client.Invoke(new Messages_SearchStickerSets
@@ -3078,7 +3092,7 @@ namespace TL
 
 		/// <summary>Get scheduled messages		<para>See <a href="https://corefork.telegram.org/method/messages.getScheduledHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getScheduledHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		public static Task<Messages_MessagesBase> Messages_GetScheduledHistory(this Client client, InputPeer peer, long hash = default)
 			=> client.Invoke(new Messages_GetScheduledHistory
 			{
@@ -3179,7 +3193,7 @@ namespace TL
 		/// <summary>Method for fetching previously featured stickers		<para>See <a href="https://corefork.telegram.org/method/messages.getOldFeaturedStickers"/></para></summary>
 		/// <param name="offset">Offset</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FeaturedStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FeaturedStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		public static Task<Messages_FeaturedStickersBase> Messages_GetOldFeaturedStickers(this Client client, int offset = default, int limit = int.MaxValue, long hash = default)
 			=> client.Invoke(new Messages_GetOldFeaturedStickers
 			{
@@ -3197,7 +3211,7 @@ namespace TL
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="max_id">If a positive value was transferred, the method will return only messages with ID smaller than max_id</param>
 		/// <param name="min_id">If a positive value was transferred, the method will return only messages with ID bigger than min_id</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		public static Task<Messages_MessagesBase> Messages_GetReplies(this Client client, InputPeer peer, int msg_id, int offset_id = default, DateTime offset_date = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default)
 			=> client.Invoke(new Messages_GetReplies
 			{
@@ -3563,6 +3577,7 @@ namespace TL
 		/// <summary>Change the set of <a href="https://corefork.telegram.org/api/reactions">message reactions »</a> that can be used in a certain group, supergroup or channel		<para>See <a href="https://corefork.telegram.org/method/messages.setChatAvailableReactions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setChatAvailableReactions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Group where to apply changes</param>
 		/// <param name="available_reactions">Allowed reaction emojis</param>
+		/// <param name="reactions_limit">This flag may be used to impose a custom limit of unique reactions (i.e. a customizable version of <a href="https://corefork.telegram.org/api/config#reactions-uniq-max">appConfig.reactions_uniq_max</a>); this field and the other info set by the method will then be available to users in <see cref="ChannelFull"/> and <see cref="ChatFull"/>.</param>
 		public static Task<UpdatesBase> Messages_SetChatAvailableReactions(this Client client, InputPeer peer, ChatReactions available_reactions, int? reactions_limit = null)
 			=> client.Invoke(new Messages_SetChatAvailableReactions
 			{
@@ -3573,7 +3588,7 @@ namespace TL
 			});
 
 		/// <summary>Obtain available <a href="https://corefork.telegram.org/api/reactions">message reactions »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getAvailableReactions"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_AvailableReactions"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_AvailableReactions"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.availableReactionsNotModified">messages.availableReactionsNotModified</a></returns>
 		public static Task<Messages_AvailableReactions> Messages_GetAvailableReactions(this Client client, int hash = default)
 			=> client.Invoke(new Messages_GetAvailableReactions
@@ -3649,7 +3664,7 @@ namespace TL
 			});
 
 		/// <summary>Returns installed attachment menu <a href="https://corefork.telegram.org/api/bots/attach">bot mini apps »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getAttachMenuBots"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="AttachMenuBots"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="AttachMenuBots"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/attachMenuBotsNotModified">attachMenuBotsNotModified</a></returns>
 		public static Task<AttachMenuBots> Messages_GetAttachMenuBots(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetAttachMenuBots
@@ -3796,7 +3811,7 @@ namespace TL
 			});
 
 		/// <summary>Gets the list of currently installed <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickersets</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStickers"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_AllStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_AllStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.allStickersNotModified">messages.allStickersNotModified</a></returns>
 		public static Task<Messages_AllStickers> Messages_GetEmojiStickers(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetEmojiStickers
@@ -3805,7 +3820,7 @@ namespace TL
 			});
 
 		/// <summary>Gets featured custom emoji stickersets.		<para>See <a href="https://corefork.telegram.org/method/messages.getFeaturedEmojiStickers"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FeaturedStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FeaturedStickers"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		public static Task<Messages_FeaturedStickersBase> Messages_GetFeaturedEmojiStickers(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetFeaturedEmojiStickers
 			{
@@ -3826,7 +3841,7 @@ namespace TL
 
 		/// <summary>Got popular <a href="https://corefork.telegram.org/api/reactions">message reactions</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getTopReactions"/></para></summary>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_Reactions"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_Reactions"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.reactionsNotModified">messages.reactionsNotModified</a></returns>
 		public static Task<Messages_Reactions> Messages_GetTopReactions(this Client client, int limit = int.MaxValue, long hash = default)
 			=> client.Invoke(new Messages_GetTopReactions
@@ -3837,7 +3852,7 @@ namespace TL
 
 		/// <summary>Get recently used <a href="https://corefork.telegram.org/api/reactions">message reactions</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getRecentReactions"/></para></summary>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_Reactions"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_Reactions"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.reactionsNotModified">messages.reactionsNotModified</a></returns>
 		public static Task<Messages_Reactions> Messages_GetRecentReactions(this Client client, int limit = int.MaxValue, long hash = default)
 			=> client.Invoke(new Messages_GetRecentReactions
@@ -3890,8 +3905,8 @@ namespace TL
 				requested_peers = requested_peers,
 			});
 
-		/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>, to be used when selecting <a href="https://corefork.telegram.org/api/custom-emoji">custom emojis</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiGroups"/> [bots: ✓]</para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_EmojiGroups"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/emoji-categories">emoji categories</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiGroups"/> [bots: ✓]</para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_EmojiGroups"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></returns>
 		public static Task<Messages_EmojiGroups> Messages_GetEmojiGroups(this Client client, int hash = default)
 			=> client.Invoke(new Messages_GetEmojiGroups
@@ -3899,8 +3914,8 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>, to be used when selecting custom emojis to set as <a href="https://corefork.telegram.org/api">custom emoji status</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStatusGroups"/> [bots: ✓]</para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_EmojiGroups"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/emoji-categories">emoji categories</a>, to be used when selecting custom emojis to set as <a href="https://corefork.telegram.org/api">custom emoji status</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStatusGroups"/> [bots: ✓]</para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_EmojiGroups"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></returns>
 		public static Task<Messages_EmojiGroups> Messages_GetEmojiStatusGroups(this Client client, int hash = default)
 			=> client.Invoke(new Messages_GetEmojiStatusGroups
@@ -3908,8 +3923,8 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/custom-emoji#emoji-categories">emoji categories</a>, to be used when selecting custom emojis to set as <a href="https://corefork.telegram.org/api/files#sticker-profile-pictures">profile picture</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiProfilePhotoGroups"/> [bots: ✓]</para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_EmojiGroups"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/emoji-categories">emoji categories</a>, to be used when selecting custom emojis to set as <a href="https://corefork.telegram.org/api/files#sticker-profile-pictures">profile picture</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiProfilePhotoGroups"/> [bots: ✓]</para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_EmojiGroups"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></returns>
 		public static Task<Messages_EmojiGroups> Messages_GetEmojiProfilePhotoGroups(this Client client, int hash = default)
 			=> client.Invoke(new Messages_GetEmojiProfilePhotoGroups
@@ -3919,7 +3934,7 @@ namespace TL
 
 		/// <summary>Look for <a href="https://corefork.telegram.org/api/custom-emoji">custom emojis</a> associated to a UTF8 emoji		<para>See <a href="https://corefork.telegram.org/method/messages.searchCustomEmoji"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.searchCustomEmoji#possible-errors">details</a>)</para></summary>
 		/// <param name="emoticon">The emoji</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="EmojiList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="EmojiList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/emojiListNotModified">emojiListNotModified</a></returns>
 		public static Task<EmojiList> Messages_SearchCustomEmoji(this Client client, string emoticon, long hash = default)
 			=> client.Invoke(new Messages_SearchCustomEmoji
@@ -3940,7 +3955,7 @@ namespace TL
 
 		/// <summary>Obtain information about a <a href="https://corefork.telegram.org/api/bots/webapps#direct-link-mini-apps">direct link Mini App</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getBotApp"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getBotApp#possible-errors">details</a>)</para></summary>
 		/// <param name="app">Bot app information obtained from a <a href="https://corefork.telegram.org/api/links#direct-mini-app-links">Direct Mini App deep link »</a>.</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		public static Task<Messages_BotApp> Messages_GetBotApp(this Client client, InputBotApp app, long hash = default)
 			=> client.Invoke(new Messages_GetBotApp
 			{
@@ -3986,7 +4001,7 @@ namespace TL
 		/// <summary>Search for <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickersets »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.searchEmojiStickerSets"/></para></summary>
 		/// <param name="exclude_featured">Exclude featured stickersets from results</param>
 		/// <param name="q">Query string</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FoundStickerSets"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_FoundStickerSets"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.foundStickerSetsNotModified">messages.foundStickerSetsNotModified</a></returns>
 		public static Task<Messages_FoundStickerSets> Messages_SearchEmojiStickerSets(this Client client, string q, long hash = default, bool exclude_featured = false)
 			=> client.Invoke(new Messages_SearchEmojiStickerSets
@@ -4002,7 +4017,7 @@ namespace TL
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a> (<c>top_message</c> ID used for pagination)</param>
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offset peer for pagination</a></param>
 		/// <param name="limit">Number of list elements to be returned</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		public static Task<Messages_SavedDialogsBase> Messages_GetSavedDialogs(this Client client, DateTime offset_date = default, int offset_id = default, InputPeer offset_peer = null, int limit = int.MaxValue, long hash = default, bool exclude_pinned = false)
 			=> client.Invoke(new Messages_GetSavedDialogs
 			{
@@ -4079,7 +4094,7 @@ namespace TL
 
 		/// <summary>Fetch the full list of <a href="https://corefork.telegram.org/api/saved-messages#tags">saved message tags</a> created by the user.		<para>See <a href="https://corefork.telegram.org/method/messages.getSavedReactionTags"/></para></summary>
 		/// <param name="peer">If set, returns tags only used in the specified <a href="https://corefork.telegram.org/api/saved-messages#saved-message-dialogs">saved message dialog</a>.</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_SavedReactionTags"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_SavedReactionTags"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.savedReactionTagsNotModified">messages.savedReactionTagsNotModified</a></returns>
 		public static Task<Messages_SavedReactionTags> Messages_GetSavedReactionTags(this Client client, long hash = default, InputPeer peer = null)
 			=> client.Invoke(new Messages_GetSavedReactionTags
@@ -4101,7 +4116,7 @@ namespace TL
 			});
 
 		/// <summary>Fetch a default recommended list of <a href="https://corefork.telegram.org/api/saved-messages#tags">saved message tag reactions</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getDefaultTagReactions"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_Reactions"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_Reactions"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.reactionsNotModified">messages.reactionsNotModified</a></returns>
 		public static Task<Messages_Reactions> Messages_GetDefaultTagReactions(this Client client, long hash = default)
 			=> client.Invoke(new Messages_GetDefaultTagReactions
@@ -4109,7 +4124,9 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getOutboxReadDate"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.getOutboxReadDate#possible-errors">details</a>)</para></summary>
+		/// <summary>Get the exact read date of one of our messages, sent to a private chat with another user.		<para>See <a href="https://corefork.telegram.org/method/messages.getOutboxReadDate"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.getOutboxReadDate#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">The user to whom we sent the message.</param>
+		/// <param name="msg_id">The message ID.</param>
 		public static Task<OutboxReadDate> Messages_GetOutboxReadDate(this Client client, InputPeer peer, int msg_id)
 			=> client.Invoke(new Messages_GetOutboxReadDate
 			{
@@ -4163,7 +4180,7 @@ namespace TL
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Fetch (a subset or all) messages in a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getQuickReplyMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getQuickReplyMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="shortcut_id">Quick reply shortcut ID.</param>
 		/// <param name="id">IDs of the messages to fetch, if empty fetches all of them.</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a></param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		public static Task<Messages_MessagesBase> Messages_GetQuickReplyMessages(this Client client, int shortcut_id, long hash = default, int[] id = null)
 			=> client.Invoke(new Messages_GetQuickReplyMessages
 			{
@@ -4197,14 +4214,15 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleDialogFilterTags"/></para></summary>
+		/// <summary>Enable or disable <a href="https://corefork.telegram.org/api/folders#folder-tags">folder tags »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.toggleDialogFilterTags"/></para></summary>
+		/// <param name="enabled">Enable or disable folder tags.</param>
 		public static Task<bool> Messages_ToggleDialogFilterTags(this Client client, bool enabled)
 			=> client.Invoke(new Messages_ToggleDialogFilterTags
 			{
 				enabled = enabled,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getMyStickers"/></para></summary>
+		/// <summary>Fetch <a href="https://corefork.telegram.org/api/stickers">stickerset owned by the current user</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getMyStickers"/></para></summary>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_MyStickers> Messages_GetMyStickers(this Client client, long offset_id = default, int limit = int.MaxValue)
@@ -4214,8 +4232,8 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStickerGroups"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_EmojiGroups"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <summary>Represents a list of <a href="https://corefork.telegram.org/api/emoji-categories">emoji categories</a>, to be used when choosing a sticker.		<para>See <a href="https://corefork.telegram.org/method/messages.getEmojiStickerGroups"/></para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_EmojiGroups"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.emojiGroupsNotModified">messages.emojiGroupsNotModified</a></returns>
 		public static Task<Messages_EmojiGroups> Messages_GetEmojiStickerGroups(this Client client, int hash = default)
 			=> client.Invoke(new Messages_GetEmojiStickerGroups
@@ -4223,8 +4241,8 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getAvailableEffects"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_AvailableEffects"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <summary>Fetch the full list of usable <a href="https://corefork.telegram.org/api/effects">animated message effects »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getAvailableEffects"/></para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Messages_AvailableEffects"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.availableEffectsNotModified">messages.availableEffectsNotModified</a></returns>
 		public static Task<Messages_AvailableEffects> Messages_GetAvailableEffects(this Client client, int hash = default)
 			=> client.Invoke(new Messages_GetAvailableEffects
@@ -4232,7 +4250,10 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.editFactCheck"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editFactCheck#possible-errors">details</a>)</para></summary>
+		/// <summary>Edit/create a <a href="https://corefork.telegram.org/api/factcheck">fact-check</a> on a message.		<para>See <a href="https://corefork.telegram.org/method/messages.editFactCheck"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editFactCheck#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer where the message was sent</param>
+		/// <param name="msg_id">Message ID</param>
+		/// <param name="text">Fact-check (maximum UTF-8 length specified in <a href="https://corefork.telegram.org/api/config#factcheck-length-limit">appConfig.factcheck_length_limit</a>).</param>
 		public static Task<UpdatesBase> Messages_EditFactCheck(this Client client, InputPeer peer, int msg_id, TextWithEntities text)
 			=> client.Invoke(new Messages_EditFactCheck
 			{
@@ -4241,7 +4262,9 @@ namespace TL
 				text = text,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.deleteFactCheck"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteFactCheck#possible-errors">details</a>)</para></summary>
+		/// <summary>Delete a <a href="https://corefork.telegram.org/api/factcheck">fact-check</a> from a message.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteFactCheck"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteFactCheck#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer where the message was sent.</param>
+		/// <param name="msg_id">Message ID</param>
 		public static Task<UpdatesBase> Messages_DeleteFactCheck(this Client client, InputPeer peer, int msg_id)
 			=> client.Invoke(new Messages_DeleteFactCheck
 			{
@@ -4545,7 +4568,7 @@ namespace TL
 			});
 
 		/// <summary>Get app-specific configuration, see <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration</a> for more info on the result.		<para>See <a href="https://corefork.telegram.org/method/help.getAppConfig"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_AppConfig"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_AppConfig"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.appConfigNotModified">help.appConfigNotModified</a></returns>
 		public static Task<Help_AppConfig> Help_GetAppConfig(this Client client, int hash = default)
 			=> client.Invoke(new Help_GetAppConfig
@@ -4562,7 +4585,7 @@ namespace TL
 			});
 
 		/// <summary>Get <a href="https://corefork.telegram.org/passport">passport</a> configuration		<para>See <a href="https://corefork.telegram.org/method/help.getPassportConfig"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_PassportConfig"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_PassportConfig"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.passportConfigNotModified">help.passportConfigNotModified</a></returns>
 		public static Task<Help_PassportConfig> Help_GetPassportConfig(this Client client, int hash = default)
 			=> client.Invoke(new Help_GetPassportConfig
@@ -4624,7 +4647,7 @@ namespace TL
 
 		/// <summary>Get name, ISO code, localized name and phone codes/patterns of all available countries		<para>See <a href="https://corefork.telegram.org/method/help.getCountriesList"/></para></summary>
 		/// <param name="lang_code">Language code of the current user</param>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_CountriesList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_CountriesList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.countriesListNotModified">help.countriesListNotModified</a></returns>
 		public static Task<Help_CountriesList> Help_GetCountriesList(this Client client, string lang_code, int hash = default)
 			=> client.Invoke(new Help_GetCountriesList
@@ -4640,7 +4663,7 @@ namespace TL
 			});
 
 		/// <summary>Get the set of <a href="https://corefork.telegram.org/api/colors">accent color palettes »</a> that can be used for message accents.		<para>See <a href="https://corefork.telegram.org/method/help.getPeerColors"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_PeerColors"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_PeerColors"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.peerColorsNotModified">help.peerColorsNotModified</a></returns>
 		public static Task<Help_PeerColors> Help_GetPeerColors(this Client client, int hash = default)
 			=> client.Invoke(new Help_GetPeerColors
@@ -4649,7 +4672,7 @@ namespace TL
 			});
 
 		/// <summary>Get the set of <a href="https://corefork.telegram.org/api/colors">accent color palettes »</a> that can be used in profile page backgrounds.		<para>See <a href="https://corefork.telegram.org/method/help.getPeerProfileColors"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_PeerColors"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_PeerColors"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.peerColorsNotModified">help.peerColorsNotModified</a></returns>
 		public static Task<Help_PeerColors> Help_GetPeerProfileColors(this Client client, int hash = default)
 			=> client.Invoke(new Help_GetPeerProfileColors
@@ -4658,7 +4681,7 @@ namespace TL
 			});
 
 		/// <summary>Returns timezone information that may be used elsewhere in the API, such as to set <a href="https://corefork.telegram.org/api/business#opening-hours">Telegram Business opening hours »</a>.		<para>See <a href="https://corefork.telegram.org/method/help.getTimezonesList"/></para></summary>
-		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash for pagination, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_TimezonesList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.<br/><strong>Note</strong>: the usual hash generation algorithm cannot be used in this case, please re-use the <see cref="Help_TimezonesList"/>.<c>hash</c> field returned by a previous call to the method, or pass 0 if this is the first call.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/help.timezonesListNotModified">help.timezonesListNotModified</a></returns>
 		public static Task<Help_TimezonesList> Help_GetTimezonesList(this Client client, int hash = default)
 			=> client.Invoke(new Help_GetTimezonesList
@@ -4886,6 +4909,7 @@ namespace TL
 		/// <summary>Get <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a> we're admin in. Usually called when the user exceeds the <see cref="Config">limit</see> for owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, and the user is given the choice to remove one of his channels/supergroups/geogroups.		<para>See <a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels#possible-errors">details</a>)</para></summary>
 		/// <param name="by_location">Get geogroups</param>
 		/// <param name="check_limit">If set and the user has reached the limit of owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, instead of returning the channel list one of the specified <a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels#possible-errors">errors</a> will be returned.<br/>Useful to check if a new public channel can indeed be created, even before asking the user to enter a channel username to use in <see cref="Channels_CheckUsername">Channels_CheckUsername</see>/<see cref="Channels_UpdateUsername">Channels_UpdateUsername</see>.</param>
+		/// <param name="for_personal">Set this flag to only fetch the full list of channels that may be passed to <see cref="Account_UpdatePersonalChannel">Account_UpdatePersonalChannel</see> to <a href="https://corefork.telegram.org/api/profile#personal-channel">display them on our profile page</a>.</param>
 		public static Task<Messages_Chats> Channels_GetAdminedPublicChannels(this Client client, bool by_location = false, bool check_limit = false, bool for_personal = false)
 			=> client.Invoke(new Channels_GetAdminedPublicChannels
 			{
@@ -5302,7 +5326,7 @@ namespace TL
 			});
 
 		/// <summary>Obtain a list of similarly themed public channels, selected based on similarities in their <strong>subscriber bases</strong>.		<para>See <a href="https://corefork.telegram.org/method/channels.getChannelRecommendations"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getChannelRecommendations#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">The method will return channels related to the passed <c>channel</c>.</param>
+		/// <param name="channel">The method will return channels related to the passed <c>channel</c>. If not set, the method will returns channels related to channels the user has joined.</param>
 		public static Task<Messages_Chats> Channels_GetChannelRecommendations(this Client client, InputChannelBase channel = null)
 			=> client.Invoke(new Channels_GetChannelRecommendations
 			{
@@ -5320,7 +5344,9 @@ namespace TL
 				emoji_status = emoji_status,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.setBoostsToUnblockRestrictions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.setBoostsToUnblockRestrictions#possible-errors">details</a>)</para></summary>
+		/// <summary>Admins with <see cref="ChatAdminRights">ban_users admin rights »</see> may allow users that apply a certain number of <a href="https://corefork.telegram.org/api/boost">booosts »</a> to the group to bypass <see cref="Channels_ToggleSlowMode">Channels_ToggleSlowMode</see> and <a href="https://corefork.telegram.org/api/rights#default-rights">other »</a> supergroup restrictions, see <a href="https://corefork.telegram.org/api/boost#bypass-slowmode-and-chat-restrictions">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/channels.setBoostsToUnblockRestrictions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.setBoostsToUnblockRestrictions#possible-errors">details</a>)</para></summary>
+		/// <param name="channel">The supergroup.</param>
+		/// <param name="boosts">The number of required boosts (1-8, 0 to disable).</param>
 		public static Task<UpdatesBase> Channels_SetBoostsToUnblockRestrictions(this Client client, InputChannelBase channel, int boosts)
 			=> client.Invoke(new Channels_SetBoostsToUnblockRestrictions
 			{
@@ -5338,7 +5364,10 @@ namespace TL
 				stickerset = stickerset,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.reportSponsoredMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.reportSponsoredMessage#possible-errors">details</a>)</para></summary>
+		/// <summary>Report a <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message »</a>, see <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">here »</a> for more info on the full flow.		<para>See <a href="https://corefork.telegram.org/method/channels.reportSponsoredMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.reportSponsoredMessage#possible-errors">details</a>)</para></summary>
+		/// <param name="channel">The channel where the sponsored message can be seen.</param>
+		/// <param name="random_id">ID of the sponsored message.</param>
+		/// <param name="option">Chosen report option, initially an empty string, see <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">here »</a> for more info on the full flow.</param>
 		public static Task<Channels_SponsoredMessageReportResult> Channels_ReportSponsoredMessage(this Client client, InputChannelBase channel, byte[] random_id, byte[] option)
 			=> client.Invoke(new Channels_ReportSponsoredMessage
 			{
@@ -5347,7 +5376,9 @@ namespace TL
 				option = option,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.restrictSponsoredMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.restrictSponsoredMessages#possible-errors">details</a>)</para></summary>
+		/// <summary>Disable ads on the specified channel, for all users.		<para>See <a href="https://corefork.telegram.org/method/channels.restrictSponsoredMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.restrictSponsoredMessages#possible-errors">details</a>)</para></summary>
+		/// <param name="channel">The channel.</param>
+		/// <param name="restricted">Whether to disable or re-enable ads.</param>
 		public static Task<UpdatesBase> Channels_RestrictSponsoredMessages(this Client client, InputChannelBase channel, bool restricted)
 			=> client.Invoke(new Channels_RestrictSponsoredMessages
 			{
@@ -5355,7 +5386,10 @@ namespace TL
 				restricted = restricted,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.searchPosts"/></para></summary>
+		/// <summary>Globally search for posts from public <a href="https://corefork.telegram.org/api/channel">channels »</a> (<em>including</em> those we aren't a member of) containing a specific hashtag.		<para>See <a href="https://corefork.telegram.org/method/channels.searchPosts"/></para></summary>
+		/// <param name="hashtag">The hashtag to search, without the <c>#</c> character.</param>
+		/// <param name="offset_rate">Initially 0, then set to the <see cref="Messages_MessagesSlice"><c>next_rate</c> parameter of messages.messagesSlice</see></param>
+		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Messages_MessagesBase> Channels_SearchPosts(this Client client, string hashtag, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue)
@@ -5691,20 +5725,23 @@ namespace TL
 				purpose = purpose,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsTopupOptions"/></para></summary>
+		/// <summary>Obtain a list of <a href="https://corefork.telegram.org/api/stars#buying-stars">Telegram Stars topup options »</a> as <see cref="StarsTopupOption"/>s.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarsTopupOptions"/></para></summary>
 		public static Task<StarsTopupOption[]> Payments_GetStarsTopupOptions(this Client client)
 			=> client.Invoke(new Payments_GetStarsTopupOptions
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarsStatus#possible-errors">details</a>)</para></summary>
+		/// <summary>Get the current <a href="https://corefork.telegram.org/api/stars">Telegram Stars balance</a> of the current account (with peer=<see cref="InputPeerSelf"/>), or the stars balance of the bot specified in <c>peer</c>.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarsStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarsStatus#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer of which to get the balance.</param>
 		public static Task<Payments_StarsStatus> Payments_GetStarsStatus(this Client client, InputPeer peer)
 			=> client.Invoke(new Payments_GetStarsStatus
 			{
 				peer = peer,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsTransactions"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarsTransactions#possible-errors">details</a>)</para></summary>
+		/// <summary>Fetch <a href="https://corefork.telegram.org/api/stars#balance-and-transaction-history">Telegram Stars transactions</a>.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarsTransactions"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarsTransactions#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Fetch the transaction history of the peer (<see cref="InputPeerSelf"/> or a bot we own).</param>
+		/// <param name="offset"><a href="https://corefork.telegram.org/api/offsets">Offset for pagination, obtained from the returned <c>next_offset</c>, initially an empty string »</a>.</param>
 		public static Task<Payments_StarsStatus> Payments_GetStarsTransactions(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, bool inbound = false, bool outbound = false, bool ascending = false)
 			=> client.Invoke(new Payments_GetStarsTransactions
 			{
@@ -5714,7 +5751,9 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.sendStarsForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.sendStarsForm#possible-errors">details</a>)</para></summary>
+		/// <summary>Make a payment using <a href="https://corefork.telegram.org/api/stars#using-stars">Telegram Stars, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/payments.sendStarsForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.sendStarsForm#possible-errors">details</a>)</para></summary>
+		/// <param name="form_id">Payment form ID</param>
+		/// <param name="invoice">Invoice</param>
 		public static Task<Payments_PaymentResultBase> Payments_SendStarsForm(this Client client, long form_id, InputInvoice invoice)
 			=> client.Invoke(new Payments_SendStarsForm
 			{
@@ -5723,7 +5762,9 @@ namespace TL
 				invoice = invoice,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.refundStarsCharge"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.refundStarsCharge#possible-errors">details</a>)</para></summary>
+		/// <summary>Refund a <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> transaction, see <a href="https://corefork.telegram.org/api/payments#6-refunds">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/payments.refundStarsCharge"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.refundStarsCharge#possible-errors">details</a>)</para></summary>
+		/// <param name="user_id">User to refund.</param>
+		/// <param name="charge_id">Transaction ID.</param>
 		public static Task<UpdatesBase> Payments_RefundStarsCharge(this Client client, InputUserBase user_id, string charge_id)
 			=> client.Invoke(new Payments_RefundStarsCharge
 			{
@@ -6391,7 +6432,9 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueStats"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueStats#possible-errors">details</a>)</para></summary>
+		/// <summary>Get <a href="https://corefork.telegram.org/api/revenue">channel ad revenue statistics »</a>.		<para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueStats"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueStats#possible-errors">details</a>)</para></summary>
+		/// <param name="dark">Whether to enable dark theme for graph colors</param>
+		/// <param name="channel">The channel</param>
 		public static Task<Stats_BroadcastRevenueStats> Stats_GetBroadcastRevenueStats(this Client client, InputChannelBase channel, bool dark = false)
 			=> client.Invoke(new Stats_GetBroadcastRevenueStats
 			{
@@ -6399,7 +6442,9 @@ namespace TL
 				channel = channel,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueWithdrawalUrl"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueWithdrawalUrl#possible-errors">details</a>)</para></summary>
+		/// <summary>Withdraw funds from a channel's <a href="https://corefork.telegram.org/api/revenue">ad revenue balance »</a>.		<para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueWithdrawalUrl"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueWithdrawalUrl#possible-errors">details</a>)</para></summary>
+		/// <param name="channel">The channel</param>
+		/// <param name="password">2FA password, see <a href="https://corefork.telegram.org/api/srp#using-the-2fa-password">here »</a> for more info.</param>
 		public static Task<Stats_BroadcastRevenueWithdrawalUrl> Stats_GetBroadcastRevenueWithdrawalUrl(this Client client, InputChannelBase channel, InputCheckPasswordSRP password)
 			=> client.Invoke(new Stats_GetBroadcastRevenueWithdrawalUrl
 			{
@@ -6407,7 +6452,9 @@ namespace TL
 				password = password,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueTransactions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueTransactions#possible-errors">details</a>)</para></summary>
+		/// <summary>Fetch <a href="https://corefork.telegram.org/api/revenue">channel ad revenue transaction history »</a>.		<para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueTransactions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueTransactions#possible-errors">details</a>)</para></summary>
+		/// <param name="channel">The channel</param>
+		/// <param name="offset"><a href="https://corefork.telegram.org/api/offsets">Offset for pagination</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Stats_BroadcastRevenueTransactions> Stats_GetBroadcastRevenueTransactions(this Client client, InputChannelBase channel, int offset = default, int limit = int.MaxValue)
 			=> client.Invoke(new Stats_GetBroadcastRevenueTransactions
@@ -6811,7 +6858,9 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.togglePinnedToTop"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.togglePinnedToTop#possible-errors">details</a>)</para></summary>
+		/// <summary>Pin some stories to the top of the profile, see <a href="https://corefork.telegram.org/api/stories#pinned-or-archived-stories">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/stories.togglePinnedToTop"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.togglePinnedToTop#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer where to pin stories.</param>
+		/// <param name="id">IDs of the stories to pin (max <a href="https://corefork.telegram.org/api/config#stories-pinned-to-top-count-max">stories_pinned_to_top_count_max</a>).</param>
 		public static Task<bool> Stories_TogglePinnedToTop(this Client client, InputPeer peer, params int[] id)
 			=> client.Invoke(new Stories_TogglePinnedToTop
 			{
@@ -6912,6 +6961,7 @@ namespace TL
 			});
 
 		/// <summary>Get info about an SMS job (official clients only).		<para>See <a href="https://corefork.telegram.org/method/smsjobs.getSmsJob"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/smsjobs.getSmsJob#possible-errors">details</a>)</para></summary>
+		/// <param name="job_id">Job ID</param>
 		public static Task<SmsJob> Smsjobs_GetSmsJob(this Client client, string job_id)
 			=> client.Invoke(new Smsjobs_GetSmsJob
 			{
@@ -6929,7 +6979,8 @@ namespace TL
 				error = error,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/fragment.getCollectibleInfo"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/fragment.getCollectibleInfo#possible-errors">details</a>)</para></summary>
+		/// <summary>Fetch information about a <a href="https://corefork.telegram.org/api/fragment#fetching-info-about-fragment-collectibles">fragment collectible, see here »</a> for more info on the full flow.		<para>See <a href="https://corefork.telegram.org/method/fragment.getCollectibleInfo"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/fragment.getCollectibleInfo#possible-errors">details</a>)</para></summary>
+		/// <param name="collectible">Collectible to fetch info about.</param>
 		public static Task<Fragment_CollectibleInfo> Fragment_GetCollectibleInfo(this Client client, InputCollectible collectible)
 			=> client.Invoke(new Fragment_GetCollectibleInfo
 			{
