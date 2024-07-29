@@ -210,6 +210,8 @@ that simplifies the download of a photo/document/file once you get a reference t
 
 See [Examples/Program_DownloadSavedMedia.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_DownloadSavedMedia.cs?ts=4#L28) that download all media files you forward to yourself (Saved Messages)
 
+_Note: To abort an ongoing download, you can throw an exception via the `progress` callback argument._
+
 <a name="upload"></a>
 ## Upload a media file and post it with caption to a chat
 ```csharp

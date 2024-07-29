@@ -80,6 +80,7 @@ namespace WTelegram
 					goto newSession;
 				case NewSessionCreated when _client.User != null:
 				newSession:
+					await Task.Delay(HalfSec); // let the opportunity to call DropPendingUpdates/StopResync before a big resync
 					if (_local[L_PTS].pts != 0) await ResyncState();
 					else await ResyncState(await _client.Updates_GetState());
 					break;
@@ -278,6 +279,18 @@ namespace WTelegram
 						if (!own) await RaiseUpdate(update);
 					}
 				}
+			}
+			finally { _sem.Release(); }
+		}
+
+		public async Task StopResync()
+		{
+			await _sem.WaitAsync();
+			try
+			{
+				foreach (var local in _local.Values)
+					local.pts = 0;
+				_pending.Clear();
 			}
 			finally { _sem.Release(); }
 		}
