@@ -752,7 +752,7 @@ namespace TL
 		/// <summary>User identifier or <c>0</c></summary>
 		public long id;
 	}
-	/// <summary>Indicates info about a certain user		<para>See <a href="https://corefork.telegram.org/constructor/user"/></para></summary>
+	/// <summary>Indicates info about a certain user.		<para>See <a href="https://corefork.telegram.org/constructor/user"/></para></summary>
 	[TLDef(0x215C4438)]
 	public sealed partial class User : UserBase
 	{
@@ -760,23 +760,23 @@ namespace TL
 		public Flags flags;
 		/// <summary>Extra bits of information, use <c>flags2.HasFlag(...)</c> to test for those</summary>
 		public Flags2 flags2;
-		/// <summary>ID of the user</summary>
+		/// <summary>ID of the user, see <a href="https://corefork.telegram.org/api/peers#peer-id">here »</a> for more info.</summary>
 		public long id;
-		/// <summary>Access hash of the user</summary>
+		/// <summary>Access hash of the user, see <a href="https://corefork.telegram.org/api/peers#access-hash">here »</a> for more info. <br/>If this flag is set, when updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, generate a virtual flag called <c>min_access_hash</c>, which is: <br/>- Set to <c>true</c> if <c>min</c> is set AND <br/>- The <c>phone</c> flag is <strong>not</strong> set OR <br/>- The <c>phone</c> flag is set and the associated phone number string is non-empty <br/>- Set to <c>false</c> otherwise. <br/><br/>Then, apply both <c>access_hash</c> and <c>min_access_hash</c> to the local database if: <br/>- <c>min_access_hash</c> is false OR <br/>- <c>min_access_hash</c> is true AND <br/>- There is no locally cached object for this user OR <br/>- There is no <c>access_hash</c> in the local cache OR <br/>- The cached object's <c>min_access_hash</c> is also true <br/>If the final merged object stored to the database has the <c>min_access_hash</c> field set to true, the related <c>access_hash</c> is <strong>only</strong> suitable to use in <see cref="InputPeerPhotoFileLocation"><c>inputPeerPhotoFileLocation</c> »</see>, to directly <a href="https://corefork.telegram.org/api/files">download the profile pictures</a> of users, everywhere else a <c>inputPeer*FromMessage</c> constructor will have to be generated as specified <a href="https://corefork.telegram.org/api/min">here »</a>. <br/>Bots can also use min access hashes in some conditions, by passing <c>0</c> instead of the min access hash.</summary>
 		[IfFlag(0)] public long access_hash;
-		/// <summary>First name</summary>
+		/// <summary>First name. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set.</summary>
 		[IfFlag(1)] public string first_name;
-		/// <summary>Last name</summary>
+		/// <summary>Last name. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set.</summary>
 		[IfFlag(2)] public string last_name;
-		/// <summary>Username</summary>
+		/// <summary>Main active username. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set.</summary>
 		[IfFlag(3)] public string username;
-		/// <summary>Phone number</summary>
+		/// <summary>Phone number. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set.</summary>
 		[IfFlag(4)] public string phone;
-		/// <summary>Profile picture of user</summary>
+		/// <summary>Profile picture of user. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>apply_min_photo</c> flag is set OR <br/>- The <c>min</c> flag of the locally cached user entry is set.</summary>
 		[IfFlag(5)] public UserProfilePhoto photo;
-		/// <summary>Online status of user</summary>
+		/// <summary>Online status of user. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set OR <br/>- The locally cached user entry is equal to <see langword="null"/>.</summary>
 		[IfFlag(6)] public UserStatus status;
-		/// <summary>Version of the <see cref="UserFull">bot_info field in userFull</see>, incremented every time it changes</summary>
+		/// <summary>Version of the <see cref="UserFull">bot_info field in userFull</see>, incremented every time it changes. <br/>Changes to this flag should invalidate the local <see cref="UserFull"/> cache for this user ID.</summary>
 		[IfFlag(14)] public int bot_info_version;
 		/// <summary>Contains the reason why access to this user must be restricted.</summary>
 		[IfFlag(18)] public RestrictionReason[] restriction_reason;
@@ -786,7 +786,7 @@ namespace TL
 		[IfFlag(22)] public string lang_code;
 		/// <summary><a href="https://corefork.telegram.org/api/emoji-status">Emoji status</a></summary>
 		[IfFlag(30)] public EmojiStatus emoji_status;
-		/// <summary>Additional usernames</summary>
+		/// <summary>Additional usernames. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set. <br/>Changes to this flag (if the above conditions are respected) should invalidate the local <see cref="UserFull"/> cache for this user ID.</summary>
 		[IfFlag(32)] public Username[] usernames;
 		/// <summary>ID of the maximum read <a href="https://corefork.telegram.org/api/stories">story</a>.</summary>
 		[IfFlag(37)] public int stories_max_id;
@@ -813,13 +813,13 @@ namespace TL
 			has_status = 0x40,
 			/// <summary>Whether this user indicates the currently logged in user</summary>
 			self = 0x400,
-			/// <summary>Whether this user is a contact</summary>
+			/// <summary>Whether this user is a contact <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, do not apply changes to this field if the <c>min</c> flag is set.</summary>
 			contact = 0x800,
-			/// <summary>Whether this user is a mutual contact</summary>
+			/// <summary>Whether this user is a mutual contact. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, do not apply changes to this field if the <c>min</c> flag is set.</summary>
 			mutual_contact = 0x1000,
 			/// <summary>Whether the account of this user was deleted</summary>
 			deleted = 0x2000,
-			/// <summary>Is this user a bot?</summary>
+			/// <summary>Is this user a bot? <br/>Changes to this flag should invalidate the local <see cref="UserFull"/> cache for this user ID.</summary>
 			bot = 0x4000,
 			/// <summary>Can the bot see all messages in groups?</summary>
 			bot_chat_history = 0x8000,
@@ -841,15 +841,15 @@ namespace TL
 			support = 0x800000,
 			/// <summary>This may be a scam user</summary>
 			scam = 0x1000000,
-			/// <summary>If set, the profile picture for this user should be refetched</summary>
+			/// <summary>If set and <c>min</c> is set, the value of <c>photo</c> can be used to update the local database, see the documentation of that flag for more info.</summary>
 			apply_min_photo = 0x2000000,
 			/// <summary>If set, this user was reported by many users as a fake or scam user: be careful when interacting with them.</summary>
 			fake = 0x4000000,
 			/// <summary>Whether this bot offers an <a href="https://corefork.telegram.org/api/bots/attach">attachment menu web app</a></summary>
 			bot_attach_menu = 0x8000000,
-			/// <summary>Whether this user is a Telegram Premium user</summary>
+			/// <summary>Whether this user is a Telegram Premium user <br/>Changes to this flag should invalidate the local <see cref="UserFull"/> cache for this user ID. <br/>Changes to this flag if the <c>self</c> flag is set should also trigger the following calls, to refresh the respective caches: <br/>- The <see cref="SchemaExtensions.Help_GetConfig">Help_GetConfig</see> cache <br/>- The <see cref="SchemaExtensions.Messages_GetTopReactions">Messages_GetTopReactions</see> cache if the <c>bot</c> flag is <strong>not</strong> set</summary>
 			premium = 0x10000000,
-			/// <summary>Whether we installed the <a href="https://corefork.telegram.org/api/bots/attach">attachment menu web app</a> offered by this bot</summary>
+			/// <summary>Whether we installed the <a href="https://corefork.telegram.org/api/bots/attach">attachment menu web app</a> offered by this bot. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, do not apply changes to this field if the <c>min</c> flag is set.</summary>
 			attach_menu_enabled = 0x20000000,
 			/// <summary>Field <see cref="emoji_status"/> has a value</summary>
 			has_emoji_status = 0x40000000,
@@ -859,11 +859,11 @@ namespace TL
 		{
 			/// <summary>Field <see cref="usernames"/> has a value</summary>
 			has_usernames = 0x1,
-			/// <summary>Whether we can edit the profile picture, name, about text and description of this bot because we own it.</summary>
+			/// <summary>Whether we can edit the profile picture, name, about text and description of this bot because we own it. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, do not apply changes to this field if the <c>min</c> flag is set. <br/>Changes to this flag (if <c>min</c> is not set) should invalidate the local <see cref="UserFull"/> cache for this user ID.</summary>
 			bot_can_edit = 0x2,
-			/// <summary>Whether we marked this user as a <a href="https://corefork.telegram.org/api/privacy">close friend, see here » for more info</a></summary>
+			/// <summary>Whether we marked this user as a <a href="https://corefork.telegram.org/api/privacy">close friend, see here » for more info</a>. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, do not apply changes to this field if the <c>min</c> flag is set.</summary>
 			close_friend = 0x4,
-			/// <summary>Whether we have <a href="https://corefork.telegram.org/api/stories#hiding-stories-of-other-users">hidden »</a> all active stories of this user.</summary>
+			/// <summary>Whether we have <a href="https://corefork.telegram.org/api/stories#hiding-stories-of-other-users">hidden »</a> all active stories of this user. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, do not apply changes to this field if the <c>min</c> flag is set.</summary>
 			stories_hidden = 0x8,
 			/// <summary>No stories from this user are visible.</summary>
 			stories_unavailable = 0x10,
@@ -931,6 +931,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>If set, the exact user status of this user is actually available to us, but to view it we must first purchase a <a href="https://corefork.telegram.org/api/premium">Premium</a> subscription, or allow this user to see <em>our</em> exact last online status. See <see cref="PrivacyKey.StatusTimestamp">here »</see> for more info.</summary>
 			by_me = 0x1,
 		}
 	}
@@ -943,6 +944,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>If set, the exact user status of this user is actually available to us, but to view it we must first purchase a <a href="https://corefork.telegram.org/api/premium">Premium</a> subscription, or allow this user to see <em>our</em> exact last online status. See <see cref="PrivacyKey.StatusTimestamp">here »</see> for more info.</summary>
 			by_me = 0x1,
 		}
 	}
@@ -955,6 +957,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>If set, the exact user status of this user is actually available to us, but to view it we must first purchase a <a href="https://corefork.telegram.org/api/premium">Premium</a> subscription, or allow this user to see <em>our</em> exact last online status. See <see cref="PrivacyKey.StatusTimestamp">here »</see> for more info.</summary>
 			by_me = 0x1,
 		}
 	}
@@ -962,7 +965,7 @@ namespace TL
 	/// <summary>Object defines a group.		<para>See <a href="https://corefork.telegram.org/type/Chat"/></para>		<para>Derived classes: <see cref="ChatEmpty"/>, <see cref="Chat"/>, <see cref="ChatForbidden"/>, <see cref="Channel"/>, <see cref="ChannelForbidden"/></para></summary>
 	public abstract partial class ChatBase : IObject
 	{
-		/// <summary>ID of the group</summary>
+		/// <summary>ID of the group, see <a href="https://corefork.telegram.org/api/peers#peer-id">here »</a> for more info</summary>
 		public virtual long ID => default;
 		/// <summary>Title</summary>
 		public virtual string Title => default;
@@ -983,7 +986,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>ID of the group</summary>
+		/// <summary>ID of the group, see <a href="https://corefork.telegram.org/api/peers#peer-id">here »</a> for more info</summary>
 		public long id;
 		/// <summary>Title</summary>
 		public string title;
@@ -1024,7 +1027,7 @@ namespace TL
 			noforwards = 0x2000000,
 		}
 
-		/// <summary>ID of the group</summary>
+		/// <summary>ID of the group, see <a href="https://corefork.telegram.org/api/peers#peer-id">here »</a> for more info</summary>
 		public override long ID => id;
 		/// <summary>Title</summary>
 		public override string Title => title;
@@ -1051,13 +1054,13 @@ namespace TL
 		public Flags flags;
 		/// <summary>Extra bits of information, use <c>flags2.HasFlag(...)</c> to test for those</summary>
 		public Flags2 flags2;
-		/// <summary>ID of the channel</summary>
+		/// <summary>ID of the channel, see <a href="https://corefork.telegram.org/api/peers#peer-id">here »</a> for more info</summary>
 		public long id;
-		/// <summary>Access hash</summary>
+		/// <summary>Access hash, see <a href="https://corefork.telegram.org/api/peers#access-hash">here »</a> for more info</summary>
 		[IfFlag(13)] public long access_hash;
 		/// <summary>Title</summary>
 		public string title;
-		/// <summary>Username</summary>
+		/// <summary>Main active username.</summary>
 		[IfFlag(6)] public string username;
 		/// <summary>Profile photo</summary>
 		public ChatPhoto photo;
@@ -1164,7 +1167,7 @@ namespace TL
 			has_level = 0x400,
 		}
 
-		/// <summary>ID of the channel</summary>
+		/// <summary>ID of the channel, see <a href="https://corefork.telegram.org/api/peers#peer-id">here »</a> for more info</summary>
 		public override long ID => id;
 		/// <summary>Title</summary>
 		public override string Title => title;
@@ -2053,7 +2056,7 @@ namespace TL
 		[IfFlag(0)] public WebDocumentBase photo;
 		/// <summary>Message ID of receipt: if set, clients should change the text of the first <see cref="KeyboardButtonBuy"/> button always attached to the <see cref="Message"/> to a localized version of the word <c>Receipt</c></summary>
 		[IfFlag(2)] public int receipt_msg_id;
-		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code, or <c>XTR</c> for <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a>.</summary>
 		public string currency;
 		/// <summary>Total price in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long total_amount;
@@ -2308,7 +2311,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code, or <c>XTR</c> for <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a>.</summary>
 		public string currency;
 		/// <summary>Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long total_amount;
@@ -2339,7 +2342,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code, or <c>XTR</c> for <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a>.</summary>
 		public string currency;
 		/// <summary>Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long total_amount;
@@ -4447,7 +4450,7 @@ namespace TL
 		[IfFlag(0)] public PaymentRequestedInfo info;
 		/// <summary>Identifier of the shipping option chosen by the user</summary>
 		[IfFlag(1)] public string shipping_option_id;
-		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code, or <c>XTR</c> for <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a>.</summary>
 		public string currency;
 		/// <summary>Total amount in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long total_amount;
@@ -5414,6 +5417,7 @@ namespace TL
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/stories">Story ID</a>.</summary>
 		public int story_id;
+		/// <summary>The peer where the story was posted.</summary>
 		public Peer peer;
 		/// <summary>The <a href="https://corefork.telegram.org/api/reactions">reaction</a>.</summary>
 		public Reaction reaction;
@@ -6578,7 +6582,7 @@ namespace TL
 	/// <summary>Privacy <strong>keys</strong> together with <a href="https://corefork.telegram.org/api/privacy#privacy-rules">privacy rules »</a> indicate <em>what</em> can or can't someone do and are specified by a <see cref="PrivacyKey"/> constructor, and its input counterpart <see cref="InputPrivacyKey"/>.		<para>See <a href="https://corefork.telegram.org/type/InputPrivacyKey"/></para></summary>
 	public enum InputPrivacyKey : uint
 	{
-		///<summary>Whether people will be able to see our exact last online timestamp.<br/><br/>Note that if <em>we</em> decide to hide our exact last online timestamp to someone <strong>and</strong> we do not have a <a href="https://corefork.telegram.org/api/premium">Premium</a> subscription, we won't be able to see the exact last online timestamp of <em>any</em> user, including those that do share it with us.</summary>
+		///<summary>Whether people will be able to see our exact last online timestamp.<br/><br/>Note that if <em>we</em> decide to hide our exact last online timestamp to someone (i.e., users A, B, C, or all users) <strong>and</strong> we do not have a <a href="https://corefork.telegram.org/api/premium">Premium</a> subscription, we won't be able to see the exact last online timestamp of those users (A, B, C, or all users), even if those users <em>do</em> share it with us.<br/><br/>If those users <em>do</em> share their exact online status with us, but we can't see it due to the reason mentioned above, the <c>by_me</c> flag of <see cref="UserStatusRecently"/>, <see cref="UserStatusLastWeek"/>, <see cref="UserStatusLastMonth"/> will be set.</summary>
 		StatusTimestamp = 0x4F96CB18,
 		///<summary>Whether people will be able to invite you to chats</summary>
 		ChatInvite = 0xBDFB0426,
@@ -6594,7 +6598,7 @@ namespace TL
 		PhoneNumber = 0x0352DAFA,
 		///<summary>Whether people can add you to their contact list by your phone number</summary>
 		AddedByPhone = 0xD1219BDD,
-		///<summary>Whether people can send you voice messages</summary>
+		///<summary>Whether people can send you voice messages or round videos (<a href="https://corefork.telegram.org/api/premium">Premium</a> users only).</summary>
 		VoiceMessages = 0xAEE69D68,
 		///<summary>Whether people can see your bio</summary>
 		About = 0x3823CC40,
@@ -6605,7 +6609,7 @@ namespace TL
 	/// <summary>Privacy <strong>keys</strong> together with <a href="https://corefork.telegram.org/api/privacy#privacy-rules">privacy rules »</a> indicate <em>what</em> can or can't someone do and are specified by a <see cref="PrivacyKey"/> constructor, and its input counterpart <see cref="InputPrivacyKey"/>.		<para>See <a href="https://corefork.telegram.org/type/PrivacyKey"/></para></summary>
 	public enum PrivacyKey : uint
 	{
-		///<summary>Whether we can see the last online timestamp of this user.<br/><br/>Note that if <em>we</em> decide to hide our exact last online timestamp to someone <strong>and</strong> we do not have a <a href="https://corefork.telegram.org/api/premium">Premium</a> subscription, we won't be able to see the exact last online timestamp of <em>any</em> user, including those that do share it with us.</summary>
+		///<summary>Whether we can see the last online timestamp of this user.<br/><br/>Note that if <em>we</em> decide to hide our exact last online timestamp to someone (i.e., users A, B, C, or all users) <strong>and</strong> we do not have a <a href="https://corefork.telegram.org/api/premium">Premium</a> subscription, we won't be able to see the exact last online timestamp of those users (A, B, C, or all users), even if those users <em>do</em> share it with us.<br/><br/>If those users <em>do</em> share their exact online status with us, but we can't see it due to the reason mentioned above, the <c>by_me</c> flag of <see cref="UserStatusRecently"/>, <see cref="UserStatusLastWeek"/>, <see cref="UserStatusLastMonth"/> will be set.</summary>
 		StatusTimestamp = 0xBC2EAB30,
 		///<summary>Whether the user can be invited to chats</summary>
 		ChatInvite = 0x500E6DFA,
@@ -8762,7 +8766,7 @@ namespace TL
 		public string description;
 		/// <summary>Product photo</summary>
 		[IfFlag(0)] public WebDocumentBase photo;
-		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code, or <c>XTR</c> for <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a>.</summary>
 		public string currency;
 		/// <summary>Total price in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long total_amount;
@@ -10106,7 +10110,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
+		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code, or <c>XTR</c> for <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a>.</summary>
 		public string currency;
 		/// <summary>Price breakdown, a list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)</summary>
 		public LabeledPrice[] prices;
@@ -10625,7 +10629,9 @@ namespace TL
 		[IfFlag(2)] public WebDocumentBase photo;
 		/// <summary>Invoice</summary>
 		public Invoice invoice;
+		/// <summary>Currency, always <c>XTR</c>.</summary>
 		public string currency;
+		/// <summary>Amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a>.</summary>
 		public long total_amount;
 		/// <summary>Transaction ID</summary>
 		public string transaction_id;
@@ -10650,7 +10656,9 @@ namespace TL
 		public override WebDocumentBase Photo => photo;
 		/// <summary>Invoice</summary>
 		public override Invoice Invoice => invoice;
+		/// <summary>Currency, always <c>XTR</c>.</summary>
 		public override string Currency => currency;
+		/// <summary>Amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a>.</summary>
 		public override long TotalAmount => total_amount;
 		/// <summary>Info about users mentioned in the other fields.</summary>
 		public override Dictionary<long, User> Users => users;
@@ -10941,7 +10949,7 @@ namespace TL
 		public long key_fingerprint;
 		/// <summary>Call protocol info to be passed to libtgvoip</summary>
 		public PhoneCallProtocol protocol;
-		/// <summary>List of endpoints the user can connect to to exchange call data</summary>
+		/// <summary>List of endpoints the user can connect to exchange call data</summary>
 		public PhoneConnectionBase[] connections;
 		/// <summary>When was the call actually started</summary>
 		public DateTime start_date;
@@ -14779,19 +14787,19 @@ namespace TL
 		public Flags flags;
 		/// <summary>Message ID</summary>
 		public byte[] random_id;
-		/// <summary>If set, contains a URL to open when the user clicks on the sponsored message.</summary>
+		/// <summary>Contains the URL to open when the user clicks on the sponsored message.</summary>
 		public string url;
-		/// <summary>If set, contains a custom sender name should be displayed for the sponsored message, like for messages sent in groups.</summary>
+		/// <summary>Contains the title of the sponsored message.</summary>
 		public string title;
 		/// <summary>Sponsored message</summary>
 		public string message;
-		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></summary>
+		/// <summary><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a> in <c>message</c>.</summary>
 		[IfFlag(1)] public MessageEntity[] entities;
 		/// <summary>If set, contains a custom profile photo bubble that should be displayed for the sponsored message, like for messages sent in groups.</summary>
 		[IfFlag(6)] public PhotoBase photo;
 		/// <summary>If set, the sponsored message should use the <a href="https://corefork.telegram.org/api/colors">message accent color »</a> specified in <c>color</c>.</summary>
 		[IfFlag(13)] public PeerColor color;
-		/// <summary>Text of the sponsored message button.</summary>
+		/// <summary>Label of the sponsored message button.</summary>
 		public string button_text;
 		/// <summary>If set, contains additional information about the sponsor to be shown along with the message.</summary>
 		[IfFlag(7)] public string sponsor_info;
@@ -14810,7 +14818,7 @@ namespace TL
 			has_sponsor_info = 0x80,
 			/// <summary>Field <see cref="additional_info"/> has a value</summary>
 			has_additional_info = 0x100,
-			/// <summary>Whether this message can be <a href="https://corefork.telegram.org/api/sponsored-message#reporting-sponsored-messages">reported as specified here »</a>.</summary>
+			/// <summary>Whether this message can be <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">reported as specified here »</a>.</summary>
 			can_report = 0x1000,
 			/// <summary>Field <see cref="color"/> has a value</summary>
 			has_color = 0x2000,
@@ -18064,9 +18072,9 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>Title of the introduction message</summary>
+		/// <summary>Title of the introduction message (max <a href="https://corefork.telegram.org/api/config#intro-title-length-limit">intro_title_length_limit »</a> UTF-8 characters).</summary>
 		public string title;
-		/// <summary>Profile introduction</summary>
+		/// <summary>Profile introduction (max <a href="https://corefork.telegram.org/api/config#intro-description-length-limit">intro_description_length_limit »</a> UTF-8 characters).</summary>
 		public string description;
 		/// <summary>Optional introduction <a href="https://corefork.telegram.org/api/stickers">sticker</a>.</summary>
 		[IfFlag(0)] public DocumentBase sticker;
@@ -18209,7 +18217,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>ID of the user. If neither of the flags below are set, we could not add the user because of their privacy settings, and we can create and directly share an <a href="https://corefork.telegram.org/constructor/missingInvitee#invite-links">invite link</a> with them using a normal message, instead.</summary>
+		/// <summary>ID of the user. If neither of the flags below are set, we could not add the user because of their privacy settings, and we can create and directly share an <a href="https://corefork.telegram.org/api/invites#invite-links">invite link</a> with them using a normal message, instead.</summary>
 		public long user_id;
 
 		[Flags] public enum Flags : uint
@@ -18608,6 +18616,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>If set, the <c>country</c>/<c>text</c> fields will <strong>not</strong> be set, and the fact check must be fetched manually by the client (if it isn't already cached with the key specified in <c>hash</c>) using bundled <see cref="SchemaExtensions.Messages_GetFactCheck">Messages_GetFactCheck</see> requests, when the message with the factcheck scrolls into view.</summary>
 			need_check = 0x1,
 			/// <summary>Fields <see cref="country"/> and <see cref="text"/> have a value</summary>
 			has_country = 0x2,
@@ -18625,7 +18634,7 @@ namespace TL
 	/// <summary>Describes a <a href="https://corefork.telegram.org/api/stars">Telegram Star</a> transaction with the Play Store, used when purchasing Telegram Stars through the Play Store.		<para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerPlayMarket"/></para></summary>
 	[TLDef(0x7B560A0B)]
 	public sealed partial class StarsTransactionPeerPlayMarket : StarsTransactionPeerBase { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerPremiumBot"/></para></summary>
+	/// <summary>Describes a <a href="https://corefork.telegram.org/api/stars">Telegram Star</a> transaction made using <a href="https://t.me/premiumbot">@PremiumBot</a> (i.e. using the <see cref="InputInvoiceStars"/> flow described <a href="https://corefork.telegram.org/api/stars#buying-stars">here »</a>).		<para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerPremiumBot"/></para></summary>
 	[TLDef(0x250DBAF8)]
 	public sealed partial class StarsTransactionPeerPremiumBot : StarsTransactionPeerBase { }
 	/// <summary>Describes a <a href="https://corefork.telegram.org/api/stars">Telegram Star</a> transaction with <a href="https://fragment.com">Fragment</a>, used when purchasing Telegram Stars through <a href="https://fragment.com">Fragment</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerFragment"/></para></summary>
