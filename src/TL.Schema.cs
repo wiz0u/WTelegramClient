@@ -753,7 +753,7 @@ namespace TL
 		public long id;
 	}
 	/// <summary>Indicates info about a certain user.		<para>See <a href="https://corefork.telegram.org/constructor/user"/></para></summary>
-	[TLDef(0x215C4438)]
+	[TLDef(0x83314FCA)]
 	public sealed partial class User : UserBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -794,6 +794,7 @@ namespace TL
 		[IfFlag(40)] public PeerColor color;
 		/// <summary>The user's <a href="https://corefork.telegram.org/api/colors">profile color</a>.</summary>
 		[IfFlag(41)] public PeerColor profile_color;
+		[IfFlag(44)] public int bot_active_users;
 
 		[Flags] public enum Flags : uint
 		{
@@ -877,6 +878,9 @@ namespace TL
 			contact_require_premium = 0x400,
 			/// <summary>Whether this bot can be <a href="https://corefork.telegram.org/api/business#connected-bots">connected to a user as specified here »</a>.</summary>
 			bot_business = 0x800,
+			/// <summary>Field <see cref="bot_active_users"/> has a value</summary>
+			has_bot_active_users = 0x1000,
+			bot_has_main_app = 0x2000,
 		}
 	}
 
@@ -2698,6 +2702,24 @@ namespace TL
 		[Flags] public enum Flags : uint
 		{
 			has_payload = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionGiftStars"/></para></summary>
+	[TLDef(0x45D5B021)]
+	public sealed partial class MessageActionGiftStars : MessageAction
+	{
+		public Flags flags;
+		public string currency;
+		public long amount;
+		public long stars;
+		[IfFlag(0)] public string crypto_currency;
+		[IfFlag(0)] public long crypto_amount;
+		[IfFlag(1)] public string transaction_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_crypto_currency = 0x1,
+			has_transaction_id = 0x2,
 		}
 	}
 
@@ -6789,7 +6811,7 @@ namespace TL
 		}
 	}
 	/// <summary>Defines a video		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeVideo"/></para></summary>
-	[TLDef(0xD38FF1C2)]
+	[TLDef(0x17399FAD)]
 	public sealed partial class DocumentAttributeVideo : DocumentAttribute
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -6802,6 +6824,7 @@ namespace TL
 		public int h;
 		/// <summary>Number of bytes to preload when preloading videos (particularly <a href="https://corefork.telegram.org/api/stories">video stories</a>).</summary>
 		[IfFlag(2)] public int preload_prefix_size;
+		[IfFlag(4)] public double video_start_ts;
 
 		[Flags] public enum Flags : uint
 		{
@@ -6813,6 +6836,8 @@ namespace TL
 			has_preload_prefix_size = 0x4,
 			/// <summary>Whether the specified document is a video file with no audio tracks (a GIF animation (even as MPEG4), for example)</summary>
 			nosound = 0x8,
+			/// <summary>Field <see cref="video_start_ts"/> has a value</summary>
+			has_video_start_ts = 0x10,
 		}
 	}
 	/// <summary>Represents an audio file		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeAudio"/></para></summary>
@@ -7507,6 +7532,7 @@ namespace TL
 			has_description_photo = 0x10,
 			/// <summary>Field <see cref="description_document"/> has a value</summary>
 			has_description_document = 0x20,
+			has_preview_medias = 0x40,
 		}
 	}
 
@@ -9326,6 +9352,8 @@ namespace TL
 		ForwardUsers = 0xA8406CA9,
 		///<summary>Chats to which the users often forwards messages to</summary>
 		ForwardChats = 0xFBEEC0F0,
+		///<summary>See <a href="https://corefork.telegram.org/constructor/topPeerCategoryBotsApp"/></summary>
+		BotsApp = 0xFD9E7BEC,
 	}
 
 	/// <summary>Top peer category		<para>See <a href="https://corefork.telegram.org/constructor/topPeerCategoryPeers"/></para></summary>
@@ -15376,11 +15404,10 @@ namespace TL
 		public PremiumGiftCodeOption option;
 	}
 	/// <summary>Used to top up the current account's <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> balance.		<para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceStars"/></para></summary>
-	[TLDef(0x1DA33AD8)]
+	[TLDef(0x65F00CE3)]
 	public sealed partial class InputInvoiceStars : InputInvoice
 	{
-		/// <summary>Top up option, obtained as described <a href="https://corefork.telegram.org/api/stars#buying-stars">here »</a>.</summary>
-		public StarsTopupOption option;
+		public InputStorePaymentPurpose purpose;
 	}
 
 	/// <summary>Exported <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a>		<para>See <a href="https://corefork.telegram.org/constructor/payments.exportedInvoice"/></para></summary>
@@ -15519,22 +15546,22 @@ namespace TL
 			has_prize_description = 0x10,
 		}
 	}
-	/// <summary>Used to top up the <a href="https://corefork.telegram.org/api/stars">Telegram Stars balance</a> using the Play Store/App Store flow (official apps only).		<para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentStars"/></para></summary>
-	[TLDef(0x4F0EE8DF)]
-	public sealed partial class InputStorePaymentStars : InputStorePaymentPurpose
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentStarsTopup"/></para></summary>
+	[TLDef(0xDDDD0F56)]
+	public sealed partial class InputStorePaymentStarsTopup : InputStorePaymentPurpose
 	{
-		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
-		public Flags flags;
-		/// <summary>Amount of stars to topup</summary>
 		public long stars;
-		/// <summary>Three-letter ISO 4217 <a href="https://corefork.telegram.org/bots/payments#supported-currencies">currency</a> code</summary>
 		public string currency;
-		/// <summary>Total price in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long amount;
-
-		[Flags] public enum Flags : uint
-		{
-		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentStarsGift"/></para></summary>
+	[TLDef(0x1D741EF7)]
+	public sealed partial class InputStorePaymentStarsGift : InputStorePaymentPurpose
+	{
+		public InputUserBase user_id;
+		public long stars;
+		public string currency;
+		public long amount;
 	}
 
 	/// <summary>Telegram Premium gift option		<para>See <a href="https://corefork.telegram.org/constructor/premiumGiftOption"/></para></summary>
@@ -16960,6 +16987,15 @@ namespace TL
 	{
 		public MediaAreaCoordinates coordinates;
 		public string url;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/mediaAreaWeather"/></para></summary>
+	[TLDef(0x49A6549C)]
+	public sealed partial class MediaAreaWeather : MediaArea
+	{
+		public MediaAreaCoordinates coordinates;
+		public string emoji;
+		public double temperature_c;
+		public int color;
 	}
 
 	/// <summary><a href="https://corefork.telegram.org/api/stories">Stories</a> associated to a peer		<para>See <a href="https://corefork.telegram.org/constructor/peerStories"/></para></summary>
@@ -18721,6 +18757,7 @@ namespace TL
 			has_msg_id = 0x100,
 			/// <summary>Field <see cref="extended_media"/> has a value</summary>
 			has_extended_media = 0x200,
+			gift = 0x400,
 		}
 	}
 
@@ -18846,5 +18883,52 @@ namespace TL
 		{
 			refund = 0x1,
 		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsGiftOption"/></para></summary>
+	[TLDef(0x5E0589F1)]
+	public sealed partial class StarsGiftOption : IObject
+	{
+		public Flags flags;
+		public long stars;
+		[IfFlag(0)] public string store_product;
+		public string currency;
+		public long amount;
+
+		[Flags] public enum Flags : uint
+		{
+			has_store_product = 0x1,
+			extended = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/bots.popularAppBots"/></para></summary>
+	[TLDef(0x1991B13B)]
+	public sealed partial class Bots_PopularAppBots : IObject
+	{
+		public Flags flags;
+		[IfFlag(0)] public string next_offset;
+		public Dictionary<long, User> users;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/botPreviewMedia"/></para></summary>
+	[TLDef(0x23E91BA3)]
+	public sealed partial class BotPreviewMedia : IObject
+	{
+		public DateTime date;
+		public MessageMedia media;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/bots.previewInfo"/></para></summary>
+	[TLDef(0x0CA71D64)]
+	public sealed partial class Bots_PreviewInfo : IObject
+	{
+		public BotPreviewMedia[] media;
+		public string[] lang_codes;
 	}
 }

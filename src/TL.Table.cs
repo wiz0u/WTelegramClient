@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 184;					// fetched 17/07/2024 09:17:31
+		public const int Version = 185;					// fetched 31/07/2024 17:28:03
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -123,7 +123,7 @@ namespace TL
 			[0x36C6019A] = typeof(PeerChat),
 			[0xA2A5371E] = typeof(PeerChannel),
 			[0xD3BC4B7A] = typeof(UserEmpty),
-			[0x215C4438] = typeof(User),
+			[0x83314FCA] = typeof(User),
 			[0x4F11BAE1] = null,//UserProfilePhotoEmpty
 			[0x82D1F706] = typeof(UserProfilePhoto),
 			[0x09D05049] = null,//UserStatusEmpty
@@ -210,6 +210,7 @@ namespace TL
 			[0xCC02AA6D] = typeof(MessageActionBoostApply),
 			[0x93B31848] = typeof(MessageActionRequestedPeerSentMe),
 			[0x41B3E202] = typeof(MessageActionPaymentRefunded),
+			[0x45D5B021] = typeof(MessageActionGiftStars),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -508,7 +509,7 @@ namespace TL
 			[0x6C37C15C] = typeof(DocumentAttributeImageSize),
 			[0x11B58939] = typeof(DocumentAttributeAnimated),
 			[0x6319D612] = typeof(DocumentAttributeSticker),
-			[0xD38FF1C2] = typeof(DocumentAttributeVideo),
+			[0x17399FAD] = typeof(DocumentAttributeVideo),
 			[0x9852F9C6] = typeof(DocumentAttributeAudio),
 			[0x15590068] = typeof(DocumentAttributeFilename),
 			[0x9801D2F7] = typeof(DocumentAttributeHasStickers),
@@ -1080,7 +1081,7 @@ namespace TL
 			[0xC5B56859] = typeof(InputInvoiceMessage),
 			[0xC326CAEF] = typeof(InputInvoiceSlug),
 			[0x98986C0D] = typeof(InputInvoicePremiumGiftCode),
-			[0x1DA33AD8] = typeof(InputInvoiceStars),
+			[0x65F00CE3] = typeof(InputInvoiceStars),
 			[0xAED0CBD9] = typeof(Payments_ExportedInvoice),
 			[0xCFB9D957] = typeof(Messages_TranscribedAudio),
 			[0x5334759C] = typeof(Help_PremiumPromo),
@@ -1088,7 +1089,8 @@ namespace TL
 			[0x616F7FE8] = typeof(InputStorePaymentGiftPremium),
 			[0xA3805F3F] = typeof(InputStorePaymentPremiumGiftCode),
 			[0x160544CA] = typeof(InputStorePaymentPremiumGiveaway),
-			[0x4F0EE8DF] = typeof(InputStorePaymentStars),
+			[0xDDDD0F56] = typeof(InputStorePaymentStarsTopup),
+			[0x1D741EF7] = typeof(InputStorePaymentStarsGift),
 			[0x74C34319] = typeof(PremiumGiftOption),
 			[0x88F8F21B] = typeof(PaymentFormMethod),
 			[0x2DE11AAE] = null,//EmojiStatusEmpty
@@ -1182,6 +1184,7 @@ namespace TL
 			[0x770416AF] = typeof(MediaAreaChannelPost),
 			[0x2271F2BF] = typeof(InputMediaAreaChannelPost),
 			[0x37381085] = typeof(MediaAreaUrl),
+			[0x49A6549C] = typeof(MediaAreaWeather),
 			[0x9A35E999] = typeof(PeerStories),
 			[0xCAE68768] = typeof(Stories_PeerStories),
 			[0xFD5E12BD] = typeof(Messages_WebPage),
@@ -1301,6 +1304,10 @@ namespace TL
 			[0x1DAB80B7] = typeof(Payments_StarsRevenueWithdrawalUrl),
 			[0x394E7F21] = typeof(Payments_StarsRevenueAdsAccountUrl),
 			[0x206AE6D1] = typeof(InputStarsTransaction),
+			[0x5E0589F1] = typeof(StarsGiftOption),
+			[0x1991B13B] = typeof(Bots_PopularAppBots),
+			[0x23E91BA3] = typeof(BotPreviewMedia),
+			[0x0CA71D64] = typeof(Bots_PreviewInfo),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
