@@ -49,7 +49,8 @@ namespace WTelegram
 		/// <summary>Size of chunks when uploading/downloading files. Reduce this if you don't have much memory</summary>
 		public int FilePartSize { get; set; } = 512 * 1024;
 		/// <summary>Is this Client instance the main or a secondary DC session</summary>
-		public bool IsMainDC => (_dcSession?.DataCenter?.id - _session.MainDC) is null or 0;
+		public bool IsMainDC => _dcSession?.DataCenter?.flags.HasFlag(DcOption.Flags.media_only) != true
+			&& (_dcSession?.DataCenter?.id - _session.MainDC) is null or 0;
 		/// <summary>Has this Client established connection been disconnected?</summary>
 		public bool Disconnected => _tcpClient != null && !(_tcpClient.Client?.Connected ?? false);
 		/// <summary>ID of the current logged-in user or 0</summary>
