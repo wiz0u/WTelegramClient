@@ -1,7 +1,7 @@
 ﻿pr: none
 trigger: [ master ]
 
-name: 4.1.7-dev.$(Rev:r)
+name: 4.1.8-dev.$(Rev:r)
 
 pool:
   vmImage: ubuntu-latest

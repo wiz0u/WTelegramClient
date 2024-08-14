@@ -59,7 +59,6 @@ You also need to obtain their `access_hash` which is specific to the resource yo
 This serves as a proof that the logged-in user is entitled to access that channel/user/photo/document/...
 (otherwise, anybody with the ID could access it)
 
-> [!IMPORTANT]  
 > A small private group `Chat` don't need an access_hash and can be queried using their `chat_id` only.
 <ins>However</ins> most common chat groups are not `Chat` but a `Channel` supergroup (without the `broadcast` flag). See [Terminology in ReadMe](README.md#terminology).  
 Some TL methods only applies to private `Chat`, some only applies to `Channel` and some to both.
@@ -109,8 +108,8 @@ To fix this, you should also switch to using the [WTelegramClient Nuget package]
 You can get these kind of problems if you abuse Telegram [Terms of Service](https://telegram.org/tos), or the [API Terms of Service](https://core.telegram.org/api/terms), or make excessive requests.
 
 You can try to wait more between the requests, wait for a day or two to see if the requests become possible again.  
-> [!NOTE]  
-> For FLOOD_WAIT_X with X < 60 seconds (see `client.FloodRetryThreshold`), WTelegramClient will automatically wait the specified delay and retry the request for you.
+
+>ℹ️ For FLOOD_WAIT_X with X < 60 seconds (see `client.FloodRetryThreshold`), WTelegramClient will automatically wait the specified delay and retry the request for you.
 For longer delays, you can catch the thrown `RpcException` and check the value of property X.
 
 An account that was restricted due to reported spam might receive PEER_FLOOD errors. Read [Telegram Spam FAQ](https://telegram.org/faq_spam) to learn more.
