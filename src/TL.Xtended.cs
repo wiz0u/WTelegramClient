@@ -86,16 +86,36 @@ namespace TL
 			else
 				return new InputChatUploadedPhoto { file = this, flags = InputChatUploadedPhoto.Flags.has_file };
 		}
+		/// <summary>Random file identifier created by the client</summary>
+		public abstract long ID { get; set; }
+		/// <summary>Number of parts saved</summary>
+		public abstract int Parts { get; set; }
+		/// <summary>Full name of the file</summary>
+		public abstract string Name { get; set; }
 	}
 	partial class InputFile
 	{
 		public override InputEncryptedFileBase ToInputEncryptedFile(int key_fingerprint) => new InputEncryptedFileUploaded { id = id, parts = parts, md5_checksum = md5_checksum, key_fingerprint = key_fingerprint };
 		public override InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret) => new InputSecureFileUploaded { id = id, parts = parts, md5_checksum = md5_checksum, file_hash = file_hash, secret = secret };
+		public override long ID { get => id; set => id = value; }
+		public override int Parts { get => parts; set => parts = value; }
+		public override string Name { get => name; set => name = value; }
 	}
 	partial class InputFileBig
 	{
 		public override InputEncryptedFileBase ToInputEncryptedFile(int key_fingerprint) => new InputEncryptedFileBigUploaded { id = id, parts = parts, key_fingerprint = key_fingerprint };
 		public override InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret) => new InputSecureFileUploaded { id = id, parts = parts, file_hash = file_hash, secret = secret };
+		public override long ID { get => id; set => id = value; }
+		public override int Parts { get => parts; set => parts = value; }
+		public override string Name { get => name; set => name = value; }
+	}
+	partial class InputFileStoryDocument // apparently this is used only in InputMediaUploadedDocument.file
+	{
+		public override InputEncryptedFileBase ToInputEncryptedFile(int key_fingerprint) => throw new NotSupportedException();
+		public override InputSecureFileBase ToInputSecureFile(byte[] file_hash, byte[] secret) => throw new NotSupportedException();
+		public override long ID { get => 0; set => throw new NotSupportedException(); }
+		public override int Parts { get => 0; set => throw new NotSupportedException(); }
+		public override string Name { get => null; set => throw new NotSupportedException(); }
 	}
 
 	partial class InputMediaUploadedDocument

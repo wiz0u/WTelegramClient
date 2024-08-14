@@ -2212,14 +2212,15 @@ namespace TL
 		/// <param name="expire_date">Expiration date</param>
 		/// <param name="usage_limit">Maximum number of users that can join using this link</param>
 		/// <param name="title">Description of the invite link, visible only to administrators</param>
-		public static Task<ExportedChatInvite> Messages_ExportChatInvite(this Client client, InputPeer peer, DateTime? expire_date = null, int? usage_limit = null, string title = null, bool legacy_revoke_permanent = false, bool request_needed = false)
+		public static Task<ExportedChatInvite> Messages_ExportChatInvite(this Client client, InputPeer peer, DateTime? expire_date = null, int? usage_limit = null, string title = null, StarsSubscriptionPricing subscription_pricing = null, bool legacy_revoke_permanent = false, bool request_needed = false)
 			=> client.Invoke(new Messages_ExportChatInvite
 			{
-				flags = (Messages_ExportChatInvite.Flags)((expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (title != null ? 0x10 : 0) | (legacy_revoke_permanent ? 0x4 : 0) | (request_needed ? 0x8 : 0)),
+				flags = (Messages_ExportChatInvite.Flags)((expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (title != null ? 0x10 : 0) | (subscription_pricing != null ? 0x20 : 0) | (legacy_revoke_permanent ? 0x4 : 0) | (request_needed ? 0x8 : 0)),
 				peer = peer,
 				expire_date = expire_date.GetValueOrDefault(),
 				usage_limit = usage_limit.GetValueOrDefault(),
 				title = title,
+				subscription_pricing = subscription_pricing,
 			});
 
 		/// <summary>Check the validity of a chat invite link and get basic info about it		<para>See <a href="https://corefork.telegram.org/method/messages.checkChatInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/messages.checkChatInvite#possible-errors">details</a>)</para></summary>
@@ -3411,10 +3412,10 @@ namespace TL
 		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_user">User ID for <a href="https://corefork.telegram.org/api/offsets">pagination</a>: if set, <c>offset_date</c> must also be set.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(this Client client, InputPeer peer, DateTime offset_date = default, InputUserBase offset_user = null, int limit = int.MaxValue, string link = null, string q = null, bool requested = false)
+		public static Task<Messages_ChatInviteImporters> Messages_GetChatInviteImporters(this Client client, InputPeer peer, DateTime offset_date = default, InputUserBase offset_user = null, int limit = int.MaxValue, string link = null, string q = null, bool requested = false, bool subscription_expired = false)
 			=> client.Invoke(new Messages_GetChatInviteImporters
 			{
-				flags = (Messages_GetChatInviteImporters.Flags)((link != null ? 0x2 : 0) | (q != null ? 0x4 : 0) | (requested ? 0x1 : 0)),
+				flags = (Messages_GetChatInviteImporters.Flags)((link != null ? 0x2 : 0) | (q != null ? 0x4 : 0) | (requested ? 0x1 : 0) | (subscription_expired ? 0x8 : 0)),
 				peer = peer,
 				link = link,
 				q = q,
@@ -3585,13 +3586,14 @@ namespace TL
 		/// <param name="peer">Group where to apply changes</param>
 		/// <param name="available_reactions">Allowed reaction emojis</param>
 		/// <param name="reactions_limit">This flag may be used to impose a custom limit of unique reactions (i.e. a customizable version of <a href="https://corefork.telegram.org/api/config#reactions-uniq-max">appConfig.reactions_uniq_max</a>); this field and the other info set by the method will then be available to users in <see cref="ChannelFull"/> and <see cref="ChatFull"/>.</param>
-		public static Task<UpdatesBase> Messages_SetChatAvailableReactions(this Client client, InputPeer peer, ChatReactions available_reactions, int? reactions_limit = null)
+		public static Task<UpdatesBase> Messages_SetChatAvailableReactions(this Client client, InputPeer peer, ChatReactions available_reactions, int? reactions_limit = null, bool? paid_enabled = default)
 			=> client.Invoke(new Messages_SetChatAvailableReactions
 			{
-				flags = (Messages_SetChatAvailableReactions.Flags)(reactions_limit != null ? 0x1 : 0),
+				flags = (Messages_SetChatAvailableReactions.Flags)((reactions_limit != null ? 0x1 : 0) | (paid_enabled != default ? 0x2 : 0)),
 				peer = peer,
 				available_reactions = available_reactions,
 				reactions_limit = reactions_limit.GetValueOrDefault(),
+				paid_enabled = paid_enabled.GetValueOrDefault(),
 			});
 
 		/// <summary>Obtain available <a href="https://corefork.telegram.org/api/reactions">message reactions »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getAvailableReactions"/></para></summary>
@@ -4310,6 +4312,26 @@ namespace TL
 				platform = platform,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.sendPaidReaction"/></para></summary>
+		public static Task<UpdatesBase> Messages_SendPaidReaction(this Client client, InputPeer peer, int msg_id, int count, long random_id, bool private_ = false)
+			=> client.Invoke(new Messages_SendPaidReaction
+			{
+				flags = (Messages_SendPaidReaction.Flags)(private_ ? 0x1 : 0),
+				peer = peer,
+				msg_id = msg_id,
+				count = count,
+				random_id = random_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.togglePaidReactionPrivacy"/></para></summary>
+		public static Task<bool> Messages_TogglePaidReactionPrivacy(this Client client, InputPeer peer, int msg_id, bool private_)
+			=> client.Invoke(new Messages_TogglePaidReactionPrivacy
+			{
+				peer = peer,
+				msg_id = msg_id,
+				private_ = private_,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -4928,12 +4950,11 @@ namespace TL
 
 		/// <summary>Enable/disable message signatures in channels		<para>See <a href="https://corefork.telegram.org/method/channels.toggleSignatures"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleSignatures#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel</param>
-		/// <param name="enabled">Value</param>
-		public static Task<UpdatesBase> Channels_ToggleSignatures(this Client client, InputChannelBase channel, bool enabled)
+		public static Task<UpdatesBase> Channels_ToggleSignatures(this Client client, InputChannelBase channel, bool signatures_enabled = false, bool profiles_enabled = false)
 			=> client.Invoke(new Channels_ToggleSignatures
 			{
+				flags = (Channels_ToggleSignatures.Flags)((signatures_enabled ? 0x1 : 0) | (profiles_enabled ? 0x2 : 0)),
 				channel = channel,
-				enabled = enabled,
 			});
 
 		/// <summary>Get <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a> we're admin in. Usually called when the user exceeds the <see cref="Config">limit</see> for owned public <a href="https://corefork.telegram.org/api/channel">channels/supergroups/geogroups</a>, and the user is given the choice to remove one of his channels/supergroups/geogroups.		<para>See <a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getAdminedPublicChannels#possible-errors">details</a>)</para></summary>
@@ -5854,10 +5875,11 @@ namespace TL
 		/// <param name="peer">Fetch the transaction history of the peer (<see cref="InputPeerSelf"/> or a bot we own).</param>
 		/// <param name="offset"><a href="https://corefork.telegram.org/api/offsets">Offset for pagination, obtained from the returned <c>next_offset</c>, initially an empty string »</a>.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Payments_StarsStatus> Payments_GetStarsTransactions(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, bool inbound = false, bool outbound = false, bool ascending = false)
+		public static Task<Payments_StarsStatus> Payments_GetStarsTransactions(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, string subscription_id = null, bool inbound = false, bool outbound = false, bool ascending = false)
 			=> client.Invoke(new Payments_GetStarsTransactions
 			{
-				flags = (Payments_GetStarsTransactions.Flags)((inbound ? 0x1 : 0) | (outbound ? 0x2 : 0) | (ascending ? 0x4 : 0)),
+				flags = (Payments_GetStarsTransactions.Flags)((subscription_id != null ? 0x8 : 0) | (inbound ? 0x1 : 0) | (outbound ? 0x2 : 0) | (ascending ? 0x4 : 0)),
+				subscription_id = subscription_id,
 				peer = peer,
 				offset = offset,
 				limit = limit,
@@ -5931,6 +5953,33 @@ namespace TL
 			{
 				flags = (Payments_GetStarsGiftOptions.Flags)(user_id != null ? 0x1 : 0),
 				user_id = user_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsSubscriptions"/></para></summary>
+		public static Task<Payments_StarsStatus> Payments_GetStarsSubscriptions(this Client client, InputPeer peer, string offset, bool missing_balance = false)
+			=> client.Invoke(new Payments_GetStarsSubscriptions
+			{
+				flags = (Payments_GetStarsSubscriptions.Flags)(missing_balance ? 0x1 : 0),
+				peer = peer,
+				offset = offset,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.changeStarsSubscription"/></para></summary>
+		public static Task<bool> Payments_ChangeStarsSubscription(this Client client, InputPeer peer, string subscription_id, bool? canceled = default)
+			=> client.Invoke(new Payments_ChangeStarsSubscription
+			{
+				flags = (Payments_ChangeStarsSubscription.Flags)(canceled != default ? 0x1 : 0),
+				peer = peer,
+				subscription_id = subscription_id,
+				canceled = canceled.GetValueOrDefault(),
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.fulfillStarsSubscription"/></para></summary>
+		public static Task<bool> Payments_FulfillStarsSubscription(this Client client, InputPeer peer, string subscription_id)
+			=> client.Invoke(new Payments_FulfillStarsSubscription
+			{
+				peer = peer,
+				subscription_id = subscription_id,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -8906,7 +8955,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xA02CE5D5)]
+	[TLDef(0xA455DE90)]
 	public sealed partial class Messages_ExportChatInvite : IMethod<ExportedChatInvite>
 	{
 		public Flags flags;
@@ -8914,6 +8963,7 @@ namespace TL.Methods
 		[IfFlag(0)] public DateTime expire_date;
 		[IfFlag(1)] public int usage_limit;
 		[IfFlag(4)] public string title;
+		[IfFlag(5)] public StarsSubscriptionPricing subscription_pricing;
 
 		[Flags] public enum Flags : uint
 		{
@@ -8922,6 +8972,7 @@ namespace TL.Methods
 			legacy_revoke_permanent = 0x4,
 			request_needed = 0x8,
 			has_title = 0x10,
+			has_subscription_pricing = 0x20,
 		}
 	}
 
@@ -9955,6 +10006,7 @@ namespace TL.Methods
 			requested = 0x1,
 			has_link = 0x2,
 			has_q = 0x4,
+			subscription_expired = 0x8,
 		}
 	}
 
@@ -10098,17 +10150,19 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x5A150BD4)]
+	[TLDef(0x864B2581)]
 	public sealed partial class Messages_SetChatAvailableReactions : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
 		public ChatReactions available_reactions;
 		[IfFlag(0)] public int reactions_limit;
+		[IfFlag(1)] public bool paid_enabled;
 
 		[Flags] public enum Flags : uint
 		{
 			has_reactions_limit = 0x1,
+			has_paid_enabled = 0x2,
 		}
 	}
 
@@ -10701,6 +10755,29 @@ namespace TL.Methods
 		}
 	}
 
+	[TLDef(0x25C8FE3E)]
+	public sealed partial class Messages_SendPaidReaction : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int msg_id;
+		public int count;
+		public long random_id;
+
+		[Flags] public enum Flags : uint
+		{
+			private_ = 0x1,
+		}
+	}
+
+	[TLDef(0x849AD397)]
+	public sealed partial class Messages_TogglePaidReactionPrivacy : IMethod<bool>
+	{
+		public InputPeer peer;
+		public int msg_id;
+		public bool private_;
+	}
+
 	[TLDef(0xEDD4882A)]
 	public sealed partial class Updates_GetState : IMethod<Updates_State> { }
 
@@ -11161,11 +11238,17 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x1F69B606)]
+	[TLDef(0x418D549C)]
 	public sealed partial class Channels_ToggleSignatures : IMethod<UpdatesBase>
 	{
+		public Flags flags;
 		public InputChannelBase channel;
-		public bool enabled;
+
+		[Flags] public enum Flags : uint
+		{
+			signatures_enabled = 0x1,
+			profiles_enabled = 0x2,
+		}
 	}
 
 	[TLDef(0xF8B036AF)]
@@ -11886,10 +11969,11 @@ namespace TL.Methods
 		public InputPeer peer;
 	}
 
-	[TLDef(0x97938D5A)]
+	[TLDef(0x69DA4557)]
 	public sealed partial class Payments_GetStarsTransactions : IMethod<Payments_StarsStatus>
 	{
 		public Flags flags;
+		[IfFlag(3)] public string subscription_id;
 		public InputPeer peer;
 		public string offset;
 		public int limit;
@@ -11899,6 +11983,7 @@ namespace TL.Methods
 			inbound = 0x1,
 			outbound = 0x2,
 			ascending = 0x4,
+			has_subscription_id = 0x8,
 		}
 	}
 
@@ -11964,6 +12049,40 @@ namespace TL.Methods
 		{
 			has_user_id = 0x1,
 		}
+	}
+
+	[TLDef(0x032512C5)]
+	public sealed partial class Payments_GetStarsSubscriptions : IMethod<Payments_StarsStatus>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public string offset;
+
+		[Flags] public enum Flags : uint
+		{
+			missing_balance = 0x1,
+		}
+	}
+
+	[TLDef(0xC7770878)]
+	public sealed partial class Payments_ChangeStarsSubscription : IMethod<bool>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public string subscription_id;
+		[IfFlag(0)] public bool canceled;
+
+		[Flags] public enum Flags : uint
+		{
+			has_canceled = 0x1,
+		}
+	}
+
+	[TLDef(0xCC5BEBB3)]
+	public sealed partial class Payments_FulfillStarsSubscription : IMethod<bool>
+	{
+		public InputPeer peer;
+		public string subscription_id;
 	}
 
 	[TLDef(0x9021AB67)]
