@@ -2,21 +2,23 @@ name: 'Auto-Lock Issues'
 
 on:
   schedule:
-    - cron: '0 12 * * *'
+    - cron: '0 2 * * *'
   workflow_dispatch:
 
 permissions:
   issues: write
   pull-requests: write
+  discussions: write
 
 concurrency:
-  group: lock
+  group: lock-threads
 
 jobs:
   action:
     runs-on: ubuntu-latest
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5.0.1
         with:
           issue-inactive-days: '60'
           pr-inactive-days: '60'
+          discussion-inactive-days: '60'
