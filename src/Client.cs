@@ -246,6 +246,7 @@ namespace WTelegram
 					return dcSession; // if we have already a session with this DC and we are connected or it is a perfect match, use it
 			if (dcSession == null && _session.DCSessions.TryGetValue(-dcId, out dcSession) && dcSession.AuthKey != null)
 			{
+				// we have already negociated an AuthKey with this DC
 				if (dcSession.DataCenter.flags == flags && _session.DCSessions.Remove(-dcId))
 					return _session.DCSessions[dcId] = dcSession; // we found a misclassed DC, change its sign
 				dcSession = new Session.DCSession { Id = Helpers.RandomLong(), // clone AuthKey for a session on the matching media_only DC
@@ -872,9 +873,11 @@ namespace WTelegram
 						var triedEndpoints = new HashSet<IPEndPoint> { endpoint };
 						if (_session.DcOptions != null)
 						{
-							var altOptions = _session.DcOptions.Where(dco => dco.id == _dcSession.DataCenter.id && dco.flags != _dcSession.DataCenter.flags
-								&& (dco.flags & (DcOption.Flags.cdn | DcOption.Flags.tcpo_only | DcOption.Flags.media_only)) == 0)
-								.OrderBy(dco => dco.flags);
+							var flags = _dcSession.DataCenter.flags;
+							var altOptions = _session.DcOptions.Where(dc => dc.id == _dcSession.DataCenter.id && dc.flags != flags
+								&& (dc.flags & DcOption.Flags.media_only) <= (flags & DcOption.Flags.media_only)
+								&& (dc.flags & (DcOption.Flags.cdn | DcOption.Flags.tcpo_only)) == 0)
+								.OrderBy(dc => (dc.flags ^ flags) & DcOption.Flags.media_only).ThenBy(dc => dc.flags ^ flags);
 							// try alternate addresses for this DC
 							foreach (var dcOption in altOptions)
 							{
@@ -884,7 +887,11 @@ namespace WTelegram
 								try
 								{
 									tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
-									_dcSession.DataCenter = dcOption;
+									if (((dcOption.flags ^ flags) & DcOption.Flags.media_only) == 0) // test to prevent AltDC becoming MainDC
+										_dcSession.DataCenter = dcOption;
+									else
+										_dcSession.DataCenter = new DcOption { flags = dcOption.flags ^ DcOption.Flags.media_only,
+											id = dcOption.id, ip_address = dcOption.ip_address, port = dcOption.port, secret = dcOption.secret };
 									break;
 								}
 								catch (SocketException) { }

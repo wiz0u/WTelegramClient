@@ -504,7 +504,7 @@ These two fields derive from class `Peer` and can be of type `PeerChat`, `PeerCh
 
 The root structure where you obtained the message (typically `UpdatesBase` or `Messages_MessagesBase`) inherits from `IPeerResolver`.
 This allows you to call `.UserOrChat(peer)` on the root structure, in order to resolve those fields into a `User` class, or a `ChatBase`-derived class
-(typically `Chat` or `Channel`) which will give you details about the peer, instead of just the ID.
+(typically `Chat` or `Channel`) which will give you details about the peer, instead of just the ID, and can be implicitly converted to `InputPeer`.
 
 However, in some case _(typically when dealing with updates)_, Telegram might choose to not include details about a peer
 because it expects you to already know about it (`UserOrChat` returns `null`).

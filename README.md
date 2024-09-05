@@ -1,12 +1,14 @@
 ﻿[![API Layer](https://img.shields.io/badge/API_Layer-186-blueviolet)](https://corefork.telegram.org/methods)
 [![NuGet version](https://img.shields.io/nuget/v/WTelegramClient?color=00508F)](https://www.nuget.org/packages/WTelegramClient/)
 [![NuGet prerelease](https://img.shields.io/nuget/vpre/WTelegramClient?color=C09030&label=dev+nuget)](https://www.nuget.org/packages/WTelegramClient/absoluteLatest)
-[![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](https://www.buymeacoffee.com/wizou)
+[![Donate](https://img.shields.io/badge/Help_this_project:-Donate-ff4444)](https://buymeacoffee.com/wizou)
 
 ## *_Telegram Client API library written 100% in C# and .NET_*
 
 This library allows you to connect to Telegram and control a user programmatically (or a bot, but [WTelegramBot](https://www.nuget.org/packages/WTelegramBot) is much easier for that).
 All the Telegram Client APIs (MTProto) are supported so you can do everything the user could do with a full Telegram GUI client.
+
+Library was developed solely by one unemployed guy. [Donations are welcome](https://buymeacoffee.com/wizou).
 
 This ReadMe is a **quick but important tutorial** to learn the fundamentals about this library. Please read it all.
 
@@ -202,6 +204,6 @@ as well as the [API Terms of Service](https://core.telegram.org/api/terms) or yo
 If you read all this ReadMe, the [Frequently Asked Questions](https://wiz0u.github.io/WTelegramClient/FAQ),
 the [Examples codes](https://wiz0u.github.io/WTelegramClient/EXAMPLES) and still have questions, feedback is welcome in our Telegram group [@WTelegramClient](https://t.me/WTelegramClient)
 
-If you like this library, you can [buy me a coffee](https://www.buymeacoffee.com/wizou) ❤ This will help the project keep going.
+If you like this library, you can [buy me a coffee](https://buymeacoffee.com/wizou) ❤ This will help the project keep going.
 
 © 2024 Olivier Marcoux
