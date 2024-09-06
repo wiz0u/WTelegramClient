@@ -16,7 +16,7 @@ namespace WTelegramClientTest
 			Console.WriteLine("The program will display updates received for the logged-in user. Press any key to terminate");
 			WTelegram.Helpers.Log = (l, s) => System.Diagnostics.Debug.WriteLine(s);
 			Client = new WTelegram.Client(Environment.GetEnvironmentVariable);
-			using (Client)
+			await using (Client)
 			{
 				Manager = Client.WithUpdateManager(Client_OnUpdate/*, "Updates.state"*/);
 				My = await Client.LoginUserIfNeeded();

@@ -28,7 +28,7 @@ namespace WTelegramClientTest
 			var store = new PostgreStore(Environment.GetEnvironmentVariable("DATABASE_URL"), Environment.GetEnvironmentVariable("SESSION_NAME"));
 			// if DB does not contain a session yet, client will be run in interactive mode
 			Client = new WTelegram.Client(store.Length == 0 ? null : Environment.GetEnvironmentVariable, store);
-			using (Client)
+			await using (Client)
 			{
 				Client.OnUpdates += Client_OnUpdates;
 				My = await Client.LoginUserIfNeeded();

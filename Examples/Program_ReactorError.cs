@@ -20,7 +20,7 @@ namespace WTelegramClientTest
 			}
 			finally
 			{
-				Client?.Dispose();
+				if (Client != null) await Client.DisposeAsync();
 			}
 		}
 
@@ -42,7 +42,7 @@ namespace WTelegramClientTest
 				while (true)
 				{
 					Console.WriteLine("Disposing the client and trying to reconnect in 5 seconds...");
-					Client?.Dispose();
+					if (Client != null) await Client.DisposeAsync();
 					Client = null;
 					await Task.Delay(5000);
 					try

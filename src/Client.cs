@@ -20,7 +20,10 @@ using static WTelegram.Encryption;
 
 namespace WTelegram
 {
-	public partial class Client : IDisposable, IAsyncDisposable
+	public partial class Client : IDisposable
+#if NETCOREAPP2_1_OR_GREATER
+		, IAsyncDisposable
+#endif
 	{
 		/// <summary>This event will be called when unsollicited updates/messages are sent by Telegram servers</summary>
 		/// <remarks>Make your handler <see langword="async"/>, or return <see cref="Task.CompletedTask"/> or <see langword="null"/><br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ReactorError.cs?ts=4#L30">Examples/Program_ReactorError.cs</see> for how to use this<br/>or <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L21">Examples/Program_ListenUpdate.cs</see> using the UpdateManager class instead</remarks>

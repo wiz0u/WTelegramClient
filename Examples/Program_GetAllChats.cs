@@ -24,7 +24,7 @@ namespace WTelegramClientTest
 
 		static async Task Main(string[] _)
 		{
-			using var client = new WTelegram.Client(Config);
+			await using var client = new WTelegram.Client(Config);
 			var user = await client.LoginUserIfNeeded();
 			Console.WriteLine($"We are logged-in as {user.username ?? user.first_name + " " + user.last_name} (id {user.id})");
 
