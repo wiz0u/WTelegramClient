@@ -6,11 +6,12 @@ using System.Linq;
 using System.Net;
 using System.Numerics;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 #if NETCOREAPP2_1_OR_GREATER
 namespace WTelegram
 {
-	static class Compat
+	static partial class Compat
 	{
 		internal static BigInteger BigEndianInteger(byte[] value) => new(value, true, true);
 		internal static IPEndPoint IPEndPoint_Parse(string addr) => IPEndPoint.Parse(addr);
@@ -19,7 +20,7 @@ namespace WTelegram
 #else // Compatibility shims for methods missing in netstandard2.0:
 namespace WTelegram
 {
-	static class Compat
+	static partial class Compat
 	{
 		internal static BigInteger BigEndianInteger(byte[] value)
 		{
@@ -105,3 +106,16 @@ namespace System.Runtime.CompilerServices
 	internal class IsExternalInit { }
 }
 #endif
+
+namespace WTelegram
+{
+	static partial class Compat
+	{
+		internal static Task WaitAsync(this Task source, int timeout)
+#if NET8_0_OR_GREATER
+			=> source?.WaitAsync(TimeSpan.FromMilliseconds(timeout)) ?? Task.CompletedTask;
+#else
+			=> source == null ? Task.CompletedTask : Task.WhenAny(source, Task.Delay(timeout));
+#endif
+	}
+}

@@ -20,7 +20,7 @@ using static WTelegram.Encryption;
 
 namespace WTelegram
 {
-	public partial class Client : IDisposable
+	public partial class Client : IDisposable, IAsyncDisposable
 	{
 		/// <summary>This event will be called when unsollicited updates/messages are sent by Telegram servers</summary>
 		/// <remarks>Make your handler <see langword="async"/>, or return <see cref="Task.CompletedTask"/> or <see langword="null"/><br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ReactorError.cs?ts=4#L30">Examples/Program_ReactorError.cs</see> for how to use this<br/>or <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L21">Examples/Program_ListenUpdate.cs</see> using the UpdateManager class instead</remarks>
@@ -178,10 +178,12 @@ namespace WTelegram
 		public static Task<InputCheckPasswordSRP> InputCheckPassword(Account_Password accountPassword, string password)
 			=> Check2FA(accountPassword, () => Task.FromResult(password));
 
-		public void Dispose()
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA1816")]
+		public void Dispose() => DisposeAsync().AsTask().Wait();
+		public async ValueTask DisposeAsync()
 		{
 			Helpers.Log(2, $"{_dcSession.DcID}>Disposing the client");
-			Reset(false, IsMainDC);
+			await ResetAsync(false, IsMainDC).ConfigureAwait(false);
 			var ex = new ObjectDisposedException("WTelegram.Client was disposed");
 			lock (_pendingRpcs) // abort all pending requests
 				foreach (var rpc in _pendingRpcs.Values)
@@ -197,19 +199,24 @@ namespace WTelegram
 		/// <summary>Disconnect from Telegram <i>(shouldn't be needed in normal usage)</i></summary>
 		/// <param name="resetUser">Forget about logged-in user</param>
 		/// <param name="resetSessions">Disconnect secondary sessions with other DCs</param>
-		public void Reset(bool resetUser = true, bool resetSessions = true)
+		public void Reset(bool resetUser = true, bool resetSessions = true) => ResetAsync(resetUser, resetSessions).Wait();
+
+		/// <summary>Disconnect from Telegram <i>(shouldn't be needed in normal usage)</i></summary>
+		/// <param name="resetUser">Forget about logged-in user</param>
+		/// <param name="resetSessions">Disconnect secondary sessions with other DCs</param>
+		public async Task ResetAsync(bool resetUser = true, bool resetSessions = true)
 		{
 			try
 			{
 				if (CheckMsgsToAck() is MsgsAck msgsAck)
-					SendAsync(msgsAck, false).Wait(1000);
+					await SendAsync(msgsAck, false).WaitAsync(1000).ConfigureAwait(false);
 			}
 			catch { }
 			_cts?.Cancel();
 			_sendSemaphore = new(0);    // initially taken, first released during DoConnectAsync
 			try
 			{
-				_reactorTask?.Wait(1000);
+				await _reactorTask.WaitAsync(1000).ConfigureAwait(false);
 			}
 			catch { }
 			_reactorTask = resetSessions ? null : Task.CompletedTask;
@@ -350,7 +357,7 @@ namespace WTelegram
 					try
 					{
 						lock (_msgsToAck) _msgsToAck.Clear();
-						Reset(false, false);
+						await ResetAsync(false, false);
 						_reactorReconnects = (_reactorReconnects + 1) % MaxAutoReconnects;
 						if (disconnectedAltDC && _pendingRpcs.Count <= 1)
 							if (_pendingRpcs.Values.FirstOrDefault() is not Rpc rpc || rpc.type == typeof(Pong))
@@ -1047,6 +1054,7 @@ namespace WTelegram
 			};
 			try
 			{
+				await ConnectAsync(); // start reactor on the current (UI?) context
 				// Login logic is executed on TaskScheduler while request TCS are still received on current SynchronizationContext
 				await Task.Run(() => LoginUserIfNeeded());
 				_loginCfg.request.SetResult(null);
