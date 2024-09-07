@@ -237,7 +237,7 @@ namespace WTelegram
 				foreach (var altSession in _session.DCSessions.Values)
 					if (altSession.Client != null && altSession.Client != this)
 					{
-						altSession.Client.Dispose();
+						await altSession.Client.DisposeAsync();
 						altSession.Client = null;
 					}
 			}
@@ -735,7 +735,7 @@ namespace WTelegram
 								retryLast = false;
 							else
 							{
-								Reset(false, false);
+								await ResetAsync(false, false);
 								_dcSession.Renew();
 								await ConnectAsync();
 							}
@@ -1562,7 +1562,7 @@ namespace WTelegram
 			Session.DCSession dcSession;
 			lock (_session)
 				dcSession = GetOrCreateDCSession(dcId, _dcSession.DataCenter.flags);
-			Reset(false, false);
+			await ResetAsync(false, false);
 			_session.MainDC = dcId;
 			_dcSession.Client = null;
 			_dcSession = dcSession;
