@@ -268,8 +268,7 @@ namespace WTelegram
 				flags &= ~DcOption.Flags.media_only;
 				dcId = Math.Abs(dcId);
 			}
-			var dcOptions = _session.DcOptions.Where(dc => dc.id == Math.Abs(dcId))
-				.OrderBy(dc => dc.flags.HasFlag(DcOption.Flags.media_only) ^ (dcId < 0)).ThenBy(dc => dc.flags ^ flags);
+			var dcOptions = GetDcOptions(Math.Abs(dcId), flags);
 			var dcOption = dcOptions.FirstOrDefault() ?? throw new WTException($"Could not find adequate dc_option for DC {dcId}");
 			dcSession ??= new Session.DCSession { Id = Helpers.RandomLong() }; // create new session only if not already existing
 			dcSession.DataCenter = dcOption;
@@ -831,6 +830,14 @@ namespace WTelegram
 			await _connecting;
 		}
 
+		private IEnumerable<DcOption> GetDcOptions(int dcId, DcOption.Flags flags) => !flags.HasFlag(DcOption.Flags.media_only)
+			? _session.DcOptions.Where(dc => dc.id == dcId && (dc.flags & (DcOption.Flags.cdn | DcOption.Flags.tcpo_only | DcOption.Flags.media_only)) == 0)
+				.OrderBy(dc => dc.flags ^ flags)
+			: _session.DcOptions.Where(dc => dc.id == dcId && (dc.flags & (DcOption.Flags.cdn | DcOption.Flags.tcpo_only)) == 0)
+				.OrderBy(dc => ~dc.flags & DcOption.Flags.media_only).ThenBy(dc => dc.flags ^ flags)
+				.Select(dc => dc.flags.HasFlag(DcOption.Flags.media_only) ? dc : new DcOption { id = dc.id, port = dc.port,
+					ip_address = dc.ip_address, secret = dc.secret, flags = dc.flags | DcOption.Flags.media_only });
+
 		private async Task DoConnectAsync(bool quickResume)
 		{
 			_cts = new();
@@ -883,11 +890,7 @@ namespace WTelegram
 						var triedEndpoints = new HashSet<IPEndPoint> { endpoint };
 						if (_session.DcOptions != null)
 						{
-							var flags = _dcSession.DataCenter.flags;
-							var altOptions = _session.DcOptions.Where(dc => dc.id == _dcSession.DataCenter.id && dc.flags != flags
-								&& (dc.flags & DcOption.Flags.media_only) <= (flags & DcOption.Flags.media_only)
-								&& (dc.flags & (DcOption.Flags.cdn | DcOption.Flags.tcpo_only)) == 0)
-								.OrderBy(dc => (dc.flags ^ flags) & DcOption.Flags.media_only).ThenBy(dc => dc.flags ^ flags);
+							var altOptions = GetDcOptions(_dcSession.DataCenter.id, _dcSession.DataCenter.flags);
 							// try alternate addresses for this DC
 							foreach (var dcOption in altOptions)
 							{
@@ -897,11 +900,7 @@ namespace WTelegram
 								try
 								{
 									tcpClient = await TcpHandler(endpoint.Address.ToString(), endpoint.Port);
-									if (((dcOption.flags ^ flags) & DcOption.Flags.media_only) == 0) // test to prevent AltDC becoming MainDC
-										_dcSession.DataCenter = dcOption;
-									else
-										_dcSession.DataCenter = new DcOption { flags = dcOption.flags ^ DcOption.Flags.media_only,
-											id = dcOption.id, ip_address = dcOption.ip_address, port = dcOption.port, secret = dcOption.secret };
+									_dcSession.DataCenter = dcOption;
 									break;
 								}
 								catch (SocketException) { }
