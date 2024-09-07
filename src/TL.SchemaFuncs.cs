@@ -4313,14 +4313,15 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.sendPaidReaction"/></para></summary>
-		public static Task<UpdatesBase> Messages_SendPaidReaction(this Client client, InputPeer peer, int msg_id, int count, long random_id, bool private_ = false)
+		public static Task<UpdatesBase> Messages_SendPaidReaction(this Client client, InputPeer peer, int msg_id, int count, long random_id, bool? private_ = default)
 			=> client.Invoke(new Messages_SendPaidReaction
 			{
-				flags = (Messages_SendPaidReaction.Flags)(private_ ? 0x1 : 0),
+				flags = (Messages_SendPaidReaction.Flags)(private_ != default ? 0x1 : 0),
 				peer = peer,
 				msg_id = msg_id,
 				count = count,
 				random_id = random_id,
+				private_ = private_.GetValueOrDefault(),
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.togglePaidReactionPrivacy"/></para></summary>
@@ -4330,6 +4331,12 @@ namespace TL
 				peer = peer,
 				msg_id = msg_id,
 				private_ = private_,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getPaidReactionPrivacy"/></para></summary>
+		public static Task<UpdatesBase> Messages_GetPaidReactionPrivacy(this Client client)
+			=> client.Invoke(new Messages_GetPaidReactionPrivacy
+			{
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -5980,6 +5987,12 @@ namespace TL
 			{
 				peer = peer,
 				subscription_id = subscription_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsGiveawayOptions"/></para></summary>
+		public static Task<StarsGiveawayOption[]> Payments_GetStarsGiveawayOptions(this Client client)
+			=> client.Invoke(new Payments_GetStarsGiveawayOptions
+			{
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -10755,7 +10768,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x25C8FE3E)]
+	[TLDef(0x9DD6A67B)]
 	public sealed partial class Messages_SendPaidReaction : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -10763,10 +10776,11 @@ namespace TL.Methods
 		public int msg_id;
 		public int count;
 		public long random_id;
+		[IfFlag(0)] public bool private_;
 
 		[Flags] public enum Flags : uint
 		{
-			private_ = 0x1,
+			has_private = 0x1,
 		}
 	}
 
@@ -10777,6 +10791,9 @@ namespace TL.Methods
 		public int msg_id;
 		public bool private_;
 	}
+
+	[TLDef(0x472455AA)]
+	public sealed partial class Messages_GetPaidReactionPrivacy : IMethod<UpdatesBase> { }
 
 	[TLDef(0xEDD4882A)]
 	public sealed partial class Updates_GetState : IMethod<Updates_State> { }
@@ -12084,6 +12101,9 @@ namespace TL.Methods
 		public InputPeer peer;
 		public string subscription_id;
 	}
+
+	[TLDef(0xBD1EFD3E)]
+	public sealed partial class Payments_GetStarsGiveawayOptions : IMethod<StarsGiveawayOption[]> { }
 
 	[TLDef(0x9021AB67)]
 	public sealed partial class Stickers_CreateStickerSet : IMethod<Messages_StickerSet>
