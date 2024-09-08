@@ -615,9 +615,8 @@ namespace WTelegram
 					else
 					{
 						Helpers.Log(1, $"             → {result?.GetType().Name,-37} #{(short)msgId.GetHashCode():X4}");
-						if (OnOwnUpdates != null)
-							if (result is UpdatesBase updates)
-								RaiseOwnUpdates(updates);
+						if (OnOwnUpdates != null && result is UpdatesBase updates)
+							RaiseOwnUpdates(updates);
 					}
 
 					rpc.tcs.SetResult(result);
@@ -797,7 +796,7 @@ namespace WTelegram
 		{
 			try
 			{
-				await OnOwnUpdates(updates);
+				await OnOwnUpdates?.Invoke(updates);
 			}
 			catch (Exception ex)
 			{
@@ -1572,11 +1571,12 @@ namespace WTelegram
 		public async Task<T> InvokeAffected<T>(IMethod<T> query, long peerId) where T : Messages_AffectedMessages
 		{
 			var result = await Invoke(query);
-			RaiseOwnUpdates(new UpdateShort
-			{
-				update = new UpdateAffectedMessages { mbox_id = peerId, pts = result.pts, pts_count = result.pts_count}, 
-				date = MsgIdToStamp(_lastRecvMsgId)
-			});
+			if (OnOwnUpdates != null)
+				RaiseOwnUpdates(new UpdateShort
+				{
+					update = new UpdateAffectedMessages { mbox_id = peerId, pts = result.pts, pts_count = result.pts_count },
+					date = MsgIdToStamp(_lastRecvMsgId)
+				});
 			return result;
 		}
 	}
