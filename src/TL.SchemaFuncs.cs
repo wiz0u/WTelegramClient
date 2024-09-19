@@ -5352,9 +5352,10 @@ namespace TL
 		/// <summary>Informs the server that the user has either:		<para>See <a href="https://corefork.telegram.org/method/channels.clickSponsoredMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.clickSponsoredMessage#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel where the sponsored message was posted</param>
 		/// <param name="random_id">Message ID</param>
-		public static Task<bool> Channels_ClickSponsoredMessage(this Client client, InputChannelBase channel, byte[] random_id)
+		public static Task<bool> Channels_ClickSponsoredMessage(this Client client, InputChannelBase channel, byte[] random_id, bool media = false, bool fullscreen = false)
 			=> client.Invoke(new Channels_ClickSponsoredMessage
 			{
+				flags = (Channels_ClickSponsoredMessage.Flags)((media ? 0x1 : 0) | (fullscreen ? 0x2 : 0)),
 				channel = channel,
 				random_id = random_id,
 			});
@@ -11570,11 +11571,18 @@ namespace TL.Methods
 		public bool enabled;
 	}
 
-	[TLDef(0x18AFBC93)]
+	[TLDef(0x01445D75)]
 	public sealed partial class Channels_ClickSponsoredMessage : IMethod<bool>
 	{
+		public Flags flags;
 		public InputChannelBase channel;
 		public byte[] random_id;
+
+		[Flags] public enum Flags : uint
+		{
+			media = 0x1,
+			fullscreen = 0x2,
+		}
 	}
 
 	[TLDef(0xD8AA3671)]

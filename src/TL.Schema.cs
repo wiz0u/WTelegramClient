@@ -1973,7 +1973,7 @@ namespace TL
 	[TLDef(0x9F84F49E)]
 	public sealed partial class MessageMediaUnsupported : MessageMedia { }
 	/// <summary>Document (video, audio, voice, sticker, any media type except photo)		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaDocument"/></para></summary>
-	[TLDef(0x4CF4D72D)]
+	[TLDef(0xDD570BD5)]
 	public sealed partial class MessageMediaDocument : MessageMedia
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1981,7 +1981,7 @@ namespace TL
 		/// <summary>Attached document</summary>
 		[IfFlag(0)] public DocumentBase document;
 		/// <summary>Currently only used for story videos, may contain an alternative version of the story video, explicitly encoded using H.264 (in MPEG4 transport) at a lower resolution than <c>document</c>.</summary>
-		[IfFlag(5)] public DocumentBase alt_document;
+		[IfFlag(5)] public DocumentBase[] alt_documents;
 		/// <summary>Time to live of self-destructing document</summary>
 		[IfFlag(2)] public int ttl_seconds;
 
@@ -1995,8 +1995,8 @@ namespace TL
 			nopremium = 0x8,
 			/// <summary>Whether this media should be hidden behind a spoiler warning</summary>
 			spoiler = 0x10,
-			/// <summary>Field <see cref="alt_document"/> has a value</summary>
-			has_alt_document = 0x20,
+			/// <summary>Field <see cref="alt_documents"/> has a value</summary>
+			has_alt_documents = 0x20,
 			/// <summary>Whether this is a video.</summary>
 			video = 0x40,
 			/// <summary>Whether this is a round video.</summary>
@@ -6901,7 +6901,7 @@ namespace TL
 		}
 	}
 	/// <summary>Defines a video		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeVideo"/></para></summary>
-	[TLDef(0x17399FAD)]
+	[TLDef(0x43C57C48)]
 	public sealed partial class DocumentAttributeVideo : DocumentAttribute
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -6916,6 +6916,7 @@ namespace TL
 		[IfFlag(2)] public int preload_prefix_size;
 		/// <summary>Floating point UNIX timestamp in seconds, indicating the frame of the video that should be used as static preview and thumbnail.</summary>
 		[IfFlag(4)] public double video_start_ts;
+		[IfFlag(5)] public string video_codec;
 
 		[Flags] public enum Flags : uint
 		{
@@ -6929,6 +6930,8 @@ namespace TL
 			nosound = 0x8,
 			/// <summary>Field <see cref="video_start_ts"/> has a value</summary>
 			has_video_start_ts = 0x10,
+			/// <summary>Field <see cref="video_codec"/> has a value</summary>
+			has_video_codec = 0x20,
 		}
 	}
 	/// <summary>Represents an audio file		<para>See <a href="https://corefork.telegram.org/constructor/documentAttributeAudio"/></para></summary>
@@ -7865,6 +7868,12 @@ namespace TL
 
 		/// <summary>Button text</summary>
 		public override string Text => text;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonCopy"/></para></summary>
+	[TLDef(0x75D2698E, inheritBefore = true)]
+	public sealed partial class KeyboardButtonCopy : KeyboardButton
+	{
+		public string copy_text;
 	}
 
 	/// <summary>Inline keyboard row		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRow"/></para></summary>

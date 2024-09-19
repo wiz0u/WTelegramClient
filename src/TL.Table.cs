@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 187;					// fetched 07/09/2024 00:00:28
+		public const int Version = 188;					// fetched 19/09/2024 11:16:22
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -155,7 +155,7 @@ namespace TL
 			[0x56E0D474] = typeof(MessageMediaGeo),
 			[0x70322949] = typeof(MessageMediaContact),
 			[0x9F84F49E] = typeof(MessageMediaUnsupported),
-			[0x4CF4D72D] = typeof(MessageMediaDocument),
+			[0xDD570BD5] = typeof(MessageMediaDocument),
 			[0xDDF10C3B] = typeof(MessageMediaWebPage),
 			[0x2EC0533F] = typeof(MessageMediaVenue),
 			[0xFDB19008] = typeof(MessageMediaGame),
@@ -513,7 +513,7 @@ namespace TL
 			[0x6C37C15C] = typeof(DocumentAttributeImageSize),
 			[0x11B58939] = typeof(DocumentAttributeAnimated),
 			[0x6319D612] = typeof(DocumentAttributeSticker),
-			[0x17399FAD] = typeof(DocumentAttributeVideo),
+			[0x43C57C48] = typeof(DocumentAttributeVideo),
 			[0x9852F9C6] = typeof(DocumentAttributeAudio),
 			[0x15590068] = typeof(DocumentAttributeFilename),
 			[0x9801D2F7] = typeof(DocumentAttributeHasStickers),
@@ -573,6 +573,7 @@ namespace TL
 			[0xA0C0505C] = typeof(KeyboardButtonSimpleWebView),
 			[0x53D7BFD8] = typeof(KeyboardButtonRequestPeer),
 			[0xC9662D05] = typeof(InputKeyboardButtonRequestPeer),
+			[0x75D2698E] = typeof(KeyboardButtonCopy),
 			[0x77608B83] = typeof(KeyboardButtonRow),
 			[0xA03E5B85] = typeof(ReplyKeyboardHide),
 			[0x86B40B08] = typeof(ReplyKeyboardForceReply),
