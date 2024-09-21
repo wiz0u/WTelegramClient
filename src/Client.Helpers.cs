@@ -754,7 +754,8 @@ namespace WTelegram
 					}
 					var rrAbout = ci.about == null ? null : new RestrictionReason[] { new() { text = ci.about } };
 					return !ci.flags.HasFlag(ChatInvite.Flags.channel)
-						? new Chat { title = ci.title, photo = chatPhoto, participants_count = ci.participants_count }
+						? new Chat { title = ci.title, photo = chatPhoto, participants_count = ci.participants_count,
+							flags = ci.flags.HasFlag(ChatInvite.Flags.request_needed) ? (Chat.Flags)Channel.Flags.join_request : 0 }
 						: new Channel { title = ci.title, photo = chatPhoto, participants_count = ci.participants_count,
 							restriction_reason = rrAbout, flags = Channel.Flags.min |
 								(ci.flags.HasFlag(ChatInvite.Flags.broadcast) ? Channel.Flags.broadcast : 0) |
