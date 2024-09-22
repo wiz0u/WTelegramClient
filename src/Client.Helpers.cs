@@ -215,17 +215,34 @@ namespace WTelegram
 						var mmd = (MessageMediaDocument)await this.Messages_UploadMedia(peer, imud);
 						ism.media = mmd.document;
 						break;
+					case InputMediaPhotoExternal impe:
+						if (User.IsBot)
+							try
+							{
+								mmp = (MessageMediaPhoto)await this.Messages_UploadMedia(peer, impe);
+								ism.media = mmp.photo;
+								break;
+							}
+							catch (RpcException) { }
+						var inputFile = await UploadFromUrl(impe.url);
+						ism.media = new InputMediaUploadedPhoto { file = inputFile };
+						goto retry;
 					case InputMediaDocumentExternal imde:
+						if (!videoUrlAsFile && User.IsBot)
+							try
+							{
+								mmd = (MessageMediaDocument)await this.Messages_UploadMedia(peer, imde);
+								ism.media = mmd.document;
+								break;
+							}
+							catch (RpcException) { }
 						string mimeType = null;
-						var inputFile = await UploadFromUrl(imde.url);
+						ism.media = (await this.Messages_UploadMedia(peer, ism.media)).ToInputMedia();
+						inputFile = await UploadFromUrl(imde.url);
 						if (videoUrlAsFile || mimeType?.StartsWith("video/") != true)
 							ism.media = new InputMediaUploadedDocument(inputFile, mimeType);
 						else
 							ism.media = new InputMediaUploadedDocument(inputFile, mimeType, new DocumentAttributeVideo { flags = DocumentAttributeVideo.Flags.supports_streaming });
-						goto retry;
-					case InputMediaPhotoExternal impe:
-						inputFile = await UploadFromUrl(impe.url);
-						ism.media = new InputMediaUploadedPhoto { file = inputFile };
 						goto retry;
 
 						async Task<InputFileBase> UploadFromUrl(string url)
