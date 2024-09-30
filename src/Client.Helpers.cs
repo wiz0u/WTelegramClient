@@ -187,10 +187,10 @@ namespace WTelegram
 		/// <param name="entities">Text formatting entities for the caption. You can use <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
 		/// <param name="schedule_date">UTC timestamp when the message should be sent</param>
 		/// <param name="videoUrlAsFile">Any <see cref="InputMediaDocumentExternal"/> URL pointing to a video should be considered as non-streamable</param>
-		/// <returns>The last of the media group messages, confirmed by Telegram</returns>
+		/// <returns>The media group messages as received by Telegram</returns>
 		/// <remarks>
-		/// * The caption/entities are set on the last media<br/>
-		/// * <see cref="InputMediaDocumentExternal"/> and <see cref="InputMediaPhotoExternal"/> are supported by downloading the file from the web via HttpClient and sending it to Telegram.
+		/// * The caption/entities are set on the first media<br/>
+		/// * <see cref="InputMediaDocumentExternal"/> and <see cref="InputMediaPhotoExternal"/> are supported natively for bot accounts, and for user accounts by downloading the file from the web via HttpClient and sending it to Telegram.
 		///   WTelegramClient proxy settings don't apply to HttpClient<br/>
 		/// * You may run into errors if you mix, in the same album, photos and file documents having no thumbnails/video attributes
 		/// </remarks>

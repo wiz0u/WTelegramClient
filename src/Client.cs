@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -28,8 +29,6 @@ namespace WTelegram
 		/// <summary>This event will be called when unsollicited updates/messages are sent by Telegram servers</summary>
 		/// <remarks>Make your handler <see langword="async"/>, or return <see cref="Task.CompletedTask"/> or <see langword="null"/><br/>See <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ReactorError.cs?ts=4#L30">Examples/Program_ReactorError.cs</see> for how to use this<br/>or <see href="https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_ListenUpdates.cs?ts=4#L21">Examples/Program_ListenUpdate.cs</see> using the UpdateManager class instead</remarks>
 		public event Func<UpdatesBase, Task> OnUpdates;
-		[Obsolete("This event was renamed OnUpdates (plural). You may also want to consider using our new UpdateManager class instead (see FAQ)")]
-		public event Func<UpdatesBase, Task> OnUpdate { add { OnUpdates += value; } remove { OnUpdates -= value; } }
 		/// <summary>This event is called for other types of notifications (login states, reactor errors, ...)</summary>
 		public event Func<IObject, Task> OnOther;
 		/// <summary>Use this handler to intercept Updates that resulted from your own API calls</summary>
@@ -67,6 +66,7 @@ namespace WTelegram
 		private Session.DCSession _dcSession;
 		private TcpClient _tcpClient;
 		private Stream _networkStream;
+		private HttpClient _httpClient;
 		private IObject _lastSentMsg;
 		private long _lastRecvMsgId;
 		private readonly List<long> _msgsToAck = [];
@@ -198,6 +198,10 @@ namespace WTelegram
 		}
 
 		public void DisableUpdates(bool disable = true) => _dcSession.DisableUpdates(disable);
+		
+		/// <summary>Enable connecting to Telegram via on-demand HTTP requests instead of permanent TCP connection</summary>
+		/// <param name="httpClient">HttpClient to use. Leave <see langword="null"/> for a default one</param>
+		public void HttpMode(HttpClient httpClient = null) => _httpClient = httpClient ?? new();
 
 		/// <summary>Disconnect from Telegram <i>(shouldn't be needed in normal usage)</i></summary>
 		/// <param name="resetUser">Forget about logged-in user</param>
@@ -513,15 +517,15 @@ namespace WTelegram
 					return null;
 				}
 			}
-
-			static string TransportError(int error_code) => error_code switch
-			{
-				404 => "Auth key not found",
-				429 => "Transport flood",
-				444 => "Invalid DC",
-				_ => Enum.GetName(typeof(HttpStatusCode), error_code) ?? "Transport error"
-			};
 		}
+
+		static string TransportError(int error_code) => error_code switch
+		{
+			404 => "Auth key not found",
+			429 => "Transport flood",
+			444 => "Invalid DC",
+			_ => Enum.GetName(typeof(HttpStatusCode), error_code) ?? "Transport error"
+		};
 
 		internal void CheckSalt()
 		{
@@ -871,6 +875,8 @@ namespace WTelegram
 				throw new Exception("Library was not compiled with OBFUSCATION symbol");
 #endif
 			}
+			if (_httpClient != null)
+				_reactorTask = Task.CompletedTask;
 			else
 			{
 				endpoint = _dcSession?.EndPoint ?? GetDefaultEndpoint(out int defaultDc);
@@ -930,16 +936,19 @@ namespace WTelegram
 				_networkStream = _tcpClient.GetStream();
 			}
 
-			byte protocolId = (byte)(_paddedMode ? 0xDD : 0xEE);
-#if OBFUSCATION
-			(_sendCtr, _recvCtr, preamble) = InitObfuscation(secret, protocolId, dcId);
-#else
-			preamble = new byte[] { protocolId, protocolId, protocolId, protocolId };
-#endif
-			await _networkStream.WriteAsync(preamble, 0, preamble.Length, _cts.Token);
-
 			_dcSession.Salts?.Remove(DateTime.MaxValue);
-			_reactorTask = Reactor(_networkStream, _cts);
+			if (_networkStream != null)
+			{
+				byte protocolId = (byte)(_paddedMode ? 0xDD : 0xEE);
+#if OBFUSCATION
+				(_sendCtr, _recvCtr, preamble) = InitObfuscation(secret, protocolId, dcId);
+#else
+				preamble = new byte[] { protocolId, protocolId, protocolId, protocolId };
+#endif
+				await _networkStream.WriteAsync(preamble, 0, preamble.Length, _cts.Token);
+
+				_reactorTask = Reactor(_networkStream, _cts);
+			}
 			_sendSemaphore.Release();
 
 			try
@@ -947,7 +956,7 @@ namespace WTelegram
 				if (_dcSession.AuthKeyID == 0)
 					await CreateAuthorizationKey(this, _dcSession);
 
-				var keepAliveTask = KeepAlive(_cts.Token);
+				if (_networkStream != null) _ = KeepAlive(_cts.Token);
 				if (quickResume && _dcSession.Layer == Layer.Version && _dcSession.DataCenter != null && _session.MainDC != 0)
 					TLConfig = new Config { this_dc = _session.MainDC, dc_options = _session.DcOptions };
 				else
@@ -1467,14 +1476,33 @@ namespace WTelegram
 				int frameLength = (int)memStream.Length;
 				BinaryPrimitives.WriteInt32LittleEndian(buffer, frameLength - 4); // patch payload_len with correct value
 #if OBFUSCATION
-				_sendCtr.EncryptDecrypt(buffer, frameLength);
+				_sendCtr?.EncryptDecrypt(buffer, frameLength);
 #endif
-				await _networkStream.WriteAsync(buffer, 0, frameLength);
+				var sending = SendFrame(buffer, frameLength);
 				_lastSentMsg = msg;
+				await sending;
 			}
 			finally
 			{
 				_sendSemaphore.Release();
+			}
+		}
+
+		private async Task SendFrame(byte[] buffer, int frameLength)
+		{
+			if (_httpClient == null)
+				await _networkStream.WriteAsync(buffer, 0, frameLength);
+			else
+			{
+				var endpoint = _dcSession?.EndPoint ?? GetDefaultEndpoint(out _);
+				var content = new ByteArrayContent(buffer, 4, frameLength - 4);
+				var response = await _httpClient.PostAsync($"http://{endpoint}/api", content);
+				if (response.StatusCode != HttpStatusCode.OK)
+					throw new RpcException((int)response.StatusCode, TransportError((int)response.StatusCode));
+				var data = await response.Content.ReadAsByteArrayAsync();
+				var obj = ReadFrame(data, data.Length);
+				if (obj != null)
+					await HandleMessageAsync(obj);
 			}
 		}
 
@@ -1501,6 +1529,12 @@ namespace WTelegram
 		retry:
 			var rpc = new Rpc { type = typeof(T) };
 			await SendAsync(query, true, rpc);
+			if (_httpClient != null && !rpc.Task.IsCompleted)
+			{
+				await SendAsync(new HttpWait { max_delay = 30, wait_after = 10, max_wait = 1000 * PingInterval }, true);
+				if (!rpc.Task.IsCompleted) rpc.tcs.TrySetException(new RpcException(417, "Missing RPC response via HTTP"));
+			}
+
 			var result = await rpc.Task;
 			switch (result)
 			{
