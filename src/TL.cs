@@ -127,16 +127,16 @@ namespace TL
 					if (type.IsArray)
 						if (value is byte[] bytes)
 							writer.WriteTLBytes(bytes);
-						else if (value is _Message[] messages)
-							writer.WriteTLMessages(messages);
 						else
 							writer.WriteTLVector((Array)value);
+					else if (value is IObject tlObject)
+						WriteTLObject(writer, tlObject);
+					else if (value is List<_Message> messages)
+						writer.WriteTLMessages(messages);
 					else if (value is Int128 int128)
 						writer.Write(int128);
 					else if (value is Int256 int256)
 						writer.Write(int256);
-					else if (value is IObject tlObject)
-						WriteTLObject(writer, tlObject);
 					else if (type.IsEnum) // needed for Mono (enums in generic types are seen as TypeCode.Object)
 						writer.Write((uint)value);
 					else
@@ -191,22 +191,22 @@ namespace TL
 			}
 		}
 
-		internal static void WriteTLMessages(this BinaryWriter writer, _Message[] messages)
+		internal static void WriteTLMessages(this BinaryWriter writer, List<_Message> messages)
 		{
-			writer.Write(messages.Length);
+			writer.Write(messages.Count);
 			foreach (var msg in messages)
 			{
 				writer.Write(msg.msg_id);
 				writer.Write(msg.seq_no);
 				var patchPos = writer.BaseStream.Position;
-				writer.Write(0);                        // patched below
+				writer.Write(0);												// patched below
 				if ((msg.seq_no & 1) != 0)
 					WTelegram.Helpers.Log(1, $"            → {msg.body.GetType().Name.TrimEnd('_'),-38} #{(short)msg.msg_id.GetHashCode():X4}");
 				else
 					WTelegram.Helpers.Log(1, $"            → {msg.body.GetType().Name.TrimEnd('_'),-38}");
 				writer.WriteTLObject(msg.body);
 				writer.BaseStream.Position = patchPos;
-				writer.Write((int)(writer.BaseStream.Length - patchPos - 4)); // patch bytes field
+				writer.Write((int)(writer.BaseStream.Length - patchPos - 4));	// patch bytes field
 				writer.Seek(0, SeekOrigin.End);
 			}
 		}
@@ -222,13 +222,13 @@ namespace TL
 				writer.WriteTLValue(array.GetValue(i), elementType);
 		}
 
-		internal static T[] ReadTLRawVector<T>(this BinaryReader reader, uint ctorNb)
+		internal static List<T> ReadTLRawVector<T>(this BinaryReader reader, uint ctorNb)
 		{
 			int count = reader.ReadInt32();
-			var array = new T[count];
+			var list = new List<T>(count);
 			for (int i = 0; i < count; i++)
-				array[i] = (T)reader.ReadTLObject(ctorNb);
-			return array;
+				list.Add((T)reader.ReadTLObject(ctorNb));
+			return list;
 		}
 
 		internal static T[] ReadTLVector<T>(this BinaryReader reader)
@@ -437,7 +437,7 @@ namespace TL
 	}
 
 	[TLDef(0x73F1F8DC)] //msg_container#73f1f8dc messages:vector<%Message> = MessageContainer
-	public sealed partial class MsgContainer : IObject { public _Message[] messages; }
+	public sealed partial class MsgContainer : IObject { public List<_Message> messages; }
 	[TLDef(0xE06046B2)] //msg_copy#e06046b2 orig_message:Message = MessageCopy
 	public sealed partial class MsgCopy : IObject { public _Message orig_message; }
 

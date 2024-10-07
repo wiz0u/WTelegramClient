@@ -159,7 +159,7 @@ public class MTProtoGenerator : IIncrementalGenerator
 						readTL.AppendLine($"r.{member.Name} = new Int256(reader);");
 						writeTl.AppendLine($"writer.Write({member.Name});");
 						break;
-					case "TL._Message[]":
+					case "System.Collections.Generic.List<TL._Message>":
 						readTL.AppendLine($"r.{member.Name} = reader.ReadTLRawVector<_Message>(0x5BB8E511);");
 						writeTl.AppendLine($"writer.WriteTLMessages({member.Name});"); 
 						break;
@@ -179,7 +179,7 @@ public class MTProtoGenerator : IIncrementalGenerator
 						if (member.Type is IArrayTypeSymbol arrayType)
 						{
 							if (name is "FutureSalts")
-								readTL.AppendLine($"r.{member.Name} = reader.ReadTLRawVector<{memberType.Substring(0, memberType.Length - 2)}>(0x0949D9DC);");
+								readTL.AppendLine($"r.{member.Name} = reader.ReadTLRawVector<{memberType.Substring(0, memberType.Length - 2)}>(0x0949D9DC).ToArray();");
 							else
 								readTL.AppendLine($"r.{member.Name} = reader.ReadTLVector<{memberType.Substring(0, memberType.Length - 2)}>();");
 							writeTl.AppendLine($"writer.WriteTLVector({member.Name});");
