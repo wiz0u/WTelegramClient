@@ -1959,14 +1959,13 @@ namespace TL
 		/// <summary>Report a message in a chat for violation of telegram's Terms of Service		<para>See <a href="https://corefork.telegram.org/method/messages.report"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.report#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="id">IDs of messages to report</param>
-		/// <param name="reason">Why are these messages being reported</param>
 		/// <param name="message">Comment for report moderation</param>
-		public static Task<bool> Messages_Report(this Client client, InputPeer peer, int[] id, ReportReason reason, string message)
+		public static Task<ReportResult> Messages_Report(this Client client, InputPeer peer, int[] id, byte[] option, string message)
 			=> client.Invoke(new Messages_Report
 			{
 				peer = peer,
 				id = id,
-				reason = reason,
+				option = option,
 				message = message,
 			});
 
@@ -5899,7 +5898,6 @@ namespace TL
 		public static Task<Payments_PaymentResultBase> Payments_SendStarsForm(this Client client, long form_id, InputInvoice invoice)
 			=> client.Invoke(new Payments_SendStarsForm
 			{
-				flags = 0,
 				form_id = form_id,
 				invoice = invoice,
 			});
@@ -5994,6 +5992,40 @@ namespace TL
 		public static Task<StarsGiveawayOption[]> Payments_GetStarsGiveawayOptions(this Client client)
 			=> client.Invoke(new Payments_GetStarsGiveawayOptions
 			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGifts"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/payments.starGiftsNotModified">payments.starGiftsNotModified</a></returns>
+		public static Task<Payments_StarGifts> Payments_GetStarGifts(this Client client, int hash = default)
+			=> client.Invoke(new Payments_GetStarGifts
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getUserStarGifts"/></para></summary>
+		public static Task<Payments_UserStarGifts> Payments_GetUserStarGifts(this Client client, InputUserBase user_id, string offset, int limit = int.MaxValue)
+			=> client.Invoke(new Payments_GetUserStarGifts
+			{
+				user_id = user_id,
+				offset = offset,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.saveStarGift"/></para></summary>
+		public static Task<bool> Payments_SaveStarGift(this Client client, InputUserBase user_id, int msg_id, bool unsave = false)
+			=> client.Invoke(new Payments_SaveStarGift
+			{
+				flags = (Payments_SaveStarGift.Flags)(unsave ? 0x1 : 0),
+				user_id = user_id,
+				msg_id = msg_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.convertStarGift"/></para></summary>
+		public static Task<bool> Payments_ConvertStarGift(this Client client, InputUserBase user_id, int msg_id)
+			=> client.Invoke(new Payments_ConvertStarGift
+			{
+				user_id = user_id,
+				msg_id = msg_id,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -6960,14 +6992,13 @@ namespace TL
 		/// <summary>Report a story.		<para>See <a href="https://corefork.telegram.org/method/stories.report"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.report#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The peer that uploaded the story.</param>
 		/// <param name="id">IDs of the stories to report.</param>
-		/// <param name="reason">Why are these storeis being reported.</param>
 		/// <param name="message">Comment for report moderation</param>
-		public static Task<bool> Stories_Report(this Client client, InputPeer peer, int[] id, ReportReason reason, string message)
+		public static Task<ReportResult> Stories_Report(this Client client, InputPeer peer, int[] id, byte[] option, string message)
 			=> client.Invoke(new Stories_Report
 			{
 				peer = peer,
 				id = id,
-				reason = reason,
+				option = option,
 				message = message,
 			});
 
@@ -8769,12 +8800,12 @@ namespace TL.Methods
 		public InputPeer peer;
 	}
 
-	[TLDef(0x8953AB4E)]
-	public sealed partial class Messages_Report : IMethod<bool>
+	[TLDef(0xFC78AF9B)]
+	public sealed partial class Messages_Report : IMethod<ReportResult>
 	{
 		public InputPeer peer;
 		public int[] id;
-		public ReportReason reason;
+		public byte[] option;
 		public string message;
 	}
 
@@ -12012,16 +12043,11 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x02BB731D)]
+	[TLDef(0x7998C914)]
 	public sealed partial class Payments_SendStarsForm : IMethod<Payments_PaymentResultBase>
 	{
-		public Flags flags;
 		public long form_id;
 		public InputInvoice invoice;
-
-		[Flags] public enum Flags : uint
-		{
-		}
 	}
 
 	[TLDef(0x25AE8F4A)]
@@ -12112,6 +12138,40 @@ namespace TL.Methods
 
 	[TLDef(0xBD1EFD3E)]
 	public sealed partial class Payments_GetStarsGiveawayOptions : IMethod<StarsGiveawayOption[]> { }
+
+	[TLDef(0xC4563590)]
+	public sealed partial class Payments_GetStarGifts : IMethod<Payments_StarGifts>
+	{
+		public int hash;
+	}
+
+	[TLDef(0x5E72C7E1)]
+	public sealed partial class Payments_GetUserStarGifts : IMethod<Payments_UserStarGifts>
+	{
+		public InputUserBase user_id;
+		public string offset;
+		public int limit;
+	}
+
+	[TLDef(0x87ACF08E)]
+	public sealed partial class Payments_SaveStarGift : IMethod<bool>
+	{
+		public Flags flags;
+		public InputUserBase user_id;
+		public int msg_id;
+
+		[Flags] public enum Flags : uint
+		{
+			unsave = 0x1,
+		}
+	}
+
+	[TLDef(0x0421E027)]
+	public sealed partial class Payments_ConvertStarGift : IMethod<bool>
+	{
+		public InputUserBase user_id;
+		public int msg_id;
+	}
 
 	[TLDef(0x9021AB67)]
 	public sealed partial class Stickers_CreateStickerSet : IMethod<Messages_StickerSet>
@@ -12904,12 +12964,12 @@ namespace TL.Methods
 		public int id;
 	}
 
-	[TLDef(0x1923FA8C)]
-	public sealed partial class Stories_Report : IMethod<bool>
+	[TLDef(0x19D8EB45)]
+	public sealed partial class Stories_Report : IMethod<ReportResult>
 	{
 		public InputPeer peer;
 		public int[] id;
-		public ReportReason reason;
+		public byte[] option;
 		public string message;
 	}
 

@@ -757,19 +757,19 @@ namespace TL
 		public Flags2 flags2;
 		/// <summary>ID of the user, see <a href="https://corefork.telegram.org/api/peers#peer-id">here »</a> for more info.</summary>
 		public long id;
-		/// <summary>Access hash of the user, see <a href="https://corefork.telegram.org/api/peers#access-hash">here »</a> for more info. <br/>If this flag is set, when updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, generate a virtual flag called <c>min_access_hash</c>, which is: <br/>- Set to <c>true</c> if <c>min</c> is set AND <br/>- The <c>phone</c> flag is <strong>not</strong> set OR <br/>- The <c>phone</c> flag is set and the associated phone number string is non-empty <br/>- Set to <c>false</c> otherwise. <br/><br/>Then, apply both <c>access_hash</c> and <c>min_access_hash</c> to the local database if: <br/>- <c>min_access_hash</c> is false OR <br/>- <c>min_access_hash</c> is true AND <br/>- There is no locally cached object for this user OR <br/>- There is no <c>access_hash</c> in the local cache OR <br/>- The cached object's <c>min_access_hash</c> is also true <br/>If the final merged object stored to the database has the <c>min_access_hash</c> field set to true, the related <c>access_hash</c> is <strong>only</strong> suitable to use in <see cref="InputPeerPhotoFileLocation"><c>inputPeerPhotoFileLocation</c> »</see>, to directly <a href="https://corefork.telegram.org/api/files">download the profile pictures</a> of users, everywhere else a <c>inputPeer*FromMessage</c> constructor will have to be generated as specified <a href="https://corefork.telegram.org/api/min">here »</a>. <br/>Bots can also use min access hashes in some conditions, by passing <c>0</c> instead of the min access hash.</summary>
+		/// <summary>Access hash of the user, see <a href="https://corefork.telegram.org/api/peers#access-hash">here »</a> for more info. <br/>If this flag is set, when updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, generate a virtual flag called <c>min_access_hash</c>, which is: <br/>- Set to <c>true</c> if <c>min</c> is set AND <br/>-- The <c>phone</c> flag is <strong>not</strong> set OR <br/>-- The <c>phone</c> flag is set and the associated phone number string is non-empty <br/>- Set to <c>false</c> otherwise. <br/><br/>Then, apply both <c>access_hash</c> and <c>min_access_hash</c> to the local database if: <br/>- <c>min_access_hash</c> is false OR <br/>- <c>min_access_hash</c> is true AND <br/>-- There is no locally cached object for this user OR <br/>-- There is no <c>access_hash</c> in the local cache OR <br/>-- The cached object's <c>min_access_hash</c> is also true <br/><br/>If the final merged object stored to the database has the <c>min_access_hash</c> field set to true, the related <c>access_hash</c> is <strong>only</strong> suitable to use in <see cref="InputPeerPhotoFileLocation"><c>inputPeerPhotoFileLocation</c> »</see>, to directly <a href="https://corefork.telegram.org/api/files">download the profile pictures</a> of users, everywhere else a <c>inputPeer*FromMessage</c> constructor will have to be generated as specified <a href="https://corefork.telegram.org/api/min">here »</a>. <br/>Bots can also use min access hashes in some conditions, by passing <c>0</c> instead of the min access hash.</summary>
 		[IfFlag(0)] public long access_hash;
-		/// <summary>First name. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set.</summary>
+		/// <summary>First name. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>-- The <c>min</c> flag of the locally cached user entry is set.</summary>
 		[IfFlag(1)] public string first_name;
-		/// <summary>Last name. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set.</summary>
+		/// <summary>Last name. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>-- The <c>min</c> flag of the locally cached user entry is set.</summary>
 		[IfFlag(2)] public string last_name;
-		/// <summary>Main active username. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set. <br/>Changes to this flag should invalidate the local <see cref="UserFull"/> cache for this user ID if the above conditions are respected and the <c>bot_can_edit</c> flag is also set.</summary>
+		/// <summary>Main active username. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>-- The <c>min</c> flag of the locally cached user entry is set. <br/>Changes to this flag should invalidate the local <see cref="UserFull"/> cache for this user ID if the above conditions are respected and the <c>bot_can_edit</c> flag is also set.</summary>
 		[IfFlag(3)] public string username;
-		/// <summary>Phone number. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set.</summary>
+		/// <summary>Phone number. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>-- The <c>min</c> flag of the locally cached user entry is set.</summary>
 		[IfFlag(4)] public string phone;
-		/// <summary>Profile picture of user. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>apply_min_photo</c> flag is set OR <br/>- The <c>min</c> flag of the locally cached user entry is set.</summary>
+		/// <summary>Profile picture of user. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>-- The <c>apply_min_photo</c> flag is set OR <br/>-- The <c>min</c> flag of the locally cached user entry is set.</summary>
 		[IfFlag(5)] public UserProfilePhoto photo;
-		/// <summary>Online status of user. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set OR <br/>- The locally cached user entry is equal to <see langword="null"/>.</summary>
+		/// <summary>Online status of user. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>-- The <c>min</c> flag of the locally cached user entry is set OR <br/>-- The locally cached user entry is equal to <see langword="null"/>.</summary>
 		[IfFlag(6)] public UserStatus status;
 		/// <summary>Version of the <see cref="UserFull">bot_info field in userFull</see>, incremented every time it changes. <br/>Changes to this flag should invalidate the local <see cref="UserFull"/> cache for this user ID, see <a href="https://corefork.telegram.org/api/peers#full-info-database">here »</a> for more info.</summary>
 		[IfFlag(14)] public int bot_info_version;
@@ -781,7 +781,7 @@ namespace TL
 		[IfFlag(22)] public string lang_code;
 		/// <summary><a href="https://corefork.telegram.org/api/emoji-status">Emoji status</a></summary>
 		[IfFlag(30)] public EmojiStatus emoji_status;
-		/// <summary>Additional usernames. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>- The <c>min</c> flag of the locally cached user entry is set. <br/>Changes to this flag (if the above conditions are respected) should invalidate the local <see cref="UserFull"/> cache for this user ID.</summary>
+		/// <summary>Additional usernames. <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, apply changes to this field only if: <br/>- The <c>min</c> flag is not set OR <br/>- The <c>min</c> flag is set AND <br/>-- The <c>min</c> flag of the locally cached user entry is set. <br/>Changes to this flag (if the above conditions are respected) should invalidate the local <see cref="UserFull"/> cache for this user ID.</summary>
 		[IfFlag(32)] public Username[] usernames;
 		/// <summary>ID of the maximum read <a href="https://corefork.telegram.org/api/stories">story</a>.  <br/>When updating the <a href="https://corefork.telegram.org/api/peers">local peer database</a>, do not apply changes to this field if the <c>min</c> flag of the incoming constructor is set.</summary>
 		[IfFlag(37)] public int stories_max_id;
@@ -1980,7 +1980,6 @@ namespace TL
 		public Flags flags;
 		/// <summary>Attached document</summary>
 		[IfFlag(0)] public DocumentBase document;
-		/// <summary>Currently only used for story videos, may contain an alternative version of the story video, explicitly encoded using H.264 (in MPEG4 transport) at a lower resolution than <c>document</c>.</summary>
 		[IfFlag(5)] public DocumentBase[] alt_documents;
 		/// <summary>Time to live of self-destructing document</summary>
 		[IfFlag(2)] public int ttl_seconds;
@@ -2784,6 +2783,23 @@ namespace TL
 			unclaimed = 0x1,
 		}
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGift"/></para></summary>
+	[TLDef(0x9BB3EF44)]
+	public sealed partial class MessageActionStarGift : MessageAction
+	{
+		public Flags flags;
+		public StarGift gift;
+		[IfFlag(1)] public TextWithEntities message;
+		public long convert_stars;
+
+		[Flags] public enum Flags : uint
+		{
+			name_hidden = 0x1,
+			has_message = 0x2,
+			saved = 0x4,
+			converted = 0x8,
+		}
+	}
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
 	public abstract partial class DialogBase : IObject
@@ -3388,7 +3404,7 @@ namespace TL
 	}
 
 	/// <summary>Extended user info		<para>See <a href="https://corefork.telegram.org/constructor/userFull"/></para></summary>
-	[TLDef(0xCC997720)]
+	[TLDef(0x1F58E369)]
 	public sealed partial class UserFull : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -3449,6 +3465,7 @@ namespace TL
 		[IfFlag(38)] public long personal_channel_id;
 		/// <summary>ID of the latest message of the associated personal <a href="https://corefork.telegram.org/api/channel">channel »</a>, that should be previewed in the <a href="https://corefork.telegram.org/api/profile#personal-channel">profile page</a>.</summary>
 		[IfFlag(38)] public int personal_channel_message;
+		[IfFlag(40)] public int stargifts_count;
 
 		[Flags] public enum Flags : uint
 		{
@@ -3528,6 +3545,8 @@ namespace TL
 			has_personal_channel_id = 0x40,
 			/// <summary>Whether ads were re-enabled for the current account (only accessible to the currently logged-in user), see <a href="https://corefork.telegram.org/api/business#re-enable-ads">here »</a> for more info.</summary>
 			sponsored_enabled = 0x80,
+			/// <summary>Field <see cref="stargifts_count"/> has a value</summary>
+			has_stargifts_count = 0x100,
 		}
 	}
 
@@ -10520,18 +10539,8 @@ namespace TL
 	{
 		/// <summary>Form ID</summary>
 		public virtual long FormId => default;
-		/// <summary>Bot ID</summary>
-		public virtual long BotId => default;
-		/// <summary>Form title</summary>
-		public virtual string Title => default;
-		/// <summary>Description</summary>
-		public virtual string Description => default;
-		/// <summary>Product photo</summary>
-		public virtual WebDocumentBase Photo => default;
 		/// <summary>Invoice</summary>
 		public virtual Invoice Invoice => default;
-		/// <summary>Users</summary>
-		public virtual Dictionary<long, User> Users => default;
 	}
 	/// <summary>Payment form		<para>See <a href="https://corefork.telegram.org/constructor/payments.paymentForm"/></para></summary>
 	[TLDef(0xA0058751)]
@@ -10588,18 +10597,8 @@ namespace TL
 
 		/// <summary>Form ID</summary>
 		public override long FormId => form_id;
-		/// <summary>Bot ID</summary>
-		public override long BotId => bot_id;
-		/// <summary>Form title</summary>
-		public override string Title => title;
-		/// <summary>Description</summary>
-		public override string Description => description;
-		/// <summary>Product photo</summary>
-		public override WebDocumentBase Photo => photo;
 		/// <summary>Invoice</summary>
 		public override Invoice Invoice => invoice;
-		/// <summary>Users</summary>
-		public override Dictionary<long, User> Users => users;
 	}
 	/// <summary>Represents a payment form, for payments to be using <a href="https://corefork.telegram.org/api/stars">Telegram Stars, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/payments.paymentFormStars"/></para></summary>
 	[TLDef(0x7BF6B15C)]
@@ -10630,18 +10629,18 @@ namespace TL
 
 		/// <summary>Form ID.</summary>
 		public override long FormId => form_id;
-		/// <summary>Bot ID.</summary>
-		public override long BotId => bot_id;
-		/// <summary>Form title</summary>
-		public override string Title => title;
-		/// <summary>Description</summary>
-		public override string Description => description;
-		/// <summary>Product photo</summary>
-		public override WebDocumentBase Photo => photo;
 		/// <summary>Invoice</summary>
 		public override Invoice Invoice => invoice;
-		/// <summary>Info about users mentioned in the other fields.</summary>
-		public override Dictionary<long, User> Users => users;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.paymentFormStarGift"/></para></summary>
+	[TLDef(0xB425CFE1)]
+	public sealed partial class Payments_PaymentFormStarGift : Payments_PaymentFormBase
+	{
+		public long form_id;
+		public Invoice invoice;
+
+		public override long FormId => form_id;
+		public override Invoice Invoice => invoice;
 	}
 
 	/// <summary>Validated user-provided info		<para>See <a href="https://corefork.telegram.org/constructor/payments.validatedRequestedInfo"/></para></summary>
@@ -15565,6 +15564,21 @@ namespace TL
 	{
 		public string hash;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceStarGift"/></para></summary>
+	[TLDef(0x25D8C1D8)]
+	public sealed partial class InputInvoiceStarGift : InputInvoice
+	{
+		public Flags flags;
+		public InputUserBase user_id;
+		public long gift_id;
+		[IfFlag(1)] public TextWithEntities message;
+
+		[Flags] public enum Flags : uint
+		{
+			hide_name = 0x1,
+			has_message = 0x2,
+		}
+	}
 
 	/// <summary>Exported <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a>		<para>See <a href="https://corefork.telegram.org/constructor/payments.exportedInvoice"/></para></summary>
 	[TLDef(0xAED0CBD9)]
@@ -18960,7 +18974,7 @@ namespace TL
 	}
 
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/stars">Telegram Stars transaction »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starsTransaction"/></para></summary>
-	[TLDef(0xEE7522D5)]
+	[TLDef(0x0A9EE4C2)]
 	public sealed partial class StarsTransaction : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -18991,6 +19005,7 @@ namespace TL
 		[IfFlag(9)] public MessageMedia[] extended_media;
 		[IfFlag(12)] public int subscription_period;
 		[IfFlag(13)] public int giveaway_post_id;
+		[IfFlag(14)] public StarGift stargift;
 
 		[Flags] public enum Flags : uint
 		{
@@ -19021,6 +19036,8 @@ namespace TL
 			has_subscription_period = 0x1000,
 			/// <summary>Field <see cref="giveaway_post_id"/> has a value</summary>
 			has_giveaway_post_id = 0x2000,
+			/// <summary>Field <see cref="stargift"/> has a value</summary>
+			has_stargift = 0x4000,
 		}
 	}
 
@@ -19331,4 +19348,103 @@ namespace TL
 			default_ = 0x1,
 		}
 	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGift"/></para></summary>
+	[TLDef(0xAEA174EE)]
+	public sealed partial class StarGift : IObject
+	{
+		public Flags flags;
+		public long id;
+		public DocumentBase sticker;
+		public long stars;
+		[IfFlag(0)] public int availability_remains;
+		[IfFlag(0)] public int availability_total;
+		public long convert_stars;
+
+		[Flags] public enum Flags : uint
+		{
+			limited = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.starGifts"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/payments.starGiftsNotModified">payments.starGiftsNotModified</a></remarks>
+	[TLDef(0x901689EA)]
+	public sealed partial class Payments_StarGifts : IObject
+	{
+		public int hash;
+		public StarGift[] gifts;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/userStarGift"/></para></summary>
+	[TLDef(0xEEA49A6E)]
+	public sealed partial class UserStarGift : IObject
+	{
+		public Flags flags;
+		[IfFlag(1)] public long from_id;
+		public DateTime date;
+		public StarGift gift;
+		[IfFlag(2)] public TextWithEntities message;
+		[IfFlag(3)] public int msg_id;
+		[IfFlag(4)] public long convert_stars;
+
+		[Flags] public enum Flags : uint
+		{
+			name_hidden = 0x1,
+			has_from_id = 0x2,
+			has_message = 0x4,
+			has_msg_id = 0x8,
+			has_convert_stars = 0x10,
+			unsaved = 0x20,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.userStarGifts"/></para></summary>
+	[TLDef(0x6B65B517)]
+	public sealed partial class Payments_UserStarGifts : IObject
+	{
+		public Flags flags;
+		public int count;
+		public UserStarGift[] gifts;
+		[IfFlag(0)] public string next_offset;
+		public Dictionary<long, User> users;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageReportOption"/></para></summary>
+	[TLDef(0x7903E3D9)]
+	public sealed partial class MessageReportOption : IObject
+	{
+		public string text;
+		public byte[] option;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/ReportResult"/></para></summary>
+	public abstract partial class ReportResult : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/reportResultChooseOption"/></para></summary>
+	[TLDef(0xF0E4E0B6)]
+	public sealed partial class ReportResultChooseOption : ReportResult
+	{
+		public string title;
+		public MessageReportOption[] options;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/reportResultAddComment"/></para></summary>
+	[TLDef(0x6F09AC31)]
+	public sealed partial class ReportResultAddComment : ReportResult
+	{
+		public Flags flags;
+		public byte[] option;
+
+		[Flags] public enum Flags : uint
+		{
+			optional = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/reportResultReported"/></para></summary>
+	[TLDef(0x8DB33C4B)]
+	public sealed partial class ReportResultReported : ReportResult { }
 }
