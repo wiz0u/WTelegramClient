@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 189;					// fetched 07/10/2024 12:32:56
+		public const int Version = 190;					// fetched 15/10/2024 14:49:33
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -199,13 +199,13 @@ namespace TL
 			[0xEBBCA3CB] = typeof(MessageActionChatJoinedByRequest),
 			[0x47DD8079] = typeof(MessageActionWebViewDataSentMe),
 			[0xB4C38CB5] = typeof(MessageActionWebViewDataSent),
-			[0xC83D6AEC] = typeof(MessageActionGiftPremium),
+			[0x6C6274FA] = typeof(MessageActionGiftPremium),
 			[0x0D999256] = typeof(MessageActionTopicCreate),
 			[0xC0944820] = typeof(MessageActionTopicEdit),
 			[0x57DE635E] = typeof(MessageActionSuggestProfilePhoto),
 			[0x31518E9B] = typeof(MessageActionRequestedPeer),
 			[0x5060A3F4] = typeof(MessageActionSetChatWallPaper),
-			[0x678C2E09] = typeof(MessageActionGiftCode),
+			[0x56D03994] = typeof(MessageActionGiftCode),
 			[0xA80F51E4] = typeof(MessageActionGiveawayLaunch),
 			[0x87E2F155] = typeof(MessageActionGiveawayResults),
 			[0xCC02AA6D] = typeof(MessageActionBoostApply),
@@ -1098,7 +1098,7 @@ namespace TL
 			[0x5334759C] = typeof(Help_PremiumPromo),
 			[0xA6751E66] = typeof(InputStorePaymentPremiumSubscription),
 			[0x616F7FE8] = typeof(InputStorePaymentGiftPremium),
-			[0xA3805F3F] = typeof(InputStorePaymentPremiumGiftCode),
+			[0xFB790393] = typeof(InputStorePaymentPremiumGiftCode),
 			[0x160544CA] = typeof(InputStorePaymentPremiumGiveaway),
 			[0xDDDD0F56] = typeof(InputStorePaymentStarsTopup),
 			[0x1D741EF7] = typeof(InputStorePaymentStarsGift),

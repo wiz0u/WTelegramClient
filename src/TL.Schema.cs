@@ -2541,7 +2541,7 @@ namespace TL
 		public string text;
 	}
 	/// <summary>Info about a gifted Telegram Premium subscription		<para>See <a href="https://corefork.telegram.org/constructor/messageActionGiftPremium"/></para></summary>
-	[TLDef(0xC83D6AEC)]
+	[TLDef(0x6C6274FA)]
 	public sealed partial class MessageActionGiftPremium : MessageAction
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -2556,11 +2556,14 @@ namespace TL
 		[IfFlag(0)] public string crypto_currency;
 		/// <summary>If the gift was bought using a cryptocurrency, price of the gift in the smallest units of a cryptocurrency.</summary>
 		[IfFlag(0)] public long crypto_amount;
+		[IfFlag(1)] public TextWithEntities message;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Fields <see cref="crypto_currency"/> and <see cref="crypto_amount"/> have a value</summary>
 			has_crypto_currency = 0x1,
+			/// <summary>Field <see cref="message"/> has a value</summary>
+			has_message = 0x2,
 		}
 	}
 	/// <summary>A <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a> was created.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionTopicCreate"/></para></summary>
@@ -2643,7 +2646,7 @@ namespace TL
 		}
 	}
 	/// <summary>Contains a <a href="https://corefork.telegram.org/api/links#premium-giftcode-links">Telegram Premium giftcode link</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionGiftCode"/></para></summary>
-	[TLDef(0x678C2E09)]
+	[TLDef(0x56D03994)]
 	public sealed partial class MessageActionGiftCode : MessageAction
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -2662,6 +2665,7 @@ namespace TL
 		[IfFlag(3)] public string crypto_currency;
 		/// <summary>If <c>crypto_currency</c> is set, contains the paid amount, in the smallest units of the cryptocurrency.</summary>
 		[IfFlag(3)] public long crypto_amount;
+		[IfFlag(4)] public TextWithEntities message;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2673,6 +2677,8 @@ namespace TL
 			unclaimed = 0x4,
 			/// <summary>Fields <see cref="crypto_currency"/> and <see cref="crypto_amount"/> have a value</summary>
 			has_crypto_currency = 0x8,
+			/// <summary>Field <see cref="message"/> has a value</summary>
+			has_message = 0x10,
 		}
 	}
 	/// <summary>A <a href="https://corefork.telegram.org/api/giveaways">giveaway</a> was started.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionGiveawayLaunch"/></para></summary>
@@ -15659,7 +15665,7 @@ namespace TL
 		public long amount;
 	}
 	/// <summary>Used to gift <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a> subscriptions only to some specific subscribers of a channel/supergroup or to some of our contacts, see <a href="https://corefork.telegram.org/api/giveaways">here »</a> for more info on giveaways and gifts.		<para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentPremiumGiftCode"/></para></summary>
-	[TLDef(0xA3805F3F)]
+	[TLDef(0xFB790393)]
 	public sealed partial class InputStorePaymentPremiumGiftCode : InputStorePaymentPurpose
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -15672,11 +15678,14 @@ namespace TL
 		public string currency;
 		/// <summary>Total price in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long amount;
+		[IfFlag(1)] public TextWithEntities message;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="boost_peer"/> has a value</summary>
 			has_boost_peer = 0x1,
+			/// <summary>Field <see cref="message"/> has a value</summary>
+			has_message = 0x2,
 		}
 	}
 	/// <summary>Used to pay for a <a href="https://corefork.telegram.org/api/giveaways">giveaway, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentPremiumGiveaway"/></para></summary>
