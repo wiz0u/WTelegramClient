@@ -92,7 +92,8 @@ namespace WTelegram
 
 		private async Task ResyncState(Updates_State state = null)
 		{
-			state ??= new() { qts = int.MaxValue };
+			if (state != null) state.qts = 0; // for some reason Updates_GetState returns an invalid qts, so better consider we have no qts.
+			else state = new() { qts = int.MaxValue };
 			await _sem.WaitAsync();
 			try
 			{
