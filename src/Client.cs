@@ -884,7 +884,7 @@ namespace WTelegram
 				throw new Exception("Library was not compiled with OBFUSCATION symbol");
 #endif
 			}
-			if (_httpClient != null)
+			else if (_httpClient != null)
 				_reactorTask = Task.CompletedTask;
 			else
 			{
