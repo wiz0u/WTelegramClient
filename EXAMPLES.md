@@ -257,10 +257,10 @@ var history = await client.Messages_GetHistory(from_chat, limit: 1);
 var msg = history.Messages[0] as Message; // last message of source chat
 
 // • Forward the message (only the source message id is necessary)
-await client.Messages_ForwardMessages(from_chat, new[] { msg.ID }, new[] { WTelegram.Helpers.RandomLong() }, to_chat);
+await client.ForwardMessagesAsync(from_chat, [msg.ID], to_chat);
 
 // • Copy the message without the "Forwarded" header (only the source message id is necessary)
-await client.Messages_ForwardMessages(from_chat, new[] { msg.ID }, new[] { WTelegram.Helpers.RandomLong() }, to_chat, drop_author: true);
+await client.ForwardMessagesAsync(from_chat, [msg.ID], to_chat, drop_author: true);
 
 // • Alternative solution to copy the message (the full message is needed)
 await client.SendMessageAsync(to_chat, msg.message, msg.media?.ToInputMedia(), entities: msg.entities);
@@ -544,7 +544,7 @@ using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 client.MTProxyUrl = "https://t.me/proxy?server=...&port=...&secret=...";
 await client.LoginUserIfNeeded();
 ```
-You can find a list of working MTProxies in channels like [@ProxyMTProto](https://t.me/ProxyMTProto) or [@MTProxyT](https://t.me/MTProxyT) *(right-click the "Connect" buttons)*  
+You can find a list of working MTProxies in channels like [@ProxyMTProto](https://t.me/s/ProxyMTProto) or [@MTProxyT](https://t.me/s/MTProxyT) *(right-click the "Connect" buttons)*  
 If your Telegram client is already connected to such MTPROTO proxy, you can also export its URL by clicking on the shield button ![🛡](https://raw.githubusercontent.com/telegramdesktop/tdesktop/dev/Telegram/Resources/icons/proxy_on.png) and then **⋮** > **Share**
 
 *Note: WTelegramClient always uses transport obfuscation when connecting to Telegram servers, even without MTProxy*

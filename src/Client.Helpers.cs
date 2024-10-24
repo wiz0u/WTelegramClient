@@ -19,14 +19,14 @@ namespace WTelegram
 		/// <param name="totalSize">total size of file in bytes, or 0 if unknown</param>
 		public delegate void ProgressCallback(long transmitted, long totalSize);
 
-		/// <summary>Helper function to upload a file to Telegram</summary>
+		/// <summary>Helper method to upload a file to Telegram</summary>
 		/// <param name="pathname">Path to the file to upload</param>
 		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>
 		/// <returns>an <see cref="InputFile"/> or <see cref="InputFileBig"/> than can be used in various requests</returns>
 		public Task<InputFileBase> UploadFileAsync(string pathname, ProgressCallback progress = null)
 			=> UploadFileAsync(File.OpenRead(pathname), Path.GetFileName(pathname), progress);
 
-		/// <summary>Helper function to upload a file to Telegram</summary>
+		/// <summary>Helper method to upload a file to Telegram</summary>
 		/// <param name="stream">Content of the file to upload. This method close/dispose the stream</param>
 		/// <param name="filename">Name of the file</param>
 		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>
@@ -107,7 +107,7 @@ namespace WTelegram
 		public Task<Messages_MessagesBase> Messages_SearchGlobal<T>(string text = null, int offset_id = 0, int limit = int.MaxValue) where T : MessagesFilter, new()
 			=> this.Messages_SearchGlobal(text, new T(), offset_id: offset_id, limit: limit);
 
-		/// <summary>Helper function to send a media message more easily</summary>
+		/// <summary>Helper method to send a media message more easily</summary>
 		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>
 		/// <param name="caption">Caption for the media <i>(in plain text)</i> or <see langword="null"/></param>
 		/// <param name="uploadedFile">Media file already uploaded to TG <i>(see <see cref="UploadFileAsync">UploadFileAsync</see>)</i></param>
@@ -137,7 +137,7 @@ namespace WTelegram
 		}
 
 		public enum LinkPreview { Disabled = 0, BelowText = 1, AboveText = 2 };
-		/// <summary>Helper function to send a text or media message easily</summary>
+		/// <summary>Helper method to send a text or media message easily</summary>
 		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>
 		/// <param name="text">The plain text of the message (or media caption)</param>
 		/// <param name="media">An instance of <see cref="InputMedia">InputMedia</see>-derived class, or <see langword="null"/> if there is no associated media</param>
@@ -179,7 +179,7 @@ namespace WTelegram
 			return null;
 		}
 
-		/// <summary>Helper function to send an album (media group) of photos or documents more easily</summary>
+		/// <summary>Helper method to send an album (media group) of photos or documents more easily</summary>
 		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>
 		/// <param name="medias">An array or List of <see cref="InputMedia">InputMedia</see>-derived class</param>
 		/// <param name="caption">Caption for the media <i>(in plain text)</i> or <see langword="null"/></param>
@@ -187,7 +187,7 @@ namespace WTelegram
 		/// <param name="entities">Text formatting entities for the caption. You can use <see cref="Markdown.MarkdownToEntities">MarkdownToEntities</see> to create these</param>
 		/// <param name="schedule_date">UTC timestamp when the message should be sent</param>
 		/// <param name="videoUrlAsFile">Any <see cref="InputMediaDocumentExternal"/> URL pointing to a video should be considered as non-streamable</param>
-		/// <returns>The media group messages as received by Telegram</returns>
+		/// <returns>The media group messages, as received by Telegram</returns>
 		/// <remarks>
 		/// * The caption/entities are set on the first media<br/>
 		/// * <see cref="InputMediaDocumentExternal"/> and <see cref="InputMediaPhotoExternal"/> are supported natively for bot accounts, and for user accounts by downloading the file from the web via HttpClient and sending it to Telegram.
@@ -268,6 +268,33 @@ namespace WTelegram
 			var updates = await this.Messages_SendMultiMedia(peer, multiMedia, reply_to: reply_to_msg_id == 0 ? null : new InputReplyToMessage { reply_to_msg_id = reply_to_msg_id }, schedule_date: schedule_date);
 			var msgIds = new int[length];
 			var result = new Message[length];
+			foreach (var update in updates.UpdateList)
+			{
+				switch (update)
+				{
+					case UpdateMessageID updMsgId: msgIds[updMsgId.random_id - random_id] = updMsgId.id; break;
+					case UpdateNewMessage { message: Message message }: result[Array.IndexOf(msgIds, message.id)] = message; break;
+					case UpdateNewScheduledMessage { message: Message schedMsg }: result[Array.IndexOf(msgIds, schedMsg.id)] = schedMsg; break;
+				}
+			}
+			return result;
+		}
+
+		/// <summary>Helper method to forwards messages more easily by their IDs.</summary>
+		/// <param name="drop_author">Whether to forward messages without quoting the original author</param>
+		/// <param name="drop_media_captions">Whether to strip captions from media</param>
+		/// <param name="from_peer">Source of messages</param>
+		/// <param name="msg_ids">IDs of messages</param>
+		/// <param name="to_peer">Destination peer</param>
+		/// <param name="top_msg_id">Destination <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
+		/// <returns>The resulting forwarded messages, as received by Telegram</returns>
+		public async Task<Message[]> ForwardMessagesAsync(InputPeer from_peer, int[] msg_ids, InputPeer to_peer, int? top_msg_id = null, bool drop_author = false, bool drop_media_captions = false)
+		{
+			var random_id = Helpers.RandomLong();
+			var random_ids = Enumerable.Range(0, msg_ids.Length).Select(i => random_id + i).ToArray();
+			var updates = await this.Messages_ForwardMessages(from_peer, msg_ids, random_ids, to_peer, top_msg_id, drop_author: drop_author, drop_media_captions: drop_media_captions);
+			var msgIds = new int[updates.UpdateList.OfType<UpdateMessageID>().Count()];
+			var result = new Message[msgIds.Length];
 			foreach (var update in updates.UpdateList)
 			{
 				switch (update)
