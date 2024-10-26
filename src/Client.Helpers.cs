@@ -287,14 +287,15 @@ namespace WTelegram
 		/// <param name="msg_ids">IDs of messages</param>
 		/// <param name="to_peer">Destination peer</param>
 		/// <param name="top_msg_id">Destination <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
-		/// <returns>The resulting forwarded messages, as received by Telegram</returns>
+		/// <returns>The resulting forwarded messages, as received by Telegram <para>Some of them might be <see langword="null"/> if they could not all be forwarded</para></returns>
 		public async Task<Message[]> ForwardMessagesAsync(InputPeer from_peer, int[] msg_ids, InputPeer to_peer, int top_msg_id = 0, bool drop_author = false, bool drop_media_captions = false)
 		{
+			int msgCount = msg_ids.Length;
 			var random_id = Helpers.RandomLong();
-			var random_ids = Enumerable.Range(0, msg_ids.Length).Select(i => random_id + i).ToArray();
+			var random_ids = Enumerable.Range(0, msgCount).Select(i => random_id + i).ToArray();
 			var updates = await this.Messages_ForwardMessages(from_peer, msg_ids, random_ids, to_peer, top_msg_id == 0 ? null : top_msg_id, drop_author: drop_author, drop_media_captions: drop_media_captions);
-			var msgIds = new int[updates.UpdateList.OfType<UpdateMessageID>().Count()];
-			var result = new Message[msgIds.Length];
+			var msgIds = new int[msgCount];
+			var result = new Message[msgCount];
 			foreach (var update in updates.UpdateList)
 			{
 				switch (update)
