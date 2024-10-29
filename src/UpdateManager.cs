@@ -37,6 +37,7 @@ namespace WTelegram
 		private readonly Func<Update, Task> _onUpdate;
 		private readonly IPeerCollector _collector;
 		private readonly bool _reentrant;
+		private readonly TaskScheduler _scheduler;
 		private readonly SemaphoreSlim _sem = new(1);
 		private readonly List<(Update update, UpdatesBase updates, bool own, DateTime stamp)> _pending = [];
 		private readonly Dictionary<long, MBoxState> _local; // -2 for seq/date, -1 for qts, 0 for common pts, >0 for channel pts
@@ -57,6 +58,7 @@ namespace WTelegram
 			_client = client;
 			_onUpdate = onUpdate;
 			_collector = collector ?? new Services.CollectorPeer(Users = [], Chats = []);
+			_scheduler = SynchronizationContext.Current == null ? TaskScheduler.Current : TaskScheduler.FromCurrentSynchronizationContext();
 
 			if (state == null || state.Count < 3)
 				_local = new() { [L_SEQ] = new() { access_hash = UndefinedSeqDate }, [L_QTS] = new(), [L_PTS] = new() };
@@ -164,7 +166,7 @@ namespace WTelegram
 						{
 							Log?.Invoke(1, $"({mbox_id,10}, {local.pts,6}+{pts_count}->{pts,-6}) {update,-30} pending {ExtendedLog(update)}");
 							_pending.Add((update, updates, own, now + HalfSec));
-							_recoveringGaps ??= Task.Delay(HalfSec).ContinueWith(RecoverGaps, scheduler: TaskScheduler.FromCurrentSynchronizationContext());
+							_recoveringGaps ??= Task.Delay(HalfSec).ContinueWith(RecoverGaps, _scheduler);
 							continue;
 						}
 						// the update can be applied.
@@ -242,7 +244,7 @@ namespace WTelegram
 					var (update, updates, own, stamp) = _pending[0];
 					if (stamp > now)
 					{
-						_recoveringGaps = Task.Delay(stamp - now).ContinueWith(RecoverGaps, scheduler: TaskScheduler.FromCurrentSynchronizationContext());
+						_recoveringGaps = Task.Delay(stamp - now).ContinueWith(RecoverGaps, _scheduler);
 						return;
 					}
 					var (mbox_id, pts, pts_count) = update.GetMBox();
