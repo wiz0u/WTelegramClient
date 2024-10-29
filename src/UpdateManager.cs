@@ -164,7 +164,7 @@ namespace WTelegram
 						{
 							Log?.Invoke(1, $"({mbox_id,10}, {local.pts,6}+{pts_count}->{pts,-6}) {update,-30} pending {ExtendedLog(update)}");
 							_pending.Add((update, updates, own, now + HalfSec));
-							_recoveringGaps ??= Task.Delay(HalfSec).ContinueWith(RecoverGaps);
+							_recoveringGaps ??= Task.Delay(HalfSec).ContinueWith(RecoverGaps, scheduler: TaskScheduler.FromCurrentSynchronizationContext());
 							continue;
 						}
 						// the update can be applied.
@@ -242,7 +242,7 @@ namespace WTelegram
 					var (update, updates, own, stamp) = _pending[0];
 					if (stamp > now)
 					{
-						_recoveringGaps = Task.Delay(stamp - now).ContinueWith(RecoverGaps);
+						_recoveringGaps = Task.Delay(stamp - now).ContinueWith(RecoverGaps, scheduler: TaskScheduler.FromCurrentSynchronizationContext());
 						return;
 					}
 					var (mbox_id, pts, pts_count) = update.GetMBox();
