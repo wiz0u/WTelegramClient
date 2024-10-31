@@ -1851,6 +1851,7 @@ namespace TL
 			has_effect = 0x4,
 			/// <summary>Field <see cref="factcheck"/> has a value</summary>
 			has_factcheck = 0x8,
+			video_processing_pending = 0x10,
 		}
 
 		/// <summary>ID of the message</summary>
@@ -3553,6 +3554,7 @@ namespace TL
 			sponsored_enabled = 0x80,
 			/// <summary>Field <see cref="stargifts_count"/> has a value</summary>
 			has_stargifts_count = 0x100,
+			can_view_revenue = 0x200,
 		}
 	}
 
@@ -4707,13 +4709,21 @@ namespace TL
 		public MessageBase message;
 	}
 	/// <summary>Some <a href="https://corefork.telegram.org/api/scheduled-messages">scheduled messages</a> were deleted from the schedule queue of a chat		<para>See <a href="https://corefork.telegram.org/constructor/updateDeleteScheduledMessages"/></para></summary>
-	[TLDef(0x90866CEE)]
+	[TLDef(0xF2A71983)]
 	public sealed partial class UpdateDeleteScheduledMessages : Update
 	{
+		public Flags flags;
 		/// <summary>Peer</summary>
 		public Peer peer;
 		/// <summary>Deleted scheduled messages</summary>
 		public int[] messages;
+		[IfFlag(0)] public int[] sent_messages;
+
+		[Flags] public enum Flags : uint
+		{
+			/// <summary>Field <see cref="sent_messages"/> has a value</summary>
+			has_sent_messages = 0x1,
+		}
 	}
 	/// <summary>A cloud theme was updated		<para>See <a href="https://corefork.telegram.org/constructor/updateTheme"/></para></summary>
 	[TLDef(0x8216FBA3)]
@@ -18957,6 +18967,9 @@ namespace TL
 	/// <summary>Describes a <a href="https://corefork.telegram.org/api/stars">Telegram Star</a> transaction used to pay for <a href="https://corefork.telegram.org/api/stars#paying-for-ads">Telegram ads as specified here »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerAds"/></para></summary>
 	[TLDef(0x60682812)]
 	public sealed partial class StarsTransactionPeerAds : StarsTransactionPeerBase { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsTransactionPeerAPI"/></para></summary>
+	[TLDef(0xF9677AAD)]
+	public sealed partial class StarsTransactionPeerAPI : StarsTransactionPeerBase { }
 
 	/// <summary><a href="https://corefork.telegram.org/api/stars">Telegram Stars topup option</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starsTopupOption"/></para></summary>
 	[TLDef(0x0BD915C0)]
@@ -18983,7 +18996,7 @@ namespace TL
 	}
 
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/stars">Telegram Stars transaction »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starsTransaction"/></para></summary>
-	[TLDef(0x0A9EE4C2)]
+	[TLDef(0x35D4F276)]
 	public sealed partial class StarsTransaction : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -19015,6 +19028,7 @@ namespace TL
 		[IfFlag(12)] public int subscription_period;
 		[IfFlag(13)] public int giveaway_post_id;
 		[IfFlag(14)] public StarGift stargift;
+		[IfFlag(15)] public int floodskip_number;
 
 		[Flags] public enum Flags : uint
 		{
@@ -19047,6 +19061,8 @@ namespace TL
 			has_giveaway_post_id = 0x2000,
 			/// <summary>Field <see cref="stargift"/> has a value</summary>
 			has_stargift = 0x4000,
+			/// <summary>Field <see cref="floodskip_number"/> has a value</summary>
+			has_floodskip_number = 0x8000,
 		}
 	}
 
@@ -19359,7 +19375,7 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGift"/></para></summary>
-	[TLDef(0xAEA174EE)]
+	[TLDef(0x49C577CD)]
 	public sealed partial class StarGift : IObject
 	{
 		public Flags flags;
@@ -19369,10 +19385,13 @@ namespace TL
 		[IfFlag(0)] public int availability_remains;
 		[IfFlag(0)] public int availability_total;
 		public long convert_stars;
+		[IfFlag(1)] public DateTime first_sale_date;
+		[IfFlag(1)] public DateTime last_sale_date;
 
 		[Flags] public enum Flags : uint
 		{
 			limited = 0x1,
+			sold_out = 0x2,
 		}
 	}
 

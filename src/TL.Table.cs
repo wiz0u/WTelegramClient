@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 190;					// fetched 15/10/2024 14:49:33
+		public const int Version = 192;					// fetched 31/10/2024 17:10:55
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -346,7 +346,7 @@ namespace TL
 			[0x6A7E7366] = typeof(UpdatePeerSettings),
 			[0xB4AFCFB0] = typeof(UpdatePeerLocated),
 			[0x39A51DFB] = typeof(UpdateNewScheduledMessage),
-			[0x90866CEE] = typeof(UpdateDeleteScheduledMessages),
+			[0xF2A71983] = typeof(UpdateDeleteScheduledMessages),
 			[0x8216FBA3] = typeof(UpdateTheme),
 			[0x871FB939] = typeof(UpdateGeoLiveViewed),
 			[0x564FE691] = typeof(UpdateLoginToken),
@@ -1307,8 +1307,9 @@ namespace TL
 			[0xE92FD902] = typeof(StarsTransactionPeerFragment),
 			[0xD80DA15D] = typeof(StarsTransactionPeer),
 			[0x60682812] = typeof(StarsTransactionPeerAds),
+			[0xF9677AAD] = typeof(StarsTransactionPeerAPI),
 			[0x0BD915C0] = typeof(StarsTopupOption),
-			[0x0A9EE4C2] = typeof(StarsTransaction),
+			[0x35D4F276] = typeof(StarsTransaction),
 			[0xBBFA316C] = typeof(Payments_StarsStatus),
 			[0xE87ACBC0] = typeof(FoundStory),
 			[0xE2DE7737] = typeof(Stories_FoundStories),
@@ -1327,7 +1328,7 @@ namespace TL
 			[0x4BA3A95A] = typeof(MessageReactor),
 			[0x94CE852A] = typeof(StarsGiveawayOption),
 			[0x54236209] = typeof(StarsGiveawayWinnersOption),
-			[0xAEA174EE] = typeof(StarGift),
+			[0x49C577CD] = typeof(StarGift),
 			[0xA388A368] = null,//Payments_StarGiftsNotModified
 			[0x901689EA] = typeof(Payments_StarGifts),
 			[0xEEA49A6E] = typeof(UserStarGift),

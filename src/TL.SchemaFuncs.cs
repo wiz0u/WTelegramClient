@@ -1860,10 +1860,10 @@ namespace TL
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
-		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
+		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_SendMessage
 			{
-				flags = (Messages_SendMessage.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
+				flags = (Messages_SendMessage.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				message = message,
@@ -1894,10 +1894,10 @@ namespace TL
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
-		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
+		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_SendMedia
 			{
-				flags = (Messages_SendMedia.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
+				flags = (Messages_SendMedia.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				media = media,
@@ -1926,10 +1926,10 @@ namespace TL
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Forward the messages as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the messages to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
-		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false)
+		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_ForwardMessages
 			{
-				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0)),
+				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
 				from_peer = from_peer,
 				id = id,
 				random_id = random_id,
@@ -2878,10 +2878,10 @@ namespace TL
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
-		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false)
+		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
-				flags = (Messages_SendMultiMedia.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0)),
+				flags = (Messages_SendMultiMedia.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				multi_media = multi_media,
@@ -4338,6 +4338,40 @@ namespace TL
 			{
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.viewSponsoredMessage"/></para></summary>
+		public static Task<bool> Messages_ViewSponsoredMessage(this Client client, InputPeer peer, byte[] random_id)
+			=> client.Invoke(new Messages_ViewSponsoredMessage
+			{
+				peer = peer,
+				random_id = random_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.clickSponsoredMessage"/></para></summary>
+		public static Task<bool> Messages_ClickSponsoredMessage(this Client client, InputPeer peer, byte[] random_id, bool media = false, bool fullscreen = false)
+			=> client.Invoke(new Messages_ClickSponsoredMessage
+			{
+				flags = (Messages_ClickSponsoredMessage.Flags)((media ? 0x1 : 0) | (fullscreen ? 0x2 : 0)),
+				peer = peer,
+				random_id = random_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.reportSponsoredMessage"/></para></summary>
+		public static Task<Channels_SponsoredMessageReportResult> Messages_ReportSponsoredMessage(this Client client, InputPeer peer, byte[] random_id, byte[] option)
+			=> client.Invoke(new Messages_ReportSponsoredMessage
+			{
+				peer = peer,
+				random_id = random_id,
+				option = option,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSponsoredMessages"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.sponsoredMessagesEmpty">messages.sponsoredMessagesEmpty</a></returns>
+		public static Task<Messages_SponsoredMessages> Messages_GetSponsoredMessages(this Client client, InputPeer peer)
+			=> client.Invoke(new Messages_GetSponsoredMessages
+			{
+				peer = peer,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -5120,25 +5154,6 @@ namespace TL
 				channel = channel,
 			});
 
-		/// <summary>Mark a specific sponsored message as read		<para>See <a href="https://corefork.telegram.org/method/channels.viewSponsoredMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.viewSponsoredMessage#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">Peer</param>
-		/// <param name="random_id">Message ID</param>
-		public static Task<bool> Channels_ViewSponsoredMessage(this Client client, InputChannelBase channel, byte[] random_id)
-			=> client.Invoke(new Channels_ViewSponsoredMessage
-			{
-				channel = channel,
-				random_id = random_id,
-			});
-
-		/// <summary>Get a list of sponsored messages		<para>See <a href="https://corefork.telegram.org/method/channels.getSponsoredMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getSponsoredMessages#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">Peer</param>
-		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.sponsoredMessagesEmpty">messages.sponsoredMessagesEmpty</a></returns>
-		public static Task<Messages_SponsoredMessages> Channels_GetSponsoredMessages(this Client client, InputChannelBase channel)
-			=> client.Invoke(new Channels_GetSponsoredMessages
-			{
-				channel = channel,
-			});
-
 		/// <summary>Obtains a list of peers that can be used to send messages in a specific group		<para>See <a href="https://corefork.telegram.org/method/channels.getSendAs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getSendAs#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The group where we intend to send messages</param>
 		public static Task<Channels_SendAsPeers> Channels_GetSendAs(this Client client, InputPeer peer)
@@ -5348,17 +5363,6 @@ namespace TL
 				enabled = enabled,
 			});
 
-		/// <summary>Informs the server that the user has either:		<para>See <a href="https://corefork.telegram.org/method/channels.clickSponsoredMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.clickSponsoredMessage#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">Channel where the sponsored message was posted</param>
-		/// <param name="random_id">Message ID</param>
-		public static Task<bool> Channels_ClickSponsoredMessage(this Client client, InputChannelBase channel, byte[] random_id, bool media = false, bool fullscreen = false)
-			=> client.Invoke(new Channels_ClickSponsoredMessage
-			{
-				flags = (Channels_ClickSponsoredMessage.Flags)((media ? 0x1 : 0) | (fullscreen ? 0x2 : 0)),
-				channel = channel,
-				random_id = random_id,
-			});
-
 		/// <summary>Update the <a href="https://corefork.telegram.org/api/colors">accent color and background custom emoji »</a> of a channel.		<para>See <a href="https://corefork.telegram.org/method/channels.updateColor"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.updateColor#possible-errors">details</a>)</para></summary>
 		/// <param name="for_profile">Whether to change the accent color emoji pattern of the profile page; otherwise, the accent color and emoji pattern of messages will be changed. <br/>Channels can change both message and profile palettes; supergroups can only change the profile palette, of course after reaching the <a href="https://corefork.telegram.org/api/colors">appropriate boost level</a>.</param>
 		/// <param name="channel">Channel whose accent color should be changed.</param>
@@ -5420,18 +5424,6 @@ namespace TL
 			{
 				channel = channel,
 				stickerset = stickerset,
-			});
-
-		/// <summary>Report a <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message »</a>, see <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">here »</a> for more info on the full flow.		<para>See <a href="https://corefork.telegram.org/method/channels.reportSponsoredMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.reportSponsoredMessage#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">The channel where the sponsored message can be seen.</param>
-		/// <param name="random_id">ID of the sponsored message.</param>
-		/// <param name="option">Chosen report option, initially an empty string, see <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">here »</a> for more info on the full flow.</param>
-		public static Task<Channels_SponsoredMessageReportResult> Channels_ReportSponsoredMessage(this Client client, InputChannelBase channel, byte[] random_id, byte[] option)
-			=> client.Invoke(new Channels_ReportSponsoredMessage
-			{
-				channel = channel,
-				random_id = random_id,
-				option = option,
 			});
 
 		/// <summary>Disable ads on the specified channel, for all users.		<para>See <a href="https://corefork.telegram.org/method/channels.restrictSponsoredMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.restrictSponsoredMessages#possible-errors">details</a>)</para></summary>
@@ -6658,32 +6650,29 @@ namespace TL
 
 		/// <summary>Get <a href="https://corefork.telegram.org/api/revenue">channel ad revenue statistics »</a>.		<para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueStats"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueStats#possible-errors">details</a>)</para></summary>
 		/// <param name="dark">Whether to enable dark theme for graph colors</param>
-		/// <param name="channel">The channel</param>
-		public static Task<Stats_BroadcastRevenueStats> Stats_GetBroadcastRevenueStats(this Client client, InputChannelBase channel, bool dark = false)
+		public static Task<Stats_BroadcastRevenueStats> Stats_GetBroadcastRevenueStats(this Client client, InputPeer peer, bool dark = false)
 			=> client.Invoke(new Stats_GetBroadcastRevenueStats
 			{
 				flags = (Stats_GetBroadcastRevenueStats.Flags)(dark ? 0x1 : 0),
-				channel = channel,
+				peer = peer,
 			});
 
 		/// <summary>Withdraw funds from a channel's <a href="https://corefork.telegram.org/api/revenue">ad revenue balance »</a>.		<para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueWithdrawalUrl"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueWithdrawalUrl#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">The channel</param>
 		/// <param name="password">2FA password, see <a href="https://corefork.telegram.org/api/srp#using-the-2fa-password">here »</a> for more info.</param>
-		public static Task<Stats_BroadcastRevenueWithdrawalUrl> Stats_GetBroadcastRevenueWithdrawalUrl(this Client client, InputChannelBase channel, InputCheckPasswordSRP password)
+		public static Task<Stats_BroadcastRevenueWithdrawalUrl> Stats_GetBroadcastRevenueWithdrawalUrl(this Client client, InputPeer peer, InputCheckPasswordSRP password)
 			=> client.Invoke(new Stats_GetBroadcastRevenueWithdrawalUrl
 			{
-				channel = channel,
+				peer = peer,
 				password = password,
 			});
 
 		/// <summary>Fetch <a href="https://corefork.telegram.org/api/revenue">channel ad revenue transaction history »</a>.		<para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueTransactions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueTransactions#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">The channel</param>
 		/// <param name="offset"><a href="https://corefork.telegram.org/api/offsets">Offset for pagination</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Stats_BroadcastRevenueTransactions> Stats_GetBroadcastRevenueTransactions(this Client client, InputChannelBase channel, int offset = default, int limit = int.MaxValue)
+		public static Task<Stats_BroadcastRevenueTransactions> Stats_GetBroadcastRevenueTransactions(this Client client, InputPeer peer, int offset = default, int limit = int.MaxValue)
 			=> client.Invoke(new Stats_GetBroadcastRevenueTransactions
 			{
-				channel = channel,
+				peer = peer,
 				offset = offset,
 				limit = limit,
 			});
@@ -7096,12 +7085,13 @@ namespace TL
 		/// <param name="area">A <see cref="MediaAreaGeoPoint"/> or a <see cref="MediaAreaVenue"/>.  <br/>Note <see cref="MediaAreaGeoPoint"/> areas may be searched only if they have an associated <c>address</c>.</param>
 		/// <param name="offset">Offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a>: initially an empty string, then the <c>next_offset</c> from the previously returned <see cref="Stories_FoundStories"/>.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Stories_FoundStories> Stories_SearchPosts(this Client client, string offset, int limit = int.MaxValue, string hashtag = null, MediaArea area = null)
+		public static Task<Stories_FoundStories> Stories_SearchPosts(this Client client, string offset, int limit = int.MaxValue, string hashtag = null, MediaArea area = null, InputPeer peer = null)
 			=> client.Invoke(new Stories_SearchPosts
 			{
-				flags = (Stories_SearchPosts.Flags)((hashtag != null ? 0x1 : 0) | (area != null ? 0x2 : 0)),
+				flags = (Stories_SearchPosts.Flags)((hashtag != null ? 0x1 : 0) | (area != null ? 0x2 : 0) | (peer != null ? 0x4 : 0)),
 				hashtag = hashtag,
 				area = area,
+				peer = peer,
 				offset = offset,
 				limit = limit,
 			});
@@ -8723,6 +8713,7 @@ namespace TL.Methods
 			invert_media = 0x10000,
 			has_quick_reply_shortcut = 0x20000,
 			has_effect = 0x40000,
+			allow_paid_floodskip = 0x80000,
 		}
 	}
 
@@ -8757,6 +8748,7 @@ namespace TL.Methods
 			invert_media = 0x10000,
 			has_quick_reply_shortcut = 0x20000,
 			has_effect = 0x40000,
+			allow_paid_floodskip = 0x80000,
 		}
 	}
 
@@ -8785,6 +8777,7 @@ namespace TL.Methods
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
 			has_quick_reply_shortcut = 0x20000,
+			allow_paid_floodskip = 0x80000,
 		}
 	}
 
@@ -9615,6 +9608,7 @@ namespace TL.Methods
 			invert_media = 0x10000,
 			has_quick_reply_shortcut = 0x20000,
 			has_effect = 0x40000,
+			allow_paid_floodskip = 0x80000,
 		}
 	}
 
@@ -10827,6 +10821,41 @@ namespace TL.Methods
 	[TLDef(0x472455AA)]
 	public sealed partial class Messages_GetPaidReactionPrivacy : IMethod<UpdatesBase> { }
 
+	[TLDef(0x673AD8F1)]
+	public sealed partial class Messages_ViewSponsoredMessage : IMethod<bool>
+	{
+		public InputPeer peer;
+		public byte[] random_id;
+	}
+
+	[TLDef(0x0F093465)]
+	public sealed partial class Messages_ClickSponsoredMessage : IMethod<bool>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public byte[] random_id;
+
+		[Flags] public enum Flags : uint
+		{
+			media = 0x1,
+			fullscreen = 0x2,
+		}
+	}
+
+	[TLDef(0x1AF3DBB8)]
+	public sealed partial class Messages_ReportSponsoredMessage : IMethod<Channels_SponsoredMessageReportResult>
+	{
+		public InputPeer peer;
+		public byte[] random_id;
+		public byte[] option;
+	}
+
+	[TLDef(0x9BD2F439)]
+	public sealed partial class Messages_GetSponsoredMessages : IMethod<Messages_SponsoredMessages>
+	{
+		public InputPeer peer;
+	}
+
 	[TLDef(0xEDD4882A)]
 	public sealed partial class Updates_GetState : IMethod<Updates_State> { }
 
@@ -11422,19 +11451,6 @@ namespace TL.Methods
 		public InputChannelBase channel;
 	}
 
-	[TLDef(0xBEAEDB94)]
-	public sealed partial class Channels_ViewSponsoredMessage : IMethod<bool>
-	{
-		public InputChannelBase channel;
-		public byte[] random_id;
-	}
-
-	[TLDef(0xEC210FBF)]
-	public sealed partial class Channels_GetSponsoredMessages : IMethod<Messages_SponsoredMessages>
-	{
-		public InputChannelBase channel;
-	}
-
 	[TLDef(0x0DC770EE)]
 	public sealed partial class Channels_GetSendAs : IMethod<Channels_SendAsPeers>
 	{
@@ -11602,20 +11618,6 @@ namespace TL.Methods
 		public bool enabled;
 	}
 
-	[TLDef(0x01445D75)]
-	public sealed partial class Channels_ClickSponsoredMessage : IMethod<bool>
-	{
-		public Flags flags;
-		public InputChannelBase channel;
-		public byte[] random_id;
-
-		[Flags] public enum Flags : uint
-		{
-			media = 0x1,
-			fullscreen = 0x2,
-		}
-	}
-
 	[TLDef(0xD8AA3671)]
 	public sealed partial class Channels_UpdateColor : IMethod<UpdatesBase>
 	{
@@ -11670,14 +11672,6 @@ namespace TL.Methods
 	{
 		public InputChannelBase channel;
 		public InputStickerSet stickerset;
-	}
-
-	[TLDef(0xAF8FF6B9)]
-	public sealed partial class Channels_ReportSponsoredMessage : IMethod<Channels_SponsoredMessageReportResult>
-	{
-		public InputChannelBase channel;
-		public byte[] random_id;
-		public byte[] option;
 	}
 
 	[TLDef(0x9AE91519)]
@@ -12695,11 +12689,11 @@ namespace TL.Methods
 		public int limit;
 	}
 
-	[TLDef(0x75DFB671)]
+	[TLDef(0xF788EE19)]
 	public sealed partial class Stats_GetBroadcastRevenueStats : IMethod<Stats_BroadcastRevenueStats>
 	{
 		public Flags flags;
-		public InputChannelBase channel;
+		public InputPeer peer;
 
 		[Flags] public enum Flags : uint
 		{
@@ -12707,17 +12701,17 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x2A65EF73)]
+	[TLDef(0x9DF4FAAD)]
 	public sealed partial class Stats_GetBroadcastRevenueWithdrawalUrl : IMethod<Stats_BroadcastRevenueWithdrawalUrl>
 	{
-		public InputChannelBase channel;
+		public InputPeer peer;
 		public InputCheckPasswordSRP password;
 	}
 
-	[TLDef(0x0069280F)]
+	[TLDef(0x70990B6D)]
 	public sealed partial class Stats_GetBroadcastRevenueTransactions : IMethod<Stats_BroadcastRevenueTransactions>
 	{
-		public InputChannelBase channel;
+		public InputPeer peer;
 		public int offset;
 		public int limit;
 	}
@@ -13049,12 +13043,13 @@ namespace TL.Methods
 		public int[] id;
 	}
 
-	[TLDef(0x6CEA116A)]
+	[TLDef(0xD1810907)]
 	public sealed partial class Stories_SearchPosts : IMethod<Stories_FoundStories>
 	{
 		public Flags flags;
 		[IfFlag(0)] public string hashtag;
 		[IfFlag(1)] public MediaArea area;
+		[IfFlag(2)] public InputPeer peer;
 		public string offset;
 		public int limit;
 
@@ -13062,6 +13057,7 @@ namespace TL.Methods
 		{
 			has_hashtag = 0x1,
 			has_area = 0x2,
+			has_peer = 0x4,
 		}
 	}
 
