@@ -621,6 +621,32 @@ namespace WTelegram
 			return resultFull;
 		}
 
+		/// <summary>Helper simplified method: Get all <a href="https://corefork.telegram.org/api/forum">topics of a forum</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getForumTopics"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getForumTopics#possible-errors">details</a>)</para></summary>
+		/// <param name="channel">Supergroup</param>
+		/// <param name="q">Search query</param>
+		public async Task<Messages_ForumTopics> Channels_GetAllForumTopics(InputChannelBase channel, string q = null)
+		{
+			var result = await this.Channels_GetForumTopics(channel, limit: 20, q: q);
+			if (result.topics.Length < result.count)
+			{
+				var topics = result.topics.ToList();
+				var messages = result.messages.ToList();
+				while (true)
+				{
+					var more_topics = await this.Channels_GetForumTopics(channel, messages[^1].Date, messages[^1].ID, topics[^1].ID);
+					if (more_topics.topics.Length == 0) break;
+					topics.AddRange(more_topics.topics);
+					messages.AddRange(more_topics.messages);
+					foreach (var kvp in more_topics.chats) result.chats[kvp.Key] = kvp.Value;
+					foreach (var kvp in more_topics.users) result.users[kvp.Key] = kvp.Value;
+					if (topics.Count >= more_topics.count) break;
+				}
+				result.topics = [.. topics];
+				result.messages = [.. messages];
+			}
+			return result;
+		}
+
 		private const string OnlyChatChannel = "This method works on Chat & Channel only";
 		/// <summary>Generic helper: Adds a single user to a Chat or Channel		<para>See <a href="https://corefork.telegram.org/method/messages.addChatUser"/><br/> and <a href="https://corefork.telegram.org/method/channels.inviteToChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403</para></summary>
 		/// <param name="peer">Chat/Channel</param>
