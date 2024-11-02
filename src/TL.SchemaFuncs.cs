@@ -764,7 +764,7 @@ namespace TL
 			=> client.Invoke(new Account_InitTakeoutSession
 			{
 				flags = (Account_InitTakeoutSession.Flags)((file_max_size != null ? 0x20 : 0) | (contacts ? 0x1 : 0) | (message_users ? 0x2 : 0) | (message_chats ? 0x4 : 0) | (message_megagroups ? 0x8 : 0) | (message_channels ? 0x10 : 0) | (files ? 0x20 : 0)),
-				file_max_size = file_max_size.GetValueOrDefault(),
+				file_max_size = file_max_size ?? default,
 			});
 
 		/// <summary>Terminate a <a href="https://corefork.telegram.org/api/takeout">takeout session, see here » for more info</a>.		<para>See <a href="https://corefork.telegram.org/method/account.finishTakeoutSession"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/account.finishTakeoutSession#possible-errors">details</a>)</para></summary>
@@ -1070,8 +1070,8 @@ namespace TL
 			{
 				flags = (Account_ChangeAuthorizationSettings.Flags)((encrypted_requests_disabled != default ? 0x1 : 0) | (call_requests_disabled != default ? 0x2 : 0) | (confirmed ? 0x8 : 0)),
 				hash = hash,
-				encrypted_requests_disabled = encrypted_requests_disabled.GetValueOrDefault(),
-				call_requests_disabled = call_requests_disabled.GetValueOrDefault(),
+				encrypted_requests_disabled = encrypted_requests_disabled ?? default,
+				call_requests_disabled = call_requests_disabled ?? default,
 			});
 
 		/// <summary>Fetch saved notification sounds		<para>See <a href="https://corefork.telegram.org/method/account.getSavedRingtones"/></para></summary>
@@ -1215,8 +1215,8 @@ namespace TL
 			=> client.Invoke(new Account_UpdateColor
 			{
 				flags = (Account_UpdateColor.Flags)((background_emoji_id != null ? 0x1 : 0) | (color != null ? 0x4 : 0) | (for_profile ? 0x2 : 0)),
-				color = color.GetValueOrDefault(),
-				background_emoji_id = background_emoji_id.GetValueOrDefault(),
+				color = color ?? default,
+				background_emoji_id = background_emoji_id ?? default,
 			});
 
 		/// <summary>Get a set of suggested <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickers</a> that can be used in an <a href="https://corefork.telegram.org/api/colors">accent color pattern</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getDefaultBackgroundEmojis"/></para></summary>
@@ -1634,7 +1634,7 @@ namespace TL
 			{
 				flags = (Contacts_GetLocated.Flags)((self_expires != null ? 0x1 : 0) | (background ? 0x2 : 0)),
 				geo_point = geo_point,
-				self_expires = self_expires.GetValueOrDefault(),
+				self_expires = self_expires ?? default,
 			});
 
 		/// <summary>Stop getting notifications about <a href="https://corefork.telegram.org/api/discussion">discussion replies</a> of a certain user in <c>@replies</c>		<para>See <a href="https://corefork.telegram.org/method/contacts.blockFromReplies"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.blockFromReplies#possible-errors">details</a>)</para></summary>
@@ -1717,7 +1717,7 @@ namespace TL
 			=> client.Invoke(new Messages_GetDialogs
 			{
 				flags = (Messages_GetDialogs.Flags)((folder_id != null ? 0x2 : 0) | (exclude_pinned ? 0x1 : 0)),
-				folder_id = folder_id.GetValueOrDefault(),
+				folder_id = folder_id ?? default,
 				offset_date = offset_date,
 				offset_id = offset_id,
 				offset_peer = offset_peer,
@@ -1772,7 +1772,7 @@ namespace TL
 				from_id = from_id,
 				saved_peer_id = saved_peer_id,
 				saved_reaction = saved_reaction,
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				top_msg_id = top_msg_id ?? default,
 				filter = filter,
 				min_date = min_date,
 				max_date = max_date,
@@ -1807,8 +1807,8 @@ namespace TL
 				flags = (Messages_DeleteHistory.Flags)((min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0) | (just_clear ? 0x1 : 0) | (revoke ? 0x2 : 0)),
 				peer = peer,
 				max_id = max_id,
-				min_date = min_date.GetValueOrDefault(),
-				max_date = max_date.GetValueOrDefault(),
+				min_date = min_date ?? default,
+				max_date = max_date ?? default,
 			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Deletes messages by their identifiers.		<para>See <a href="https://corefork.telegram.org/method/messages.deleteMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.deleteMessages#possible-errors">details</a>)</para></summary>
@@ -1838,7 +1838,7 @@ namespace TL
 			{
 				flags = (Messages_SetTyping.Flags)(top_msg_id != null ? 0x1 : 0),
 				peer = peer,
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				top_msg_id = top_msg_id ?? default,
 				action = action,
 			});
 
@@ -1870,10 +1870,10 @@ namespace TL
 				random_id = random_id,
 				reply_markup = reply_markup,
 				entities = entities,
-				schedule_date = schedule_date.GetValueOrDefault(),
+				schedule_date = schedule_date ?? default,
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
-				effect = effect.GetValueOrDefault(),
+				effect = effect ?? default,
 			});
 
 		/// <summary>Send a media		<para>See <a href="https://corefork.telegram.org/method/messages.sendMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,420,500 (<a href="https://corefork.telegram.org/method/messages.sendMedia#possible-errors">details</a>)</para></summary>
@@ -1905,10 +1905,10 @@ namespace TL
 				random_id = random_id,
 				reply_markup = reply_markup,
 				entities = entities,
-				schedule_date = schedule_date.GetValueOrDefault(),
+				schedule_date = schedule_date ?? default,
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
-				effect = effect.GetValueOrDefault(),
+				effect = effect ?? default,
 			});
 
 		/// <summary>Forwards messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.forwardMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,420,500 (<a href="https://corefork.telegram.org/method/messages.forwardMessages#possible-errors">details</a>)</para></summary>
@@ -1934,8 +1934,8 @@ namespace TL
 				id = id,
 				random_id = random_id,
 				to_peer = to_peer,
-				top_msg_id = top_msg_id.GetValueOrDefault(),
-				schedule_date = schedule_date.GetValueOrDefault(),
+				top_msg_id = top_msg_id ?? default,
+				schedule_date = schedule_date ?? default,
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
 			});
@@ -2039,7 +2039,7 @@ namespace TL
 				flags = (Messages_CreateChat.Flags)(ttl_period != null ? 0x1 : 0),
 				users = users,
 				title = title,
-				ttl_period = ttl_period.GetValueOrDefault(),
+				ttl_period = ttl_period ?? default,
 			});
 
 		/// <summary>Returns configuration parameters for Diffie-Hellman key generation. Can also return a random sequence of bytes of required length.		<para>See <a href="https://corefork.telegram.org/method/messages.getDhConfig"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getDhConfig#possible-errors">details</a>)</para></summary>
@@ -2216,8 +2216,8 @@ namespace TL
 			{
 				flags = (Messages_ExportChatInvite.Flags)((expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (title != null ? 0x10 : 0) | (subscription_pricing != null ? 0x20 : 0) | (legacy_revoke_permanent ? 0x4 : 0) | (request_needed ? 0x8 : 0)),
 				peer = peer,
-				expire_date = expire_date.GetValueOrDefault(),
-				usage_limit = usage_limit.GetValueOrDefault(),
+				expire_date = expire_date ?? default,
+				usage_limit = usage_limit ?? default,
 				title = title,
 				subscription_pricing = subscription_pricing,
 			});
@@ -2328,7 +2328,7 @@ namespace TL
 			=> client.Invoke(new Messages_SearchGlobal
 			{
 				flags = (Messages_SearchGlobal.Flags)((folder_id != null ? 0x1 : 0) | (broadcasts_only ? 0x2 : 0)),
-				folder_id = folder_id.GetValueOrDefault(),
+				folder_id = folder_id ?? default,
 				q = q,
 				filter = filter,
 				min_date = min_date,
@@ -2441,7 +2441,7 @@ namespace TL
 				random_id = random_id,
 				query_id = query_id,
 				id = id,
-				schedule_date = schedule_date.GetValueOrDefault(),
+				schedule_date = schedule_date ?? default,
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
 			});
@@ -2477,8 +2477,8 @@ namespace TL
 				media = media,
 				reply_markup = reply_markup,
 				entities = entities,
-				schedule_date = schedule_date.GetValueOrDefault(),
-				quick_reply_shortcut_id = quick_reply_shortcut_id.GetValueOrDefault(),
+				schedule_date = schedule_date ?? default,
+				quick_reply_shortcut_id = quick_reply_shortcut_id ?? default,
 			});
 
 		/// <summary>Edit an inline bot message		<para>See <a href="https://corefork.telegram.org/method/messages.editInlineBotMessage"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.editInlineBotMessage#possible-errors">details</a>)</para></summary>
@@ -2558,7 +2558,7 @@ namespace TL
 				message = message,
 				entities = entities,
 				media = media,
-				effect = effect.GetValueOrDefault(),
+				effect = effect ?? default,
 			});
 
 		/// <summary>Return all message <a href="https://corefork.telegram.org/api/drafts">drafts</a>.<br/>Returns all the latest <see cref="UpdateDraftMessage"/> updates related to all chats with drafts.		<para>See <a href="https://corefork.telegram.org/method/messages.getAllDrafts"/></para></summary>
@@ -2833,7 +2833,7 @@ namespace TL
 			{
 				flags = (Messages_GetUnreadMentions.Flags)(top_msg_id != null ? 0x1 : 0),
 				peer = peer,
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				top_msg_id = top_msg_id ?? default,
 				offset_id = offset_id,
 				add_offset = add_offset,
 				limit = limit,
@@ -2849,7 +2849,7 @@ namespace TL
 			{
 				flags = (Messages_ReadMentions.Flags)(top_msg_id != null ? 0x1 : 0),
 				peer = peer,
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				top_msg_id = top_msg_id ?? default,
 			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary>Get live location history of a certain user		<para>See <a href="https://corefork.telegram.org/method/messages.getRecentLocations"/></para></summary>
@@ -2885,10 +2885,10 @@ namespace TL
 				peer = peer,
 				reply_to = reply_to,
 				multi_media = multi_media,
-				schedule_date = schedule_date.GetValueOrDefault(),
+				schedule_date = schedule_date ?? default,
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
-				effect = effect.GetValueOrDefault(),
+				effect = effect ?? default,
 			});
 
 		/// <summary>Upload encrypted file and associate it to a secret chat		<para>See <a href="https://corefork.telegram.org/method/messages.uploadEncryptedFile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.uploadEncryptedFile#possible-errors">details</a>)</para></summary>
@@ -3052,7 +3052,7 @@ namespace TL
 				flags = (Messages_GetSearchCounters.Flags)((top_msg_id != null ? 0x1 : 0) | (saved_peer_id != null ? 0x4 : 0)),
 				peer = peer,
 				saved_peer_id = saved_peer_id,
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				top_msg_id = top_msg_id ?? default,
 				filters = filters,
 			});
 
@@ -3067,8 +3067,8 @@ namespace TL
 			{
 				flags = (Messages_RequestUrlAuth.Flags)((peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0)),
 				peer = peer,
-				msg_id = msg_id.GetValueOrDefault(),
-				button_id = button_id.GetValueOrDefault(),
+				msg_id = msg_id ?? default,
+				button_id = button_id ?? default,
 				url = url,
 			});
 
@@ -3084,8 +3084,8 @@ namespace TL
 			{
 				flags = (Messages_AcceptUrlAuth.Flags)((peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0) | (write_allowed ? 0x1 : 0)),
 				peer = peer,
-				msg_id = msg_id.GetValueOrDefault(),
-				button_id = button_id.GetValueOrDefault(),
+				msg_id = msg_id ?? default,
+				button_id = button_id ?? default,
 				url = url,
 			});
 
@@ -3263,7 +3263,7 @@ namespace TL
 			{
 				flags = (Messages_UnpinAllMessages.Flags)(top_msg_id != null ? 0x1 : 0),
 				peer = peer,
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				top_msg_id = top_msg_id ?? default,
 			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Delete a <a href="https://corefork.telegram.org/api/channel">chat</a>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChat#possible-errors">details</a>)</para></summary>
@@ -3340,7 +3340,7 @@ namespace TL
 				flags = (Messages_GetExportedChatInvites.Flags)((offset_date != null ? 0x4 : 0) | (offset_link != null ? 0x4 : 0) | (revoked ? 0x8 : 0)),
 				peer = peer,
 				admin_id = admin_id,
-				offset_date = offset_date.GetValueOrDefault(),
+				offset_date = offset_date ?? default,
 				offset_link = offset_link,
 				limit = limit,
 			});
@@ -3369,9 +3369,9 @@ namespace TL
 				flags = (Messages_EditExportedChatInvite.Flags)((expire_date != null ? 0x1 : 0) | (usage_limit != null ? 0x2 : 0) | (request_needed != default ? 0x8 : 0) | (title != null ? 0x10 : 0) | (revoked ? 0x4 : 0)),
 				peer = peer,
 				link = link,
-				expire_date = expire_date.GetValueOrDefault(),
-				usage_limit = usage_limit.GetValueOrDefault(),
-				request_needed = request_needed.GetValueOrDefault(),
+				expire_date = expire_date ?? default,
+				usage_limit = usage_limit ?? default,
+				request_needed = request_needed ?? default,
 				title = title,
 			});
 
@@ -3591,8 +3591,8 @@ namespace TL
 				flags = (Messages_SetChatAvailableReactions.Flags)((reactions_limit != null ? 0x1 : 0) | (paid_enabled != default ? 0x2 : 0)),
 				peer = peer,
 				available_reactions = available_reactions,
-				reactions_limit = reactions_limit.GetValueOrDefault(),
-				paid_enabled = paid_enabled.GetValueOrDefault(),
+				reactions_limit = reactions_limit ?? default,
+				paid_enabled = paid_enabled ?? default,
 			});
 
 		/// <summary>Obtain available <a href="https://corefork.telegram.org/api/reactions">message reactions »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getAvailableReactions"/></para></summary>
@@ -3640,7 +3640,7 @@ namespace TL
 			{
 				flags = (Messages_GetUnreadReactions.Flags)(top_msg_id != null ? 0x1 : 0),
 				peer = peer,
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				top_msg_id = top_msg_id ?? default,
 				offset_id = offset_id,
 				add_offset = add_offset,
 				limit = limit,
@@ -3656,7 +3656,7 @@ namespace TL
 			{
 				flags = (Messages_ReadReactions.Flags)(top_msg_id != null ? 0x1 : 0),
 				peer = peer,
-				top_msg_id = top_msg_id.GetValueOrDefault(),
+				top_msg_id = top_msg_id ?? default,
 			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary>View and search recently sent media.<br/>This method does not support pagination.		<para>See <a href="https://corefork.telegram.org/method/messages.searchSentMedia"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.searchSentMedia#possible-errors">details</a>)</para></summary>
@@ -4006,7 +4006,7 @@ namespace TL
 				peer = peer,
 				wallpaper = wallpaper,
 				settings = settings,
-				id = id.GetValueOrDefault(),
+				id = id ?? default,
 			});
 
 		/// <summary>Search for <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickersets »</a>		<para>See <a href="https://corefork.telegram.org/method/messages.searchEmojiStickerSets"/></para></summary>
@@ -4073,8 +4073,8 @@ namespace TL
 				flags = (Messages_DeleteSavedHistory.Flags)((min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0)),
 				peer = peer,
 				max_id = max_id,
-				min_date = min_date.GetValueOrDefault(),
-				max_date = max_date.GetValueOrDefault(),
+				min_date = min_date ?? default,
+				max_date = max_date ?? default,
 			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary>Get pinned <a href="https://corefork.telegram.org/api/saved-messages">saved dialogs, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/messages.getPinnedSavedDialogs"/></para></summary>
@@ -4320,7 +4320,7 @@ namespace TL
 				msg_id = msg_id,
 				count = count,
 				random_id = random_id,
-				private_ = private_.GetValueOrDefault(),
+				private_ = private_ ?? default,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.togglePaidReactionPrivacy"/></para></summary>
@@ -4390,11 +4390,11 @@ namespace TL
 			{
 				flags = (Updates_GetDifference.Flags)((pts_total_limit != null ? 0x1 : 0) | (pts_limit != null ? 0x2 : 0) | (qts_limit != null ? 0x4 : 0)),
 				pts = pts,
-				pts_limit = pts_limit.GetValueOrDefault(),
-				pts_total_limit = pts_total_limit.GetValueOrDefault(),
+				pts_limit = pts_limit ?? default,
+				pts_total_limit = pts_total_limit ?? default,
 				date = date,
 				qts = qts,
-				qts_limit = qts_limit.GetValueOrDefault(),
+				qts_limit = qts_limit ?? default,
 			});
 
 		/// <summary>Returns the difference between the current state of updates of a certain channel and transmitted.		<para>See <a href="https://corefork.telegram.org/method/updates.getChannelDifference"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,500 (<a href="https://corefork.telegram.org/method/updates.getChannelDifference#possible-errors">details</a>)</para></summary>
@@ -4439,7 +4439,7 @@ namespace TL
 				bot = bot,
 				file = file,
 				video = video,
-				video_start_ts = video_start_ts.GetValueOrDefault(),
+				video_start_ts = video_start_ts ?? default,
 				video_emoji_markup = video_emoji_markup,
 			});
 
@@ -4480,7 +4480,7 @@ namespace TL
 				user_id = user_id,
 				file = file,
 				video = video,
-				video_start_ts = video_start_ts.GetValueOrDefault(),
+				video_start_ts = video_start_ts ?? default,
 				video_emoji_markup = video_emoji_markup,
 			});
 
@@ -4884,7 +4884,7 @@ namespace TL
 				about = about,
 				geo_point = geo_point,
 				address = address,
-				ttl_period = ttl_period.GetValueOrDefault(),
+				ttl_period = ttl_period ?? default,
 			});
 
 		/// <summary>Modify the admin rights of a user in a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.editAdmin"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/channels.editAdmin#possible-errors">details</a>)</para></summary>
@@ -5245,8 +5245,8 @@ namespace TL
 				flags = (Channels_CreateForumTopic.Flags)((icon_color != null ? 0x1 : 0) | (send_as != null ? 0x4 : 0) | (icon_emoji_id != null ? 0x8 : 0)),
 				channel = channel,
 				title = title,
-				icon_color = icon_color.GetValueOrDefault(),
-				icon_emoji_id = icon_emoji_id.GetValueOrDefault(),
+				icon_color = icon_color ?? default,
+				icon_emoji_id = icon_emoji_id ?? default,
 				random_id = random_id,
 				send_as = send_as,
 			});
@@ -5294,9 +5294,9 @@ namespace TL
 				channel = channel,
 				topic_id = topic_id,
 				title = title,
-				icon_emoji_id = icon_emoji_id.GetValueOrDefault(),
-				closed = closed.GetValueOrDefault(),
-				hidden = hidden.GetValueOrDefault(),
+				icon_emoji_id = icon_emoji_id ?? default,
+				closed = closed ?? default,
+				hidden = hidden ?? default,
 			});
 
 		/// <summary>Pin or unpin <a href="https://corefork.telegram.org/api/forum">forum topics</a>		<para>See <a href="https://corefork.telegram.org/method/channels.updatePinnedForumTopic"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.updatePinnedForumTopic#possible-errors">details</a>)</para></summary>
@@ -5373,8 +5373,8 @@ namespace TL
 			{
 				flags = (Channels_UpdateColor.Flags)((background_emoji_id != null ? 0x1 : 0) | (color != null ? 0x4 : 0) | (for_profile ? 0x2 : 0)),
 				channel = channel,
-				color = color.GetValueOrDefault(),
-				background_emoji_id = background_emoji_id.GetValueOrDefault(),
+				color = color ?? default,
+				background_emoji_id = background_emoji_id ?? default,
 			});
 
 		/// <summary>Users may also choose to display messages from all topics of a <a href="https://corefork.telegram.org/api/forum">forum</a> as if they were sent to a normal group, using a "View as messages" setting in the local client: this setting only affects the current account, and is synced to other logged in sessions using this method.		<para>See <a href="https://corefork.telegram.org/method/channels.toggleViewForumAsMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleViewForumAsMessages#possible-errors">details</a>)</para></summary>
@@ -5744,7 +5744,7 @@ namespace TL
 				requested_info_id = requested_info_id,
 				shipping_option_id = shipping_option_id,
 				credentials = credentials,
-				tip_amount = tip_amount.GetValueOrDefault(),
+				tip_amount = tip_amount ?? default,
 			});
 
 		/// <summary>Get saved payment information		<para>See <a href="https://corefork.telegram.org/method/payments.getSavedInfo"/></para></summary>
@@ -5969,7 +5969,7 @@ namespace TL
 				flags = (Payments_ChangeStarsSubscription.Flags)(canceled != default ? 0x1 : 0),
 				peer = peer,
 				subscription_id = subscription_id,
-				canceled = canceled.GetValueOrDefault(),
+				canceled = canceled ?? default,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.fulfillStarsSubscription"/></para></summary>
@@ -6085,7 +6085,7 @@ namespace TL
 				flags = (Stickers_SetStickerSetThumb.Flags)((thumb != null ? 0x1 : 0) | (thumb_document_id != null ? 0x2 : 0)),
 				stickerset = stickerset,
 				thumb = thumb,
-				thumb_document_id = thumb_document_id.GetValueOrDefault(),
+				thumb_document_id = thumb_document_id ?? default,
 			});
 
 		/// <summary>Check whether the given short name is available		<para>See <a href="https://corefork.telegram.org/method/stickers.checkShortName"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.checkShortName#possible-errors">details</a>)</para></summary>
@@ -6269,7 +6269,7 @@ namespace TL
 				peer = peer,
 				random_id = random_id,
 				title = title,
-				schedule_date = schedule_date.GetValueOrDefault(),
+				schedule_date = schedule_date ?? default,
 			});
 
 		/// <summary>Join a group call		<para>See <a href="https://corefork.telegram.org/method/phone.joinGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.joinGroupCall#possible-errors">details</a>)</para></summary>
@@ -6326,7 +6326,7 @@ namespace TL
 			{
 				flags = (Phone_ToggleGroupCallSettings.Flags)((join_muted != default ? 0x1 : 0) | (reset_invite_hash ? 0x2 : 0)),
 				call = call,
-				join_muted = join_muted.GetValueOrDefault(),
+				join_muted = join_muted ?? default,
 			});
 
 		/// <summary>Get info about a group call		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.getGroupCall#possible-errors">details</a>)</para></summary>
@@ -6377,7 +6377,7 @@ namespace TL
 				flags = (Phone_ToggleGroupCallRecord.Flags)((title != null ? 0x2 : 0) | (video_portrait != default ? 0x4 : 0) | (start ? 0x1 : 0) | (video ? 0x4 : 0)),
 				call = call,
 				title = title,
-				video_portrait = video_portrait.GetValueOrDefault(),
+				video_portrait = video_portrait ?? default,
 			});
 
 		/// <summary>Edit information about a given group call participant		<para>See <a href="https://corefork.telegram.org/method/phone.editGroupCallParticipant"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.editGroupCallParticipant#possible-errors">details</a>)</para></summary>
@@ -6395,12 +6395,12 @@ namespace TL
 				flags = (Phone_EditGroupCallParticipant.Flags)((muted != default ? 0x1 : 0) | (volume != null ? 0x2 : 0) | (raise_hand != default ? 0x4 : 0) | (video_stopped != default ? 0x8 : 0) | (video_paused != default ? 0x10 : 0) | (presentation_paused != default ? 0x20 : 0)),
 				call = call,
 				participant = participant,
-				muted = muted.GetValueOrDefault(),
-				volume = volume.GetValueOrDefault(),
-				raise_hand = raise_hand.GetValueOrDefault(),
-				video_stopped = video_stopped.GetValueOrDefault(),
-				video_paused = video_paused.GetValueOrDefault(),
-				presentation_paused = presentation_paused.GetValueOrDefault(),
+				muted = muted ?? default,
+				volume = volume ?? default,
+				raise_hand = raise_hand ?? default,
+				video_stopped = video_stopped ?? default,
+				video_paused = video_paused ?? default,
+				presentation_paused = presentation_paused ?? default,
 			});
 
 		/// <summary>Edit the title of a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.editGroupCallTitle"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.editGroupCallTitle#possible-errors">details</a>)</para></summary>
@@ -6583,7 +6583,7 @@ namespace TL
 			{
 				flags = (Stats_LoadAsyncGraph.Flags)(x != null ? 0x1 : 0),
 				token = token,
-				x = x.GetValueOrDefault(),
+				x = x ?? default,
 			});
 
 		/// <summary>Get <a href="https://corefork.telegram.org/api/stats">supergroup statistics</a>		<para>See <a href="https://corefork.telegram.org/method/stats.getMegagroupStats"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/stats.getMegagroupStats#possible-errors">details</a>)</para></summary>
@@ -6817,9 +6817,9 @@ namespace TL
 				entities = entities,
 				privacy_rules = privacy_rules,
 				random_id = random_id,
-				period = period.GetValueOrDefault(),
+				period = period ?? default,
 				fwd_from_id = fwd_from_id,
-				fwd_from_story = fwd_from_story.GetValueOrDefault(),
+				fwd_from_story = fwd_from_story ?? default,
 			});
 
 		/// <summary>Edit an uploaded <a href="https://corefork.telegram.org/api/stories">story</a>		<para>See <a href="https://corefork.telegram.org/method/stories.editStory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.editStory#possible-errors">details</a>)</para></summary>
