@@ -626,7 +626,7 @@ namespace WTelegram
 		/// <param name="q">Search query</param>
 		public async Task<Messages_ForumTopics> Channels_GetAllForumTopics(InputChannelBase channel, string q = null)
 		{
-			var result = await this.Channels_GetForumTopics(channel, limit: 20, q: q);
+			var result = await this.Channels_GetForumTopics(channel, offset_date: DateTime.MaxValue, q: q);
 			if (result.topics.Length < result.count)
 			{
 				var topics = result.topics.ToList();

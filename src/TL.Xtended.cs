@@ -308,6 +308,7 @@ namespace TL
 	partial class ChatParticipantsForbidden { public override ChatParticipantBase[] Participants => []; }
 	partial class ChatParticipants			{ public override ChatParticipantBase[] Participants => participants; }
 
+	partial class MessageBase				{ public MessageReplyHeader ReplyHeader => ReplyTo as MessageReplyHeader; }
 	partial class MessageEmpty				{ public override string ToString() => "(no message)"; }
 	partial class Message					{ public override string ToString() => $"{(from_id ?? peer_id)?.ID}> {message} {media}"; }
 	partial class MessageService			{ public override string ToString() => $"{(from_id ?? peer_id)?.ID} [{action.GetType().Name[13..]}]"; }
@@ -756,8 +757,9 @@ namespace TL
 		}
 	}
 
-	partial class Theme				{ public static implicit operator InputTheme(Theme theme) => new() { id = theme.id, access_hash = theme.access_hash }; }
-	partial class GroupCallBase		{ public static implicit operator InputGroupCall(GroupCallBase call) => new() { id = call.ID, access_hash = call.AccessHash }; }
+	partial class Theme					{ public static implicit operator InputTheme(Theme theme) => new() { id = theme.id, access_hash = theme.access_hash }; }
+	partial class MessageReplyHeader	{ public int TopicID => flags.HasFlag(Flags.forum_topic) ? flags.HasFlag(Flags.has_reply_to_top_id) ? reply_to_top_id : reply_to_msg_id : 0; }
+	partial class GroupCallBase			{ public static implicit operator InputGroupCall(GroupCallBase call) => new() { id = call.ID, access_hash = call.AccessHash }; }
 
 	partial class RequestedPeer			{ public abstract long ID { get; } }
 	partial class RequestedPeerUser		{ public override long ID => user_id; }
