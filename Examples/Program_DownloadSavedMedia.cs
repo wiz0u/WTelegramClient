@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using TL;
 
@@ -11,10 +12,12 @@ namespace WTelegramClientTest
 		static async Task Main(string[] _)
 		{
 			Console.WriteLine("The program will download photos/medias from messages you send/forward to yourself (Saved Messages)");
+			var cts = new CancellationTokenSource();
 			await using var client = new WTelegram.Client(Environment.GetEnvironmentVariable);
 			var user = await client.LoginUserIfNeeded();
 			client.OnUpdates += Client_OnUpdates;
 			Console.ReadKey();
+			cts.Cancel();
 
 			async Task Client_OnUpdates(UpdatesBase updates)
 			{
@@ -31,7 +34,7 @@ namespace WTelegramClientTest
 						filename ??= $"{document.id}.{document.mime_type[(document.mime_type.IndexOf('/') + 1)..]}";
 						Console.WriteLine("Downloading " + filename);
 						using var fileStream = File.Create(filename);
-						await client.DownloadFileAsync(document, fileStream);
+						await client.DownloadFileAsync(document, fileStream, progress: (p, t) => cts.Token.ThrowIfCancellationRequested());
 						Console.WriteLine("Download finished");
 					}
 					else if (message.media is MessageMediaPhoto { photo: Photo photo })
