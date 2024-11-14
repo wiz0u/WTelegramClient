@@ -1850,6 +1850,7 @@ namespace TL
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="invert_media">If set, any eventual webpage preview will be shown on top of the message instead of at the bottom.</param>
+		/// <param name="allow_paid_floodskip">Bots only: if set, allows sending up to 1000 messages per second, ignoring <a href="https://corefork.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.</param>
 		/// <param name="peer">The destination where the message will be sent</param>
 		/// <param name="reply_to">If set, indicates that the message should be sent in reply to the specified message or story. <br/>Also used to quote other messages.</param>
 		/// <param name="message">The message</param>
@@ -1883,6 +1884,7 @@ namespace TL
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="invert_media">If set, any eventual webpage preview will be shown on top of the message instead of at the bottom.</param>
+		/// <param name="allow_paid_floodskip">Bots only: if set, allows sending up to 1000 messages per second, ignoring <a href="https://corefork.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.</param>
 		/// <param name="peer">Destination</param>
 		/// <param name="reply_to">If set, indicates that the message should be sent in reply to the specified message or story.</param>
 		/// <param name="media">Attached media</param>
@@ -1918,6 +1920,7 @@ namespace TL
 		/// <param name="drop_author">Whether to forward messages without quoting the original author</param>
 		/// <param name="drop_media_captions">Whether to strip captions from media</param>
 		/// <param name="noforwards">Only for bots, disallows further re-forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
+		/// <param name="allow_paid_floodskip">Bots only: if set, allows sending up to 1000 messages per second, ignoring <a href="https://corefork.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.</param>
 		/// <param name="from_peer">Source of messages</param>
 		/// <param name="id">IDs of messages</param>
 		/// <param name="random_id">Random ID to prevent resending of messages <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
@@ -2871,6 +2874,7 @@ namespace TL
 		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="invert_media">If set, any eventual webpage preview will be shown on top of the message instead of at the bottom.</param>
+		/// <param name="allow_paid_floodskip">Bots only: if set, allows sending up to 1000 messages per second, ignoring <a href="https://corefork.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.</param>
 		/// <param name="peer">The destination chat</param>
 		/// <param name="reply_to">If set, indicates that the message should be sent in reply to the specified message or story.</param>
 		/// <param name="multi_media">The medias to send: note that they must be separately uploaded using <see cref="Messages_UploadMedia">Messages_UploadMedia</see> first, using raw <c>inputMediaUploaded*</c> constructors is not supported.</param>
@@ -4311,7 +4315,8 @@ namespace TL
 				platform = platform,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.sendPaidReaction"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.sendPaidReaction"/> [bots: ✓]</para></summary>
+		/// <param name="random_id"> <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		public static Task<UpdatesBase> Messages_SendPaidReaction(this Client client, InputPeer peer, int msg_id, int count, long random_id, bool? private_ = default)
 			=> client.Invoke(new Messages_SendPaidReaction
 			{
@@ -4323,7 +4328,7 @@ namespace TL
 				private_ = private_ ?? default,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.togglePaidReactionPrivacy"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.togglePaidReactionPrivacy"/> [bots: ✓]</para></summary>
 		public static Task<bool> Messages_TogglePaidReactionPrivacy(this Client client, InputPeer peer, int msg_id, bool private_)
 			=> client.Invoke(new Messages_TogglePaidReactionPrivacy
 			{
@@ -4332,13 +4337,15 @@ namespace TL
 				private_ = private_,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getPaidReactionPrivacy"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getPaidReactionPrivacy"/> [bots: ✓]</para></summary>
 		public static Task<UpdatesBase> Messages_GetPaidReactionPrivacy(this Client client)
 			=> client.Invoke(new Messages_GetPaidReactionPrivacy
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.viewSponsoredMessage"/></para></summary>
+		/// <summary>Mark a specific <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message »</a> as read		<para>See <a href="https://corefork.telegram.org/method/messages.viewSponsoredMessage"/> [bots: ✓]</para></summary>
+		/// <param name="peer">The channel/bot where the ad is located</param>
+		/// <param name="random_id">The ad's unique ID.</param>
 		public static Task<bool> Messages_ViewSponsoredMessage(this Client client, InputPeer peer, byte[] random_id)
 			=> client.Invoke(new Messages_ViewSponsoredMessage
 			{
@@ -4346,7 +4353,9 @@ namespace TL
 				random_id = random_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.clickSponsoredMessage"/></para></summary>
+		/// <summary>Informs the server that the user has either:		<para>See <a href="https://corefork.telegram.org/method/messages.clickSponsoredMessage"/> [bots: ✓]</para></summary>
+		/// <param name="peer">The channel/bot where the ad is located</param>
+		/// <param name="random_id">The ad's unique ID.</param>
 		public static Task<bool> Messages_ClickSponsoredMessage(this Client client, InputPeer peer, byte[] random_id, bool media = false, bool fullscreen = false)
 			=> client.Invoke(new Messages_ClickSponsoredMessage
 			{
@@ -4355,7 +4364,10 @@ namespace TL
 				random_id = random_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.reportSponsoredMessage"/></para></summary>
+		/// <summary>Report a <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message »</a>, see <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">here »</a> for more info on the full flow.		<para>See <a href="https://corefork.telegram.org/method/messages.reportSponsoredMessage"/> [bots: ✓]</para></summary>
+		/// <param name="peer">The channel/bot where the ad is located</param>
+		/// <param name="random_id">The ad's unique ID.</param>
+		/// <param name="option">Chosen report option, initially an empty string, see <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">here »</a> for more info on the full flow.</param>
 		public static Task<Channels_SponsoredMessageReportResult> Messages_ReportSponsoredMessage(this Client client, InputPeer peer, byte[] random_id, byte[] option)
 			=> client.Invoke(new Messages_ReportSponsoredMessage
 			{
@@ -4364,7 +4376,8 @@ namespace TL
 				option = option,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSponsoredMessages"/></para></summary>
+		/// <summary>Get a list of <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored messages for a peer, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/messages.getSponsoredMessages"/> [bots: ✓]</para></summary>
+		/// <param name="peer">The currently open channel/bot.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.sponsoredMessagesEmpty">messages.sponsoredMessagesEmpty</a></returns>
 		public static Task<Messages_SponsoredMessages> Messages_GetSponsoredMessages(this Client client, InputPeer peer)
 			=> client.Invoke(new Messages_GetSponsoredMessages
@@ -5953,7 +5966,7 @@ namespace TL
 				user_id = user_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsSubscriptions"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsSubscriptions"/> [bots: ✓]</para></summary>
 		public static Task<Payments_StarsStatus> Payments_GetStarsSubscriptions(this Client client, InputPeer peer, string offset, bool missing_balance = false)
 			=> client.Invoke(new Payments_GetStarsSubscriptions
 			{
@@ -5962,7 +5975,7 @@ namespace TL
 				offset = offset,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.changeStarsSubscription"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.changeStarsSubscription"/> [bots: ✓]</para></summary>
 		public static Task<bool> Payments_ChangeStarsSubscription(this Client client, InputPeer peer, string subscription_id, bool? canceled = default)
 			=> client.Invoke(new Payments_ChangeStarsSubscription
 			{
@@ -5972,7 +5985,7 @@ namespace TL
 				canceled = canceled ?? default,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.fulfillStarsSubscription"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.fulfillStarsSubscription"/> [bots: ✓]</para></summary>
 		public static Task<bool> Payments_FulfillStarsSubscription(this Client client, InputPeer peer, string subscription_id)
 			=> client.Invoke(new Payments_FulfillStarsSubscription
 			{
@@ -5980,13 +5993,14 @@ namespace TL
 				subscription_id = subscription_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsGiveawayOptions"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsGiveawayOptions"/> [bots: ✓]</para></summary>
 		public static Task<StarsGiveawayOption[]> Payments_GetStarsGiveawayOptions(this Client client)
 			=> client.Invoke(new Payments_GetStarsGiveawayOptions
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGifts"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGifts"/> [bots: ✓]</para></summary>
+		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/payments.starGiftsNotModified">payments.starGiftsNotModified</a></returns>
 		public static Task<Payments_StarGifts> Payments_GetStarGifts(this Client client, int hash = default)
 			=> client.Invoke(new Payments_GetStarGifts
@@ -5994,7 +6008,8 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getUserStarGifts"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getUserStarGifts"/> [bots: ✓]</para></summary>
+		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Payments_UserStarGifts> Payments_GetUserStarGifts(this Client client, InputUserBase user_id, string offset, int limit = int.MaxValue)
 			=> client.Invoke(new Payments_GetUserStarGifts
 			{
@@ -6003,7 +6018,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.saveStarGift"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.saveStarGift"/> [bots: ✓]</para></summary>
 		public static Task<bool> Payments_SaveStarGift(this Client client, InputUserBase user_id, int msg_id, bool unsave = false)
 			=> client.Invoke(new Payments_SaveStarGift
 			{
@@ -6012,7 +6027,7 @@ namespace TL
 				msg_id = msg_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.convertStarGift"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.convertStarGift"/> [bots: ✓]</para></summary>
 		public static Task<bool> Payments_ConvertStarGift(this Client client, InputUserBase user_id, int msg_id)
 			=> client.Invoke(new Payments_ConvertStarGift
 			{
