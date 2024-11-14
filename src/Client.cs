@@ -1518,7 +1518,7 @@ namespace WTelegram
 				var data = await response.Content.ReadAsByteArrayAsync();
 				var obj = ReadFrame(data, data.Length);
 				if (obj != null)
-					await HandleMessageAsync(obj);
+					_ = HandleMessageAsync(obj);
 			}
 		}
 
