@@ -6025,7 +6025,7 @@ namespace TL
 		/// <summary>Obtain a list of active, expired or cancelled <a href="https://corefork.telegram.org/api/invites#paid-invite-links">Telegram Star subscriptions »</a>.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarsSubscriptions"/> [bots: ✓]</para></summary>
 		/// <param name="missing_balance">Whether to return only expired subscriptions due to an excessively low Telegram Star balance.</param>
 		/// <param name="peer">Always pass <see cref="InputPeerSelf"/>.</param>
-		/// <param name="offset">Offset for pagination, taken from <see cref="Payments_StarsStatus#subscriptionsNextOffset">payments.starsStatus</see>.</param>
+		/// <param name="offset">Offset for pagination, taken from <see cref="Payments_StarsStatus">payments.starsStatus</see>.</param>
 		public static Task<Payments_StarsStatus> Payments_GetStarsSubscriptions(this Client client, InputPeer peer, string offset, bool missing_balance = false)
 			=> client.Invoke(new Payments_GetStarsSubscriptions
 			{

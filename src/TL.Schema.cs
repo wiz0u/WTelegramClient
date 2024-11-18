@@ -2332,7 +2332,7 @@ namespace TL
 		public int score;
 	}
 	/// <summary>A user just sent a payment to me (a bot)		<para>See <a href="https://corefork.telegram.org/constructor/messageActionPaymentSentMe"/></para></summary>
-	[TLDef(0x8F31B327)]
+	[TLDef(0xFFA00CCC)]
 	public sealed partial class MessageActionPaymentSentMe : MessageAction
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -2349,6 +2349,7 @@ namespace TL
 		[IfFlag(1)] public string shipping_option_id;
 		/// <summary>Provider payment identifier</summary>
 		public PaymentCharge charge;
+		[IfFlag(4)] public DateTime subscription_until_date;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2360,10 +2361,12 @@ namespace TL
 			recurring_init = 0x4,
 			/// <summary>Whether this payment is part of a recurring payment</summary>
 			recurring_used = 0x8,
+			/// <summary>Field <see cref="subscription_until_date"/> has a value</summary>
+			has_subscription_until_date = 0x10,
 		}
 	}
 	/// <summary>A payment was sent		<para>See <a href="https://corefork.telegram.org/constructor/messageActionPaymentSent"/></para></summary>
-	[TLDef(0x96163F56)]
+	[TLDef(0xC624B16E)]
 	public sealed partial class MessageActionPaymentSent : MessageAction
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -2374,6 +2377,7 @@ namespace TL
 		public long total_amount;
 		/// <summary>An invoice slug taken from an <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a> or from the <a href="https://corefork.telegram.org/api/config#premium-invoice-slug"><c>premium_invoice_slug</c> app config parameter »</a></summary>
 		[IfFlag(0)] public string invoice_slug;
+		[IfFlag(4)] public DateTime subscription_until_date;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2383,6 +2387,8 @@ namespace TL
 			recurring_init = 0x4,
 			/// <summary>Whether this payment is part of a recurring payment</summary>
 			recurring_used = 0x8,
+			/// <summary>Field <see cref="subscription_until_date"/> has a value</summary>
+			has_subscription_until_date = 0x10,
 		}
 	}
 	/// <summary>A phone call		<para>See <a href="https://corefork.telegram.org/constructor/messageActionPhoneCall"/></para></summary>
