@@ -2214,6 +2214,7 @@ namespace TL
 		/// <param name="expire_date">Expiration date</param>
 		/// <param name="usage_limit">Maximum number of users that can join using this link</param>
 		/// <param name="title">Description of the invite link, visible only to administrators</param>
+		/// <param name="subscription_pricing">For <a href="https://corefork.telegram.org/api/stars#star-subscriptions">Telegram Star subscriptions »</a>, contains the pricing of the subscription the user must activate to join the private channel.</param>
 		public static Task<ExportedChatInvite> Messages_ExportChatInvite(this Client client, InputPeer peer, DateTime? expire_date = null, int? usage_limit = null, string title = null, StarsSubscriptionPricing subscription_pricing = null, bool legacy_revoke_permanent = false, bool request_needed = false)
 			=> client.Invoke(new Messages_ExportChatInvite
 			{
@@ -3409,6 +3410,7 @@ namespace TL
 
 		/// <summary>Get info about the users that joined the chat using a specific chat invite		<para>See <a href="https://corefork.telegram.org/method/messages.getChatInviteImporters"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.getChatInviteImporters#possible-errors">details</a>)</para></summary>
 		/// <param name="requested">If set, only returns info about users with pending <a href="https://corefork.telegram.org/api/invites#join-requests">join requests »</a></param>
+		/// <param name="subscription_expired">Set this flag if the link is a <a href="https://corefork.telegram.org/api/stars#star-subscriptions">Telegram Star subscription link »</a> and only members with already expired subscription must be returned.</param>
 		/// <param name="peer">Chat</param>
 		/// <param name="link">Invite link</param>
 		/// <param name="q">Search for a user in the pending <a href="https://corefork.telegram.org/api/invites#join-requests">join requests »</a> list: only available when the <c>requested</c> flag is set, cannot be used together with a specific <c>link</c>.</param>
@@ -3588,7 +3590,8 @@ namespace TL
 		/// <summary>Change the set of <a href="https://corefork.telegram.org/api/reactions">message reactions »</a> that can be used in a certain group, supergroup or channel		<para>See <a href="https://corefork.telegram.org/method/messages.setChatAvailableReactions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setChatAvailableReactions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Group where to apply changes</param>
 		/// <param name="available_reactions">Allowed reaction emojis</param>
-		/// <param name="reactions_limit">This flag may be used to impose a custom limit of unique reactions (i.e. a customizable version of <a href="https://corefork.telegram.org/api/config#reactions-uniq-max">appConfig.reactions_uniq_max</a>); this field and the other info set by the method will then be available to users in <see cref="ChannelFull"/> and <see cref="ChatFull"/>.</param>
+		/// <param name="reactions_limit">This flag may be used to impose a custom limit of unique reactions (i.e. a customizable version of <a href="https://corefork.telegram.org/api/config#reactions-uniq-max">appConfig.reactions_uniq_max</a>); this field and the other info set by the method will then be available to users in <see cref="ChannelFull"/> and <see cref="ChatFull"/>. <br/>If this flag is not set, the previously configured <c>reactions_limit</c> will not be altered.</param>
+		/// <param name="paid_enabled">If this flag is set and a <see cref="bool"/> is passed, the method will enable or disable <a href="https://corefork.telegram.org/api/reactions#paid-reactions">paid message reactions »</a>. If this flag is not set, the previously stored setting will not be changed.</param>
 		public static Task<UpdatesBase> Messages_SetChatAvailableReactions(this Client client, InputPeer peer, ChatReactions available_reactions, int? reactions_limit = null, bool? paid_enabled = default)
 			=> client.Invoke(new Messages_SetChatAvailableReactions
 			{
@@ -3716,10 +3719,10 @@ namespace TL
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
 		/// <param name="reply_to">If set, indicates that the inline message that will be sent by the bot on behalf of the user once the web app interaction is <see cref="Messages_SendWebViewResultMessage">Messages_SendWebViewResultMessage</see> should be sent in reply to the specified message or story.</param>
 		/// <param name="send_as">Open the web app as the specified peer, sending the resulting the message as the specified peer.</param>
-		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, string platform, InputReplyTo reply_to = null, string url = null, DataJSON theme_params = null, string start_param = null, InputPeer send_as = null, bool from_bot_menu = false, bool silent = false, bool compact = false)
+		public static Task<WebViewResult> Messages_RequestWebView(this Client client, InputPeer peer, InputUserBase bot, string platform, InputReplyTo reply_to = null, string url = null, DataJSON theme_params = null, string start_param = null, InputPeer send_as = null, bool from_bot_menu = false, bool silent = false, bool compact = false, bool fullscreen = false)
 			=> client.Invoke(new Messages_RequestWebView
 			{
-				flags = (Messages_RequestWebView.Flags)((reply_to != null ? 0x1 : 0) | (url != null ? 0x2 : 0) | (theme_params != null ? 0x4 : 0) | (start_param != null ? 0x8 : 0) | (send_as != null ? 0x2000 : 0) | (from_bot_menu ? 0x10 : 0) | (silent ? 0x20 : 0) | (compact ? 0x80 : 0)),
+				flags = (Messages_RequestWebView.Flags)((reply_to != null ? 0x1 : 0) | (url != null ? 0x2 : 0) | (theme_params != null ? 0x4 : 0) | (start_param != null ? 0x8 : 0) | (send_as != null ? 0x2000 : 0) | (from_bot_menu ? 0x10 : 0) | (silent ? 0x20 : 0) | (compact ? 0x80 : 0) | (fullscreen ? 0x100 : 0)),
 				peer = peer,
 				bot = bot,
 				url = url,
@@ -3757,10 +3760,10 @@ namespace TL
 		/// <param name="start_param">Deprecated.</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
-		public static Task<WebViewResult> Messages_RequestSimpleWebView(this Client client, InputUserBase bot, string platform, DataJSON theme_params = null, string url = null, string start_param = null, bool from_switch_webview = false, bool from_side_menu = false, bool compact = false)
+		public static Task<WebViewResult> Messages_RequestSimpleWebView(this Client client, InputUserBase bot, string platform, DataJSON theme_params = null, string url = null, string start_param = null, bool from_switch_webview = false, bool from_side_menu = false, bool compact = false, bool fullscreen = false)
 			=> client.Invoke(new Messages_RequestSimpleWebView
 			{
-				flags = (Messages_RequestSimpleWebView.Flags)((theme_params != null ? 0x1 : 0) | (url != null ? 0x8 : 0) | (start_param != null ? 0x10 : 0) | (from_switch_webview ? 0x2 : 0) | (from_side_menu ? 0x4 : 0) | (compact ? 0x80 : 0)),
+				flags = (Messages_RequestSimpleWebView.Flags)((theme_params != null ? 0x1 : 0) | (url != null ? 0x8 : 0) | (start_param != null ? 0x10 : 0) | (from_switch_webview ? 0x2 : 0) | (from_side_menu ? 0x4 : 0) | (compact ? 0x80 : 0) | (fullscreen ? 0x100 : 0)),
 				bot = bot,
 				url = url,
 				start_param = start_param,
@@ -3985,10 +3988,10 @@ namespace TL
 		/// <param name="start_param">If the <c>startapp</c> query string parameter is present in the <a href="https://corefork.telegram.org/api/links#direct-mini-app-links">direct Mini App deep link</a>, pass it to <c>start_param</c>.</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
-		public static Task<WebViewResult> Messages_RequestAppWebView(this Client client, InputPeer peer, InputBotApp app, string platform, string start_param = null, DataJSON theme_params = null, bool write_allowed = false, bool compact = false)
+		public static Task<WebViewResult> Messages_RequestAppWebView(this Client client, InputPeer peer, InputBotApp app, string platform, string start_param = null, DataJSON theme_params = null, bool write_allowed = false, bool compact = false, bool fullscreen = false)
 			=> client.Invoke(new Messages_RequestAppWebView
 			{
-				flags = (Messages_RequestAppWebView.Flags)((start_param != null ? 0x2 : 0) | (theme_params != null ? 0x4 : 0) | (write_allowed ? 0x1 : 0) | (compact ? 0x80 : 0)),
+				flags = (Messages_RequestAppWebView.Flags)((start_param != null ? 0x2 : 0) | (theme_params != null ? 0x4 : 0) | (write_allowed ? 0x1 : 0) | (compact ? 0x80 : 0) | (fullscreen ? 0x100 : 0)),
 				peer = peer,
 				app = app,
 				start_param = start_param,
@@ -4304,10 +4307,10 @@ namespace TL
 		/// <param name="start_param">Start parameter, if opening from a <a href="https://corefork.telegram.org/api/links#main-mini-app-links">Main Mini App link »</a>.</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		/// <param name="platform">Short name of the application; 0-64 English letters, digits, and underscores</param>
-		public static Task<WebViewResult> Messages_RequestMainWebView(this Client client, InputPeer peer, InputUserBase bot, string platform, DataJSON theme_params = null, string start_param = null, bool compact = false)
+		public static Task<WebViewResult> Messages_RequestMainWebView(this Client client, InputPeer peer, InputUserBase bot, string platform, DataJSON theme_params = null, string start_param = null, bool compact = false, bool fullscreen = false)
 			=> client.Invoke(new Messages_RequestMainWebView
 			{
-				flags = (Messages_RequestMainWebView.Flags)((theme_params != null ? 0x1 : 0) | (start_param != null ? 0x2 : 0) | (compact ? 0x80 : 0)),
+				flags = (Messages_RequestMainWebView.Flags)((theme_params != null ? 0x1 : 0) | (start_param != null ? 0x2 : 0) | (compact ? 0x80 : 0) | (fullscreen ? 0x100 : 0)),
 				peer = peer,
 				bot = bot,
 				start_param = start_param,
@@ -4315,8 +4318,12 @@ namespace TL
 				platform = platform,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.sendPaidReaction"/> [bots: ✓]</para></summary>
-		/// <param name="random_id"> <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
+		/// <summary>Sends one or more <a href="https://corefork.telegram.org/api/reactions#paid-reactions">paid Telegram Star reactions »</a>, transferring <a href="https://corefork.telegram.org/api/stars">Telegram Stars »</a> to a channel's balance.		<para>See <a href="https://corefork.telegram.org/method/messages.sendPaidReaction"/> [bots: ✓]</para></summary>
+		/// <param name="peer">The channel</param>
+		/// <param name="msg_id">The message to react to</param>
+		/// <param name="count">The number of <a href="https://corefork.telegram.org/api/stars">stars</a> to send (each will increment the reaction counter by one).</param>
+		/// <param name="random_id">Unique client message ID required to prevent message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
+		/// <param name="private_">Each post with star reactions has a leaderboard with the top senders, but users can opt out of appearing there if they prefer more privacy.  <br/>If the user explicitly chose to make their paid reaction(s) private, pass <see langword="true"/> to <see cref="Messages_SendPaidReaction">Messages_SendPaidReaction</see>.<c>private</c>.  <br/>If the user explicitly chose to make their paid reaction(s) private, pass <see langword="true"/> to <see cref="Messages_SendPaidReaction">Messages_SendPaidReaction</see>.<c>private</c>.  <br/>If the user did not make any explicit choice about the privacy of their paid reaction(s) (i.e. when reacting by clicking on an existing star reaction on a message), do not populate the <see cref="Messages_SendPaidReaction">Messages_SendPaidReaction</see>.<c>private</c> flag.</param>
 		public static Task<UpdatesBase> Messages_SendPaidReaction(this Client client, InputPeer peer, int msg_id, int count, long random_id, bool? private_ = default)
 			=> client.Invoke(new Messages_SendPaidReaction
 			{
@@ -4328,7 +4335,10 @@ namespace TL
 				private_ = private_ ?? default,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.togglePaidReactionPrivacy"/> [bots: ✓]</para></summary>
+		/// <summary>Changes the privacy of already sent <a href="https://corefork.telegram.org/api/reactions#paid-reactions">paid reactions</a> on a specific message.		<para>See <a href="https://corefork.telegram.org/method/messages.togglePaidReactionPrivacy"/> [bots: ✓]</para></summary>
+		/// <param name="peer">The channel</param>
+		/// <param name="msg_id">The ID of the message to which we sent the paid reactions</param>
+		/// <param name="private_">If true, makes the current anonymous in the top sender leaderboard for this message; otherwise, does the opposite.</param>
 		public static Task<bool> Messages_TogglePaidReactionPrivacy(this Client client, InputPeer peer, int msg_id, bool private_)
 			=> client.Invoke(new Messages_TogglePaidReactionPrivacy
 			{
@@ -4337,7 +4347,7 @@ namespace TL
 				private_ = private_,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getPaidReactionPrivacy"/> [bots: ✓]</para></summary>
+		/// <summary>Fetches an <see cref="UpdatePaidReactionPrivacy"/> update with the current <a href="https://corefork.telegram.org/api/reactions#paid-reactions">default paid reaction privacy, see here &amp;raquo:</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/messages.getPaidReactionPrivacy"/> [bots: ✓]</para></summary>
 		public static Task<UpdatesBase> Messages_GetPaidReactionPrivacy(this Client client)
 			=> client.Invoke(new Messages_GetPaidReactionPrivacy
 			{
@@ -4383,6 +4393,24 @@ namespace TL
 			=> client.Invoke(new Messages_GetSponsoredMessages
 			{
 				peer = peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.savePreparedInlineMessage"/></para></summary>
+		public static Task<Messages_BotPreparedInlineMessage> Messages_SavePreparedInlineMessage(this Client client, InputBotInlineResultBase result, InputUserBase user_id, InlineQueryPeerType[] peer_types = null)
+			=> client.Invoke(new Messages_SavePreparedInlineMessage
+			{
+				flags = (Messages_SavePreparedInlineMessage.Flags)(peer_types != null ? 0x1 : 0),
+				result = result,
+				user_id = user_id,
+				peer_types = peer_types,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getPreparedInlineMessage"/></para></summary>
+		public static Task<Messages_PreparedInlineMessage> Messages_GetPreparedInlineMessage(this Client client, InputUserBase bot, string id)
+			=> client.Invoke(new Messages_GetPreparedInlineMessage
+			{
+				bot = bot,
+				id = id,
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -5002,6 +5030,8 @@ namespace TL
 			});
 
 		/// <summary>Enable/disable message signatures in channels		<para>See <a href="https://corefork.telegram.org/method/channels.toggleSignatures"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleSignatures#possible-errors">details</a>)</para></summary>
+		/// <param name="signatures_enabled">If set, enables message signatures.</param>
+		/// <param name="profiles_enabled">If set, messages from channel admins will link to their profiles, just like for group messages: can only be set if the <c>signatures_enabled</c> flag is set.</param>
 		/// <param name="channel">Channel</param>
 		public static Task<UpdatesBase> Channels_ToggleSignatures(this Client client, InputChannelBase channel, bool signatures_enabled = false, bool profiles_enabled = false)
 			=> client.Invoke(new Channels_ToggleSignatures
@@ -5708,6 +5738,31 @@ namespace TL
 				bot = bot,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.updateUserEmojiStatus"/></para></summary>
+		public static Task<bool> Bots_UpdateUserEmojiStatus(this Client client, InputUserBase user_id, EmojiStatus emoji_status)
+			=> client.Invoke(new Bots_UpdateUserEmojiStatus
+			{
+				user_id = user_id,
+				emoji_status = emoji_status,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.toggleUserEmojiStatusPermission"/></para></summary>
+		public static Task<bool> Bots_ToggleUserEmojiStatusPermission(this Client client, InputUserBase bot, bool enabled)
+			=> client.Invoke(new Bots_ToggleUserEmojiStatusPermission
+			{
+				bot = bot,
+				enabled = enabled,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.checkDownloadFileParams"/></para></summary>
+		public static Task<bool> Bots_CheckDownloadFileParams(this Client client, InputUserBase bot, string file_name, string url)
+			=> client.Invoke(new Bots_CheckDownloadFileParams
+			{
+				bot = bot,
+				file_name = file_name,
+				url = url,
+			});
+
 		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
 		/// <param name="invoice">Invoice</param>
 		/// <param name="theme_params">A JSON object with the following keys, containing color theme information (integers, RGB24) to pass to the payment provider, to apply in eventual verification pages: <br/><c>bg_color</c> - Background color <br/><c>text_color</c> - Text color <br/><c>hint_color</c> - Hint text color <br/><c>link_color</c> - Link color <br/><c>button_color</c> - Button color <br/><c>button_text_color</c> - Button text color</param>
@@ -5884,6 +5939,7 @@ namespace TL
 		/// <param name="inbound">If set, fetches only incoming transactions.</param>
 		/// <param name="outbound">If set, fetches only outgoing transactions.</param>
 		/// <param name="ascending">Return transactions in ascending order by date (instead of descending order by date).</param>
+		/// <param name="subscription_id">If set, fetches only transactions for the specified <a href="https://corefork.telegram.org/api/stars#star-subscriptions">Telegram Star subscription »</a>.</param>
 		/// <param name="peer">Fetch the transaction history of the peer (<see cref="InputPeerSelf"/> or a bot we own).</param>
 		/// <param name="offset"><a href="https://corefork.telegram.org/api/offsets">Offset for pagination, obtained from the returned <c>next_offset</c>, initially an empty string »</a>.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
@@ -5966,7 +6022,10 @@ namespace TL
 				user_id = user_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsSubscriptions"/> [bots: ✓]</para></summary>
+		/// <summary>Obtain a list of active, expired or cancelled <a href="https://corefork.telegram.org/api/invites#paid-invite-links">Telegram Star subscriptions »</a>.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarsSubscriptions"/> [bots: ✓]</para></summary>
+		/// <param name="missing_balance">Whether to return only expired subscriptions due to an excessively low Telegram Star balance.</param>
+		/// <param name="peer">Always pass <see cref="InputPeerSelf"/>.</param>
+		/// <param name="offset">Offset for pagination, taken from <see cref="Payments_StarsStatus#subscriptionsNextOffset">payments.starsStatus</see>.</param>
 		public static Task<Payments_StarsStatus> Payments_GetStarsSubscriptions(this Client client, InputPeer peer, string offset, bool missing_balance = false)
 			=> client.Invoke(new Payments_GetStarsSubscriptions
 			{
@@ -5975,7 +6034,10 @@ namespace TL
 				offset = offset,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.changeStarsSubscription"/> [bots: ✓]</para></summary>
+		/// <summary>Activate or deactivate a <a href="https://corefork.telegram.org/api/invites#paid-invite-links">Telegram Star subscription »</a>.		<para>See <a href="https://corefork.telegram.org/method/payments.changeStarsSubscription"/> [bots: ✓]</para></summary>
+		/// <param name="peer">Always pass <see cref="InputPeerSelf"/>.</param>
+		/// <param name="subscription_id">ID of the subscription.</param>
+		/// <param name="canceled">Whether to cancel or reactivate the subscription.</param>
 		public static Task<bool> Payments_ChangeStarsSubscription(this Client client, InputPeer peer, string subscription_id, bool? canceled = default)
 			=> client.Invoke(new Payments_ChangeStarsSubscription
 			{
@@ -5985,7 +6047,9 @@ namespace TL
 				canceled = canceled ?? default,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.fulfillStarsSubscription"/> [bots: ✓]</para></summary>
+		/// <summary>Re-join a private channel associated to an active <a href="https://corefork.telegram.org/api/invites#paid-invite-links">Telegram Star subscription »</a>.		<para>See <a href="https://corefork.telegram.org/method/payments.fulfillStarsSubscription"/> [bots: ✓]</para></summary>
+		/// <param name="peer">Always pass <see cref="InputPeerSelf"/>.</param>
+		/// <param name="subscription_id">ID of the subscription.</param>
 		public static Task<bool> Payments_FulfillStarsSubscription(this Client client, InputPeer peer, string subscription_id)
 			=> client.Invoke(new Payments_FulfillStarsSubscription
 			{
@@ -6033,6 +6097,16 @@ namespace TL
 			{
 				user_id = user_id,
 				msg_id = msg_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.botCancelStarsSubscription"/></para></summary>
+		public static Task<bool> Payments_BotCancelStarsSubscription(this Client client, InputUserBase user_id, string invoice_slug = null, string charge_id = null, bool restore = false)
+			=> client.Invoke(new Payments_BotCancelStarsSubscription
+			{
+				flags = (Payments_BotCancelStarsSubscription.Flags)((invoice_slug != null ? 0x2 : 0) | (charge_id != null ? 0x4 : 0) | (restore ? 0x1 : 0)),
+				user_id = user_id,
+				invoice_slug = invoice_slug,
+				charge_id = charge_id,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -7098,6 +7172,7 @@ namespace TL
 		/// <summary>Globally search for <a href="https://corefork.telegram.org/api/stories">stories</a> using a hashtag or a <a href="https://corefork.telegram.org/api/stories#location-tags">location media area</a>, see <a href="https://corefork.telegram.org/api/stories#searching-stories">here »</a> for more info on the full flow.		<para>See <a href="https://corefork.telegram.org/method/stories.searchPosts"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.searchPosts#possible-errors">details</a>)</para></summary>
 		/// <param name="hashtag">Hashtag (without the <c>#</c>)</param>
 		/// <param name="area">A <see cref="MediaAreaGeoPoint"/> or a <see cref="MediaAreaVenue"/>.  <br/>Note <see cref="MediaAreaGeoPoint"/> areas may be searched only if they have an associated <c>address</c>.</param>
+		/// <param name="peer">If set, returns only stories posted by this peer.</param>
 		/// <param name="offset">Offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a>: initially an empty string, then the <c>next_offset</c> from the previously returned <see cref="Stories_FoundStories"/>.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Stories_FoundStories> Stories_SearchPosts(this Client client, string offset, int limit = int.MaxValue, string hashtag = null, MediaArea area = null, InputPeer peer = null)
@@ -10334,6 +10409,7 @@ namespace TL.Methods
 			from_bot_menu = 0x10,
 			silent = 0x20,
 			compact = 0x80,
+			fullscreen = 0x100,
 			has_send_as = 0x2000,
 		}
 	}
@@ -10374,6 +10450,7 @@ namespace TL.Methods
 			has_url = 0x8,
 			has_start_param = 0x10,
 			compact = 0x80,
+			fullscreen = 0x100,
 		}
 	}
 
@@ -10537,6 +10614,7 @@ namespace TL.Methods
 			has_start_param = 0x2,
 			has_theme_params = 0x4,
 			compact = 0x80,
+			fullscreen = 0x100,
 		}
 	}
 
@@ -10806,6 +10884,7 @@ namespace TL.Methods
 			has_theme_params = 0x1,
 			has_start_param = 0x2,
 			compact = 0x80,
+			fullscreen = 0x100,
 		}
 	}
 
@@ -10869,6 +10948,27 @@ namespace TL.Methods
 	public sealed partial class Messages_GetSponsoredMessages : IMethod<Messages_SponsoredMessages>
 	{
 		public InputPeer peer;
+	}
+
+	[TLDef(0xF21F7F2F)]
+	public sealed partial class Messages_SavePreparedInlineMessage : IMethod<Messages_BotPreparedInlineMessage>
+	{
+		public Flags flags;
+		public InputBotInlineResultBase result;
+		public InputUserBase user_id;
+		[IfFlag(0)] public InlineQueryPeerType[] peer_types;
+
+		[Flags] public enum Flags : uint
+		{
+			has_peer_types = 0x1,
+		}
+	}
+
+	[TLDef(0x857EBDB8)]
+	public sealed partial class Messages_GetPreparedInlineMessage : IMethod<Messages_PreparedInlineMessage>
+	{
+		public InputUserBase bot;
+		public string id;
 	}
 
 	[TLDef(0xEDD4882A)]
@@ -11887,6 +11987,28 @@ namespace TL.Methods
 		public InputUserBase bot;
 	}
 
+	[TLDef(0xED9F30C5)]
+	public sealed partial class Bots_UpdateUserEmojiStatus : IMethod<bool>
+	{
+		public InputUserBase user_id;
+		public EmojiStatus emoji_status;
+	}
+
+	[TLDef(0x06DE6392)]
+	public sealed partial class Bots_ToggleUserEmojiStatusPermission : IMethod<bool>
+	{
+		public InputUserBase bot;
+		public bool enabled;
+	}
+
+	[TLDef(0x50077589)]
+	public sealed partial class Bots_CheckDownloadFileParams : IMethod<bool>
+	{
+		public InputUserBase bot;
+		public string file_name;
+		public string url;
+	}
+
 	[TLDef(0x37148DBB)]
 	public sealed partial class Payments_GetPaymentForm : IMethod<Payments_PaymentFormBase>
 	{
@@ -12180,6 +12302,22 @@ namespace TL.Methods
 	{
 		public InputUserBase user_id;
 		public int msg_id;
+	}
+
+	[TLDef(0x57F9ECE6)]
+	public sealed partial class Payments_BotCancelStarsSubscription : IMethod<bool>
+	{
+		public Flags flags;
+		public InputUserBase user_id;
+		[IfFlag(1)] public string invoice_slug;
+		[IfFlag(2)] public string charge_id;
+
+		[Flags] public enum Flags : uint
+		{
+			restore = 0x1,
+			has_invoice_slug = 0x2,
+			has_charge_id = 0x4,
+		}
 	}
 
 	[TLDef(0x9021AB67)]

@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 192;					// fetched 31/10/2024 17:10:55
+		public const int Version = 193;					// fetched 18/11/2024 12:45:10
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -213,7 +213,7 @@ namespace TL
 			[0x41B3E202] = typeof(MessageActionPaymentRefunded),
 			[0x45D5B021] = typeof(MessageActionGiftStars),
 			[0xB00C47A2] = typeof(MessageActionPrizeStars),
-			[0x9BB3EF44] = typeof(MessageActionStarGift),
+			[0x08557637] = typeof(MessageActionStarGift),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -419,6 +419,7 @@ namespace TL
 			[0xA584B019] = typeof(UpdateStarsRevenueStatus),
 			[0x283BD312] = typeof(UpdateBotPurchasedPaidMedia),
 			[0x51CA7AEC] = typeof(UpdatePaidReactionPrivacy),
+			[0x2D13C6EE] = typeof(UpdateBotSubscriptionExpire),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -499,6 +500,8 @@ namespace TL
 			[0xE94F0F86] = typeof(InputPrivacyValueDisallowChatParticipants),
 			[0x2F453E49] = typeof(InputPrivacyValueAllowCloseFriends),
 			[0x77CDC9F1] = typeof(InputPrivacyValueAllowPremium),
+			[0x5A4FCCE5] = typeof(InputPrivacyValueAllowBots),
+			[0xC4E57915] = typeof(InputPrivacyValueDisallowBots),
 			[0xFFFE1BAC] = typeof(PrivacyValueAllowContacts),
 			[0x65427B82] = typeof(PrivacyValueAllowAll),
 			[0xB8905FB2] = typeof(PrivacyValueAllowUsers),
@@ -509,6 +512,8 @@ namespace TL
 			[0x41C87565] = typeof(PrivacyValueDisallowChatParticipants),
 			[0xF7E8D89B] = typeof(PrivacyValueAllowCloseFriends),
 			[0xECE9814B] = typeof(PrivacyValueAllowPremium),
+			[0x21461B5D] = typeof(PrivacyValueAllowBots),
+			[0xF6A5F82F] = typeof(PrivacyValueDisallowBots),
 			[0x50A04E45] = typeof(Account_PrivacyRules),
 			[0xB8D0AFDF] = typeof(AccountDaysTTL),
 			[0x6C37C15C] = typeof(DocumentAttributeImageSize),
@@ -556,7 +561,7 @@ namespace TL
 			[0x6E153F16] = typeof(Messages_StickerSet),
 			[0xD3F924EB] = null,//Messages_StickerSetNotModified
 			[0xC27AC8C7] = typeof(BotCommand),
-			[0x82437E74] = typeof(BotInfo),
+			[0x36607333] = typeof(BotInfo),
 			[0xA2FA4880] = typeof(KeyboardButton),
 			[0x258AFF05] = typeof(KeyboardButtonUrl),
 			[0x35BBDB6B] = typeof(KeyboardButtonCallback),
@@ -745,7 +750,7 @@ namespace TL
 			[0xA44F3EF6] = typeof(PageBlockMap),
 			[0x7D748D04] = typeof(DataJSON),
 			[0xCB296BF8] = typeof(LabeledPrice),
-			[0x5DB95A15] = typeof(Invoice),
+			[0x049EE584] = typeof(Invoice),
 			[0xEA02C27E] = typeof(PaymentCharge),
 			[0x1E8CAAEB] = typeof(PostAddress),
 			[0x909C3F94] = typeof(PaymentRequestedInfo),
@@ -1324,7 +1329,7 @@ namespace TL
 			[0x23E91BA3] = typeof(BotPreviewMedia),
 			[0x0CA71D64] = typeof(Bots_PreviewInfo),
 			[0x05416D58] = typeof(StarsSubscriptionPricing),
-			[0x538ECF18] = typeof(StarsSubscription),
+			[0x2E6EAB1A] = typeof(StarsSubscription),
 			[0x4BA3A95A] = typeof(MessageReactor),
 			[0x94CE852A] = typeof(StarsGiveawayOption),
 			[0x54236209] = typeof(StarsGiveawayWinnersOption),
@@ -1337,6 +1342,9 @@ namespace TL
 			[0xF0E4E0B6] = typeof(ReportResultChooseOption),
 			[0x6F09AC31] = typeof(ReportResultAddComment),
 			[0x8DB33C4B] = typeof(ReportResultReported),
+			[0x8ECF0511] = typeof(Messages_BotPreparedInlineMessage),
+			[0xFF57708D] = typeof(Messages_PreparedInlineMessage),
+			[0xC99B1950] = typeof(BotAppSettings),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
