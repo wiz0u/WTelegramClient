@@ -126,9 +126,9 @@ namespace TL
 		{
 			var entities = new List<MessageEntity>();
 			MessageEntityBlockquote lastBlockQuote = null;
-			int inCode = 0;
+			int offset, inCode = 0;
 			var sb = new StringBuilder(text);
-			for (int offset = 0; offset < sb.Length;)
+			for (offset = 0; offset < sb.Length;)
 			{
 				switch (sb[offset])
 				{
@@ -176,13 +176,12 @@ namespace TL
 						break;
 					case '>' when inCode == 0 && offset == 0 || sb[offset - 1] == '\n':
 						sb.Remove(offset, 1);
-						if (lastBlockQuote is null || lastBlockQuote.length < offset - lastBlockQuote.offset)
+						if (lastBlockQuote == null)
 							entities.Add(lastBlockQuote = new MessageEntityBlockquote { offset = offset, length = -1 });
-						else
-							lastBlockQuote.length = -1;
 						break;
-					case '\n' when lastBlockQuote is { length: -1 }:
-						lastBlockQuote.length = ++offset - lastBlockQuote.offset;
+					case '\n' when lastBlockQuote != null:
+						if (offset + 1 >= sb.Length || sb[offset + 1] != '>') CloseBlockQuote();
+						offset++;
 						break;
 					case '!' when inCode == 0 && offset + 1 < sb.Length && sb[offset + 1] == '[':
 						sb.Remove(offset, 1);
@@ -232,11 +231,21 @@ namespace TL
 						entities.Add(new T { offset = offset, length = -1 });
 				}
 			}
-			if (lastBlockQuote is { length: -1 })
-				lastBlockQuote.length = sb.Length - lastBlockQuote.offset;
+			if (lastBlockQuote != null) CloseBlockQuote();
 			HtmlText.FixUps(sb, entities);
 			text = sb.ToString();
 			return entities.Count == 0 ? null : [.. entities];
+
+			void CloseBlockQuote()
+			{
+				if (entities[^1] is MessageEntitySpoiler { length: -1 } mes && mes.offset == offset)
+				{
+					entities.RemoveAt(entities.Count - 1);
+					lastBlockQuote.flags = MessageEntityBlockquote.Flags.collapsed;
+				}
+				lastBlockQuote.length = offset - lastBlockQuote.offset;
+				lastBlockQuote = null;
+			}
 		}
 
 		/// <summary>Converts the (plain text + entities) format used by Telegram messages into a <a href="https://core.telegram.org/bots/api/#markdownv2-style">Markdown text</a></summary>
@@ -261,7 +270,7 @@ namespace TL
 					var md = closings[0].md;
 					closings.RemoveAt(0);
 					if (i > 0 && md[0] == '_' && sb[i - 1] == '_') md = '\r' + md;
-					if (md[0] == '>') { inBlockQuote = false; if (lastCh != '\n' && i < sb.Length && sb[i] != '\n') md = "\n"; else continue; }
+					if (md[0] == '>') { inBlockQuote = false; md = md[1..]; if (lastCh != '\n' && i < sb.Length && sb[i] != '\n') md += '\n'; }
 					sb.Insert(i, md); i += md.Length;
 				}
 				if (i == sb.Length) break;
@@ -283,8 +292,9 @@ namespace TL
 								if (premium) closing.md = $"](tg://emoji?id={mecu.document_id})";
 								else continue;
 						}
-						else if (md[0] == '>')
-						{ inBlockQuote = true; if (lastCh is not '\n' and not '\0') md = "\n>"; }
+						else if (nextEntity is MessageEntityBlockquote mebq)
+						{ inBlockQuote = true; if (lastCh is not '\n' and not '\0') md = "\n>";
+						  if (mebq.flags == MessageEntityBlockquote.Flags.collapsed) closing.md = ">||"; }
 						else if (nextEntity is MessageEntityPre mep)
 							md = $"```{mep.language}\n";
 						int index = ~closings.BinarySearch(closing, Comparer<(int, string)>.Create((x, y) => x.Item1.CompareTo(y.Item1) | 1));
@@ -396,6 +406,9 @@ namespace TL
 						case "pre": ProcessEntity<MessageEntityPre>(); break;
 						case "tg-emoji" when closing: ProcessEntity<MessageEntityCustomEmoji>(); break;
 						case "blockquote": ProcessEntity<MessageEntityBlockquote>(); break;
+						case "blockquote expandable": 
+							entities.Add(new MessageEntityBlockquote { offset = offset, length = -1, flags = MessageEntityBlockquote.Flags.collapsed });
+							break;
 						default:
 							if (closing)
 							{
@@ -495,6 +508,8 @@ namespace TL
 							closing.Item2 = "</code></pre>";
 							tag = $"<pre><code class=\"language-{mep.language}\">";
 						}
+						else if (nextEntity is MessageEntityBlockquote { flags: MessageEntityBlockquote.Flags.collapsed })
+							tag = "<blockquote expandable>";
 						else
 							tag = $"<{tag}>";
 						int index = ~closings.BinarySearch(closing, Comparer<(int, string)>.Create((x, y) => x.Item1.CompareTo(y.Item1) | 1));
