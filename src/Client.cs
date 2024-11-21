@@ -209,6 +209,7 @@ namespace WTelegram
 			if (_tcpClient != null) throw new InvalidOperationException("Cannot switch to HTTP after TCP connection");
 			_httpClient = httpClient ?? new();
 			_httpWait = defaultHttpWait;
+			while (_parallelTransfers.CurrentCount > 1) _parallelTransfers.Wait();
 		}
 
 		/// <summary>Disconnect from Telegram <i>(shouldn't be needed in normal usage)</i></summary>
