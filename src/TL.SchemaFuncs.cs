@@ -1962,6 +1962,7 @@ namespace TL
 		/// <summary>Report a message in a chat for violation of telegram's Terms of Service		<para>See <a href="https://corefork.telegram.org/method/messages.report"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.report#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="id">IDs of messages to report</param>
+		/// <param name="option">Menu option, intially empty</param>
 		/// <param name="message">Comment for report moderation</param>
 		public static Task<ReportResult> Messages_Report(this Client client, InputPeer peer, int[] id, byte[] option, string message)
 			=> client.Invoke(new Messages_Report
@@ -4347,7 +4348,7 @@ namespace TL
 				private_ = private_,
 			});
 
-		/// <summary>Fetches an <see cref="UpdatePaidReactionPrivacy"/> update with the current <a href="https://corefork.telegram.org/api/reactions#paid-reactions">default paid reaction privacy, see here &amp;raquo:</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/messages.getPaidReactionPrivacy"/> [bots: ✓]</para></summary>
+		/// <summary>Fetches an <see cref="UpdatePaidReactionPrivacy"/> update with the current <a href="https://corefork.telegram.org/api/reactions#paid-reactions">default paid reaction privacy, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/messages.getPaidReactionPrivacy"/> [bots: ✓]</para></summary>
 		public static Task<UpdatesBase> Messages_GetPaidReactionPrivacy(this Client client)
 			=> client.Invoke(new Messages_GetPaidReactionPrivacy
 			{
@@ -6057,13 +6058,13 @@ namespace TL
 				subscription_id = subscription_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarsGiveawayOptions"/> [bots: ✓]</para></summary>
+		/// <summary>Fetch a list of <a href="https://corefork.telegram.org/api/giveaways#star-giveaways">star giveaway options »</a>.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarsGiveawayOptions"/> [bots: ✓]</para></summary>
 		public static Task<StarsGiveawayOption[]> Payments_GetStarsGiveawayOptions(this Client client)
 			=> client.Invoke(new Payments_GetStarsGiveawayOptions
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGifts"/> [bots: ✓]</para></summary>
+		/// <summary>Get a list of available <a href="https://corefork.telegram.org/api/gifts">gifts, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarGifts"/> [bots: ✓]</para></summary>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/payments.starGiftsNotModified">payments.starGiftsNotModified</a></returns>
 		public static Task<Payments_StarGifts> Payments_GetStarGifts(this Client client, int hash = default)
@@ -6072,7 +6073,9 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getUserStarGifts"/> [bots: ✓]</para></summary>
+		/// <summary>Get the <a href="https://corefork.telegram.org/api/gifts">gifts »</a> pinned on a specific user's profile.		<para>See <a href="https://corefork.telegram.org/method/payments.getUserStarGifts"/> [bots: ✓]</para></summary>
+		/// <param name="user_id">Identifier of the user (can be the current user to fetch all gifts received by the current user).</param>
+		/// <param name="offset">Offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a>, taken from <see cref="Payments_UserStarGifts"/> (initially empty).</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Payments_UserStarGifts> Payments_GetUserStarGifts(this Client client, InputUserBase user_id, string offset, int limit = int.MaxValue)
 			=> client.Invoke(new Payments_GetUserStarGifts
@@ -6082,7 +6085,10 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.saveStarGift"/> [bots: ✓]</para></summary>
+		/// <summary>Display or remove a <a href="https://corefork.telegram.org/api/gifts">received gift »</a> from our profile.		<para>See <a href="https://corefork.telegram.org/method/payments.saveStarGift"/> [bots: ✓]</para></summary>
+		/// <param name="unsave">If set, hides the gift from our profile.</param>
+		/// <param name="user_id">ID of the user that sent us the gift.</param>
+		/// <param name="msg_id">The ID of the <see cref="MessageService"/> with the <see cref="MessageActionStarGift"/>.</param>
 		public static Task<bool> Payments_SaveStarGift(this Client client, InputUserBase user_id, int msg_id, bool unsave = false)
 			=> client.Invoke(new Payments_SaveStarGift
 			{
@@ -6091,7 +6097,9 @@ namespace TL
 				msg_id = msg_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.convertStarGift"/> [bots: ✓]</para></summary>
+		/// <summary>Convert a <a href="https://corefork.telegram.org/api/gifts">received gift »</a> into Telegram Stars: this will permanently destroy the gift, converting it into <see cref="StarGift"/>.<c>convert_stars</c> <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a>, added to the user's balance.		<para>See <a href="https://corefork.telegram.org/method/payments.convertStarGift"/> [bots: ✓]</para></summary>
+		/// <param name="user_id">ID of the user that sent us the gift.</param>
+		/// <param name="msg_id">The ID of the <see cref="MessageService"/> with the <see cref="MessageActionStarGift"/>.</param>
 		public static Task<bool> Payments_ConvertStarGift(this Client client, InputUserBase user_id, int msg_id)
 			=> client.Invoke(new Payments_ConvertStarGift
 			{
@@ -6739,6 +6747,7 @@ namespace TL
 
 		/// <summary>Get <a href="https://corefork.telegram.org/api/revenue">channel ad revenue statistics »</a>.		<para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueStats"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueStats#possible-errors">details</a>)</para></summary>
 		/// <param name="dark">Whether to enable dark theme for graph colors</param>
+		/// <param name="peer">Get ad revenue stats for the specified channel or bot</param>
 		public static Task<Stats_BroadcastRevenueStats> Stats_GetBroadcastRevenueStats(this Client client, InputPeer peer, bool dark = false)
 			=> client.Invoke(new Stats_GetBroadcastRevenueStats
 			{
@@ -6747,6 +6756,7 @@ namespace TL
 			});
 
 		/// <summary>Withdraw funds from a channel's <a href="https://corefork.telegram.org/api/revenue">ad revenue balance »</a>.		<para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueWithdrawalUrl"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueWithdrawalUrl#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Get ad revenue withdrawal URL for the specified channel or bot</param>
 		/// <param name="password">2FA password, see <a href="https://corefork.telegram.org/api/srp#using-the-2fa-password">here »</a> for more info.</param>
 		public static Task<Stats_BroadcastRevenueWithdrawalUrl> Stats_GetBroadcastRevenueWithdrawalUrl(this Client client, InputPeer peer, InputCheckPasswordSRP password)
 			=> client.Invoke(new Stats_GetBroadcastRevenueWithdrawalUrl
@@ -6756,6 +6766,7 @@ namespace TL
 			});
 
 		/// <summary>Fetch <a href="https://corefork.telegram.org/api/revenue">channel ad revenue transaction history »</a>.		<para>See <a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueTransactions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stats.getBroadcastRevenueTransactions#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Get ad revenue transactions for the specified channel or bot</param>
 		/// <param name="offset"><a href="https://corefork.telegram.org/api/offsets">Offset for pagination</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Stats_BroadcastRevenueTransactions> Stats_GetBroadcastRevenueTransactions(this Client client, InputPeer peer, int offset = default, int limit = int.MaxValue)
@@ -7070,6 +7081,7 @@ namespace TL
 		/// <summary>Report a story.		<para>See <a href="https://corefork.telegram.org/method/stories.report"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.report#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The peer that uploaded the story.</param>
 		/// <param name="id">IDs of the stories to report.</param>
+		/// <param name="option">Menu option, intially empty</param>
 		/// <param name="message">Comment for report moderation</param>
 		public static Task<ReportResult> Stories_Report(this Client client, InputPeer peer, int[] id, byte[] option, string message)
 			=> client.Invoke(new Stories_Report
