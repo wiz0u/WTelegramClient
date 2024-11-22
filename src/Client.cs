@@ -629,8 +629,7 @@ namespace WTelegram
 					else
 					{
 						Helpers.Log(1, $"             → {result?.GetType().Name,-37} #{(short)msgId.GetHashCode():X4}");
-						if (OnOwnUpdates != null && result is UpdatesBase updates)
-							RaiseOwnUpdates(updates);
+						CheckRaiseOwnUpdates(result);
 					}
 
 					rpc.tcs.SetResult(result);
@@ -654,8 +653,7 @@ namespace WTelegram
 				else
 				{
 					result = reader.ReadTLObject(ctorNb);
-					if (OnOwnUpdates != null && result is UpdatesBase updates)
-						RaiseOwnUpdates(updates);
+					CheckRaiseOwnUpdates(result);
 				}
 
 				var typeName = result?.GetType().Name;
@@ -804,6 +802,17 @@ namespace WTelegram
 			{
 				Helpers.Log(4, $"{nameof(OnUpdates)}({obj?.GetType().Name}) raised {ex}");
 			}
+		}
+
+		private void CheckRaiseOwnUpdates(object result)
+		{
+			if (OnOwnUpdates == null) return;
+			if (result is UpdatesBase updates)
+				RaiseOwnUpdates(updates);
+			else if (result is Payments_PaymentResult ppr)
+				RaiseOwnUpdates(ppr.updates);
+			else if (result is Messages_InvitedUsers miu)
+				RaiseOwnUpdates(miu.updates);
 		}
 
 		private async void RaiseOwnUpdates(UpdatesBase updates)
