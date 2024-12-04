@@ -3448,7 +3448,7 @@ namespace TL
 	}
 
 	/// <summary>Extended user info		<para>See <a href="https://corefork.telegram.org/constructor/userFull"/></para></summary>
-	[TLDef(0x1F58E369)]
+	[TLDef(0x979D2376)]
 	public sealed partial class UserFull : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -3511,6 +3511,7 @@ namespace TL
 		[IfFlag(38)] public int personal_channel_message;
 		/// <summary>Number of <a href="https://corefork.telegram.org/api/gifts">gifts</a> the user has chosen to display on their profile</summary>
 		[IfFlag(40)] public int stargifts_count;
+		[IfFlag(43)] public StarRefProgram starref_program;
 
 		[Flags] public enum Flags : uint
 		{
@@ -3595,6 +3596,8 @@ namespace TL
 			/// <summary>If set, this user can view <a href="https://corefork.telegram.org/api/revenue#revenue-statistics">ad revenue statistics »</a> for this bot.</summary>
 			can_view_revenue = 0x200,
 			bot_can_manage_emoji_status = 0x400,
+			/// <summary>Field <see cref="starref_program"/> has a value</summary>
+			has_starref_program = 0x800,
 		}
 	}
 
@@ -5592,11 +5595,11 @@ namespace TL
 		public BroadcastRevenueBalances balances;
 	}
 	/// <summary>The current account's <a href="https://corefork.telegram.org/api/stars">Telegram Stars balance »</a> has changed.		<para>See <a href="https://corefork.telegram.org/constructor/updateStarsBalance"/></para></summary>
-	[TLDef(0x0FB85198)]
+	[TLDef(0x4E80A379)]
 	public sealed partial class UpdateStarsBalance : Update
 	{
 		/// <summary>New balance.</summary>
-		public long balance;
+		public StarsAmount balance;
 	}
 	/// <summary>A callback button sent via a <a href="https://corefork.telegram.org/api/business#connected-bots">business connection</a> was pressed, and the button data was sent to the bot that created the button.		<para>See <a href="https://corefork.telegram.org/constructor/updateBusinessBotCallbackQuery"/></para></summary>
 	[TLDef(0x1EA2FDA7)]
@@ -5655,18 +5658,6 @@ namespace TL
 	{
 		/// <summary>Whether paid reaction privacy is enabled or disabled.</summary>
 		public bool private_;
-	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBotSubscriptionExpire"/></para></summary>
-	[TLDef(0x2D13C6EE)]
-	public sealed partial class UpdateBotSubscriptionExpire : Update
-	{
-		public long user_id;
-		public string payload;
-		public string invoice_slug;
-		public DateTime until_date;
-		public int qts;
-
-		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -19129,7 +19120,7 @@ namespace TL
 	}
 
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/stars">Telegram Stars transaction »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starsTransaction"/></para></summary>
-	[TLDef(0x35D4F276)]
+	[TLDef(0x64DFC926)]
 	public sealed partial class StarsTransaction : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -19137,7 +19128,7 @@ namespace TL
 		/// <summary>Transaction ID.</summary>
 		public string id;
 		/// <summary>Amount of Stars (negative for outgoing transactions).</summary>
-		public long stars;
+		public StarsAmount stars;
 		/// <summary>Date of the transaction (unixtime).</summary>
 		public DateTime date;
 		/// <summary>Source of the incoming transaction, or its recipient for outgoing transactions.</summary>
@@ -19166,6 +19157,9 @@ namespace TL
 		[IfFlag(14)] public StarGift stargift;
 		/// <summary>This transaction is payment for <a href="https://corefork.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">paid bot broadcasts</a>.  <br/>Paid broadcasts are only allowed if the <c>allow_paid_floodskip</c> parameter of <see cref="SchemaExtensions.Messages_SendMessage">Messages_SendMessage</see> and other message sending methods is set while trying to broadcast more than 30 messages per second to bot users. <br/>The integer value returned by this flag indicates the number of billed API calls.</summary>
 		[IfFlag(15)] public int floodskip_number;
+		[IfFlag(16)] public int starref_commission_permille;
+		[IfFlag(17)] public Peer starref_peer;
+		[IfFlag(17)] public StarsAmount starref_amount;
 
 		[Flags] public enum Flags : uint
 		{
@@ -19201,17 +19195,21 @@ namespace TL
 			has_stargift = 0x4000,
 			/// <summary>Field <see cref="floodskip_number"/> has a value</summary>
 			has_floodskip_number = 0x8000,
+			/// <summary>Field <see cref="starref_commission_permille"/> has a value</summary>
+			has_starref_commission_permille = 0x10000,
+			/// <summary>Fields <see cref="starref_peer"/> and <see cref="starref_amount"/> have a value</summary>
+			has_starref_peer = 0x20000,
 		}
 	}
 
 	/// <summary>Info about the current <a href="https://corefork.telegram.org/api/stars#balance-and-transaction-history">Telegram Star subscriptions, balance and transaction history »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/payments.starsStatus"/></para></summary>
-	[TLDef(0xBBFA316C)]
+	[TLDef(0x6C9CE8ED)]
 	public sealed partial class Payments_StarsStatus : IObject, IPeerResolver
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Current Telegram Star balance.</summary>
-		public long balance;
+		public StarsAmount balance;
 		/// <summary>Info about current Telegram Star subscriptions, only returned when invoking <see cref="SchemaExtensions.Payments_GetStarsTransactions">Payments_GetStarsTransactions</see> and <see cref="SchemaExtensions.Payments_GetStarsSubscriptions">Payments_GetStarsSubscriptions</see>.</summary>
 		[IfFlag(1)] public StarsSubscription[] subscriptions;
 		/// <summary>Offset for pagination of subscriptions: only usable with <see cref="SchemaExtensions.Payments_GetStarsSubscriptions">Payments_GetStarsSubscriptions</see>, returned when invoking <see cref="SchemaExtensions.Payments_GetStarsTransactions">Payments_GetStarsTransactions</see> and <see cref="SchemaExtensions.Payments_GetStarsSubscriptions">Payments_GetStarsSubscriptions</see>.</summary>
@@ -19307,17 +19305,17 @@ namespace TL
 	}
 
 	/// <summary>Describes <a href="https://corefork.telegram.org/api/stars">Telegram Star revenue balances »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starsRevenueStatus"/></para></summary>
-	[TLDef(0x79342946)]
+	[TLDef(0xFEBE5491)]
 	public sealed partial class StarsRevenueStatus : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Amount of not-yet-withdrawn Telegram Stars.</summary>
-		public long current_balance;
+		public StarsAmount current_balance;
 		/// <summary>Amount of withdrawable Telegram Stars.</summary>
-		public long available_balance;
+		public StarsAmount available_balance;
 		/// <summary>Total amount of earned Telegram Stars.</summary>
-		public long overall_revenue;
+		public StarsAmount overall_revenue;
 		/// <summary>Unixtime indicating when will withdrawal be available to the user. If not set, withdrawal can be started now.</summary>
 		[IfFlag(1)] public int next_withdrawal_at;
 
@@ -19737,6 +19735,107 @@ namespace TL
 			has_background_dark_color = 0x4,
 			has_header_color = 0x8,
 			has_header_dark_color = 0x10,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starRefProgram"/></para></summary>
+	[TLDef(0xDD0C66F2)]
+	public sealed partial class StarRefProgram : IObject
+	{
+		public Flags flags;
+		public long bot_id;
+		public int commission_permille;
+		[IfFlag(0)] public int duration_months;
+		[IfFlag(1)] public DateTime end_date;
+		[IfFlag(2)] public StarsAmount daily_revenue_per_user;
+
+		[Flags] public enum Flags : uint
+		{
+			has_duration_months = 0x1,
+			has_end_date = 0x2,
+			has_daily_revenue_per_user = 0x4,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/connectedBotStarRef"/></para></summary>
+	[TLDef(0x19A13F71)]
+	public sealed partial class ConnectedBotStarRef : IObject
+	{
+		public Flags flags;
+		public string url;
+		public DateTime date;
+		public long bot_id;
+		public int commission_permille;
+		[IfFlag(0)] public int duration_months;
+		public long participants;
+		public long revenue;
+
+		[Flags] public enum Flags : uint
+		{
+			has_duration_months = 0x1,
+			revoked = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.connectedStarRefBots"/></para></summary>
+	[TLDef(0x98D5EA1D)]
+	public sealed partial class Payments_ConnectedStarRefBots : IObject
+	{
+		public int count;
+		public ConnectedBotStarRef[] connected_bots;
+		public Dictionary<long, User> users;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.suggestedStarRefBots"/></para></summary>
+	[TLDef(0xB4D5D859)]
+	public sealed partial class Payments_SuggestedStarRefBots : IObject
+	{
+		public Flags flags;
+		public int count;
+		public StarRefProgram[] suggested_bots;
+		public Dictionary<long, User> users;
+		[IfFlag(0)] public string next_offset;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsAmount"/></para></summary>
+	[TLDef(0xBBB6B4A3)]
+	public sealed partial class StarsAmount : IObject
+	{
+		public long amount;
+		public int nanos;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/messages.FoundStickers"/></para></summary>
+	public abstract partial class Messages_FoundStickersBase : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.foundStickersNotModified"/></para></summary>
+	[TLDef(0x6010C534)]
+	public sealed partial class Messages_FoundStickersNotModified : Messages_FoundStickersBase
+	{
+		public Flags flags;
+		[IfFlag(0)] public int next_offset;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.foundStickers"/></para></summary>
+	[TLDef(0x82C9E290)]
+	public sealed partial class Messages_FoundStickers : Messages_FoundStickersBase
+	{
+		public Flags flags;
+		[IfFlag(0)] public int next_offset;
+		public long hash;
+		public DocumentBase[] stickers;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
 		}
 	}
 }

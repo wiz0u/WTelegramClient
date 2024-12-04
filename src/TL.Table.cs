@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 194;					// fetched 18/11/2024 12:59:06
+		public const int Version = 195;					// fetched 04/12/2024 17:50:39
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -241,7 +241,7 @@ namespace TL
 			[0xACD66C5E] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0x1F58E369] = typeof(UserFull),
+			[0x979D2376] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -414,12 +414,11 @@ namespace TL
 			[0xA02A982E] = typeof(UpdateBotDeleteBusinessMessage),
 			[0x1824E40B] = typeof(UpdateNewStoryReaction),
 			[0xDFD961F5] = typeof(UpdateBroadcastRevenueTransactions),
-			[0x0FB85198] = typeof(UpdateStarsBalance),
+			[0x4E80A379] = typeof(UpdateStarsBalance),
 			[0x1EA2FDA7] = typeof(UpdateBusinessBotCallbackQuery),
 			[0xA584B019] = typeof(UpdateStarsRevenueStatus),
 			[0x283BD312] = typeof(UpdateBotPurchasedPaidMedia),
 			[0x51CA7AEC] = typeof(UpdatePaidReactionPrivacy),
-			[0x2D13C6EE] = typeof(UpdateBotSubscriptionExpire),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -1314,12 +1313,12 @@ namespace TL
 			[0x60682812] = typeof(StarsTransactionPeerAds),
 			[0xF9677AAD] = typeof(StarsTransactionPeerAPI),
 			[0x0BD915C0] = typeof(StarsTopupOption),
-			[0x35D4F276] = typeof(StarsTransaction),
-			[0xBBFA316C] = typeof(Payments_StarsStatus),
+			[0x64DFC926] = typeof(StarsTransaction),
+			[0x6C9CE8ED] = typeof(Payments_StarsStatus),
 			[0xE87ACBC0] = typeof(FoundStory),
 			[0xE2DE7737] = typeof(Stories_FoundStories),
 			[0xDE4C5D93] = typeof(GeoPointAddress),
-			[0x79342946] = typeof(StarsRevenueStatus),
+			[0xFEBE5491] = typeof(StarsRevenueStatus),
 			[0xC92BB73B] = typeof(Payments_StarsRevenueStats),
 			[0x1DAB80B7] = typeof(Payments_StarsRevenueWithdrawalUrl),
 			[0x394E7F21] = typeof(Payments_StarsRevenueAdsAccountUrl),
@@ -1345,6 +1344,13 @@ namespace TL
 			[0x8ECF0511] = typeof(Messages_BotPreparedInlineMessage),
 			[0xFF57708D] = typeof(Messages_PreparedInlineMessage),
 			[0xC99B1950] = typeof(BotAppSettings),
+			[0xDD0C66F2] = typeof(StarRefProgram),
+			[0x19A13F71] = typeof(ConnectedBotStarRef),
+			[0x98D5EA1D] = typeof(Payments_ConnectedStarRefBots),
+			[0xB4D5D859] = typeof(Payments_SuggestedStarRefBots),
+			[0xBBB6B4A3] = typeof(StarsAmount),
+			[0x6010C534] = typeof(Messages_FoundStickersNotModified),
+			[0x82C9E290] = typeof(Messages_FoundStickers),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),

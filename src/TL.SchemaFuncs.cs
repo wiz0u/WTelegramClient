@@ -1542,10 +1542,12 @@ namespace TL
 
 		/// <summary>Resolve a @username to get peer info		<para>See <a href="https://corefork.telegram.org/method/contacts.resolveUsername"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.resolveUsername#possible-errors">details</a>)</para></summary>
 		/// <param name="username">@username to resolve</param>
-		public static Task<Contacts_ResolvedPeer> Contacts_ResolveUsername(this Client client, string username)
+		public static Task<Contacts_ResolvedPeer> Contacts_ResolveUsername(this Client client, string username, string referer = null)
 			=> client.Invoke(new Contacts_ResolveUsername
 			{
+				flags = (Contacts_ResolveUsername.Flags)(referer != null ? 0x1 : 0),
 				username = username,
+				referer = referer,
 			});
 
 		/// <summary>Get most used peers		<para>See <a href="https://corefork.telegram.org/method/contacts.getTopPeers"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.getTopPeers#possible-errors">details</a>)</para></summary>
@@ -4364,7 +4366,9 @@ namespace TL
 				random_id = random_id,
 			});
 
-		/// <summary>Informs the server that the user has either:		<para>See <a href="https://corefork.telegram.org/method/messages.clickSponsoredMessage"/> [bots: ✓]</para></summary>
+		/// <summary>Informs the server that the user has interacted with a sponsored message in <a href="https://corefork.telegram.org/api/sponsored-messages#clicking-on-sponsored-messages">one of the ways listed here »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.clickSponsoredMessage"/> [bots: ✓]</para></summary>
+		/// <param name="media">The user clicked on the media</param>
+		/// <param name="fullscreen">The user expanded the video to full screen, and then clicked on it.</param>
 		/// <param name="peer">The channel/bot where the ad is located</param>
 		/// <param name="random_id">The ad's unique ID.</param>
 		public static Task<bool> Messages_ClickSponsoredMessage(this Client client, InputPeer peer, byte[] random_id, bool media = false, bool fullscreen = false)
@@ -4412,6 +4416,19 @@ namespace TL
 			{
 				bot = bot,
 				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.searchStickers"/></para></summary>
+		public static Task<Messages_FoundStickersBase> Messages_SearchStickers(this Client client, string q, string emoticon, string[] lang_code, int offset = default, int limit = int.MaxValue, long hash = default, bool emojis = false)
+			=> client.Invoke(new Messages_SearchStickers
+			{
+				flags = (Messages_SearchStickers.Flags)(emojis ? 0x1 : 0),
+				q = q,
+				emoticon = emoticon,
+				lang_code = lang_code,
+				offset = offset,
+				limit = limit,
+				hash = hash,
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -5764,6 +5781,22 @@ namespace TL
 				url = url,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.getAdminedBots"/></para></summary>
+		public static Task<UserBase[]> Bots_GetAdminedBots(this Client client)
+			=> client.Invoke(new Bots_GetAdminedBots
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.updateStarRefProgram"/></para></summary>
+		public static Task<StarRefProgram> Bots_UpdateStarRefProgram(this Client client, InputUserBase bot, int commission_permille, int? duration_months = null)
+			=> client.Invoke(new Bots_UpdateStarRefProgram
+			{
+				flags = (Bots_UpdateStarRefProgram.Flags)(duration_months != null ? 0x1 : 0),
+				bot = bot,
+				commission_permille = commission_permille,
+				duration_months = duration_months ?? default,
+			});
+
 		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
 		/// <param name="invoice">Invoice</param>
 		/// <param name="theme_params">A JSON object with the following keys, containing color theme information (integers, RGB24) to pass to the payment provider, to apply in eventual verification pages: <br/><c>bg_color</c> - Background color <br/><c>text_color</c> - Text color <br/><c>hint_color</c> - Hint text color <br/><c>link_color</c> - Link color <br/><c>button_color</c> - Button color <br/><c>button_text_color</c> - Button text color</param>
@@ -6108,13 +6141,58 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.botCancelStarsSubscription"/></para></summary>
-		public static Task<bool> Payments_BotCancelStarsSubscription(this Client client, InputUserBase user_id, string invoice_slug = null, string charge_id = null, bool restore = false)
+		public static Task<bool> Payments_BotCancelStarsSubscription(this Client client, InputUserBase user_id, string charge_id, bool restore = false)
 			=> client.Invoke(new Payments_BotCancelStarsSubscription
 			{
-				flags = (Payments_BotCancelStarsSubscription.Flags)((invoice_slug != null ? 0x2 : 0) | (charge_id != null ? 0x4 : 0) | (restore ? 0x1 : 0)),
+				flags = (Payments_BotCancelStarsSubscription.Flags)(restore ? 0x1 : 0),
 				user_id = user_id,
-				invoice_slug = invoice_slug,
 				charge_id = charge_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getConnectedStarRefBots"/></para></summary>
+		public static Task<Payments_ConnectedStarRefBots> Payments_GetConnectedStarRefBots(this Client client, InputPeer peer, int limit = int.MaxValue, DateTime? offset_date = null, string offset_link = null)
+			=> client.Invoke(new Payments_GetConnectedStarRefBots
+			{
+				flags = (Payments_GetConnectedStarRefBots.Flags)((offset_date != null ? 0x4 : 0) | (offset_link != null ? 0x4 : 0)),
+				peer = peer,
+				offset_date = offset_date ?? default,
+				offset_link = offset_link,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getConnectedStarRefBot"/></para></summary>
+		public static Task<Payments_ConnectedStarRefBots> Payments_GetConnectedStarRefBot(this Client client, InputPeer peer, InputUserBase bot)
+			=> client.Invoke(new Payments_GetConnectedStarRefBot
+			{
+				peer = peer,
+				bot = bot,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getSuggestedStarRefBots"/></para></summary>
+		public static Task<Payments_SuggestedStarRefBots> Payments_GetSuggestedStarRefBots(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, bool order_by_revenue = false, bool order_by_date = false)
+			=> client.Invoke(new Payments_GetSuggestedStarRefBots
+			{
+				flags = (Payments_GetSuggestedStarRefBots.Flags)((order_by_revenue ? 0x1 : 0) | (order_by_date ? 0x2 : 0)),
+				peer = peer,
+				offset = offset,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.connectStarRefBot"/></para></summary>
+		public static Task<Payments_ConnectedStarRefBots> Payments_ConnectStarRefBot(this Client client, InputPeer peer, InputUserBase bot)
+			=> client.Invoke(new Payments_ConnectStarRefBot
+			{
+				peer = peer,
+				bot = bot,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.editConnectedStarRefBot"/></para></summary>
+		public static Task<Payments_ConnectedStarRefBots> Payments_EditConnectedStarRefBot(this Client client, InputPeer peer, string link, bool revoked = false)
+			=> client.Invoke(new Payments_EditConnectedStarRefBot
+			{
+				flags = (Payments_EditConnectedStarRefBot.Flags)(revoked ? 0x1 : 0),
+				peer = peer,
+				link = link,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -8528,10 +8606,17 @@ namespace TL.Methods
 		public int limit;
 	}
 
-	[TLDef(0xF93CCBA3)]
+	[TLDef(0x725AFBBC)]
 	public sealed partial class Contacts_ResolveUsername : IMethod<Contacts_ResolvedPeer>
 	{
+		public Flags flags;
 		public string username;
+		[IfFlag(0)] public string referer;
+
+		[Flags] public enum Flags : uint
+		{
+			has_referer = 0x1,
+		}
 	}
 
 	[TLDef(0x973478B6)]
@@ -10983,6 +11068,23 @@ namespace TL.Methods
 		public string id;
 	}
 
+	[TLDef(0x29B1C66A)]
+	public sealed partial class Messages_SearchStickers : IMethod<Messages_FoundStickersBase>
+	{
+		public Flags flags;
+		public string q;
+		public string emoticon;
+		public string[] lang_code;
+		public int offset;
+		public int limit;
+		public long hash;
+
+		[Flags] public enum Flags : uint
+		{
+			emojis = 0x1,
+		}
+	}
+
 	[TLDef(0xEDD4882A)]
 	public sealed partial class Updates_GetState : IMethod<Updates_State> { }
 
@@ -12021,6 +12123,23 @@ namespace TL.Methods
 		public string url;
 	}
 
+	[TLDef(0xB0711D83)]
+	public sealed partial class Bots_GetAdminedBots : IMethod<UserBase[]> { }
+
+	[TLDef(0x778B5AB3)]
+	public sealed partial class Bots_UpdateStarRefProgram : IMethod<StarRefProgram>
+	{
+		public Flags flags;
+		public InputUserBase bot;
+		public int commission_permille;
+		[IfFlag(0)] public int duration_months;
+
+		[Flags] public enum Flags : uint
+		{
+			has_duration_months = 0x1,
+		}
+	}
+
 	[TLDef(0x37148DBB)]
 	public sealed partial class Payments_GetPaymentForm : IMethod<Payments_PaymentFormBase>
 	{
@@ -12316,19 +12435,73 @@ namespace TL.Methods
 		public int msg_id;
 	}
 
-	[TLDef(0x57F9ECE6)]
+	[TLDef(0x6DFA0622)]
 	public sealed partial class Payments_BotCancelStarsSubscription : IMethod<bool>
 	{
 		public Flags flags;
 		public InputUserBase user_id;
-		[IfFlag(1)] public string invoice_slug;
-		[IfFlag(2)] public string charge_id;
+		public string charge_id;
 
 		[Flags] public enum Flags : uint
 		{
 			restore = 0x1,
-			has_invoice_slug = 0x2,
-			has_charge_id = 0x4,
+		}
+	}
+
+	[TLDef(0x5869A553)]
+	public sealed partial class Payments_GetConnectedStarRefBots : IMethod<Payments_ConnectedStarRefBots>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		[IfFlag(2)] public DateTime offset_date;
+		[IfFlag(2)] public string offset_link;
+		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			has_offset_date = 0x4,
+		}
+	}
+
+	[TLDef(0xB7D998F0)]
+	public sealed partial class Payments_GetConnectedStarRefBot : IMethod<Payments_ConnectedStarRefBots>
+	{
+		public InputPeer peer;
+		public InputUserBase bot;
+	}
+
+	[TLDef(0x0D6B48F7)]
+	public sealed partial class Payments_GetSuggestedStarRefBots : IMethod<Payments_SuggestedStarRefBots>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public string offset;
+		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			order_by_revenue = 0x1,
+			order_by_date = 0x2,
+		}
+	}
+
+	[TLDef(0x7ED5348A)]
+	public sealed partial class Payments_ConnectStarRefBot : IMethod<Payments_ConnectedStarRefBots>
+	{
+		public InputPeer peer;
+		public InputUserBase bot;
+	}
+
+	[TLDef(0xE4FCA4A3)]
+	public sealed partial class Payments_EditConnectedStarRefBot : IMethod<Payments_ConnectedStarRefBots>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public string link;
+
+		[Flags] public enum Flags : uint
+		{
+			revoked = 0x1,
 		}
 	}
 

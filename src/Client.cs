@@ -1642,6 +1642,7 @@ namespace WTelegram
 			await ConnectAsync();
 		}
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public async Task<T> InvokeAffected<T>(IMethod<T> query, long peerId) where T : Messages_AffectedMessages
 		{
 			var result = await Invoke(query);
