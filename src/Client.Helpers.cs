@@ -237,7 +237,6 @@ namespace WTelegram
 							}
 							catch (RpcException) { }
 						string mimeType = null;
-						ism.media = (await this.Messages_UploadMedia(peer, ism.media)).ToInputMedia();
 						inputFile = await UploadFromUrl(imde.url);
 						if (videoUrlAsFile || mimeType?.StartsWith("video/") != true)
 							ism.media = new InputMediaUploadedDocument(inputFile, mimeType);
