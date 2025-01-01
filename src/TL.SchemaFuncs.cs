@@ -6147,23 +6147,19 @@ namespace TL
 
 		/// <summary>Display or remove a <a href="https://corefork.telegram.org/api/gifts">received gift »</a> from our profile.		<para>See <a href="https://corefork.telegram.org/method/payments.saveStarGift"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.saveStarGift#possible-errors">details</a>)</para></summary>
 		/// <param name="unsave">If set, hides the gift from our profile.</param>
-		/// <param name="user_id">ID of the user that sent us the gift.</param>
 		/// <param name="msg_id">The ID of the <see cref="MessageService"/> with the <see cref="MessageActionStarGift"/>.</param>
-		public static Task<bool> Payments_SaveStarGift(this Client client, InputUserBase user_id, int msg_id, bool unsave = false)
+		public static Task<bool> Payments_SaveStarGift(this Client client, int msg_id, bool unsave = false)
 			=> client.Invoke(new Payments_SaveStarGift
 			{
 				flags = (Payments_SaveStarGift.Flags)(unsave ? 0x1 : 0),
-				user_id = user_id,
 				msg_id = msg_id,
 			});
 
 		/// <summary>Convert a <a href="https://corefork.telegram.org/api/gifts">received gift »</a> into Telegram Stars: this will permanently destroy the gift, converting it into <see cref="StarGift"/>.<c>convert_stars</c> <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a>, added to the user's balance.		<para>See <a href="https://corefork.telegram.org/method/payments.convertStarGift"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.convertStarGift#possible-errors">details</a>)</para></summary>
-		/// <param name="user_id">ID of the user that sent us the gift.</param>
 		/// <param name="msg_id">The ID of the <see cref="MessageService"/> with the <see cref="MessageActionStarGift"/>.</param>
-		public static Task<bool> Payments_ConvertStarGift(this Client client, InputUserBase user_id, int msg_id)
+		public static Task<bool> Payments_ConvertStarGift(this Client client, int msg_id)
 			=> client.Invoke(new Payments_ConvertStarGift
 			{
-				user_id = user_id,
 				msg_id = msg_id,
 			});
 
@@ -6239,6 +6235,36 @@ namespace TL
 				flags = (Payments_EditConnectedStarRefBot.Flags)(revoked ? 0x1 : 0),
 				peer = peer,
 				link = link,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftUpgradePreview"/></para></summary>
+		public static Task<Payments_StarGiftUpgradePreview> Payments_GetStarGiftUpgradePreview(this Client client, long gift_id)
+			=> client.Invoke(new Payments_GetStarGiftUpgradePreview
+			{
+				gift_id = gift_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.upgradeStarGift"/></para></summary>
+		public static Task<UpdatesBase> Payments_UpgradeStarGift(this Client client, int msg_id, bool keep_original_details = false)
+			=> client.Invoke(new Payments_UpgradeStarGift
+			{
+				flags = (Payments_UpgradeStarGift.Flags)(keep_original_details ? 0x1 : 0),
+				msg_id = msg_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.transferStarGift"/></para></summary>
+		public static Task<UpdatesBase> Payments_TransferStarGift(this Client client, int msg_id, InputUserBase to_id)
+			=> client.Invoke(new Payments_TransferStarGift
+			{
+				msg_id = msg_id,
+				to_id = to_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getUserStarGift"/></para></summary>
+		public static Task<Payments_UserStarGifts> Payments_GetUserStarGift(this Client client, params int[] msg_id)
+			=> client.Invoke(new Payments_GetUserStarGift
+			{
+				msg_id = msg_id,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -6383,11 +6409,12 @@ namespace TL
 		/// <param name="random_id">Random ID to avoid resending the same object</param>
 		/// <param name="g_a_hash"><a href="https://corefork.telegram.org/api/end-to-end/voice-calls">Parameter for E2E encryption key exchange »</a></param>
 		/// <param name="protocol">Phone call settings</param>
-		public static Task<Phone_PhoneCall> Phone_RequestCall(this Client client, InputUserBase user_id, int random_id, byte[] g_a_hash, PhoneCallProtocol protocol, bool video = false)
+		public static Task<Phone_PhoneCall> Phone_RequestCall(this Client client, InputUserBase user_id, int random_id, byte[] g_a_hash, PhoneCallProtocol protocol, InputGroupCall conference_call = null, bool video = false)
 			=> client.Invoke(new Phone_RequestCall
 			{
-				flags = (Phone_RequestCall.Flags)(video ? 0x1 : 0),
+				flags = (Phone_RequestCall.Flags)((conference_call != null ? 0x2 : 0) | (video ? 0x1 : 0)),
 				user_id = user_id,
+				conference_call = conference_call,
 				random_id = random_id,
 				g_a_hash = g_a_hash,
 				protocol = protocol,
@@ -6500,13 +6527,14 @@ namespace TL
 		/// <param name="join_as">Join the group call, presenting yourself as the specified user/channel</param>
 		/// <param name="invite_hash">The invitation hash from the <a href="https://corefork.telegram.org/api/links#video-chat-livestream-links">invite link »</a>, if provided allows speaking in a livestream or muted group chat.</param>
 		/// <param name="params_">WebRTC parameters</param>
-		public static Task<UpdatesBase> Phone_JoinGroupCall(this Client client, InputGroupCall call, InputPeer join_as, DataJSON params_, string invite_hash = null, bool muted = false, bool video_stopped = false)
+		public static Task<UpdatesBase> Phone_JoinGroupCall(this Client client, InputGroupCall call, InputPeer join_as, DataJSON params_, string invite_hash = null, long? key_fingerprint = null, bool muted = false, bool video_stopped = false)
 			=> client.Invoke(new Phone_JoinGroupCall
 			{
-				flags = (Phone_JoinGroupCall.Flags)((invite_hash != null ? 0x2 : 0) | (muted ? 0x1 : 0) | (video_stopped ? 0x4 : 0)),
+				flags = (Phone_JoinGroupCall.Flags)((invite_hash != null ? 0x2 : 0) | (key_fingerprint != null ? 0x8 : 0) | (muted ? 0x1 : 0) | (video_stopped ? 0x4 : 0)),
 				call = call,
 				join_as = join_as,
 				invite_hash = invite_hash,
+				key_fingerprint = key_fingerprint ?? default,
 				params_ = params_,
 			});
 
@@ -6724,6 +6752,14 @@ namespace TL
 			{
 				peer = peer,
 				file = file,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.createConferenceCall"/></para></summary>
+		public static Task<Phone_PhoneCall> Phone_CreateConferenceCall(this Client client, InputPhoneCall peer, long key_fingerprint)
+			=> client.Invoke(new Phone_CreateConferenceCall
+			{
+				peer = peer,
+				key_fingerprint = key_fingerprint,
 			});
 
 		/// <summary>Get localization pack strings		<para>See <a href="https://corefork.telegram.org/method/langpack.getLangPack"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/langpack.getLangPack#possible-errors">details</a>)</para></summary>
@@ -12461,11 +12497,10 @@ namespace TL.Methods
 		public int limit;
 	}
 
-	[TLDef(0x87ACF08E)]
+	[TLDef(0x92FD2AAE)]
 	public sealed partial class Payments_SaveStarGift : IMethod<bool>
 	{
 		public Flags flags;
-		public InputUserBase user_id;
 		public int msg_id;
 
 		[Flags] public enum Flags : uint
@@ -12474,10 +12509,9 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x0421E027)]
+	[TLDef(0x72770C83)]
 	public sealed partial class Payments_ConvertStarGift : IMethod<bool>
 	{
-		public InputUserBase user_id;
 		public int msg_id;
 	}
 
@@ -12549,6 +12583,37 @@ namespace TL.Methods
 		{
 			revoked = 0x1,
 		}
+	}
+
+	[TLDef(0x9C9ABCB1)]
+	public sealed partial class Payments_GetStarGiftUpgradePreview : IMethod<Payments_StarGiftUpgradePreview>
+	{
+		public long gift_id;
+	}
+
+	[TLDef(0xCF4F0781)]
+	public sealed partial class Payments_UpgradeStarGift : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public int msg_id;
+
+		[Flags] public enum Flags : uint
+		{
+			keep_original_details = 0x1,
+		}
+	}
+
+	[TLDef(0x333FB526)]
+	public sealed partial class Payments_TransferStarGift : IMethod<UpdatesBase>
+	{
+		public int msg_id;
+		public InputUserBase to_id;
+	}
+
+	[TLDef(0xB502E4A5)]
+	public sealed partial class Payments_GetUserStarGift : IMethod<Payments_UserStarGifts>
+	{
+		public int[] msg_id;
 	}
 
 	[TLDef(0x9021AB67)]
@@ -12659,11 +12724,12 @@ namespace TL.Methods
 	[TLDef(0x55451FA9)]
 	public sealed partial class Phone_GetCallConfig : IMethod<DataJSON> { }
 
-	[TLDef(0x42FF96ED)]
+	[TLDef(0xA6C4600C)]
 	public sealed partial class Phone_RequestCall : IMethod<Phone_PhoneCall>
 	{
 		public Flags flags;
 		public InputUserBase user_id;
+		[IfFlag(1)] public InputGroupCall conference_call;
 		public int random_id;
 		public byte[] g_a_hash;
 		public PhoneCallProtocol protocol;
@@ -12671,6 +12737,7 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			video = 0x1,
+			has_conference_call = 0x2,
 		}
 	}
 
@@ -12757,13 +12824,14 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xB132FF7B)]
+	[TLDef(0xD61E1DF3)]
 	public sealed partial class Phone_JoinGroupCall : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputGroupCall call;
 		public InputPeer join_as;
 		[IfFlag(1)] public string invite_hash;
+		[IfFlag(3)] public long key_fingerprint;
 		public DataJSON params_;
 
 		[Flags] public enum Flags : uint
@@ -12771,6 +12839,7 @@ namespace TL.Methods
 			muted = 0x1,
 			has_invite_hash = 0x2,
 			video_stopped = 0x4,
+			has_key_fingerprint = 0x8,
 		}
 	}
 
@@ -12948,6 +13017,13 @@ namespace TL.Methods
 	{
 		public InputPhoneCall peer;
 		public InputFileBase file;
+	}
+
+	[TLDef(0xDFC909AB)]
+	public sealed partial class Phone_CreateConferenceCall : IMethod<Phone_PhoneCall>
+	{
+		public InputPhoneCall peer;
+		public long key_fingerprint;
 	}
 
 	[TLDef(0xF2F2330A)]
