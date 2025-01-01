@@ -42,11 +42,8 @@ namespace TL
 	/// <summary>Indicates the location of a photo, will be deprecated soon		<para>See <a href="https://corefork.telegram.org/type/FileLocation"/></para></summary>
 	public abstract partial class FileLocationBase : IObject
 	{
-		/// <summary>Server volume</summary>
 		public virtual long VolumeId => default;
-		/// <summary>File ID</summary>
 		public virtual int LocalId => default;
-		/// <summary>Checksum to access the file</summary>
 		public virtual long Secret => default;
 	}
 
@@ -501,38 +498,25 @@ namespace TL
 		[TLDef(0x7C596B46)]
 		public sealed partial class FileLocationUnavailable : FileLocationBase
 		{
-			/// <summary>Server volume</summary>
 			public long volume_id;
-			/// <summary>File ID</summary>
 			public int local_id;
-			/// <summary>Checksum to access the file</summary>
 			public long secret;
 
-			/// <summary>Server volume</summary>
 			public override long VolumeId => volume_id;
-			/// <summary>File ID</summary>
 			public override int LocalId => local_id;
-			/// <summary>Checksum to access the file</summary>
 			public override long Secret => secret;
 		}
 		/// <summary>File location.		<para>See <a href="https://corefork.telegram.org/constructor/fileLocation"/></para></summary>
 		[TLDef(0x53D69076)]
 		public sealed partial class FileLocation : FileLocationBase
 		{
-			/// <summary>Number of the data center holding the file</summary>
 			public int dc_id;
-			/// <summary>Server volume</summary>
 			public long volume_id;
-			/// <summary>File ID</summary>
 			public int local_id;
-			/// <summary>Checksum to access the file</summary>
 			public long secret;
 
-			/// <summary>Server volume</summary>
 			public override long VolumeId => volume_id;
-			/// <summary>File ID</summary>
 			public override int LocalId => local_id;
-			/// <summary>Checksum to access the file</summary>
 			public override long Secret => secret;
 		}
 	}
