@@ -1,7 +1,7 @@
 ﻿pr: none
 trigger: [ master ]
 
-name: 4.2.6-dev.$(Rev:r)
+name: 4.2.7-dev.$(Rev:r)
 
 pool:
   vmImage: ubuntu-latest
@@ -57,3 +57,4 @@ stages:
               "message": "{ \"commitId\": \"$(Build.SourceVersion)\", \"buildNumber\": \"$(Build.BuildNumber)\", \"teamProjectName\": \"$(System.TeamProject)\", \"commitMessage\": \"$(Release_Notes)\" }"
             }
           waitForCompletion: 'false'
+ 

@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 196;					// fetched 01/01/2025 23:32:39
+		public const int Version = 196;					// fetched 02/01/2025 13:18:52
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -1367,6 +1367,8 @@ namespace TL
 			[0x94271762] = typeof(StarGiftAttributeBackdrop),
 			[0xC02C4F4B] = typeof(StarGiftAttributeOriginalDetails),
 			[0x167BD90B] = typeof(Payments_StarGiftUpgradePreview),
+			[0x62D706B8] = typeof(Users_Users),
+			[0x315A4974] = typeof(Users_UsersSlice),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),

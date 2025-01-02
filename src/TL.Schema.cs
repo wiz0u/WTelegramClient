@@ -20153,4 +20153,17 @@ namespace TL
 	{
 		public StarGiftAttribute[] sample_attributes;
 	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/users.users"/></para></summary>
+	[TLDef(0x62D706B8)]
+	public partial class Users_Users : IObject
+	{
+		public Dictionary<long, User> users;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/users.usersSlice"/></para></summary>
+	[TLDef(0x315A4974)]
+	public sealed partial class Users_UsersSlice : Users_Users
+	{
+		public int count;
+	}
 }

@@ -2323,6 +2323,8 @@ namespace TL
 
 		/// <summary>Search for messages and peers globally		<para>See <a href="https://corefork.telegram.org/method/messages.searchGlobal"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.searchGlobal#possible-errors">details</a>)</para></summary>
 		/// <param name="broadcasts_only">If set, only returns results from channels (used in the <a href="https://corefork.telegram.org/api/search#global-search">global channel search tab »</a>).</param>
+		/// <param name="groups_only">Whether to search only in groups</param>
+		/// <param name="users_only">Whether to search only in private chats</param>
 		/// <param name="folder_id"><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></param>
 		/// <param name="q">Query</param>
 		/// <param name="filter">Global search filter</param>
@@ -2332,10 +2334,10 @@ namespace TL
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
-		public static Task<Messages_MessagesBase> Messages_SearchGlobal(this Client client, string q, MessagesFilter filter = null, DateTime min_date = default, DateTime max_date = default, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue, int? folder_id = null, bool broadcasts_only = false)
+		public static Task<Messages_MessagesBase> Messages_SearchGlobal(this Client client, string q, MessagesFilter filter = null, DateTime min_date = default, DateTime max_date = default, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue, int? folder_id = null, bool broadcasts_only = false, bool groups_only = false, bool users_only = false)
 			=> client.Invoke(new Messages_SearchGlobal
 			{
-				flags = (Messages_SearchGlobal.Flags)((folder_id != null ? 0x1 : 0) | (broadcasts_only ? 0x2 : 0)),
+				flags = (Messages_SearchGlobal.Flags)((folder_id != null ? 0x1 : 0) | (broadcasts_only ? 0x2 : 0) | (groups_only ? 0x4 : 0) | (users_only ? 0x8 : 0)),
 				folder_id = folder_id ?? default,
 				q = q,
 				filter = filter,
@@ -4448,6 +4450,15 @@ namespace TL
 				hash = hash,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.reportMessagesDelivery"/></para></summary>
+		public static Task<bool> Messages_ReportMessagesDelivery(this Client client, InputPeer peer, int[] id, bool push = false)
+			=> client.Invoke(new Messages_ReportMessagesDelivery
+			{
+				flags = (Messages_ReportMessagesDelivery.Flags)(push ? 0x1 : 0),
+				peer = peer,
+				id = id,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -5822,6 +5833,24 @@ namespace TL
 				bot = bot,
 				commission_permille = commission_permille,
 				duration_months = duration_months ?? default,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.setCustomVerification"/></para></summary>
+		public static Task<bool> Bots_SetCustomVerification(this Client client, InputPeer peer, InputUserBase bot = null, string custom_description = null, bool enabled = false)
+			=> client.Invoke(new Bots_SetCustomVerification
+			{
+				flags = (Bots_SetCustomVerification.Flags)((bot != null ? 0x1 : 0) | (custom_description != null ? 0x4 : 0) | (enabled ? 0x2 : 0)),
+				bot = bot,
+				peer = peer,
+				custom_description = custom_description,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.getBotRecommendations"/></para></summary>
+		public static Task<Users_Users> Bots_GetBotRecommendations(this Client client, InputUserBase bot)
+			=> client.Invoke(new Bots_GetBotRecommendations
+			{
+				flags = 0,
+				bot = bot,
 			});
 
 		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
@@ -9364,6 +9393,8 @@ namespace TL.Methods
 		{
 			has_folder_id = 0x1,
 			broadcasts_only = 0x2,
+			groups_only = 0x4,
+			users_only = 0x8,
 		}
 	}
 
@@ -11167,6 +11198,19 @@ namespace TL.Methods
 		}
 	}
 
+	[TLDef(0x5A6D7395)]
+	public sealed partial class Messages_ReportMessagesDelivery : IMethod<bool>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int[] id;
+
+		[Flags] public enum Flags : uint
+		{
+			push = 0x1,
+		}
+	}
+
 	[TLDef(0xEDD4882A)]
 	public sealed partial class Updates_GetState : IMethod<Updates_State> { }
 
@@ -12219,6 +12263,33 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			has_duration_months = 0x1,
+		}
+	}
+
+	[TLDef(0x8B89DFBD)]
+	public sealed partial class Bots_SetCustomVerification : IMethod<bool>
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputUserBase bot;
+		public InputPeer peer;
+		[IfFlag(2)] public string custom_description;
+
+		[Flags] public enum Flags : uint
+		{
+			has_bot = 0x1,
+			enabled = 0x2,
+			has_custom_description = 0x4,
+		}
+	}
+
+	[TLDef(0x2855BE61)]
+	public sealed partial class Bots_GetBotRecommendations : IMethod<Users_Users>
+	{
+		public Flags flags;
+		public InputUserBase bot;
+
+		[Flags] public enum Flags : uint
+		{
 		}
 	}
 
