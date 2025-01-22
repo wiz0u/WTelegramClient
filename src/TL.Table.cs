@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 196;					// fetched 02/01/2025 13:18:52
+		public const int Version = 198;					// fetched 22/01/2025 22:22:20
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -90,11 +90,11 @@ namespace TL
 			[0xB3BA0635] = typeof(InputMediaPhoto),
 			[0xF9C44144] = typeof(InputMediaGeoPoint),
 			[0xF8AB7DFB] = typeof(InputMediaContact),
-			[0x5B38C6C1] = typeof(InputMediaUploadedDocument),
-			[0x33473058] = typeof(InputMediaDocument),
+			[0x037C9330] = typeof(InputMediaUploadedDocument),
+			[0xA8763AB5] = typeof(InputMediaDocument),
 			[0xC13D1C11] = typeof(InputMediaVenue),
 			[0xE5BBFE1A] = typeof(InputMediaPhotoExternal),
-			[0xFB52DC99] = typeof(InputMediaDocumentExternal),
+			[0x779600F9] = typeof(InputMediaDocumentExternal),
 			[0xD33F43F3] = typeof(InputMediaGame),
 			[0x405FEF0D] = typeof(InputMediaInvoice),
 			[0x971FA843] = typeof(InputMediaGeoLive),
@@ -139,7 +139,7 @@ namespace TL
 			[0xE00998B7] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
 			[0x2633421B] = typeof(ChatFull),
-			[0x9FF3B858] = typeof(ChannelFull),
+			[0x52D6806B] = typeof(ChannelFull),
 			[0xC02D4007] = typeof(ChatParticipant),
 			[0xE46BCEE4] = typeof(ChatParticipantCreator),
 			[0xA0933F5B] = typeof(ChatParticipantAdmin),
@@ -155,7 +155,7 @@ namespace TL
 			[0x56E0D474] = typeof(MessageMediaGeo),
 			[0x70322949] = typeof(MessageMediaContact),
 			[0x9F84F49E] = typeof(MessageMediaUnsupported),
-			[0xDD570BD5] = typeof(MessageMediaDocument),
+			[0x52D8CCD9] = typeof(MessageMediaDocument),
 			[0xDDF10C3B] = typeof(MessageMediaWebPage),
 			[0x2EC0533F] = typeof(MessageMediaVenue),
 			[0xFDB19008] = typeof(MessageMediaGame),
@@ -213,8 +213,8 @@ namespace TL
 			[0x41B3E202] = typeof(MessageActionPaymentRefunded),
 			[0x45D5B021] = typeof(MessageActionGiftStars),
 			[0xB00C47A2] = typeof(MessageActionPrizeStars),
-			[0xD8F4F0A7] = typeof(MessageActionStarGift),
-			[0x26077B99] = typeof(MessageActionStarGiftUnique),
+			[0x4717E8A4] = typeof(MessageActionStarGift),
+			[0xACDFCB81] = typeof(MessageActionStarGiftUnique),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -989,6 +989,7 @@ namespace TL
 			[0x54B56617] = typeof(WebPageAttributeTheme),
 			[0x2E94C3E7] = typeof(WebPageAttributeStory),
 			[0x50CC03D3] = typeof(WebPageAttributeStickerSet),
+			[0xCF6F6DB8] = typeof(WebPageAttributeUniqueStarGift),
 			[0x4899484E] = typeof(Messages_VotesList),
 			[0xF568028A] = typeof(BankCardOpenUrl),
 			[0x3E24E573] = typeof(Payments_BankCardData),
@@ -1102,9 +1103,9 @@ namespace TL
 			[0x98986C0D] = typeof(InputInvoicePremiumGiftCode),
 			[0x65F00CE3] = typeof(InputInvoiceStars),
 			[0x34E793F1] = typeof(InputInvoiceChatInviteSubscription),
-			[0x25D8C1D8] = typeof(InputInvoiceStarGift),
-			[0x5EBE7262] = typeof(InputInvoiceStarGiftUpgrade),
-			[0xAE3BA9ED] = typeof(InputInvoiceStarGiftTransfer),
+			[0xE8625E92] = typeof(InputInvoiceStarGift),
+			[0x4D818D5D] = typeof(InputInvoiceStarGiftUpgrade),
+			[0x4A5F5BD9] = typeof(InputInvoiceStarGiftTransfer),
 			[0xAED0CBD9] = typeof(Payments_ExportedInvoice),
 			[0xCFB9D957] = typeof(Messages_TranscribedAudio),
 			[0x5334759C] = typeof(Help_PremiumPromo),
@@ -1118,8 +1119,9 @@ namespace TL
 			[0x74C34319] = typeof(PremiumGiftOption),
 			[0x88F8F21B] = typeof(PaymentFormMethod),
 			[0x2DE11AAE] = null,//EmojiStatusEmpty
-			[0x929B619D] = typeof(EmojiStatus),
-			[0xFA30A8C7] = typeof(EmojiStatusUntil),
+			[0xE7FF068A] = typeof(EmojiStatus),
+			[0x7184603B] = typeof(EmojiStatusCollectible),
+			[0x07141DBF] = typeof(InputEmojiStatusCollectible),
 			[0xD08CE645] = null,//Account_EmojiStatusesNotModified
 			[0x90C467D1] = typeof(Account_EmojiStatuses),
 			[0x79F5D419] = null,//ReactionEmpty
@@ -1210,6 +1212,7 @@ namespace TL
 			[0x2271F2BF] = typeof(InputMediaAreaChannelPost),
 			[0x37381085] = typeof(MediaAreaUrl),
 			[0x49A6549C] = typeof(MediaAreaWeather),
+			[0x5787686D] = typeof(MediaAreaStarGift),
 			[0x9A35E999] = typeof(PeerStories),
 			[0xCAE68768] = typeof(Stories_PeerStories),
 			[0xFD5E12BD] = typeof(Messages_WebPage),
@@ -1341,11 +1344,9 @@ namespace TL
 			[0x94CE852A] = typeof(StarsGiveawayOption),
 			[0x54236209] = typeof(StarsGiveawayWinnersOption),
 			[0x02CC73C8] = typeof(StarGift),
-			[0x6A1407CD] = typeof(StarGiftUnique),
+			[0xF2FE7E4A] = typeof(StarGiftUnique),
 			[0xA388A368] = null,//Payments_StarGiftsNotModified
 			[0x901689EA] = typeof(Payments_StarGifts),
-			[0x325835E1] = typeof(UserStarGift),
-			[0x6B65B517] = typeof(Payments_UserStarGifts),
 			[0x7903E3D9] = typeof(MessageReportOption),
 			[0xF0E4E0B6] = typeof(ReportResultChooseOption),
 			[0x6F09AC31] = typeof(ReportResultAddComment),
@@ -1365,10 +1366,17 @@ namespace TL
 			[0x39D99013] = typeof(StarGiftAttributeModel),
 			[0x13ACFF19] = typeof(StarGiftAttributePattern),
 			[0x94271762] = typeof(StarGiftAttributeBackdrop),
-			[0xC02C4F4B] = typeof(StarGiftAttributeOriginalDetails),
+			[0xE0BFF26C] = typeof(StarGiftAttributeOriginalDetails),
 			[0x167BD90B] = typeof(Payments_StarGiftUpgradePreview),
 			[0x62D706B8] = typeof(Users_Users),
 			[0x315A4974] = typeof(Users_UsersSlice),
+			[0xCAA2F60B] = typeof(Payments_UniqueStarGift),
+			[0xB53E8B21] = typeof(Messages_WebPagePreview),
+			[0x6056DBA5] = typeof(SavedStarGift),
+			[0x95F389B1] = typeof(Payments_SavedStarGifts),
+			[0x69279795] = typeof(InputSavedStarGiftUser),
+			[0xF101AA7F] = typeof(InputSavedStarGiftChat),
+			[0x84AA3A9C] = typeof(Payments_StarGiftWithdrawalUrl),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
@@ -1488,6 +1496,7 @@ namespace TL
 			[typeof(ChatReactions)]                  = 0xEAFC32BC, //chatReactionsNone
 			[typeof(Messages_Reactions)]             = 0xB06FDBDF, //messages.reactionsNotModified
 			// from TL.Secret:
+			[typeof(EmojiStatusBase)]                = 0x2DE11AAE, //emojiStatusEmpty
 			[typeof(EmojiList)]                      = 0x481EADFA, //emojiListNotModified
 			[typeof(Messages_EmojiGroups)]           = 0x6FB4AD87, //messages.emojiGroupsNotModified
 			[typeof(Help_AppConfig)]                 = 0x7CDE641D, //help.appConfigNotModified

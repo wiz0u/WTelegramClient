@@ -1107,7 +1107,7 @@ namespace TL
 
 		/// <summary>Set an <a href="https://corefork.telegram.org/api/emoji-status">emoji status</a>		<para>See <a href="https://corefork.telegram.org/method/account.updateEmojiStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.updateEmojiStatus#possible-errors">details</a>)</para></summary>
 		/// <param name="emoji_status"><a href="https://corefork.telegram.org/api/emoji-status">Emoji status</a> to set</param>
-		public static Task<bool> Account_UpdateEmojiStatus(this Client client, EmojiStatus emoji_status)
+		public static Task<bool> Account_UpdateEmojiStatus(this Client client, EmojiStatusBase emoji_status)
 			=> client.Invoke(new Account_UpdateEmojiStatus
 			{
 				emoji_status = emoji_status,
@@ -1415,6 +1415,14 @@ namespace TL
 			=> client.Invoke(new Account_SetReactionsNotifySettings
 			{
 				settings = settings,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getCollectibleEmojiStatuses"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.emojiStatusesNotModified">account.emojiStatusesNotModified</a></returns>
+		public static Task<Account_EmojiStatuses> Account_GetCollectibleEmojiStatuses(this Client client, long hash = default)
+			=> client.Invoke(new Account_GetCollectibleEmojiStatuses
+			{
+				hash = hash,
 			});
 
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
@@ -1932,10 +1940,10 @@ namespace TL
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Forward the messages as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the messages to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
-		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false)
+		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, int? video_timestamp = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_ForwardMessages
 			{
-				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
+				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (video_timestamp != null ? 0x100000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
 				from_peer = from_peer,
 				id = id,
 				random_id = random_id,
@@ -1944,6 +1952,7 @@ namespace TL
 				schedule_date = schedule_date ?? default,
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
+				video_timestamp = video_timestamp ?? default,
 			});
 
 		/// <summary>Report a new incoming chat for spam, if the <see cref="PeerSettings"/> of the chat allow us to do that		<para>See <a href="https://corefork.telegram.org/method/messages.reportSpam"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.reportSpam#possible-errors">details</a>)</para></summary>
@@ -2202,8 +2211,7 @@ namespace TL
 		/// <summary>Get preview of webpage		<para>See <a href="https://corefork.telegram.org/method/messages.getWebPagePreview"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getWebPagePreview#possible-errors">details</a>)</para></summary>
 		/// <param name="message">Message from which to extract the preview</param>
 		/// <param name="entities"><a href="https://corefork.telegram.org/api/entities">Message entities for styled text</a></param>
-		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messageMediaEmpty">messageMediaEmpty</a></returns>
-		public static Task<MessageMedia> Messages_GetWebPagePreview(this Client client, string message, MessageEntity[] entities = null)
+		public static Task<Messages_WebPagePreview> Messages_GetWebPagePreview(this Client client, string message, MessageEntity[] entities = null)
 			=> client.Invoke(new Messages_GetWebPagePreview
 			{
 				flags = (Messages_GetWebPagePreview.Flags)(entities != null ? 0x8 : 0),
@@ -5488,7 +5496,7 @@ namespace TL
 		/// <summary>Set an <a href="https://corefork.telegram.org/api/emoji-status">emoji status</a> for a channel or supergroup.		<para>See <a href="https://corefork.telegram.org/method/channels.updateEmojiStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.updateEmojiStatus#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">The channel/supergroup, must have at least <a href="https://corefork.telegram.org/api/config#channel-emoji-status-level-min">channel_emoji_status_level_min</a>/<a href="https://corefork.telegram.org/api/config#group-emoji-status-level-min">group_emoji_status_level_min</a> boosts.</param>
 		/// <param name="emoji_status"><a href="https://corefork.telegram.org/api/emoji-status">Emoji status</a> to set</param>
-		public static Task<UpdatesBase> Channels_UpdateEmojiStatus(this Client client, InputChannelBase channel, EmojiStatus emoji_status)
+		public static Task<UpdatesBase> Channels_UpdateEmojiStatus(this Client client, InputChannelBase channel, EmojiStatusBase emoji_status)
 			=> client.Invoke(new Channels_UpdateEmojiStatus
 			{
 				channel = channel,
@@ -5787,7 +5795,7 @@ namespace TL
 		/// <summary>Change the emoji status of a user (invoked by bots, see <a href="https://corefork.telegram.org/api/emoji-status#setting-an-emoji-status-from-a-bot">here »</a> for more info on the full flow)		<para>See <a href="https://corefork.telegram.org/method/bots.updateUserEmojiStatus"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.updateUserEmojiStatus#possible-errors">details</a>)</para></summary>
 		/// <param name="user_id">The user whose emoji status should be changed</param>
 		/// <param name="emoji_status">The emoji status</param>
-		public static Task<bool> Bots_UpdateUserEmojiStatus(this Client client, InputUserBase user_id, EmojiStatus emoji_status)
+		public static Task<bool> Bots_UpdateUserEmojiStatus(this Client client, InputUserBase user_id, EmojiStatusBase emoji_status)
 			=> client.Invoke(new Bots_UpdateUserEmojiStatus
 			{
 				user_id = user_id,
@@ -5849,7 +5857,6 @@ namespace TL
 		public static Task<Users_Users> Bots_GetBotRecommendations(this Client client, InputUserBase bot)
 			=> client.Invoke(new Bots_GetBotRecommendations
 			{
-				flags = 0,
 				bot = bot,
 			});
 
@@ -6162,34 +6169,20 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary>Get the <a href="https://corefork.telegram.org/api/gifts">gifts »</a> pinned on a specific user's profile.		<para>See <a href="https://corefork.telegram.org/method/payments.getUserStarGifts"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getUserStarGifts#possible-errors">details</a>)</para></summary>
-		/// <param name="user_id">Identifier of the user (can be the current user to fetch all gifts received by the current user).</param>
-		/// <param name="offset">Offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a>, taken from <see cref="Payments_UserStarGifts"/> (initially empty).</param>
-		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Payments_UserStarGifts> Payments_GetUserStarGifts(this Client client, InputUserBase user_id, string offset, int limit = int.MaxValue)
-			=> client.Invoke(new Payments_GetUserStarGifts
-			{
-				user_id = user_id,
-				offset = offset,
-				limit = limit,
-			});
-
 		/// <summary>Display or remove a <a href="https://corefork.telegram.org/api/gifts">received gift »</a> from our profile.		<para>See <a href="https://corefork.telegram.org/method/payments.saveStarGift"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.saveStarGift#possible-errors">details</a>)</para></summary>
 		/// <param name="unsave">If set, hides the gift from our profile.</param>
-		/// <param name="msg_id">The ID of the <see cref="MessageService"/> with the <see cref="MessageActionStarGift"/>.</param>
-		public static Task<bool> Payments_SaveStarGift(this Client client, int msg_id, bool unsave = false)
+		public static Task<bool> Payments_SaveStarGift(this Client client, InputSavedStarGift stargift, bool unsave = false)
 			=> client.Invoke(new Payments_SaveStarGift
 			{
 				flags = (Payments_SaveStarGift.Flags)(unsave ? 0x1 : 0),
-				msg_id = msg_id,
+				stargift = stargift,
 			});
 
 		/// <summary>Convert a <a href="https://corefork.telegram.org/api/gifts">received gift »</a> into Telegram Stars: this will permanently destroy the gift, converting it into <see cref="StarGift"/>.<c>convert_stars</c> <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a>, added to the user's balance.		<para>See <a href="https://corefork.telegram.org/method/payments.convertStarGift"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.convertStarGift#possible-errors">details</a>)</para></summary>
-		/// <param name="msg_id">The ID of the <see cref="MessageService"/> with the <see cref="MessageActionStarGift"/>.</param>
-		public static Task<bool> Payments_ConvertStarGift(this Client client, int msg_id)
+		public static Task<bool> Payments_ConvertStarGift(this Client client, InputSavedStarGift stargift)
 			=> client.Invoke(new Payments_ConvertStarGift
 			{
-				msg_id = msg_id,
+				stargift = stargift,
 			});
 
 		/// <summary>Cancel a <a href="https://corefork.telegram.org/api/subscriptions#bot-subscriptions">bot subscription</a>		<para>See <a href="https://corefork.telegram.org/method/payments.botCancelStarsSubscription"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.botCancelStarsSubscription#possible-errors">details</a>)</para></summary>
@@ -6274,26 +6267,59 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.upgradeStarGift"/></para></summary>
-		public static Task<UpdatesBase> Payments_UpgradeStarGift(this Client client, int msg_id, bool keep_original_details = false)
+		public static Task<UpdatesBase> Payments_UpgradeStarGift(this Client client, InputSavedStarGift stargift, bool keep_original_details = false)
 			=> client.Invoke(new Payments_UpgradeStarGift
 			{
 				flags = (Payments_UpgradeStarGift.Flags)(keep_original_details ? 0x1 : 0),
-				msg_id = msg_id,
+				stargift = stargift,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.transferStarGift"/></para></summary>
-		public static Task<UpdatesBase> Payments_TransferStarGift(this Client client, int msg_id, InputUserBase to_id)
+		public static Task<UpdatesBase> Payments_TransferStarGift(this Client client, InputSavedStarGift stargift, InputPeer to_id)
 			=> client.Invoke(new Payments_TransferStarGift
 			{
-				msg_id = msg_id,
+				stargift = stargift,
 				to_id = to_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getUserStarGift"/></para></summary>
-		public static Task<Payments_UserStarGifts> Payments_GetUserStarGift(this Client client, params int[] msg_id)
-			=> client.Invoke(new Payments_GetUserStarGift
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getUniqueStarGift"/></para></summary>
+		public static Task<Payments_UniqueStarGift> Payments_GetUniqueStarGift(this Client client, string slug)
+			=> client.Invoke(new Payments_GetUniqueStarGift
 			{
-				msg_id = msg_id,
+				slug = slug,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getSavedStarGifts"/></para></summary>
+		public static Task<Payments_SavedStarGifts> Payments_GetSavedStarGifts(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, bool exclude_unsaved = false, bool exclude_saved = false, bool exclude_unlimited = false, bool exclude_limited = false, bool exclude_unique = false, bool sort_by_value = false)
+			=> client.Invoke(new Payments_GetSavedStarGifts
+			{
+				flags = (Payments_GetSavedStarGifts.Flags)((exclude_unsaved ? 0x1 : 0) | (exclude_saved ? 0x2 : 0) | (exclude_unlimited ? 0x4 : 0) | (exclude_limited ? 0x8 : 0) | (exclude_unique ? 0x10 : 0) | (sort_by_value ? 0x20 : 0)),
+				peer = peer,
+				offset = offset,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getSavedStarGift"/></para></summary>
+		public static Task<Payments_SavedStarGifts> Payments_GetSavedStarGift(this Client client, params InputSavedStarGift[] stargift)
+			=> client.Invoke(new Payments_GetSavedStarGift
+			{
+				stargift = stargift,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftWithdrawalUrl"/></para></summary>
+		public static Task<Payments_StarGiftWithdrawalUrl> Payments_GetStarGiftWithdrawalUrl(this Client client, InputSavedStarGift stargift, InputCheckPasswordSRP password)
+			=> client.Invoke(new Payments_GetStarGiftWithdrawalUrl
+			{
+				stargift = stargift,
+				password = password,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.toggleChatStarGiftNotifications"/></para></summary>
+		public static Task<bool> Payments_ToggleChatStarGiftNotifications(this Client client, InputPeer peer, bool enabled = false)
+			=> client.Invoke(new Payments_ToggleChatStarGiftNotifications
+			{
+				flags = (Payments_ToggleChatStarGiftNotifications.Flags)(enabled ? 0x1 : 0),
+				peer = peer,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -8352,7 +8378,7 @@ namespace TL.Methods
 	[TLDef(0xFBD3DE6B)]
 	public sealed partial class Account_UpdateEmojiStatus : IMethod<bool>
 	{
-		public EmojiStatus emoji_status;
+		public EmojiStatusBase emoji_status;
 	}
 
 	[TLDef(0xD6753386)]
@@ -8613,6 +8639,12 @@ namespace TL.Methods
 	public sealed partial class Account_SetReactionsNotifySettings : IMethod<ReactionsNotifySettings>
 	{
 		public ReactionsNotifySettings settings;
+	}
+
+	[TLDef(0x2E7B4543)]
+	public sealed partial class Account_GetCollectibleEmojiStatuses : IMethod<Account_EmojiStatuses>
+	{
+		public long hash;
 	}
 
 	[TLDef(0x0D91A548)]
@@ -9050,7 +9082,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xD5039208)]
+	[TLDef(0x6D74DA08)]
 	public sealed partial class Messages_ForwardMessages : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -9062,6 +9094,7 @@ namespace TL.Methods
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
+		[IfFlag(20)] public int video_timestamp;
 
 		[Flags] public enum Flags : uint
 		{
@@ -9076,6 +9109,7 @@ namespace TL.Methods
 			noforwards = 0x4000,
 			has_quick_reply_shortcut = 0x20000,
 			allow_paid_floodskip = 0x80000,
+			has_video_timestamp = 0x100000,
 		}
 	}
 
@@ -9278,8 +9312,8 @@ namespace TL.Methods
 		public long hash;
 	}
 
-	[TLDef(0x8B68B0CC)]
-	public sealed partial class Messages_GetWebPagePreview : IMethod<MessageMedia>
+	[TLDef(0x570D6F6F)]
+	public sealed partial class Messages_GetWebPagePreview : IMethod<Messages_WebPagePreview>
 	{
 		public Flags flags;
 		public string message;
@@ -12012,7 +12046,7 @@ namespace TL.Methods
 	public sealed partial class Channels_UpdateEmojiStatus : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
-		public EmojiStatus emoji_status;
+		public EmojiStatusBase emoji_status;
 	}
 
 	[TLDef(0xAD399CEE)]
@@ -12231,7 +12265,7 @@ namespace TL.Methods
 	public sealed partial class Bots_UpdateUserEmojiStatus : IMethod<bool>
 	{
 		public InputUserBase user_id;
-		public EmojiStatus emoji_status;
+		public EmojiStatusBase emoji_status;
 	}
 
 	[TLDef(0x06DE6392)]
@@ -12282,15 +12316,10 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x2855BE61)]
+	[TLDef(0xA1B70815)]
 	public sealed partial class Bots_GetBotRecommendations : IMethod<Users_Users>
 	{
-		public Flags flags;
 		public InputUserBase bot;
-
-		[Flags] public enum Flags : uint
-		{
-		}
 	}
 
 	[TLDef(0x37148DBB)]
@@ -12560,19 +12589,11 @@ namespace TL.Methods
 		public int hash;
 	}
 
-	[TLDef(0x5E72C7E1)]
-	public sealed partial class Payments_GetUserStarGifts : IMethod<Payments_UserStarGifts>
-	{
-		public InputUserBase user_id;
-		public string offset;
-		public int limit;
-	}
-
-	[TLDef(0x92FD2AAE)]
+	[TLDef(0x2A2A697C)]
 	public sealed partial class Payments_SaveStarGift : IMethod<bool>
 	{
 		public Flags flags;
-		public int msg_id;
+		public InputSavedStarGift stargift;
 
 		[Flags] public enum Flags : uint
 		{
@@ -12580,10 +12601,10 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x72770C83)]
+	[TLDef(0x74BF076B)]
 	public sealed partial class Payments_ConvertStarGift : IMethod<bool>
 	{
-		public int msg_id;
+		public InputSavedStarGift stargift;
 	}
 
 	[TLDef(0x6DFA0622)]
@@ -12662,11 +12683,11 @@ namespace TL.Methods
 		public long gift_id;
 	}
 
-	[TLDef(0xCF4F0781)]
+	[TLDef(0xAED6E4F5)]
 	public sealed partial class Payments_UpgradeStarGift : IMethod<UpdatesBase>
 	{
 		public Flags flags;
-		public int msg_id;
+		public InputSavedStarGift stargift;
 
 		[Flags] public enum Flags : uint
 		{
@@ -12674,17 +12695,61 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x333FB526)]
+	[TLDef(0x7F18176A)]
 	public sealed partial class Payments_TransferStarGift : IMethod<UpdatesBase>
 	{
-		public int msg_id;
-		public InputUserBase to_id;
+		public InputSavedStarGift stargift;
+		public InputPeer to_id;
 	}
 
-	[TLDef(0xB502E4A5)]
-	public sealed partial class Payments_GetUserStarGift : IMethod<Payments_UserStarGifts>
+	[TLDef(0xA1974D72)]
+	public sealed partial class Payments_GetUniqueStarGift : IMethod<Payments_UniqueStarGift>
 	{
-		public int[] msg_id;
+		public string slug;
+	}
+
+	[TLDef(0x23830DE9)]
+	public sealed partial class Payments_GetSavedStarGifts : IMethod<Payments_SavedStarGifts>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public string offset;
+		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			exclude_unsaved = 0x1,
+			exclude_saved = 0x2,
+			exclude_unlimited = 0x4,
+			exclude_limited = 0x8,
+			exclude_unique = 0x10,
+			sort_by_value = 0x20,
+		}
+	}
+
+	[TLDef(0xB455A106)]
+	public sealed partial class Payments_GetSavedStarGift : IMethod<Payments_SavedStarGifts>
+	{
+		public InputSavedStarGift[] stargift;
+	}
+
+	[TLDef(0xD06E93A8)]
+	public sealed partial class Payments_GetStarGiftWithdrawalUrl : IMethod<Payments_StarGiftWithdrawalUrl>
+	{
+		public InputSavedStarGift stargift;
+		public InputCheckPasswordSRP password;
+	}
+
+	[TLDef(0x60EAEFA1)]
+	public sealed partial class Payments_ToggleChatStarGiftNotifications : IMethod<bool>
+	{
+		public Flags flags;
+		public InputPeer peer;
+
+		[Flags] public enum Flags : uint
+		{
+			enabled = 0x1,
+		}
 	}
 
 	[TLDef(0x9021AB67)]
