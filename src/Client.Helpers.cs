@@ -504,7 +504,11 @@ namespace WTelegram
 		public async Task<Messages_Chats> Messages_GetAllChats()
 		{
 			var dialogs = await Messages_GetAllDialogs();
-			return new Messages_Chats { chats = dialogs.chats };
+			var result = new Messages_Chats { chats = [] };
+			foreach (var dialog in dialogs.dialogs)
+				if (dialog.Peer is (PeerChat or PeerChannel) and { ID: var id })
+					result.chats[id] = dialogs.chats[id];
+			return result;
 		}
 
 		/// <summary>Returns the current user dialog list.		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getDialogs#possible-errors">details</a>)</para></summary>

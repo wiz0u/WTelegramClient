@@ -17,7 +17,7 @@
 
 Release Notes:
 $(ReleaseNotes.Replace("|", "%0D%0A").Replace(" - ","%0D%0A- ").Replace("  ", "%0D%0A%0D%0A"))</Description>
-    <Copyright>Copyright © Olivier Marcoux 2021-2024</Copyright>
+    <Copyright>Copyright © Olivier Marcoux 2021-2025</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://wiz0u.github.io/WTelegramClient</PackageProjectUrl>
     <PackageIcon>logo.png</PackageIcon>

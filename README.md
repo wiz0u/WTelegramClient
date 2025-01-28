@@ -206,4 +206,4 @@ the [Examples codes](https://wiz0u.github.io/WTelegramClient/EXAMPLES) and still
 
 If you like this library, you can [buy me a coffee](https://buymeacoffee.com/wizou) ❤ This will help the project keep going.
 
-© 2024 Olivier Marcoux
+© 2021-2025 Olivier Marcoux
