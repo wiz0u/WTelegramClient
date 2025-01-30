@@ -373,9 +373,10 @@ namespace TL
 				char c = sb[offset];
 				if (c == '&')
 				{
-					for (end = offset + 1; end < sb.Length; end++)
-						if (sb[end] == ';') break;
-					if (end >= sb.Length) break;
+					end = offset + 1;
+					if (end < sb.Length && sb[end] == '#') end++;
+					while (end < sb.Length && sb[end] is >= 'a' and <= 'z' or >= 'A' and <= 'Z' or >= '0' and <= '9') end++;
+					if (end >= sb.Length || sb[end] != ';') break;
 					var html = HttpUtility.HtmlDecode(sb.ToString(offset, end - offset + 1));
 					if (html.Length == 1)
 					{
@@ -421,7 +422,7 @@ namespace TL
 							}
 							else if (tag.StartsWith("a href=\"") && tag[^1] == '"')
 							{
-								tag = tag[8..^1];
+								tag = HttpUtility.HtmlDecode(tag[8..^1]);
 								if (tag.StartsWith("tg://user?id=") && long.TryParse(tag[13..], out var user_id) && users?.GetValueOrDefault(user_id)?.access_hash is long hash)
 									entities.Add(new InputMessageEntityMentionName { offset = offset, length = -1, user_id = new InputUser(user_id, hash) });
 								else
@@ -494,7 +495,7 @@ namespace TL
 						if (tag[0] == 'a')
 						{
 							if (nextEntity is MessageEntityTextUrl metu)
-								tag = $"<a href=\"{metu.url}\">";
+								tag = $"<a href=\"{Escape(metu.url)}\">";
 							else if (nextEntity is MessageEntityMentionName memn)
 								tag = $"<a href=\"tg://user?id={memn.user_id}\">";
 							else if (nextEntity is InputMessageEntityMentionName imemn)
