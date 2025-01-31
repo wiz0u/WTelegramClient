@@ -761,6 +761,10 @@ namespace TL
 	partial class MessageReplyHeader	{ public int TopicID => flags.HasFlag(Flags.forum_topic) ? flags.HasFlag(Flags.has_reply_to_top_id) ? reply_to_top_id : reply_to_msg_id : 0; }
 	partial class GroupCallBase			{ public static implicit operator InputGroupCall(GroupCallBase call) => new() { id = call.ID, access_hash = call.AccessHash }; }
 
+	partial class EmojiStatusBase		{ public virtual long DocumentId => 0; }
+	partial class EmojiStatus			{ public override long DocumentId => document_id; }
+	partial class EmojiStatusCollectible{ public override long DocumentId => document_id; }
+
 	partial class ForumTopicBase		{ public virtual string Title => null; }
 	partial class ForumTopic			{ public override string Title => title; }
 
