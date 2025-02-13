@@ -126,6 +126,14 @@ namespace TL
 				query = query,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/invokeWithReCaptcha"/></para></summary>
+		public static Task<X> InvokeWithReCaptcha<X>(this Client client, string token, IMethod<X> query)
+			=> client.Invoke(new InvokeWithReCaptcha<X>
+			{
+				token = token,
+				query = query,
+			});
+
 		/// <summary>Send the verification code for login		<para>See <a href="https://corefork.telegram.org/method/auth.sendCode"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406,500 (<a href="https://corefork.telegram.org/method/auth.sendCode#possible-errors">details</a>)</para></summary>
 		/// <param name="phone_number">Phone number in international format</param>
 		/// <param name="api_id">Application identifier (see <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
@@ -4336,28 +4344,28 @@ namespace TL
 				platform = platform,
 			});
 
-		/// <summary>Sends one or more <a href="https://corefork.telegram.org/api/reactions#paid-reactions">paid Telegram Star reactions »</a>, transferring <a href="https://corefork.telegram.org/api/stars">Telegram Stars »</a> to a channel's balance.		<para>See <a href="https://corefork.telegram.org/method/messages.sendPaidReaction"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendPaidReaction#possible-errors">details</a>)</para></summary>
+		/// <summary>Sends one or more <a href="https://corefork.telegram.org/api/reactions#paid-reactions">paid Telegram Star reactions »</a>, transferring <a href="https://corefork.telegram.org/api/stars">Telegram Stars »</a> to a channel&#39;s balance.		<para>See <a href="https://corefork.telegram.org/method/messages.sendPaidReaction"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.sendPaidReaction#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The channel</param>
 		/// <param name="msg_id">The message to react to</param>
 		/// <param name="count">The number of <a href="https://corefork.telegram.org/api/stars">stars</a> to send (each will increment the reaction counter by one).</param>
 		/// <param name="random_id">Unique client message ID required to prevent message resending <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
-		/// <param name="private_">Each post with star reactions has a leaderboard with the top senders, but users can opt out of appearing there if they prefer more privacy.  <br/>If the user explicitly chose to make their paid reaction(s) private, pass <see langword="true"/> to <see cref="Messages_SendPaidReaction">Messages_SendPaidReaction</see>.<c>private</c>.  <br/>If the user explicitly chose to make their paid reaction(s) private, pass <see langword="true"/> to <see cref="Messages_SendPaidReaction">Messages_SendPaidReaction</see>.<c>private</c>.  <br/>If the user did not make any explicit choice about the privacy of their paid reaction(s) (i.e. when reacting by clicking on an existing star reaction on a message), do not populate the <see cref="Messages_SendPaidReaction">Messages_SendPaidReaction</see>.<c>private</c> flag.</param>
-		public static Task<UpdatesBase> Messages_SendPaidReaction(this Client client, InputPeer peer, int msg_id, int count, long random_id, bool? private_ = default)
+		/// <param name="private_">Each post with star reactions has a leaderboard with the top senders, but users can opt out of appearing there if they prefer more privacy.<br/>If the user explicitly chose to make their paid reaction(s) private, pass <see langword="true"/> to <see cref="Messages_SendPaidReaction">Messages_SendPaidReaction</see>.<c>private</c>.<br/>If the user explicitly chose to make their paid reaction(s) not private, pass <see langword="true"/> to <see cref="Messages_SendPaidReaction">Messages_SendPaidReaction</see>.<c>private</c>.<br/>If the user did not make any explicit choice about the privacy of their paid reaction(s) (i.e. when reacting by clicking on an existing star reaction on a message), do not populate the <see cref="Messages_SendPaidReaction">Messages_SendPaidReaction</see>.<c>private</c> flag.</param>
+		public static Task<UpdatesBase> Messages_SendPaidReaction(this Client client, InputPeer peer, int msg_id, int count, long random_id, PaidReactionPrivacy private_ = null)
 			=> client.Invoke(new Messages_SendPaidReaction
 			{
-				flags = (Messages_SendPaidReaction.Flags)(private_ != default ? 0x1 : 0),
+				flags = (Messages_SendPaidReaction.Flags)(private_ != null ? 0x1 : 0),
 				peer = peer,
 				msg_id = msg_id,
 				count = count,
 				random_id = random_id,
-				private_ = private_ ?? default,
+				private_ = private_,
 			});
 
 		/// <summary>Changes the privacy of already sent <a href="https://corefork.telegram.org/api/reactions#paid-reactions">paid reactions</a> on a specific message.		<para>See <a href="https://corefork.telegram.org/method/messages.togglePaidReactionPrivacy"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.togglePaidReactionPrivacy#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The channel</param>
 		/// <param name="msg_id">The ID of the message to which we sent the paid reactions</param>
 		/// <param name="private_">If true, makes the current anonymous in the top sender leaderboard for this message; otherwise, does the opposite.</param>
-		public static Task<bool> Messages_TogglePaidReactionPrivacy(this Client client, InputPeer peer, int msg_id, bool private_)
+		public static Task<bool> Messages_TogglePaidReactionPrivacy(this Client client, InputPeer peer, int msg_id, PaidReactionPrivacy private_)
 			=> client.Invoke(new Messages_TogglePaidReactionPrivacy
 			{
 				peer = peer,
@@ -5253,9 +5261,10 @@ namespace TL
 
 		/// <summary>Obtains a list of peers that can be used to send messages in a specific group		<para>See <a href="https://corefork.telegram.org/method/channels.getSendAs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getSendAs#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The group where we intend to send messages</param>
-		public static Task<Channels_SendAsPeers> Channels_GetSendAs(this Client client, InputPeer peer)
+		public static Task<Channels_SendAsPeers> Channels_GetSendAs(this Client client, InputPeer peer, bool for_paid_reactions = false)
 			=> client.Invoke(new Channels_GetSendAs
 			{
+				flags = (Channels_GetSendAs.Flags)(for_paid_reactions ? 0x1 : 0),
 				peer = peer,
 			});
 
@@ -7609,6 +7618,13 @@ namespace TL.Methods
 	{
 		public string nonce;
 		public string secret;
+		public IMethod<X> query;
+	}
+
+	[TLDef(0xADBB0F94)]
+	public sealed partial class InvokeWithReCaptcha<X> : IMethod<X>
+	{
+		public string token;
 		public IMethod<X> query;
 	}
 
@@ -11132,7 +11148,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x9DD6A67B)]
+	[TLDef(0x58BBCB50)]
 	public sealed partial class Messages_SendPaidReaction : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -11140,7 +11156,7 @@ namespace TL.Methods
 		public int msg_id;
 		public int count;
 		public long random_id;
-		[IfFlag(0)] public bool private_;
+		[IfFlag(0)] public PaidReactionPrivacy private_;
 
 		[Flags] public enum Flags : uint
 		{
@@ -11148,12 +11164,12 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x849AD397)]
+	[TLDef(0x435885B5)]
 	public sealed partial class Messages_TogglePaidReactionPrivacy : IMethod<bool>
 	{
 		public InputPeer peer;
 		public int msg_id;
-		public bool private_;
+		public PaidReactionPrivacy private_;
 	}
 
 	[TLDef(0x472455AA)]
@@ -11840,10 +11856,16 @@ namespace TL.Methods
 		public InputChannelBase channel;
 	}
 
-	[TLDef(0x0DC770EE)]
+	[TLDef(0xE785A43F)]
 	public sealed partial class Channels_GetSendAs : IMethod<Channels_SendAsPeers>
 	{
+		public Flags flags;
 		public InputPeer peer;
+
+		[Flags] public enum Flags : uint
+		{
+			for_paid_reactions = 0x1,
+		}
 	}
 
 	[TLDef(0x367544DB)]

@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 198;					// fetched 22/01/2025 22:22:20
+		public const int Version = 199;					// fetched 13/02/2025 13:06:03
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -419,7 +419,7 @@ namespace TL
 			[0x1EA2FDA7] = typeof(UpdateBusinessBotCallbackQuery),
 			[0xA584B019] = typeof(UpdateStarsRevenueStatus),
 			[0x283BD312] = typeof(UpdateBotPurchasedPaidMedia),
-			[0x51CA7AEC] = typeof(UpdatePaidReactionPrivacy),
+			[0x8B725FCE] = typeof(UpdatePaidReactionPrivacy),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -1344,7 +1344,7 @@ namespace TL
 			[0x94CE852A] = typeof(StarsGiveawayOption),
 			[0x54236209] = typeof(StarsGiveawayWinnersOption),
 			[0x02CC73C8] = typeof(StarGift),
-			[0xF2FE7E4A] = typeof(StarGiftUnique),
+			[0x5C62D151] = typeof(StarGiftUnique),
 			[0xA388A368] = null,//Payments_StarGiftsNotModified
 			[0x901689EA] = typeof(Payments_StarGifts),
 			[0x7903E3D9] = typeof(MessageReportOption),
@@ -1377,6 +1377,9 @@ namespace TL
 			[0x69279795] = typeof(InputSavedStarGiftUser),
 			[0xF101AA7F] = typeof(InputSavedStarGiftChat),
 			[0x84AA3A9C] = typeof(Payments_StarGiftWithdrawalUrl),
+			[0x206AD49E] = null,//PaidReactionPrivacyDefault
+			[0x1F0C1AD9] = typeof(PaidReactionPrivacyAnonymous),
+			[0xDC6CFCF0] = typeof(PaidReactionPrivacyPeer),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
@@ -1507,6 +1510,7 @@ namespace TL
 			[typeof(Messages_QuickReplies)]          = 0x5F91EB5B, //messages.quickRepliesNotModified
 			[typeof(Messages_AvailableEffects)]      = 0xD1ED9A5B, //messages.availableEffectsNotModified
 			[typeof(Payments_StarGifts)]             = 0xA388A368, //payments.starGiftsNotModified
+			[typeof(PaidReactionPrivacy)]            = 0x206AD49E, //paidReactionPrivacyDefault
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}

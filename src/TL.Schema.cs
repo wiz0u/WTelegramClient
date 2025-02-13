@@ -257,7 +257,7 @@ namespace TL
 			has_ttl_seconds = 0x2,
 			/// <summary>Field <see cref="thumb"/> has a value</summary>
 			has_thumb = 0x4,
-			/// <summary>Whether the specified document is a video file with no audio tracks (a GIF animation (even as MPEG4), for example)</summary>
+			/// <summary>Whether to send the file as a video even if it doesn&#39;t have an audio track (i.e. if set, the <see cref="DocumentAttributeAnimated"/> attribute will <strong>not</strong> be set even for videos without audio)</summary>
 			nosound_video = 0x8,
 			/// <summary>Force the media file to be uploaded as document</summary>
 			force_file = 0x10,
@@ -5756,11 +5756,11 @@ namespace TL
 		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
 	/// <summary>Contains the current <a href="https://corefork.telegram.org/api/reactions#paid-reactions">default paid reaction privacy, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/updatePaidReactionPrivacy"/></para></summary>
-	[TLDef(0x51CA7AEC)]
+	[TLDef(0x8B725FCE)]
 	public sealed partial class UpdatePaidReactionPrivacy : Update
 	{
 		/// <summary>Whether paid reaction privacy is enabled or disabled.</summary>
-		public bool private_;
+		public PaidReactionPrivacy private_;
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -7118,7 +7118,7 @@ namespace TL
 		[IfFlag(2)] public int preload_prefix_size;
 		/// <summary>Floating point UNIX timestamp in seconds, indicating the frame of the video that should be used as static preview and thumbnail.</summary>
 		[IfFlag(4)] public double video_start_ts;
-		/// <summary>Codec used for the video, i.e. "h264", "h265", or "av1"</summary>
+		/// <summary>Codec used for the video, i.e. “h264”, “h265”, or “av1”</summary>
 		[IfFlag(5)] public string video_codec;
 
 		[Flags] public enum Flags : uint
@@ -7129,7 +7129,7 @@ namespace TL
 			supports_streaming = 0x2,
 			/// <summary>Field <see cref="preload_prefix_size"/> has a value</summary>
 			has_preload_prefix_size = 0x4,
-			/// <summary>Whether the specified document is a video file with no audio tracks (a GIF animation (even as MPEG4), for example)</summary>
+			/// <summary>Whether the specified document is a video file with no audio tracks</summary>
 			nosound = 0x8,
 			/// <summary>Field <see cref="video_start_ts"/> has a value</summary>
 			has_video_start_ts = 0x10,
@@ -7361,6 +7361,7 @@ namespace TL
 			has_attributes = 0x1000,
 			/// <summary>Whether the size of the media in the preview can be changed.</summary>
 			has_large_media = 0x2000,
+			video_cover_photo = 0x4000,
 		}
 
 		/// <summary>Preview ID</summary>
@@ -19842,7 +19843,7 @@ namespace TL
 		public override int AvailabilityTotal => availability_total;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftUnique"/></para></summary>
-	[TLDef(0xF2FE7E4A)]
+	[TLDef(0x5C62D151)]
 	public sealed partial class StarGiftUnique : StarGiftBase
 	{
 		public Flags flags;
@@ -19856,12 +19857,14 @@ namespace TL
 		public StarGiftAttribute[] attributes;
 		public int availability_issued;
 		public int availability_total;
+		[IfFlag(3)] public string gift_address;
 
 		[Flags] public enum Flags : uint
 		{
 			has_owner_id = 0x1,
 			has_owner_name = 0x2,
 			has_owner_address = 0x4,
+			has_gift_address = 0x8,
 		}
 
 		public override long ID => id;
@@ -20298,5 +20301,18 @@ namespace TL
 	public sealed partial class Payments_StarGiftWithdrawalUrl : IObject
 	{
 		public string url;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/PaidReactionPrivacy"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/paidReactionPrivacyDefault">paidReactionPrivacyDefault</a></remarks>
+	public abstract partial class PaidReactionPrivacy : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/paidReactionPrivacyAnonymous"/></para></summary>
+	[TLDef(0x1F0C1AD9)]
+	public sealed partial class PaidReactionPrivacyAnonymous : PaidReactionPrivacy { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/paidReactionPrivacyPeer"/></para></summary>
+	[TLDef(0xDC6CFCF0)]
+	public sealed partial class PaidReactionPrivacyPeer : PaidReactionPrivacy
+	{
+		public InputPeer peer;
 	}
 }
