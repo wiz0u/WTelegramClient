@@ -292,6 +292,7 @@ namespace WTelegram
 		/// <param name="dcId">ID of the Data Center (use negative values for media_only)</param>
 		/// <param name="connect">Connect immediately</param>
 		/// <returns>Client connected to the selected DC</returns>
+		/// <remarks>⚠️ You shouldn't have to use this method unless you know what you're doing</remarks>
 		public async Task<Client> GetClientForDC(int dcId, bool connect = true)
 		{
 			if (_dcSession.DataCenter?.id == dcId) return this;

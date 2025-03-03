@@ -1,7 +1,11 @@
 ﻿pr: none
-trigger: [ master ]
+trigger:
+  branches:
+    include: [ master ]
+  paths:
+    exclude: [ '.github', '*.md', 'Examples' ]
 
-name: 4.3.1-dev.$(Rev:r)
+name: 4.3.2-dev.$(Rev:r)
 
 pool:
   vmImage: ubuntu-latest
@@ -57,4 +61,3 @@ stages:
               "message": "{ \"commitId\": \"$(Build.SourceVersion)\", \"buildNumber\": \"$(Build.BuildNumber)\", \"teamProjectName\": \"$(System.TeamProject)\", \"commitMessage\": \"$(Release_Notes)\" }"
             }
           waitForCompletion: 'false'
- 

@@ -2,7 +2,7 @@ name: 'Auto-Lock Issues'
 
 on:
   schedule:
-    - cron: '17 2 * * *'
+    - cron: '17 2 * * 1'
   workflow_dispatch:
 
 permissions:
