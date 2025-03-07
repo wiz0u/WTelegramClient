@@ -1433,6 +1433,21 @@ namespace TL
 				hash = hash,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.addNoPaidMessagesException"/></para></summary>
+		public static Task<bool> Account_AddNoPaidMessagesException(this Client client, InputUserBase user_id, bool refund_charged = false)
+			=> client.Invoke(new Account_AddNoPaidMessagesException
+			{
+				flags = (Account_AddNoPaidMessagesException.Flags)(refund_charged ? 0x1 : 0),
+				user_id = user_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getPaidMessagesRevenue"/></para></summary>
+		public static Task<Account_PaidMessagesRevenue> Account_GetPaidMessagesRevenue(this Client client, InputUserBase user_id)
+			=> client.Invoke(new Account_GetPaidMessagesRevenue
+			{
+				user_id = user_id,
+			});
+
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, params InputUserBase[] id)
@@ -1459,10 +1474,9 @@ namespace TL
 				errors = errors,
 			});
 
-		/// <summary>Check whether we can write to the specified user (this method can only be called by non-<a href="https://corefork.telegram.org/api/premium">Premium</a> users), see <a href="https://corefork.telegram.org/api/privacy#require-premium-for-new-non-contact-users">here »</a> for more info on the full flow.		<para>See <a href="https://corefork.telegram.org/method/users.getIsPremiumRequiredToContact"/></para></summary>
-		/// <param name="id">Users to fetch info about.</param>
-		public static Task<bool[]> Users_GetIsPremiumRequiredToContact(this Client client, params InputUserBase[] id)
-			=> client.Invoke(new Users_GetIsPremiumRequiredToContact
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/users.getRequirementsToContact"/></para></summary>
+		public static Task<RequirementToContact[]> Users_GetRequirementsToContact(this Client client, params InputUserBase[] id)
+			=> client.Invoke(new Users_GetRequirementsToContact
 			{
 				id = id,
 			});
@@ -1880,10 +1894,10 @@ namespace TL
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
-		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
+		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, long? allow_paid_stars = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_SendMessage
 			{
-				flags = (Messages_SendMessage.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
+				flags = (Messages_SendMessage.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (allow_paid_stars != null ? 0x200000 : 0) | (no_webpage ? 0x2 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				message = message,
@@ -1894,6 +1908,7 @@ namespace TL
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
 				effect = effect ?? default,
+				allow_paid_stars = allow_paid_stars ?? default,
 			});
 
 		/// <summary>Send a media		<para>See <a href="https://corefork.telegram.org/method/messages.sendMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,420,500 (<a href="https://corefork.telegram.org/method/messages.sendMedia#possible-errors">details</a>)</para></summary>
@@ -1915,10 +1930,10 @@ namespace TL
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
-		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
+		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, long? allow_paid_stars = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_SendMedia
 			{
-				flags = (Messages_SendMedia.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
+				flags = (Messages_SendMedia.Flags)((reply_to != null ? 0x1 : 0) | (reply_markup != null ? 0x4 : 0) | (entities != null ? 0x8 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (allow_paid_stars != null ? 0x200000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				media = media,
@@ -1930,6 +1945,7 @@ namespace TL
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
 				effect = effect ?? default,
+				allow_paid_stars = allow_paid_stars ?? default,
 			});
 
 		/// <summary>Forwards messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.forwardMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,420,500 (<a href="https://corefork.telegram.org/method/messages.forwardMessages#possible-errors">details</a>)</para></summary>
@@ -1948,10 +1964,10 @@ namespace TL
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Forward the messages as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the messages to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
-		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, int? video_timestamp = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false)
+		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, int? video_timestamp = null, long? allow_paid_stars = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_ForwardMessages
 			{
-				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (video_timestamp != null ? 0x100000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
+				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (video_timestamp != null ? 0x100000 : 0) | (allow_paid_stars != null ? 0x200000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
 				from_peer = from_peer,
 				id = id,
 				random_id = random_id,
@@ -1961,6 +1977,7 @@ namespace TL
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
 				video_timestamp = video_timestamp ?? default,
+				allow_paid_stars = allow_paid_stars ?? default,
 			});
 
 		/// <summary>Report a new incoming chat for spam, if the <see cref="PeerSettings"/> of the chat allow us to do that		<para>See <a href="https://corefork.telegram.org/method/messages.reportSpam"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.reportSpam#possible-errors">details</a>)</para></summary>
@@ -2458,10 +2475,10 @@ namespace TL
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
-		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false)
+		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? allow_paid_stars = null, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false)
 			=> client.Invoke(new Messages_SendInlineBotResult
 			{
-				flags = (Messages_SendInlineBotResult.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0)),
+				flags = (Messages_SendInlineBotResult.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (allow_paid_stars != null ? 0x200000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (hide_via ? 0x800 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				random_id = random_id,
@@ -2470,6 +2487,7 @@ namespace TL
 				schedule_date = schedule_date ?? default,
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
+				allow_paid_stars = allow_paid_stars ?? default,
 			});
 
 		/// <summary>Find out if a media message's caption can be edited		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageEditData"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.getMessageEditData#possible-errors">details</a>)</para></summary>
@@ -2905,10 +2923,10 @@ namespace TL
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
-		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
+		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, long? allow_paid_stars = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
-				flags = (Messages_SendMultiMedia.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
+				flags = (Messages_SendMultiMedia.Flags)((reply_to != null ? 0x1 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (allow_paid_stars != null ? 0x200000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (clear_draft ? 0x80 : 0) | (noforwards ? 0x4000 : 0) | (update_stickersets_order ? 0x8000 : 0) | (invert_media ? 0x10000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
 				peer = peer,
 				reply_to = reply_to,
 				multi_media = multi_media,
@@ -2916,6 +2934,7 @@ namespace TL
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
 				effect = effect ?? default,
+				allow_paid_stars = allow_paid_stars ?? default,
 			});
 
 		/// <summary>Upload encrypted file and associate it to a secret chat		<para>See <a href="https://corefork.telegram.org/method/messages.uploadEncryptedFile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.uploadEncryptedFile#possible-errors">details</a>)</para></summary>
@@ -5558,6 +5577,14 @@ namespace TL
 				limit = limit,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.updatePaidMessagesPrice"/></para></summary>
+		public static Task<UpdatesBase> Channels_UpdatePaidMessagesPrice(this Client client, InputChannelBase channel, long send_paid_messages_stars)
+			=> client.Invoke(new Channels_UpdatePaidMessagesPrice
+			{
+				channel = channel,
+				send_paid_messages_stars = send_paid_messages_stars,
+			});
+
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
 		/// <param name="custom_method">The method name</param>
 		/// <param name="params_">JSON-serialized method parameters</param>
@@ -6329,6 +6356,14 @@ namespace TL
 			{
 				flags = (Payments_ToggleChatStarGiftNotifications.Flags)(enabled ? 0x1 : 0),
 				peer = peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.toggleStarGiftsPinnedToTop"/></para></summary>
+		public static Task<bool> Payments_ToggleStarGiftsPinnedToTop(this Client client, InputPeer peer, params InputSavedStarGift[] stargift)
+			=> client.Invoke(new Payments_ToggleStarGiftsPinnedToTop
+			{
+				peer = peer,
+				stargift = stargift,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -8663,6 +8698,24 @@ namespace TL.Methods
 		public long hash;
 	}
 
+	[TLDef(0x6F688AA7)]
+	public sealed partial class Account_AddNoPaidMessagesException : IMethod<bool>
+	{
+		public Flags flags;
+		public InputUserBase user_id;
+
+		[Flags] public enum Flags : uint
+		{
+			refund_charged = 0x1,
+		}
+	}
+
+	[TLDef(0xF1266F38)]
+	public sealed partial class Account_GetPaidMessagesRevenue : IMethod<Account_PaidMessagesRevenue>
+	{
+		public InputUserBase user_id;
+	}
+
 	[TLDef(0x0D91A548)]
 	public sealed partial class Users_GetUsers : IMethod<UserBase[]>
 	{
@@ -8682,8 +8735,8 @@ namespace TL.Methods
 		public SecureValueErrorBase[] errors;
 	}
 
-	[TLDef(0xA622AA10)]
-	public sealed partial class Users_GetIsPremiumRequiredToContact : IMethod<bool[]>
+	[TLDef(0xD89A83A3)]
+	public sealed partial class Users_GetRequirementsToContact : IMethod<RequirementToContact[]>
 	{
 		public InputUserBase[] id;
 	}
@@ -9028,7 +9081,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x983F9745)]
+	[TLDef(0xFBF2340A)]
 	public sealed partial class Messages_SendMessage : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -9042,6 +9095,7 @@ namespace TL.Methods
 		[IfFlag(13)] public InputPeer send_as;
 		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
 		[IfFlag(18)] public long effect;
+		[IfFlag(21)] public long allow_paid_stars;
 
 		[Flags] public enum Flags : uint
 		{
@@ -9060,10 +9114,11 @@ namespace TL.Methods
 			has_quick_reply_shortcut = 0x20000,
 			has_effect = 0x40000,
 			allow_paid_floodskip = 0x80000,
+			has_allow_paid_stars = 0x200000,
 		}
 	}
 
-	[TLDef(0x7852834E)]
+	[TLDef(0xA550CD78)]
 	public sealed partial class Messages_SendMedia : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -9078,6 +9133,7 @@ namespace TL.Methods
 		[IfFlag(13)] public InputPeer send_as;
 		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
 		[IfFlag(18)] public long effect;
+		[IfFlag(21)] public long allow_paid_stars;
 
 		[Flags] public enum Flags : uint
 		{
@@ -9095,10 +9151,11 @@ namespace TL.Methods
 			has_quick_reply_shortcut = 0x20000,
 			has_effect = 0x40000,
 			allow_paid_floodskip = 0x80000,
+			has_allow_paid_stars = 0x200000,
 		}
 	}
 
-	[TLDef(0x6D74DA08)]
+	[TLDef(0xBB9FA475)]
 	public sealed partial class Messages_ForwardMessages : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -9111,6 +9168,7 @@ namespace TL.Methods
 		[IfFlag(13)] public InputPeer send_as;
 		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
 		[IfFlag(20)] public int video_timestamp;
+		[IfFlag(21)] public long allow_paid_stars;
 
 		[Flags] public enum Flags : uint
 		{
@@ -9126,6 +9184,7 @@ namespace TL.Methods
 			has_quick_reply_shortcut = 0x20000,
 			allow_paid_floodskip = 0x80000,
 			has_video_timestamp = 0x100000,
+			has_allow_paid_stars = 0x200000,
 		}
 	}
 
@@ -9519,7 +9578,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x3EBEE86A)]
+	[TLDef(0xC0CF7646)]
 	public sealed partial class Messages_SendInlineBotResult : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -9531,6 +9590,7 @@ namespace TL.Methods
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
+		[IfFlag(21)] public long allow_paid_stars;
 
 		[Flags] public enum Flags : uint
 		{
@@ -9542,6 +9602,7 @@ namespace TL.Methods
 			hide_via = 0x800,
 			has_send_as = 0x2000,
 			has_quick_reply_shortcut = 0x20000,
+			has_allow_paid_stars = 0x200000,
 		}
 	}
 
@@ -9933,7 +9994,7 @@ namespace TL.Methods
 		public long hash;
 	}
 
-	[TLDef(0x37B74355)]
+	[TLDef(0x1BF89D74)]
 	public sealed partial class Messages_SendMultiMedia : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -9944,6 +10005,7 @@ namespace TL.Methods
 		[IfFlag(13)] public InputPeer send_as;
 		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
 		[IfFlag(18)] public long effect;
+		[IfFlag(21)] public long allow_paid_stars;
 
 		[Flags] public enum Flags : uint
 		{
@@ -9959,6 +10021,7 @@ namespace TL.Methods
 			has_quick_reply_shortcut = 0x20000,
 			has_effect = 0x40000,
 			allow_paid_floodskip = 0x80000,
+			has_allow_paid_stars = 0x200000,
 		}
 	}
 
@@ -12102,6 +12165,13 @@ namespace TL.Methods
 		public int limit;
 	}
 
+	[TLDef(0xFC84653F)]
+	public sealed partial class Channels_UpdatePaidMessagesPrice : IMethod<UpdatesBase>
+	{
+		public InputChannelBase channel;
+		public long send_paid_messages_stars;
+	}
+
 	[TLDef(0xAA2769ED)]
 	public sealed partial class Bots_SendCustomRequest : IMethod<DataJSON>
 	{
@@ -12772,6 +12842,13 @@ namespace TL.Methods
 		{
 			enabled = 0x1,
 		}
+	}
+
+	[TLDef(0x1513E7B0)]
+	public sealed partial class Payments_ToggleStarGiftsPinnedToTop : IMethod<bool>
+	{
+		public InputPeer peer;
+		public InputSavedStarGift[] stargift;
 	}
 
 	[TLDef(0x9021AB67)]

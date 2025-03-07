@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 199;					// fetched 13/02/2025 13:06:03
+		public const int Version = 200;					// fetched 07/03/2025 23:09:37
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -124,7 +124,7 @@ namespace TL
 			[0x36C6019A] = typeof(PeerChat),
 			[0xA2A5371E] = typeof(PeerChannel),
 			[0xD3BC4B7A] = typeof(UserEmpty),
-			[0x4B46C37E] = typeof(User),
+			[0x020B1422] = typeof(User),
 			[0x4F11BAE1] = null,//UserProfilePhotoEmpty
 			[0x82D1F706] = typeof(UserProfilePhoto),
 			[0x09D05049] = null,//UserStatusEmpty
@@ -136,7 +136,7 @@ namespace TL
 			[0x29562865] = typeof(ChatEmpty),
 			[0x41CBF256] = typeof(Chat),
 			[0x6592A1A7] = typeof(ChatForbidden),
-			[0xE00998B7] = typeof(Channel),
+			[0x7482147E] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
 			[0x2633421B] = typeof(ChatFull),
 			[0x52D6806B] = typeof(ChannelFull),
@@ -148,7 +148,7 @@ namespace TL
 			[0x37C1011C] = null,//ChatPhotoEmpty
 			[0x1C6E1C11] = typeof(ChatPhoto),
 			[0x90A6CA84] = typeof(MessageEmpty),
-			[0x96FDBBE9] = typeof(Message),
+			[0xEABCDD4D] = typeof(Message),
 			[0xD3D28540] = typeof(MessageService),
 			[0x3DED6320] = null,//MessageMediaEmpty
 			[0x695150D7] = typeof(MessageMediaPhoto),
@@ -239,10 +239,10 @@ namespace TL
 			[0x5C467992] = typeof(InputNotifyForumTopic),
 			[0xCACB6AE2] = typeof(InputPeerNotifySettings),
 			[0x99622C0C] = typeof(PeerNotifySettings),
-			[0xACD66C5E] = typeof(PeerSettings),
+			[0xF47741F7] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0x4D975BBC] = typeof(UserFull),
+			[0xD2234EA0] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -1013,7 +1013,7 @@ namespace TL
 			[0xD7584C87] = typeof(StatsGroupTopAdmin),
 			[0x535F779D] = typeof(StatsGroupTopInviter),
 			[0xEF7FF916] = typeof(Stats_MegagroupStats),
-			[0x734C4CCB] = typeof(GlobalPrivacySettings),
+			[0xC9D8DF1C] = typeof(GlobalPrivacySettings),
 			[0x4203C5EF] = typeof(Help_CountryCode),
 			[0xC3878E23] = typeof(Help_Country),
 			[0x93CC1F32] = null,//Help_CountriesListNotModified
@@ -1106,6 +1106,7 @@ namespace TL
 			[0xE8625E92] = typeof(InputInvoiceStarGift),
 			[0x4D818D5D] = typeof(InputInvoiceStarGiftUpgrade),
 			[0x4A5F5BD9] = typeof(InputInvoiceStarGiftTransfer),
+			[0xDABAB2EF] = typeof(InputInvoicePremiumGiftStars),
 			[0xAED0CBD9] = typeof(Payments_ExportedInvoice),
 			[0xCFB9D957] = typeof(Messages_TranscribedAudio),
 			[0x5334759C] = typeof(Help_PremiumPromo),
@@ -1116,7 +1117,6 @@ namespace TL
 			[0xDDDD0F56] = typeof(InputStorePaymentStarsTopup),
 			[0x1D741EF7] = typeof(InputStorePaymentStarsGift),
 			[0x751F08FA] = typeof(InputStorePaymentStarsGiveaway),
-			[0x74C34319] = typeof(PremiumGiftOption),
 			[0x88F8F21B] = typeof(PaymentFormMethod),
 			[0x2DE11AAE] = null,//EmojiStatusEmpty
 			[0xE7FF068A] = typeof(EmojiStatus),
@@ -1324,7 +1324,7 @@ namespace TL
 			[0x60682812] = typeof(StarsTransactionPeerAds),
 			[0xF9677AAD] = typeof(StarsTransactionPeerAPI),
 			[0x0BD915C0] = typeof(StarsTopupOption),
-			[0x64DFC926] = typeof(StarsTransaction),
+			[0xA39FD94A] = typeof(StarsTransaction),
 			[0x6C9CE8ED] = typeof(Payments_StarsStatus),
 			[0xE87ACBC0] = typeof(FoundStory),
 			[0xE2DE7737] = typeof(Stories_FoundStories),
@@ -1380,6 +1380,10 @@ namespace TL
 			[0x206AD49E] = null,//PaidReactionPrivacyDefault
 			[0x1F0C1AD9] = typeof(PaidReactionPrivacyAnonymous),
 			[0xDC6CFCF0] = typeof(PaidReactionPrivacyPeer),
+			[0x1E109708] = typeof(Account_PaidMessagesRevenue),
+			[0x050A9839] = null,//RequirementToContactEmpty
+			[0xE581E4E9] = typeof(RequirementToContactPremium),
+			[0xB4F67E93] = typeof(RequirementToContactPaidMessages),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
@@ -1511,6 +1515,7 @@ namespace TL
 			[typeof(Messages_AvailableEffects)]      = 0xD1ED9A5B, //messages.availableEffectsNotModified
 			[typeof(Payments_StarGifts)]             = 0xA388A368, //payments.starGiftsNotModified
 			[typeof(PaidReactionPrivacy)]            = 0x206AD49E, //paidReactionPrivacyDefault
+			[typeof(RequirementToContact)]           = 0x050A9839, //requirementToContactEmpty
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}
