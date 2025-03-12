@@ -985,23 +985,7 @@ namespace WTelegram
 				else
 				{
 					if (_dcSession.Layer != 0 && _dcSession.Layer != Layer.Version) _dcSession.Renew();
-					var initParams = JSONValue.FromJsonElement(System.Text.Json.JsonDocument.Parse(Config("init_params")).RootElement);
-					TLConfig = await this.InvokeWithLayer(Layer.Version,
-						new TL.Methods.InitConnection<Config>
-						{
-							flags = TL.Methods.InitConnection<Config>.Flags.has_params,
-							api_id = _session.ApiId,
-							device_model = Config("device_model"),
-							system_version = Config("system_version"),
-							app_version = Config("app_version"),
-							system_lang_code = Config("system_lang_code"),
-							lang_pack = Config("lang_pack"),
-							lang_code = Config("lang_code"),
-							params_ = initParams,
-							query = new TL.Methods.Help_GetConfig()
-						});
-					_dcSession.Layer = Layer.Version;
-					_session.DcOptions = TLConfig.dc_options;
+					await InitConnection();
 					if (_dcSession.DataCenter == null)
 					{
 						_dcSession.DataCenter = _session.DcOptions.Where(dc => dc.id == TLConfig.this_dc)
@@ -1020,6 +1004,27 @@ namespace WTelegram
 					lock (_session) _session.Save();
 			}
 			Helpers.Log(2, $"Connected to {(TLConfig.test_mode ? "Test DC" : "DC")} {TLConfig.this_dc}... {TLConfig.flags & (Config.Flags)~0x18E00U}");
+		}
+
+		private async Task InitConnection()
+		{
+			var initParams = JSONValue.FromJsonElement(System.Text.Json.JsonDocument.Parse(Config("init_params")).RootElement);
+			TLConfig = await this.InvokeWithLayer(Layer.Version,
+				new TL.Methods.InitConnection<Config>
+				{
+					flags = TL.Methods.InitConnection<Config>.Flags.has_params,
+					api_id = _session.ApiId,
+					device_model = Config("device_model"),
+					system_version = Config("system_version"),
+					app_version = Config("app_version"),
+					system_lang_code = Config("system_lang_code"),
+					lang_pack = Config("lang_pack"),
+					lang_code = Config("lang_code"),
+					params_ = initParams,
+					query = new TL.Methods.Help_GetConfig()
+				});
+			_dcSession.Layer = Layer.Version;
+			_session.DcOptions = TLConfig.dc_options;
 		}
 
 		private async Task KeepAlive(CancellationToken ct)
@@ -1613,6 +1618,11 @@ namespace WTelegram
 					else if (code == -503 && !got503)
 					{
 						got503 = true;
+						goto retry;
+					}
+					else if (code == 400 && message == "CONNECTION_NOT_INITED")
+					{
+						await InitConnection();
 						goto retry;
 					}
 					else if (code == 500 && message == "AUTH_RESTART")
