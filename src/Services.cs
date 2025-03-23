@@ -458,11 +458,13 @@ namespace TL
 		{
 			int newlen = sb.Length;
 			while (--newlen >= 0 && char.IsWhiteSpace(sb[newlen]));
-			if (++newlen == sb.Length) return;
-			sb.Length = newlen;
-			foreach (var entity in entities)
-				if (entity.offset + entity.length > newlen)
-					entity.length = newlen - entity.offset;
+			if (++newlen != sb.Length) sb.Length = newlen;
+			for (int i = 0; i < entities.Count; i++)
+			{
+				var entity = entities[i];
+				if (entity.offset + entity.length > newlen) entity.length = newlen - entity.offset;
+				if (entity.length == 0) entities.RemoveAt(i--);
+			}
 		}
 
 		/// <summary>Converts the (plain text + entities) format used by Telegram messages into an <a href="https://core.telegram.org/bots/api/#html-style">HTML-formatted text</a></summary>
