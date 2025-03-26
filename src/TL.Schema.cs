@@ -2946,6 +2946,19 @@ namespace TL
 			has_peer = 0x80,
 		}
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionPaidMessagesRefunded"/></para></summary>
+	[TLDef(0xAC1F1FCD)]
+	public sealed partial class MessageActionPaidMessagesRefunded : MessageAction
+	{
+		public int count;
+		public long stars;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionPaidMessagesPrice"/></para></summary>
+	[TLDef(0xBCD71419)]
+	public sealed partial class MessageActionPaidMessagesPrice : MessageAction
+	{
+		public long stars;
+	}
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
 	public abstract partial class DialogBase : IObject
@@ -3224,6 +3237,13 @@ namespace TL
 	{
 		/// <summary>Authorization info</summary>
 		public Auth_AuthorizationBase authorization;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.sentCodePaymentRequired"/></para></summary>
+	[TLDef(0xD7CEF980)]
+	public sealed partial class Auth_SentCodePaymentRequired : Auth_SentCodeBase
+	{
+		public string store_product;
+		public string phone_code_hash;
 	}
 
 	/// <summary>Object contains info on user authorization.		<para>See <a href="https://corefork.telegram.org/type/auth.Authorization"/></para>		<para>Derived classes: <see cref="Auth_Authorization"/>, <see cref="Auth_AuthorizationSignUpRequired"/></para></summary>
@@ -3565,7 +3585,7 @@ namespace TL
 	}
 
 	/// <summary>Extended user info		<para>See <a href="https://corefork.telegram.org/constructor/userFull"/></para></summary>
-	[TLDef(0xD2234EA0)]
+	[TLDef(0x99E78045)]
 	public sealed partial class UserFull : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -3630,6 +3650,7 @@ namespace TL
 		[IfFlag(43)] public StarRefProgram starref_program;
 		[IfFlag(44)] public BotVerification bot_verification;
 		[IfFlag(46)] public long send_paid_messages_stars;
+		[IfFlag(47)] public DisallowedGiftsSettings disallowed_gifts;
 
 		[Flags] public enum Flags : uint
 		{
@@ -3719,6 +3740,9 @@ namespace TL
 			has_bot_verification = 0x1000,
 			/// <summary>Field <see cref="send_paid_messages_stars"/> has a value</summary>
 			has_send_paid_messages_stars = 0x4000,
+			/// <summary>Field <see cref="disallowed_gifts"/> has a value</summary>
+			has_disallowed_gifts = 0x8000,
+			display_gifts_button = 0x10000,
 		}
 	}
 
@@ -5787,6 +5811,12 @@ namespace TL
 	{
 		/// <summary>Whether paid reaction privacy is enabled or disabled.</summary>
 		public PaidReactionPrivacy private_;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSentPhoneCode"/></para></summary>
+	[TLDef(0x504AA18F)]
+	public sealed partial class UpdateSentPhoneCode : Update
+	{
+		public Auth_SentCodeBase sent_code;
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -14484,12 +14514,13 @@ namespace TL
 	}
 
 	/// <summary>Global privacy settings		<para>See <a href="https://corefork.telegram.org/constructor/globalPrivacySettings"/></para></summary>
-	[TLDef(0xC9D8DF1C)]
+	[TLDef(0xFE41B34F)]
 	public sealed partial class GlobalPrivacySettings : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		[IfFlag(5)] public long noncontact_peers_paid_stars;
+		[IfFlag(6)] public DisallowedGiftsSettings disallowed_gifts;
 
 		[Flags] public enum Flags : uint
 		{
@@ -14505,6 +14536,9 @@ namespace TL
 			new_noncontact_peers_require_premium = 0x10,
 			/// <summary>Field <see cref="noncontact_peers_paid_stars"/> has a value</summary>
 			has_noncontact_peers_paid_stars = 0x20,
+			/// <summary>Field <see cref="disallowed_gifts"/> has a value</summary>
+			has_disallowed_gifts = 0x40,
+			display_gifts_button = 0x80,
 		}
 	}
 
@@ -16116,6 +16150,21 @@ namespace TL
 			winners_are_visible = 0x8,
 			/// <summary>Field <see cref="prize_description"/> has a value</summary>
 			has_prize_description = 0x10,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputStorePaymentAuthCode"/></para></summary>
+	[TLDef(0x9BB2636D)]
+	public sealed partial class InputStorePaymentAuthCode : InputStorePaymentPurpose
+	{
+		public Flags flags;
+		public string phone_number;
+		public string phone_code_hash;
+		public string currency;
+		public long amount;
+
+		[Flags] public enum Flags : uint
+		{
+			restore = 0x1,
 		}
 	}
 
@@ -18644,7 +18693,7 @@ namespace TL
 	}
 
 	/// <summary>Contains info about a <a href="https://corefork.telegram.org/api/business#connected-bots">connected business bot »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/connectedBot"/></para></summary>
-	[TLDef(0xBD068601)]
+	[TLDef(0xCD64636C)]
 	public sealed partial class ConnectedBot : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -18653,11 +18702,10 @@ namespace TL
 		public long bot_id;
 		/// <summary>Specifies the private chats that a <a href="https://corefork.telegram.org/api/business#connected-bots">connected business bot »</a> may receive messages and interact with.<br/></summary>
 		public BusinessBotRecipients recipients;
+		public BusinessBotRights rights;
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Whether the the bot can reply to messages it receives through the connection</summary>
-			can_reply = 0x1,
 		}
 	}
 
@@ -18708,7 +18756,7 @@ namespace TL
 	}
 
 	/// <summary>Contains info about a <a href="https://corefork.telegram.org/api/business#connected-bots">bot business connection</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botBusinessConnection"/></para></summary>
-	[TLDef(0x896433B4)]
+	[TLDef(0x8F34B2F5)]
 	public sealed partial class BotBusinessConnection : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -18721,13 +18769,14 @@ namespace TL
 		public int dc_id;
 		/// <summary>When was the connection created.</summary>
 		public DateTime date;
+		[IfFlag(2)] public BusinessBotRights rights;
 
 		[Flags] public enum Flags : uint
 		{
-			/// <summary>Whether the bot can reply on behalf of the user to messages it receives through the business connection</summary>
-			can_reply = 0x1,
 			/// <summary>Whether this business connection is currently disabled</summary>
 			disabled = 0x2,
+			/// <summary>Field <see cref="rights"/> has a value</summary>
+			has_rights = 0x4,
 		}
 	}
 
@@ -20364,5 +20413,74 @@ namespace TL
 	public sealed partial class RequirementToContactPaidMessages : RequirementToContact
 	{
 		public long stars_amount;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/businessBotRights"/></para></summary>
+	[TLDef(0xA0624CF7)]
+	public sealed partial class BusinessBotRights : IObject
+	{
+		public Flags flags;
+
+		[Flags] public enum Flags : uint
+		{
+			reply = 0x1,
+			read_messages = 0x2,
+			delete_sent_messages = 0x4,
+			delete_received_messages = 0x8,
+			edit_name = 0x10,
+			edit_bio = 0x20,
+			edit_profile_photo = 0x40,
+			edit_username = 0x80,
+			view_gifts = 0x100,
+			sell_gifts = 0x200,
+			change_gift_settings = 0x400,
+			transfer_and_upgrade_gifts = 0x800,
+			transfer_stars = 0x1000,
+			manage_stories = 0x2000,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/disallowedGiftsSettings"/></para></summary>
+	[TLDef(0x71F276C4)]
+	public sealed partial class DisallowedGiftsSettings : IObject
+	{
+		public Flags flags;
+
+		[Flags] public enum Flags : uint
+		{
+			disallow_unlimited_stargifts = 0x1,
+			disallow_limited_stargifts = 0x2,
+			disallow_unique_stargifts = 0x4,
+			disallow_premium_gifts = 0x8,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/sponsoredPeer"/></para></summary>
+	[TLDef(0xC69708D3)]
+	public sealed partial class SponsoredPeer : IObject
+	{
+		public Flags flags;
+		public byte[] random_id;
+		public Peer peer;
+		[IfFlag(0)] public string sponsor_info;
+		[IfFlag(1)] public string additional_info;
+
+		[Flags] public enum Flags : uint
+		{
+			has_sponsor_info = 0x1,
+			has_additional_info = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/contacts.sponsoredPeers"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/contacts.sponsoredPeersEmpty">contacts.sponsoredPeersEmpty</a></remarks>
+	[TLDef(0xEB032884)]
+	public sealed partial class Contacts_SponsoredPeers : IObject, IPeerResolver
+	{
+		public SponsoredPeer[] peers;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 }

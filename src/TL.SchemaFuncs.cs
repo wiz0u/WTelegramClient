@@ -1293,14 +1293,14 @@ namespace TL
 			});
 
 		/// <summary>Connect a <a href="https://corefork.telegram.org/api/business#connected-bots">business bot »</a> to the current account, or to change the current connection settings.		<para>See <a href="https://corefork.telegram.org/method/account.updateConnectedBot"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/account.updateConnectedBot#possible-errors">details</a>)</para></summary>
-		/// <param name="can_reply">Whether the bot can reply to messages it receives from us, on behalf of us using the <a href="https://corefork.telegram.org/api/business#connected-bots">business connection</a>.</param>
 		/// <param name="deleted">Whether to fully disconnect the bot from the current account.</param>
 		/// <param name="bot">The bot to connect or disconnect</param>
 		/// <param name="recipients">Configuration for the business connection</param>
-		public static Task<UpdatesBase> Account_UpdateConnectedBot(this Client client, InputUserBase bot, InputBusinessBotRecipients recipients, bool can_reply = false, bool deleted = false)
+		public static Task<UpdatesBase> Account_UpdateConnectedBot(this Client client, InputUserBase bot, InputBusinessBotRecipients recipients, BusinessBotRights rights = null, bool deleted = false)
 			=> client.Invoke(new Account_UpdateConnectedBot
 			{
-				flags = (Account_UpdateConnectedBot.Flags)((can_reply ? 0x1 : 0) | (deleted ? 0x2 : 0)),
+				flags = (Account_UpdateConnectedBot.Flags)((rights != null ? 0x1 : 0) | (deleted ? 0x2 : 0)),
+				rights = rights,
 				bot = bot,
 				recipients = recipients,
 			});
@@ -1728,6 +1728,14 @@ namespace TL
 		public static Task<Contacts_ContactBirthdays> Contacts_GetBirthdays(this Client client)
 			=> client.Invoke(new Contacts_GetBirthdays
 			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.getSponsoredPeers"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/contacts.sponsoredPeersEmpty">contacts.sponsoredPeersEmpty</a></returns>
+		public static Task<Contacts_SponsoredPeers> Contacts_GetSponsoredPeers(this Client client, string q)
+			=> client.Invoke(new Contacts_GetSponsoredPeers
+			{
+				q = q,
 			});
 
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para></summary>
@@ -2424,7 +2432,7 @@ namespace TL
 				unsave = unsave,
 			});
 
-		/// <summary>Query an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineBotResults"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406,-503 (<a href="https://corefork.telegram.org/method/messages.getInlineBotResults#possible-errors">details</a>)</para></summary>
+		/// <summary>Query an inline bot		<para>See <a href="https://corefork.telegram.org/method/messages.getInlineBotResults"/></para>		<para>Possible <see cref="RpcException"/> codes: -503,400,406 (<a href="https://corefork.telegram.org/method/messages.getInlineBotResults#possible-errors">details</a>)</para></summary>
 		/// <param name="bot">The bot to query</param>
 		/// <param name="peer">The currently opened chat</param>
 		/// <param name="geo_point">The geolocation, if requested</param>
@@ -2544,7 +2552,7 @@ namespace TL
 				entities = entities,
 			});
 
-		/// <summary>Press an inline callback button and get a callback answer from the bot		<para>See <a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,-503 (<a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer#possible-errors">details</a>)</para></summary>
+		/// <summary>Press an inline callback button and get a callback answer from the bot		<para>See <a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer"/></para>		<para>Possible <see cref="RpcException"/> codes: -503,400 (<a href="https://corefork.telegram.org/method/messages.getBotCallbackAnswer#possible-errors">details</a>)</para></summary>
 		/// <param name="game">Whether this is a "play game" button</param>
 		/// <param name="peer">Where was the inline keyboard sent</param>
 		/// <param name="msg_id">ID of the Message with the inline keyboard</param>
@@ -4399,36 +4407,30 @@ namespace TL
 			});
 
 		/// <summary>Mark a specific <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message »</a> as read		<para>See <a href="https://corefork.telegram.org/method/messages.viewSponsoredMessage"/></para></summary>
-		/// <param name="peer">The channel/bot where the ad is located</param>
 		/// <param name="random_id">The ad's unique ID.</param>
-		public static Task<bool> Messages_ViewSponsoredMessage(this Client client, InputPeer peer, byte[] random_id)
+		public static Task<bool> Messages_ViewSponsoredMessage(this Client client, byte[] random_id)
 			=> client.Invoke(new Messages_ViewSponsoredMessage
 			{
-				peer = peer,
 				random_id = random_id,
 			});
 
 		/// <summary>Informs the server that the user has interacted with a sponsored message in <a href="https://corefork.telegram.org/api/sponsored-messages#clicking-on-sponsored-messages">one of the ways listed here »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.clickSponsoredMessage"/></para></summary>
 		/// <param name="media">The user clicked on the media</param>
 		/// <param name="fullscreen">The user expanded the video to full screen, and then clicked on it.</param>
-		/// <param name="peer">The channel/bot where the ad is located</param>
 		/// <param name="random_id">The ad's unique ID.</param>
-		public static Task<bool> Messages_ClickSponsoredMessage(this Client client, InputPeer peer, byte[] random_id, bool media = false, bool fullscreen = false)
+		public static Task<bool> Messages_ClickSponsoredMessage(this Client client, byte[] random_id, bool media = false, bool fullscreen = false)
 			=> client.Invoke(new Messages_ClickSponsoredMessage
 			{
 				flags = (Messages_ClickSponsoredMessage.Flags)((media ? 0x1 : 0) | (fullscreen ? 0x2 : 0)),
-				peer = peer,
 				random_id = random_id,
 			});
 
 		/// <summary>Report a <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message »</a>, see <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">here »</a> for more info on the full flow.		<para>See <a href="https://corefork.telegram.org/method/messages.reportSponsoredMessage"/></para></summary>
-		/// <param name="peer">The channel/bot where the ad is located</param>
 		/// <param name="random_id">The ad's unique ID.</param>
 		/// <param name="option">Chosen report option, initially an empty string, see <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">here »</a> for more info on the full flow.</param>
-		public static Task<Channels_SponsoredMessageReportResult> Messages_ReportSponsoredMessage(this Client client, InputPeer peer, byte[] random_id, byte[] option)
+		public static Task<Channels_SponsoredMessageReportResult> Messages_ReportSponsoredMessage(this Client client, byte[] random_id, byte[] option)
 			=> client.Invoke(new Messages_ReportSponsoredMessage
 			{
-				peer = peer,
 				random_id = random_id,
 				option = option,
 			});
@@ -5999,14 +6001,6 @@ namespace TL
 				purpose = purpose,
 			});
 
-		/// <summary>Checks whether Telegram Premium purchase is possible. Must be called before in-store Premium purchase, official apps only.		<para>See <a href="https://corefork.telegram.org/method/payments.canPurchasePremium"/></para>		<para>Possible <see cref="RpcException"/> codes: 406 (<a href="https://corefork.telegram.org/method/payments.canPurchasePremium#possible-errors">details</a>)</para></summary>
-		/// <param name="purpose">Payment purpose</param>
-		public static Task<bool> Payments_CanPurchasePremium(this Client client, InputStorePaymentPurpose purpose)
-			=> client.Invoke(new Payments_CanPurchasePremium
-			{
-				purpose = purpose,
-			});
-
 		/// <summary>Obtain a list of Telegram Premium <a href="https://corefork.telegram.org/api/giveaways">giveaway/gift code »</a> options.		<para>See <a href="https://corefork.telegram.org/method/payments.getPremiumGiftCodeOptions"/></para></summary>
 		/// <param name="boost_peer">The channel that will start the giveaway</param>
 		public static Task<PremiumGiftCodeOption[]> Payments_GetPremiumGiftCodeOptions(this Client client, InputPeer boost_peer = null)
@@ -6364,6 +6358,13 @@ namespace TL
 			{
 				peer = peer,
 				stargift = stargift,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.canPurchaseStore"/></para></summary>
+		public static Task<bool> Payments_CanPurchaseStore(this Client client, InputStorePaymentPurpose purpose)
+			=> client.Invoke(new Payments_CanPurchaseStore
+			{
+				purpose = purpose,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -8583,16 +8584,17 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x43D8521D)]
+	[TLDef(0x66A08C7E)]
 	public sealed partial class Account_UpdateConnectedBot : IMethod<UpdatesBase>
 	{
 		public Flags flags;
+		[IfFlag(0)] public BusinessBotRights rights;
 		public InputUserBase bot;
 		public InputBusinessBotRecipients recipients;
 
 		[Flags] public enum Flags : uint
 		{
-			can_reply = 0x1,
+			has_rights = 0x1,
 			deleted = 0x2,
 		}
 	}
@@ -8957,6 +8959,12 @@ namespace TL.Methods
 
 	[TLDef(0xDAEDA864)]
 	public sealed partial class Contacts_GetBirthdays : IMethod<Contacts_ContactBirthdays> { }
+
+	[TLDef(0xB6C8C393)]
+	public sealed partial class Contacts_GetSponsoredPeers : IMethod<Contacts_SponsoredPeers>
+	{
+		public string q;
+	}
 
 	[TLDef(0x63C66506)]
 	public sealed partial class Messages_GetMessages : IMethod<Messages_MessagesBase>
@@ -11238,18 +11246,16 @@ namespace TL.Methods
 	[TLDef(0x472455AA)]
 	public sealed partial class Messages_GetPaidReactionPrivacy : IMethod<UpdatesBase> { }
 
-	[TLDef(0x673AD8F1)]
+	[TLDef(0x269E3643)]
 	public sealed partial class Messages_ViewSponsoredMessage : IMethod<bool>
 	{
-		public InputPeer peer;
 		public byte[] random_id;
 	}
 
-	[TLDef(0x0F093465)]
+	[TLDef(0x8235057E)]
 	public sealed partial class Messages_ClickSponsoredMessage : IMethod<bool>
 	{
 		public Flags flags;
-		public InputPeer peer;
 		public byte[] random_id;
 
 		[Flags] public enum Flags : uint
@@ -11259,10 +11265,9 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x1AF3DBB8)]
+	[TLDef(0x12CBF0C4)]
 	public sealed partial class Messages_ReportSponsoredMessage : IMethod<Channels_SponsoredMessageReportResult>
 	{
-		public InputPeer peer;
 		public byte[] random_id;
 		public byte[] option;
 	}
@@ -12507,12 +12512,6 @@ namespace TL.Methods
 		public InputStorePaymentPurpose purpose;
 	}
 
-	[TLDef(0x9FC19EB6)]
-	public sealed partial class Payments_CanPurchasePremium : IMethod<bool>
-	{
-		public InputStorePaymentPurpose purpose;
-	}
-
 	[TLDef(0x2757BA54)]
 	public sealed partial class Payments_GetPremiumGiftCodeOptions : IMethod<PremiumGiftCodeOption[]>
 	{
@@ -12849,6 +12848,12 @@ namespace TL.Methods
 	{
 		public InputPeer peer;
 		public InputSavedStarGift[] stargift;
+	}
+
+	[TLDef(0x4FDC5EA7)]
+	public sealed partial class Payments_CanPurchaseStore : IMethod<bool>
+	{
+		public InputStorePaymentPurpose purpose;
 	}
 
 	[TLDef(0x9021AB67)]

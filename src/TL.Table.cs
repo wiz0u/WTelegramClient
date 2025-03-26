@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 200;					// fetched 07/03/2025 23:09:37
+		public const int Version = 201;					// fetched 26/03/2025 23:35:58
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -215,6 +215,8 @@ namespace TL
 			[0xB00C47A2] = typeof(MessageActionPrizeStars),
 			[0x4717E8A4] = typeof(MessageActionStarGift),
 			[0xACDFCB81] = typeof(MessageActionStarGiftUnique),
+			[0xAC1F1FCD] = typeof(MessageActionPaidMessagesRefunded),
+			[0xBCD71419] = typeof(MessageActionPaidMessagesPrice),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -229,6 +231,7 @@ namespace TL
 			[0xB2A2F663] = typeof(GeoPoint),
 			[0x5E002502] = typeof(Auth_SentCode),
 			[0x2390FE44] = typeof(Auth_SentCodeSuccess),
+			[0xD7CEF980] = typeof(Auth_SentCodePaymentRequired),
 			[0x2EA2C0D4] = typeof(Auth_Authorization),
 			[0x44747E9A] = typeof(Auth_AuthorizationSignUpRequired),
 			[0xB434E2B8] = typeof(Auth_ExportedAuthorization),
@@ -242,7 +245,7 @@ namespace TL
 			[0xF47741F7] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0xD2234EA0] = typeof(UserFull),
+			[0x99E78045] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -420,6 +423,7 @@ namespace TL
 			[0xA584B019] = typeof(UpdateStarsRevenueStatus),
 			[0x283BD312] = typeof(UpdateBotPurchasedPaidMedia),
 			[0x8B725FCE] = typeof(UpdatePaidReactionPrivacy),
+			[0x504AA18F] = typeof(UpdateSentPhoneCode),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -1013,7 +1017,7 @@ namespace TL
 			[0xD7584C87] = typeof(StatsGroupTopAdmin),
 			[0x535F779D] = typeof(StatsGroupTopInviter),
 			[0xEF7FF916] = typeof(Stats_MegagroupStats),
-			[0xC9D8DF1C] = typeof(GlobalPrivacySettings),
+			[0xFE41B34F] = typeof(GlobalPrivacySettings),
 			[0x4203C5EF] = typeof(Help_CountryCode),
 			[0xC3878E23] = typeof(Help_Country),
 			[0x93CC1F32] = null,//Help_CountriesListNotModified
@@ -1117,6 +1121,7 @@ namespace TL
 			[0xDDDD0F56] = typeof(InputStorePaymentStarsTopup),
 			[0x1D741EF7] = typeof(InputStorePaymentStarsGift),
 			[0x751F08FA] = typeof(InputStorePaymentStarsGiveaway),
+			[0x9BB2636D] = typeof(InputStorePaymentAuthCode),
 			[0x88F8F21B] = typeof(PaymentFormMethod),
 			[0x2DE11AAE] = null,//EmojiStatusEmpty
 			[0xE7FF068A] = typeof(EmojiStatus),
@@ -1275,11 +1280,11 @@ namespace TL
 			[0x01190CF1] = typeof(InputQuickReplyShortcutId),
 			[0xC68D6695] = typeof(Messages_QuickReplies),
 			[0x5F91EB5B] = null,//Messages_QuickRepliesNotModified
-			[0xBD068601] = typeof(ConnectedBot),
+			[0xCD64636C] = typeof(ConnectedBot),
 			[0x17D7F87B] = typeof(Account_ConnectedBots),
 			[0x2AD93719] = typeof(Messages_DialogFilters),
 			[0x6C8E1E06] = typeof(Birthday),
-			[0x896433B4] = typeof(BotBusinessConnection),
+			[0x8F34B2F5] = typeof(BotBusinessConnection),
 			[0x09C469CD] = typeof(InputBusinessIntro),
 			[0x5A0A066D] = typeof(BusinessIntro),
 			[0xFAFF629D] = typeof(Messages_MyStickers),
@@ -1384,6 +1389,11 @@ namespace TL
 			[0x050A9839] = null,//RequirementToContactEmpty
 			[0xE581E4E9] = typeof(RequirementToContactPremium),
 			[0xB4F67E93] = typeof(RequirementToContactPaidMessages),
+			[0xA0624CF7] = typeof(BusinessBotRights),
+			[0x71F276C4] = typeof(DisallowedGiftsSettings),
+			[0xC69708D3] = typeof(SponsoredPeer),
+			[0xEA32B4B1] = null,//Contacts_SponsoredPeersEmpty
+			[0xEB032884] = typeof(Contacts_SponsoredPeers),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
@@ -1516,6 +1526,7 @@ namespace TL
 			[typeof(Payments_StarGifts)]             = 0xA388A368, //payments.starGiftsNotModified
 			[typeof(PaidReactionPrivacy)]            = 0x206AD49E, //paidReactionPrivacyDefault
 			[typeof(RequirementToContact)]           = 0x050A9839, //requirementToContactEmpty
+			[typeof(Contacts_SponsoredPeers)]        = 0xEA32B4B1, //contacts.sponsoredPeersEmpty
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}
