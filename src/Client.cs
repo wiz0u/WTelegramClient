@@ -312,7 +312,7 @@ namespace WTelegram
 				try
 				{
 					Auth_ExportedAuthorization exported = null;
-					if (_session.UserId != 0 && IsMainDC && altSession.UserId != _session.UserId)
+					if (_session.UserId != 0 && IsMainDC && altSession.UserId != _session.UserId && altSession.DcID != _dcSession.DcID)
 						exported = await this.Auth_ExportAuthorization(Math.Abs(dcId));
 					await altSession.Client.ConnectAsync();
 					if (exported != null)

@@ -33,6 +33,7 @@ namespace WTelegram
 		/// <returns>an <see cref="InputFile"/> or <see cref="InputFileBig"/> than can be used in various requests</returns>
 		public async Task<InputFileBase> UploadFileAsync(Stream stream, string filename, ProgressCallback progress = null)
 		{
+			var client = await GetClientForDC(-_dcSession.DcID, true);
 			using (stream)
 			{
 				bool hasLength = stream.CanSeek;
@@ -65,9 +66,9 @@ namespace WTelegram
 						try
 						{
 							if (isBig)
-								await this.Upload_SaveBigFilePart(file_id, file_part, file_total_parts, bytes);
+								await client.Upload_SaveBigFilePart(file_id, file_part, file_total_parts, bytes);
 							else
-								await this.Upload_SaveFilePart(file_id, file_part, bytes);
+								await client.Upload_SaveFilePart(file_id, file_part, bytes);
 							lock (tasks) { transmitted += bytes.Length; tasks.Remove(file_part); }
 							progress?.Invoke(transmitted, length);
 						}

@@ -525,7 +525,7 @@ namespace TL
 	partial class Document
 	{
 		public override long ID => id;
-		public override string ToString() => Filename is string filename ? base.ToString() + ": " + filename : base.ToString();
+		public override string ToString() => $"{Filename ?? $"Document {mime_type}"} {size:N0} bytes";
 		public string Filename => GetAttribute<DocumentAttributeFilename>()?.file_name;
 		protected override InputDocument ToInputDocument() => new() { id = id, access_hash = access_hash, file_reference = file_reference };
 		public InputDocumentFileLocation ToFileLocation(PhotoSizeBase thumbSize = null) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = thumbSize?.Type };
