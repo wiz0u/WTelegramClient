@@ -110,9 +110,9 @@ namespace WTelegram
 			var g_a = BigEndianInteger(serverDHinnerData.g_a);
 			var dh_prime = BigEndianInteger(serverDHinnerData.dh_prime);
 			CheckGoodPrime(dh_prime, serverDHinnerData.g);
-			session.LastSentMsgId = 0;
-			session.ServerTicksOffset = (serverDHinnerData.server_time - localTime).Ticks;
-			Helpers.Log(1, $"Time offset: {session.ServerTicksOffset} | Server: {serverDHinnerData.server_time.TimeOfDay} UTC | Local: {localTime.TimeOfDay} UTC");
+			session.lastSentMsgId = 0;
+			session.serverTicksOffset = (serverDHinnerData.server_time - localTime).Ticks;
+			Helpers.Log(1, $"Time offset: {session.serverTicksOffset} | Server: {serverDHinnerData.server_time.TimeOfDay} UTC | Local: {localTime.TimeOfDay} UTC");
 			//6)
 			var salt = new byte[256];
 			RNG.GetBytes(salt);
@@ -159,7 +159,7 @@ namespace WTelegram
 			if (!Enumerable.SequenceEqual(dhGenOk.new_nonce_hash1.raw, sha1.ComputeHash(expected_new_nonceN).Skip(4)))
 				throw new WTException("setClientDHparamsAnswer.new_nonce_hashN mismatch");
 
-			session.AuthKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
+			session.authKeyID = BinaryPrimitives.ReadInt64LittleEndian(authKeyHash.AsSpan(12));
 			session.AuthKey = authKey;
 			session.Salt = BinaryPrimitives.ReadInt64LittleEndian(pqInnerData.new_nonce.raw) ^ BinaryPrimitives.ReadInt64LittleEndian(resPQ.server_nonce.raw);
 			session.OldSalt = session.Salt;

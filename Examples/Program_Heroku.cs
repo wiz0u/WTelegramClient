@@ -62,10 +62,8 @@ namespace WTelegramClientTest
 	{
 		private readonly NpgsqlConnection _sql;
 		private readonly string _sessionName;
-		private byte[] _data;
-		private int _dataLen;
-		private DateTime _lastWrite;
-		private Task _delayedWrite;
+		private readonly byte[] _data;
+		private readonly int _dataLen;
 
 		/// <param name="databaseUrl">Heroku DB URL of the form "postgres://user:password@host:port/database"</param>
 		/// <param name="sessionName">Entry name for the session data in the WTelegram_sessions table (default: "Heroku")</param>
@@ -85,7 +83,6 @@ namespace WTelegramClientTest
 
 		protected override void Dispose(bool disposing)
 		{
-			_delayedWrite?.Wait();
 			_sql.Dispose();
 		}
 
@@ -97,18 +94,9 @@ namespace WTelegramClientTest
 
 		public override void Write(byte[] buffer, int offset, int count) // Write call and buffer modifications are done within a lock()
 		{
-			_data = buffer; _dataLen = count;
-			if (_delayedWrite != null) return;
-			var left = 1000 - (int)(DateTime.UtcNow - _lastWrite).TotalMilliseconds;
-			if (left < 0)
-			{
-				using var cmd = new NpgsqlCommand($"INSERT INTO WTelegram_sessions (name, data) VALUES ('{_sessionName}', @data) ON CONFLICT (name) DO UPDATE SET data = EXCLUDED.data", _sql);
-				cmd.Parameters.AddWithValue("data", count == buffer.Length ? buffer : buffer[offset..(offset + count)]);
-				cmd.ExecuteNonQuery();
-				_lastWrite = DateTime.UtcNow;
-			}
-			else // delay writings for a full second
-				_delayedWrite = Task.Delay(left).ContinueWith(t => { lock (this) { _delayedWrite = null; Write(_data, 0, _dataLen); } });
+			using var cmd = new NpgsqlCommand($"INSERT INTO WTelegram_sessions (name, data) VALUES ('{_sessionName}', @data) ON CONFLICT (name) DO UPDATE SET data = EXCLUDED.data", _sql);
+			cmd.Parameters.AddWithValue("data", count == buffer.Length ? buffer : buffer[offset..(offset + count)]);
+			cmd.ExecuteNonQuery();
 		}
 
 		public override long Length => _dataLen;

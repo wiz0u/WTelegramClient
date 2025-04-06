@@ -21,25 +21,25 @@ namespace WTelegram
 
 		public sealed class DCSession
 		{
-			public long Id;
-			public long AuthKeyID;
 			public byte[] AuthKey;      // 2048-bit = 256 bytes
 			public long UserId;
 			public long OldSalt;        // still accepted for a further 1800 seconds
 			public long Salt;
 			public SortedList<DateTime, long> Salts;
-			public int Seqno;
-			public long ServerTicksOffset;
-			public long LastSentMsgId;
 			public TL.DcOption DataCenter;
-			public bool WithoutUpdates;
 			public int Layer;
 
+			internal long id = Helpers.RandomLong();
+			internal long authKeyID;
+			internal int seqno;
+			internal long serverTicksOffset;
+			internal long lastSentMsgId;
+			internal bool withoutUpdates;
 			internal Client Client;
 			internal int DcID => DataCenter?.id ?? 0;
 			internal IPEndPoint EndPoint => DataCenter == null ? null : new(IPAddress.Parse(DataCenter.ip_address), DataCenter.port);
-			internal void Renew() { Helpers.Log(3, $"Renewing session on DC {DcID}..."); Id = Helpers.RandomLong(); Seqno = 0; LastSentMsgId = 0; }
-			public void DisableUpdates(bool disable = true) { if (WithoutUpdates != disable) { WithoutUpdates = disable; Renew(); } }
+			internal void Renew() { Helpers.Log(3, $"Renewing session on DC {DcID}..."); id = Helpers.RandomLong(); seqno = 0; lastSentMsgId = 0; }
+			public void DisableUpdates(bool disable = true) { if (withoutUpdates != disable) { withoutUpdates = disable; Renew(); } }
 
 			const int MsgIdsN = 512;
 			private long[] _msgIds;
@@ -117,6 +117,9 @@ namespace WTelegram
 						throw new WTException("Integrity check failed in session loading");
 					session = JsonSerializer.Deserialize<Session>(utf8Json.AsSpan(32), Helpers.JsonOptions);
 					Helpers.Log(2, "Loaded previous session");
+					using var sha1 = SHA1.Create();
+					foreach (var dcs in session.DCSessions.Values)
+						dcs.authKeyID = BinaryPrimitives.ReadInt64LittleEndian(sha1.ComputeHash(dcs.AuthKey).AsSpan(12)); 
 				}
 				session ??= new Session();
 				session._store = store;
