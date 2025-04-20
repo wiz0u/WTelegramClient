@@ -15946,6 +15946,13 @@ namespace TL
 			has_message = 0x1,
 		}
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceBusinessBotTransferStars"/></para></summary>
+	[TLDef(0xF4997E42)]
+	public sealed partial class InputInvoiceBusinessBotTransferStars : InputInvoice
+	{
+		public InputUserBase bot;
+		public long stars;
+	}
 
 	/// <summary>Exported <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a>		<para>See <a href="https://corefork.telegram.org/constructor/payments.exportedInvoice"/></para></summary>
 	[TLDef(0xAED0CBD9)]
@@ -19510,6 +19517,7 @@ namespace TL
 			has_paid_messages = 0x80000,
 			/// <summary>Field <see cref="premium_gift_months"/> has a value</summary>
 			has_premium_gift_months = 0x100000,
+			business_transfer = 0x200000,
 		}
 	}
 

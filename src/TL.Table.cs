@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 201;					// fetched 26/03/2025 23:35:58
+		public const int Version = 201;					// fetched 20/04/2025 01:20:15
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -1111,6 +1111,7 @@ namespace TL
 			[0x4D818D5D] = typeof(InputInvoiceStarGiftUpgrade),
 			[0x4A5F5BD9] = typeof(InputInvoiceStarGiftTransfer),
 			[0xDABAB2EF] = typeof(InputInvoicePremiumGiftStars),
+			[0xF4997E42] = typeof(InputInvoiceBusinessBotTransferStars),
 			[0xAED0CBD9] = typeof(Payments_ExportedInvoice),
 			[0xCFB9D957] = typeof(Messages_TranscribedAudio),
 			[0x5334759C] = typeof(Help_PremiumPromo),
