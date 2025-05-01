@@ -6509,12 +6509,11 @@ namespace TL
 		/// <param name="random_id">Random ID to avoid resending the same object</param>
 		/// <param name="g_a_hash"><a href="https://corefork.telegram.org/api/end-to-end/voice-calls">Parameter for E2E encryption key exchange »</a></param>
 		/// <param name="protocol">Phone call settings</param>
-		public static Task<Phone_PhoneCall> Phone_RequestCall(this Client client, InputUserBase user_id, int random_id, byte[] g_a_hash, PhoneCallProtocol protocol, InputGroupCall conference_call = null, bool video = false)
+		public static Task<Phone_PhoneCall> Phone_RequestCall(this Client client, InputUserBase user_id, int random_id, byte[] g_a_hash, PhoneCallProtocol protocol, bool video = false)
 			=> client.Invoke(new Phone_RequestCall
 			{
-				flags = (Phone_RequestCall.Flags)((conference_call != null ? 0x2 : 0) | (video ? 0x1 : 0)),
+				flags = (Phone_RequestCall.Flags)(video ? 0x1 : 0),
 				user_id = user_id,
-				conference_call = conference_call,
 				random_id = random_id,
 				g_a_hash = g_a_hash,
 				protocol = protocol,
@@ -6627,21 +6626,22 @@ namespace TL
 		/// <param name="join_as">Join the group call, presenting yourself as the specified user/channel</param>
 		/// <param name="invite_hash">The invitation hash from the <a href="https://corefork.telegram.org/api/links#video-chat-livestream-links">invite link »</a>, if provided allows speaking in a livestream or muted group chat.</param>
 		/// <param name="params_">WebRTC parameters</param>
-		public static Task<UpdatesBase> Phone_JoinGroupCall(this Client client, InputGroupCall call, InputPeer join_as, DataJSON params_, string invite_hash = null, long? key_fingerprint = null, bool muted = false, bool video_stopped = false)
+		public static Task<UpdatesBase> Phone_JoinGroupCall(this Client client, InputGroupCallBase call, InputPeer join_as, DataJSON params_, string invite_hash = null, Int256? public_key = null, byte[] block = null, bool muted = false, bool video_stopped = false)
 			=> client.Invoke(new Phone_JoinGroupCall
 			{
-				flags = (Phone_JoinGroupCall.Flags)((invite_hash != null ? 0x2 : 0) | (key_fingerprint != null ? 0x8 : 0) | (muted ? 0x1 : 0) | (video_stopped ? 0x4 : 0)),
+				flags = (Phone_JoinGroupCall.Flags)((invite_hash != null ? 0x2 : 0) | (public_key != null ? 0x8 : 0) | (block != null ? 0x8 : 0) | (muted ? 0x1 : 0) | (video_stopped ? 0x4 : 0)),
 				call = call,
 				join_as = join_as,
 				invite_hash = invite_hash,
-				key_fingerprint = key_fingerprint ?? default,
+				public_key = public_key ?? default,
+				block = block,
 				params_ = params_,
 			});
 
 		/// <summary>Leave a group call		<para>See <a href="https://corefork.telegram.org/method/phone.leaveGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.leaveGroupCall#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The group call</param>
 		/// <param name="source">Your source ID</param>
-		public static Task<UpdatesBase> Phone_LeaveGroupCall(this Client client, InputGroupCall call, int source)
+		public static Task<UpdatesBase> Phone_LeaveGroupCall(this Client client, InputGroupCallBase call, int source)
 			=> client.Invoke(new Phone_LeaveGroupCall
 			{
 				call = call,
@@ -6651,7 +6651,7 @@ namespace TL
 		/// <summary>Invite a set of users to a group call.		<para>See <a href="https://corefork.telegram.org/method/phone.inviteToGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.inviteToGroupCall#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The group call</param>
 		/// <param name="users">The users to invite.</param>
-		public static Task<UpdatesBase> Phone_InviteToGroupCall(this Client client, InputGroupCall call, params InputUserBase[] users)
+		public static Task<UpdatesBase> Phone_InviteToGroupCall(this Client client, InputGroupCallBase call, params InputUserBase[] users)
 			=> client.Invoke(new Phone_InviteToGroupCall
 			{
 				call = call,
@@ -6660,7 +6660,7 @@ namespace TL
 
 		/// <summary>Terminate a group call		<para>See <a href="https://corefork.telegram.org/method/phone.discardGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.discardGroupCall#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The group call to terminate</param>
-		public static Task<UpdatesBase> Phone_DiscardGroupCall(this Client client, InputGroupCall call)
+		public static Task<UpdatesBase> Phone_DiscardGroupCall(this Client client, InputGroupCallBase call)
 			=> client.Invoke(new Phone_DiscardGroupCall
 			{
 				call = call,
@@ -6670,7 +6670,7 @@ namespace TL
 		/// <param name="reset_invite_hash">Invalidate existing invite links</param>
 		/// <param name="call">Group call</param>
 		/// <param name="join_muted">Whether all users will that join this group call are muted by default upon joining the group call</param>
-		public static Task<UpdatesBase> Phone_ToggleGroupCallSettings(this Client client, InputGroupCall call, bool? join_muted = default, bool reset_invite_hash = false)
+		public static Task<UpdatesBase> Phone_ToggleGroupCallSettings(this Client client, InputGroupCallBase call, bool? join_muted = default, bool reset_invite_hash = false)
 			=> client.Invoke(new Phone_ToggleGroupCallSettings
 			{
 				flags = (Phone_ToggleGroupCallSettings.Flags)((join_muted != default ? 0x1 : 0) | (reset_invite_hash ? 0x2 : 0)),
@@ -6681,7 +6681,7 @@ namespace TL
 		/// <summary>Get info about a group call		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.getGroupCall#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The group call</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Phone_GroupCall> Phone_GetGroupCall(this Client client, InputGroupCall call, int limit = int.MaxValue)
+		public static Task<Phone_GroupCall> Phone_GetGroupCall(this Client client, InputGroupCallBase call, int limit = int.MaxValue)
 			=> client.Invoke(new Phone_GetGroupCall
 			{
 				call = call,
@@ -6694,7 +6694,7 @@ namespace TL
 		/// <param name="sources">If specified, will fetch group participant info about the specified WebRTC source IDs</param>
 		/// <param name="offset">Offset for results, taken from the <c>next_offset</c> field of <see cref="Phone_GroupParticipants"/>, initially an empty string. <br/>Note: if no more results are available, the method call will return an empty <c>next_offset</c>; thus, avoid providing the <c>next_offset</c> returned in <see cref="Phone_GroupParticipants"/> if it is empty, to avoid an infinite loop.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Phone_GroupParticipants> Phone_GetGroupParticipants(this Client client, InputGroupCall call, InputPeer[] ids, int[] sources, string offset, int limit = int.MaxValue)
+		public static Task<Phone_GroupParticipants> Phone_GetGroupParticipants(this Client client, InputGroupCallBase call, InputPeer[] ids, int[] sources, string offset, int limit = int.MaxValue)
 			=> client.Invoke(new Phone_GetGroupParticipants
 			{
 				call = call,
@@ -6707,7 +6707,7 @@ namespace TL
 		/// <summary>Check whether the group call Server Forwarding Unit is currently receiving the streams with the specified WebRTC source IDs.<br/>Returns an intersection of the source IDs specified in <c>sources</c>, and the source IDs currently being forwarded by the SFU.		<para>See <a href="https://corefork.telegram.org/method/phone.checkGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.checkGroupCall#possible-errors">details</a>)</para></summary>
 		/// <param name="call">Group call</param>
 		/// <param name="sources">Source IDs</param>
-		public static Task<int[]> Phone_CheckGroupCall(this Client client, InputGroupCall call, params int[] sources)
+		public static Task<int[]> Phone_CheckGroupCall(this Client client, InputGroupCallBase call, params int[] sources)
 			=> client.Invoke(new Phone_CheckGroupCall
 			{
 				call = call,
@@ -6720,7 +6720,7 @@ namespace TL
 		/// <param name="call">The group call or livestream</param>
 		/// <param name="title">Recording title</param>
 		/// <param name="video_portrait">If video stream recording is enabled, whether to record in portrait or landscape mode</param>
-		public static Task<UpdatesBase> Phone_ToggleGroupCallRecord(this Client client, InputGroupCall call, string title = null, bool? video_portrait = default, bool start = false, bool video = false)
+		public static Task<UpdatesBase> Phone_ToggleGroupCallRecord(this Client client, InputGroupCallBase call, string title = null, bool? video_portrait = default, bool start = false, bool video = false)
 			=> client.Invoke(new Phone_ToggleGroupCallRecord
 			{
 				flags = (Phone_ToggleGroupCallRecord.Flags)((title != null ? 0x2 : 0) | (video_portrait != default ? 0x4 : 0) | (start ? 0x1 : 0) | (video ? 0x4 : 0)),
@@ -6738,7 +6738,7 @@ namespace TL
 		/// <param name="video_stopped">Start or stop the video stream</param>
 		/// <param name="video_paused">Pause or resume the video stream</param>
 		/// <param name="presentation_paused">Pause or resume the screen sharing stream</param>
-		public static Task<UpdatesBase> Phone_EditGroupCallParticipant(this Client client, InputGroupCall call, InputPeer participant, bool? muted = default, int? volume = null, bool? raise_hand = default, bool? video_stopped = default, bool? video_paused = default, bool? presentation_paused = default)
+		public static Task<UpdatesBase> Phone_EditGroupCallParticipant(this Client client, InputGroupCallBase call, InputPeer participant, bool? muted = default, int? volume = null, bool? raise_hand = default, bool? video_stopped = default, bool? video_paused = default, bool? presentation_paused = default)
 			=> client.Invoke(new Phone_EditGroupCallParticipant
 			{
 				flags = (Phone_EditGroupCallParticipant.Flags)((muted != default ? 0x1 : 0) | (volume != null ? 0x2 : 0) | (raise_hand != default ? 0x4 : 0) | (video_stopped != default ? 0x8 : 0) | (video_paused != default ? 0x10 : 0) | (presentation_paused != default ? 0x20 : 0)),
@@ -6755,7 +6755,7 @@ namespace TL
 		/// <summary>Edit the title of a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.editGroupCallTitle"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.editGroupCallTitle#possible-errors">details</a>)</para></summary>
 		/// <param name="call">Group call</param>
 		/// <param name="title">New title</param>
-		public static Task<UpdatesBase> Phone_EditGroupCallTitle(this Client client, InputGroupCall call, string title)
+		public static Task<UpdatesBase> Phone_EditGroupCallTitle(this Client client, InputGroupCallBase call, string title)
 			=> client.Invoke(new Phone_EditGroupCallTitle
 			{
 				call = call,
@@ -6773,7 +6773,7 @@ namespace TL
 		/// <summary>Get an <a href="https://corefork.telegram.org/api/links#video-chat-livestream-links">invite link</a> for a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite#possible-errors">details</a>)</para></summary>
 		/// <param name="can_self_unmute">For livestreams or muted group chats, if set, users that join using this link will be able to speak without explicitly requesting permission by (for example by raising their hand).</param>
 		/// <param name="call">The group call</param>
-		public static Task<Phone_ExportedGroupCallInvite> Phone_ExportGroupCallInvite(this Client client, InputGroupCall call, bool can_self_unmute = false)
+		public static Task<Phone_ExportedGroupCallInvite> Phone_ExportGroupCallInvite(this Client client, InputGroupCallBase call, bool can_self_unmute = false)
 			=> client.Invoke(new Phone_ExportGroupCallInvite
 			{
 				flags = (Phone_ExportGroupCallInvite.Flags)(can_self_unmute ? 0x1 : 0),
@@ -6783,7 +6783,7 @@ namespace TL
 		/// <summary>Subscribe or unsubscribe to a scheduled group call		<para>See <a href="https://corefork.telegram.org/method/phone.toggleGroupCallStartSubscription"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.toggleGroupCallStartSubscription#possible-errors">details</a>)</para></summary>
 		/// <param name="call">Scheduled group call</param>
 		/// <param name="subscribed">Enable or disable subscription</param>
-		public static Task<UpdatesBase> Phone_ToggleGroupCallStartSubscription(this Client client, InputGroupCall call, bool subscribed)
+		public static Task<UpdatesBase> Phone_ToggleGroupCallStartSubscription(this Client client, InputGroupCallBase call, bool subscribed)
 			=> client.Invoke(new Phone_ToggleGroupCallStartSubscription
 			{
 				call = call,
@@ -6792,7 +6792,7 @@ namespace TL
 
 		/// <summary>Start a scheduled group call.		<para>See <a href="https://corefork.telegram.org/method/phone.startScheduledGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.startScheduledGroupCall#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The scheduled group call</param>
-		public static Task<UpdatesBase> Phone_StartScheduledGroupCall(this Client client, InputGroupCall call)
+		public static Task<UpdatesBase> Phone_StartScheduledGroupCall(this Client client, InputGroupCallBase call)
 			=> client.Invoke(new Phone_StartScheduledGroupCall
 			{
 				call = call,
@@ -6811,7 +6811,7 @@ namespace TL
 		/// <summary>Start screen sharing in a call		<para>See <a href="https://corefork.telegram.org/method/phone.joinGroupCallPresentation"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.joinGroupCallPresentation#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The group call</param>
 		/// <param name="params_">WebRTC parameters</param>
-		public static Task<UpdatesBase> Phone_JoinGroupCallPresentation(this Client client, InputGroupCall call, DataJSON params_)
+		public static Task<UpdatesBase> Phone_JoinGroupCallPresentation(this Client client, InputGroupCallBase call, DataJSON params_)
 			=> client.Invoke(new Phone_JoinGroupCallPresentation
 			{
 				call = call,
@@ -6820,7 +6820,7 @@ namespace TL
 
 		/// <summary>Stop screen sharing in a group call		<para>See <a href="https://corefork.telegram.org/method/phone.leaveGroupCallPresentation"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.leaveGroupCallPresentation#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The group call</param>
-		public static Task<UpdatesBase> Phone_LeaveGroupCallPresentation(this Client client, InputGroupCall call)
+		public static Task<UpdatesBase> Phone_LeaveGroupCallPresentation(this Client client, InputGroupCallBase call)
 			=> client.Invoke(new Phone_LeaveGroupCallPresentation
 			{
 				call = call,
@@ -6828,7 +6828,7 @@ namespace TL
 
 		/// <summary>Get info about RTMP streams in a group call or livestream.<br/>This method should be invoked to the same group/channel-related DC used for <a href="https://corefork.telegram.org/api/files#downloading-files">downloading livestream chunks</a>.<br/>As usual, the media DC is preferred, if available.		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallStreamChannels"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.getGroupCallStreamChannels#possible-errors">details</a>)</para></summary>
 		/// <param name="call">Group call or livestream</param>
-		public static Task<Phone_GroupCallStreamChannels> Phone_GetGroupCallStreamChannels(this Client client, InputGroupCall call)
+		public static Task<Phone_GroupCallStreamChannels> Phone_GetGroupCallStreamChannels(this Client client, InputGroupCallBase call)
 			=> client.Invoke(new Phone_GetGroupCallStreamChannels
 			{
 				call = call,
@@ -6855,11 +6855,58 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.createConferenceCall"/></para></summary>
-		public static Task<Phone_PhoneCall> Phone_CreateConferenceCall(this Client client, InputPhoneCall peer, long key_fingerprint)
+		public static Task<UpdatesBase> Phone_CreateConferenceCall(this Client client, int random_id, Int256? public_key = null, byte[] block = null, DataJSON params_ = null, bool muted = false, bool video_stopped = false, bool join = false)
 			=> client.Invoke(new Phone_CreateConferenceCall
 			{
-				peer = peer,
-				key_fingerprint = key_fingerprint,
+				flags = (Phone_CreateConferenceCall.Flags)((public_key != null ? 0x8 : 0) | (block != null ? 0x8 : 0) | (params_ != null ? 0x8 : 0) | (muted ? 0x1 : 0) | (video_stopped ? 0x4 : 0) | (join ? 0x8 : 0)),
+				random_id = random_id,
+				public_key = public_key ?? default,
+				block = block,
+				params_ = params_,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.deleteConferenceCallParticipants"/></para></summary>
+		public static Task<UpdatesBase> Phone_DeleteConferenceCallParticipants(this Client client, InputGroupCallBase call, long[] ids, byte[] block, bool only_left = false, bool kick = false)
+			=> client.Invoke(new Phone_DeleteConferenceCallParticipants
+			{
+				flags = (Phone_DeleteConferenceCallParticipants.Flags)((only_left ? 0x1 : 0) | (kick ? 0x2 : 0)),
+				call = call,
+				ids = ids,
+				block = block,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.sendConferenceCallBroadcast"/></para></summary>
+		public static Task<UpdatesBase> Phone_SendConferenceCallBroadcast(this Client client, InputGroupCallBase call, byte[] block)
+			=> client.Invoke(new Phone_SendConferenceCallBroadcast
+			{
+				call = call,
+				block = block,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.inviteConferenceCallParticipant"/></para></summary>
+		public static Task<UpdatesBase> Phone_InviteConferenceCallParticipant(this Client client, InputGroupCallBase call, InputUserBase user_id, bool video = false)
+			=> client.Invoke(new Phone_InviteConferenceCallParticipant
+			{
+				flags = (Phone_InviteConferenceCallParticipant.Flags)(video ? 0x1 : 0),
+				call = call,
+				user_id = user_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.declineConferenceCallInvite"/></para></summary>
+		public static Task<UpdatesBase> Phone_DeclineConferenceCallInvite(this Client client, int msg_id)
+			=> client.Invoke(new Phone_DeclineConferenceCallInvite
+			{
+				msg_id = msg_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallChainBlocks"/></para></summary>
+		public static Task<UpdatesBase> Phone_GetGroupCallChainBlocks(this Client client, InputGroupCallBase call, int sub_chain_id, int offset = default, int limit = int.MaxValue)
+			=> client.Invoke(new Phone_GetGroupCallChainBlocks
+			{
+				call = call,
+				sub_chain_id = sub_chain_id,
+				offset = offset,
+				limit = limit,
 			});
 
 		/// <summary>Get localization pack strings		<para>See <a href="https://corefork.telegram.org/method/langpack.getLangPack"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/langpack.getLangPack#possible-errors">details</a>)</para></summary>
@@ -12964,12 +13011,11 @@ namespace TL.Methods
 	[TLDef(0x55451FA9)]
 	public sealed partial class Phone_GetCallConfig : IMethod<DataJSON> { }
 
-	[TLDef(0xA6C4600C)]
+	[TLDef(0x42FF96ED)]
 	public sealed partial class Phone_RequestCall : IMethod<Phone_PhoneCall>
 	{
 		public Flags flags;
 		public InputUserBase user_id;
-		[IfFlag(1)] public InputGroupCall conference_call;
 		public int random_id;
 		public byte[] g_a_hash;
 		public PhoneCallProtocol protocol;
@@ -12977,7 +13023,6 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			video = 0x1,
-			has_conference_call = 0x2,
 		}
 	}
 
@@ -13064,14 +13109,15 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xD61E1DF3)]
+	[TLDef(0x8FB53057)]
 	public sealed partial class Phone_JoinGroupCall : IMethod<UpdatesBase>
 	{
 		public Flags flags;
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		public InputPeer join_as;
 		[IfFlag(1)] public string invite_hash;
-		[IfFlag(3)] public long key_fingerprint;
+		[IfFlag(3)] public Int256 public_key;
+		[IfFlag(3)] public byte[] block;
 		public DataJSON params_;
 
 		[Flags] public enum Flags : uint
@@ -13079,35 +13125,35 @@ namespace TL.Methods
 			muted = 0x1,
 			has_invite_hash = 0x2,
 			video_stopped = 0x4,
-			has_key_fingerprint = 0x8,
+			has_public_key = 0x8,
 		}
 	}
 
 	[TLDef(0x500377F9)]
 	public sealed partial class Phone_LeaveGroupCall : IMethod<UpdatesBase>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		public int source;
 	}
 
 	[TLDef(0x7B393160)]
 	public sealed partial class Phone_InviteToGroupCall : IMethod<UpdatesBase>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		public InputUserBase[] users;
 	}
 
 	[TLDef(0x7A777135)]
 	public sealed partial class Phone_DiscardGroupCall : IMethod<UpdatesBase>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 	}
 
 	[TLDef(0x74BBB43D)]
 	public sealed partial class Phone_ToggleGroupCallSettings : IMethod<UpdatesBase>
 	{
 		public Flags flags;
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		[IfFlag(0)] public bool join_muted;
 
 		[Flags] public enum Flags : uint
@@ -13120,14 +13166,14 @@ namespace TL.Methods
 	[TLDef(0x041845DB)]
 	public sealed partial class Phone_GetGroupCall : IMethod<Phone_GroupCall>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		public int limit;
 	}
 
 	[TLDef(0xC558D8AB)]
 	public sealed partial class Phone_GetGroupParticipants : IMethod<Phone_GroupParticipants>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		public InputPeer[] ids;
 		public int[] sources;
 		public string offset;
@@ -13137,7 +13183,7 @@ namespace TL.Methods
 	[TLDef(0xB59CF977)]
 	public sealed partial class Phone_CheckGroupCall : IMethod<int[]>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		public int[] sources;
 	}
 
@@ -13145,7 +13191,7 @@ namespace TL.Methods
 	public sealed partial class Phone_ToggleGroupCallRecord : IMethod<UpdatesBase>
 	{
 		public Flags flags;
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		[IfFlag(1)] public string title;
 		[IfFlag(2)] public bool video_portrait;
 
@@ -13161,7 +13207,7 @@ namespace TL.Methods
 	public sealed partial class Phone_EditGroupCallParticipant : IMethod<UpdatesBase>
 	{
 		public Flags flags;
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		public InputPeer participant;
 		[IfFlag(0)] public bool muted;
 		[IfFlag(1)] public int volume;
@@ -13184,7 +13230,7 @@ namespace TL.Methods
 	[TLDef(0x1CA6AC0A)]
 	public sealed partial class Phone_EditGroupCallTitle : IMethod<UpdatesBase>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		public string title;
 	}
 
@@ -13198,7 +13244,7 @@ namespace TL.Methods
 	public sealed partial class Phone_ExportGroupCallInvite : IMethod<Phone_ExportedGroupCallInvite>
 	{
 		public Flags flags;
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 
 		[Flags] public enum Flags : uint
 		{
@@ -13209,14 +13255,14 @@ namespace TL.Methods
 	[TLDef(0x219C34E6)]
 	public sealed partial class Phone_ToggleGroupCallStartSubscription : IMethod<UpdatesBase>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		public bool subscribed;
 	}
 
 	[TLDef(0x5680E342)]
 	public sealed partial class Phone_StartScheduledGroupCall : IMethod<UpdatesBase>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 	}
 
 	[TLDef(0x575E1F8C)]
@@ -13229,20 +13275,20 @@ namespace TL.Methods
 	[TLDef(0xCBEA6BC4)]
 	public sealed partial class Phone_JoinGroupCallPresentation : IMethod<UpdatesBase>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		public DataJSON params_;
 	}
 
 	[TLDef(0x1C50D144)]
 	public sealed partial class Phone_LeaveGroupCallPresentation : IMethod<UpdatesBase>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 	}
 
 	[TLDef(0x1AB21940)]
 	public sealed partial class Phone_GetGroupCallStreamChannels : IMethod<Phone_GroupCallStreamChannels>
 	{
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 	}
 
 	[TLDef(0xDEB3ABBF)]
@@ -13259,11 +13305,71 @@ namespace TL.Methods
 		public InputFileBase file;
 	}
 
-	[TLDef(0xDFC909AB)]
-	public sealed partial class Phone_CreateConferenceCall : IMethod<Phone_PhoneCall>
+	[TLDef(0x7D0444BB)]
+	public sealed partial class Phone_CreateConferenceCall : IMethod<UpdatesBase>
 	{
-		public InputPhoneCall peer;
-		public long key_fingerprint;
+		public Flags flags;
+		public int random_id;
+		[IfFlag(3)] public Int256 public_key;
+		[IfFlag(3)] public byte[] block;
+		[IfFlag(3)] public DataJSON params_;
+
+		[Flags] public enum Flags : uint
+		{
+			muted = 0x1,
+			video_stopped = 0x4,
+			join = 0x8,
+		}
+	}
+
+	[TLDef(0x8CA60525)]
+	public sealed partial class Phone_DeleteConferenceCallParticipants : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputGroupCallBase call;
+		public long[] ids;
+		public byte[] block;
+
+		[Flags] public enum Flags : uint
+		{
+			only_left = 0x1,
+			kick = 0x2,
+		}
+	}
+
+	[TLDef(0xC6701900)]
+	public sealed partial class Phone_SendConferenceCallBroadcast : IMethod<UpdatesBase>
+	{
+		public InputGroupCallBase call;
+		public byte[] block;
+	}
+
+	[TLDef(0xBCF22685)]
+	public sealed partial class Phone_InviteConferenceCallParticipant : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputGroupCallBase call;
+		public InputUserBase user_id;
+
+		[Flags] public enum Flags : uint
+		{
+			video = 0x1,
+		}
+	}
+
+	[TLDef(0x3C479971)]
+	public sealed partial class Phone_DeclineConferenceCallInvite : IMethod<UpdatesBase>
+	{
+		public int msg_id;
+	}
+
+	[TLDef(0xEE9F88A6)]
+	public sealed partial class Phone_GetGroupCallChainBlocks : IMethod<UpdatesBase>
+	{
+		public InputGroupCallBase call;
+		public int sub_chain_id;
+		public int offset;
+		public int limit;
 	}
 
 	[TLDef(0xF2F2330A)]

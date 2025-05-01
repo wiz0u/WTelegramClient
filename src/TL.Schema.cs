@@ -692,7 +692,7 @@ namespace TL
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Livestream info</summary>
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		/// <summary>Timestamp in milliseconds</summary>
 		public long time_ms;
 		/// <summary>Specifies the duration of the video segment to fetch in milliseconds, by bitshifting <c>1000</c> to the right <c>scale</c> times: <c>duration_ms := 1000 &gt;&gt; scale</c></summary>
@@ -1262,7 +1262,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		public virtual int Folder => default;
 		/// <summary>Group call information</summary>
-		public virtual InputGroupCall Call => default;
+		public virtual InputGroupCallBase Call => default;
 		/// <summary>Time-To-Live of messages sent by the current user to this chat</summary>
 		public virtual int TtlPeriod => default;
 		/// <summary>When using <see cref="SchemaExtensions.Phone_GetGroupCallJoinAs">Phone_GetGroupCallJoinAs</see> to get a list of peers that can be used to join a group call, this field indicates the peer that should be selected by default.</summary>
@@ -1303,7 +1303,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		[IfFlag(11)] public int folder_id;
 		/// <summary>Group call information</summary>
-		[IfFlag(12)] public InputGroupCall call;
+		[IfFlag(12)] public InputGroupCallBase call;
 		/// <summary>Time-To-Live of messages sent by the current user to this chat</summary>
 		[IfFlag(14)] public int ttl_period;
 		/// <summary>When using <see cref="SchemaExtensions.Phone_GetGroupCallJoinAs">Phone_GetGroupCallJoinAs</see> to get a list of peers that can be used to join a group call, this field indicates the peer that should be selected by default.</summary>
@@ -1370,7 +1370,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		public override int Folder => folder_id;
 		/// <summary>Group call information</summary>
-		public override InputGroupCall Call => call;
+		public override InputGroupCallBase Call => call;
 		/// <summary>Time-To-Live of messages sent by the current user to this chat</summary>
 		public override int TtlPeriod => ttl_period;
 		/// <summary>When using <see cref="SchemaExtensions.Phone_GetGroupCallJoinAs">Phone_GetGroupCallJoinAs</see> to get a list of peers that can be used to join a group call, this field indicates the peer that should be selected by default.</summary>
@@ -1447,7 +1447,7 @@ namespace TL
 		/// <summary>Latest <a href="https://corefork.telegram.org/api/updates">PTS</a> for this channel</summary>
 		public int pts;
 		/// <summary>Livestream or group call information</summary>
-		[IfFlag(21)] public InputGroupCall call;
+		[IfFlag(21)] public InputGroupCallBase call;
 		/// <summary>Time-To-Live of messages in this channel or supergroup</summary>
 		[IfFlag(24)] public int ttl_period;
 		/// <summary>A list of <a href="https://corefork.telegram.org/api/config#suggestions">suggested actions</a> for the supergroup admin, <a href="https://corefork.telegram.org/api/config#suggestions">see here for more info »</a>.</summary>
@@ -1606,7 +1606,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></summary>
 		public override int Folder => folder_id;
 		/// <summary>Livestream or group call information</summary>
-		public override InputGroupCall Call => call;
+		public override InputGroupCallBase Call => call;
 		/// <summary>Time-To-Live of messages in this channel or supergroup</summary>
 		public override int TtlPeriod => ttl_period;
 		/// <summary>When using <see cref="SchemaExtensions.Phone_GetGroupCallJoinAs">Phone_GetGroupCallJoinAs</see> to get a list of peers that can be used to join a group call, this field indicates the peer that should be selected by default.</summary>
@@ -2548,7 +2548,7 @@ namespace TL
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>Group call</summary>
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		/// <summary>Group call duration</summary>
 		[IfFlag(0)] public int duration;
 
@@ -2563,7 +2563,7 @@ namespace TL
 	public sealed partial class MessageActionInviteToGroupCall : MessageAction
 	{
 		/// <summary>The group call</summary>
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		/// <summary>The invited users</summary>
 		public long[] users;
 	}
@@ -2589,7 +2589,7 @@ namespace TL
 	public sealed partial class MessageActionGroupCallScheduled : MessageAction
 	{
 		/// <summary>The group call</summary>
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		/// <summary>When is this group call scheduled to start</summary>
 		public DateTime schedule_date;
 	}
@@ -2958,6 +2958,24 @@ namespace TL
 	public sealed partial class MessageActionPaidMessagesPrice : MessageAction
 	{
 		public long stars;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionConferenceCall"/></para></summary>
+	[TLDef(0x2FFE2F7A)]
+	public sealed partial class MessageActionConferenceCall : MessageAction
+	{
+		public Flags flags;
+		public long call_id;
+		[IfFlag(2)] public int duration;
+		[IfFlag(3)] public Peer[] other_participants;
+
+		[Flags] public enum Flags : uint
+		{
+			missed = 0x1,
+			active = 0x2,
+			has_duration = 0x4,
+			has_other_participants = 0x8,
+			video = 0x10,
+		}
 	}
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
@@ -5124,7 +5142,7 @@ namespace TL
 	public sealed partial class UpdateGroupCallParticipants : Update
 	{
 		/// <summary>Group call</summary>
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 		/// <summary>New participant list</summary>
 		public GroupCallParticipant[] participants;
 		/// <summary>Version</summary>
@@ -5817,6 +5835,15 @@ namespace TL
 	public sealed partial class UpdateSentPhoneCode : Update
 	{
 		public Auth_SentCodeBase sent_code;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateGroupCallChainBlocks"/></para></summary>
+	[TLDef(0xA477288F)]
+	public sealed partial class UpdateGroupCallChainBlocks : Update
+	{
+		public InputGroupCallBase call;
+		public int sub_chain_id;
+		public byte[][] blocks;
+		public int next_offset;
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -10529,11 +10556,11 @@ namespace TL
 	/// <summary>The phone call was discarded because the user is busy in another call		<para>See <a href="https://corefork.telegram.org/constructor/phoneCallDiscardReasonBusy"/></para></summary>
 	[TLDef(0xFAF7E8C9)]
 	public sealed partial class PhoneCallDiscardReasonBusy : PhoneCallDiscardReason { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/phoneCallDiscardReasonAllowGroupCall"/></para></summary>
-	[TLDef(0xAFE2B839)]
-	public sealed partial class PhoneCallDiscardReasonAllowGroupCall : PhoneCallDiscardReason
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/phoneCallDiscardReasonMigrateConferenceCall"/></para></summary>
+	[TLDef(0x9FBBF1F7)]
+	public sealed partial class PhoneCallDiscardReasonMigrateConferenceCall : PhoneCallDiscardReason
 	{
-		public byte[] encrypted_key;
+		public string slug;
 	}
 
 	/// <summary>Represents a json-encoded object		<para>See <a href="https://corefork.telegram.org/constructor/dataJSON"/></para></summary>
@@ -11232,7 +11259,6 @@ namespace TL
 		public virtual long ParticipantId => default;
 		/// <summary>Phone call protocol info</summary>
 		public virtual PhoneCallProtocol Protocol => default;
-		public virtual InputGroupCall ConferenceCall => default;
 	}
 	/// <summary>Empty constructor		<para>See <a href="https://corefork.telegram.org/constructor/phoneCallEmpty"/></para></summary>
 	[TLDef(0x5366C915)]
@@ -11245,7 +11271,7 @@ namespace TL
 		public override long ID => id;
 	}
 	/// <summary>Incoming phone call		<para>See <a href="https://corefork.telegram.org/constructor/phoneCallWaiting"/></para></summary>
-	[TLDef(0xEED42858)]
+	[TLDef(0xC5226F17)]
 	public sealed partial class PhoneCallWaiting : PhoneCallBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -11264,7 +11290,6 @@ namespace TL
 		public PhoneCallProtocol protocol;
 		/// <summary>When was the phone call received</summary>
 		[IfFlag(0)] public DateTime receive_date;
-		[IfFlag(8)] public InputGroupCall conference_call;
 
 		[Flags] public enum Flags : uint
 		{
@@ -11272,8 +11297,6 @@ namespace TL
 			has_receive_date = 0x1,
 			/// <summary>Is this a video call</summary>
 			video = 0x40,
-			/// <summary>Field <see cref="conference_call"/> has a value</summary>
-			has_conference_call = 0x100,
 		}
 
 		/// <summary>Call ID</summary>
@@ -11288,10 +11311,9 @@ namespace TL
 		public override long ParticipantId => participant_id;
 		/// <summary>Phone call protocol info</summary>
 		public override PhoneCallProtocol Protocol => protocol;
-		public override InputGroupCall ConferenceCall => conference_call;
 	}
 	/// <summary>Requested phone call		<para>See <a href="https://corefork.telegram.org/constructor/phoneCallRequested"/></para></summary>
-	[TLDef(0x45361C63)]
+	[TLDef(0x14B0ED0C)]
 	public sealed partial class PhoneCallRequested : PhoneCallBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -11310,14 +11332,11 @@ namespace TL
 		public byte[] g_a_hash;
 		/// <summary>Call protocol info to be passed to libtgvoip</summary>
 		public PhoneCallProtocol protocol;
-		[IfFlag(8)] public InputGroupCall conference_call;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this is a video call</summary>
 			video = 0x40,
-			/// <summary>Field <see cref="conference_call"/> has a value</summary>
-			has_conference_call = 0x100,
 		}
 
 		/// <summary>Phone call ID</summary>
@@ -11332,10 +11351,9 @@ namespace TL
 		public override long ParticipantId => participant_id;
 		/// <summary>Call protocol info to be passed to libtgvoip</summary>
 		public override PhoneCallProtocol Protocol => protocol;
-		public override InputGroupCall ConferenceCall => conference_call;
 	}
 	/// <summary>An accepted phone call		<para>See <a href="https://corefork.telegram.org/constructor/phoneCallAccepted"/></para></summary>
-	[TLDef(0x22FD7181)]
+	[TLDef(0x3660C311)]
 	public sealed partial class PhoneCallAccepted : PhoneCallBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -11354,14 +11372,11 @@ namespace TL
 		public byte[] g_b;
 		/// <summary>Protocol to use for phone call</summary>
 		public PhoneCallProtocol protocol;
-		[IfFlag(8)] public InputGroupCall conference_call;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Whether this is a video call</summary>
 			video = 0x40,
-			/// <summary>Field <see cref="conference_call"/> has a value</summary>
-			has_conference_call = 0x100,
 		}
 
 		/// <summary>ID of accepted phone call</summary>
@@ -11376,10 +11391,9 @@ namespace TL
 		public override long ParticipantId => participant_id;
 		/// <summary>Protocol to use for phone call</summary>
 		public override PhoneCallProtocol Protocol => protocol;
-		public override InputGroupCall ConferenceCall => conference_call;
 	}
 	/// <summary>Phone call		<para>See <a href="https://corefork.telegram.org/constructor/phoneCall"/></para></summary>
-	[TLDef(0x3BA5940C)]
+	[TLDef(0x30535AF5)]
 	public sealed partial class PhoneCall : PhoneCallBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -11406,7 +11420,6 @@ namespace TL
 		public DateTime start_date;
 		/// <summary>Custom JSON-encoded call parameters to be passed to tgcalls.</summary>
 		[IfFlag(7)] public DataJSON custom_parameters;
-		[IfFlag(8)] public InputGroupCall conference_call;
 
 		[Flags] public enum Flags : uint
 		{
@@ -11416,8 +11429,7 @@ namespace TL
 			video = 0x40,
 			/// <summary>Field <see cref="custom_parameters"/> has a value</summary>
 			has_custom_parameters = 0x80,
-			/// <summary>Field <see cref="conference_call"/> has a value</summary>
-			has_conference_call = 0x100,
+			conference_supported = 0x100,
 		}
 
 		/// <summary>Call ID</summary>
@@ -11432,10 +11444,9 @@ namespace TL
 		public override long ParticipantId => participant_id;
 		/// <summary>Call protocol info to be passed to libtgvoip</summary>
 		public override PhoneCallProtocol Protocol => protocol;
-		public override InputGroupCall ConferenceCall => conference_call;
 	}
 	/// <summary>Indicates a discarded phone call		<para>See <a href="https://corefork.telegram.org/constructor/phoneCallDiscarded"/></para></summary>
-	[TLDef(0xF9D25503)]
+	[TLDef(0x50CA4DE1)]
 	public sealed partial class PhoneCallDiscarded : PhoneCallBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -11446,7 +11457,6 @@ namespace TL
 		[IfFlag(0)] public PhoneCallDiscardReason reason;
 		/// <summary>Duration of the phone call in seconds</summary>
 		[IfFlag(1)] public int duration;
-		[IfFlag(8)] public InputGroupCall conference_call;
 
 		[Flags] public enum Flags : uint
 		{
@@ -11460,13 +11470,10 @@ namespace TL
 			need_debug = 0x8,
 			/// <summary>Whether the call was a video call</summary>
 			video = 0x40,
-			/// <summary>Field <see cref="conference_call"/> has a value</summary>
-			has_conference_call = 0x100,
 		}
 
 		/// <summary>Call ID</summary>
 		public override long ID => id;
-		public override InputGroupCall ConferenceCall => conference_call;
 	}
 
 	/// <summary>Phone call connection		<para>See <a href="https://corefork.telegram.org/type/PhoneConnection"/></para>		<para>Derived classes: <see cref="PhoneConnection"/>, <see cref="PhoneConnectionWebrtc"/></para></summary>
@@ -11904,14 +11911,14 @@ namespace TL
 	public sealed partial class ChannelAdminLogEventActionStartGroupCall : ChannelAdminLogEventAction
 	{
 		/// <summary>Group call</summary>
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 	}
 	/// <summary>A group call was terminated		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionDiscardGroupCall"/></para></summary>
 	[TLDef(0xDB9F9140)]
 	public sealed partial class ChannelAdminLogEventActionDiscardGroupCall : ChannelAdminLogEventAction
 	{
 		/// <summary>The group call that was terminated</summary>
-		public InputGroupCall call;
+		public InputGroupCallBase call;
 	}
 	/// <summary>A group call participant was muted		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionParticipantMute"/></para></summary>
 	[TLDef(0xF92424D2)]
@@ -14809,7 +14816,7 @@ namespace TL
 		public override long AccessHash => access_hash;
 	}
 	/// <summary>Info about a group call or livestream		<para>See <a href="https://corefork.telegram.org/constructor/groupCall"/></para></summary>
-	[TLDef(0xCDF8D3E3)]
+	[TLDef(0x553B0BA1)]
 	public sealed partial class GroupCall : GroupCallBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -14834,7 +14841,7 @@ namespace TL
 		public int unmuted_video_limit;
 		/// <summary>Version</summary>
 		public int version;
-		[IfFlag(14)] public long conference_from_call;
+		[IfFlag(16)] public string invite_link;
 
 		[Flags] public enum Flags : uint
 		{
@@ -14864,8 +14871,10 @@ namespace TL
 			rtmp_stream = 0x1000,
 			/// <summary>Whether the listeners list is hidden and cannot be fetched using <see cref="SchemaExtensions.Phone_GetGroupParticipants">Phone_GetGroupParticipants</see>. The <c>phone.groupParticipants.count</c> and <c>groupCall.participants_count</c> counters will still include listeners.</summary>
 			listeners_hidden = 0x2000,
-			/// <summary>Field <see cref="conference_from_call"/> has a value</summary>
-			has_conference_from_call = 0x4000,
+			conference = 0x4000,
+			creator = 0x8000,
+			/// <summary>Field <see cref="invite_link"/> has a value</summary>
+			has_invite_link = 0x10000,
 		}
 
 		/// <summary>Group call ID</summary>
@@ -14874,14 +14883,28 @@ namespace TL
 		public override long AccessHash => access_hash;
 	}
 
+	/// <summary>Indicates a group call		<para>See <a href="https://corefork.telegram.org/type/InputGroupCall"/></para>		<para>Derived classes: <see cref="InputGroupCall"/></para></summary>
+	public abstract partial class InputGroupCallBase : IObject { }
 	/// <summary>Points to a specific group call		<para>See <a href="https://corefork.telegram.org/constructor/inputGroupCall"/></para></summary>
 	[TLDef(0xD8AA840F)]
-	public sealed partial class InputGroupCall : IObject
+	public sealed partial class InputGroupCall : InputGroupCallBase
 	{
 		/// <summary>Group call ID</summary>
 		public long id;
 		/// <summary>⚠ <b>REQUIRED FIELD</b>. See <see href="https://wiz0u.github.io/WTelegramClient/FAQ#access-hash">how to obtain it</see><br/>Group call access hash</summary>
 		public long access_hash;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputGroupCallSlug"/></para></summary>
+	[TLDef(0xFE06823F)]
+	public sealed partial class InputGroupCallSlug : InputGroupCallBase
+	{
+		public string slug;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputGroupCallInviteMessage"/></para></summary>
+	[TLDef(0x8C10603F)]
+	public sealed partial class InputGroupCallInviteMessage : InputGroupCallBase
+	{
+		public int msg_id;
 	}
 
 	/// <summary>Info about a group call participant		<para>See <a href="https://corefork.telegram.org/constructor/groupCallParticipant"/></para></summary>

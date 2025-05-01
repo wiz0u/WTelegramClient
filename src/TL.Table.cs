@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 201;					// fetched 20/04/2025 01:20:15
+		public const int Version = 202;					// fetched 01/05/2025 10:01:40
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -217,6 +217,7 @@ namespace TL
 			[0xACDFCB81] = typeof(MessageActionStarGiftUnique),
 			[0xAC1F1FCD] = typeof(MessageActionPaidMessagesRefunded),
 			[0xBCD71419] = typeof(MessageActionPaidMessagesPrice),
+			[0x2FFE2F7A] = typeof(MessageActionConferenceCall),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -424,6 +425,7 @@ namespace TL
 			[0x283BD312] = typeof(UpdateBotPurchasedPaidMedia),
 			[0x8B725FCE] = typeof(UpdatePaidReactionPrivacy),
 			[0x504AA18F] = typeof(UpdateSentPhoneCode),
+			[0xA477288F] = typeof(UpdateGroupCallChainBlocks),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -756,7 +758,7 @@ namespace TL
 			[0xE095C1A0] = typeof(PhoneCallDiscardReasonDisconnect),
 			[0x57ADC690] = typeof(PhoneCallDiscardReasonHangup),
 			[0xFAF7E8C9] = typeof(PhoneCallDiscardReasonBusy),
-			[0xAFE2B839] = typeof(PhoneCallDiscardReasonAllowGroupCall),
+			[0x9FBBF1F7] = typeof(PhoneCallDiscardReasonMigrateConferenceCall),
 			[0x7D748D04] = typeof(DataJSON),
 			[0xCB296BF8] = typeof(LabeledPrice),
 			[0x049EE584] = typeof(Invoice),
@@ -789,11 +791,11 @@ namespace TL
 			[0x32DA9E9C] = typeof(InputStickerSetItem),
 			[0x1E36FDED] = typeof(InputPhoneCall),
 			[0x5366C915] = typeof(PhoneCallEmpty),
-			[0xEED42858] = typeof(PhoneCallWaiting),
-			[0x45361C63] = typeof(PhoneCallRequested),
-			[0x22FD7181] = typeof(PhoneCallAccepted),
-			[0x3BA5940C] = typeof(PhoneCall),
-			[0xF9D25503] = typeof(PhoneCallDiscarded),
+			[0xC5226F17] = typeof(PhoneCallWaiting),
+			[0x14B0ED0C] = typeof(PhoneCallRequested),
+			[0x3660C311] = typeof(PhoneCallAccepted),
+			[0x30535AF5] = typeof(PhoneCall),
+			[0x50CA4DE1] = typeof(PhoneCallDiscarded),
 			[0x9CC123C7] = typeof(PhoneConnection),
 			[0x635FE375] = typeof(PhoneConnectionWebrtc),
 			[0xFC878FC8] = typeof(PhoneCallProtocol),
@@ -1031,8 +1033,10 @@ namespace TL
 			[0xE8FD8014] = typeof(PeerBlocked),
 			[0x7FE91C14] = typeof(Stats_MessageStats),
 			[0x7780BCB4] = typeof(GroupCallDiscarded),
-			[0xCDF8D3E3] = typeof(GroupCall),
+			[0x553B0BA1] = typeof(GroupCall),
 			[0xD8AA840F] = typeof(InputGroupCall),
+			[0xFE06823F] = typeof(InputGroupCallSlug),
+			[0x8C10603F] = typeof(InputGroupCallInviteMessage),
 			[0xEBA636FE] = typeof(GroupCallParticipant),
 			[0x9E727AAD] = typeof(Phone_GroupCall),
 			[0xF47751B6] = typeof(Phone_GroupParticipants),
