@@ -1204,6 +1204,7 @@ namespace TL
 			has_bot_verification_icon = 0x2000,
 			/// <summary>Field <see cref="send_paid_messages_stars"/> has a value</summary>
 			has_send_paid_messages_stars = 0x4000,
+			autotranslation = 0x8000,
 		}
 
 		/// <summary>ID of the channel, see <a href="https://corefork.telegram.org/api/peers#peer-id">here »</a> for more info</summary>
@@ -2923,7 +2924,7 @@ namespace TL
 		}
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGiftUnique"/></para></summary>
-	[TLDef(0xACDFCB81)]
+	[TLDef(0x2E3AE60E)]
 	public sealed partial class MessageActionStarGiftUnique : MessageAction
 	{
 		public Flags flags;
@@ -2933,6 +2934,9 @@ namespace TL
 		[IfFlag(6)] public Peer from_id;
 		[IfFlag(7)] public Peer peer;
 		[IfFlag(7)] public long saved_id;
+		[IfFlag(8)] public long resale_stars;
+		[IfFlag(9)] public int can_transfer_at;
+		[IfFlag(10)] public int can_resell_at;
 
 		[Flags] public enum Flags : uint
 		{
@@ -2944,6 +2948,9 @@ namespace TL
 			refunded = 0x20,
 			has_from_id = 0x40,
 			has_peer = 0x80,
+			has_resale_stars = 0x100,
+			has_can_transfer_at = 0x200,
+			has_can_resell_at = 0x400,
 		}
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionPaidMessagesRefunded"/></para></summary>
@@ -12137,6 +12144,12 @@ namespace TL
 		/// <summary>The subscriber that extended the subscription.</summary>
 		public ChannelParticipantBase new_participant;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEventActionToggleAutotranslation"/></para></summary>
+	[TLDef(0xC517F77E)]
+	public sealed partial class ChannelAdminLogEventActionToggleAutotranslation : ChannelAdminLogEventAction
+	{
+		public bool new_value;
+	}
 
 	/// <summary>Admin log event		<para>See <a href="https://corefork.telegram.org/constructor/channelAdminLogEvent"/></para></summary>
 	[TLDef(0x1FAD68CD)]
@@ -14367,7 +14380,7 @@ namespace TL
 		public DateTime expires;
 	}
 	/// <summary>MTProxy/Public Service Announcement information		<para>See <a href="https://corefork.telegram.org/constructor/help.promoData"/></para></summary>
-	[TLDef(0x8C39793F)]
+	[TLDef(0x08A4D87A)]
 	public sealed partial class Help_PromoData : Help_PromoDataBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -14375,15 +14388,18 @@ namespace TL
 		/// <summary>Expiry of PSA/MTProxy info</summary>
 		public DateTime expires;
 		/// <summary>MTProxy/PSA peer</summary>
-		public Peer peer;
-		/// <summary>Chat info</summary>
-		public Dictionary<long, ChatBase> chats;
-		/// <summary>User info</summary>
-		public Dictionary<long, User> users;
+		[IfFlag(3)] public Peer peer;
 		/// <summary>PSA type</summary>
 		[IfFlag(1)] public string psa_type;
 		/// <summary>PSA message</summary>
 		[IfFlag(2)] public string psa_message;
+		public string[] pending_suggestions;
+		public string[] dismissed_suggestions;
+		[IfFlag(4)] public PendingSuggestion custom_pending_suggestion;
+		/// <summary>Chat info</summary>
+		public Dictionary<long, ChatBase> chats;
+		/// <summary>User info</summary>
+		public Dictionary<long, User> users;
 
 		[Flags] public enum Flags : uint
 		{
@@ -14393,6 +14409,10 @@ namespace TL
 			has_psa_type = 0x2,
 			/// <summary>Field <see cref="psa_message"/> has a value</summary>
 			has_psa_message = 0x4,
+			/// <summary>Field <see cref="peer"/> has a value</summary>
+			has_peer = 0x8,
+			/// <summary>Field <see cref="custom_pending_suggestion"/> has a value</summary>
+			has_custom_pending_suggestion = 0x10,
 		}
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the result</summary>
 		public IPeerInfo UserOrChat => peer?.UserOrChat(users, chats);
@@ -15975,6 +15995,13 @@ namespace TL
 	{
 		public InputUserBase bot;
 		public long stars;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceStarGiftResale"/></para></summary>
+	[TLDef(0x63CBC38C)]
+	public sealed partial class InputInvoiceStarGiftResale : InputInvoice
+	{
+		public string slug;
+		public InputPeer to_id;
 	}
 
 	/// <summary>Exported <a href="https://corefork.telegram.org/api/links#invoice-links">invoice deep link</a>		<para>See <a href="https://corefork.telegram.org/constructor/payments.exportedInvoice"/></para></summary>
@@ -19541,6 +19568,7 @@ namespace TL
 			/// <summary>Field <see cref="premium_gift_months"/> has a value</summary>
 			has_premium_gift_months = 0x100000,
 			business_transfer = 0x200000,
+			stargift_resale = 0x400000,
 		}
 	}
 
@@ -19909,9 +19937,10 @@ namespace TL
 		public virtual long ID => default;
 		/// <summary>For limited-supply gifts: the total number of gifts that was available in the initial supply.</summary>
 		public virtual int AvailabilityTotal => default;
+		public virtual string Title => default;
 	}
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/gifts">star gift, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/starGift"/></para></summary>
-	[TLDef(0x02CC73C8)]
+	[TLDef(0xC62ACA28)]
 	public sealed partial class StarGift : StarGiftBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -19926,6 +19955,7 @@ namespace TL
 		[IfFlag(0)] public int availability_remains;
 		/// <summary>For limited-supply gifts: the total number of gifts that was available in the initial supply.</summary>
 		[IfFlag(0)] public int availability_total;
+		[IfFlag(4)] public long availability_resale;
 		/// <summary>The receiver of this gift may convert it to this many Telegram Stars, instead of displaying it on their profile page.<br/><c>convert_stars</c> will be equal to <c>stars</c> only if the gift was bought using recently bought Telegram Stars, otherwise it will be less than <c>stars</c>.</summary>
 		public long convert_stars;
 		/// <summary>For sold out gifts only: when was the gift first bought.</summary>
@@ -19933,6 +19963,8 @@ namespace TL
 		/// <summary>For sold out gifts only: when was the gift last bought.</summary>
 		[IfFlag(1)] public DateTime last_sale_date;
 		[IfFlag(3)] public long upgrade_stars;
+		[IfFlag(4)] public long resell_min_stars;
+		[IfFlag(5)] public string title;
 
 		[Flags] public enum Flags : uint
 		{
@@ -19944,15 +19976,20 @@ namespace TL
 			birthday = 0x4,
 			/// <summary>Field <see cref="upgrade_stars"/> has a value</summary>
 			has_upgrade_stars = 0x8,
+			/// <summary>Fields <see cref="availability_resale"/> and <see cref="resell_min_stars"/> have a value</summary>
+			has_availability_resale = 0x10,
+			/// <summary>Field <see cref="title"/> has a value</summary>
+			has_title = 0x20,
 		}
 
 		/// <summary>Identifier of the gift</summary>
 		public override long ID => id;
 		/// <summary>For limited-supply gifts: the total number of gifts that was available in the initial supply.</summary>
 		public override int AvailabilityTotal => availability_total;
+		public override string Title => title;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftUnique"/></para></summary>
-	[TLDef(0x5C62D151)]
+	[TLDef(0x6411DB89)]
 	public sealed partial class StarGiftUnique : StarGiftBase
 	{
 		public Flags flags;
@@ -19967,6 +20004,7 @@ namespace TL
 		public int availability_issued;
 		public int availability_total;
 		[IfFlag(3)] public string gift_address;
+		[IfFlag(4)] public long resell_stars;
 
 		[Flags] public enum Flags : uint
 		{
@@ -19974,10 +20012,12 @@ namespace TL
 			has_owner_name = 0x2,
 			has_owner_address = 0x4,
 			has_gift_address = 0x8,
+			has_resell_stars = 0x10,
 		}
 
 		public override long ID => id;
 		public override int AvailabilityTotal => availability_total;
+		public override string Title => title;
 	}
 
 	/// <summary>Available <a href="https://corefork.telegram.org/api/gifts">gifts »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/payments.starGifts"/></para></summary>
@@ -20272,10 +20312,11 @@ namespace TL
 		public int rarity_permille;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeBackdrop"/></para></summary>
-	[TLDef(0x94271762)]
+	[TLDef(0xD93D859C)]
 	public sealed partial class StarGiftAttributeBackdrop : StarGiftAttribute
 	{
 		public string name;
+		public int backdrop_id;
 		public int center_color;
 		public int edge_color;
 		public int pattern_color;
@@ -20336,7 +20377,7 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/savedStarGift"/></para></summary>
-	[TLDef(0x6056DBA5)]
+	[TLDef(0xDFDA0499)]
 	public sealed partial class SavedStarGift : IObject
 	{
 		public Flags flags;
@@ -20350,6 +20391,8 @@ namespace TL
 		[IfFlag(6)] public long upgrade_stars;
 		[IfFlag(7)] public int can_export_at;
 		[IfFlag(8)] public long transfer_stars;
+		[IfFlag(13)] public int can_transfer_at;
+		[IfFlag(14)] public int can_resell_at;
 
 		[Flags] public enum Flags : uint
 		{
@@ -20366,6 +20409,8 @@ namespace TL
 			can_upgrade = 0x400,
 			has_saved_id = 0x800,
 			pinned_to_top = 0x1000,
+			has_can_transfer_at = 0x2000,
+			has_can_resell_at = 0x4000,
 		}
 	}
 
@@ -20404,6 +20449,12 @@ namespace TL
 	{
 		public InputPeer peer;
 		public long saved_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputSavedStarGiftSlug"/></para></summary>
+	[TLDef(0x2085C238)]
+	public sealed partial class InputSavedStarGiftSlug : InputSavedStarGift
+	{
+		public string slug;
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.starGiftWithdrawalUrl"/></para></summary>
@@ -20513,5 +20564,75 @@ namespace TL
 		public Dictionary<long, User> users;
 		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/StarGiftAttributeId"/></para></summary>
+	public abstract partial class StarGiftAttributeId : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeIdModel"/></para></summary>
+	[TLDef(0x48AAAE3C)]
+	public sealed partial class StarGiftAttributeIdModel : StarGiftAttributeId
+	{
+		public long document_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeIdPattern"/></para></summary>
+	[TLDef(0x4A162433)]
+	public sealed partial class StarGiftAttributeIdPattern : StarGiftAttributeId
+	{
+		public long document_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeIdBackdrop"/></para></summary>
+	[TLDef(0x1F01C757)]
+	public sealed partial class StarGiftAttributeIdBackdrop : StarGiftAttributeId
+	{
+		public int backdrop_id;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeCounter"/></para></summary>
+	[TLDef(0x2EB1B658)]
+	public sealed partial class StarGiftAttributeCounter : IObject
+	{
+		public StarGiftAttributeId attribute;
+		public int count;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.resaleStarGifts"/></para></summary>
+	[TLDef(0x947A12DF)]
+	public sealed partial class Payments_ResaleStarGifts : IObject, IPeerResolver
+	{
+		public Flags flags;
+		public int count;
+		public StarGiftBase[] gifts;
+		[IfFlag(0)] public string next_offset;
+		[IfFlag(1)] public StarGiftAttribute[] attributes;
+		[IfFlag(1)] public long attributes_hash;
+		public Dictionary<long, ChatBase> chats;
+		[IfFlag(2)] public StarGiftAttributeCounter[] counters;
+		public Dictionary<long, User> users;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
+			has_attributes = 0x2,
+			has_counters = 0x4,
+		}
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/stories.canSendStoryCount"/></para></summary>
+	[TLDef(0xC387C04E)]
+	public sealed partial class Stories_CanSendStoryCount : IObject
+	{
+		public int count_remains;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/pendingSuggestion"/></para></summary>
+	[TLDef(0xE7E82E12)]
+	public sealed partial class PendingSuggestion : IObject
+	{
+		public string suggestion;
+		public TextWithEntities title;
+		public TextWithEntities description;
+		public string url;
 	}
 }

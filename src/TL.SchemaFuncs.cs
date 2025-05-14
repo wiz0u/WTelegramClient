@@ -5587,6 +5587,14 @@ namespace TL
 				send_paid_messages_stars = send_paid_messages_stars,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.toggleAutotranslation"/></para></summary>
+		public static Task<UpdatesBase> Channels_ToggleAutotranslation(this Client client, InputChannelBase channel, bool enabled)
+			=> client.Invoke(new Channels_ToggleAutotranslation
+			{
+				channel = channel,
+				enabled = enabled,
+			});
+
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
 		/// <param name="custom_method">The method name</param>
 		/// <param name="params_">JSON-serialized method parameters</param>
@@ -6365,6 +6373,26 @@ namespace TL
 			=> client.Invoke(new Payments_CanPurchaseStore
 			{
 				purpose = purpose,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getResaleStarGifts"/></para></summary>
+		public static Task<Payments_ResaleStarGifts> Payments_GetResaleStarGifts(this Client client, long gift_id, string offset, int limit = int.MaxValue, long? attributes_hash = null, StarGiftAttributeId[] attributes = null, bool sort_by_price = false, bool sort_by_num = false)
+			=> client.Invoke(new Payments_GetResaleStarGifts
+			{
+				flags = (Payments_GetResaleStarGifts.Flags)((attributes_hash != null ? 0x1 : 0) | (attributes != null ? 0x8 : 0) | (sort_by_price ? 0x2 : 0) | (sort_by_num ? 0x4 : 0)),
+				attributes_hash = attributes_hash ?? default,
+				gift_id = gift_id,
+				attributes = attributes,
+				offset = offset,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.updateStarGiftPrice"/></para></summary>
+		public static Task<UpdatesBase> Payments_UpdateStarGiftPrice(this Client client, InputSavedStarGift stargift, long resell_stars)
+			=> client.Invoke(new Payments_UpdateStarGiftPrice
+			{
+				stargift = stargift,
+				resell_stars = resell_stars,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -7193,7 +7221,7 @@ namespace TL
 
 		/// <summary>Check whether we can post stories as the specified peer.		<para>See <a href="https://corefork.telegram.org/method/stories.canSendStory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.canSendStory#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The peer from which we wish to post stories.</param>
-		public static Task<bool> Stories_CanSendStory(this Client client, InputPeer peer)
+		public static Task<Stories_CanSendStoryCount> Stories_CanSendStory(this Client client, InputPeer peer)
 			=> client.Invoke(new Stories_CanSendStory
 			{
 				peer = peer,
@@ -12224,6 +12252,13 @@ namespace TL.Methods
 		public long send_paid_messages_stars;
 	}
 
+	[TLDef(0x167FC0A1)]
+	public sealed partial class Channels_ToggleAutotranslation : IMethod<UpdatesBase>
+	{
+		public InputChannelBase channel;
+		public bool enabled;
+	}
+
 	[TLDef(0xAA2769ED)]
 	public sealed partial class Bots_SendCustomRequest : IMethod<DataJSON>
 	{
@@ -12901,6 +12936,32 @@ namespace TL.Methods
 	public sealed partial class Payments_CanPurchaseStore : IMethod<bool>
 	{
 		public InputStorePaymentPurpose purpose;
+	}
+
+	[TLDef(0x7A5FA236)]
+	public sealed partial class Payments_GetResaleStarGifts : IMethod<Payments_ResaleStarGifts>
+	{
+		public Flags flags;
+		[IfFlag(0)] public long attributes_hash;
+		public long gift_id;
+		[IfFlag(3)] public StarGiftAttributeId[] attributes;
+		public string offset;
+		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			has_attributes_hash = 0x1,
+			sort_by_price = 0x2,
+			sort_by_num = 0x4,
+			has_attributes = 0x8,
+		}
+	}
+
+	[TLDef(0x3BAEA4E1)]
+	public sealed partial class Payments_UpdateStarGiftPrice : IMethod<UpdatesBase>
+	{
+		public InputSavedStarGift stargift;
+		public long resell_stars;
 	}
 
 	[TLDef(0x9021AB67)]
@@ -13604,8 +13665,8 @@ namespace TL.Methods
 		public InputPeer[] peers;
 	}
 
-	[TLDef(0xC7DFDFDD)]
-	public sealed partial class Stories_CanSendStory : IMethod<bool>
+	[TLDef(0x30EB63F0)]
+	public sealed partial class Stories_CanSendStory : IMethod<Stories_CanSendStoryCount>
 	{
 		public InputPeer peer;
 	}

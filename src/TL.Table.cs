@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 202;					// fetched 01/05/2025 10:01:40
+		public const int Version = 203;					// fetched 14/05/2025 16:07:47
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -214,7 +214,7 @@ namespace TL
 			[0x45D5B021] = typeof(MessageActionGiftStars),
 			[0xB00C47A2] = typeof(MessageActionPrizeStars),
 			[0x4717E8A4] = typeof(MessageActionStarGift),
-			[0xACDFCB81] = typeof(MessageActionStarGiftUnique),
+			[0x2E3AE60E] = typeof(MessageActionStarGiftUnique),
 			[0xAC1F1FCD] = typeof(MessageActionPaidMessagesRefunded),
 			[0xBCD71419] = typeof(MessageActionPaidMessagesPrice),
 			[0x2FFE2F7A] = typeof(MessageActionConferenceCall),
@@ -859,6 +859,7 @@ namespace TL
 			[0x46D840AB] = typeof(ChannelAdminLogEventActionChangeEmojiStickerSet),
 			[0x60A79C79] = typeof(ChannelAdminLogEventActionToggleSignatureProfiles),
 			[0x64642DB3] = typeof(ChannelAdminLogEventActionParticipantSubExtend),
+			[0xC517F77E] = typeof(ChannelAdminLogEventActionToggleAutotranslation),
 			[0x1FAD68CD] = typeof(ChannelAdminLogEvent),
 			[0xED8AF74D] = typeof(Channels_AdminLogResults),
 			[0xEA107AE4] = typeof(ChannelAdminLogEventsFilter),
@@ -1011,7 +1012,7 @@ namespace TL
 			[0x8EA464B6] = typeof(StatsGraph),
 			[0x396CA5FC] = typeof(Stats_BroadcastStats),
 			[0x98F6AC75] = typeof(Help_PromoDataEmpty),
-			[0x8C39793F] = typeof(Help_PromoData),
+			[0x08A4D87A] = typeof(Help_PromoData),
 			[0xDE33B094] = typeof(VideoSize),
 			[0xF85C413C] = typeof(VideoSizeEmojiMarkup),
 			[0x0DA082FE] = typeof(VideoSizeStickerMarkup),
@@ -1116,6 +1117,7 @@ namespace TL
 			[0x4A5F5BD9] = typeof(InputInvoiceStarGiftTransfer),
 			[0xDABAB2EF] = typeof(InputInvoicePremiumGiftStars),
 			[0xF4997E42] = typeof(InputInvoiceBusinessBotTransferStars),
+			[0x63CBC38C] = typeof(InputInvoiceStarGiftResale),
 			[0xAED0CBD9] = typeof(Payments_ExportedInvoice),
 			[0xCFB9D957] = typeof(Messages_TranscribedAudio),
 			[0x5334759C] = typeof(Help_PremiumPromo),
@@ -1353,8 +1355,8 @@ namespace TL
 			[0x4BA3A95A] = typeof(MessageReactor),
 			[0x94CE852A] = typeof(StarsGiveawayOption),
 			[0x54236209] = typeof(StarsGiveawayWinnersOption),
-			[0x02CC73C8] = typeof(StarGift),
-			[0x5C62D151] = typeof(StarGiftUnique),
+			[0xC62ACA28] = typeof(StarGift),
+			[0x6411DB89] = typeof(StarGiftUnique),
 			[0xA388A368] = null,//Payments_StarGiftsNotModified
 			[0x901689EA] = typeof(Payments_StarGifts),
 			[0x7903E3D9] = typeof(MessageReportOption),
@@ -1375,17 +1377,18 @@ namespace TL
 			[0xF93CD45C] = typeof(BotVerification),
 			[0x39D99013] = typeof(StarGiftAttributeModel),
 			[0x13ACFF19] = typeof(StarGiftAttributePattern),
-			[0x94271762] = typeof(StarGiftAttributeBackdrop),
+			[0xD93D859C] = typeof(StarGiftAttributeBackdrop),
 			[0xE0BFF26C] = typeof(StarGiftAttributeOriginalDetails),
 			[0x167BD90B] = typeof(Payments_StarGiftUpgradePreview),
 			[0x62D706B8] = typeof(Users_Users),
 			[0x315A4974] = typeof(Users_UsersSlice),
 			[0xCAA2F60B] = typeof(Payments_UniqueStarGift),
 			[0xB53E8B21] = typeof(Messages_WebPagePreview),
-			[0x6056DBA5] = typeof(SavedStarGift),
+			[0xDFDA0499] = typeof(SavedStarGift),
 			[0x95F389B1] = typeof(Payments_SavedStarGifts),
 			[0x69279795] = typeof(InputSavedStarGiftUser),
 			[0xF101AA7F] = typeof(InputSavedStarGiftChat),
+			[0x2085C238] = typeof(InputSavedStarGiftSlug),
 			[0x84AA3A9C] = typeof(Payments_StarGiftWithdrawalUrl),
 			[0x206AD49E] = null,//PaidReactionPrivacyDefault
 			[0x1F0C1AD9] = typeof(PaidReactionPrivacyAnonymous),
@@ -1399,6 +1402,13 @@ namespace TL
 			[0xC69708D3] = typeof(SponsoredPeer),
 			[0xEA32B4B1] = null,//Contacts_SponsoredPeersEmpty
 			[0xEB032884] = typeof(Contacts_SponsoredPeers),
+			[0x48AAAE3C] = typeof(StarGiftAttributeIdModel),
+			[0x4A162433] = typeof(StarGiftAttributeIdPattern),
+			[0x1F01C757] = typeof(StarGiftAttributeIdBackdrop),
+			[0x2EB1B658] = typeof(StarGiftAttributeCounter),
+			[0x947A12DF] = typeof(Payments_ResaleStarGifts),
+			[0xC387C04E] = typeof(Stories_CanSendStoryCount),
+			[0xE7E82E12] = typeof(PendingSuggestion),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
