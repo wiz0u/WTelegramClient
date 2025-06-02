@@ -54,7 +54,6 @@ public class MTProtoGenerator : IIncrementalGenerator
 			var tldef = symbol.GetAttributes().FirstOrDefault(a => a.AttributeClass == tlDefAttribute);
 			if (tldef == null) continue;
 			var id = (uint)tldef.ConstructorArguments[0].Value;
-			var inheritBefore = (bool?)tldef.NamedArguments.FirstOrDefault(k => k.Key == "inheritBefore").Value.Value ?? false;
 			StringBuilder writeTl = new(), readTL = new();
 			var ns = symbol.BaseType.ContainingNamespace.ToString();
 			var name = symbol.BaseType.Name;
@@ -105,8 +104,12 @@ public class MTProtoGenerator : IIncrementalGenerator
 				.AppendLine($"\t\t\twriter.Write(0x{id:X8});");
 			var members = symbol.GetMembers().ToList();
 			for (var parent = symbol.BaseType; parent != object_; parent = parent.BaseType)
+			{
+				var inheritBefore = (bool?)tldef.NamedArguments.FirstOrDefault(k => k.Key == "inheritBefore").Value.Value ?? false;
 				if (inheritBefore) members.InsertRange(0, parent.GetMembers());
 				else members.AddRange(parent.GetMembers());
+				tldef = parent.GetAttributes().FirstOrDefault(a => a.AttributeClass == tlDefAttribute);
+			}
 			foreach (var member in members.OfType<IFieldSymbol>())
 			{
 				if (member.DeclaredAccessibility != Accessibility.Public || member.IsStatic) continue;
