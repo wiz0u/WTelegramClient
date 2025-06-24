@@ -1430,8 +1430,11 @@ namespace WTelegram
 			int seqno;
 			long msgId = DateTime.UtcNow.Ticks + _dcSession.serverTicksOffset - 621355968000000000L;
 			msgId = msgId * 428 + (msgId >> 24) * 25110956; // approximately unixtime*2^32 and divisible by 4
-			if (msgId <= _dcSession.lastSentMsgId) msgId = _dcSession.lastSentMsgId += 4; else _dcSession.lastSentMsgId = msgId;
-			seqno = isContent ? _dcSession.seqno++ * 2 + 1 : _dcSession.seqno * 2;
+			lock (_session)
+			{
+				if (msgId <= _dcSession.lastSentMsgId) msgId = _dcSession.lastSentMsgId += 4; else _dcSession.lastSentMsgId = msgId;
+				seqno = isContent ? _dcSession.seqno++ * 2 + 1 : _dcSession.seqno * 2;
+			}
 			return (msgId, seqno);
 		}
 
