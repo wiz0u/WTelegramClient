@@ -59,6 +59,18 @@ namespace WTelegram
 		public long UserId => _session.UserId;
 		/// <summary>Info about the current logged-in user. This is only filled after a successful (re)login, not updated later</summary>
 		public User User { get; private set; }
+		/// <summary>Number of parallel transfers operations (uploads/downloads) allowed at the same time.</summary>
+		/// <remarks>Don't use this property while transfers are ongoing!</remarks>
+		public int ParallelTransfers
+		{
+			get => _parallelTransfers.CurrentCount;
+			set
+			{
+				int delta = value - _parallelTransfers.CurrentCount;
+				for (; delta < 0; delta++) _parallelTransfers.Wait();
+				if (delta > 0) _parallelTransfers.Release(delta);
+			}
+		}
 
 		private Func<string, string> _config;
 		private readonly Session _session;
@@ -83,7 +95,7 @@ namespace WTelegram
 		private int _reactorReconnects = 0;
 		private const string ConnectionShutDown = "Could not read payload length : Connection shut down";
 		private const long Ticks5Secs = 5 * TimeSpan.TicksPerSecond;
-		private readonly SemaphoreSlim _parallelTransfers = new(10); // max parallel part uploads/downloads
+		private readonly SemaphoreSlim _parallelTransfers = new(2); // max parallel part uploads/downloads
 		private readonly SHA256 _sha256 = SHA256.Create();
 		private readonly SHA256 _sha256Recv = SHA256.Create();
 #if OBFUSCATION
@@ -209,7 +221,7 @@ namespace WTelegram
 			if (_tcpClient != null) throw new InvalidOperationException("Cannot switch to HTTP after TCP connection");
 			_httpClient = httpClient ?? new();
 			_httpWait = defaultHttpWait;
-			while (_parallelTransfers.CurrentCount > 1) _parallelTransfers.Wait();
+			ParallelTransfers = 1;
 		}
 
 		/// <summary>Disconnect from Telegram <i>(shouldn't be needed in normal usage)</i></summary>
