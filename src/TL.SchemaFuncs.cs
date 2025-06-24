@@ -1972,15 +1972,16 @@ namespace TL
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Forward the messages as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the messages to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
-		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, int? video_timestamp = null, long? allow_paid_stars = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false)
+		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, int? video_timestamp = null, long? allow_paid_stars = null, InputReplyTo reply_to = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_ForwardMessages
 			{
-				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (video_timestamp != null ? 0x100000 : 0) | (allow_paid_stars != null ? 0x200000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
+				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (video_timestamp != null ? 0x100000 : 0) | (allow_paid_stars != null ? 0x200000 : 0) | (reply_to != null ? 0x400000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
 				from_peer = from_peer,
 				id = id,
 				random_id = random_id,
 				to_peer = to_peer,
 				top_msg_id = top_msg_id ?? default,
+				reply_to = reply_to,
 				schedule_date = schedule_date ?? default,
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
@@ -2978,17 +2979,20 @@ namespace TL
 		/// <summary>Manually mark dialog as unread		<para>See <a href="https://corefork.telegram.org/method/messages.markDialogUnread"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.markDialogUnread#possible-errors">details</a>)</para></summary>
 		/// <param name="unread">Mark as unread/read</param>
 		/// <param name="peer">Dialog</param>
-		public static Task<bool> Messages_MarkDialogUnread(this Client client, InputDialogPeerBase peer, bool unread = false)
+		public static Task<bool> Messages_MarkDialogUnread(this Client client, InputDialogPeerBase peer, InputPeer parent_peer = null, bool unread = false)
 			=> client.Invoke(new Messages_MarkDialogUnread
 			{
-				flags = (Messages_MarkDialogUnread.Flags)(unread ? 0x1 : 0),
+				flags = (Messages_MarkDialogUnread.Flags)((parent_peer != null ? 0x2 : 0) | (unread ? 0x1 : 0)),
+				parent_peer = parent_peer,
 				peer = peer,
 			});
 
 		/// <summary>Get dialogs manually marked as unread		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogUnreadMarks"/></para></summary>
-		public static Task<DialogPeerBase[]> Messages_GetDialogUnreadMarks(this Client client)
+		public static Task<DialogPeerBase[]> Messages_GetDialogUnreadMarks(this Client client, InputPeer parent_peer = null)
 			=> client.Invoke(new Messages_GetDialogUnreadMarks
 			{
+				flags = (Messages_GetDialogUnreadMarks.Flags)(parent_peer != null ? 0x1 : 0),
+				parent_peer = parent_peer,
 			});
 
 		/// <summary>Clear all <a href="https://corefork.telegram.org/api/drafts">drafts</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.clearAllDrafts"/></para></summary>
@@ -3312,12 +3316,13 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/pin">Unpin</a> all pinned messages		<para>See <a href="https://corefork.telegram.org/method/messages.unpinAllMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.unpinAllMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Chat where to unpin</param>
 		/// <param name="top_msg_id"><a href="https://corefork.telegram.org/api/forum#forum-topics">Forum topic</a> where to unpin</param>
-		public static Task<Messages_AffectedHistory> Messages_UnpinAllMessages(this Client client, InputPeer peer, int? top_msg_id = null)
+		public static Task<Messages_AffectedHistory> Messages_UnpinAllMessages(this Client client, InputPeer peer, int? top_msg_id = null, InputPeer saved_peer_id = null)
 			=> client.InvokeAffected(new Messages_UnpinAllMessages
 			{
-				flags = (Messages_UnpinAllMessages.Flags)(top_msg_id != null ? 0x1 : 0),
+				flags = (Messages_UnpinAllMessages.Flags)((top_msg_id != null ? 0x1 : 0) | (saved_peer_id != null ? 0x2 : 0)),
 				peer = peer,
 				top_msg_id = top_msg_id ?? default,
+				saved_peer_id = saved_peer_id,
 			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Delete a <a href="https://corefork.telegram.org/api/channel">chat</a>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.deleteChat#possible-errors">details</a>)</para></summary>
@@ -3691,12 +3696,13 @@ namespace TL
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="max_id">Only return reactions for messages up until this message ID</param>
 		/// <param name="min_id">Only return reactions for messages starting from this message ID</param>
-		public static Task<Messages_MessagesBase> Messages_GetUnreadReactions(this Client client, InputPeer peer, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, int? top_msg_id = null)
+		public static Task<Messages_MessagesBase> Messages_GetUnreadReactions(this Client client, InputPeer peer, int offset_id = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, int? top_msg_id = null, InputPeer saved_peer_id = null)
 			=> client.Invoke(new Messages_GetUnreadReactions
 			{
-				flags = (Messages_GetUnreadReactions.Flags)(top_msg_id != null ? 0x1 : 0),
+				flags = (Messages_GetUnreadReactions.Flags)((top_msg_id != null ? 0x1 : 0) | (saved_peer_id != null ? 0x2 : 0)),
 				peer = peer,
 				top_msg_id = top_msg_id ?? default,
+				saved_peer_id = saved_peer_id,
 				offset_id = offset_id,
 				add_offset = add_offset,
 				limit = limit,
@@ -3707,12 +3713,13 @@ namespace TL
 		/// <summary>Mark <a href="https://corefork.telegram.org/api/reactions">message reactions »</a> as read		<para>See <a href="https://corefork.telegram.org/method/messages.readReactions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readReactions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer</param>
 		/// <param name="top_msg_id">Mark as read only reactions to messages within the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
-		public static Task<Messages_AffectedHistory> Messages_ReadReactions(this Client client, InputPeer peer, int? top_msg_id = null)
+		public static Task<Messages_AffectedHistory> Messages_ReadReactions(this Client client, InputPeer peer, int? top_msg_id = null, InputPeer saved_peer_id = null)
 			=> client.InvokeAffected(new Messages_ReadReactions
 			{
-				flags = (Messages_ReadReactions.Flags)(top_msg_id != null ? 0x1 : 0),
+				flags = (Messages_ReadReactions.Flags)((top_msg_id != null ? 0x1 : 0) | (saved_peer_id != null ? 0x2 : 0)),
 				peer = peer,
 				top_msg_id = top_msg_id ?? default,
+				saved_peer_id = saved_peer_id,
 			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary>View and search recently sent media.<br/>This method does not support pagination.		<para>See <a href="https://corefork.telegram.org/method/messages.searchSentMedia"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.searchSentMedia#possible-errors">details</a>)</para></summary>
@@ -4088,10 +4095,11 @@ namespace TL
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offset peer for pagination</a></param>
 		/// <param name="limit">Number of list elements to be returned</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
-		public static Task<Messages_SavedDialogsBase> Messages_GetSavedDialogs(this Client client, DateTime offset_date = default, int offset_id = default, InputPeer offset_peer = null, int limit = int.MaxValue, long hash = default, bool exclude_pinned = false)
+		public static Task<Messages_SavedDialogsBase> Messages_GetSavedDialogs(this Client client, DateTime offset_date = default, int offset_id = default, InputPeer offset_peer = null, int limit = int.MaxValue, long hash = default, InputPeer parent_peer = null, bool exclude_pinned = false)
 			=> client.Invoke(new Messages_GetSavedDialogs
 			{
-				flags = (Messages_GetSavedDialogs.Flags)(exclude_pinned ? 0x1 : 0),
+				flags = (Messages_GetSavedDialogs.Flags)((parent_peer != null ? 0x2 : 0) | (exclude_pinned ? 0x1 : 0)),
+				parent_peer = parent_peer,
 				offset_date = offset_date,
 				offset_id = offset_id,
 				offset_peer = offset_peer,
@@ -4108,9 +4116,11 @@ namespace TL
 		/// <param name="max_id">If a positive value was transferred, the method will return only messages with IDs less than <strong>max_id</strong></param>
 		/// <param name="min_id">If a positive value was transferred, the method will return only messages with IDs more than <strong>min_id</strong></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets">Result hash</a></param>
-		public static Task<Messages_MessagesBase> Messages_GetSavedHistory(this Client client, InputPeer peer, int offset_id = default, DateTime offset_date = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default)
+		public static Task<Messages_MessagesBase> Messages_GetSavedHistory(this Client client, InputPeer peer, int offset_id = default, DateTime offset_date = default, int add_offset = default, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default, InputPeer parent_peer = null)
 			=> client.Invoke(new Messages_GetSavedHistory
 			{
+				flags = (Messages_GetSavedHistory.Flags)(parent_peer != null ? 0x1 : 0),
+				parent_peer = parent_peer,
 				peer = peer,
 				offset_id = offset_id,
 				offset_date = offset_date,
@@ -4126,10 +4136,11 @@ namespace TL
 		/// <param name="max_id">Maximum ID of message to delete</param>
 		/// <param name="min_date">Delete all messages newer than this UNIX timestamp</param>
 		/// <param name="max_date">Delete all messages older than this UNIX timestamp</param>
-		public static Task<Messages_AffectedHistory> Messages_DeleteSavedHistory(this Client client, InputPeer peer, int max_id = default, DateTime? min_date = null, DateTime? max_date = null)
+		public static Task<Messages_AffectedHistory> Messages_DeleteSavedHistory(this Client client, InputPeer peer, int max_id = default, InputPeer parent_peer = null, DateTime? min_date = null, DateTime? max_date = null)
 			=> client.InvokeAffected(new Messages_DeleteSavedHistory
 			{
-				flags = (Messages_DeleteSavedHistory.Flags)((min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0)),
+				flags = (Messages_DeleteSavedHistory.Flags)((parent_peer != null ? 0x1 : 0) | (min_date != null ? 0x4 : 0) | (max_date != null ? 0x8 : 0)),
+				parent_peer = parent_peer,
 				peer = peer,
 				max_id = max_id,
 				min_date = min_date ?? default,
@@ -4494,6 +4505,24 @@ namespace TL
 				flags = (Messages_ReportMessagesDelivery.Flags)(push ? 0x1 : 0),
 				peer = peer,
 				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSavedDialogsByID"/></para></summary>
+		public static Task<Messages_SavedDialogsBase> Messages_GetSavedDialogsByID(this Client client, InputPeer[] ids, InputPeer parent_peer = null)
+			=> client.Invoke(new Messages_GetSavedDialogsByID
+			{
+				flags = (Messages_GetSavedDialogsByID.Flags)(parent_peer != null ? 0x2 : 0),
+				parent_peer = parent_peer,
+				ids = ids,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.readSavedHistory"/></para></summary>
+		public static Task<bool> Messages_ReadSavedHistory(this Client client, InputPeer parent_peer, InputPeer peer, int max_id = default)
+			=> client.Invoke(new Messages_ReadSavedHistory
+			{
+				parent_peer = parent_peer,
+				peer = peer,
+				max_id = max_id,
 			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
@@ -5352,11 +5381,12 @@ namespace TL
 		/// <summary>Enable or disable <a href="https://corefork.telegram.org/api/forum">forum functionality</a> in a supergroup.		<para>See <a href="https://corefork.telegram.org/method/channels.toggleForum"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleForum#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Supergroup ID</param>
 		/// <param name="enabled">Enable or disable forum functionality</param>
-		public static Task<UpdatesBase> Channels_ToggleForum(this Client client, InputChannelBase channel, bool enabled)
+		public static Task<UpdatesBase> Channels_ToggleForum(this Client client, InputChannelBase channel, bool enabled, bool tabs)
 			=> client.Invoke(new Channels_ToggleForum
 			{
 				channel = channel,
 				enabled = enabled,
+				tabs = tabs,
 			});
 
 		/// <summary>Create a <a href="https://corefork.telegram.org/api/forum">forum topic</a>; requires <a href="https://corefork.telegram.org/api/rights"><c>manage_topics</c> rights</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.createForumTopic"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.createForumTopic#possible-errors">details</a>)</para></summary>
@@ -5580,9 +5610,10 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.updatePaidMessagesPrice"/></para></summary>
-		public static Task<UpdatesBase> Channels_UpdatePaidMessagesPrice(this Client client, InputChannelBase channel, long send_paid_messages_stars)
+		public static Task<UpdatesBase> Channels_UpdatePaidMessagesPrice(this Client client, InputChannelBase channel, long send_paid_messages_stars, bool broadcast_messages_allowed = false)
 			=> client.Invoke(new Channels_UpdatePaidMessagesPrice
 			{
+				flags = (Channels_UpdatePaidMessagesPrice.Flags)(broadcast_messages_allowed ? 0x1 : 0),
 				channel = channel,
 				send_paid_messages_stars = send_paid_messages_stars,
 			});
@@ -5593,6 +5624,14 @@ namespace TL
 			{
 				channel = channel,
 				enabled = enabled,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.getMessageAuthor"/></para></summary>
+		public static Task<UserBase> Channels_GetMessageAuthor(this Client client, InputChannelBase channel, int id)
+			=> client.Invoke(new Channels_GetMessageAuthor
+			{
+				channel = channel,
+				id = id,
 			});
 
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
@@ -9238,7 +9277,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0xBB9FA475)]
+	[TLDef(0x38F0188C)]
 	public sealed partial class Messages_ForwardMessages : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -9247,6 +9286,7 @@ namespace TL.Methods
 		public long[] random_id;
 		public InputPeer to_peer;
 		[IfFlag(9)] public int top_msg_id;
+		[IfFlag(22)] public InputReplyTo reply_to;
 		[IfFlag(10)] public DateTime schedule_date;
 		[IfFlag(13)] public InputPeer send_as;
 		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
@@ -9268,6 +9308,7 @@ namespace TL.Methods
 			allow_paid_floodskip = 0x80000,
 			has_video_timestamp = 0x100000,
 			has_allow_paid_stars = 0x200000,
+			has_reply_to = 0x400000,
 		}
 	}
 
@@ -10131,20 +10172,31 @@ namespace TL.Methods
 	[TLDef(0x1CFF7E08)]
 	public sealed partial class Messages_GetSplitRanges : IMethod<MessageRange[]> { }
 
-	[TLDef(0xC286D98F)]
+	[TLDef(0x8C5006F8)]
 	public sealed partial class Messages_MarkDialogUnread : IMethod<bool>
 	{
 		public Flags flags;
+		[IfFlag(1)] public InputPeer parent_peer;
 		public InputDialogPeerBase peer;
 
 		[Flags] public enum Flags : uint
 		{
 			unread = 0x1,
+			has_parent_peer = 0x2,
 		}
 	}
 
-	[TLDef(0x22E24E22)]
-	public sealed partial class Messages_GetDialogUnreadMarks : IMethod<DialogPeerBase[]> { }
+	[TLDef(0x21202222)]
+	public sealed partial class Messages_GetDialogUnreadMarks : IMethod<DialogPeerBase[]>
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputPeer parent_peer;
+
+		[Flags] public enum Flags : uint
+		{
+			has_parent_peer = 0x1,
+		}
+	}
 
 	[TLDef(0x7E58EE9C)]
 	public sealed partial class Messages_ClearAllDrafts : IMethod<bool> { }
@@ -10400,16 +10452,18 @@ namespace TL.Methods
 		public int read_max_id;
 	}
 
-	[TLDef(0xEE22B9A8)]
+	[TLDef(0x062DD747)]
 	public sealed partial class Messages_UnpinAllMessages : IMethod<Messages_AffectedHistory>
 	{
 		public Flags flags;
 		public InputPeer peer;
 		[IfFlag(0)] public int top_msg_id;
+		[IfFlag(1)] public InputPeer saved_peer_id;
 
 		[Flags] public enum Flags : uint
 		{
 			has_top_msg_id = 0x1,
+			has_saved_peer_id = 0x2,
 		}
 	}
 
@@ -10729,12 +10783,13 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x3223495B)]
+	[TLDef(0xBD7F90AC)]
 	public sealed partial class Messages_GetUnreadReactions : IMethod<Messages_MessagesBase>
 	{
 		public Flags flags;
 		public InputPeer peer;
 		[IfFlag(0)] public int top_msg_id;
+		[IfFlag(1)] public InputPeer saved_peer_id;
 		public int offset_id;
 		public int add_offset;
 		public int limit;
@@ -10744,19 +10799,22 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			has_top_msg_id = 0x1,
+			has_saved_peer_id = 0x2,
 		}
 	}
 
-	[TLDef(0x54AA7F8E)]
+	[TLDef(0x9EC44F93)]
 	public sealed partial class Messages_ReadReactions : IMethod<Messages_AffectedHistory>
 	{
 		public Flags flags;
 		public InputPeer peer;
 		[IfFlag(0)] public int top_msg_id;
+		[IfFlag(1)] public InputPeer saved_peer_id;
 
 		[Flags] public enum Flags : uint
 		{
 			has_top_msg_id = 0x1,
+			has_saved_peer_id = 0x2,
 		}
 	}
 
@@ -11056,10 +11114,11 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x5381D21A)]
+	[TLDef(0x1E91FC99)]
 	public sealed partial class Messages_GetSavedDialogs : IMethod<Messages_SavedDialogsBase>
 	{
 		public Flags flags;
+		[IfFlag(1)] public InputPeer parent_peer;
 		public DateTime offset_date;
 		public int offset_id;
 		public InputPeer offset_peer;
@@ -11069,12 +11128,15 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			exclude_pinned = 0x1,
+			has_parent_peer = 0x2,
 		}
 	}
 
-	[TLDef(0x3D9A414D)]
+	[TLDef(0x998AB009)]
 	public sealed partial class Messages_GetSavedHistory : IMethod<Messages_MessagesBase>
 	{
+		public Flags flags;
+		[IfFlag(0)] public InputPeer parent_peer;
 		public InputPeer peer;
 		public int offset_id;
 		public DateTime offset_date;
@@ -11083,12 +11145,18 @@ namespace TL.Methods
 		public int max_id;
 		public int min_id;
 		public long hash;
+
+		[Flags] public enum Flags : uint
+		{
+			has_parent_peer = 0x1,
+		}
 	}
 
-	[TLDef(0x6E98102B)]
+	[TLDef(0x4DC5085F)]
 	public sealed partial class Messages_DeleteSavedHistory : IMethod<Messages_AffectedHistory>
 	{
 		public Flags flags;
+		[IfFlag(0)] public InputPeer parent_peer;
 		public InputPeer peer;
 		public int max_id;
 		[IfFlag(2)] public DateTime min_date;
@@ -11096,6 +11164,7 @@ namespace TL.Methods
 
 		[Flags] public enum Flags : uint
 		{
+			has_parent_peer = 0x1,
 			has_min_date = 0x4,
 			has_max_date = 0x8,
 		}
@@ -11402,6 +11471,27 @@ namespace TL.Methods
 		{
 			push = 0x1,
 		}
+	}
+
+	[TLDef(0x6F6F9C96)]
+	public sealed partial class Messages_GetSavedDialogsByID : IMethod<Messages_SavedDialogsBase>
+	{
+		public Flags flags;
+		[IfFlag(1)] public InputPeer parent_peer;
+		public InputPeer[] ids;
+
+		[Flags] public enum Flags : uint
+		{
+			has_parent_peer = 0x2,
+		}
+	}
+
+	[TLDef(0xBA4A3B5B)]
+	public sealed partial class Messages_ReadSavedHistory : IMethod<bool>
+	{
+		public InputPeer parent_peer;
+		public InputPeer peer;
+		public int max_id;
 	}
 
 	[TLDef(0xEDD4882A)]
@@ -12053,11 +12143,12 @@ namespace TL.Methods
 		public InputChannelBase channel;
 	}
 
-	[TLDef(0xA4298B29)]
+	[TLDef(0x3FF75734)]
 	public sealed partial class Channels_ToggleForum : IMethod<UpdatesBase>
 	{
 		public InputChannelBase channel;
 		public bool enabled;
+		public bool tabs;
 	}
 
 	[TLDef(0xF40C0224)]
@@ -12245,11 +12336,17 @@ namespace TL.Methods
 		public int limit;
 	}
 
-	[TLDef(0xFC84653F)]
+	[TLDef(0x4B12327B)]
 	public sealed partial class Channels_UpdatePaidMessagesPrice : IMethod<UpdatesBase>
 	{
+		public Flags flags;
 		public InputChannelBase channel;
 		public long send_paid_messages_stars;
+
+		[Flags] public enum Flags : uint
+		{
+			broadcast_messages_allowed = 0x1,
+		}
 	}
 
 	[TLDef(0x167FC0A1)]
@@ -12257,6 +12354,13 @@ namespace TL.Methods
 	{
 		public InputChannelBase channel;
 		public bool enabled;
+	}
+
+	[TLDef(0xECE2A0E6)]
+	public sealed partial class Channels_GetMessageAuthor : IMethod<UserBase>
+	{
+		public InputChannelBase channel;
+		public int id;
 	}
 
 	[TLDef(0xAA2769ED)]

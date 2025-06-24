@@ -1074,7 +1074,7 @@ namespace TL
 		public override string Title => title;
 	}
 	/// <summary>Channel/supergroup info		<para>See <a href="https://corefork.telegram.org/constructor/channel"/></para></summary>
-	[TLDef(0x7482147E)]
+	[TLDef(0xFE685355)]
 	public sealed partial class Channel : ChatBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1119,6 +1119,7 @@ namespace TL
 		[IfFlag(43)] public DateTime subscription_until_date;
 		[IfFlag(45)] public long bot_verification_icon;
 		[IfFlag(46)] public long send_paid_messages_stars;
+		[IfFlag(50)] public long linked_monoforum_id;
 
 		[Flags] public enum Flags : uint
 		{
@@ -1205,6 +1206,11 @@ namespace TL
 			/// <summary>Field <see cref="send_paid_messages_stars"/> has a value</summary>
 			has_send_paid_messages_stars = 0x4000,
 			autotranslation = 0x8000,
+			broadcast_messages_allowed = 0x10000,
+			monoforum = 0x20000,
+			/// <summary>Field <see cref="linked_monoforum_id"/> has a value</summary>
+			has_linked_monoforum_id = 0x40000,
+			forum_tabs = 0x80000,
 		}
 
 		/// <summary>ID of the channel, see <a href="https://corefork.telegram.org/api/peers#peer-id">here »</a> for more info</summary>
@@ -2961,10 +2967,16 @@ namespace TL
 		public long stars;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionPaidMessagesPrice"/></para></summary>
-	[TLDef(0xBCD71419)]
+	[TLDef(0x84B88578)]
 	public sealed partial class MessageActionPaidMessagesPrice : MessageAction
 	{
+		public Flags flags;
 		public long stars;
+
+		[Flags] public enum Flags : uint
+		{
+			broadcast_messages_allowed = 0x1,
+		}
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionConferenceCall"/></para></summary>
 	[TLDef(0x2FFE2F7A)]
@@ -4650,7 +4662,7 @@ namespace TL
 		public int max_id;
 	}
 	/// <summary>Notifies a change of a message <a href="https://corefork.telegram.org/api/drafts">draft</a>.		<para>See <a href="https://corefork.telegram.org/constructor/updateDraftMessage"/></para></summary>
-	[TLDef(0x1B49EC6D)]
+	[TLDef(0xEDFC111E)]
 	public sealed partial class UpdateDraftMessage : Update
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -4659,6 +4671,7 @@ namespace TL
 		public Peer peer;
 		/// <summary>ID of the <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a> to which the draft is associated</summary>
 		[IfFlag(0)] public int top_msg_id;
+		[IfFlag(1)] public Peer saved_peer_id;
 		/// <summary>The draft</summary>
 		public DraftMessageBase draft;
 
@@ -4666,6 +4679,8 @@ namespace TL
 		{
 			/// <summary>Field <see cref="top_msg_id"/> has a value</summary>
 			has_top_msg_id = 0x1,
+			/// <summary>Field <see cref="saved_peer_id"/> has a value</summary>
+			has_saved_peer_id = 0x2,
 		}
 	}
 	/// <summary>Some featured stickers were marked as read		<para>See <a href="https://corefork.telegram.org/constructor/updateReadFeaturedStickers"/></para></summary>
@@ -4812,7 +4827,7 @@ namespace TL
 	[TLDef(0xE511996D)]
 	public sealed partial class UpdateFavedStickers : Update { }
 	/// <summary>The specified <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> messages were read		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelReadMessagesContents"/></para></summary>
-	[TLDef(0xEA29055D)]
+	[TLDef(0x25F324F7)]
 	public sealed partial class UpdateChannelReadMessagesContents : Update
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -4821,6 +4836,7 @@ namespace TL
 		public long channel_id;
 		/// <summary><a href="https://corefork.telegram.org/api/forum#forum-topics">Forum topic ID</a>.</summary>
 		[IfFlag(0)] public int top_msg_id;
+		[IfFlag(1)] public Peer saved_peer_id;
 		/// <summary>IDs of messages that were read</summary>
 		public int[] messages;
 
@@ -4828,6 +4844,8 @@ namespace TL
 		{
 			/// <summary>Field <see cref="top_msg_id"/> has a value</summary>
 			has_top_msg_id = 0x1,
+			/// <summary>Field <see cref="saved_peer_id"/> has a value</summary>
+			has_saved_peer_id = 0x2,
 		}
 	}
 	/// <summary>All contacts were deleted		<para>See <a href="https://corefork.telegram.org/constructor/updateContactsReset"/></para></summary>
@@ -4841,18 +4859,21 @@ namespace TL
 		public int available_min_id;
 	}
 	/// <summary>The manual unread mark of a chat was changed		<para>See <a href="https://corefork.telegram.org/constructor/updateDialogUnreadMark"/></para></summary>
-	[TLDef(0xE16459C3)]
+	[TLDef(0xB658F23E)]
 	public sealed partial class UpdateDialogUnreadMark : Update
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The dialog</summary>
 		public DialogPeerBase peer;
+		[IfFlag(1)] public Peer saved_peer_id;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Was the chat marked or unmarked as read</summary>
 			unread = 0x1,
+			/// <summary>Field <see cref="saved_peer_id"/> has a value</summary>
+			has_saved_peer_id = 0x2,
 		}
 	}
 	/// <summary>The results of a poll have changed		<para>See <a href="https://corefork.telegram.org/constructor/updateMessagePoll"/></para></summary>
@@ -5332,7 +5353,7 @@ namespace TL
 		public override (long, int, int) GetMBox() => (-1, qts, 1);
 	}
 	/// <summary>New <a href="https://corefork.telegram.org/api/reactions">message reactions »</a> are available		<para>See <a href="https://corefork.telegram.org/constructor/updateMessageReactions"/></para></summary>
-	[TLDef(0x5E1B3CB8)]
+	[TLDef(0x1E297BFA)]
 	public sealed partial class UpdateMessageReactions : Update
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -5343,6 +5364,7 @@ namespace TL
 		public int msg_id;
 		/// <summary><a href="https://corefork.telegram.org/api/forum#forum-topics">Forum topic ID</a></summary>
 		[IfFlag(0)] public int top_msg_id;
+		[IfFlag(1)] public Peer saved_peer_id;
 		/// <summary>Reactions</summary>
 		public MessageReactions reactions;
 
@@ -5350,6 +5372,8 @@ namespace TL
 		{
 			/// <summary>Field <see cref="top_msg_id"/> has a value</summary>
 			has_top_msg_id = 0x1,
+			/// <summary>Field <see cref="saved_peer_id"/> has a value</summary>
+			has_saved_peer_id = 0x2,
 		}
 	}
 	/// <summary>The list of installed <a href="https://corefork.telegram.org/api/bots/attach">attachment menu entries »</a> has changed, use <see cref="SchemaExtensions.Messages_GetAttachMenuBots">Messages_GetAttachMenuBots</see> to fetch the updated list.		<para>See <a href="https://corefork.telegram.org/constructor/updateAttachMenuBots"/></para></summary>
@@ -5851,6 +5875,22 @@ namespace TL
 		public int sub_chain_id;
 		public byte[][] blocks;
 		public int next_offset;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateReadMonoForumInbox"/></para></summary>
+	[TLDef(0x77B0E372)]
+	public sealed partial class UpdateReadMonoForumInbox : Update
+	{
+		public long channel_id;
+		public Peer saved_peer_id;
+		public int read_max_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateReadMonoForumOutbox"/></para></summary>
+	[TLDef(0xA4A79376)]
+	public sealed partial class UpdateReadMonoForumOutbox : Update
+	{
+		public long channel_id;
+		public Peer saved_peer_id;
+		public int read_max_id;
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -17484,7 +17524,7 @@ namespace TL
 	/// <summary>Contains info about a message or story to reply to.		<para>See <a href="https://corefork.telegram.org/type/InputReplyTo"/></para>		<para>Derived classes: <see cref="InputReplyToMessage"/>, <see cref="InputReplyToStory"/></para></summary>
 	public abstract partial class InputReplyTo : IObject { }
 	/// <summary>Reply to a message.		<para>See <a href="https://corefork.telegram.org/constructor/inputReplyToMessage"/></para></summary>
-	[TLDef(0x22C0F6D5)]
+	[TLDef(0xB07038B0)]
 	public sealed partial class InputReplyToMessage : InputReplyTo
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -17501,6 +17541,7 @@ namespace TL
 		[IfFlag(3)] public MessageEntity[] quote_entities;
 		/// <summary>Offset of the message <c>quote_text</c> within the original message (in <a href="https://corefork.telegram.org/api/entities#entity-length">UTF-16 code units</a>).</summary>
 		[IfFlag(4)] public int quote_offset;
+		[IfFlag(5)] public InputPeer monoforum_peer_id;
 
 		[Flags] public enum Flags : uint
 		{
@@ -17514,6 +17555,8 @@ namespace TL
 			has_quote_entities = 0x8,
 			/// <summary>Field <see cref="quote_offset"/> has a value</summary>
 			has_quote_offset = 0x10,
+			/// <summary>Field <see cref="monoforum_peer_id"/> has a value</summary>
+			has_monoforum_peer_id = 0x20,
 		}
 	}
 	/// <summary>Reply to a story.		<para>See <a href="https://corefork.telegram.org/constructor/inputReplyToStory"/></para></summary>
@@ -17524,6 +17567,12 @@ namespace TL
 		public InputPeer peer;
 		/// <summary>ID of the story to reply to.</summary>
 		public int story_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputReplyToMonoForum"/></para></summary>
+	[TLDef(0x69D66C45)]
+	public sealed partial class InputReplyToMonoForum : InputReplyTo
+	{
+		public InputPeer monoforum_peer_id;
 	}
 
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/stories#story-links">story deep link</a>.		<para>See <a href="https://corefork.telegram.org/constructor/exportedStoryLink"/></para></summary>
@@ -18336,9 +18385,17 @@ namespace TL
 		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/saved-messages">saved message dialog »</a>.		<para>See <a href="https://corefork.telegram.org/type/SavedDialog"/></para>		<para>Derived classes: <see cref="SavedDialog"/></para></summary>
+	public abstract partial class SavedDialogBase : IObject
+	{
+		/// <summary>The dialog</summary>
+		public virtual Peer Peer => default;
+		/// <summary>The latest message ID</summary>
+		public virtual int TopMessage => default;
+	}
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/saved-messages">saved dialog »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/savedDialog"/></para></summary>
 	[TLDef(0xBD87CB6C)]
-	public sealed partial class SavedDialog : IObject
+	public sealed partial class SavedDialog : SavedDialogBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
@@ -18352,13 +18409,40 @@ namespace TL
 			/// <summary>Is the dialog pinned</summary>
 			pinned = 0x4,
 		}
+
+		/// <summary>The dialog</summary>
+		public override Peer Peer => peer;
+		/// <summary>The latest message ID</summary>
+		public override int TopMessage => top_message;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/monoForumDialog"/></para></summary>
+	[TLDef(0x64407EA7)]
+	public sealed partial class MonoForumDialog : SavedDialogBase
+	{
+		public Flags flags;
+		public Peer peer;
+		public int top_message;
+		public int read_inbox_max_id;
+		public int read_outbox_max_id;
+		public int unread_count;
+		public int unread_reactions_count;
+		[IfFlag(1)] public DraftMessageBase draft;
+
+		[Flags] public enum Flags : uint
+		{
+			has_draft = 0x2,
+			unread_mark = 0x8,
+		}
+
+		public override Peer Peer => peer;
+		public override int TopMessage => top_message;
 	}
 
 	/// <summary>Represents some <a href="https://corefork.telegram.org/api/saved-messages">saved message dialogs »</a>.		<para>See <a href="https://corefork.telegram.org/type/messages.SavedDialogs"/></para>		<para>Derived classes: <see cref="Messages_SavedDialogs"/>, <see cref="Messages_SavedDialogsSlice"/>, <see cref="Messages_SavedDialogsNotModified"/></para></summary>
 	public abstract partial class Messages_SavedDialogsBase : IObject
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/saved-messages">Saved message dialogs »</a>.</summary>
-		public virtual SavedDialog[] Dialogs => default;
+		public virtual SavedDialogBase[] Dialogs => default;
 		/// <summary>List of last messages from each saved dialog</summary>
 		public virtual MessageBase[] Messages => default;
 		/// <summary>Mentioned chats</summary>
@@ -18371,7 +18455,7 @@ namespace TL
 	public partial class Messages_SavedDialogs : Messages_SavedDialogsBase, IPeerResolver
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/saved-messages">Saved message dialogs »</a>.</summary>
-		public SavedDialog[] dialogs;
+		public SavedDialogBase[] dialogs;
 		/// <summary>List of last messages from each saved dialog</summary>
 		public MessageBase[] messages;
 		/// <summary>Mentioned chats</summary>
@@ -18380,7 +18464,7 @@ namespace TL
 		public Dictionary<long, User> users;
 
 		/// <summary><a href="https://corefork.telegram.org/api/saved-messages">Saved message dialogs »</a>.</summary>
-		public override SavedDialog[] Dialogs => dialogs;
+		public override SavedDialogBase[] Dialogs => dialogs;
 		/// <summary>List of last messages from each saved dialog</summary>
 		public override MessageBase[] Messages => messages;
 		/// <summary>Mentioned chats</summary>

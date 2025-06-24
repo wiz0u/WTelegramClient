@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 203;					// fetched 14/05/2025 16:07:47
+		public const int Version = 204;					// fetched 04/06/2025 15:07:47
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -136,7 +136,7 @@ namespace TL
 			[0x29562865] = typeof(ChatEmpty),
 			[0x41CBF256] = typeof(Chat),
 			[0x6592A1A7] = typeof(ChatForbidden),
-			[0x7482147E] = typeof(Channel),
+			[0xFE685355] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
 			[0x2633421B] = typeof(ChatFull),
 			[0x52D6806B] = typeof(ChannelFull),
@@ -216,7 +216,7 @@ namespace TL
 			[0x4717E8A4] = typeof(MessageActionStarGift),
 			[0x2E3AE60E] = typeof(MessageActionStarGiftUnique),
 			[0xAC1F1FCD] = typeof(MessageActionPaidMessagesRefunded),
-			[0xBCD71419] = typeof(MessageActionPaidMessagesPrice),
+			[0x84B88578] = typeof(MessageActionPaidMessagesPrice),
 			[0x2FFE2F7A] = typeof(MessageActionConferenceCall),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
@@ -325,7 +325,7 @@ namespace TL
 			[0xE40370A3] = typeof(UpdateEditMessage),
 			[0x691E9052] = typeof(UpdateInlineBotCallbackQuery),
 			[0xB75F99A9] = typeof(UpdateReadChannelOutbox),
-			[0x1B49EC6D] = typeof(UpdateDraftMessage),
+			[0xEDFC111E] = typeof(UpdateDraftMessage),
 			[0x571D2742] = typeof(UpdateReadFeaturedStickers),
 			[0x9A422C20] = typeof(UpdateRecentStickers),
 			[0xA229DD06] = typeof(UpdateConfig),
@@ -341,10 +341,10 @@ namespace TL
 			[0x46560264] = typeof(UpdateLangPackTooLong),
 			[0x56022F4D] = typeof(UpdateLangPack),
 			[0xE511996D] = typeof(UpdateFavedStickers),
-			[0xEA29055D] = typeof(UpdateChannelReadMessagesContents),
+			[0x25F324F7] = typeof(UpdateChannelReadMessagesContents),
 			[0x7084A7BE] = typeof(UpdateContactsReset),
 			[0xB23FC698] = typeof(UpdateChannelAvailableMessages),
-			[0xE16459C3] = typeof(UpdateDialogUnreadMark),
+			[0xB658F23E] = typeof(UpdateDialogUnreadMark),
 			[0xACA1657B] = typeof(UpdateMessagePoll),
 			[0x54C01850] = typeof(UpdateChatDefaultBannedRights),
 			[0x19360DC0] = typeof(UpdateFolderPeers),
@@ -378,7 +378,7 @@ namespace TL
 			[0x4D712F2E] = typeof(UpdateBotCommands),
 			[0x7063C3DB] = typeof(UpdatePendingJoinRequests),
 			[0x11DFA986] = typeof(UpdateBotChatInviteRequester),
-			[0x5E1B3CB8] = typeof(UpdateMessageReactions),
+			[0x1E297BFA] = typeof(UpdateMessageReactions),
 			[0x17B7A20B] = typeof(UpdateAttachMenuBots),
 			[0x1592B79D] = typeof(UpdateWebViewResultSent),
 			[0x14B85813] = typeof(UpdateBotMenuButton),
@@ -426,6 +426,8 @@ namespace TL
 			[0x8B725FCE] = typeof(UpdatePaidReactionPrivacy),
 			[0x504AA18F] = typeof(UpdateSentPhoneCode),
 			[0xA477288F] = typeof(UpdateGroupCallChainBlocks),
+			[0x77B0E372] = typeof(UpdateReadMonoForumInbox),
+			[0xA4A79376] = typeof(UpdateReadMonoForumOutbox),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -1211,8 +1213,9 @@ namespace TL
 			[0xBD74CF49] = typeof(StoryViewPublicRepost),
 			[0x59D78FC5] = typeof(Stories_StoryViewsList),
 			[0xDE9EED1D] = typeof(Stories_StoryViews),
-			[0x22C0F6D5] = typeof(InputReplyToMessage),
+			[0xB07038B0] = typeof(InputReplyToMessage),
 			[0x5881323A] = typeof(InputReplyToStory),
+			[0x69D66C45] = typeof(InputReplyToMonoForum),
 			[0x3FC9053B] = typeof(ExportedStoryLink),
 			[0x712E27FD] = typeof(StoriesStealthMode),
 			[0xCFC9E002] = typeof(MediaAreaCoordinates),
@@ -1257,6 +1260,7 @@ namespace TL
 			[0xCFCD0F13] = typeof(StoryReactionPublicRepost),
 			[0xAA5F789C] = typeof(Stories_StoryReactionsList),
 			[0xBD87CB6C] = typeof(SavedDialog),
+			[0x64407EA7] = typeof(MonoForumDialog),
 			[0xF83AE221] = typeof(Messages_SavedDialogs),
 			[0x44BA9DD9] = typeof(Messages_SavedDialogsSlice),
 			[0xC01F6FE8] = typeof(Messages_SavedDialogsNotModified),
