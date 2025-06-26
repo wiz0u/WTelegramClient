@@ -36,7 +36,7 @@ namespace WTelegram
 			internal long lastSentMsgId;
 			internal bool withoutUpdates;
 			internal Client Client;
-			internal int DcID => DataCenter?.id ?? 0;
+			internal int DcID => DataCenter == null ? 0 : DataCenter.flags.HasFlag(TL.DcOption.Flags.media_only) ? -DataCenter.id : DataCenter.id;
 			internal IPEndPoint EndPoint => DataCenter == null ? null : new(IPAddress.Parse(DataCenter.ip_address), DataCenter.port);
 			internal void Renew() { Helpers.Log(3, $"Renewing session on DC {DcID}..."); id = Helpers.RandomLong(); seqno = 0; lastSentMsgId = 0; }
 			public void DisableUpdates(bool disable = true) { if (withoutUpdates != disable) { withoutUpdates = disable; Renew(); } }

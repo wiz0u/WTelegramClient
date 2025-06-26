@@ -325,7 +325,7 @@ namespace WTelegram
 				try
 				{
 					Auth_ExportedAuthorization exported = null;
-					if (_session.UserId != 0 && IsMainDC && altSession.UserId != _session.UserId && altSession.DcID != _dcSession.DcID)
+					if (_session.UserId != 0 && IsMainDC && altSession.UserId != _session.UserId && Math.Abs(altSession.DcID) != Math.Abs(_dcSession.DcID))
 						exported = await this.Auth_ExportAuthorization(Math.Abs(dcId));
 					await altSession.Client.ConnectAsync();
 					if (exported != null)
@@ -345,16 +345,16 @@ namespace WTelegram
 			return altSession.Client;
 		}
 
-		private async Task Reactor(Stream stream, CancellationTokenSource cts)
+		private async Task Reactor(Stream stream, CancellationToken ct)
 		{
 			const int MinBufferSize = 1024;
 			var data = new byte[MinBufferSize];
-			while (!cts.IsCancellationRequested)
+			while (!ct.IsCancellationRequested)
 			{
 				IObject obj = null;
 				try
 				{
-					if (await stream.FullReadAsync(data, 4, cts.Token) != 4)
+					if (await stream.FullReadAsync(data, 4, ct) != 4)
 						throw new WTException(ConnectionShutDown);
 #if OBFUSCATION
 					_recvCtr.EncryptDecrypt(data, 4);
@@ -366,7 +366,7 @@ namespace WTelegram
 						data = new byte[payloadLen];
 					else if (Math.Max(payloadLen, MinBufferSize) < data.Length / 4)
 						data = new byte[Math.Max(payloadLen, MinBufferSize)];
-					if (await stream.FullReadAsync(data, payloadLen, cts.Token) != payloadLen)
+					if (await stream.FullReadAsync(data, payloadLen, ct) != payloadLen)
 						throw new WTException("Could not read frame data : Connection shut down");
 #if OBFUSCATION
 					_recvCtr.EncryptDecrypt(data, payloadLen);
@@ -375,14 +375,14 @@ namespace WTelegram
 				}
 				catch (Exception ex) // an exception in RecvAsync is always fatal
 				{
-					if (cts.IsCancellationRequested) return;
+					if (ct.IsCancellationRequested) return;
 					bool disconnectedAltDC = !IsMainDC && ex is WTException { Message: ConnectionShutDown } or IOException { InnerException: SocketException };
 					if (disconnectedAltDC)
 						Helpers.Log(3, $"{_dcSession.DcID}>Alt DC disconnected: {ex.Message}");
 					else
 						Helpers.Log(5, $"{_dcSession.DcID}>An exception occured in the reactor: {ex}");
 					var oldSemaphore = _sendSemaphore;
-					await oldSemaphore.WaitAsync(cts.Token); // prevent any sending while we reconnect
+					await oldSemaphore.WaitAsync(ct); // prevent any sending while we reconnect
 					var reactorError = new ReactorError { Exception = ex };
 					try
 					{
@@ -599,13 +599,13 @@ namespace WTelegram
 					var ctorNb = reader.ReadUInt32();
 					if (ctorNb == Layer.RpcResultCtor)
 					{
-						Helpers.Log(1, $"            → {"RpcResult",-38} {MsgIdToStamp(msg.msg_id):u}");
+						Helpers.Log(1, $"             → {"RpcResult",-38} {MsgIdToStamp(msg.msg_id):u}");
 						msg.body = ReadRpcResult(reader);
 					}
 					else
 					{
 						var obj = msg.body = reader.ReadTLObject(ctorNb);
-						Helpers.Log(1, $"            → {obj.GetType().Name,-38} {MsgIdToStamp(msg.msg_id):u} {((msg.seq_no & 1) != 0 ? "" : "(svc)")} {((msg.msg_id & 2) == 0 ? "" : "NAR")}");
+						Helpers.Log(1, $"             → {obj.GetType().Name,-38} {MsgIdToStamp(msg.msg_id):u} {((msg.seq_no & 1) != 0 ? "" : "(svc)")} {((msg.msg_id & 2) == 0 ? "" : "NAR")}");
 					}
 				}
 				catch (Exception ex)
@@ -676,9 +676,9 @@ namespace WTelegram
 
 				var typeName = result?.GetType().Name;
 				if (MsgIdToStamp(msgId) >= _session.SessionStart)
-					Helpers.Log(4, $"             → {typeName,-37} for unknown msgId #{(short)msgId.GetHashCode():X4}");
+					Helpers.Log(4, $"              → {typeName,-37} for unknown msgId #{(short)msgId.GetHashCode():X4}");
 				else
-					Helpers.Log(1, $"             → {typeName,-37} for past msgId #{(short)msgId.GetHashCode():X4}");
+					Helpers.Log(1, $"              → {typeName,-37} for past msgId #{(short)msgId.GetHashCode():X4}");
 			}
 			return new RpcResult { req_msg_id = msgId, result = result };
 		}
@@ -889,8 +889,7 @@ namespace WTelegram
 			if (MTProxyUrl != null)
 			{
 #if OBFUSCATION
-				if (TLConfig?.test_mode == true) dcId += 10000;
-				if (_dcSession.DataCenter?.flags.HasFlag(DcOption.Flags.media_only) == true) dcId = -dcId;
+				if (TLConfig?.test_mode == true) dcId += dcId < 0 ? -10000 : 10000;
 				var parms = HttpUtility.ParseQueryString(MTProxyUrl[MTProxyUrl.IndexOf('?')..]);
 				var server = parms["server"];
 				int port = int.Parse(parms["port"]);
@@ -988,7 +987,7 @@ namespace WTelegram
 #endif
 				await _networkStream.WriteAsync(preamble, 0, preamble.Length, _cts.Token);
 
-				_reactorTask = Reactor(_networkStream, _cts);
+				_reactorTask = Reactor(_networkStream, _cts.Token);
 			}
 			_sendSemaphore.Release();
 

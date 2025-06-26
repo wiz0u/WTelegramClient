@@ -201,9 +201,9 @@ namespace TL
 				var patchPos = writer.BaseStream.Position;
 				writer.Write(0);												// patched below
 				if ((msg.seq_no & 1) != 0)
-					WTelegram.Helpers.Log(1, $"            → {msg.body.GetType().Name.TrimEnd('_'),-38} #{(short)msg.msg_id.GetHashCode():X4}");
+					WTelegram.Helpers.Log(1, $"             → {msg.body.GetType().Name.TrimEnd('_'),-38} #{(short)msg.msg_id.GetHashCode():X4}");
 				else
-					WTelegram.Helpers.Log(1, $"            → {msg.body.GetType().Name.TrimEnd('_'),-38}");
+					WTelegram.Helpers.Log(1, $"             → {msg.body.GetType().Name.TrimEnd('_'),-38}");
 				writer.WriteTLObject(msg.body);
 				writer.BaseStream.Position = patchPos;
 				writer.Write((int)(writer.BaseStream.Length - patchPos - 4));	// patch bytes field
