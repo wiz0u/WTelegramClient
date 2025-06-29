@@ -140,6 +140,7 @@ namespace WTelegram
 			TcpHandler = cloneOf.TcpHandler;
 			MTProxyUrl = cloneOf.MTProxyUrl;
 			PingInterval = cloneOf.PingInterval;
+			MaxAutoReconnects = cloneOf.MaxAutoReconnects;
 			TLConfig = cloneOf.TLConfig;
 			_dcSession = dcSession;
 		}
@@ -561,7 +562,7 @@ namespace WTelegram
 				{
 					var keys = _dcSession.Salts.Keys;
 					if (keys[^1] == DateTime.MaxValue) return; // GetFutureSalts ongoing
-					var now = DateTime.UtcNow.AddTicks(_dcSession.serverTicksOffset);
+					var now = DateTime.UtcNow.AddTicks(_dcSession.serverTicksOffset - TimeSpan.TicksPerMinute);
 					bool removed = false;
 					for (; keys.Count > 1 && keys[1] < now; _dcSession.OldSalt = _dcSession.Salt, _dcSession.Salt = _dcSession.Salts.Values[0], removed = true)
 						_dcSession.Salts.RemoveAt(0);
@@ -742,10 +743,7 @@ namespace WTelegram
 				case MsgsAck msgsAck:
 					break; // we don't do anything with these, for now
 				case BadMsgNotification badMsgNotification:
-					await _sendSemaphore.WaitAsync();
-					bool retryLast = badMsgNotification.bad_msg_id == _dcSession.lastSentMsgId;
-					var lastSentMsg = _lastSentMsg;
-					_sendSemaphore.Release();
+					bool retryRpcs = true;
 					var logLevel = badMsgNotification.error_code == 48 ? 2 : 4;
 					Helpers.Log(logLevel, $"BadMsgNotification {badMsgNotification.error_code} for msg #{(short)badMsgNotification.bad_msg_id.GetHashCode():X4}");
 					switch (badMsgNotification.error_code)
@@ -760,7 +758,7 @@ namespace WTelegram
 						case 32: // msg_seqno too low (the server has already received a message with a lower msg_id but with either a higher or an equal and odd seqno)
 						case 33: // msg_seqno too high (similarly, there is a message with a higher msg_id but with either a lower or an equal and odd seqno)
 							if (_dcSession.seqno <= 1)
-								retryLast = false;
+								retryRpcs = false;
 							else
 							{
 								await ResetAsync(false, false);
@@ -775,25 +773,19 @@ namespace WTelegram
 							CheckSalt();
 							break;
 						default:
-							retryLast = false;
+							retryRpcs = false;
 							break;
 					}
-					if (retryLast)
+					if (retryRpcs)
 					{
-						Rpc prevRequest;
 						lock (_pendingRpcs)
-							_pendingRpcs.TryGetValue(badMsgNotification.bad_msg_id, out prevRequest);
-						await SendAsync(lastSentMsg, lastSentMsg is not MsgContainer, prevRequest);
-						lock (_pendingRpcs)
-							_pendingRpcs.Remove(badMsgNotification.bad_msg_id);
-					}
-					else if (PullPendingRequest(badMsgNotification.bad_msg_id) is Rpc rpc)
-					{
-						if (_bareRpc?.msgId == badMsgNotification.bad_msg_id) _bareRpc = null;
-						rpc.tcs.SetException(new WTException($"BadMsgNotification {badMsgNotification.error_code}"));
-					}
-					else
+						{
+							foreach (var rpc in _pendingRpcs.Values)
+								rpc.tcs.TrySetResult(new RpcError { error_code = -503, error_message = $"BadMsgNotification {badMsgNotification.error_code}" });
+							_pendingRpcs.Clear();
+						}
 						RaiseUpdates(badMsgNotification);
+					}
 					break;
 				default:
 					RaiseUpdates(obj);
