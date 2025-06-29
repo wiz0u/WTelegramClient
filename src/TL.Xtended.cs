@@ -348,8 +348,9 @@ namespace TL
 		protected override InputPhoto ToInputPhoto() => new() { id = id, access_hash = access_hash, file_reference = file_reference };
 		public InputPhotoFileLocation ToFileLocation() => ToFileLocation(LargestPhotoSize);
 		public InputPhotoFileLocation ToFileLocation(PhotoSizeBase photoSize) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = photoSize.Type };
-		public InputDocumentFileLocation ToFileLocation(VideoSize videoSize) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = videoSize.type };
+		public InputPhotoFileLocation ToFileLocation(VideoSize videoSize) => new() { id = id, access_hash = access_hash, file_reference = file_reference, thumb_size = videoSize.type };
 		public PhotoSizeBase LargestPhotoSize => sizes.Aggregate((agg, next) => (long)next.Width * next.Height > (long)agg.Width * agg.Height ? next : agg);
+		public VideoSize LargestVideoSize => video_sizes?.OfType<VideoSize>().DefaultIfEmpty().Aggregate((agg, next) => (long)next.w * next.h > (long)agg.w * agg.h ? next : agg);
 	}
 
 	partial class PhotoSizeBase

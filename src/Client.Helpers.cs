@@ -334,6 +334,18 @@ namespace WTelegram
 			return await DownloadFileAsync(fileLocation, outputStream, photo.dc_id, photoSize.FileSize, progress);
 		}
 
+		/// <summary>Download an animated photo from Telegram into the outputStream</summary>
+		/// <param name="photo">The photo to download</param>
+		/// <param name="outputStream">Stream to write the file content to. This method does not close/dispose the stream</param>
+		/// <param name="videoSize">A specific size/version of the animated photo. Use <c>photo.LargestVideoSize</c> to download the largest version of the animated photo</param>
+		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>
+		/// <returns>The file type of the photo</returns>
+		public async Task<Storage_FileType> DownloadFileAsync(Photo photo, Stream outputStream, VideoSize videoSize, ProgressCallback progress = null)
+		{
+			var fileLocation = photo.ToFileLocation(videoSize);
+			return await DownloadFileAsync(fileLocation, outputStream, photo.dc_id, videoSize.size, progress);
+		}
+
 		/// <summary>Download a document from Telegram into the outputStream</summary>
 		/// <param name="document">The document to download</param>
 		/// <param name="outputStream">Stream to write the file content to. This method does not close/dispose the stream</param>
