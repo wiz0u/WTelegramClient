@@ -54,3 +54,12 @@ jobs:
       run: |
         git tag $VERSION
         git push --tags
+    - name: Deployment Notification
+      env:
+        JSON: |
+          {
+              "status": "success", "complete": true, "commitMessage": ${{ toJSON(github.event.head_commit.message) }},
+              "message": "{ \"commitId\": \"${{ github.sha }}\", \"buildNumber\": \"${{ env.VERSION }}\", \"repoName\": \"${{ github.repository }}\"}"
+          }
+      run: |
+        curl -X POST -H "Content-Type: application/json" -d "$JSON" ${{ secrets.DEPLOYED_WEBHOOK }}

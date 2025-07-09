@@ -2970,14 +2970,14 @@ namespace TL
 	{
 		public Flags flags;
 		public StarGiftBase gift;
-		[IfFlag(3)] public int can_export_at;
+		[IfFlag(3)] public DateTime can_export_at;
 		[IfFlag(4)] public long transfer_stars;
 		[IfFlag(6)] public Peer from_id;
 		[IfFlag(7)] public Peer peer;
 		[IfFlag(7)] public long saved_id;
 		[IfFlag(8)] public long resale_stars;
-		[IfFlag(9)] public int can_transfer_at;
-		[IfFlag(10)] public int can_resell_at;
+		[IfFlag(9)] public DateTime can_transfer_at;
+		[IfFlag(10)] public DateTime can_resell_at;
 
 		[Flags] public enum Flags : uint
 		{
@@ -19791,7 +19791,7 @@ namespace TL
 		/// <summary>Total amount of earned Telegram Stars.</summary>
 		public StarsAmountBase overall_revenue;
 		/// <summary>Unixtime indicating when will withdrawal be available to the user. If not set, withdrawal can be started now.</summary>
-		[IfFlag(1)] public int next_withdrawal_at;
+		[IfFlag(1)] public DateTime next_withdrawal_at;
 
 		[Flags] public enum Flags : uint
 		{
@@ -20518,10 +20518,10 @@ namespace TL
 		[IfFlag(11)] public long saved_id;
 		[IfFlag(4)] public long convert_stars;
 		[IfFlag(6)] public long upgrade_stars;
-		[IfFlag(7)] public int can_export_at;
+		[IfFlag(7)] public DateTime can_export_at;
 		[IfFlag(8)] public long transfer_stars;
-		[IfFlag(13)] public int can_transfer_at;
-		[IfFlag(14)] public int can_resell_at;
+		[IfFlag(13)] public DateTime can_transfer_at;
+		[IfFlag(14)] public DateTime can_resell_at;
 
 		[Flags] public enum Flags : uint
 		{
