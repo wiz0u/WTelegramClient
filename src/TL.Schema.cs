@@ -20050,9 +20050,10 @@ namespace TL
 		/// <summary>For limited-supply gifts: the total number of gifts that was available in the initial supply.</summary>
 		public virtual int AvailabilityTotal => default;
 		public virtual string Title => default;
+		public virtual Peer ReleasedBy => default;
 	}
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/gifts">star gift, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/starGift"/></para></summary>
-	[TLDef(0xC62ACA28)]
+	[TLDef(0x7F853C12)]
 	public sealed partial class StarGift : StarGiftBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -20077,6 +20078,7 @@ namespace TL
 		[IfFlag(3)] public long upgrade_stars;
 		[IfFlag(4)] public long resell_min_stars;
 		[IfFlag(5)] public string title;
+		[IfFlag(6)] public Peer released_by;
 
 		[Flags] public enum Flags : uint
 		{
@@ -20092,6 +20094,8 @@ namespace TL
 			has_availability_resale = 0x10,
 			/// <summary>Field <see cref="title"/> has a value</summary>
 			has_title = 0x20,
+			/// <summary>Field <see cref="released_by"/> has a value</summary>
+			has_released_by = 0x40,
 		}
 
 		/// <summary>Identifier of the gift</summary>
@@ -20099,9 +20103,10 @@ namespace TL
 		/// <summary>For limited-supply gifts: the total number of gifts that was available in the initial supply.</summary>
 		public override int AvailabilityTotal => availability_total;
 		public override string Title => title;
+		public override Peer ReleasedBy => released_by;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftUnique"/></para></summary>
-	[TLDef(0x6411DB89)]
+	[TLDef(0xF63778AE)]
 	public sealed partial class StarGiftUnique : StarGiftBase
 	{
 		public Flags flags;
@@ -20117,6 +20122,7 @@ namespace TL
 		public int availability_total;
 		[IfFlag(3)] public string gift_address;
 		[IfFlag(4)] public long resell_stars;
+		[IfFlag(5)] public Peer released_by;
 
 		[Flags] public enum Flags : uint
 		{
@@ -20125,22 +20131,28 @@ namespace TL
 			has_owner_address = 0x4,
 			has_gift_address = 0x8,
 			has_resell_stars = 0x10,
+			has_released_by = 0x20,
 		}
 
 		public override long ID => id;
 		public override int AvailabilityTotal => availability_total;
 		public override string Title => title;
+		public override Peer ReleasedBy => released_by;
 	}
 
 	/// <summary>Available <a href="https://corefork.telegram.org/api/gifts">gifts »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/payments.starGifts"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/payments.starGiftsNotModified">payments.starGiftsNotModified</a></remarks>
-	[TLDef(0x901689EA)]
-	public sealed partial class Payments_StarGifts : IObject
+	[TLDef(0x2ED82995)]
+	public sealed partial class Payments_StarGifts : IObject, IPeerResolver
 	{
 		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public int hash;
 		/// <summary>List of available gifts.</summary>
 		public StarGiftBase[] gifts;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, User> users;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary>Report menu option		<para>See <a href="https://corefork.telegram.org/constructor/messageReportOption"/></para></summary>

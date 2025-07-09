@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 206;					// fetched 02/07/2025 12:40:29
+		public const int Version = 207;					// fetched 08/07/2025 17:40:58
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -1361,10 +1361,10 @@ namespace TL
 			[0x4BA3A95A] = typeof(MessageReactor),
 			[0x94CE852A] = typeof(StarsGiveawayOption),
 			[0x54236209] = typeof(StarsGiveawayWinnersOption),
-			[0xC62ACA28] = typeof(StarGift),
-			[0x6411DB89] = typeof(StarGiftUnique),
+			[0x7F853C12] = typeof(StarGift),
+			[0xF63778AE] = typeof(StarGiftUnique),
 			[0xA388A368] = null,//Payments_StarGiftsNotModified
-			[0x901689EA] = typeof(Payments_StarGifts),
+			[0x2ED82995] = typeof(Payments_StarGifts),
 			[0x7903E3D9] = typeof(MessageReportOption),
 			[0xF0E4E0B6] = typeof(ReportResultChooseOption),
 			[0x6F09AC31] = typeof(ReportResultAddComment),

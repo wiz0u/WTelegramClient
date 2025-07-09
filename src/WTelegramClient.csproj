@@ -13,8 +13,8 @@
     <PackageId>WTelegramClient</PackageId>
     <Authors>Wizou</Authors>
     <VersionPrefix>0.0.0</VersionPrefix>
-    <VersionSuffix>layer.206</VersionSuffix>
-    <Description>Telegram Client API (MTProto) library written 100% in C# and .NET Standard | Latest API layer: 206
+    <VersionSuffix>layer.207</VersionSuffix>
+    <Description>Telegram Client API (MTProto) library written 100% in C# and .NET Standard | Latest API layer: 207
 
 Release Notes:
 $(ReleaseNotes.Replace("|", "%0D%0A").Replace(" - ","%0D%0A- ").Replace("  ", "%0D%0A%0D%0A"))</Description>
