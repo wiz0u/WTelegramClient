@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 207;					// fetched 08/07/2025 17:40:58
+		public const int Version = 209;					// fetched 14/07/2025 20:10:02
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -1039,7 +1039,7 @@ namespace TL
 			[0x455B853D] = typeof(MessageViews),
 			[0xB6C4F543] = typeof(Messages_MessageViews),
 			[0xA6341782] = typeof(Messages_DiscussionMessage),
-			[0xAFBC09DB] = typeof(MessageReplyHeader),
+			[0x6917560B] = typeof(MessageReplyHeader),
 			[0x0E5AF939] = typeof(MessageReplyStoryHeader),
 			[0x83D60FC2] = typeof(MessageReplies),
 			[0xE8FD8014] = typeof(PeerBlocked),
@@ -1222,7 +1222,7 @@ namespace TL
 			[0xBD74CF49] = typeof(StoryViewPublicRepost),
 			[0x59D78FC5] = typeof(Stories_StoryViewsList),
 			[0xDE9EED1D] = typeof(Stories_StoryViews),
-			[0xB07038B0] = typeof(InputReplyToMessage),
+			[0x869FBE10] = typeof(InputReplyToMessage),
 			[0x5881323A] = typeof(InputReplyToStory),
 			[0x69D66C45] = typeof(InputReplyToMonoForum),
 			[0x3FC9053B] = typeof(ExportedStoryLink),
