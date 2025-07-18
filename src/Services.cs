@@ -401,6 +401,7 @@ namespace TL
 						case "u": case "ins": ProcessEntity<MessageEntityUnderline>(); break;
 						case "s": case "strike": case "del": ProcessEntity<MessageEntityStrike>(); break;
 						case "span class=\"tg-spoiler\"":
+						case "span class='tg-spoiler'":
 						case "span" when closing:
 						case "tg-spoiler": ProcessEntity<MessageEntitySpoiler>(); break;
 						case "code": ProcessEntity<MessageEntityCode>(); break;
@@ -420,7 +421,8 @@ namespace TL
 										prevEntity.length = offset - prevEntity.offset;
 								}
 							}
-							else if (tag.StartsWith("a href=\"") && tag[^1] == '"')
+							else if ((tag[^1] == '"' && tag.StartsWith("a href=\""))
+								  || (tag[^1] == '\'' && tag.StartsWith("a href='")))
 							{
 								tag = HttpUtility.HtmlDecode(tag[8..^1]);
 								if (tag.StartsWith("tg://user?id=") && long.TryParse(tag[13..], out var user_id) && users?.GetValueOrDefault(user_id)?.access_hash is long hash)
@@ -428,12 +430,13 @@ namespace TL
 								else
 									entities.Add(new MessageEntityTextUrl { offset = offset, length = -1, url = tag });
 							}
-							else if (tag.StartsWith("code class=\"language-") && tag[^1] == '"')
+							else if ((tag[^1] == '"' && tag.StartsWith("code class=\"language-"))
+								  || (tag[^1] == '\'' && tag.StartsWith("code class='language-")))
 							{
 								if (entities.LastOrDefault(e => e.length == -1) is MessageEntityPre prevEntity)
 									prevEntity.language = tag[21..^1];
 							}
-							else if (premium && (tag.StartsWith("tg-emoji emoji-id=\"") || tag.StartsWith("tg-emoji id=\"")))
+							else if (premium && (tag.StartsWith("tg-emoji emoji-id=\"") || tag.StartsWith("tg-emoji emoji-id='")))
 								entities.Add(new MessageEntityCustomEmoji { offset = offset, length = -1, document_id = long.Parse(tag[(tag.IndexOf('=') + 2)..^1]) });
 							break;
 					}
