@@ -210,7 +210,7 @@ that simplifies the download of a photo/document/file once you get a reference t
 
 See [Examples/Program_DownloadSavedMedia.cs](https://github.com/wiz0u/WTelegramClient/blob/master/Examples/Program_DownloadSavedMedia.cs?ts=4#L28) that download all media files you forward to yourself (Saved Messages)
 
-_Note: To abort an ongoing download, you can throw an exception via the `progress` callback argument._
+_Note: To abort an ongoing download, you can throw an exception via the `progress` callback argument. Example: `(t,s) => ct.ThrowIfCancellationRequested()`_
 
 <a name="upload"></a>
 ## Upload a media file and post it with caption to a chat
@@ -223,6 +223,41 @@ InputPeer peer = chats.chats[ChatId];
 var inputFile = await client.UploadFileAsync(Filepath);
 await client.SendMediaAsync(peer, "Here is the photo", inputFile);
 ```
+
+<a name="upload-video"></a>
+## Upload a streamable video with optional custom thumbnail
+```csharp
+var chats = await client.Messages_GetAllChats();
+InputPeer peer = chats.chats[1234567890]; // the chat we want
+const string videoPath = @"C:\...\video.mp4";
+const string thumbnailPath = @"C:\...\thumbnail.jpg";
+
+// Extract video information using FFMpegCore or similar library
+var mediaInfo = await FFmpeg.GetMediaInfo(videoPath);
+var videoStream = mediaInfo.VideoStreams.FirstOrDefault();
+int width = videoStream?.Width ?? 0;
+int height = videoStream?.Height ?? 0;
+int duration = (int)mediaInfo.Duration.TotalSeconds;
+
+// Upload video file
+var inputFile = await Client.UploadFileAsync(videoPath);
+
+// Prepare InputMedia structure with video attributes
+var media = new InputMediaUploadedDocument(inputFile, "video/mp4",
+    new DocumentAttributeVideo { w = width, h = height, duration = duration, 
+        flags = DocumentAttributeVideo.Flags.supports_streaming });
+if (thumbnailPath != null)
+{
+	// upload custom thumbnail and complete InputMedia structure
+    var inputThumb = await client.UploadFileAsync(thumbnailPath);
+    media.thumb = inputThumb;
+    media.flags |= InputMediaUploadedDocument.Flags.has_thumb;
+}
+
+// Send the media message
+await client.SendMessageAsync(peer, "caption", media);
+```
+*Note: This example requires FFMpegCore NuGet package for video metadata extraction. You can also manually set width, height, and duration if you know the video properties.*
 
 <a name="album"></a>
 ## Send a grouped media album using photos from various sources

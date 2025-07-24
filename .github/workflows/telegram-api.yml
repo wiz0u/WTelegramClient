@@ -12,7 +12,7 @@ jobs:
     if: contains(github.event.issue.labels.*.name, 'telegram api')
     runs-on: ubuntu-latest
     steps:
-      - uses: dessant/support-requests@v3.0.0
+      - uses: dessant/support-requests@v4
         with:
           support-label: 'telegram api'
           issue-comment: >
@@ -26,3 +26,4 @@ jobs:
 
             If the above links didn't answer your problem, [click here to ask your question on **StackOverflow**](https://stackoverflow.com/questions/ask?tags=c%23+wtelegramclient+telegram-api) so the whole community can help and benefit.
           close-issue: true
+          issue-close-reason: 'not planned'
