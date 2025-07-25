@@ -1433,7 +1433,9 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getPaidMessagesRevenue"/> [bots: ✓]</para></summary>
+		/// <summary>Get the number of stars we have received from the specified user thanks to <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>; the received amount will be equal to the sent amount multiplied by <a href="https://corefork.telegram.org/api/config#stars-paid-message-commission-permille">stars_paid_message_commission_permille</a> divided by 1000.  		<para>See <a href="https://corefork.telegram.org/method/account.getPaidMessagesRevenue"/> [bots: ✓]</para></summary>
+		/// <param name="parent_peer">If set, can contain the ID of a <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum (channel direct messages)</a> to obtain the number of stars the user has spent to send us direct messages via the channel.</param>
+		/// <param name="user_id">The user that paid to send us messages.</param>
 		public static Task<Account_PaidMessagesRevenue> Account_GetPaidMessagesRevenue(this Client client, InputUserBase user_id, InputPeer parent_peer = null)
 			=> client.Invoke(new Account_GetPaidMessagesRevenue
 			{
@@ -1442,7 +1444,11 @@ namespace TL
 				user_id = user_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.toggleNoPaidMessagesException"/> [bots: ✓]</para></summary>
+		/// <summary>Allow a user to send us messages without paying if <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a> are enabled.		<para>See <a href="https://corefork.telegram.org/method/account.toggleNoPaidMessagesException"/> [bots: ✓]</para></summary>
+		/// <param name="refund_charged">If set and <c>require_payment</c> is not set, refunds the amounts the user has already paid us to send us messages (directly or via a monoforum).</param>
+		/// <param name="require_payment">Allow or disallow a user to send us messages without paying.</param>
+		/// <param name="parent_peer">If set, applies the setting within the <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum aka direct messages »</a> (pass the ID of the monoforum, <strong>not</strong> the ID of the associated channel).</param>
+		/// <param name="user_id">The user to exempt or unexempt.</param>
 		public static Task<bool> Account_ToggleNoPaidMessagesException(this Client client, InputUserBase user_id, InputPeer parent_peer = null, bool refund_charged = false, bool require_payment = false)
 			=> client.Invoke(new Account_ToggleNoPaidMessagesException
 			{
@@ -4659,7 +4665,7 @@ namespace TL
 
 		/// <summary>Upload a custom profile picture for a contact, or suggest a new profile picture to a contact.		<para>See <a href="https://corefork.telegram.org/method/photos.uploadContactProfilePhoto"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/photos.uploadContactProfilePhoto#possible-errors">details</a>)</para></summary>
 		/// <param name="suggest">If set, will send a <see cref="MessageActionSuggestProfilePhoto"/> service message to <c>user_id</c>, suggesting them to use the specified profile picture; otherwise, will set a personal profile picture for the user (only visible to the current user).</param>
-		/// <param name="save">If set, removes a previously set personal profile picture (does not affect suggested profile pictures, to remove them simply deleted the <see cref="MessageActionSuggestProfilePhoto"/> service message with <see cref="Messages_DeleteMessages">Messages_DeleteMessages</see>).</param>
+		/// <param name="save">If set, removes a previously set personal profile picture (does not affect suggested profile pictures, to remove them simply delete the <see cref="MessageActionSuggestProfilePhoto"/> service message with <see cref="Messages_DeleteMessages">Messages_DeleteMessages</see>).</param>
 		/// <param name="user_id">The contact</param>
 		/// <param name="file">Profile photo</param>
 		/// <param name="video"><a href="https://corefork.telegram.org/api/files#animated-profile-pictures">Animated profile picture</a> video</param>
@@ -5648,7 +5654,10 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.updatePaidMessagesPrice"/> [bots: ✓]</para></summary>
+		/// <summary>Enable or disable <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a> in this <a href="https://corefork.telegram.org/api/channel">supergroup</a> or <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.updatePaidMessagesPrice"/> [bots: ✓]</para></summary>
+		/// <param name="broadcast_messages_allowed">Only usable for channels, enables or disables the associated <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum aka direct messages</a>.</param>
+		/// <param name="channel">Pass the supergroup ID for supergroups and the ID of the <a href="https://corefork.telegram.org/api/channel">channel</a> to modify the setting in the associated monoforum.</param>
+		/// <param name="send_paid_messages_stars">Specifies the required amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> users must pay to send messages to the supergroup or monoforum.</param>
 		public static Task<UpdatesBase> Channels_UpdatePaidMessagesPrice(this Client client, InputChannelBase channel, long send_paid_messages_stars, bool broadcast_messages_allowed = false)
 			=> client.Invoke(new Channels_UpdatePaidMessagesPrice
 			{
@@ -6409,11 +6418,12 @@ namespace TL
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getSavedStarGifts"/> [bots: ✓]</para></summary>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Payments_SavedStarGifts> Payments_GetSavedStarGifts(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, bool exclude_unsaved = false, bool exclude_saved = false, bool exclude_unlimited = false, bool exclude_limited = false, bool exclude_unique = false, bool sort_by_value = false)
+		public static Task<Payments_SavedStarGifts> Payments_GetSavedStarGifts(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, int? collection_id = null, bool exclude_unsaved = false, bool exclude_saved = false, bool exclude_unlimited = false, bool exclude_limited = false, bool exclude_unique = false, bool sort_by_value = false)
 			=> client.Invoke(new Payments_GetSavedStarGifts
 			{
-				flags = (Payments_GetSavedStarGifts.Flags)((exclude_unsaved ? 0x1 : 0) | (exclude_saved ? 0x2 : 0) | (exclude_unlimited ? 0x4 : 0) | (exclude_limited ? 0x8 : 0) | (exclude_unique ? 0x10 : 0) | (sort_by_value ? 0x20 : 0)),
+				flags = (Payments_GetSavedStarGifts.Flags)((collection_id != null ? 0x40 : 0) | (exclude_unsaved ? 0x1 : 0) | (exclude_saved ? 0x2 : 0) | (exclude_unlimited ? 0x4 : 0) | (exclude_limited ? 0x8 : 0) | (exclude_unique ? 0x10 : 0) | (sort_by_value ? 0x20 : 0)),
 				peer = peer,
+				collection_id = collection_id ?? default,
 				offset = offset,
 				limit = limit,
 			});
@@ -6475,6 +6485,53 @@ namespace TL
 			{
 				stargift = stargift,
 				resell_stars = resell_stars,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.createStarGiftCollection"/></para></summary>
+		public static Task<StarGiftCollection> Payments_CreateStarGiftCollection(this Client client, InputPeer peer, string title, params InputSavedStarGift[] stargift)
+			=> client.Invoke(new Payments_CreateStarGiftCollection
+			{
+				peer = peer,
+				title = title,
+				stargift = stargift,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.updateStarGiftCollection"/></para></summary>
+		public static Task<StarGiftCollection> Payments_UpdateStarGiftCollection(this Client client, InputPeer peer, int collection_id, string title = null, InputSavedStarGift[] delete_stargift = null, InputSavedStarGift[] add_stargift = null, InputSavedStarGift[] order = null)
+			=> client.Invoke(new Payments_UpdateStarGiftCollection
+			{
+				flags = (Payments_UpdateStarGiftCollection.Flags)((title != null ? 0x1 : 0) | (delete_stargift != null ? 0x2 : 0) | (add_stargift != null ? 0x4 : 0) | (order != null ? 0x8 : 0)),
+				peer = peer,
+				collection_id = collection_id,
+				title = title,
+				delete_stargift = delete_stargift,
+				add_stargift = add_stargift,
+				order = order,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.reorderStarGiftCollections"/></para></summary>
+		public static Task<bool> Payments_ReorderStarGiftCollections(this Client client, InputPeer peer, params int[] order)
+			=> client.Invoke(new Payments_ReorderStarGiftCollections
+			{
+				peer = peer,
+				order = order,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.deleteStarGiftCollection"/></para></summary>
+		public static Task<bool> Payments_DeleteStarGiftCollection(this Client client, InputPeer peer, int collection_id)
+			=> client.Invoke(new Payments_DeleteStarGiftCollection
+			{
+				peer = peer,
+				collection_id = collection_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftCollections"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/payments.starGiftCollectionsNotModified">payments.starGiftCollectionsNotModified</a></returns>
+		public static Task<Payments_StarGiftCollections> Payments_GetStarGiftCollections(this Client client, InputPeer peer, long hash = default)
+			=> client.Invoke(new Payments_GetStarGiftCollections
+			{
+				peer = peer,
+				hash = hash,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -13077,11 +13134,12 @@ namespace TL.Methods
 		public string slug;
 	}
 
-	[TLDef(0x23830DE9)]
+	[TLDef(0xA319E569)]
 	public sealed partial class Payments_GetSavedStarGifts : IMethod<Payments_SavedStarGifts>
 	{
 		public Flags flags;
 		public InputPeer peer;
+		[IfFlag(6)] public int collection_id;
 		public string offset;
 		public int limit;
 
@@ -13093,6 +13151,7 @@ namespace TL.Methods
 			exclude_limited = 0x8,
 			exclude_unique = 0x10,
 			sort_by_value = 0x20,
+			has_collection_id = 0x40,
 		}
 	}
 
@@ -13158,6 +13217,55 @@ namespace TL.Methods
 	{
 		public InputSavedStarGift stargift;
 		public long resell_stars;
+	}
+
+	[TLDef(0x1F4A0E87)]
+	public sealed partial class Payments_CreateStarGiftCollection : IMethod<StarGiftCollection>
+	{
+		public InputPeer peer;
+		public string title;
+		public InputSavedStarGift[] stargift;
+	}
+
+	[TLDef(0x4FDDBEE7)]
+	public sealed partial class Payments_UpdateStarGiftCollection : IMethod<StarGiftCollection>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int collection_id;
+		[IfFlag(0)] public string title;
+		[IfFlag(1)] public InputSavedStarGift[] delete_stargift;
+		[IfFlag(2)] public InputSavedStarGift[] add_stargift;
+		[IfFlag(3)] public InputSavedStarGift[] order;
+
+		[Flags] public enum Flags : uint
+		{
+			has_title = 0x1,
+			has_delete_stargift = 0x2,
+			has_add_stargift = 0x4,
+			has_order = 0x8,
+		}
+	}
+
+	[TLDef(0xC32AF4CC)]
+	public sealed partial class Payments_ReorderStarGiftCollections : IMethod<bool>
+	{
+		public InputPeer peer;
+		public int[] order;
+	}
+
+	[TLDef(0xAD5648E8)]
+	public sealed partial class Payments_DeleteStarGiftCollection : IMethod<bool>
+	{
+		public InputPeer peer;
+		public int collection_id;
+	}
+
+	[TLDef(0x981B91DD)]
+	public sealed partial class Payments_GetStarGiftCollections : IMethod<Payments_StarGiftCollections>
+	{
+		public InputPeer peer;
+		public long hash;
 	}
 
 	[TLDef(0x9021AB67)]

@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 209;					// fetched 14/07/2025 20:10:02
+		public const int Version = 210;					// fetched 25/07/2025 14:54:33
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -254,7 +254,7 @@ namespace TL
 			[0xF47741F7] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0x99E78045] = typeof(UserFull),
+			[0x29DE80BE] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -1361,7 +1361,7 @@ namespace TL
 			[0x4BA3A95A] = typeof(MessageReactor),
 			[0x94CE852A] = typeof(StarsGiveawayOption),
 			[0x54236209] = typeof(StarsGiveawayWinnersOption),
-			[0x7F853C12] = typeof(StarGift),
+			[0x00BCFF5B] = typeof(StarGift),
 			[0xF63778AE] = typeof(StarGiftUnique),
 			[0xA388A368] = null,//Payments_StarGiftsNotModified
 			[0x2ED82995] = typeof(Payments_StarGifts),
@@ -1391,7 +1391,7 @@ namespace TL
 			[0x315A4974] = typeof(Users_UsersSlice),
 			[0xCAA2F60B] = typeof(Payments_UniqueStarGift),
 			[0xB53E8B21] = typeof(Messages_WebPagePreview),
-			[0xDFDA0499] = typeof(SavedStarGift),
+			[0x1EA646DF] = typeof(SavedStarGift),
 			[0x95F389B1] = typeof(Payments_SavedStarGifts),
 			[0x69279795] = typeof(InputSavedStarGiftUser),
 			[0xF101AA7F] = typeof(InputSavedStarGiftChat),
@@ -1420,6 +1420,10 @@ namespace TL
 			[0x49B92A26] = typeof(TodoList),
 			[0x4CC120B7] = typeof(TodoCompletion),
 			[0x0E8E37E5] = typeof(SuggestedPost),
+			[0x1B0E4F07] = typeof(StarsRating),
+			[0x9D6B13B0] = typeof(StarGiftCollection),
+			[0xA0BA4F17] = null,//Payments_StarGiftCollectionsNotModified
+			[0x8A2932F3] = typeof(Payments_StarGiftCollections),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
@@ -1553,6 +1557,7 @@ namespace TL
 			[typeof(PaidReactionPrivacy)]            = 0x206AD49E, //paidReactionPrivacyDefault
 			[typeof(RequirementToContact)]           = 0x050A9839, //requirementToContactEmpty
 			[typeof(Contacts_SponsoredPeers)]        = 0xEA32B4B1, //contacts.sponsoredPeersEmpty
+			[typeof(Payments_StarGiftCollections)]   = 0xA0BA4F17, //payments.starGiftCollectionsNotModified
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}

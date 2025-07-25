@@ -898,7 +898,7 @@ namespace TL
 			has_color = 0x100,
 			/// <summary>Field <see cref="profile_color"/> has a value</summary>
 			has_profile_color = 0x200,
-			/// <summary>If set, we can only write to this user if they have already sent some messages to us, if we are subscribed to <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a>, or if they're a mutual contact (<see cref="User"/>.<c>mutual_contact</c>).  <br/>All the secondary conditions listed above must be checked separately to verify whether we can still write to the user, even if this flag is set (i.e. a mutual contact will have this flag set even if we can still write to them, and so on...); to avoid doing these extra checks if we haven't yet cached all the required information (for example while displaying the chat list in the sharing UI) the <see cref="SchemaExtensions.Users_GetIsPremiumRequiredToContact">Users_GetIsPremiumRequiredToContact</see> method may be invoked instead, passing the list of users currently visible in the UI, returning a list of booleans that directly specify whether we can or cannot write to each user; alternatively, the <see cref="UserFull"/>.<c>contact_require_premium</c> flag contains the same (fully checked, i.e. it's not just a copy of this flag) info returned by <see cref="SchemaExtensions.Users_GetIsPremiumRequiredToContact">Users_GetIsPremiumRequiredToContact</see>. <br/>To set this flag for ourselves invoke <see cref="SchemaExtensions.Account_SetGlobalPrivacySettings">Account_SetGlobalPrivacySettings</see>, setting the <c>settings.new_noncontact_peers_require_premium</c> flag.</summary>
+			/// <summary>See <a href="https://corefork.telegram.org/api/privacy#require-premium-for-new-non-contact-users">here for more info on this flag »</a>.</summary>
 			contact_require_premium = 0x400,
 			/// <summary>Whether this bot can be <a href="https://corefork.telegram.org/api/business#connected-bots">connected to a user as specified here »</a>.</summary>
 			bot_business = 0x800,
@@ -3742,7 +3742,7 @@ namespace TL
 	}
 
 	/// <summary>Extended user info		<para>See <a href="https://corefork.telegram.org/constructor/userFull"/></para></summary>
-	[TLDef(0x99E78045)]
+	[TLDef(0x29DE80BE)]
 	public sealed partial class UserFull : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -3808,6 +3808,7 @@ namespace TL
 		[IfFlag(44)] public BotVerification bot_verification;
 		[IfFlag(46)] public long send_paid_messages_stars;
 		[IfFlag(47)] public DisallowedGiftsSettings disallowed_gifts;
+		[IfFlag(49)] public StarsRating stars_rating;
 
 		[Flags] public enum Flags : uint
 		{
@@ -3900,6 +3901,8 @@ namespace TL
 			/// <summary>Field <see cref="disallowed_gifts"/> has a value</summary>
 			has_disallowed_gifts = 0x8000,
 			display_gifts_button = 0x10000,
+			/// <summary>Field <see cref="stars_rating"/> has a value</summary>
+			has_stars_rating = 0x20000,
 		}
 	}
 
@@ -14719,6 +14722,7 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>If configured, specifies the number of <a href="https://corefork.telegram.org/api/stars">stars</a> users must pay us to send us a message, see <a href="https://corefork.telegram.org/api/paid-messages">here »</a> for more info on paid messages.</summary>
 		[IfFlag(5)] public long noncontact_peers_paid_stars;
 		[IfFlag(6)] public DisallowedGiftsSettings disallowed_gifts;
 
@@ -14732,7 +14736,7 @@ namespace TL
 			keep_archived_folders = 0x4,
 			/// <summary>If this flag is set, the <see cref="InputPrivacyKey.StatusTimestamp"/> key will also apply to the ability to use <see cref="SchemaExtensions.Messages_GetOutboxReadDate">Messages_GetOutboxReadDate</see> on messages sent to us. <br/>Meaning, users that cannot see <em>our</em> exact last online date due to the current value of the <see cref="InputPrivacyKey.StatusTimestamp"/> key will receive a <c>403 USER_PRIVACY_RESTRICTED</c> error when invoking <see cref="SchemaExtensions.Messages_GetOutboxReadDate">Messages_GetOutboxReadDate</see> to fetch the exact read date of a message they sent to us. <br/>The <see cref="UserFull"/>.<c>read_dates_private</c> flag will be set for users that have this flag enabled.</summary>
 			hide_read_marks = 0x8,
-			/// <summary>If set, only users that have a premium account, are in our contact list, or already have a private chat with us can write to us; a <c>403 PRIVACY_PREMIUM_REQUIRED</c> error will be emitted otherwise.  <br/>The <see cref="UserFull"/>.<c>contact_require_premium</c> flag will be set for users that have this flag enabled.  <br/>To check whether we can write to a user with this flag enabled, if we haven't yet cached all the required information (for example we don't have the <see cref="UserFull"/> or history of all users while displaying the chat list in the sharing UI) the <see cref="SchemaExtensions.Users_GetIsPremiumRequiredToContact">Users_GetIsPremiumRequiredToContact</see> method may be invoked, passing the list of users currently visible in the UI, returning a list of booleans that directly specify whether we can or cannot write to each user. <br/>This option may be enabled by both non-<a href="https://corefork.telegram.org/api/premium">Premium</a> and <a href="https://corefork.telegram.org/api/premium">Premium</a> users only if the <a href="https://corefork.telegram.org/api/config#new-noncontact-peers-require-premium-without-ownpremium">new_noncontact_peers_require_premium_without_ownpremium client configuration flag »</a> is equal to true, otherwise it may be enabled only by <a href="https://corefork.telegram.org/api/premium">Premium</a> users and non-Premium users will receive a <c>PREMIUM_ACCOUNT_REQUIRED</c> error when trying to enable this flag.</summary>
+			/// <summary>See <a href="https://corefork.telegram.org/api/privacy#require-premium-for-new-non-contact-users">here for more info on this flag »</a>.</summary>
 			new_noncontact_peers_require_premium = 0x10,
 			/// <summary>Field <see cref="noncontact_peers_paid_stars"/> has a value</summary>
 			has_noncontact_peers_paid_stars = 0x20,
@@ -20094,7 +20098,7 @@ namespace TL
 		public virtual Peer ReleasedBy => default;
 	}
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/gifts">star gift, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/starGift"/></para></summary>
-	[TLDef(0x7F853C12)]
+	[TLDef(0x00BCFF5B)]
 	public sealed partial class StarGift : StarGiftBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -20120,6 +20124,8 @@ namespace TL
 		[IfFlag(4)] public long resell_min_stars;
 		[IfFlag(5)] public string title;
 		[IfFlag(6)] public Peer released_by;
+		[IfFlag(8)] public int per_user_total;
+		[IfFlag(8)] public int per_user_remains;
 
 		[Flags] public enum Flags : uint
 		{
@@ -20137,6 +20143,8 @@ namespace TL
 			has_title = 0x20,
 			/// <summary>Field <see cref="released_by"/> has a value</summary>
 			has_released_by = 0x40,
+			require_premium = 0x80,
+			limited_per_user = 0x100,
 		}
 
 		/// <summary>Identifier of the gift</summary>
@@ -20180,6 +20188,7 @@ namespace TL
 			has_resell_stars = 0x10,
 			/// <summary>Field <see cref="released_by"/> has a value</summary>
 			has_released_by = 0x20,
+			require_premium = 0x40,
 		}
 
 		public override long ID => id;
@@ -20571,7 +20580,7 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/savedStarGift"/></para></summary>
-	[TLDef(0xDFDA0499)]
+	[TLDef(0x1EA646DF)]
 	public sealed partial class SavedStarGift : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -20588,6 +20597,7 @@ namespace TL
 		[IfFlag(8)] public long transfer_stars;
 		[IfFlag(13)] public DateTime can_transfer_at;
 		[IfFlag(14)] public DateTime can_resell_at;
+		[IfFlag(15)] public int[] collection_id;
 
 		[Flags] public enum Flags : uint
 		{
@@ -20616,6 +20626,8 @@ namespace TL
 			has_can_transfer_at = 0x2000,
 			/// <summary>Field <see cref="can_resell_at"/> has a value</summary>
 			has_can_resell_at = 0x4000,
+			/// <summary>Field <see cref="collection_id"/> has a value</summary>
+			has_collection_id = 0x8000,
 		}
 	}
 
@@ -20904,5 +20916,46 @@ namespace TL
 			/// <summary>Field <see cref="price"/> has a value</summary>
 			has_price = 0x8,
 		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starsRating"/></para></summary>
+	[TLDef(0x1B0E4F07)]
+	public sealed partial class StarsRating : IObject
+	{
+		public Flags flags;
+		public int level;
+		public long current_level_stars;
+		public long stars;
+		[IfFlag(0)] public long next_level_stars;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_level_stars = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftCollection"/></para></summary>
+	[TLDef(0x9D6B13B0)]
+	public sealed partial class StarGiftCollection : IObject
+	{
+		public Flags flags;
+		public int collection_id;
+		public string title;
+		[IfFlag(0)] public DocumentBase icon;
+		public int gifts_count;
+		public long hash;
+
+		[Flags] public enum Flags : uint
+		{
+			has_icon = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.starGiftCollections"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/payments.starGiftCollectionsNotModified">payments.starGiftCollectionsNotModified</a></remarks>
+	[TLDef(0x8A2932F3)]
+	public sealed partial class Payments_StarGiftCollections : IObject
+	{
+		public StarGiftCollection[] collections;
 	}
 }
