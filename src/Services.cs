@@ -29,7 +29,9 @@ namespace TL
 							if (!user.flags.HasFlag(User.Flags.min) || !_users.TryGetValue(user.id, out var prevUser) || prevUser.flags.HasFlag(User.Flags.min))
 								_users[user.id] = user;
 							else
-							{	// update previously full user from min user:
+							{   // update previously full user from min user:
+								// see https://github.com/tdlib/td/blob/master/td/telegram/UserManager.cpp#L2689
+								// and https://github.com/telegramdesktop/tdesktop/blob/dev/Telegram/SourceFiles/data/data_session.cpp#L515
 								const User.Flags updated_flags = (User.Flags)0x5DAFE000;
 								const User.Flags2 updated_flags2 = (User.Flags2)0x711;
 								// tdlib updated flags: deleted | bot | bot_chat_history | bot_nochats | verified | bot_inline_geo
@@ -53,7 +55,7 @@ namespace TL
 								if (user.lang_code != null)
 									prevUser.lang_code = user.lang_code;				// tdlib: updated if present ; tdesktop: ignored
 								prevUser.emoji_status = user.emoji_status;				// tdlib/tdesktop: updated
-								prevUser.usernames = user.usernames;					// tdlib: not updated ; tdesktop: updated
+								//prevUser.usernames = user.usernames;					// tdlib/tdesktop: not updated
 								if (user.stories_max_id > 0)
 									prevUser.stories_max_id = user.stories_max_id;		// tdlib: updated if > 0 ; tdesktop: not updated
 								prevUser.color = user.color;							// tdlib/tdesktop: updated
