@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 210;					// fetched 25/07/2025 14:54:33
+		public const int Version = 211;					// fetched 31/07/2025 22:39:04
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -216,7 +216,7 @@ namespace TL
 			[0x45D5B021] = typeof(MessageActionGiftStars),
 			[0xB00C47A2] = typeof(MessageActionPrizeStars),
 			[0x4717E8A4] = typeof(MessageActionStarGift),
-			[0x2E3AE60E] = typeof(MessageActionStarGiftUnique),
+			[0x34F762F3] = typeof(MessageActionStarGiftUnique),
 			[0xAC1F1FCD] = typeof(MessageActionPaidMessagesRefunded),
 			[0x84B88578] = typeof(MessageActionPaidMessagesPrice),
 			[0x2FFE2F7A] = typeof(MessageActionConferenceCall),
@@ -254,7 +254,7 @@ namespace TL
 			[0xF47741F7] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0x29DE80BE] = typeof(UserFull),
+			[0x7E63CE1F] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -267,7 +267,7 @@ namespace TL
 			[0x71E094F3] = typeof(Messages_DialogsSlice),
 			[0xF0E3E596] = typeof(Messages_DialogsNotModified),
 			[0x8C718E87] = typeof(Messages_Messages),
-			[0x3A54685E] = typeof(Messages_MessagesSlice),
+			[0x762B263D] = typeof(Messages_MessagesSlice),
 			[0xC776BA4E] = typeof(Messages_ChannelMessages),
 			[0x74535F21] = typeof(Messages_MessagesNotModified),
 			[0x64FF9FD5] = typeof(Messages_Chats),
@@ -1008,6 +1008,7 @@ namespace TL
 			[0x2E94C3E7] = typeof(WebPageAttributeStory),
 			[0x50CC03D3] = typeof(WebPageAttributeStickerSet),
 			[0xCF6F6DB8] = typeof(WebPageAttributeUniqueStarGift),
+			[0x31CAD303] = typeof(WebPageAttributeStarGiftCollection),
 			[0x4899484E] = typeof(Messages_VotesList),
 			[0xF568028A] = typeof(BankCardOpenUrl),
 			[0x3E24E573] = typeof(Payments_BankCardData),
@@ -1128,7 +1129,7 @@ namespace TL
 			[0x4A5F5BD9] = typeof(InputInvoiceStarGiftTransfer),
 			[0xDABAB2EF] = typeof(InputInvoicePremiumGiftStars),
 			[0xF4997E42] = typeof(InputInvoiceBusinessBotTransferStars),
-			[0x63CBC38C] = typeof(InputInvoiceStarGiftResale),
+			[0xC39F5324] = typeof(InputInvoiceStarGiftResale),
 			[0xAED0CBD9] = typeof(Payments_ExportedInvoice),
 			[0xCFB9D957] = typeof(Messages_TranscribedAudio),
 			[0x5334759C] = typeof(Help_PremiumPromo),
@@ -1213,7 +1214,7 @@ namespace TL
 			[0x8D595CD6] = typeof(StoryViews),
 			[0x51E6EE4F] = typeof(StoryItemDeleted),
 			[0xFFADC913] = typeof(StoryItemSkipped),
-			[0x79B26A24] = typeof(StoryItem),
+			[0xEDF164F1] = typeof(StoryItem),
 			[0x1158FE3E] = typeof(Stories_AllStoriesNotModified),
 			[0x6EFC5E81] = typeof(Stories_AllStories),
 			[0x63C3DD0A] = typeof(Stories_Stories),
@@ -1362,7 +1363,7 @@ namespace TL
 			[0x94CE852A] = typeof(StarsGiveawayOption),
 			[0x54236209] = typeof(StarsGiveawayWinnersOption),
 			[0x00BCFF5B] = typeof(StarGift),
-			[0xF63778AE] = typeof(StarGiftUnique),
+			[0x3A274D50] = typeof(StarGiftUnique),
 			[0xA388A368] = null,//Payments_StarGiftsNotModified
 			[0x2ED82995] = typeof(Payments_StarGifts),
 			[0x7903E3D9] = typeof(MessageReportOption),
@@ -1424,6 +1425,10 @@ namespace TL
 			[0x9D6B13B0] = typeof(StarGiftCollection),
 			[0xA0BA4F17] = null,//Payments_StarGiftCollectionsNotModified
 			[0x8A2932F3] = typeof(Payments_StarGiftCollections),
+			[0x9325705A] = typeof(StoryAlbum),
+			[0x564EDAEB] = null,//Stories_AlbumsNotModified
+			[0xC3987A3A] = typeof(Stories_Albums),
+			[0x3E0B5B6A] = typeof(SearchPostsFlood),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
@@ -1558,6 +1563,7 @@ namespace TL
 			[typeof(RequirementToContact)]           = 0x050A9839, //requirementToContactEmpty
 			[typeof(Contacts_SponsoredPeers)]        = 0xEA32B4B1, //contacts.sponsoredPeersEmpty
 			[typeof(Payments_StarGiftCollections)]   = 0xA0BA4F17, //payments.starGiftCollectionsNotModified
+			[typeof(Stories_Albums)]                 = 0x564EDAEB, //stories.albumsNotModified
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}

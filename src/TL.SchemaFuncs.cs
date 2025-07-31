@@ -1433,7 +1433,7 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary>Get the number of stars we have received from the specified user thanks to <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>; the received amount will be equal to the sent amount multiplied by <a href="https://corefork.telegram.org/api/config#stars-paid-message-commission-permille">stars_paid_message_commission_permille</a> divided by 1000.  		<para>See <a href="https://corefork.telegram.org/method/account.getPaidMessagesRevenue"/> [bots: ✓]</para></summary>
+		/// <summary>Get the number of stars we have received from the specified user thanks to <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>; the received amount will be equal to the sent amount multiplied by <a href="https://corefork.telegram.org/api/config#stars-paid-message-commission-permille">stars_paid_message_commission_permille</a> divided by 1000.		<para>See <a href="https://corefork.telegram.org/method/account.getPaidMessagesRevenue"/> [bots: ✓]</para></summary>
 		/// <param name="parent_peer">If set, can contain the ID of a <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum (channel direct messages)</a> to obtain the number of stars the user has spent to send us direct messages via the channel.</param>
 		/// <param name="user_id">The user that paid to send us messages.</param>
 		public static Task<Account_PaidMessagesRevenue> Account_GetPaidMessagesRevenue(this Client client, InputUserBase user_id, InputPeer parent_peer = null)
@@ -1446,7 +1446,7 @@ namespace TL
 
 		/// <summary>Allow a user to send us messages without paying if <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a> are enabled.		<para>See <a href="https://corefork.telegram.org/method/account.toggleNoPaidMessagesException"/> [bots: ✓]</para></summary>
 		/// <param name="refund_charged">If set and <c>require_payment</c> is not set, refunds the amounts the user has already paid us to send us messages (directly or via a monoforum).</param>
-		/// <param name="require_payment">Allow or disallow a user to send us messages without paying.</param>
+		/// <param name="require_payment">If set, requires the user to pay in order to send us messages (can only be used by monoforums, not users, i.e. <c>parent_peer</c> must be set if this flag is set; users must instead use the <see cref="InputPrivacyKey.NoPaidMessages"/>                <a href="https://corefork.telegram.org/api/privacy">privacy setting</a> to remove a previously added exemption). <br/>If not set, allows the user to send us messages without paying (can be used by both monoforums and users).</param>
 		/// <param name="parent_peer">If set, applies the setting within the <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum aka direct messages »</a> (pass the ID of the monoforum, <strong>not</strong> the ID of the associated channel).</param>
 		/// <param name="user_id">The user to exempt or unexempt.</param>
 		public static Task<bool> Account_ToggleNoPaidMessagesException(this Client client, InputUserBase user_id, InputPeer parent_peer = null, bool refund_charged = false, bool require_payment = false)
@@ -1483,7 +1483,8 @@ namespace TL
 				errors = errors,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/users.getRequirementsToContact"/> [bots: ✓]</para></summary>
+		/// <summary>Check whether we can write to the specified users, used to implement bulk checks for <a href="https://corefork.telegram.org/api/privacy#require-premium-for-new-non-contact-users">Premium-only messages »</a> and <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>.		<para>See <a href="https://corefork.telegram.org/method/users.getRequirementsToContact"/> [bots: ✓]</para></summary>
+		/// <param name="id">Users to check.</param>
 		public static Task<RequirementToContact[]> Users_GetRequirementsToContact(this Client client, params InputUserBase[] id)
 			=> client.Invoke(new Users_GetRequirementsToContact
 			{
@@ -1911,6 +1912,7 @@ namespace TL
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
+		/// <param name="allow_paid_stars">For <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>, specifies the amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> the user has agreed to pay in order to send the message.</param>
 		public static Task<UpdatesBase> Messages_SendMessage(this Client client, InputPeer peer, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, long? allow_paid_stars = null, SuggestedPost suggested_post = null, bool no_webpage = false, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_SendMessage
 			{
@@ -1948,6 +1950,7 @@ namespace TL
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
+		/// <param name="allow_paid_stars">For <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>, specifies the amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> the user has agreed to pay in order to send the message.</param>
 		public static Task<UpdatesBase> Messages_SendMedia(this Client client, InputPeer peer, InputMedia media, string message, long random_id, InputReplyTo reply_to = null, ReplyMarkup reply_markup = null, MessageEntity[] entities = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, long? allow_paid_stars = null, SuggestedPost suggested_post = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_SendMedia
 			{
@@ -1983,6 +1986,7 @@ namespace TL
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Forward the messages as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the messages to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
+		/// <param name="allow_paid_stars">For <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>, specifies the amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> the user has agreed to pay in order to send the message.</param>
 		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, int? video_timestamp = null, long? allow_paid_stars = null, InputReplyTo reply_to = null, SuggestedPost suggested_post = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_ForwardMessages
 			{
@@ -2496,6 +2500,7 @@ namespace TL
 		/// <param name="schedule_date">Scheduled message date for scheduled messages</param>
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
+		/// <param name="allow_paid_stars">For <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>, specifies the amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> the user has agreed to pay in order to send the message.</param>
 		public static Task<UpdatesBase> Messages_SendInlineBotResult(this Client client, InputPeer peer, long random_id, long query_id, string id, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? allow_paid_stars = null, bool silent = false, bool background = false, bool clear_draft = false, bool hide_via = false)
 			=> client.Invoke(new Messages_SendInlineBotResult
 			{
@@ -2945,6 +2950,7 @@ namespace TL
 		/// <param name="send_as">Send this message as the specified peer</param>
 		/// <param name="quick_reply_shortcut">Add the message to the specified <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a>, instead.</param>
 		/// <param name="effect">Specifies a <a href="https://corefork.telegram.org/api/effects">message effect »</a> to use for the message.</param>
+		/// <param name="allow_paid_stars">For <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>, specifies the amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> the user has agreed to pay in order to send the message.</param>
 		public static Task<UpdatesBase> Messages_SendMultiMedia(this Client client, InputPeer peer, InputSingleMedia[] multi_media, InputReplyTo reply_to = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, long? allow_paid_stars = null, bool silent = false, bool background = false, bool clear_draft = false, bool noforwards = false, bool update_stickersets_order = false, bool invert_media = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_SendMultiMedia
 			{
@@ -4513,7 +4519,8 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.reportMessagesDelivery"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.reportMessagesDelivery#possible-errors">details</a>)</para></summary>
+		/// <summary>Used for <a href="https://telegram.org/blog/star-messages-gateway-2-0-and-more#save-even-more-on-user-verification">Telegram Gateway verification messages »</a>: indicate to the server that one or more <see cref="Message"/>s were received by the client, if requested by the <see cref="Message"/>.<strong>report_delivery_until_date</strong> flag or the equivalent flag in <a href="https://corefork.telegram.org/api/push-updates">push notifications</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.reportMessagesDelivery"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.reportMessagesDelivery#possible-errors">details</a>)</para></summary>
+		/// <param name="push">If set,</param>
 		public static Task<bool> Messages_ReportMessagesDelivery(this Client client, InputPeer peer, int[] id, bool push = false)
 			=> client.Invoke(new Messages_ReportMessagesDelivery
 			{
@@ -5644,14 +5651,17 @@ namespace TL
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Messages_MessagesBase> Channels_SearchPosts(this Client client, string hashtag, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue)
+		public static Task<Messages_MessagesBase> Channels_SearchPosts(this Client client, int offset_rate = default, InputPeer offset_peer = null, int offset_id = default, int limit = int.MaxValue, string hashtag = null, string query = null, long? allow_paid_stars = null)
 			=> client.Invoke(new Channels_SearchPosts
 			{
+				flags = (Channels_SearchPosts.Flags)((hashtag != null ? 0x1 : 0) | (query != null ? 0x2 : 0) | (allow_paid_stars != null ? 0x4 : 0)),
 				hashtag = hashtag,
+				query = query,
 				offset_rate = offset_rate,
 				offset_peer = offset_peer,
 				offset_id = offset_id,
 				limit = limit,
+				allow_paid_stars = allow_paid_stars ?? default,
 			});
 
 		/// <summary>Enable or disable <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a> in this <a href="https://corefork.telegram.org/api/channel">supergroup</a> or <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.updatePaidMessagesPrice"/> [bots: ✓]</para></summary>
@@ -5680,6 +5690,14 @@ namespace TL
 			{
 				channel = channel,
 				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.checkSearchPostsFlood"/></para></summary>
+		public static Task<SearchPostsFlood> Channels_CheckSearchPostsFlood(this Client client, string query = null)
+			=> client.Invoke(new Channels_CheckSearchPostsFlood
+			{
+				flags = (Channels_CheckSearchPostsFlood.Flags)(query != null ? 0x1 : 0),
+				query = query,
 			});
 
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
@@ -5976,7 +5994,11 @@ namespace TL
 				duration_months = duration_months ?? default,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.setCustomVerification"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.setCustomVerification#possible-errors">details</a>)</para></summary>
+		/// <summary>Verify a user or chat <a href="https://corefork.telegram.org/api/bots/verification">on behalf of an organization »</a>.		<para>See <a href="https://corefork.telegram.org/method/bots.setCustomVerification"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.setCustomVerification#possible-errors">details</a>)</para></summary>
+		/// <param name="enabled">If set, adds the verification; otherwise removes verification.</param>
+		/// <param name="bot">Must <strong>not</strong> be set if invoked by a bot, <strong>must</strong> be set to the ID of an owned bot if invoked by a user.</param>
+		/// <param name="peer">The peer to verify</param>
+		/// <param name="custom_description">Custom description for the verification, the UTF-8 length limit for this field is contained in <a href="https://corefork.telegram.org/api/config#bot-verification-description-length-limit">bot_verification_description_length_limit »</a>. <br/>If not set, <c>Was verified by organization "organization_name"</c> will be used as description.</param>
 		public static Task<bool> Bots_SetCustomVerification(this Client client, InputPeer peer, InputUserBase bot = null, string custom_description = null, bool enabled = false)
 			=> client.Invoke(new Bots_SetCustomVerification
 			{
@@ -5986,7 +6008,8 @@ namespace TL
 				custom_description = custom_description,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.getBotRecommendations"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.getBotRecommendations#possible-errors">details</a>)</para></summary>
+		/// <summary>Obtain a list of similarly themed bots, selected based on similarities in their subscriber bases, see <a href="https://corefork.telegram.org/api/recommend">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/bots.getBotRecommendations"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.getBotRecommendations#possible-errors">details</a>)</para></summary>
+		/// <param name="bot">The method will return bots related to the passed bot.</param>
 		public static Task<Users_Users> Bots_GetBotRecommendations(this Client client, InputUserBase bot)
 			=> client.Invoke(new Bots_GetBotRecommendations
 			{
@@ -6480,11 +6503,11 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.updateStarGiftPrice"/> [bots: ✓]</para></summary>
-		public static Task<UpdatesBase> Payments_UpdateStarGiftPrice(this Client client, InputSavedStarGift stargift, long resell_stars)
+		public static Task<UpdatesBase> Payments_UpdateStarGiftPrice(this Client client, InputSavedStarGift stargift, StarsAmountBase resell_amount)
 			=> client.Invoke(new Payments_UpdateStarGiftPrice
 			{
 				stargift = stargift,
-				resell_stars = resell_stars,
+				resell_amount = resell_amount,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.createStarGiftCollection"/></para></summary>
@@ -7021,7 +7044,14 @@ namespace TL
 				file = file,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.createConferenceCall"/> [bots: ✓]</para></summary>
+		/// <summary>Create and optionally join a new conference call.		<para>See <a href="https://corefork.telegram.org/method/phone.createConferenceCall"/> [bots: ✓]</para></summary>
+		/// <param name="muted">If set, mute our microphone when joining the call (can only be used if <c>join</c> is set).</param>
+		/// <param name="video_stopped">If set, our video stream is disabled (can only be used if <c>join</c> is set).</param>
+		/// <param name="join">If set, also join the call, otherwise just create the call link.</param>
+		/// <param name="random_id">Unique client message ID required to prevent creation of duplicate group calls.</param>
+		/// <param name="public_key">Public key (can only be used if <c>join</c> is set).</param>
+		/// <param name="block">Initial blockchain block (can only be used if <c>join</c> is set).</param>
+		/// <param name="params_">Parameters from tgcalls (can only be used if <c>join</c> is set).</param>
 		public static Task<UpdatesBase> Phone_CreateConferenceCall(this Client client, int random_id, Int256? public_key = null, byte[] block = null, DataJSON params_ = null, bool muted = false, bool video_stopped = false, bool join = false)
 			=> client.Invoke(new Phone_CreateConferenceCall
 			{
@@ -7349,10 +7379,10 @@ namespace TL
 		/// <param name="period">Period after which the story is moved to archive (and to the profile if <c>pinned</c> is set), in seconds; must be one of <c>6 * 3600</c>, <c>12 * 3600</c>, <c>86400</c>, or <c>2 * 86400</c> for Telegram Premium users, and <c>86400</c> otherwise.</param>
 		/// <param name="fwd_from_id">If set, indicates that this story is a repost of story with ID <c>fwd_from_story</c> posted by the peer in <c>fwd_from_id</c>.</param>
 		/// <param name="fwd_from_story">If set, indicates that this story is a repost of story with ID <c>fwd_from_story</c> posted by the peer in <c>fwd_from_id</c>.</param>
-		public static Task<UpdatesBase> Stories_SendStory(this Client client, InputPeer peer, InputMedia media, InputPrivacyRule[] privacy_rules, long random_id, string caption = null, MessageEntity[] entities = null, int? period = null, MediaArea[] media_areas = null, InputPeer fwd_from_id = null, int? fwd_from_story = null, bool pinned = false, bool noforwards = false, bool fwd_modified = false)
+		public static Task<UpdatesBase> Stories_SendStory(this Client client, InputPeer peer, InputMedia media, InputPrivacyRule[] privacy_rules, long random_id, string caption = null, MessageEntity[] entities = null, int? period = null, MediaArea[] media_areas = null, InputPeer fwd_from_id = null, int? fwd_from_story = null, int[] albums = null, bool pinned = false, bool noforwards = false, bool fwd_modified = false)
 			=> client.Invoke(new Stories_SendStory
 			{
-				flags = (Stories_SendStory.Flags)((caption != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (period != null ? 0x8 : 0) | (media_areas != null ? 0x20 : 0) | (fwd_from_id != null ? 0x40 : 0) | (fwd_from_story != null ? 0x40 : 0) | (pinned ? 0x4 : 0) | (noforwards ? 0x10 : 0) | (fwd_modified ? 0x80 : 0)),
+				flags = (Stories_SendStory.Flags)((caption != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (period != null ? 0x8 : 0) | (media_areas != null ? 0x20 : 0) | (fwd_from_id != null ? 0x40 : 0) | (fwd_from_story != null ? 0x40 : 0) | (albums != null ? 0x100 : 0) | (pinned ? 0x4 : 0) | (noforwards ? 0x10 : 0) | (fwd_modified ? 0x80 : 0)),
 				peer = peer,
 				media = media,
 				media_areas = media_areas,
@@ -7363,6 +7393,7 @@ namespace TL
 				period = period ?? default,
 				fwd_from_id = fwd_from_id,
 				fwd_from_story = fwd_from_story ?? default,
+				albums = albums,
 			});
 
 		/// <summary>Edit an uploaded <a href="https://corefork.telegram.org/api/stories">story</a>		<para>See <a href="https://corefork.telegram.org/method/stories.editStory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.editStory#possible-errors">details</a>)</para></summary>
@@ -7637,6 +7668,63 @@ namespace TL
 				hashtag = hashtag,
 				area = area,
 				peer = peer,
+				offset = offset,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.createAlbum"/></para></summary>
+		public static Task<StoryAlbum> Stories_CreateAlbum(this Client client, InputPeer peer, string title, params int[] stories)
+			=> client.Invoke(new Stories_CreateAlbum
+			{
+				peer = peer,
+				title = title,
+				stories = stories,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.updateAlbum"/></para></summary>
+		public static Task<StoryAlbum> Stories_UpdateAlbum(this Client client, InputPeer peer, int album_id, string title = null, int[] delete_stories = null, int[] add_stories = null, int[] order = null)
+			=> client.Invoke(new Stories_UpdateAlbum
+			{
+				flags = (Stories_UpdateAlbum.Flags)((title != null ? 0x1 : 0) | (delete_stories != null ? 0x2 : 0) | (add_stories != null ? 0x4 : 0) | (order != null ? 0x8 : 0)),
+				peer = peer,
+				album_id = album_id,
+				title = title,
+				delete_stories = delete_stories,
+				add_stories = add_stories,
+				order = order,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.reorderAlbums"/></para></summary>
+		public static Task<bool> Stories_ReorderAlbums(this Client client, InputPeer peer, params int[] order)
+			=> client.Invoke(new Stories_ReorderAlbums
+			{
+				peer = peer,
+				order = order,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.deleteAlbum"/></para></summary>
+		public static Task<bool> Stories_DeleteAlbum(this Client client, InputPeer peer, int album_id)
+			=> client.Invoke(new Stories_DeleteAlbum
+			{
+				peer = peer,
+				album_id = album_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getAlbums"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/stories.albumsNotModified">stories.albumsNotModified</a></returns>
+		public static Task<Stories_Albums> Stories_GetAlbums(this Client client, InputPeer peer, long hash = default)
+			=> client.Invoke(new Stories_GetAlbums
+			{
+				peer = peer,
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getAlbumStories"/></para></summary>
+		public static Task<Stories_Stories> Stories_GetAlbumStories(this Client client, InputPeer peer, int album_id, int offset = default, int limit = int.MaxValue)
+			=> client.Invoke(new Stories_GetAlbumStories
+			{
+				peer = peer,
+				album_id = album_id,
 				offset = offset,
 				limit = limit,
 			});
@@ -12454,14 +12542,24 @@ namespace TL.Methods
 		public bool restricted;
 	}
 
-	[TLDef(0xD19F987B)]
+	[TLDef(0xF2C4F24D)]
 	public sealed partial class Channels_SearchPosts : IMethod<Messages_MessagesBase>
 	{
-		public string hashtag;
+		public Flags flags;
+		[IfFlag(0)] public string hashtag;
+		[IfFlag(1)] public string query;
 		public int offset_rate;
 		public InputPeer offset_peer;
 		public int offset_id;
 		public int limit;
+		[IfFlag(2)] public long allow_paid_stars;
+
+		[Flags] public enum Flags : uint
+		{
+			has_hashtag = 0x1,
+			has_query = 0x2,
+			has_allow_paid_stars = 0x4,
+		}
 	}
 
 	[TLDef(0x4B12327B)]
@@ -12489,6 +12587,18 @@ namespace TL.Methods
 	{
 		public InputChannelBase channel;
 		public int id;
+	}
+
+	[TLDef(0x22567115)]
+	public sealed partial class Channels_CheckSearchPostsFlood : IMethod<SearchPostsFlood>
+	{
+		public Flags flags;
+		[IfFlag(0)] public string query;
+
+		[Flags] public enum Flags : uint
+		{
+			has_query = 0x1,
+		}
 	}
 
 	[TLDef(0xAA2769ED)]
@@ -13212,11 +13322,11 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x3BAEA4E1)]
+	[TLDef(0xEDBE6CCB)]
 	public sealed partial class Payments_UpdateStarGiftPrice : IMethod<UpdatesBase>
 	{
 		public InputSavedStarGift stargift;
-		public long resell_stars;
+		public StarsAmountBase resell_amount;
 	}
 
 	[TLDef(0x1F4A0E87)]
@@ -13948,7 +14058,7 @@ namespace TL.Methods
 		public InputPeer peer;
 	}
 
-	[TLDef(0xE4E6694B)]
+	[TLDef(0x737FC2EC)]
 	public sealed partial class Stories_SendStory : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -13962,6 +14072,7 @@ namespace TL.Methods
 		[IfFlag(3)] public int period;
 		[IfFlag(6)] public InputPeer fwd_from_id;
 		[IfFlag(6)] public int fwd_from_story;
+		[IfFlag(8)] public int[] albums;
 
 		[Flags] public enum Flags : uint
 		{
@@ -13973,6 +14084,7 @@ namespace TL.Methods
 			has_media_areas = 0x20,
 			has_fwd_from_id = 0x40,
 			fwd_modified = 0x80,
+			has_albums = 0x100,
 		}
 	}
 
@@ -14203,6 +14315,64 @@ namespace TL.Methods
 			has_area = 0x2,
 			has_peer = 0x4,
 		}
+	}
+
+	[TLDef(0xA36396E5)]
+	public sealed partial class Stories_CreateAlbum : IMethod<StoryAlbum>
+	{
+		public InputPeer peer;
+		public string title;
+		public int[] stories;
+	}
+
+	[TLDef(0x5E5259B6)]
+	public sealed partial class Stories_UpdateAlbum : IMethod<StoryAlbum>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int album_id;
+		[IfFlag(0)] public string title;
+		[IfFlag(1)] public int[] delete_stories;
+		[IfFlag(2)] public int[] add_stories;
+		[IfFlag(3)] public int[] order;
+
+		[Flags] public enum Flags : uint
+		{
+			has_title = 0x1,
+			has_delete_stories = 0x2,
+			has_add_stories = 0x4,
+			has_order = 0x8,
+		}
+	}
+
+	[TLDef(0x8535FBD9)]
+	public sealed partial class Stories_ReorderAlbums : IMethod<bool>
+	{
+		public InputPeer peer;
+		public int[] order;
+	}
+
+	[TLDef(0x8D3456D0)]
+	public sealed partial class Stories_DeleteAlbum : IMethod<bool>
+	{
+		public InputPeer peer;
+		public int album_id;
+	}
+
+	[TLDef(0x25B3EAC7)]
+	public sealed partial class Stories_GetAlbums : IMethod<Stories_Albums>
+	{
+		public InputPeer peer;
+		public long hash;
+	}
+
+	[TLDef(0xAC806D61)]
+	public sealed partial class Stories_GetAlbumStories : IMethod<Stories_Stories>
+	{
+		public InputPeer peer;
+		public int album_id;
+		public int offset;
+		public int limit;
 	}
 
 	[TLDef(0x60F67660)]
