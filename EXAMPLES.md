@@ -224,6 +224,48 @@ var inputFile = await client.UploadFileAsync(Filepath);
 await client.SendMediaAsync(peer, "Here is the photo", inputFile);
 ```
 
+<a name="upload-video-thumbnail"></a>
+## Upload a video with custom thumbnail
+```csharp
+const string videoPath = @"C:\...\video.mp4";
+const string thumbnailPath = @"C:\...\thumbnail.jpg";
+
+var chats = await client.Messages_GetAllChats();
+InputPeer peer = chats.chats[1234567890]; // the chat we want
+
+// Extract video information using FFMpegCore or similar library
+var mediaInfo = await FFmpeg.GetMediaInfo(videoPath);
+var videoStream = mediaInfo.VideoStreams.FirstOrDefault();
+int width = videoStream?.Width ?? 0;
+int height = videoStream?.Height ?? 0;
+int duration = (int)(mediaInfo.Duration.TotalSeconds);
+
+// Upload both video file and thumbnail
+var inputFile = await client.UploadFileAsync(videoPath);
+var inputThumb = await client.UploadFileAsync(thumbnailPath);
+
+// Create video media with thumbnail and attributes
+var media = new InputMediaUploadedDocument
+{
+    file = inputFile,
+    thumb = inputThumb,
+    mime_type = "video/mp4",
+    attributes = new DocumentAttribute[] {
+        new DocumentAttributeVideo { 
+            w = width, 
+            h = height, 
+            duration = duration, 
+            flags = DocumentAttributeVideo.Flags.supports_streaming 
+        },
+        new DocumentAttributeFilename { file_name = Path.GetFileName(videoPath) }
+    },
+    flags = InputMediaUploadedDocument.Flags.has_thumb
+};
+
+await client.SendMessageAsync(peer, Path.GetFileName(videoPath), media);
+```
+*Note: This example requires FFMpegCore NuGet package for video metadata extraction. You can also manually set width, height, and duration if you know the video properties.*
+
 <a name="album"></a>
 ## Send a grouped media album using photos from various sources
 ```csharp
