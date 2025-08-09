@@ -277,9 +277,8 @@ namespace WTelegram
 
 		private Session.DCSession GetOrCreateDCSession(int dcId, DcOption.Flags flags)
 		{
-			if (_session.DCSessions.TryGetValue(dcId, out var dcSession) && dcSession.AuthKey != null)
-				if (dcSession.Client != null || dcSession.DataCenter.flags == flags)
-					return dcSession; // if we have already a session with this DC and we are connected or it is a perfect match, use it
+			if (_session.DCSessions.TryGetValue(dcId, out var dcSession) && dcSession.Client != null)
+				return dcSession; // we have already a connected session with this DC, use it
 			if (dcSession == null && _session.DCSessions.TryGetValue(-dcId, out dcSession) && dcSession.AuthKey != null)
 			{
 				// we have already negociated an AuthKey with this DC
@@ -295,9 +294,10 @@ namespace WTelegram
 				dcId = Math.Abs(dcId);
 			}
 			var dcOptions = GetDcOptions(Math.Abs(dcId), flags);
-			var dcOption = dcOptions.FirstOrDefault() ?? throw new WTException($"Could not find adequate dc_option for DC {dcId}");
+			var dcOption = dcOptions.FirstOrDefault();
 			dcSession ??= new(); // create new session only if not already existing
-			dcSession.DataCenter = dcOption;
+			if (dcOption != null) dcSession.DataCenter = dcOption; 
+			else if (dcSession.DataCenter == null) throw new WTException($"Could not find adequate dc_option for DC {dcId}");
 			return _session.DCSessions[dcId] = dcSession;
 		}
 
@@ -1629,6 +1629,16 @@ namespace WTelegram
 					{
 						got503 = true;
 						goto retry;
+					}
+					else if (code == 401 && message == "SESSION_REVOKED" && !IsMainDC) // need to renegociate alt-DC auth
+					{
+						lock (_session)
+						{
+							_session.DCSessions.Remove(_dcSession.DcID);
+							if (_session.MainDC != -_dcSession.DcID) _session.DCSessions.Remove(-_dcSession.DcID);
+							_session.Save();
+						}
+						await DisposeAsync();
 					}
 					else if (code == 400 && message == "CONNECTION_NOT_INITED")
 					{

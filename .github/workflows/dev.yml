@@ -46,7 +46,7 @@ jobs:
       env:
         JSON: |
           {
-              "status": "success", "complete": true, "commitMessage": ${{ toJSON(github.event.head_commit.message) }},
+              "status": "success", "complete": true, "commitMessage": ${{ toJSON(env.RELEASE_NOTES) }},
               "message": "{ \"commitId\": \"${{ github.sha }}\", \"buildNumber\": \"${{ env.VERSION }}\", \"repoName\": \"${{ github.repository }}\"}"
           }
       run: |
