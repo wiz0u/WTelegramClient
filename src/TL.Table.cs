@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 211;					// fetched 31/07/2025 22:39:04
+		public const int Version = 211;					// fetched 16/08/2025 00:21:53
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;

@@ -2945,10 +2945,14 @@ namespace TL
 		[IfFlag(1)] public TextWithEntities message;
 		/// <summary>The receiver of this gift may convert it to this many Telegram Stars, instead of displaying it on their profile page.<br/><c>convert_stars</c> will be equal to <c>stars</c> only if the gift was bought using recently bought Telegram Stars, otherwise it will be less than <c>stars</c>.</summary>
 		[IfFlag(4)] public long convert_stars;
+		/// <summary>If set, this gift was <a href="https://corefork.telegram.org/api/gifts#upgrade-a-gift-to-a-collectible-gift">upgraded to a collectible gift</a>, and the corresponding <see cref="MessageActionStarGiftUnique"/> is available at the specified message ID.</summary>
 		[IfFlag(5)] public int upgrade_msg_id;
 		[IfFlag(8)] public long upgrade_stars;
+		/// <summary>Sender of the gift (unset for anonymous gifts).</summary>
 		[IfFlag(11)] public Peer from_id;
+		/// <summary>Receiver of the gift.</summary>
 		[IfFlag(12)] public Peer peer;
+		/// <summary>For channel gifts, ID to use in <see cref="InputSavedStarGiftChat"/>s.</summary>
 		[IfFlag(12)] public long saved_id;
 
 		[Flags] public enum Flags : uint
@@ -2963,10 +2967,13 @@ namespace TL
 			converted = 0x8,
 			/// <summary>Field <see cref="convert_stars"/> has a value</summary>
 			has_convert_stars = 0x10,
+			/// <summary>This gift was upgraded to a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>.</summary>
 			upgraded = 0x20,
 			/// <summary>Field <see cref="upgrade_stars"/> has a value</summary>
 			has_upgrade_stars = 0x100,
+			/// <summary>This gift is not available anymore because a request to refund the payment related to this gift was made, and the money was returned.</summary>
 			refunded = 0x200,
+			/// <summary>If set, this gift can be <a href="https://corefork.telegram.org/api/gifts#upgrade-a-gift-to-a-collectible-gift">upgraded to a collectible gift</a>; can only be set for the receiver of a gift.</summary>
 			can_upgrade = 0x400,
 			/// <summary>Field <see cref="from_id"/> has a value</summary>
 			has_from_id = 0x800,
@@ -2974,31 +2981,42 @@ namespace TL
 			has_peer = 0x1000,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGiftUnique"/></para></summary>
+	/// <summary>A <a href="https://corefork.telegram.org/api/gifts">gift »</a> was upgraded to a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGiftUnique"/></para></summary>
 	[TLDef(0x34F762F3)]
 	public sealed partial class MessageActionStarGiftUnique : MessageAction
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>The collectible gift.</summary>
 		public StarGiftBase gift;
 		[IfFlag(3)] public DateTime can_export_at;
+		/// <summary>If set, indicates that the gift can be <a href="https://corefork.telegram.org/api/gifts#transferring-collectible-gifts">transferred »</a> to another user by paying the specified amount of stars.</summary>
 		[IfFlag(4)] public long transfer_stars;
+		/// <summary>Sender of the gift (unset for anonymous gifts).</summary>
 		[IfFlag(6)] public Peer from_id;
+		/// <summary>Receiver of the gift.</summary>
 		[IfFlag(7)] public Peer peer;
+		/// <summary>For channel gifts, ID to use in <see cref="InputSavedStarGiftChat"/>s.</summary>
 		[IfFlag(7)] public long saved_id;
 		[IfFlag(8)] public StarsAmountBase resale_amount;
+		/// <summary>If set, indicates that the current gift can't be <a href="https://corefork.telegram.org/api/gifts#transferring-collectible-gifts">transferred »</a> yet: the owner will be able to transfer it at the specified unixtime.</summary>
 		[IfFlag(9)] public DateTime can_transfer_at;
+		/// <summary>If set, indicates that the current gift can't be <a href="https://corefork.telegram.org/api/gifts#sell-a-collectible-gift">resold »</a> yet: the owner will be able to put it up for sale at the specified unixtime.</summary>
 		[IfFlag(10)] public DateTime can_resell_at;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>If set, this collectible was <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">upgraded »</a> to a collectible gift from a previously received or sent (depending on the <c>out</c> flag of the containing <see cref="MessageService"/>) non-collectible gift.</summary>
 			upgrade = 0x1,
+			/// <summary>If set, this collectible was transferred (either to the current user or by the current user to the other user in the private chat, depending on the <c>out</c> flag of the containing <see cref="MessageService"/>).</summary>
 			transferred = 0x2,
+			/// <summary>If set, this gift is visible on the user or channel's profile page; can only be set for the receiver of a gift.</summary>
 			saved = 0x4,
 			/// <summary>Field <see cref="can_export_at"/> has a value</summary>
 			has_can_export_at = 0x8,
 			/// <summary>Field <see cref="transfer_stars"/> has a value</summary>
 			has_transfer_stars = 0x10,
+			/// <summary>This gift was upgraded to a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a> and then re-downgraded to a regular gift because a request to refund the payment related to the upgrade was made, and the money was returned.</summary>
 			refunded = 0x20,
 			/// <summary>Field <see cref="from_id"/> has a value</summary>
 			has_from_id = 0x40,
@@ -7584,7 +7602,7 @@ namespace TL
 		public string display_url;
 		/// <summary><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></summary>
 		public int hash;
-		/// <summary>Type of the web page. One of the following: <!-- start type --><br/><br/>- <c>video</c><br/>- <c>gif</c><br/>- <c>photo</c><br/>- <c>document</c><br/>- <c>profile</c><br/>- <c>telegram_background</c><br/>- <c>telegram_theme</c><br/>- <c>telegram_story</c><br/>- <c>telegram_channel</c><br/>- <c>telegram_channel_request</c><br/>- <c>telegram_megagroup</c><br/>- <c>telegram_chat</c><br/>- <c>telegram_megagroup_request</c><br/>- <c>telegram_chat_request</c><br/>- <c>telegram_album</c><br/>- <c>telegram_message</c><br/>- <c>telegram_bot</c><br/>- <c>telegram_voicechat</c><br/>- <c>telegram_livestream</c><br/>- <c>telegram_call</c><br/>- <c>telegram_user</c><br/>- <c>telegram_botapp</c><br/>- <c>telegram_channel_boost</c><br/>- <c>telegram_group_boost</c><br/>- <c>telegram_giftcode</c><br/>- <c>telegram_stickerset</c><br/><br/><!-- end type --></summary>
+		/// <summary>Type of the web page. One of the following: <!-- start type --><br/><br/>- <c>video</c><br/>- <c>gif</c><br/>- <c>photo</c><br/>- <c>document</c><br/>- <c>profile</c><br/>- <c>telegram_background</c><br/>- <c>telegram_theme</c><br/>- <c>telegram_story</c><br/>- <c>telegram_channel</c><br/>- <c>telegram_channel_request</c><br/>- <c>telegram_megagroup</c><br/>- <c>telegram_chat</c><br/>- <c>telegram_megagroup_request</c><br/>- <c>telegram_chat_request</c><br/>- <c>telegram_album</c><br/>- <c>telegram_message</c><br/>- <c>telegram_bot</c><br/>- <c>telegram_voicechat</c><br/>- <c>telegram_livestream</c><br/>- <c>telegram_call</c><br/>- <c>telegram_user</c><br/>- <c>telegram_botapp</c><br/>- <c>telegram_channel_boost</c><br/>- <c>telegram_group_boost</c><br/>- <c>telegram_giftcode</c><br/>- <c>telegram_stickerset</c><br/>- <c>telegram_story_album</c><br/>- <c>telegram_collection</c><br/><br/><!-- end type --></summary>
 		[IfFlag(0)] public string type;
 		/// <summary>Short name of the site (e.g., Google Docs, App Store)</summary>
 		[IfFlag(1)] public string site_name;
@@ -19749,6 +19767,7 @@ namespace TL
 			stargift_resale = 0x400000,
 			/// <summary>Fields <see cref="ads_proceeds_from_date"/> and <see cref="ads_proceeds_to_date"/> have a value</summary>
 			has_ads_proceeds_from_date = 0x800000,
+			posts_search = 0x1000000,
 		}
 	}
 
@@ -20186,12 +20205,13 @@ namespace TL
 		public override string Title => title;
 		public override Peer ReleasedBy => released_by;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftUnique"/></para></summary>
+	/// <summary>Represents a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible star gift, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftUnique"/></para></summary>
 	[TLDef(0x3A274D50)]
 	public sealed partial class StarGiftUnique : StarGiftBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Identifier of the gift.</summary>
 		public long id;
 		public string title;
 		public string slug;
@@ -20224,6 +20244,7 @@ namespace TL
 			resale_ton_only = 0x80,
 		}
 
+		/// <summary>Identifier of the gift.</summary>
 		public override long ID => id;
 		public override int AvailabilityTotal => availability_total;
 		public override string Title => title;
@@ -20526,45 +20547,62 @@ namespace TL
 		public string description;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/type/StarGiftAttribute"/></para>		<para>Derived classes: <see cref="StarGiftAttributeModel"/>, <see cref="StarGiftAttributePattern"/>, <see cref="StarGiftAttributeBackdrop"/>, <see cref="StarGiftAttributeOriginalDetails"/></para></summary>
+	/// <summary>An attribute of a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>.		<para>See <a href="https://corefork.telegram.org/type/StarGiftAttribute"/></para>		<para>Derived classes: <see cref="StarGiftAttributeModel"/>, <see cref="StarGiftAttributePattern"/>, <see cref="StarGiftAttributeBackdrop"/>, <see cref="StarGiftAttributeOriginalDetails"/></para></summary>
 	public abstract partial class StarGiftAttribute : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeModel"/></para></summary>
+	/// <summary>The model of a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeModel"/></para></summary>
 	[TLDef(0x39D99013)]
 	public sealed partial class StarGiftAttributeModel : StarGiftAttribute
 	{
+		/// <summary>Name of the model</summary>
 		public string name;
+		/// <summary>The <a href="https://corefork.telegram.org/api/stickers">sticker</a> representing the upgraded gift</summary>
 		public DocumentBase document;
+		/// <summary>The number of upgraded gifts that receive this backdrop for each 1000 gifts upgraded.</summary>
 		public int rarity_permille;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributePattern"/></para></summary>
+	/// <summary>A <a href="https://corefork.telegram.org/api/stickers">sticker</a> applied on the backdrop of a <a href="https://corefork.telegram.org/api/gifts">collectible gift »</a> using a repeating pattern.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributePattern"/></para></summary>
 	[TLDef(0x13ACFF19)]
 	public sealed partial class StarGiftAttributePattern : StarGiftAttribute
 	{
+		/// <summary>Name of the symbol</summary>
 		public string name;
+		/// <summary>The symbol</summary>
 		public DocumentBase document;
+		/// <summary>The number of upgraded gifts that receive this backdrop for each 1000 gifts upgraded.</summary>
 		public int rarity_permille;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeBackdrop"/></para></summary>
+	/// <summary>The backdrop of a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeBackdrop"/></para></summary>
 	[TLDef(0xD93D859C)]
 	public sealed partial class StarGiftAttributeBackdrop : StarGiftAttribute
 	{
+		/// <summary>Name of the backdrop</summary>
 		public string name;
+		/// <summary>Unique ID of the backdrop</summary>
 		public int backdrop_id;
+		/// <summary>Color of the center of the backdrop in RGB24 format.</summary>
 		public int center_color;
+		/// <summary>Color of the edges of the backdrop in RGB24 format.</summary>
 		public int edge_color;
+		/// <summary>Color of the <see cref="StarGiftAttributePattern"/> applied on the backdrop in RGB24 format.</summary>
 		public int pattern_color;
+		/// <summary>Color of the text on the backdrop in RGB24 format.</summary>
 		public int text_color;
+		/// <summary>The number of upgraded gifts that receive this backdrop for each 1000 gifts upgraded.</summary>
 		public int rarity_permille;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeOriginalDetails"/></para></summary>
+	/// <summary>Info about the sender, receiver and message attached to the original <a href="https://corefork.telegram.org/api/gifts">gift »</a>, before it was upgraded to a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeOriginalDetails"/></para></summary>
 	[TLDef(0xE0BFF26C)]
 	public sealed partial class StarGiftAttributeOriginalDetails : StarGiftAttribute
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Original sender of the gift, absent if the gift was private.</summary>
 		[IfFlag(0)] public Peer sender_id;
+		/// <summary>Original receiver of the gift.</summary>
 		public Peer recipient_id;
+		/// <summary>When was the gift sent.</summary>
 		public DateTime date;
+		/// <summary>Original message attached to the gift, if present.</summary>
 		[IfFlag(1)] public TextWithEntities message;
 
 		[Flags] public enum Flags : uint
@@ -20576,10 +20614,11 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.starGiftUpgradePreview"/></para></summary>
+	/// <summary>A preview of the possible attributes (chosen randomly) a <a href="https://corefork.telegram.org/api/gifts">gift »</a> can receive after upgrading it to a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>, see <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/payments.starGiftUpgradePreview"/></para></summary>
 	[TLDef(0x167BD90B)]
 	public sealed partial class Payments_StarGiftUpgradePreview : IObject
 	{
+		/// <summary>Possible gift attributes</summary>
 		public StarGiftAttribute[] sample_attributes;
 	}
 
@@ -20690,17 +20729,20 @@ namespace TL
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputSavedStarGift"/></para>		<para>Derived classes: <see cref="InputSavedStarGiftUser"/>, <see cref="InputSavedStarGiftChat"/>, <see cref="InputSavedStarGiftSlug"/></para></summary>
 	public abstract partial class InputSavedStarGift : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputSavedStarGiftUser"/></para></summary>
+	/// <summary>A gift received in a private chat with another user.  		<para>See <a href="https://corefork.telegram.org/constructor/inputSavedStarGiftUser"/></para></summary>
 	[TLDef(0x69279795)]
 	public sealed partial class InputSavedStarGiftUser : InputSavedStarGift
 	{
+		/// <summary>ID of the <see cref="MessageService"/> with the <see cref="MessageActionStarGift"/> with the gift.</summary>
 		public int msg_id;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputSavedStarGiftChat"/></para></summary>
+	/// <summary>A gift received by a channel we own.		<para>See <a href="https://corefork.telegram.org/constructor/inputSavedStarGiftChat"/></para></summary>
 	[TLDef(0xF101AA7F)]
 	public sealed partial class InputSavedStarGiftChat : InputSavedStarGift
 	{
+		/// <summary>The channel.</summary>
 		public InputPeer peer;
+		/// <summary>ID of the gift, must be the <c>saved_id</c> of a <see cref="MessageActionStarGift"/>/<see cref="MessageActionStarGiftUnique"/>.</summary>
 		public long saved_id;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputSavedStarGiftSlug"/></para></summary>
@@ -20957,6 +20999,7 @@ namespace TL
 	[TLDef(0x1B0E4F07)]
 	public sealed partial class StarsRating : IObject
 	{
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		public int level;
 		public long current_level_stars;
@@ -20965,6 +21008,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="next_level_stars"/> has a value</summary>
 			has_next_level_stars = 0x1,
 		}
 	}
@@ -20973,6 +21017,7 @@ namespace TL
 	[TLDef(0x9D6B13B0)]
 	public sealed partial class StarGiftCollection : IObject
 	{
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		public int collection_id;
 		public string title;
@@ -20982,6 +21027,7 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="icon"/> has a value</summary>
 			has_icon = 0x1,
 		}
 	}
@@ -20998,6 +21044,7 @@ namespace TL
 	[TLDef(0x9325705A)]
 	public sealed partial class StoryAlbum : IObject
 	{
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		public int album_id;
 		public string title;
@@ -21006,7 +21053,9 @@ namespace TL
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>Field <see cref="icon_photo"/> has a value</summary>
 			has_icon_photo = 0x1,
+			/// <summary>Field <see cref="icon_video"/> has a value</summary>
 			has_icon_video = 0x2,
 		}
 	}
@@ -21024,6 +21073,7 @@ namespace TL
 	[TLDef(0x3E0B5B6A)]
 	public sealed partial class SearchPostsFlood : IObject
 	{
+		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		public int total_daily;
 		public int remains;
@@ -21033,6 +21083,7 @@ namespace TL
 		[Flags] public enum Flags : uint
 		{
 			query_is_free = 0x1,
+			/// <summary>Field <see cref="wait_till"/> has a value</summary>
 			has_wait_till = 0x2,
 		}
 	}

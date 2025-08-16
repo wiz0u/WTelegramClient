@@ -54,7 +54,7 @@ namespace TL
 				query = query,
 			});
 
-		/// <summary>Invoke the specified query using the specified API <a href="https://corefork.telegram.org/api/invoking#layers">layer</a>		<para>See <a href="https://corefork.telegram.org/method/invokeWithLayer"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/invokeWithLayer#possible-errors">details</a>)</para></summary>
+		/// <summary>Invoke the specified query using the specified API <a href="https://corefork.telegram.org/api/invoking#layers">layer</a>		<para>See <a href="https://corefork.telegram.org/method/invokeWithLayer"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400,403,406 (<a href="https://corefork.telegram.org/method/invokeWithLayer#possible-errors">details</a>)</para></summary>
 		/// <param name="layer">The layer to use</param>
 		/// <param name="query">The query</param>
 		public static Task<X> InvokeWithLayer<X>(this Client client, int layer, IMethod<X> query)
@@ -212,7 +212,7 @@ namespace TL
 				bytes = bytes,
 			});
 
-		/// <summary>Binds a temporary authorization key <c>temp_auth_key_id</c> to the permanent authorization key <c>perm_auth_key_id</c>. Each permanent key may only be bound to one temporary key at a time, binding a new temporary key overwrites the previous one.		<para>See <a href="https://corefork.telegram.org/method/auth.bindTempAuthKey"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.bindTempAuthKey#possible-errors">details</a>)</para></summary>
+		/// <summary>Binds a temporary authorization key <c>temp_auth_key_id</c> to the permanent authorization key <c>perm_auth_key_id</c>. Each permanent key may only be bound to one temporary key at a time, binding a new temporary key overwrites the previous one.		<para>See <a href="https://corefork.telegram.org/method/auth.bindTempAuthKey"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/auth.bindTempAuthKey#possible-errors">details</a>)</para></summary>
 		/// <param name="perm_auth_key_id">Permanent auth_key_id to bind to</param>
 		/// <param name="nonce">Random long from <a href="https://corefork.telegram.org/method/auth.bindTempAuthKey#binding-message-contents">Binding message contents</a></param>
 		/// <param name="expires_at">Unix timestamp to invalidate temporary key, see <a href="https://corefork.telegram.org/method/auth.bindTempAuthKey#binding-message-contents">Binding message contents</a></param>
@@ -298,7 +298,7 @@ namespace TL
 				except_auth_keys = except_auth_keys,
 			});
 
-		/// <summary>Generate a login token, for <a href="https://corefork.telegram.org/api/qr-login">login via QR code</a>.<br/>The generated login token should be encoded using base64url, then shown as a <c>tg://login?token=base64encodedtoken</c> <a href="https://corefork.telegram.org/api/links#qr-code-login-links">deep link »</a> in the QR code.		<para>See <a href="https://corefork.telegram.org/method/auth.exportLoginToken"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/auth.exportLoginToken#possible-errors">details</a>)</para></summary>
+		/// <summary>Generate a login token, for <a href="https://corefork.telegram.org/api/qr-login">login via QR code</a>.<br/>The generated login token should be encoded using base64url, then shown as a <c>tg://login?token=base64encodedtoken</c> <a href="https://corefork.telegram.org/api/links#qr-code-login-links">deep link »</a> in the QR code.		<para>See <a href="https://corefork.telegram.org/method/auth.exportLoginToken"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/auth.exportLoginToken#possible-errors">details</a>)</para></summary>
 		/// <param name="api_id">Application identifier (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="api_hash">Application identifier hash (see. <a href="https://corefork.telegram.org/myapp">App configuration</a>)</param>
 		/// <param name="except_ids">List of already logged-in user IDs, to prevent logging in twice with the same user</param>
@@ -452,7 +452,7 @@ namespace TL
 				about = about,
 			});
 
-		/// <summary>Updates online user status.		<para>See <a href="https://corefork.telegram.org/method/account.updateStatus"/></para></summary>
+		/// <summary>Updates online user status.		<para>See <a href="https://corefork.telegram.org/method/account.updateStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: -504 (<a href="https://corefork.telegram.org/method/account.updateStatus#possible-errors">details</a>)</para></summary>
 		/// <param name="offline">If <see langword="true"/> is transmitted, user status will change to <see cref="UserStatusOffline"/>.</param>
 		public static Task<bool> Account_UpdateStatus(this Client client, bool offline)
 			=> client.Invoke(new Account_UpdateStatus
@@ -1425,7 +1425,7 @@ namespace TL
 				settings = settings,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getCollectibleEmojiStatuses"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getCollectibleEmojiStatuses"/></para></summary>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.emojiStatusesNotModified">account.emojiStatusesNotModified</a></returns>
 		public static Task<Account_EmojiStatuses> Account_GetCollectibleEmojiStatuses(this Client client, long hash = default)
 			=> client.Invoke(new Account_GetCollectibleEmojiStatuses
@@ -1433,7 +1433,7 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary>Get the number of stars we have received from the specified user thanks to <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>; the received amount will be equal to the sent amount multiplied by <a href="https://corefork.telegram.org/api/config#stars-paid-message-commission-permille">stars_paid_message_commission_permille</a> divided by 1000.		<para>See <a href="https://corefork.telegram.org/method/account.getPaidMessagesRevenue"/> [bots: ✓]</para></summary>
+		/// <summary>Get the number of stars we have received from the specified user thanks to <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>; the received amount will be equal to the sent amount multiplied by <a href="https://corefork.telegram.org/api/config#stars-paid-message-commission-permille">stars_paid_message_commission_permille</a> divided by 1000.		<para>See <a href="https://corefork.telegram.org/method/account.getPaidMessagesRevenue"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.getPaidMessagesRevenue#possible-errors">details</a>)</para></summary>
 		/// <param name="parent_peer">If set, can contain the ID of a <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum (channel direct messages)</a> to obtain the number of stars the user has spent to send us direct messages via the channel.</param>
 		/// <param name="user_id">The user that paid to send us messages.</param>
 		public static Task<Account_PaidMessagesRevenue> Account_GetPaidMessagesRevenue(this Client client, InputUserBase user_id, InputPeer parent_peer = null)
@@ -1444,9 +1444,9 @@ namespace TL
 				user_id = user_id,
 			});
 
-		/// <summary>Allow a user to send us messages without paying if <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a> are enabled.		<para>See <a href="https://corefork.telegram.org/method/account.toggleNoPaidMessagesException"/> [bots: ✓]</para></summary>
+		/// <summary>Allow a user to send us messages without paying if <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a> are enabled.		<para>See <a href="https://corefork.telegram.org/method/account.toggleNoPaidMessagesException"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.toggleNoPaidMessagesException#possible-errors">details</a>)</para></summary>
 		/// <param name="refund_charged">If set and <c>require_payment</c> is not set, refunds the amounts the user has already paid us to send us messages (directly or via a monoforum).</param>
-		/// <param name="require_payment">If set, requires the user to pay in order to send us messages (can only be used by monoforums, not users, i.e. <c>parent_peer</c> must be set if this flag is set; users must instead use the <see cref="InputPrivacyKey.NoPaidMessages"/>                <a href="https://corefork.telegram.org/api/privacy">privacy setting</a> to remove a previously added exemption). <br/>If not set, allows the user to send us messages without paying (can be used by both monoforums and users).</param>
+		/// <param name="require_payment">If set, requires the user to pay in order to send us messages. <br/>Can only be <strong>set</strong> by monoforums, not users, i.e. <c>parent_peer</c> must be set if this flag is set; users must instead use the <see cref="InputPrivacyKey.NoPaidMessages"/> privacy setting to remove a previously added exemption. <br/>If not set, allows the user to send us messages without paying (can be <strong>unset</strong> by both monoforums and users).</param>
 		/// <param name="parent_peer">If set, applies the setting within the <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum aka direct messages »</a> (pass the ID of the monoforum, <strong>not</strong> the ID of the associated channel).</param>
 		/// <param name="user_id">The user to exempt or unexempt.</param>
 		public static Task<bool> Account_ToggleNoPaidMessagesException(this Client client, InputUserBase user_id, InputPeer parent_peer = null, bool refund_charged = false, bool require_payment = false)
@@ -1457,7 +1457,7 @@ namespace TL
 				user_id = user_id,
 			});
 
-		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
+		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, params InputUserBase[] id)
 			=> client.Invoke(new Users_GetUsers
@@ -1465,7 +1465,7 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary>Returns extended user info by ID.		<para>See <a href="https://corefork.telegram.org/method/users.getFullUser"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getFullUser#possible-errors">details</a>)</para></summary>
+		/// <summary>Returns extended user info by ID.		<para>See <a href="https://corefork.telegram.org/method/users.getFullUser"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/users.getFullUser#possible-errors">details</a>)</para></summary>
 		/// <param name="id">User ID</param>
 		public static Task<Users_UserFull> Users_GetFullUser(this Client client, InputUserBase id)
 			=> client.Invoke(new Users_GetFullUser
@@ -1483,7 +1483,7 @@ namespace TL
 				errors = errors,
 			});
 
-		/// <summary>Check whether we can write to the specified users, used to implement bulk checks for <a href="https://corefork.telegram.org/api/privacy#require-premium-for-new-non-contact-users">Premium-only messages »</a> and <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>.		<para>See <a href="https://corefork.telegram.org/method/users.getRequirementsToContact"/> [bots: ✓]</para></summary>
+		/// <summary>Check whether we can write to the specified users, used to implement bulk checks for <a href="https://corefork.telegram.org/api/privacy#require-premium-for-new-non-contact-users">Premium-only messages »</a> and <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>.		<para>See <a href="https://corefork.telegram.org/method/users.getRequirementsToContact"/></para></summary>
 		/// <param name="id">Users to check.</param>
 		public static Task<RequirementToContact[]> Users_GetRequirementsToContact(this Client client, params InputUserBase[] id)
 			=> client.Invoke(new Users_GetRequirementsToContact
@@ -1580,7 +1580,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary>Resolve a @username to get peer info		<para>See <a href="https://corefork.telegram.org/method/contacts.resolveUsername"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.resolveUsername#possible-errors">details</a>)</para></summary>
+		/// <summary>Resolve a @username to get peer info		<para>See <a href="https://corefork.telegram.org/method/contacts.resolveUsername"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/contacts.resolveUsername#possible-errors">details</a>)</para></summary>
 		/// <param name="username">@username to resolve</param>
 		/// <param name="referer"><a href="https://corefork.telegram.org/api/links#referral-links">Referrer ID from referral links »</a>.</param>
 		public static Task<Contacts_ResolvedPeer> Contacts_ResolveUsername(this Client client, string username, string referer = null)
@@ -1740,7 +1740,7 @@ namespace TL
 			{
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.getSponsoredPeers"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.getSponsoredPeers"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.getSponsoredPeers#possible-errors">details</a>)</para></summary>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/contacts.sponsoredPeersEmpty">contacts.sponsoredPeersEmpty</a></returns>
 		public static Task<Contacts_SponsoredPeers> Contacts_GetSponsoredPeers(this Client client, string q)
 			=> client.Invoke(new Contacts_GetSponsoredPeers
@@ -1748,7 +1748,7 @@ namespace TL
 				q = q,
 			});
 
-		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para></summary>
+		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504 (<a href="https://corefork.telegram.org/method/messages.getMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client client, params InputMessage[] id)
 			=> client.Invoke(new Messages_GetMessages
@@ -1756,7 +1756,7 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary>Returns the current user dialog list.		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.getDialogs#possible-errors">details</a>)</para></summary>
+		/// <summary>Returns the current user dialog list.		<para>See <a href="https://corefork.telegram.org/method/messages.getDialogs"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400,403 (<a href="https://corefork.telegram.org/method/messages.getDialogs#possible-errors">details</a>)</para></summary>
 		/// <param name="exclude_pinned">Exclude pinned dialogs</param>
 		/// <param name="folder_id"><a href="https://corefork.telegram.org/api/folders#peer-folders">Peer folder ID, for more info click here</a></param>
 		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
@@ -1776,7 +1776,7 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary>Returns the conversation history with one interlocutor / within a chat		<para>See <a href="https://corefork.telegram.org/method/messages.getHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/messages.getHistory#possible-errors">details</a>)</para></summary>
+		/// <summary>Returns the conversation history with one interlocutor / within a chat		<para>See <a href="https://corefork.telegram.org/method/messages.getHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400,406 (<a href="https://corefork.telegram.org/method/messages.getHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Target peer</param>
 		/// <param name="offset_id">Only return messages starting from the specified message ID</param>
 		/// <param name="offset_date">Only return messages sent before the specified date</param>
@@ -1880,7 +1880,7 @@ namespace TL
 				max_id = max_id,
 			});
 
-		/// <summary>Sends a current user typing event (see <see cref="SendMessageAction"/> for all event types) to a conversation partner or group.		<para>See <a href="https://corefork.telegram.org/method/messages.setTyping"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/messages.setTyping#possible-errors">details</a>)</para></summary>
+		/// <summary>Sends a current user typing event (see <see cref="SendMessageAction"/> for all event types) to a conversation partner or group.		<para>See <a href="https://corefork.telegram.org/method/messages.setTyping"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400,403,406 (<a href="https://corefork.telegram.org/method/messages.setTyping#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Target user or group</param>
 		/// <param name="top_msg_id"><a href="https://corefork.telegram.org/api/threads">Topic ID</a></param>
 		/// <param name="action">Type of action</param>
@@ -1893,7 +1893,7 @@ namespace TL
 				action = action,
 			});
 
-		/// <summary>Sends a message to a chat		<para>See <a href="https://corefork.telegram.org/method/messages.sendMessage"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,404,406,420,500 (<a href="https://corefork.telegram.org/method/messages.sendMessage#possible-errors">details</a>)</para></summary>
+		/// <summary>Sends a message to a chat		<para>See <a href="https://corefork.telegram.org/method/messages.sendMessage"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400,403,404,406,420,500 (<a href="https://corefork.telegram.org/method/messages.sendMessage#possible-errors">details</a>)</para></summary>
 		/// <param name="no_webpage">Set this flag to disable generation of the webpage preview</param>
 		/// <param name="silent">Send this message silently (no notifications for the receivers)</param>
 		/// <param name="background">Send this message as background message</param>
@@ -1931,7 +1931,7 @@ namespace TL
 				suggested_post = suggested_post,
 			});
 
-		/// <summary>Send a media		<para>See <a href="https://corefork.telegram.org/method/messages.sendMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,420,500 (<a href="https://corefork.telegram.org/method/messages.sendMedia#possible-errors">details</a>)</para></summary>
+		/// <summary>Send a media		<para>See <a href="https://corefork.telegram.org/method/messages.sendMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400,403,406,420,500 (<a href="https://corefork.telegram.org/method/messages.sendMedia#possible-errors">details</a>)</para></summary>
 		/// <param name="silent">Send message silently (no notification should be triggered)</param>
 		/// <param name="background">Send message in background</param>
 		/// <param name="clear_draft">Clear the draft</param>
@@ -2095,7 +2095,7 @@ namespace TL
 				user_id = user_id,
 			});
 
-		/// <summary>Creates a new chat.		<para>See <a href="https://corefork.telegram.org/method/messages.createChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406,500 (<a href="https://corefork.telegram.org/method/messages.createChat#possible-errors">details</a>)</para></summary>
+		/// <summary>Creates a new chat.		<para>See <a href="https://corefork.telegram.org/method/messages.createChat"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/messages.createChat#possible-errors">details</a>)</para></summary>
 		/// <param name="users">List of user IDs to be invited</param>
 		/// <param name="title">Chat name</param>
 		/// <param name="ttl_period">Time-to-live of all messages that will be sent in the chat: once message.date+message.ttl_period === time(), the message will be deleted on the server, and must be deleted locally as well. You can use <see cref="Messages_SetDefaultHistoryTTL">Messages_SetDefaultHistoryTTL</see> to edit this value later.</param>
@@ -2118,7 +2118,7 @@ namespace TL
 				random_length = random_length,
 			});
 
-		/// <summary>Sends a request to start a secret chat to the user.		<para>See <a href="https://corefork.telegram.org/method/messages.requestEncryption"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.requestEncryption#possible-errors">details</a>)</para></summary>
+		/// <summary>Sends a request to start a secret chat to the user.		<para>See <a href="https://corefork.telegram.org/method/messages.requestEncryption"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.requestEncryption#possible-errors">details</a>)</para></summary>
 		/// <param name="user_id">User ID</param>
 		/// <param name="random_id">Unique client request ID required to prevent resending. This also doubles as the chat ID.</param>
 		/// <param name="g_a"><c>A = g ^ a mod p</c>, see <a href="https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange">Wikipedia</a></param>
@@ -2288,7 +2288,7 @@ namespace TL
 				subscription_pricing = subscription_pricing,
 			});
 
-		/// <summary>Check the validity of a chat invite link and get basic info about it		<para>See <a href="https://corefork.telegram.org/method/messages.checkChatInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/messages.checkChatInvite#possible-errors">details</a>)</para></summary>
+		/// <summary>Check the validity of a chat invite link and get basic info about it		<para>See <a href="https://corefork.telegram.org/method/messages.checkChatInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400,406 (<a href="https://corefork.telegram.org/method/messages.checkChatInvite#possible-errors">details</a>)</para></summary>
 		/// <param name="hash">Invite hash from <a href="https://corefork.telegram.org/api/links#chat-invite-links">chat invite deep link »</a>.</param>
 		public static Task<ChatInviteBase> Messages_CheckChatInvite(this Client client, string hash)
 			=> client.Invoke(new Messages_CheckChatInvite
@@ -2347,7 +2347,7 @@ namespace TL
 				start_param = start_param,
 			});
 
-		/// <summary>Get and increase the view counter of a message sent or forwarded from a <a href="https://corefork.telegram.org/api/channel">channel</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getMessagesViews"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/messages.getMessagesViews#possible-errors">details</a>)</para></summary>
+		/// <summary>Get and increase the view counter of a message sent or forwarded from a <a href="https://corefork.telegram.org/api/channel">channel</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getMessagesViews"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400,406 (<a href="https://corefork.telegram.org/method/messages.getMessagesViews#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer where the message was found</param>
 		/// <param name="id">ID of message</param>
 		/// <param name="increment">Whether to mark the message as viewed and increment the view counter</param>
@@ -2602,7 +2602,7 @@ namespace TL
 				cache_time = cache_time,
 			});
 
-		/// <summary>Get dialog info of specified peers		<para>See <a href="https://corefork.telegram.org/method/messages.getPeerDialogs"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/messages.getPeerDialogs#possible-errors">details</a>)</para></summary>
+		/// <summary>Get dialog info of specified peers		<para>See <a href="https://corefork.telegram.org/method/messages.getPeerDialogs"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400,406 (<a href="https://corefork.telegram.org/method/messages.getPeerDialogs#possible-errors">details</a>)</para></summary>
 		/// <param name="peers">Peers</param>
 		public static Task<Messages_PeerDialogs> Messages_GetPeerDialogs(this Client client, params InputDialogPeerBase[] peers)
 			=> client.Invoke(new Messages_GetPeerDialogs
@@ -2846,7 +2846,7 @@ namespace TL
 				error = error,
 			});
 
-		/// <summary>Upload a file and associate it to a chat (without actually sending it to the chat)		<para>See <a href="https://corefork.telegram.org/method/messages.uploadMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.uploadMedia#possible-errors">details</a>)</para></summary>
+		/// <summary>Upload a file and associate it to a chat (without actually sending it to the chat)		<para>See <a href="https://corefork.telegram.org/method/messages.uploadMedia"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400,403 (<a href="https://corefork.telegram.org/method/messages.uploadMedia#possible-errors">details</a>)</para></summary>
 		/// <param name="business_connection_id">Whether the media will be used only in the specified <a href="https://corefork.telegram.org/api/business#connected-bots">business connection »</a>, and not directly by the bot.</param>
 		/// <param name="peer">The chat, can be <see langword="null"/> for bots and <see cref="InputPeerSelf"/> for users.</param>
 		/// <param name="media">File uploaded in chunks as described in <a href="https://corefork.telegram.org/api/files">files »</a></param>
@@ -2891,7 +2891,7 @@ namespace TL
 				unfave = unfave,
 			});
 
-		/// <summary>Get unread messages where we were mentioned		<para>See <a href="https://corefork.telegram.org/method/messages.getUnreadMentions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getUnreadMentions#possible-errors">details</a>)</para></summary>
+		/// <summary>Get unread messages where we were mentioned		<para>See <a href="https://corefork.telegram.org/method/messages.getUnreadMentions"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/messages.getUnreadMentions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer where to look for mentions</param>
 		/// <param name="top_msg_id">If set, considers only messages within the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
@@ -2912,7 +2912,7 @@ namespace TL
 				min_id = min_id,
 			});
 
-		/// <summary>Mark mentions as read		<para>See <a href="https://corefork.telegram.org/method/messages.readMentions"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readMentions#possible-errors">details</a>)</para></summary>
+		/// <summary>Mark mentions as read		<para>See <a href="https://corefork.telegram.org/method/messages.readMentions"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/messages.readMentions#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Dialog</param>
 		/// <param name="top_msg_id">Mark as read only mentions within the specified <a href="https://corefork.telegram.org/api/forum#forum-topics">forum topic</a></param>
 		public static Task<Messages_AffectedHistory> Messages_ReadMentions(this Client client, InputPeer peer, int? top_msg_id = null)
@@ -3692,7 +3692,7 @@ namespace TL
 				reaction = reaction,
 			});
 
-		/// <summary>Translate a given text.		<para>See <a href="https://corefork.telegram.org/method/messages.translateText"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,500 (<a href="https://corefork.telegram.org/method/messages.translateText#possible-errors">details</a>)</para></summary>
+		/// <summary>Translate a given text.		<para>See <a href="https://corefork.telegram.org/method/messages.translateText"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406,500 (<a href="https://corefork.telegram.org/method/messages.translateText#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">If the text is a chat message, the peer ID</param>
 		/// <param name="id">A list of message IDs to translate</param>
 		/// <param name="text">A list of styled messages to translate</param>
@@ -4192,7 +4192,7 @@ namespace TL
 				order = order,
 			});
 
-		/// <summary>Fetch the full list of <a href="https://corefork.telegram.org/api/saved-messages#tags">saved message tags</a> created by the user.		<para>See <a href="https://corefork.telegram.org/method/messages.getSavedReactionTags"/></para></summary>
+		/// <summary>Fetch the full list of <a href="https://corefork.telegram.org/api/saved-messages#tags">saved message tags</a> created by the user.		<para>See <a href="https://corefork.telegram.org/method/messages.getSavedReactionTags"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getSavedReactionTags#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">If set, returns tags only used in the specified <a href="https://corefork.telegram.org/api/saved-messages#saved-message-dialogs">saved message dialog</a>.</param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a>.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.savedReactionTagsNotModified">messages.savedReactionTagsNotModified</a></returns>
@@ -4436,7 +4436,7 @@ namespace TL
 			{
 			});
 
-		/// <summary>Mark a specific <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message »</a> as read		<para>See <a href="https://corefork.telegram.org/method/messages.viewSponsoredMessage"/></para></summary>
+		/// <summary>Mark a specific <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message »</a> as read		<para>See <a href="https://corefork.telegram.org/method/messages.viewSponsoredMessage"/></para>		<para>Possible <see cref="RpcException"/> codes: -504 (<a href="https://corefork.telegram.org/method/messages.viewSponsoredMessage#possible-errors">details</a>)</para></summary>
 		/// <param name="random_id">The ad's unique ID.</param>
 		public static Task<bool> Messages_ViewSponsoredMessage(this Client client, byte[] random_id)
 			=> client.Invoke(new Messages_ViewSponsoredMessage
@@ -4465,7 +4465,7 @@ namespace TL
 				option = option,
 			});
 
-		/// <summary>Get a list of <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored messages for a peer, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/messages.getSponsoredMessages"/></para></summary>
+		/// <summary>Get a list of <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored messages for a peer, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/messages.getSponsoredMessages"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getSponsoredMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The currently open channel/bot.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/messages.sponsoredMessagesEmpty">messages.sponsoredMessagesEmpty</a></returns>
 		public static Task<Messages_SponsoredMessages> Messages_GetSponsoredMessages(this Client client, InputPeer peer, int? msg_id = null)
@@ -4529,7 +4529,7 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSavedDialogsByID"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getSavedDialogsByID"/></para></summary>
 		public static Task<Messages_SavedDialogsBase> Messages_GetSavedDialogsByID(this Client client, InputPeer[] ids, InputPeer parent_peer = null)
 			=> client.Invoke(new Messages_GetSavedDialogsByID
 			{
@@ -4538,7 +4538,7 @@ namespace TL
 				ids = ids,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.readSavedHistory"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.readSavedHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.readSavedHistory#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Messages_ReadSavedHistory(this Client client, InputPeer parent_peer, InputPeer peer, int max_id = default)
 			=> client.Invoke(new Messages_ReadSavedHistory
 			{
@@ -4547,7 +4547,7 @@ namespace TL
 				max_id = max_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleTodoCompleted"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleTodoCompleted"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.toggleTodoCompleted#possible-errors">details</a>)</para></summary>
 		public static Task<UpdatesBase> Messages_ToggleTodoCompleted(this Client client, InputPeer peer, int msg_id, int[] completed, params int[] incompleted)
 			=> client.Invoke(new Messages_ToggleTodoCompleted
 			{
@@ -4557,7 +4557,7 @@ namespace TL
 				incompleted = incompleted,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.appendTodoList"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.appendTodoList"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.appendTodoList#possible-errors">details</a>)</para></summary>
 		public static Task<UpdatesBase> Messages_AppendTodoList(this Client client, InputPeer peer, int msg_id, params TodoItem[] list)
 			=> client.Invoke(new Messages_AppendTodoList
 			{
@@ -4566,7 +4566,7 @@ namespace TL
 				list = list,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleSuggestedPostApproval"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.toggleSuggestedPostApproval"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.toggleSuggestedPostApproval#possible-errors">details</a>)</para></summary>
 		public static Task<UpdatesBase> Messages_ToggleSuggestedPostApproval(this Client client, InputPeer peer, int msg_id, DateTime? schedule_date = null, string reject_comment = null, bool reject = false)
 			=> client.Invoke(new Messages_ToggleSuggestedPostApproval
 			{
@@ -4577,13 +4577,13 @@ namespace TL
 				reject_comment = reject_comment,
 			});
 
-		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
+		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504 (<a href="https://corefork.telegram.org/method/updates.getState#possible-errors">details</a>)</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
 			{
 			});
 
-		/// <summary>Get new <a href="https://corefork.telegram.org/api/updates">updates</a>.		<para>See <a href="https://corefork.telegram.org/method/updates.getDifference"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/updates.getDifference#possible-errors">details</a>)</para></summary>
+		/// <summary>Get new <a href="https://corefork.telegram.org/api/updates">updates</a>.		<para>See <a href="https://corefork.telegram.org/method/updates.getDifference"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400,403,500 (<a href="https://corefork.telegram.org/method/updates.getDifference#possible-errors">details</a>)</para></summary>
 		/// <param name="pts">PTS, see <a href="https://corefork.telegram.org/api/updates">updates</a>.</param>
 		/// <param name="pts_limit">PTS limit</param>
 		/// <param name="pts_total_limit">For fast updating: if provided and <c>pts + pts_total_limit &lt; remote pts</c>, <see cref="Updates_DifferenceTooLong"/> will be returned.<br/>Simply tells the server to not return the difference if it is bigger than <c>pts_total_limit</c><br/>If the remote pts is too big (&gt; ~4000000), this field will default to 1000000</param>
@@ -4602,7 +4602,7 @@ namespace TL
 				qts_limit = qts_limit ?? default,
 			});
 
-		/// <summary>Returns the difference between the current state of updates of a certain channel and transmitted.		<para>See <a href="https://corefork.telegram.org/method/updates.getChannelDifference"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,500 (<a href="https://corefork.telegram.org/method/updates.getChannelDifference#possible-errors">details</a>)</para></summary>
+		/// <summary>Returns the difference between the current state of updates of a certain channel and transmitted.		<para>See <a href="https://corefork.telegram.org/method/updates.getChannelDifference"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400,403,406,500 (<a href="https://corefork.telegram.org/method/updates.getChannelDifference#possible-errors">details</a>)</para></summary>
 		/// <param name="force">Set to true to skip some possibly unneeded updates and reduce server-side load</param>
 		/// <param name="channel">The channel</param>
 		/// <param name="filter">Messsage filter</param>
@@ -4742,7 +4742,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary>Download a <a href="https://corefork.telegram.org/cdn">CDN</a> file.		<para>See <a href="https://corefork.telegram.org/method/upload.getCdnFile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.getCdnFile#possible-errors">details</a>)</para></summary>
+		/// <summary>Download a <a href="https://corefork.telegram.org/cdn">CDN</a> file.		<para>See <a href="https://corefork.telegram.org/method/upload.getCdnFile"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,404 (<a href="https://corefork.telegram.org/method/upload.getCdnFile#possible-errors">details</a>)</para></summary>
 		/// <param name="file_token">File token</param>
 		/// <param name="offset">Offset of chunk to download</param>
 		/// <param name="limit">Length of chunk to download</param>
@@ -4764,7 +4764,7 @@ namespace TL
 				request_token = request_token,
 			});
 
-		/// <summary>Get SHA256 hashes for verifying downloaded <a href="https://corefork.telegram.org/cdn">CDN</a> files		<para>See <a href="https://corefork.telegram.org/method/upload.getCdnFileHashes"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/upload.getCdnFileHashes#possible-errors">details</a>)</para></summary>
+		/// <summary>Get SHA256 hashes for verifying downloaded <a href="https://corefork.telegram.org/cdn">CDN</a> files		<para>See <a href="https://corefork.telegram.org/method/upload.getCdnFileHashes"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/upload.getCdnFileHashes#possible-errors">details</a>)</para></summary>
 		/// <param name="file_token">File</param>
 		/// <param name="offset">Offset from which to start getting hashes</param>
 		public static Task<FileHash[]> Upload_GetCdnFileHashes(this Client client, byte[] file_token, long offset = default)
@@ -4784,7 +4784,7 @@ namespace TL
 				offset = offset,
 			});
 
-		/// <summary>Returns current configuration, including data center configuration.		<para>See <a href="https://corefork.telegram.org/method/help.getConfig"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/help.getConfig#possible-errors">details</a>)</para></summary>
+		/// <summary>Returns current configuration, including data center configuration.		<para>See <a href="https://corefork.telegram.org/method/help.getConfig"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400,403 (<a href="https://corefork.telegram.org/method/help.getConfig#possible-errors">details</a>)</para></summary>
 		public static Task<Config> Help_GetConfig(this Client client)
 			=> client.Invoke(new Help_GetConfig
 			{
@@ -4827,7 +4827,7 @@ namespace TL
 				message = message,
 			});
 
-		/// <summary>Get configuration for <a href="https://corefork.telegram.org/cdn">CDN</a> file downloads.		<para>See <a href="https://corefork.telegram.org/method/help.getCdnConfig"/> [bots: ✓]</para></summary>
+		/// <summary>Get configuration for <a href="https://corefork.telegram.org/cdn">CDN</a> file downloads.		<para>See <a href="https://corefork.telegram.org/method/help.getCdnConfig"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504 (<a href="https://corefork.telegram.org/method/help.getCdnConfig#possible-errors">details</a>)</para></summary>
 		public static Task<CdnConfig> Help_GetCdnConfig(this Client client)
 			=> client.Invoke(new Help_GetCdnConfig
 			{
@@ -4986,7 +4986,7 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary>Mark <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> history as read		<para>See <a href="https://corefork.telegram.org/method/channels.readHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/channels.readHistory#possible-errors">details</a>)</para></summary>
+		/// <summary>Mark <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> history as read		<para>See <a href="https://corefork.telegram.org/method/channels.readHistory"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400,406 (<a href="https://corefork.telegram.org/method/channels.readHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a></param>
 		/// <param name="max_id">ID of message up to which messages should be marked as read</param>
 		public static Task<bool> Channels_ReadHistory(this Client client, InputChannelBase channel, int max_id = default)
@@ -4996,7 +4996,7 @@ namespace TL
 				max_id = max_id,
 			});
 
-		/// <summary>Delete messages in a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/channels.deleteMessages#possible-errors">details</a>)</para></summary>
+		/// <summary>Delete messages in a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406,420 (<a href="https://corefork.telegram.org/method/channels.deleteMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="channel"><a href="https://corefork.telegram.org/api/channel">Channel/supergroup</a></param>
 		/// <param name="id">IDs of messages to delete</param>
 		public static Task<Messages_AffectedMessages> Channels_DeleteMessages(this Client client, InputChannelBase channel, params int[] id)
@@ -5018,7 +5018,7 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary>Get <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> messages		<para>See <a href="https://corefork.telegram.org/method/channels.getMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/channels.getMessages#possible-errors">details</a>)</para></summary>
+		/// <summary>Get <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> messages		<para>See <a href="https://corefork.telegram.org/method/channels.getMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400,406 (<a href="https://corefork.telegram.org/method/channels.getMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup</param>
 		/// <param name="id">IDs of messages to get</param>
 		public static Task<Messages_MessagesBase> Channels_GetMessages(this Client client, InputChannelBase channel, params InputMessage[] id)
@@ -5028,7 +5028,7 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary>Get the participants of a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getParticipants"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/channels.getParticipants#possible-errors">details</a>)</para></summary>
+		/// <summary>Get the participants of a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getParticipants"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400,403,406 (<a href="https://corefork.telegram.org/method/channels.getParticipants#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel</param>
 		/// <param name="filter">Which participant types to fetch</param>
 		/// <param name="offset"><a href="https://corefork.telegram.org/api/offsets">Offset</a></param>
@@ -5055,7 +5055,7 @@ namespace TL
 				participant = participant,
 			});
 
-		/// <summary>Get info about <a href="https://corefork.telegram.org/api/channel">channels/supergroups</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getChannels"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/channels.getChannels#possible-errors">details</a>)</para></summary>
+		/// <summary>Get info about <a href="https://corefork.telegram.org/api/channel">channels/supergroups</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getChannels"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400,406 (<a href="https://corefork.telegram.org/method/channels.getChannels#possible-errors">details</a>)</para></summary>
 		/// <param name="id">IDs of channels/supergroups to get info about</param>
 		public static Task<Messages_Chats> Channels_GetChannels(this Client client, params InputChannelBase[] id)
 			=> client.Invoke(new Channels_GetChannels
@@ -5063,7 +5063,7 @@ namespace TL
 				id = id,
 			});
 
-		/// <summary>Get full info about a <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a>, <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a> or <a href="https://corefork.telegram.org/api/channel#channels">channel</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getFullChannel"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/channels.getFullChannel#possible-errors">details</a>)</para></summary>
+		/// <summary>Get full info about a <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a>, <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a> or <a href="https://corefork.telegram.org/api/channel#channels">channel</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getFullChannel"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400,403,406 (<a href="https://corefork.telegram.org/method/channels.getFullChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">The <a href="https://corefork.telegram.org/api/channel#channels">channel</a>, <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a> or <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a> to get info about</param>
 		public static Task<Messages_ChatFull> Channels_GetFullChannel(this Client client, InputChannelBase channel)
 			=> client.Invoke(new Channels_GetFullChannel
@@ -5071,7 +5071,7 @@ namespace TL
 				channel = channel,
 			});
 
-		/// <summary>Create a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.createChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406,500 (<a href="https://corefork.telegram.org/method/channels.createChannel#possible-errors">details</a>)</para></summary>
+		/// <summary>Create a <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.createChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/channels.createChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="broadcast">Whether to create a <a href="https://corefork.telegram.org/api/channel">channel</a></param>
 		/// <param name="megagroup">Whether to create a <a href="https://corefork.telegram.org/api/channel">supergroup</a></param>
 		/// <param name="for_import">Whether the supergroup is being created to import messages from a foreign chat service using <see cref="Messages_InitHistoryImport">Messages_InitHistoryImport</see></param>
@@ -5146,7 +5146,7 @@ namespace TL
 				username = username,
 			});
 
-		/// <summary>Join a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.joinChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,406 (<a href="https://corefork.telegram.org/method/channels.joinChannel#possible-errors">details</a>)</para></summary>
+		/// <summary>Join a channel/supergroup		<para>See <a href="https://corefork.telegram.org/method/channels.joinChannel"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400,406,420 (<a href="https://corefork.telegram.org/method/channels.joinChannel#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Channel/supergroup to join</param>
 		public static Task<UpdatesBase> Channels_JoinChannel(this Client client, InputChannelBase channel)
 			=> client.Invoke(new Channels_JoinChannel
@@ -5289,7 +5289,7 @@ namespace TL
 				enabled = enabled,
 			});
 
-		/// <summary>Get a list of <a href="https://corefork.telegram.org/api/channel">channels/supergroups</a> we left, requires a <a href="https://corefork.telegram.org/api/takeout">takeout session, see here » for more info</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.getLeftChannels"/></para>		<para>Possible <see cref="RpcException"/> codes: 403 (<a href="https://corefork.telegram.org/method/channels.getLeftChannels#possible-errors">details</a>)</para></summary>
+		/// <summary>Get a list of <a href="https://corefork.telegram.org/api/channel">channels/supergroups</a> we left, requires a <a href="https://corefork.telegram.org/api/takeout">takeout session, see here » for more info</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.getLeftChannels"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.getLeftChannels#possible-errors">details</a>)</para></summary>
 		/// <param name="offset">Offset for <a href="https://corefork.telegram.org/api/offsets">pagination</a></param>
 		public static Task<Messages_Chats> Channels_GetLeftChannels(this Client client, int offset = default)
 			=> client.Invoke(new Channels_GetLeftChannels
@@ -5520,7 +5520,7 @@ namespace TL
 				pinned = pinned,
 			});
 
-		/// <summary>Delete message history of a <a href="https://corefork.telegram.org/api/forum">forum topic</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteTopicHistory"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.deleteTopicHistory#possible-errors">details</a>)</para></summary>
+		/// <summary>Delete message history of a <a href="https://corefork.telegram.org/api/forum">forum topic</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteTopicHistory"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.deleteTopicHistory#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">Forum</param>
 		/// <param name="top_msg_id">Topic ID</param>
 		public static Task<Messages_AffectedHistory> Channels_DeleteTopicHistory(this Client client, InputChannelBase channel, int top_msg_id)
@@ -5596,7 +5596,7 @@ namespace TL
 				enabled = enabled,
 			});
 
-		/// <summary>Obtain a list of similarly themed public channels, selected based on similarities in their <strong>subscriber bases</strong>.		<para>See <a href="https://corefork.telegram.org/method/channels.getChannelRecommendations"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getChannelRecommendations#possible-errors">details</a>)</para></summary>
+		/// <summary>Obtain a list of similarly themed public channels, selected based on similarities in their <strong>subscriber bases</strong>.		<para>See <a href="https://corefork.telegram.org/method/channels.getChannelRecommendations"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/channels.getChannelRecommendations#possible-errors">details</a>)</para></summary>
 		/// <param name="channel">The method will return channels related to the passed <c>channel</c>. If not set, the method will returns channels related to channels the user has joined.</param>
 		public static Task<Messages_Chats> Channels_GetChannelRecommendations(this Client client, InputChannelBase channel = null)
 			=> client.Invoke(new Channels_GetChannelRecommendations
@@ -5645,7 +5645,7 @@ namespace TL
 				restricted = restricted,
 			});
 
-		/// <summary>Globally search for posts from public <a href="https://corefork.telegram.org/api/channel">channels »</a> (<em>including</em> those we aren't a member of) containing a specific hashtag.		<para>See <a href="https://corefork.telegram.org/method/channels.searchPosts"/></para></summary>
+		/// <summary>Globally search for posts from public <a href="https://corefork.telegram.org/api/channel">channels »</a> (<em>including</em> those we aren't a member of) containing a specific hashtag.		<para>See <a href="https://corefork.telegram.org/method/channels.searchPosts"/></para>		<para>Possible <see cref="RpcException"/> codes: 420 (<a href="https://corefork.telegram.org/method/channels.searchPosts#possible-errors">details</a>)</para></summary>
 		/// <param name="hashtag">The hashtag to search, without the <c>#</c> character.</param>
 		/// <param name="offset_rate">Initially 0, then set to the <see cref="Messages_MessagesSlice"><c>next_rate</c> parameter of messages.messagesSlice</see></param>
 		/// <param name="offset_peer"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a></param>
@@ -5664,7 +5664,7 @@ namespace TL
 				allow_paid_stars = allow_paid_stars ?? default,
 			});
 
-		/// <summary>Enable or disable <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a> in this <a href="https://corefork.telegram.org/api/channel">supergroup</a> or <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.updatePaidMessagesPrice"/> [bots: ✓]</para></summary>
+		/// <summary>Enable or disable <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a> in this <a href="https://corefork.telegram.org/api/channel">supergroup</a> or <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.updatePaidMessagesPrice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.updatePaidMessagesPrice#possible-errors">details</a>)</para></summary>
 		/// <param name="broadcast_messages_allowed">Only usable for channels, enables or disables the associated <a href="https://corefork.telegram.org/api/forum#monoforums">monoforum aka direct messages</a>.</param>
 		/// <param name="channel">Pass the supergroup ID for supergroups and the ID of the <a href="https://corefork.telegram.org/api/channel">channel</a> to modify the setting in the associated monoforum.</param>
 		/// <param name="send_paid_messages_stars">Specifies the required amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> users must pay to send messages to the supergroup or monoforum.</param>
@@ -5676,7 +5676,7 @@ namespace TL
 				send_paid_messages_stars = send_paid_messages_stars,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.toggleAutotranslation"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.toggleAutotranslation"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleAutotranslation#possible-errors">details</a>)</para></summary>
 		public static Task<UpdatesBase> Channels_ToggleAutotranslation(this Client client, InputChannelBase channel, bool enabled)
 			=> client.Invoke(new Channels_ToggleAutotranslation
 			{
@@ -5684,7 +5684,7 @@ namespace TL
 				enabled = enabled,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.getMessageAuthor"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.getMessageAuthor"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getMessageAuthor#possible-errors">details</a>)</para></summary>
 		public static Task<UserBase> Channels_GetMessageAuthor(this Client client, InputChannelBase channel, int id)
 			=> client.Invoke(new Channels_GetMessageAuthor
 			{
@@ -6016,7 +6016,7 @@ namespace TL
 				bot = bot,
 			});
 
-		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
+		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
 		/// <param name="invoice">Invoice</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
 		public static Task<Payments_PaymentFormBase> Payments_GetPaymentForm(this Client client, InputInvoice invoice, DataJSON theme_params = null)
@@ -6172,7 +6172,7 @@ namespace TL
 			{
 			});
 
-		/// <summary>Get the current <a href="https://corefork.telegram.org/api/stars">Telegram Stars balance</a> of the current account (with peer=<see cref="InputPeerSelf"/>), or the stars balance of the bot specified in <c>peer</c>.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarsStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarsStatus#possible-errors">details</a>)</para></summary>
+		/// <summary>Get the current <a href="https://corefork.telegram.org/api/stars">Telegram Stars balance</a> of the current account (with peer=<see cref="InputPeerSelf"/>), or the stars balance of the bot specified in <c>peer</c>.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarsStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/payments.getStarsStatus#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer of which to get the balance.</param>
 		public static Task<Payments_StarsStatus> Payments_GetStarsStatus(this Client client, InputPeer peer, bool ton = false)
 			=> client.Invoke(new Payments_GetStarsStatus
@@ -6199,7 +6199,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary>Make a payment using <a href="https://corefork.telegram.org/api/stars#using-stars">Telegram Stars, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/payments.sendStarsForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.sendStarsForm#possible-errors">details</a>)</para></summary>
+		/// <summary>Make a payment using <a href="https://corefork.telegram.org/api/stars#using-stars">Telegram Stars, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/payments.sendStarsForm"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/payments.sendStarsForm#possible-errors">details</a>)</para></summary>
 		/// <param name="form_id">Payment form ID</param>
 		/// <param name="invoice">Invoice</param>
 		public static Task<Payments_PaymentResultBase> Payments_SendStarsForm(this Client client, long form_id, InputInvoice invoice)
@@ -6409,7 +6409,8 @@ namespace TL
 				link = link,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftUpgradePreview"/></para></summary>
+		/// <summary>Obtain a preview of the possible attributes (chosen randomly) a <a href="https://corefork.telegram.org/api/gifts">gift »</a> can receive after upgrading it to a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>, see <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftUpgradePreview"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarGiftUpgradePreview#possible-errors">details</a>)</para></summary>
+		/// <param name="gift_id">The gift to upgrade.</param>
 		public static Task<Payments_StarGiftUpgradePreview> Payments_GetStarGiftUpgradePreview(this Client client, long gift_id)
 			=> client.Invoke(new Payments_GetStarGiftUpgradePreview
 			{
@@ -6432,14 +6433,14 @@ namespace TL
 				to_id = to_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getUniqueStarGift"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getUniqueStarGift"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getUniqueStarGift#possible-errors">details</a>)</para></summary>
 		public static Task<Payments_UniqueStarGift> Payments_GetUniqueStarGift(this Client client, string slug)
 			=> client.Invoke(new Payments_GetUniqueStarGift
 			{
 				slug = slug,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getSavedStarGifts"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getSavedStarGifts"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getSavedStarGifts#possible-errors">details</a>)</para></summary>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Payments_SavedStarGifts> Payments_GetSavedStarGifts(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, int? collection_id = null, bool exclude_unsaved = false, bool exclude_saved = false, bool exclude_unlimited = false, bool exclude_limited = false, bool exclude_unique = false, bool sort_by_value = false)
 			=> client.Invoke(new Payments_GetSavedStarGifts
@@ -6451,14 +6452,14 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getSavedStarGift"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getSavedStarGift"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getSavedStarGift#possible-errors">details</a>)</para></summary>
 		public static Task<Payments_SavedStarGifts> Payments_GetSavedStarGift(this Client client, params InputSavedStarGift[] stargift)
 			=> client.Invoke(new Payments_GetSavedStarGift
 			{
 				stargift = stargift,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftWithdrawalUrl"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftWithdrawalUrl"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarGiftWithdrawalUrl#possible-errors">details</a>)</para></summary>
 		public static Task<Payments_StarGiftWithdrawalUrl> Payments_GetStarGiftWithdrawalUrl(this Client client, InputSavedStarGift stargift, InputCheckPasswordSRP password)
 			=> client.Invoke(new Payments_GetStarGiftWithdrawalUrl
 			{
@@ -6466,7 +6467,7 @@ namespace TL
 				password = password,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.toggleChatStarGiftNotifications"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.toggleChatStarGiftNotifications"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.toggleChatStarGiftNotifications#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Payments_ToggleChatStarGiftNotifications(this Client client, InputPeer peer, bool enabled = false)
 			=> client.Invoke(new Payments_ToggleChatStarGiftNotifications
 			{
@@ -6474,7 +6475,7 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.toggleStarGiftsPinnedToTop"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.toggleStarGiftsPinnedToTop"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.toggleStarGiftsPinnedToTop#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Payments_ToggleStarGiftsPinnedToTop(this Client client, InputPeer peer, params InputSavedStarGift[] stargift)
 			=> client.Invoke(new Payments_ToggleStarGiftsPinnedToTop
 			{
@@ -6482,14 +6483,14 @@ namespace TL
 				stargift = stargift,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.canPurchaseStore"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.canPurchaseStore"/></para>		<para>Possible <see cref="RpcException"/> codes: 406 (<a href="https://corefork.telegram.org/method/payments.canPurchaseStore#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Payments_CanPurchaseStore(this Client client, InputStorePaymentPurpose purpose)
 			=> client.Invoke(new Payments_CanPurchaseStore
 			{
 				purpose = purpose,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getResaleStarGifts"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getResaleStarGifts"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/payments.getResaleStarGifts#possible-errors">details</a>)</para></summary>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Payments_ResaleStarGifts> Payments_GetResaleStarGifts(this Client client, long gift_id, string offset, int limit = int.MaxValue, long? attributes_hash = null, StarGiftAttributeId[] attributes = null, bool sort_by_price = false, bool sort_by_num = false)
 			=> client.Invoke(new Payments_GetResaleStarGifts
@@ -6502,7 +6503,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.updateStarGiftPrice"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.updateStarGiftPrice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.updateStarGiftPrice#possible-errors">details</a>)</para></summary>
 		public static Task<UpdatesBase> Payments_UpdateStarGiftPrice(this Client client, InputSavedStarGift stargift, StarsAmountBase resell_amount)
 			=> client.Invoke(new Payments_UpdateStarGiftPrice
 			{
@@ -6510,7 +6511,7 @@ namespace TL
 				resell_amount = resell_amount,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.createStarGiftCollection"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.createStarGiftCollection"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.createStarGiftCollection#possible-errors">details</a>)</para></summary>
 		public static Task<StarGiftCollection> Payments_CreateStarGiftCollection(this Client client, InputPeer peer, string title, params InputSavedStarGift[] stargift)
 			=> client.Invoke(new Payments_CreateStarGiftCollection
 			{
@@ -6519,7 +6520,7 @@ namespace TL
 				stargift = stargift,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.updateStarGiftCollection"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.updateStarGiftCollection"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.updateStarGiftCollection#possible-errors">details</a>)</para></summary>
 		public static Task<StarGiftCollection> Payments_UpdateStarGiftCollection(this Client client, InputPeer peer, int collection_id, string title = null, InputSavedStarGift[] delete_stargift = null, InputSavedStarGift[] add_stargift = null, InputSavedStarGift[] order = null)
 			=> client.Invoke(new Payments_UpdateStarGiftCollection
 			{
@@ -6532,7 +6533,7 @@ namespace TL
 				order = order,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.reorderStarGiftCollections"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.reorderStarGiftCollections"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.reorderStarGiftCollections#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Payments_ReorderStarGiftCollections(this Client client, InputPeer peer, params int[] order)
 			=> client.Invoke(new Payments_ReorderStarGiftCollections
 			{
@@ -6540,7 +6541,7 @@ namespace TL
 				order = order,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.deleteStarGiftCollection"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.deleteStarGiftCollection"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.deleteStarGiftCollection#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Payments_DeleteStarGiftCollection(this Client client, InputPeer peer, int collection_id)
 			=> client.Invoke(new Payments_DeleteStarGiftCollection
 			{
@@ -6548,7 +6549,7 @@ namespace TL
 				collection_id = collection_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftCollections"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftCollections"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarGiftCollections#possible-errors">details</a>)</para></summary>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/payments.starGiftCollectionsNotModified">payments.starGiftCollectionsNotModified</a></returns>
 		public static Task<Payments_StarGiftCollections> Payments_GetStarGiftCollections(this Client client, InputPeer peer, long hash = default)
 			=> client.Invoke(new Payments_GetStarGiftCollections
@@ -6693,7 +6694,7 @@ namespace TL
 			{
 			});
 
-		/// <summary>Start a telegram phone call		<para>See <a href="https://corefork.telegram.org/method/phone.requestCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.requestCall#possible-errors">details</a>)</para></summary>
+		/// <summary>Start a telegram phone call		<para>See <a href="https://corefork.telegram.org/method/phone.requestCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403,500 (<a href="https://corefork.telegram.org/method/phone.requestCall#possible-errors">details</a>)</para></summary>
 		/// <param name="video">Whether to start a video call</param>
 		/// <param name="user_id">Destination of the phone call</param>
 		/// <param name="random_id">Random ID to avoid resending the same object</param>
@@ -7044,7 +7045,7 @@ namespace TL
 				file = file,
 			});
 
-		/// <summary>Create and optionally join a new conference call.		<para>See <a href="https://corefork.telegram.org/method/phone.createConferenceCall"/> [bots: ✓]</para></summary>
+		/// <summary>Create and optionally join a new conference call.		<para>See <a href="https://corefork.telegram.org/method/phone.createConferenceCall"/></para></summary>
 		/// <param name="muted">If set, mute our microphone when joining the call (can only be used if <c>join</c> is set).</param>
 		/// <param name="video_stopped">If set, our video stream is disabled (can only be used if <c>join</c> is set).</param>
 		/// <param name="join">If set, also join the call, otherwise just create the call link.</param>
@@ -7062,7 +7063,7 @@ namespace TL
 				params_ = params_,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.deleteConferenceCallParticipants"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.deleteConferenceCallParticipants"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.deleteConferenceCallParticipants#possible-errors">details</a>)</para></summary>
 		public static Task<UpdatesBase> Phone_DeleteConferenceCallParticipants(this Client client, InputGroupCallBase call, long[] ids, byte[] block, bool only_left = false, bool kick = false)
 			=> client.Invoke(new Phone_DeleteConferenceCallParticipants
 			{
@@ -7072,7 +7073,7 @@ namespace TL
 				block = block,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.sendConferenceCallBroadcast"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.sendConferenceCallBroadcast"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.sendConferenceCallBroadcast#possible-errors">details</a>)</para></summary>
 		public static Task<UpdatesBase> Phone_SendConferenceCallBroadcast(this Client client, InputGroupCallBase call, byte[] block)
 			=> client.Invoke(new Phone_SendConferenceCallBroadcast
 			{
@@ -7080,7 +7081,7 @@ namespace TL
 				block = block,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.inviteConferenceCallParticipant"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.inviteConferenceCallParticipant"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.inviteConferenceCallParticipant#possible-errors">details</a>)</para></summary>
 		public static Task<UpdatesBase> Phone_InviteConferenceCallParticipant(this Client client, InputGroupCallBase call, InputUserBase user_id, bool video = false)
 			=> client.Invoke(new Phone_InviteConferenceCallParticipant
 			{
@@ -7089,14 +7090,14 @@ namespace TL
 				user_id = user_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.declineConferenceCallInvite"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.declineConferenceCallInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.declineConferenceCallInvite#possible-errors">details</a>)</para></summary>
 		public static Task<UpdatesBase> Phone_DeclineConferenceCallInvite(this Client client, int msg_id)
 			=> client.Invoke(new Phone_DeclineConferenceCallInvite
 			{
 				msg_id = msg_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallChainBlocks"/> [bots: ✓]</para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallChainBlocks"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.getGroupCallChainBlocks#possible-errors">details</a>)</para></summary>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<UpdatesBase> Phone_GetGroupCallChainBlocks(this Client client, InputGroupCallBase call, int sub_chain_id, int offset = default, int limit = int.MaxValue)
 			=> client.Invoke(new Phone_GetGroupCallChainBlocks
@@ -7417,7 +7418,7 @@ namespace TL
 				privacy_rules = privacy_rules,
 			});
 
-		/// <summary>Deletes some posted <a href="https://corefork.telegram.org/api/stories">stories</a>.		<para>See <a href="https://corefork.telegram.org/method/stories.deleteStories"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.deleteStories#possible-errors">details</a>)</para></summary>
+		/// <summary>Deletes some posted <a href="https://corefork.telegram.org/api/stories">stories</a>.		<para>See <a href="https://corefork.telegram.org/method/stories.deleteStories"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/stories.deleteStories#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Channel/user from where to delete stories.</param>
 		/// <param name="id">IDs of stories to delete.</param>
 		public static Task<int[]> Stories_DeleteStories(this Client client, InputPeer peer, params int[] id)
@@ -7532,7 +7533,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary>Obtain info about the view count, forward count, reactions and recent viewers of one or more <a href="https://corefork.telegram.org/api/stories">stories</a>.		<para>See <a href="https://corefork.telegram.org/method/stories.getStoriesViews"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.getStoriesViews#possible-errors">details</a>)</para></summary>
+		/// <summary>Obtain info about the view count, forward count, reactions and recent viewers of one or more <a href="https://corefork.telegram.org/api/stories">stories</a>.		<para>See <a href="https://corefork.telegram.org/method/stories.getStoriesViews"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/stories.getStoriesViews#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Peer whose stories should be fetched</param>
 		/// <param name="id">Story IDs</param>
 		public static Task<Stories_StoryViews> Stories_GetStoriesViews(this Client client, InputPeer peer, params int[] id)
@@ -7672,7 +7673,7 @@ namespace TL
 				limit = limit,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.createAlbum"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.createAlbum"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.createAlbum#possible-errors">details</a>)</para></summary>
 		public static Task<StoryAlbum> Stories_CreateAlbum(this Client client, InputPeer peer, string title, params int[] stories)
 			=> client.Invoke(new Stories_CreateAlbum
 			{
@@ -7681,7 +7682,7 @@ namespace TL
 				stories = stories,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.updateAlbum"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.updateAlbum"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.updateAlbum#possible-errors">details</a>)</para></summary>
 		public static Task<StoryAlbum> Stories_UpdateAlbum(this Client client, InputPeer peer, int album_id, string title = null, int[] delete_stories = null, int[] add_stories = null, int[] order = null)
 			=> client.Invoke(new Stories_UpdateAlbum
 			{
@@ -7694,7 +7695,7 @@ namespace TL
 				order = order,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.reorderAlbums"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.reorderAlbums"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.reorderAlbums#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Stories_ReorderAlbums(this Client client, InputPeer peer, params int[] order)
 			=> client.Invoke(new Stories_ReorderAlbums
 			{
@@ -7702,7 +7703,7 @@ namespace TL
 				order = order,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.deleteAlbum"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.deleteAlbum"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.deleteAlbum#possible-errors">details</a>)</para></summary>
 		public static Task<bool> Stories_DeleteAlbum(this Client client, InputPeer peer, int album_id)
 			=> client.Invoke(new Stories_DeleteAlbum
 			{
@@ -7710,7 +7711,7 @@ namespace TL
 				album_id = album_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getAlbums"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getAlbums"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.getAlbums#possible-errors">details</a>)</para></summary>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/stories.albumsNotModified">stories.albumsNotModified</a></returns>
 		public static Task<Stories_Albums> Stories_GetAlbums(this Client client, InputPeer peer, long hash = default)
 			=> client.Invoke(new Stories_GetAlbums
@@ -7719,7 +7720,8 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getAlbumStories"/></para></summary>
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stories.getAlbumStories"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stories.getAlbumStories#possible-errors">details</a>)</para></summary>
+		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Stories_Stories> Stories_GetAlbumStories(this Client client, InputPeer peer, int album_id, int offset = default, int limit = int.MaxValue)
 			=> client.Invoke(new Stories_GetAlbumStories
 			{
@@ -7760,7 +7762,7 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary>Gets the current <a href="https://corefork.telegram.org/api/boost">number of boosts</a> of a channel/supergroup.		<para>See <a href="https://corefork.telegram.org/method/premium.getBoostsStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/premium.getBoostsStatus#possible-errors">details</a>)</para></summary>
+		/// <summary>Gets the current <a href="https://corefork.telegram.org/api/boost">number of boosts</a> of a channel/supergroup.		<para>See <a href="https://corefork.telegram.org/method/premium.getBoostsStatus"/></para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/premium.getBoostsStatus#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The peer.</param>
 		public static Task<Premium_BoostsStatus> Premium_GetBoostsStatus(this Client client, InputPeer peer)
 			=> client.Invoke(new Premium_GetBoostsStatus
