@@ -36,9 +36,10 @@ namespace WTelegram
 			var client = await GetClientForDC(-_dcSession.DcID, true);
 			using (stream)
 			{
+				const long SMALL_FILE_MAX_SIZE = 10 << 20;
 				bool hasLength = stream.CanSeek;
 				long transmitted = 0, length = hasLength ? stream.Length : -1;
-				bool isBig = !hasLength || length >= 10 * 1024 * 1024;
+				bool isBig = !hasLength || length > SMALL_FILE_MAX_SIZE;
 				int file_total_parts = hasLength ? (int)((length - 1) / FilePartSize) + 1 : -1;
 				long file_id = Helpers.RandomLong();
 				int file_part = 0, read;

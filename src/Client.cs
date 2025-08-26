@@ -1238,10 +1238,13 @@ namespace WTelegram
 						if (verified is Account_EmailVerifiedLogin verifiedLogin) // (it should always be)
 							sentCodeBase = verifiedLogin.sent_code;
 					}
+					RaiseUpdates(sentCodeBase);
 				}
 			resent:
 				if (sentCodeBase is Auth_SentCodeSuccess success)
 					authorization = success.authorization;
+				else if (sentCodeBase is Auth_SentCodePaymentRequired paymentRequired)
+					throw new WTException("Auth_SentCodePaymentRequired unsupported");
 				else if (sentCodeBase is Auth_SentCode sentCode)
 				{
 					phone_code_hash = sentCode.phone_code_hash;
@@ -1410,7 +1413,7 @@ namespace WTelegram
 		public User LoginAlreadyDone(Auth_AuthorizationBase authorization)
 		{
 			if (authorization is not Auth_Authorization { user: User self })
-				throw new WTException("Failed to get Authorization: " + authorization.GetType().Name);
+				throw new WTException("Failed to get Authorization: " + authorization?.GetType().Name);
 			_session.UserId = _dcSession.UserId = self.id;
 			lock (_session) _session.Save();
 			RaiseUpdates(self);
