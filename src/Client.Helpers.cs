@@ -13,7 +13,6 @@ namespace WTelegram
 {
 	partial class Client
 	{
-		#region Client TL Helpers
 		/// <summary>Used to indicate progression of file download/upload</summary>
 		/// <param name="transmitted">transmitted bytes</param>
 		/// <param name="totalSize">total size of file in bytes, or 0 if unknown</param>
@@ -910,6 +909,28 @@ namespace WTelegram
 			}
 			return chat;
 		}
-		#endregion
+
+		/// <summary>Receive updates for a given group/channel until cancellation is requested.</summary>
+		/// <param name="channel">Group/channel to monitor without joining</param>
+		/// <param name="ct">Cancel token to stop the monitoring</param>
+		/// <remarks>After cancelling, you may still receive updates for a few more seconds</remarks>
+		public async void OpenChat(InputChannel channel, CancellationToken ct)
+		{
+			var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
+			try
+			{
+				while (!cts.IsCancellationRequested)
+				{
+					var diff = await this.Updates_GetChannelDifference(channel, null, 1, 1, true);
+					var timeout = diff.Timeout * 1000;
+					await Task.Delay(timeout != 0 ? timeout : 30000, cts.Token);
+				}
+			}
+			catch (Exception ex)
+			{
+				if (!cts.IsCancellationRequested)
+					Console.WriteLine($"An exception occured for OpenChat {channel.channel_id}: {ex.Message}");
+			}
+		}
 	}
 }
