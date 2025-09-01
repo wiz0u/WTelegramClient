@@ -1457,6 +1457,40 @@ namespace TL
 				user_id = user_id,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.setMainProfileTab"/></para></summary>
+		public static Task<bool> Account_SetMainProfileTab(this Client client, ProfileTab tab)
+			=> client.Invoke(new Account_SetMainProfileTab
+			{
+				tab = tab,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.saveMusic"/></para></summary>
+		public static Task<bool> Account_SaveMusic(this Client client, InputDocument id, InputDocument after_id = null, bool unsave = false)
+			=> client.Invoke(new Account_SaveMusic
+			{
+				flags = (Account_SaveMusic.Flags)((after_id != null ? 0x2 : 0) | (unsave ? 0x1 : 0)),
+				id = id,
+				after_id = after_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getSavedMusicIds"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.savedMusicIdsNotModified">account.savedMusicIdsNotModified</a></returns>
+		public static Task<Account_SavedMusicIds> Account_GetSavedMusicIds(this Client client, long hash = default)
+			=> client.Invoke(new Account_GetSavedMusicIds
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getUniqueGiftChatThemes"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.chatThemesNotModified">account.chatThemesNotModified</a></returns>
+		public static Task<Account_ChatThemes> Account_GetUniqueGiftChatThemes(this Client client, int offset = default, int limit = int.MaxValue, long hash = default)
+			=> client.Invoke(new Account_GetUniqueGiftChatThemes
+			{
+				offset = offset,
+				limit = limit,
+				hash = hash,
+			});
+
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: -504,400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, params InputUserBase[] id)
@@ -1489,6 +1523,24 @@ namespace TL
 			=> client.Invoke(new Users_GetRequirementsToContact
 			{
 				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/users.getSavedMusic"/></para></summary>
+		public static Task<Users_SavedMusicBase> Users_GetSavedMusic(this Client client, InputUserBase id, int offset = default, int limit = int.MaxValue, long hash = default)
+			=> client.Invoke(new Users_GetSavedMusic
+			{
+				id = id,
+				offset = offset,
+				limit = limit,
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/users.getSavedMusicByID"/></para></summary>
+		public static Task<Users_SavedMusicBase> Users_GetSavedMusicByID(this Client client, InputUserBase id, params InputDocument[] documents)
+			=> client.Invoke(new Users_GetSavedMusicByID
+			{
+				id = id,
+				documents = documents,
 			});
 
 		/// <summary>Get the telegram IDs of all contacts.<br/>Returns an array of Telegram user IDs for all contacts (0 if a contact does not have an associated Telegram account or have hidden their account using privacy settings).		<para>See <a href="https://corefork.telegram.org/method/contacts.getContactIDs"/></para></summary>
@@ -3522,12 +3574,11 @@ namespace TL
 
 		/// <summary>Change the chat theme of a certain chat		<para>See <a href="https://corefork.telegram.org/method/messages.setChatTheme"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.setChatTheme#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">Private chat where to change theme</param>
-		/// <param name="emoticon">Emoji, identifying a specific chat theme; a list of chat themes can be fetched using <see cref="Account_GetChatThemes">Account_GetChatThemes</see></param>
-		public static Task<UpdatesBase> Messages_SetChatTheme(this Client client, InputPeer peer, string emoticon)
+		public static Task<UpdatesBase> Messages_SetChatTheme(this Client client, InputPeer peer, InputChatThemeBase theme)
 			=> client.Invoke(new Messages_SetChatTheme
 			{
 				peer = peer,
-				emoticon = emoticon,
+				theme = theme,
 			});
 
 		/// <summary>Get which users read a specific message: only available for groups and supergroups with less than <a href="https://corefork.telegram.org/api/config#chat-read-mark-size-threshold"><c>chat_read_mark_size_threshold</c> members</a>, read receipts will be stored for <a href="https://corefork.telegram.org/api/config#chat-read-mark-expire-period"><c>chat_read_mark_expire_period</c> seconds after the message was sent</a>, see <a href="https://corefork.telegram.org/api/config#client-configuration">client configuration for more info »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessageReadParticipants"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getMessageReadParticipants#possible-errors">details</a>)</para></summary>
@@ -5700,6 +5751,14 @@ namespace TL
 				query = query,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.setMainProfileTab"/></para></summary>
+		public static Task<bool> Channels_SetMainProfileTab(this Client client, InputChannelBase channel, ProfileTab tab)
+			=> client.Invoke(new Channels_SetMainProfileTab
+			{
+				channel = channel,
+				tab = tab,
+			});
+
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
 		/// <param name="custom_method">The method name</param>
 		/// <param name="params_">JSON-serialized method parameters</param>
@@ -6442,10 +6501,10 @@ namespace TL
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getSavedStarGifts"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getSavedStarGifts#possible-errors">details</a>)</para></summary>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Payments_SavedStarGifts> Payments_GetSavedStarGifts(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, int? collection_id = null, bool exclude_unsaved = false, bool exclude_saved = false, bool exclude_unlimited = false, bool exclude_limited = false, bool exclude_unique = false, bool sort_by_value = false)
+		public static Task<Payments_SavedStarGifts> Payments_GetSavedStarGifts(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, int? collection_id = null, bool exclude_unsaved = false, bool exclude_saved = false, bool exclude_unlimited = false, bool exclude_unique = false, bool sort_by_value = false, bool exclude_upgradable = false, bool exclude_unupgradable = false)
 			=> client.Invoke(new Payments_GetSavedStarGifts
 			{
-				flags = (Payments_GetSavedStarGifts.Flags)((collection_id != null ? 0x40 : 0) | (exclude_unsaved ? 0x1 : 0) | (exclude_saved ? 0x2 : 0) | (exclude_unlimited ? 0x4 : 0) | (exclude_limited ? 0x8 : 0) | (exclude_unique ? 0x10 : 0) | (sort_by_value ? 0x20 : 0)),
+				flags = (Payments_GetSavedStarGifts.Flags)((collection_id != null ? 0x40 : 0) | (exclude_unsaved ? 0x1 : 0) | (exclude_saved ? 0x2 : 0) | (exclude_unlimited ? 0x4 : 0) | (exclude_unique ? 0x10 : 0) | (sort_by_value ? 0x20 : 0) | (exclude_upgradable ? 0x80 : 0) | (exclude_unupgradable ? 0x100 : 0)),
 				peer = peer,
 				collection_id = collection_id ?? default,
 				offset = offset,
@@ -6556,6 +6615,20 @@ namespace TL
 			{
 				peer = peer,
 				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getUniqueStarGiftValueInfo"/></para></summary>
+		public static Task<Payments_UniqueStarGiftValueInfo> Payments_GetUniqueStarGiftValueInfo(this Client client, string slug)
+			=> client.Invoke(new Payments_GetUniqueStarGiftValueInfo
+			{
+				slug = slug,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.checkCanSendGift"/></para></summary>
+		public static Task<Payments_CheckCanSendGiftResult> Payments_CheckCanSendGift(this Client client, long gift_id)
+			=> client.Invoke(new Payments_CheckCanSendGift
+			{
+				gift_id = gift_id,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -9001,6 +9074,40 @@ namespace TL.Methods
 		}
 	}
 
+	[TLDef(0x5DEE78B0)]
+	public sealed partial class Account_SetMainProfileTab : IMethod<bool>
+	{
+		public ProfileTab tab;
+	}
+
+	[TLDef(0xB26732A9)]
+	public sealed partial class Account_SaveMusic : IMethod<bool>
+	{
+		public Flags flags;
+		public InputDocument id;
+		[IfFlag(1)] public InputDocument after_id;
+
+		[Flags] public enum Flags : uint
+		{
+			unsave = 0x1,
+			has_after_id = 0x2,
+		}
+	}
+
+	[TLDef(0xE09D5FAF)]
+	public sealed partial class Account_GetSavedMusicIds : IMethod<Account_SavedMusicIds>
+	{
+		public long hash;
+	}
+
+	[TLDef(0xFE74EF9F)]
+	public sealed partial class Account_GetUniqueGiftChatThemes : IMethod<Account_ChatThemes>
+	{
+		public int offset;
+		public int limit;
+		public long hash;
+	}
+
 	[TLDef(0x0D91A548)]
 	public sealed partial class Users_GetUsers : IMethod<UserBase[]>
 	{
@@ -9024,6 +9131,22 @@ namespace TL.Methods
 	public sealed partial class Users_GetRequirementsToContact : IMethod<RequirementToContact[]>
 	{
 		public InputUserBase[] id;
+	}
+
+	[TLDef(0x788D7FE3)]
+	public sealed partial class Users_GetSavedMusic : IMethod<Users_SavedMusicBase>
+	{
+		public InputUserBase id;
+		public int offset;
+		public int limit;
+		public long hash;
+	}
+
+	[TLDef(0x7573A4E9)]
+	public sealed partial class Users_GetSavedMusicByID : IMethod<Users_SavedMusicBase>
+	{
+		public InputUserBase id;
+		public InputDocument[] documents;
 	}
 
 	[TLDef(0x7ADC669D)]
@@ -10789,11 +10912,11 @@ namespace TL.Methods
 		public InputPeer peer;
 	}
 
-	[TLDef(0xE63BE13F)]
+	[TLDef(0x081202C9)]
 	public sealed partial class Messages_SetChatTheme : IMethod<UpdatesBase>
 	{
 		public InputPeer peer;
-		public string emoticon;
+		public InputChatThemeBase theme;
 	}
 
 	[TLDef(0x31C1C44F)]
@@ -12603,6 +12726,13 @@ namespace TL.Methods
 		}
 	}
 
+	[TLDef(0x3583FCB1)]
+	public sealed partial class Channels_SetMainProfileTab : IMethod<bool>
+	{
+		public InputChannelBase channel;
+		public ProfileTab tab;
+	}
+
 	[TLDef(0xAA2769ED)]
 	public sealed partial class Bots_SendCustomRequest : IMethod<DataJSON>
 	{
@@ -13260,10 +13390,11 @@ namespace TL.Methods
 			exclude_unsaved = 0x1,
 			exclude_saved = 0x2,
 			exclude_unlimited = 0x4,
-			exclude_limited = 0x8,
 			exclude_unique = 0x10,
 			sort_by_value = 0x20,
 			has_collection_id = 0x40,
+			exclude_upgradable = 0x80,
+			exclude_unupgradable = 0x100,
 		}
 	}
 
@@ -13378,6 +13509,18 @@ namespace TL.Methods
 	{
 		public InputPeer peer;
 		public long hash;
+	}
+
+	[TLDef(0x4365AF6B)]
+	public sealed partial class Payments_GetUniqueStarGiftValueInfo : IMethod<Payments_UniqueStarGiftValueInfo>
+	{
+		public string slug;
+	}
+
+	[TLDef(0xC0C4EDC9)]
+	public sealed partial class Payments_CheckCanSendGift : IMethod<Payments_CheckCanSendGiftResult>
+	{
+		public long gift_id;
 	}
 
 	[TLDef(0x9021AB67)]
