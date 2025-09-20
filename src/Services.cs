@@ -378,15 +378,15 @@ namespace TL
 					end = offset + 1;
 					if (end < sb.Length && sb[end] == '#') end++;
 					while (end < sb.Length && sb[end] is >= 'a' and <= 'z' or >= 'A' and <= 'Z' or >= '0' and <= '9') end++;
-					if (end >= sb.Length || sb[end] != ';') break;
-					var html = HttpUtility.HtmlDecode(sb.ToString(offset, end - offset + 1));
+					var html = HttpUtility.HtmlDecode(end >= sb.Length || sb[end] != ';'
+						? sb.ToString(offset, end - offset) + ";" : sb.ToString(offset, ++end - offset));
 					if (html.Length == 1)
 					{
 						sb[offset] = html[0];
-						sb.Remove(++offset, end - offset + 1);
+						sb.Remove(++offset, end - offset);
 					}
 					else
-						offset = end + 1;
+						offset = end;
 				}
 				else if (c == '<')
 				{
