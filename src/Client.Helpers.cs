@@ -535,18 +535,20 @@ namespace WTelegram
 				case Messages_DialogsSlice mds:
 					var dialogList = new List<DialogBase>();
 					var messageList = new List<MessageBase>();
-					while (dialogs.Dialogs.Length != 0)
+					int skip = 0;
+					while (dialogs.Dialogs.Length > skip)
 					{
-						dialogList.AddRange(dialogs.Dialogs);
+						dialogList.AddRange(skip == 0 ? dialogs.Dialogs : dialogs.Dialogs[skip..]);
 						messageList.AddRange(dialogs.Messages);
+						skip = 0;
 						int last = dialogs.Dialogs.Length - 1;
 						var lastDialog = dialogs.Dialogs[last];
+					retryDate:
 						var lastPeer = dialogs.UserOrChat(lastDialog).ToInputPeer();
 						var lastMsgId = lastDialog.TopMessage;
-					retryDate:
 						var lastDate = dialogs.Messages.LastOrDefault(m => m.Peer.ID == lastDialog.Peer.ID && m.ID == lastDialog.TopMessage)?.Date ?? default;
 						if (lastDate == default)
-							if (--last < 0) break; else { lastDialog = dialogs.Dialogs[last]; goto retryDate; }
+							if (--last < 0) break; else { ++skip; lastDialog = dialogs.Dialogs[last]; goto retryDate; }
 						dialogs = await this.Messages_GetDialogs(lastDate, lastMsgId, lastPeer, folder_id: folder_id);
 						if (dialogs is not Messages_Dialogs md) break;
 						foreach (var (key, value) in md.chats) mds.chats[key] = value;

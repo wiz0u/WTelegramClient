@@ -8,7 +8,7 @@
 This library allows you to connect to Telegram and control a user programmatically (or a bot, but [WTelegramBot](https://www.nuget.org/packages/WTelegramBot) is much easier for that).
 All the Telegram Client APIs (MTProto) are supported so you can do everything the user could do with a full Telegram GUI client.
 
-Library was developed solely by one unemployed guy. [Donations are welcome](https://buymeacoffee.com/wizou).
+Library was developed solely by one unemployed guy. [Donations](https://buymeacoffee.com/wizou) or [Patreon memberships are welcome](https://patreon.com/wizou).
 
 This ReadMe is a **quick but important tutorial** to learn the fundamentals about this library. Please read it all.
 
