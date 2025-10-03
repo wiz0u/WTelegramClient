@@ -94,19 +94,19 @@ namespace WTelegram
 		/// <summary>Search messages in chat with <see href="https://corefork.telegram.org/type/MessagesFilter">filter</see> and text		<para>See <a href="https://corefork.telegram.org/method/messages.search"/></para></summary>
 		/// <typeparam name="T">See <see cref="MessagesFilter"/> for a list of possible filter types</typeparam>
 		/// <param name="peer">User or chat, histories with which are searched, or <see langword="null"/> constructor for global search</param>
-		/// <param name="text">Text search request</param>
+		/// <param name="q">Text search request</param>
 		/// <param name="offset_id">Only return messages starting from the specified message ID</param>
 		/// <param name="limit"><a href="https://corefork.telegram.org/api/offsets">Number of results to return</a></param>
-		public Task<Messages_MessagesBase> Messages_Search<T>(InputPeer peer, string text = null, int offset_id = 0, int limit = int.MaxValue) where T : MessagesFilter, new()
-			=> this.Messages_Search(peer, text, new T(), offset_id: offset_id, limit: limit);
+		public Task<Messages_MessagesBase> Messages_Search<T>(InputPeer peer, string q = null, int offset_id = 0, int limit = int.MaxValue) where T : MessagesFilter, new()
+			=> this.Messages_Search(peer, q, new T(), offset_id: offset_id, limit: limit);
 
 		/// <summary>Search messages globally with <see href="https://corefork.telegram.org/type/MessagesFilter">filter</see> and text		<para>See <a href="https://corefork.telegram.org/method/messages.searchGlobal"/></para></summary>
 		/// <typeparam name="T">See <see cref="MessagesFilter"/> for a list of possible filter types</typeparam>
-		/// <param name="text">Text search request</param>
+		/// <param name="q">Query</param>
 		/// <param name="offset_id">Only return messages starting from the specified message ID</param>
 		/// <param name="limit"><a href="https://corefork.telegram.org/api/offsets">Number of results to return</a></param>
-		public Task<Messages_MessagesBase> Messages_SearchGlobal<T>(string text = null, int offset_id = 0, int limit = int.MaxValue) where T : MessagesFilter, new()
-			=> this.Messages_SearchGlobal(text, new T(), offset_id: offset_id, limit: limit);
+		public Task<Messages_MessagesBase> Messages_SearchGlobal<T>(string q = null, int offset_id = 0, int limit = int.MaxValue) where T : MessagesFilter, new()
+			=> this.Messages_SearchGlobal(q, new T(), offset_id: offset_id, limit: limit);
 
 		/// <summary>Helper method to send a media message more easily</summary>
 		/// <param name="peer">Destination of message (chat group, channel, user chat, etc..) </param>
