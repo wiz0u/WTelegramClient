@@ -3,7 +3,7 @@
 namespace TL
 {
 	#pragma warning disable IDE1006, CS1574
-	/// <summary>Object describes the contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessage"/></para></summary>
+	/// <summary>Object describes the contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessage"/></para>		<para>Derived classes: <see cref="DecryptedMessage"/>, <see cref="DecryptedMessageService"/></para></summary>
 	public abstract partial class DecryptedMessageBase : IObject
 	{
 		/// <summary>Flags, see <a href="https://corefork.telegram.org/mtproto/TL-combinators#conditional-fields">TL conditional fields</a> (added in layer 45)</summary>
@@ -24,11 +24,12 @@ namespace TL
 		public virtual long ReplyToRandom => default;
 		/// <summary>Random group ID, assigned by the author of message.<br/>Multiple encrypted messages with a photo attached and with the same group ID indicate an <a href="https://corefork.telegram.org/api/files#albums-grouped-media">album or grouped media</a> (parameter added in layer 45)</summary>
 		public virtual long Grouped => default;
+		/// <summary>Random bytes, removed in layer 17.</summary>
 		public virtual byte[] RandomBytes => default;
 		public virtual DecryptedMessageAction Action => default;
 	}
 
-	/// <summary>Object describes media contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageMedia"/></para></summary>
+	/// <summary>Object describes media contents of an encrypted message.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageMedia"/></para>		<para>Derived classes: <see cref="DecryptedMessageMediaPhoto"/>, <see cref="DecryptedMessageMediaVideo"/>, <see cref="DecryptedMessageMediaGeoPoint"/>, <see cref="DecryptedMessageMediaContact"/>, <see cref="DecryptedMessageMediaDocument"/>, <see cref="DecryptedMessageMediaAudio"/>, <see cref="DecryptedMessageMediaExternalDocument"/>, <see cref="DecryptedMessageMediaVenue"/>, <see cref="DecryptedMessageMediaWebPage"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/decryptedMessageMediaEmpty">decryptedMessageMediaEmpty</a></remarks>
 	public abstract partial class DecryptedMessageMedia : IObject
 	{
@@ -36,14 +37,17 @@ namespace TL
 		internal virtual (long size, byte[] key, byte[] iv) SizeKeyIV { get => default; set => throw new WTelegram.WTException("Incompatible DecryptedMessageMedia"); }
 	}
 
-	/// <summary>Object describes the action to which a service message is linked.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageAction"/></para></summary>
+	/// <summary>Object describes the action to which a service message is linked.		<para>See <a href="https://corefork.telegram.org/type/DecryptedMessageAction"/></para>		<para>Derived classes: <see cref="DecryptedMessageActionSetMessageTTL"/>, <see cref="DecryptedMessageActionReadMessages"/>, <see cref="DecryptedMessageActionDeleteMessages"/>, <see cref="DecryptedMessageActionScreenshotMessages"/>, <see cref="DecryptedMessageActionFlushHistory"/>, <see cref="DecryptedMessageActionResend"/>, <see cref="DecryptedMessageActionNotifyLayer"/>, <see cref="DecryptedMessageActionTyping"/>, <see cref="DecryptedMessageActionRequestKey"/>, <see cref="DecryptedMessageActionAcceptKey"/>, <see cref="DecryptedMessageActionAbortKey"/>, <see cref="DecryptedMessageActionCommitKey"/>, <see cref="DecryptedMessageActionNoop"/></para></summary>
 	public abstract partial class DecryptedMessageAction : IObject { }
 
-	/// <summary>Indicates the location of a photo, will be deprecated soon		<para>See <a href="https://corefork.telegram.org/type/FileLocation"/></para></summary>
+	/// <summary>Indicates the location of a photo, will be deprecated soon		<para>See <a href="https://corefork.telegram.org/type/FileLocation"/></para>		<para>Derived classes: <see cref="FileLocationUnavailable"/>, <see cref="FileLocation"/></para></summary>
 	public abstract partial class FileLocationBase : IObject
 	{
+		/// <summary>Volume ID</summary>
 		public virtual long VolumeId => default;
+		/// <summary>Local ID</summary>
 		public virtual int LocalId => default;
+		/// <summary>Secret</summary>
 		public virtual long Secret => default;
 	}
 
@@ -55,6 +59,7 @@ namespace TL
 		{
 			/// <summary>Random message ID, assigned by the author of message.<br/>Must be equal to the ID passed to sending method.</summary>
 			public long random_id;
+			/// <summary>Random bytes, removed in layer 17.</summary>
 			public byte[] random_bytes;
 			/// <summary>Message text</summary>
 			public string message;
@@ -67,6 +72,7 @@ namespace TL
 			public override string Message => message;
 			/// <summary>Media content</summary>
 			public override DecryptedMessageMedia Media => media;
+			/// <summary>Random bytes, removed in layer 17.</summary>
 			public override byte[] RandomBytes => random_bytes;
 		}
 		/// <summary>Contents of an encrypted service message.		<para>See <a href="https://corefork.telegram.org/constructor/decryptedMessageService"/></para></summary>
@@ -75,12 +81,14 @@ namespace TL
 		{
 			/// <summary>Random message ID, assigned by the message author.<br/>Must be equal to the ID passed to the sending method.</summary>
 			public long random_id;
+			/// <summary>Random bytes, removed in Layer 17.</summary>
 			public byte[] random_bytes;
 			/// <summary>Action relevant to the service message</summary>
 			public DecryptedMessageAction action;
 
 			/// <summary>Random message ID, assigned by the message author.<br/>Must be equal to the ID passed to the sending method.</summary>
 			public override long RandomId => random_id;
+			/// <summary>Random bytes, removed in Layer 17.</summary>
 			public override byte[] RandomBytes => random_bytes;
 			/// <summary>Action relevant to the service message</summary>
 			public override DecryptedMessageAction Action => action;
@@ -167,6 +175,7 @@ namespace TL
 			public int thumb_w;
 			/// <summary>Thumbnail height</summary>
 			public int thumb_h;
+			/// <summary>File name, moved to <c>attributes</c> in Layer 45.</summary>
 			public string file_name;
 			/// <summary>File MIME-type</summary>
 			public string mime_type;
@@ -498,25 +507,38 @@ namespace TL
 		[TLDef(0x7C596B46)]
 		public sealed partial class FileLocationUnavailable : FileLocationBase
 		{
+			/// <summary>Volume ID</summary>
 			public long volume_id;
+			/// <summary>Local ID</summary>
 			public int local_id;
+			/// <summary>Secret</summary>
 			public long secret;
 
+			/// <summary>Volume ID</summary>
 			public override long VolumeId => volume_id;
+			/// <summary>Local ID</summary>
 			public override int LocalId => local_id;
+			/// <summary>Secret</summary>
 			public override long Secret => secret;
 		}
 		/// <summary>File location.		<para>See <a href="https://corefork.telegram.org/constructor/fileLocation"/></para></summary>
 		[TLDef(0x53D69076)]
 		public sealed partial class FileLocation : FileLocationBase
 		{
+			/// <summary>DC ID</summary>
 			public int dc_id;
+			/// <summary>Volume ID</summary>
 			public long volume_id;
+			/// <summary>Local ID</summary>
 			public int local_id;
+			/// <summary>Secret</summary>
 			public long secret;
 
+			/// <summary>Volume ID</summary>
 			public override long VolumeId => volume_id;
+			/// <summary>Local ID</summary>
 			public override int LocalId => local_id;
+			/// <summary>Secret</summary>
 			public override long Secret => secret;
 		}
 	}
@@ -775,7 +797,6 @@ namespace TL
 			{
 				/// <summary>Field <see cref="reply_to_random_id"/> has a value</summary>
 				has_reply_to_random_id = 0x8,
-				/// <summary>Whether this is a silent message (no notification triggered)</summary>
 				silent = 0x20,
 				/// <summary>Field <see cref="entities"/> has a value</summary>
 				has_entities = 0x80,
