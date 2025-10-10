@@ -13,7 +13,7 @@ using static WTelegram.Compat;
 
 namespace WTelegram
 {
-	internal static class Encryption
+	public static class Encryption
 	{
 		private static readonly Dictionary<long, RSAPublicKey> PublicKeys = [];
 		internal static readonly RandomNumberGenerator RNG = RandomNumberGenerator.Create();
@@ -237,6 +237,8 @@ namespace WTelegram
 				throw new WTException("g^a or g^b is not between 2^{2048-64} and dh_prime - 2^{2048-64}");
 		}
 
+		/// <summary>Load a specific Telegram server public key</summary>
+		/// <param name="pem">A string starting with <c>-----BEGIN RSA PUBLIC KEY-----</c></param>
 		public static void LoadPublicKey(string pem)
 		{
 			using var rsa = RSA.Create();
@@ -319,7 +321,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 		}
 
 #if OBFUSCATION
-		internal sealed class AesCtr(byte[] key, byte[] ivec) : IDisposable
+		public sealed class AesCtr(byte[] key, byte[] ivec) : IDisposable
 		{
 			readonly ICryptoTransform _encryptor = AesECB.CreateEncryptor(key, null);
 			readonly byte[] _ecount = new byte[16];
@@ -327,9 +329,9 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 
 			public void Dispose() => _encryptor.Dispose();
 
-			public void EncryptDecrypt(byte[] buffer, int length)
+			public void EncryptDecrypt(Span<byte> buffer)
 			{
-				for (int i = 0; i < length; i++)
+				for (int i = 0; i < buffer.Length; i++)
 				{
 					if (_num == 0)
 					{
@@ -373,7 +375,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			var sendCtr = new AesCtr(sendKey, sendIV);
 			var recvCtr = new AesCtr(recvKey, recvIV);
 			var encrypted = (byte[])preamble.Clone();
-			sendCtr.EncryptDecrypt(encrypted, 64);
+			sendCtr.EncryptDecrypt(encrypted);
 			for (int i = 56; i < 64; i++)
 				preamble[i] = encrypted[i];
 			return (sendCtr, recvCtr, preamble);

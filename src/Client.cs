@@ -185,10 +185,6 @@ namespace WTelegram
 			return Console.ReadLine();
 		}
 
-		/// <summary>Load a specific Telegram server public key</summary>
-		/// <param name="pem">A string starting with <c>-----BEGIN RSA PUBLIC KEY-----</c></param>
-		public static void LoadPublicKey(string pem) => Encryption.LoadPublicKey(pem);
-
 		/// <summary>Builds a structure that is used to validate a 2FA password</summary>
 		/// <param name="accountPassword">Password validation configuration. You can obtain this via <c>Account_GetPassword</c> or through OnOther as part of the login process</param>
 		/// <param name="password">The password to validate</param>
@@ -358,7 +354,7 @@ namespace WTelegram
 					if (await stream.FullReadAsync(data, 4, ct) != 4)
 						throw new WTException(ConnectionShutDown);
 #if OBFUSCATION
-					_recvCtr.EncryptDecrypt(data, 4);
+					_recvCtr.EncryptDecrypt(data.AsSpan(0, 4));
 #endif
 					int payloadLen = BinaryPrimitives.ReadInt32LittleEndian(data);
 					if (payloadLen <= 0)
@@ -370,7 +366,7 @@ namespace WTelegram
 					if (await stream.FullReadAsync(data, payloadLen, ct) != payloadLen)
 						throw new WTException("Could not read frame data : Connection shut down");
 #if OBFUSCATION
-					_recvCtr.EncryptDecrypt(data, payloadLen);
+					_recvCtr.EncryptDecrypt(data.AsSpan(0, payloadLen));
 #endif
 					obj = ReadFrame(data, payloadLen);
 				}
@@ -1526,7 +1522,7 @@ namespace WTelegram
 				int frameLength = (int)memStream.Length;
 				BinaryPrimitives.WriteInt32LittleEndian(buffer, frameLength - 4); // patch payload_len with correct value
 #if OBFUSCATION
-				_sendCtr?.EncryptDecrypt(buffer, frameLength);
+				_sendCtr?.EncryptDecrypt(buffer.AsSpan(0, frameLength));
 #endif
 				if (_networkStream != null)
 					await _networkStream.WriteAsync(buffer, 0, frameLength);

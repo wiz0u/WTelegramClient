@@ -32,6 +32,7 @@ public class MTProtoGenerator : IIncrementalGenerator
 		var nullables = LoadNullables(layer);
 		var namespaces = new Dictionary<string, Dictionary<string, string>>(); // namespace,class,methods
 		var tableTL = new StringBuilder();
+		var methodsTL = new StringBuilder();
 		var source = new StringBuilder();
 		source
 			.AppendLine("using System;")
@@ -45,6 +46,9 @@ public class MTProtoGenerator : IIncrementalGenerator
 			.AppendLine();
 		tableTL
 			.AppendLine("\t\tpublic static readonly Dictionary<uint, Func<BinaryReader, IObject>> Table = new()")
+			.AppendLine("\t\t{");
+		methodsTL
+			.AppendLine("\t\tpublic static readonly Dictionary<uint, Func<BinaryReader, IObject>> Methods = new()")
 			.AppendLine("\t\t{");
 
 		foreach (var classDecl in unit.classes)
@@ -86,8 +90,13 @@ public class MTProtoGenerator : IIncrementalGenerator
 			}
 			if (id == 0x3072CFA1) // GzipPacked
 				tableTL.AppendLine($"\t\t\t[0x{id:X8}] = reader => (IObject)reader.ReadTLGzipped(typeof(IObject)),");
-			else if (name != "Null" && (ns != "TL.Methods" || name == "Ping"))
-				tableTL.AppendLine($"\t\t\t[0x{id:X8}] = {(ns == "TL" ? "" : ns + '.')}{name}.ReadTL,");
+			else if (name != "Null")
+			{ 
+				if (ns == "TL.Methods")
+					methodsTL.AppendLine($"\t\t\t[0x{id:X8}] = {(ns == "TL" ? "" : ns + '.')}{name}{(symbol.IsGenericType ? "<IObject>" : "")}.ReadTL,");
+				if (ns != "TL.Methods" || name == "Ping")
+					tableTL.AppendLine($"\t\t\t[0x{id:X8}] = {(ns == "TL" ? "" : ns + '.')}{name}.ReadTL,");
+			}
 			var override_ = symbol.BaseType == object_ ? "" : "override ";
 			if (name == "Messages_AffectedMessages") override_ = "virtual ";
 			//if (symbol.Constructors[0].IsImplicitlyDeclared)
@@ -213,7 +222,8 @@ public class MTProtoGenerator : IIncrementalGenerator
 		foreach (var nullable in nullables)
 			tableTL.AppendLine($"\t\t\t[0x{nullable.Value:X8}] = null,");
 		tableTL.AppendLine("\t\t};");
-		namespaces["TL"]["Layer"] = tableTL.ToString();
+		methodsTL.AppendLine("\t\t};");
+		namespaces["TL"]["Layer"] = tableTL.ToString() + methodsTL.ToString();
 		foreach (var namesp in namespaces)
 		{
 			source.Append("namespace ").AppendLine(namesp.Key).Append('{');
