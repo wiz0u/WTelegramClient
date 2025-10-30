@@ -566,7 +566,7 @@ namespace WTelegram
 
 		/// <summary>Save the current state of the manager to JSON file</summary>
 		/// <param name="statePath">File path to write</param>
-		/// <remarks>Note: This does not save the the content of collected Users/Chats dictionaries</remarks>
+		/// <remarks>Note: This does not save the content of collected Users/Chats dictionaries</remarks>
 		public void SaveState(string statePath)
 			=> System.IO.File.WriteAllText(statePath, System.Text.Json.JsonSerializer.Serialize(State, Helpers.JsonOptions));
 		public static Dictionary<long, MBoxState> LoadState(string statePath) => !System.IO.File.Exists(statePath) ? null

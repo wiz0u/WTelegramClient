@@ -70,8 +70,13 @@ namespace TL
 					foreach (var chat in chats)
 						if (chat is not Channel channel)
 							_chats[chat.ID] = chat;
-						else if (!channel.flags.HasFlag(Channel.Flags.min) || !_chats.TryGetValue(channel.id, out var prevChat) || prevChat is not Channel prevChannel || prevChannel.flags.HasFlag(Channel.Flags.min))
+						else if (!_chats.TryGetValue(channel.id, out var prevChat) || prevChat is not Channel prevChannel)
 							_chats[channel.id] = channel;
+						else if (!channel.flags.HasFlag(Channel.Flags.min) || prevChannel.flags.HasFlag(Channel.Flags.min))
+						{
+							if (channel.participants_count == 0) channel.participants_count = prevChannel.participants_count; // non-min channel can lack this info
+							_chats[channel.id] = channel;
+						}
 						else
 						{   // update previously full channel from min channel:
 							const Channel.Flags updated_flags = (Channel.Flags)0x7FDC0BE0;
