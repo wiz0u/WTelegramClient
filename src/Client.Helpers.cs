@@ -361,6 +361,18 @@ namespace WTelegram
 			return thumbSize == null ? document.mime_type : "image/" + fileType;
 		}
 
+		/// <summary>Download a document from Telegram into the outputStream</summary>
+		/// <param name="document">The document to download</param>
+		/// <param name="outputStream">Stream to write the file content to. This method does not close/dispose the stream</param>
+		/// <param name="videoSize">A specific size/version of the animated photo. Use <c>photo.LargestVideoSize</c> to download the largest version of the animated photo</param>
+		/// <param name="progress">(optional) Callback for tracking the progression of the transfer</param>
+		/// <returns>MIME type of the document/thumbnail</returns>
+		public async Task<Storage_FileType> DownloadFileAsync(Document document, Stream outputStream, VideoSize videoSize, ProgressCallback progress = null)
+		{
+			var fileLocation = document.ToFileLocation(videoSize);
+			return await DownloadFileAsync(fileLocation, outputStream, document.dc_id, videoSize.size, progress);
+		}
+
 		/// <summary>Download a file from Telegram into the outputStream</summary>
 		/// <param name="fileLocation">Telegram file identifier, typically obtained with a .ToFileLocation() call</param>
 		/// <param name="outputStream">Stream to write file content to. This method does not close/dispose the stream</param>
