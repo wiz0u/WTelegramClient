@@ -94,7 +94,7 @@ namespace WTelegram
 			if (serverDHparams is not ServerDHParamsOk serverDHparamsOk) throw new WTException("not server_DH_params_ok");
 			if (serverDHparamsOk.nonce != nonce) throw new WTException("Nonce mismatch");
 			if (serverDHparamsOk.server_nonce != resPQ.server_nonce) throw new WTException("Server Nonce mismatch");
-			var (tmp_aes_key, tmp_aes_iv) = ConstructTmpAESKeyIV(resPQ.server_nonce, pqInnerData.new_nonce);
+			var (tmp_aes_key, tmp_aes_iv) = ConstructTmpAESKeyIV(sha1, resPQ.server_nonce, pqInnerData.new_nonce);
 			var answer = AES_IGE_EncryptDecrypt(serverDHparamsOk.encrypted_answer, tmp_aes_key, tmp_aes_iv, false);
 
 			using var answerReader = new BinaryReader(new MemoryStream(answer));
@@ -163,26 +163,26 @@ namespace WTelegram
 			session.AuthKey = authKey;
 			session.Salt = BinaryPrimitives.ReadInt64LittleEndian(pqInnerData.new_nonce.raw) ^ BinaryPrimitives.ReadInt64LittleEndian(resPQ.server_nonce.raw);
 			session.OldSalt = session.Salt;
+		}
 
-			(byte[] key, byte[] iv) ConstructTmpAESKeyIV(TL.Int128 server_nonce, Int256 new_nonce)
-			{
-				byte[] tmp_aes_key = new byte[32], tmp_aes_iv = new byte[32];
-				sha1.TransformBlock(new_nonce, 0, 32, null, 0);
-				sha1.TransformFinalBlock(server_nonce, 0, 16);
-				sha1.Hash.CopyTo(tmp_aes_key, 0);                   // tmp_aes_key := SHA1(new_nonce + server_nonce)
-				sha1.Initialize();
-				sha1.TransformBlock(server_nonce, 0, 16, null, 0);
-				sha1.TransformFinalBlock(new_nonce, 0, 32);
-				Array.Copy(sha1.Hash, 0, tmp_aes_key, 20, 12);      //              + SHA1(server_nonce, new_nonce)[0:12]
-				Array.Copy(sha1.Hash, 12, tmp_aes_iv, 0, 8);        // tmp_aes_iv  != SHA1(server_nonce, new_nonce)[12:8]
-				sha1.Initialize();
-				sha1.TransformBlock(new_nonce, 0, 32, null, 0);
-				sha1.TransformFinalBlock(new_nonce, 0, 32);
-				sha1.Hash.CopyTo(tmp_aes_iv, 8);                    //              + SHA(new_nonce + new_nonce)
-				Array.Copy(new_nonce, 0, tmp_aes_iv, 28, 4);        //              + new_nonce[0:4]
-				sha1.Initialize();
-				return (tmp_aes_key, tmp_aes_iv);
-			}
+		public static (byte[] key, byte[] iv) ConstructTmpAESKeyIV(SHA1 sha1, TL.Int128 server_nonce, Int256 new_nonce)
+		{
+			byte[] tmp_aes_key = new byte[32], tmp_aes_iv = new byte[32];
+			sha1.TransformBlock(new_nonce, 0, 32, null, 0);
+			sha1.TransformFinalBlock(server_nonce, 0, 16);
+			sha1.Hash.CopyTo(tmp_aes_key, 0);                   // tmp_aes_key := SHA1(new_nonce + server_nonce)
+			sha1.Initialize();
+			sha1.TransformBlock(server_nonce, 0, 16, null, 0);
+			sha1.TransformFinalBlock(new_nonce, 0, 32);
+			Array.Copy(sha1.Hash, 0, tmp_aes_key, 20, 12);      //              + SHA1(server_nonce, new_nonce)[0:12]
+			Array.Copy(sha1.Hash, 12, tmp_aes_iv, 0, 8);        // tmp_aes_iv  != SHA1(server_nonce, new_nonce)[12:8]
+			sha1.Initialize();
+			sha1.TransformBlock(new_nonce, 0, 32, null, 0);
+			sha1.TransformFinalBlock(new_nonce, 0, 32);
+			sha1.Hash.CopyTo(tmp_aes_iv, 8);                    //              + SHA(new_nonce + new_nonce)
+			Array.Copy(new_nonce, 0, tmp_aes_iv, 28, 4);        //              + new_nonce[0:4]
+			sha1.Initialize();
+			return (tmp_aes_key, tmp_aes_iv);
 		}
 
 		internal static void CheckGoodPrime(BigInteger p, int g)
@@ -278,7 +278,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 -----END RSA PUBLIC KEY-----");
 		}
 
-		internal static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, int x, byte[] authKey, byte[] msgKey, int msgKeyOffset, SHA256 sha256)
+		public static byte[] EncryptDecryptMessage(Span<byte> input, bool encrypt, int x, byte[] authKey, byte[] msgKey, int msgKeyOffset, SHA256 sha256)
 		{
 			// first, construct AES key & IV
 			byte[] aes_key = new byte[32], aes_iv = new byte[32];
@@ -299,7 +299,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			return AES_IGE_EncryptDecrypt(input, aes_key, aes_iv, encrypt);
 		}
 
-		internal static byte[] AES_IGE_EncryptDecrypt(Span<byte> input, byte[] aes_key, byte[] aes_iv, bool encrypt)
+		public static byte[] AES_IGE_EncryptDecrypt(Span<byte> input, byte[] aes_key, byte[] aes_iv, bool encrypt)
 		{
 			if (input.Length % 16 != 0) throw new WTException("AES_IGE input size not divisible by 16");
 

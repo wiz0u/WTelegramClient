@@ -16,7 +16,7 @@ namespace TL
 #else
 	public interface IObject { }
 #endif
-	public interface IMethod<ReturnType> : IObject { }
+	public interface IMethod<out ReturnType> : IObject { }
 	public interface IPeerResolver { IPeerInfo UserOrChat(Peer peer); }
 
 	[AttributeUsage(AttributeTargets.Class)]
@@ -103,6 +103,17 @@ namespace TL
 			}
 			return (IObject)obj;
 #endif
+		}
+
+		public static IMethod<X> ReadTLMethod<X>(this BinaryReader reader)
+		{
+			uint ctorNb = reader.ReadUInt32();
+			if (!Layer.Methods.TryGetValue(ctorNb, out var ctor))
+				throw new WTelegram.WTException($"Cannot find method for ctor #{ctorNb:x}");
+			var method = ctor?.Invoke(reader);
+			if (method is IMethod<bool> && typeof(X) == typeof(object))
+				method = new BoolMethod { query = method };
+			return (IMethod<X>)method;
 		}
 
 		internal static void WriteTLValue(this BinaryWriter writer, object value, Type valueType)
@@ -220,6 +231,21 @@ namespace TL
 			var elementType = array.GetType().GetElementType();
 			for (int i = 0; i < count; i++)
 				writer.WriteTLValue(array.GetValue(i), elementType);
+		}
+
+		internal static void WriteTLRawVector(this BinaryWriter writer, Array array, int elementSize)
+		{
+			var startPos = writer.BaseStream.Position;
+			int count = array.Length;
+			var elementType = array.GetType().GetElementType();
+			for (int i = count - 1; i >= 0; i--)
+			{
+				writer.BaseStream.Position = startPos + i * elementSize;
+				writer.WriteTLValue(array.GetValue(i), elementType);
+			}
+			writer.BaseStream.Position = startPos;
+			writer.Write(count);
+			writer.BaseStream.Position = startPos + count * elementSize + 4;
 		}
 
 		internal static List<T> ReadTLRawVector<T>(this BinaryReader reader, uint ctorNb)
@@ -443,4 +469,16 @@ namespace TL
 
 	[TLDef(0x3072CFA1)] //gzip_packed#3072cfa1 packed_data:bytes = Object
 	public sealed partial class GzipPacked : IObject { public byte[] packed_data; }
+
+	public sealed class Null<X> : IObject
+	{
+		public readonly static Null<X> Instance = new();
+		public void WriteTL(BinaryWriter writer) => writer.WriteTLNull(typeof(X));
+	}
+
+	public sealed class BoolMethod : IMethod<object>
+	{
+		public IObject query;
+		public void WriteTL(BinaryWriter writer) => query.WriteTL(writer);
+	}
 }

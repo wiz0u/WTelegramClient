@@ -83,7 +83,7 @@ public class MTProtoGenerator : IIncrementalGenerator
 			ns = symbol.ContainingNamespace.ToString();
 			name = symbol.Name;
 			if (!namespaces.TryGetValue(ns, out var classes)) namespaces[ns] = classes = [];
-			if (name is "_Message" or "RpcResult" or "MsgCopy")
+			if (name is "_Message" or "MsgCopy")
 			{
 				classes[name] = "\t\tpublic void WriteTL(BinaryWriter writer) => throw new NotSupportedException();";
 				continue;
@@ -93,7 +93,7 @@ public class MTProtoGenerator : IIncrementalGenerator
 			else if (name != "Null")
 			{ 
 				if (ns == "TL.Methods")
-					methodsTL.AppendLine($"\t\t\t[0x{id:X8}] = {(ns == "TL" ? "" : ns + '.')}{name}{(symbol.IsGenericType ? "<IObject>" : "")}.ReadTL,");
+					methodsTL.AppendLine($"\t\t\t[0x{id:X8}] = {(ns == "TL" ? "" : ns + '.')}{name}{(symbol.IsGenericType ? "<object>" : "")}.ReadTL,");
 				if (ns != "TL.Methods" || name == "Ping")
 					tableTL.AppendLine($"\t\t\t[0x{id:X8}] = {(ns == "TL" ? "" : ns + '.')}{name}.ReadTL,");
 			}
@@ -176,7 +176,7 @@ public class MTProtoGenerator : IIncrementalGenerator
 						writeTl.AppendLine($"writer.WriteTLMessages({member.Name});"); 
 						break;
 					case "TL.IObject": case "TL.IMethod<X>":
-						readTL.AppendLine($"r.{member.Name} = {(memberType == "TL.IObject" ? "" : $"({memberType})")}reader.ReadTLObject();");
+						readTL.AppendLine($"r.{member.Name} = {(memberType == "TL.IObject" ? "reader.ReadTLObject()" : "reader.ReadTLMethod<X>()")};");
 						writeTl.AppendLine($"{member.Name}.WriteTL(writer);"); 
 						break;
 					case "System.Collections.Generic.Dictionary<long, TL.User>":
@@ -187,14 +187,23 @@ public class MTProtoGenerator : IIncrementalGenerator
 						readTL.AppendLine($"r.{member.Name} = reader.ReadTLDictionary<ChatBase>();");
 						writeTl.AppendLine($"writer.WriteTLVector({member.Name}.Values.ToArray());");
 						break;
+					case "object":
+						readTL.AppendLine($"r.{member.Name} = reader.ReadTLObject();");
+						writeTl.AppendLine($"writer.WriteTLValue({member.Name}, {member.Name}.GetType());");
+						break;
 					default:
 						if (member.Type is IArrayTypeSymbol arrayType)
 						{
 							if (name is "FutureSalts")
+							{
 								readTL.AppendLine($"r.{member.Name} = reader.ReadTLRawVector<{memberType.Substring(0, memberType.Length - 2)}>(0x0949D9DC).ToArray();");
+								writeTl.AppendLine($"writer.WriteTLRawVector({member.Name}, 16);");
+							}
 							else
+							{
 								readTL.AppendLine($"r.{member.Name} = reader.ReadTLVector<{memberType.Substring(0, memberType.Length - 2)}>();");
-							writeTl.AppendLine($"writer.WriteTLVector({member.Name});");
+								writeTl.AppendLine($"writer.WriteTLVector({member.Name});");
+							}
 						}
 						else if (member.Type.BaseType.SpecialType == SpecialType.System_Enum)
 						{
