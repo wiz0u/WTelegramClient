@@ -963,7 +963,7 @@ namespace TL
 	public sealed partial class UserStatusOffline : UserStatus
 	{
 		/// <summary>Time the user was last seen online</summary>
-		public int was_online;
+		public DateTime was_online;
 	}
 	/// <summary>Online status: last seen recently		<para>See <a href="https://corefork.telegram.org/constructor/userStatusRecently"/></para></summary>
 	[TLDef(0x7B197DC8)]

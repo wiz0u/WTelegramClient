@@ -216,7 +216,7 @@ namespace TL
 	/// <remarks>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/userStatusEmpty">userStatusEmpty</a> = last seen a long time ago, more than a month (or blocked/deleted users)</remarks>
 	partial class UserStatus			{ internal abstract TimeSpan LastSeenAgo { get; } }
 	partial class UserStatusOnline		{ internal override TimeSpan LastSeenAgo => TimeSpan.Zero; }
-	partial class UserStatusOffline		{ internal override TimeSpan LastSeenAgo => DateTime.UtcNow - new DateTime((was_online + 62135596800L) * 10000000, DateTimeKind.Utc); }
+	partial class UserStatusOffline		{ internal override TimeSpan LastSeenAgo => DateTime.UtcNow - was_online; }
 	/// <remarks>covers anything between 1 second and 2-3 days</remarks>
 	partial class UserStatusRecently	{ internal override TimeSpan LastSeenAgo => TimeSpan.FromDays(1); }
 	/// <remarks>between 2-3 and seven days</remarks>
@@ -690,8 +690,8 @@ namespace TL
 		{
 			System.Text.Json.JsonValueKind.True or
 			System.Text.Json.JsonValueKind.False => new JsonBool { value = elem.GetBoolean() },
-			System.Text.Json.JsonValueKind.Object => new JsonObject { value = elem.EnumerateObject().Select(FromJsonProperty).ToArray() },
-			System.Text.Json.JsonValueKind.Array => new JsonArray { value = elem.EnumerateArray().Select(FromJsonElement).ToArray() },
+			System.Text.Json.JsonValueKind.Object => new JsonObject { value = [.. elem.EnumerateObject().Select(FromJsonProperty)] },
+			System.Text.Json.JsonValueKind.Array => new JsonArray { value = [.. elem.EnumerateArray().Select(FromJsonElement)] },
 			System.Text.Json.JsonValueKind.String => new JsonString { value = elem.GetString() },
 			System.Text.Json.JsonValueKind.Number => new JsonNumber { value = elem.GetDouble() },
 			_ => new JsonNull(),
@@ -710,7 +710,7 @@ namespace TL
 				sb.Append(i == 0 ? "" : ",").Append(value[i]);
 			return sb.Append(']').ToString();
 		}
-		public object[] ToNativeArray() => value.Select(v => v.ToNative()).ToArray();
+		public object[] ToNativeArray() => [.. value.Select(v => v.ToNative())];
 		public override object ToNative()
 		{
 			if (value.Length == 0) return Array.Empty<object>();
