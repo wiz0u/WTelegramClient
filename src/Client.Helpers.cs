@@ -640,18 +640,18 @@ namespace WTelegram
 		}
 
 		/// <summary>Helper simplified method: Get all <a href="https://corefork.telegram.org/api/forum">topics of a forum</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getForumTopics"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getForumTopics#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">Supergroup</param>
+		/// <param name="peer">Supergroup or Bot peer</param>
 		/// <param name="q">Search query</param>
-		public async Task<Messages_ForumTopics> Channels_GetAllForumTopics(InputChannelBase channel, string q = null)
+		public async Task<Messages_ForumTopics> Channels_GetAllForumTopics(InputPeer peer, string q = null)
 		{
-			var result = await this.Channels_GetForumTopics(channel, offset_date: DateTime.MaxValue, q: q);
+			var result = await this.Messages_GetForumTopics(peer, offset_date: DateTime.MaxValue, q: q);
 			if (result.topics.Length < result.count)
 			{
 				var topics = result.topics.ToList();
 				var messages = result.messages.ToList();
 				while (true)
 				{
-					var more_topics = await this.Channels_GetForumTopics(channel, messages[^1].Date, messages[^1].ID, topics[^1].ID);
+					var more_topics = await this.Messages_GetForumTopics(peer, messages[^1].Date, messages[^1].ID, topics[^1].ID);
 					if (more_topics.topics.Length == 0) break;
 					topics.AddRange(more_topics.topics);
 					messages.AddRange(more_topics.messages);

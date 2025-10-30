@@ -387,6 +387,15 @@ namespace TL
 				mnc = mnc,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.checkPaidAuth"/></para></summary>
+		public static Task<Auth_SentCodeBase> Auth_CheckPaidAuth(this Client client, string phone_number, string phone_code_hash, long form_id)
+			=> client.Invoke(new Auth_CheckPaidAuth
+			{
+				phone_number = phone_number,
+				phone_code_hash = phone_code_hash,
+				form_id = form_id,
+			});
+
 		/// <summary>Register device to receive <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>		<para>See <a href="https://corefork.telegram.org/method/account.registerDevice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.registerDevice#possible-errors">details</a>)</para></summary>
 		/// <param name="no_muted">Avoid receiving (silent and invisible background) notifications. Useful to save battery.</param>
 		/// <param name="token_type">Device token type, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
@@ -1220,13 +1229,11 @@ namespace TL
 		/// <summary>Update the <a href="https://corefork.telegram.org/api/colors">accent color and background custom emoji »</a> of the current account.		<para>See <a href="https://corefork.telegram.org/method/account.updateColor"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/account.updateColor#possible-errors">details</a>)</para></summary>
 		/// <param name="for_profile">Whether to change the accent color emoji pattern of the profile page; otherwise, the accent color and emoji pattern of messages will be changed.</param>
 		/// <param name="color"><a href="https://corefork.telegram.org/api/colors">ID of the accent color palette »</a> to use (not RGB24, see <a href="https://corefork.telegram.org/api/colors">here »</a> for more info).</param>
-		/// <param name="background_emoji_id">Custom emoji ID used in the accent color pattern.</param>
-		public static Task<bool> Account_UpdateColor(this Client client, long? background_emoji_id = null, int? color = null, bool for_profile = false)
+		public static Task<bool> Account_UpdateColor(this Client client, PeerColorBase color = null, bool for_profile = false)
 			=> client.Invoke(new Account_UpdateColor
 			{
-				flags = (Account_UpdateColor.Flags)((background_emoji_id != null ? 0x1 : 0) | (color != null ? 0x4 : 0) | (for_profile ? 0x2 : 0)),
-				color = color ?? default,
-				background_emoji_id = background_emoji_id ?? default,
+				flags = (Account_UpdateColor.Flags)((color != null ? 0x4 : 0) | (for_profile ? 0x2 : 0)),
+				color = color,
 			});
 
 		/// <summary>Get a set of suggested <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji stickers</a> that can be used in an <a href="https://corefork.telegram.org/api/colors">accent color pattern</a>.		<para>See <a href="https://corefork.telegram.org/method/account.getDefaultBackgroundEmojis"/></para></summary>
@@ -1495,7 +1502,7 @@ namespace TL
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="hash">Hash from a previously returned <see cref="Account_ChatThemes"/>, to avoid returning any result if the theme list hasn't changed.</param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/account.chatThemesNotModified">account.chatThemesNotModified</a></returns>
-		public static Task<Account_ChatThemes> Account_GetUniqueGiftChatThemes(this Client client, int offset = default, int limit = int.MaxValue, long hash = default)
+		public static Task<Account_ChatThemes> Account_GetUniqueGiftChatThemes(this Client client, string offset, int limit = int.MaxValue, long hash = default)
 			=> client.Invoke(new Account_GetUniqueGiftChatThemes
 			{
 				offset = offset,
@@ -1559,6 +1566,14 @@ namespace TL
 			{
 				id = id,
 				documents = documents,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/users.suggestBirthday"/></para></summary>
+		public static Task<UpdatesBase> Users_SuggestBirthday(this Client client, InputUserBase id, Birthday birthday)
+			=> client.Invoke(new Users_SuggestBirthday
+			{
+				id = id,
+				birthday = birthday,
 			});
 
 		/// <summary>Get the telegram IDs of all contacts.<br/>Returns an array of Telegram user IDs for all contacts (0 if a contact does not have an associated Telegram account or have hidden their account using privacy settings).		<para>See <a href="https://corefork.telegram.org/method/contacts.getContactIDs"/></para></summary>
@@ -1720,14 +1735,15 @@ namespace TL
 		/// <param name="first_name">First name</param>
 		/// <param name="last_name">Last name</param>
 		/// <param name="phone">User's phone number, may be omitted to simply add the user to the contact list, without a phone number.</param>
-		public static Task<UpdatesBase> Contacts_AddContact(this Client client, InputUserBase id, string first_name, string last_name, string phone, bool add_phone_privacy_exception = false)
+		public static Task<UpdatesBase> Contacts_AddContact(this Client client, InputUserBase id, string first_name, string last_name, string phone, TextWithEntities note = null, bool add_phone_privacy_exception = false)
 			=> client.Invoke(new Contacts_AddContact
 			{
-				flags = (Contacts_AddContact.Flags)(add_phone_privacy_exception ? 0x1 : 0),
+				flags = (Contacts_AddContact.Flags)((note != null ? 0x2 : 0) | (add_phone_privacy_exception ? 0x1 : 0)),
 				id = id,
 				first_name = first_name,
 				last_name = last_name,
 				phone = phone,
+				note = note,
 			});
 
 		/// <summary>If the <a href="https://corefork.telegram.org/api/action-bar#add-contact">add contact action bar is active</a>, add that user as contact		<para>See <a href="https://corefork.telegram.org/method/contacts.acceptContact"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.acceptContact#possible-errors">details</a>)</para></summary>
@@ -1817,6 +1833,14 @@ namespace TL
 			=> client.Invoke(new Contacts_GetSponsoredPeers
 			{
 				q = q,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.updateContactNote"/></para></summary>
+		public static Task<bool> Contacts_UpdateContactNote(this Client client, InputUserBase id, TextWithEntities note)
+			=> client.Invoke(new Contacts_UpdateContactNote
+			{
+				id = id,
+				note = note,
 			});
 
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para></summary>
@@ -4490,7 +4514,7 @@ namespace TL
 		/// <param name="peer">The channel</param>
 		/// <param name="msg_id">The message to react to</param>
 		/// <param name="count">The number of <a href="https://corefork.telegram.org/api/stars">stars</a> to send (each will increment the reaction counter by one).</param>
-		/// <param name="random_id">Unique client message ID required to prevent message resending. <br/><strong>Note</strong>: this argument <strong>must</strong> be composed of a 64-bit integer where the first 32 bits are random, and the remaining 32 bits <strong>are equal to the current unixtime</strong>, i.e. <c>uint64_t random_id = (time() &lt;&lt; 32) | ((uint64_t)random_uint32_t())</c>: this differs from the <c>random_id</c> format of all other methods in the API, which just take 64 random bits. <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
+		/// <param name="random_id">Unique client message ID required to prevent message resending. <br/><strong>Note</strong>: this argument <strong>must</strong> be composed of a 64-bit integer where the lower 32 bits are random, and the higher 32 bits <strong>are equal to the current unixtime</strong>, i.e. <c>uint64_t random_id = (time() &lt;&lt; 32) | ((uint64_t)random_uint32_t())</c>: this differs from the <c>random_id</c> format of all other methods in the API, which just take 64 random bits. <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
 		/// <param name="private_">Each post with star reactions has a leaderboard with the top senders, but users can opt out of appearing there if they prefer more privacy. Not populating this field will use the default reaction privacy, stored on the server and synced to clients using <see cref="UpdatePaidReactionPrivacy"/> (see <a href="https://corefork.telegram.org/api/reactions#paid-reaction-privacy">here</a> for more info).</param>
 		public static Task<UpdatesBase> Messages_SendPaidReaction(this Client client, InputPeer peer, int msg_id, int count, long random_id, PaidReactionPrivacy private_ = null)
 			=> client.Invoke(new Messages_SendPaidReaction
@@ -4681,6 +4705,108 @@ namespace TL
 				schedule_date = schedule_date ?? default,
 				reject_comment = reject_comment,
 			});
+
+		/// <summary>Get <a href="https://corefork.telegram.org/api/forum">topics of a forum</a>		<para>See <a href="https://corefork.telegram.org/method/messages.getForumTopics"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getForumTopics#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer</param>
+		/// <param name="q">Search query</param>
+		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a>, date of the last message of the last found topic. Use 0 or any date in the future to get results from the last topic.</param>
+		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a>, ID of the last message of the last found topic (or initially <c>0</c>).</param>
+		/// <param name="offset_topic"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a>, ID of the last found topic (or initially <c>0</c>).</param>
+		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a>. For optimal performance, the number of returned topics is chosen by the server and can be smaller than the specified limit.</param>
+		public static Task<Messages_ForumTopics> Messages_GetForumTopics(this Client client, InputPeer peer, DateTime offset_date = default, int offset_id = default, int offset_topic = default, int limit = int.MaxValue, string q = null)
+			=> client.Invoke(new Messages_GetForumTopics
+			{
+				flags = (Messages_GetForumTopics.Flags)(q != null ? 0x1 : 0),
+				peer = peer,
+				q = q,
+				offset_date = offset_date,
+				offset_id = offset_id,
+				offset_topic = offset_topic,
+				limit = limit,
+			});
+
+		/// <summary>Get forum topics by their ID		<para>See <a href="https://corefork.telegram.org/method/messages.getForumTopicsByID"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getForumTopicsByID#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer</param>
+		/// <param name="topics">Topic IDs</param>
+		public static Task<Messages_ForumTopics> Messages_GetForumTopicsByID(this Client client, InputPeer peer, params int[] topics)
+			=> client.Invoke(new Messages_GetForumTopicsByID
+			{
+				peer = peer,
+				topics = topics,
+			});
+
+		/// <summary>Edit <a href="https://corefork.telegram.org/api/forum">forum topic</a>; requires <a href="https://corefork.telegram.org/api/rights"><c>manage_topics</c> rights</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editForumTopic"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.editForumTopic#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer</param>
+		/// <param name="topic_id">Topic ID</param>
+		/// <param name="title">If present, will update the topic title (maximum UTF-8 length: 128).</param>
+		/// <param name="icon_emoji_id">If present, updates the <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> used as topic icon. <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a> users can use any custom emoji, other users can only use the custom emojis contained in the <see cref="InputStickerSetEmojiDefaultTopicIcons"/> emoji pack. Pass 0 to switch to the fallback topic icon.</param>
+		/// <param name="closed">If present, will update the open/closed status of the topic.</param>
+		/// <param name="hidden">If present, will hide/unhide the topic (only valid for the "General" topic, <c>id=1</c>).</param>
+		public static Task<UpdatesBase> Messages_EditForumTopic(this Client client, InputPeer peer, int topic_id, string title = null, long? icon_emoji_id = null, bool? closed = default, bool? hidden = default)
+			=> client.Invoke(new Messages_EditForumTopic
+			{
+				flags = (Messages_EditForumTopic.Flags)((title != null ? 0x1 : 0) | (icon_emoji_id != null ? 0x2 : 0) | (closed != default ? 0x4 : 0) | (hidden != default ? 0x8 : 0)),
+				peer = peer,
+				topic_id = topic_id,
+				title = title,
+				icon_emoji_id = icon_emoji_id ?? default,
+				closed = closed ?? default,
+				hidden = hidden ?? default,
+			});
+
+		/// <summary>Pin or unpin <a href="https://corefork.telegram.org/api/forum">forum topics</a>		<para>See <a href="https://corefork.telegram.org/method/messages.updatePinnedForumTopic"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.updatePinnedForumTopic#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer</param>
+		/// <param name="topic_id"><a href="https://corefork.telegram.org/api/forum">Forum topic ID</a></param>
+		/// <param name="pinned">Whether to pin or unpin the topic</param>
+		public static Task<UpdatesBase> Messages_UpdatePinnedForumTopic(this Client client, InputPeer peer, int topic_id, bool pinned)
+			=> client.Invoke(new Messages_UpdatePinnedForumTopic
+			{
+				peer = peer,
+				topic_id = topic_id,
+				pinned = pinned,
+			});
+
+		/// <summary>Reorder pinned forum topics		<para>See <a href="https://corefork.telegram.org/method/messages.reorderPinnedForumTopics"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.reorderPinnedForumTopics#possible-errors">details</a>)</para></summary>
+		/// <param name="force">If not set, the order of only the topics present both server-side and in <c>order</c> will be changed (i.e. mentioning topics not pinned server-side in <c>order</c> will not pin them, and not mentioning topics pinned server-side will not unpin them).  <br/>If set, the entire server-side pinned topic list will be replaced with <c>order</c> (i.e. mentioning topics not pinned server-side in <c>order</c> will pin them, and not mentioning topics pinned server-side will unpin them)</param>
+		/// <param name="peer">Peer</param>
+		/// <param name="order"><a href="https://corefork.telegram.org/api/forum">Topic IDs »</a></param>
+		public static Task<UpdatesBase> Messages_ReorderPinnedForumTopics(this Client client, InputPeer peer, int[] order, bool force = false)
+			=> client.Invoke(new Messages_ReorderPinnedForumTopics
+			{
+				flags = (Messages_ReorderPinnedForumTopics.Flags)(force ? 0x1 : 0),
+				peer = peer,
+				order = order,
+			});
+
+		/// <summary>Create a <a href="https://corefork.telegram.org/api/forum">forum topic</a>; requires <a href="https://corefork.telegram.org/api/rights"><c>manage_topics</c> rights</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.createForumTopic"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.createForumTopic#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer</param>
+		/// <param name="title">Topic title (maximum UTF-8 length: 128)</param>
+		/// <param name="icon_color">If no custom emoji icon is specified, specifies the color of the fallback topic icon (RGB), one of <c>0x6FB9F0</c>, <c>0xFFD67E</c>, <c>0xCB86DB</c>, <c>0x8EEE98</c>, <c>0xFF93B2</c>, or <c>0xFB6F5F</c>.</param>
+		/// <param name="icon_emoji_id">ID of the <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> used as topic icon. <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a> users can use any custom emoji, other users can only use the custom emojis contained in the <see cref="InputStickerSetEmojiDefaultTopicIcons"/> emoji pack.</param>
+		/// <param name="random_id">Unique client message ID to prevent duplicate sending of the same event <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
+		/// <param name="send_as">Create the topic as the specified peer</param>
+		public static Task<UpdatesBase> Messages_CreateForumTopic(this Client client, InputPeer peer, string title, long random_id, int? icon_color = null, InputPeer send_as = null, long? icon_emoji_id = null, bool title_missing = false)
+			=> client.Invoke(new Messages_CreateForumTopic
+			{
+				flags = (Messages_CreateForumTopic.Flags)((icon_color != null ? 0x1 : 0) | (send_as != null ? 0x4 : 0) | (icon_emoji_id != null ? 0x8 : 0) | (title_missing ? 0x10 : 0)),
+				peer = peer,
+				title = title,
+				icon_color = icon_color ?? default,
+				icon_emoji_id = icon_emoji_id ?? default,
+				random_id = random_id,
+				send_as = send_as,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.deleteTopicHistory"/></para></summary>
+		/// <summary>Delete message history of a <a href="https://corefork.telegram.org/api/forum">forum topic</a>		<para>See <a href="https://corefork.telegram.org/method/messages.deleteTopicHistory"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/messages.deleteTopicHistory#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Peer</param>
+		/// <param name="top_msg_id">Topic ID</param>
+		public static Task<Messages_AffectedHistory> Messages_DeleteTopicHistory(this Client client, InputPeer peer, int top_msg_id)
+			=> client.InvokeAffected(new Messages_DeleteTopicHistory
+			{
+				peer = peer,
+				top_msg_id = top_msg_id,
+			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
@@ -5546,107 +5672,6 @@ namespace TL
 				channel = channel,
 				enabled = enabled,
 				tabs = tabs,
-			});
-
-		/// <summary>Create a <a href="https://corefork.telegram.org/api/forum">forum topic</a>; requires <a href="https://corefork.telegram.org/api/rights"><c>manage_topics</c> rights</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.createForumTopic"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.createForumTopic#possible-errors">details</a>)</para></summary>
-		/// <param name="channel"><a href="https://corefork.telegram.org/api/forum">The forum</a></param>
-		/// <param name="title">Topic title (maximum UTF-8 length: 128)</param>
-		/// <param name="icon_color">If no custom emoji icon is specified, specifies the color of the fallback topic icon (RGB), one of <c>0x6FB9F0</c>, <c>0xFFD67E</c>, <c>0xCB86DB</c>, <c>0x8EEE98</c>, <c>0xFF93B2</c>, or <c>0xFB6F5F</c>.</param>
-		/// <param name="icon_emoji_id">ID of the <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> used as topic icon. <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a> users can use any custom emoji, other users can only use the custom emojis contained in the <see cref="InputStickerSetEmojiDefaultTopicIcons"/> emoji pack.</param>
-		/// <param name="random_id">Unique client message ID to prevent duplicate sending of the same event <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
-		/// <param name="send_as">Create the topic as the specified peer</param>
-		public static Task<UpdatesBase> Channels_CreateForumTopic(this Client client, InputChannelBase channel, string title, long random_id, int? icon_color = null, InputPeer send_as = null, long? icon_emoji_id = null)
-			=> client.Invoke(new Channels_CreateForumTopic
-			{
-				flags = (Channels_CreateForumTopic.Flags)((icon_color != null ? 0x1 : 0) | (send_as != null ? 0x4 : 0) | (icon_emoji_id != null ? 0x8 : 0)),
-				channel = channel,
-				title = title,
-				icon_color = icon_color ?? default,
-				icon_emoji_id = icon_emoji_id ?? default,
-				random_id = random_id,
-				send_as = send_as,
-			});
-
-		/// <summary>Get <a href="https://corefork.telegram.org/api/forum">topics of a forum</a>		<para>See <a href="https://corefork.telegram.org/method/channels.getForumTopics"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getForumTopics#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">Supergroup</param>
-		/// <param name="q">Search query</param>
-		/// <param name="offset_date"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a>, date of the last message of the last found topic. Use 0 or any date in the future to get results from the last topic.</param>
-		/// <param name="offset_id"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a>, ID of the last message of the last found topic (or initially <c>0</c>).</param>
-		/// <param name="offset_topic"><a href="https://corefork.telegram.org/api/offsets">Offsets for pagination, for more info click here</a>, ID of the last found topic (or initially <c>0</c>).</param>
-		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a>. For optimal performance, the number of returned topics is chosen by the server and can be smaller than the specified limit.</param>
-		public static Task<Messages_ForumTopics> Channels_GetForumTopics(this Client client, InputChannelBase channel, DateTime offset_date = default, int offset_id = default, int offset_topic = default, int limit = int.MaxValue, string q = null)
-			=> client.Invoke(new Channels_GetForumTopics
-			{
-				flags = (Channels_GetForumTopics.Flags)(q != null ? 0x1 : 0),
-				channel = channel,
-				q = q,
-				offset_date = offset_date,
-				offset_id = offset_id,
-				offset_topic = offset_topic,
-				limit = limit,
-			});
-
-		/// <summary>Get forum topics by their ID		<para>See <a href="https://corefork.telegram.org/method/channels.getForumTopicsByID"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.getForumTopicsByID#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">Forum</param>
-		/// <param name="topics">Topic IDs</param>
-		public static Task<Messages_ForumTopics> Channels_GetForumTopicsByID(this Client client, InputChannelBase channel, params int[] topics)
-			=> client.Invoke(new Channels_GetForumTopicsByID
-			{
-				channel = channel,
-				topics = topics,
-			});
-
-		/// <summary>Edit <a href="https://corefork.telegram.org/api/forum">forum topic</a>; requires <a href="https://corefork.telegram.org/api/rights"><c>manage_topics</c> rights</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.editForumTopic"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.editForumTopic#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">Supergroup</param>
-		/// <param name="topic_id">Topic ID</param>
-		/// <param name="title">If present, will update the topic title (maximum UTF-8 length: 128).</param>
-		/// <param name="icon_emoji_id">If present, updates the <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> used as topic icon. <a href="https://corefork.telegram.org/api/premium">Telegram Premium</a> users can use any custom emoji, other users can only use the custom emojis contained in the <see cref="InputStickerSetEmojiDefaultTopicIcons"/> emoji pack. Pass 0 to switch to the fallback topic icon.</param>
-		/// <param name="closed">If present, will update the open/closed status of the topic.</param>
-		/// <param name="hidden">If present, will hide/unhide the topic (only valid for the "General" topic, <c>id=1</c>).</param>
-		public static Task<UpdatesBase> Channels_EditForumTopic(this Client client, InputChannelBase channel, int topic_id, string title = null, long? icon_emoji_id = null, bool? closed = default, bool? hidden = default)
-			=> client.Invoke(new Channels_EditForumTopic
-			{
-				flags = (Channels_EditForumTopic.Flags)((title != null ? 0x1 : 0) | (icon_emoji_id != null ? 0x2 : 0) | (closed != default ? 0x4 : 0) | (hidden != default ? 0x8 : 0)),
-				channel = channel,
-				topic_id = topic_id,
-				title = title,
-				icon_emoji_id = icon_emoji_id ?? default,
-				closed = closed ?? default,
-				hidden = hidden ?? default,
-			});
-
-		/// <summary>Pin or unpin <a href="https://corefork.telegram.org/api/forum">forum topics</a>		<para>See <a href="https://corefork.telegram.org/method/channels.updatePinnedForumTopic"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.updatePinnedForumTopic#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">Supergroup ID</param>
-		/// <param name="topic_id"><a href="https://corefork.telegram.org/api/forum">Forum topic ID</a></param>
-		/// <param name="pinned">Whether to pin or unpin the topic</param>
-		public static Task<UpdatesBase> Channels_UpdatePinnedForumTopic(this Client client, InputChannelBase channel, int topic_id, bool pinned)
-			=> client.Invoke(new Channels_UpdatePinnedForumTopic
-			{
-				channel = channel,
-				topic_id = topic_id,
-				pinned = pinned,
-			});
-
-		/// <summary>Delete message history of a <a href="https://corefork.telegram.org/api/forum">forum topic</a>		<para>See <a href="https://corefork.telegram.org/method/channels.deleteTopicHistory"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/channels.deleteTopicHistory#possible-errors">details</a>)</para></summary>
-		/// <param name="channel">Forum</param>
-		/// <param name="top_msg_id">Topic ID</param>
-		public static Task<Messages_AffectedHistory> Channels_DeleteTopicHistory(this Client client, InputChannelBase channel, int top_msg_id)
-			=> client.InvokeAffected(new Channels_DeleteTopicHistory
-			{
-				channel = channel,
-				top_msg_id = top_msg_id,
-			}, channel.ChannelId);
-
-		/// <summary>Reorder pinned forum topics		<para>See <a href="https://corefork.telegram.org/method/channels.reorderPinnedForumTopics"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.reorderPinnedForumTopics#possible-errors">details</a>)</para></summary>
-		/// <param name="force">If not set, the order of only the topics present both server-side and in <c>order</c> will be changed (i.e. mentioning topics not pinned server-side in <c>order</c> will not pin them, and not mentioning topics pinned server-side will not unpin them).  <br/>If set, the entire server-side pinned topic list will be replaced with <c>order</c> (i.e. mentioning topics not pinned server-side in <c>order</c> will pin them, and not mentioning topics pinned server-side will unpin them)</param>
-		/// <param name="channel">Supergroup ID</param>
-		/// <param name="order"><a href="https://corefork.telegram.org/api/forum">Topic IDs »</a></param>
-		public static Task<UpdatesBase> Channels_ReorderPinnedForumTopics(this Client client, InputChannelBase channel, int[] order, bool force = false)
-			=> client.Invoke(new Channels_ReorderPinnedForumTopics
-			{
-				flags = (Channels_ReorderPinnedForumTopics.Flags)(force ? 0x1 : 0),
-				channel = channel,
-				order = order,
 			});
 
 		/// <summary>Enable or disable the <a href="https://corefork.telegram.org/api/antispam">native antispam system</a>.		<para>See <a href="https://corefork.telegram.org/method/channels.toggleAntiSpam"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/channels.toggleAntiSpam#possible-errors">details</a>)</para></summary>
@@ -6589,10 +6614,10 @@ namespace TL
 		/// <param name="collection_id">Only returns gifts within the specified <a href="https://corefork.telegram.org/api/gifts#gift-collections">collection »</a>.</param>
 		/// <param name="offset"><a href="https://corefork.telegram.org/api/offsets">Offset for pagination</a>.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Payments_SavedStarGifts> Payments_GetSavedStarGifts(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, int? collection_id = null, bool exclude_unsaved = false, bool exclude_saved = false, bool exclude_unlimited = false, bool exclude_unique = false, bool sort_by_value = false, bool exclude_upgradable = false, bool exclude_unupgradable = false)
+		public static Task<Payments_SavedStarGifts> Payments_GetSavedStarGifts(this Client client, InputPeer peer, string offset, int limit = int.MaxValue, int? collection_id = null, bool exclude_unsaved = false, bool exclude_saved = false, bool exclude_unlimited = false, bool exclude_unique = false, bool sort_by_value = false, bool exclude_upgradable = false, bool exclude_unupgradable = false, bool peer_color_available = false, bool exclude_hosted = false)
 			=> client.Invoke(new Payments_GetSavedStarGifts
 			{
-				flags = (Payments_GetSavedStarGifts.Flags)((collection_id != null ? 0x40 : 0) | (exclude_unsaved ? 0x1 : 0) | (exclude_saved ? 0x2 : 0) | (exclude_unlimited ? 0x4 : 0) | (exclude_unique ? 0x10 : 0) | (sort_by_value ? 0x20 : 0) | (exclude_upgradable ? 0x80 : 0) | (exclude_unupgradable ? 0x100 : 0)),
+				flags = (Payments_GetSavedStarGifts.Flags)((collection_id != null ? 0x40 : 0) | (exclude_unsaved ? 0x1 : 0) | (exclude_saved ? 0x2 : 0) | (exclude_unlimited ? 0x4 : 0) | (exclude_unique ? 0x10 : 0) | (sort_by_value ? 0x20 : 0) | (exclude_upgradable ? 0x80 : 0) | (exclude_unupgradable ? 0x100 : 0) | (peer_color_available ? 0x200 : 0) | (exclude_hosted ? 0x400 : 0)),
 				peer = peer,
 				collection_id = collection_id ?? default,
 				offset = offset,
@@ -6648,10 +6673,10 @@ namespace TL
 		/// <summary>Get <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gifts</a> of a specific type currently on resale, see <a href="https://corefork.telegram.org/api/gifts#reselling-collectible-gifts">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/payments.getResaleStarGifts"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getResaleStarGifts#possible-errors">details</a>)</para></summary>
 		/// <param name="sort_by_price">Sort gifts by price (ascending).</param>
 		/// <param name="sort_by_num">Sort gifts by number (ascending).</param>
-		/// <param name="attributes_hash">If a previous call to the method was made and <see cref="Payments_ResaleStarGifts"/>.<c>attributes_hash</c> was set, pass it here to avoid returning any results if they haven't changed.</param>
+		/// <param name="attributes_hash">If a previous call to the method was made and <see cref="Payments_ResaleStarGifts"/>.<c>attributes_hash</c> was set, pass it here to avoid returning any results if they haven't changed. <br/>Otherwise, set this flag and pass <c>0</c> to return <see cref="Payments_ResaleStarGifts"/>.<c>attributes_hash</c> and <see cref="Payments_ResaleStarGifts"/>.<c>attributes</c>, <strong>these two fields will not be set</strong> if this flag is not set.</param>
 		/// <param name="gift_id">Mandatory identifier of the base gift from which the collectible gift was upgraded.</param>
 		/// <param name="attributes">Optionally filter gifts with the specified attributes. If no attributes of a specific type are specified, all attributes of that type are allowed.</param>
-		/// <param name="offset">Offset for pagination.</param>
+		/// <param name="offset">Offset for pagination. If not equal to an empty string, <see cref="Payments_ResaleStarGifts"/>.<c>counters</c> will not be set to avoid returning the counters every time a new page is fetched.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		public static Task<Payments_ResaleStarGifts> Payments_GetResaleStarGifts(this Client client, long gift_id, string offset, int limit = int.MaxValue, long? attributes_hash = null, StarGiftAttributeId[] attributes = null, bool sort_by_price = false, bool sort_by_num = false)
 			=> client.Invoke(new Payments_GetResaleStarGifts
@@ -7057,12 +7082,13 @@ namespace TL
 		/// <param name="reset_invite_hash">Invalidate existing invite links</param>
 		/// <param name="call">Group call</param>
 		/// <param name="join_muted">Whether all users will that join this group call are muted by default upon joining the group call</param>
-		public static Task<UpdatesBase> Phone_ToggleGroupCallSettings(this Client client, InputGroupCallBase call, bool? join_muted = default, bool reset_invite_hash = false)
+		public static Task<UpdatesBase> Phone_ToggleGroupCallSettings(this Client client, InputGroupCallBase call, bool? join_muted = default, bool? messages_enabled = default, bool reset_invite_hash = false)
 			=> client.Invoke(new Phone_ToggleGroupCallSettings
 			{
-				flags = (Phone_ToggleGroupCallSettings.Flags)((join_muted != default ? 0x1 : 0) | (reset_invite_hash ? 0x2 : 0)),
+				flags = (Phone_ToggleGroupCallSettings.Flags)((join_muted != default ? 0x1 : 0) | (messages_enabled != default ? 0x4 : 0) | (reset_invite_hash ? 0x2 : 0)),
 				call = call,
 				join_muted = join_muted ?? default,
+				messages_enabled = messages_enabled ?? default,
 			});
 
 		/// <summary>Get info about a group call		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.getGroupCall#possible-errors">details</a>)</para></summary>
@@ -7316,6 +7342,23 @@ namespace TL
 				sub_chain_id = sub_chain_id,
 				offset = offset,
 				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.sendGroupCallMessage"/></para></summary>
+		public static Task<bool> Phone_SendGroupCallMessage(this Client client, InputGroupCallBase call, long random_id, TextWithEntities message)
+			=> client.Invoke(new Phone_SendGroupCallMessage
+			{
+				call = call,
+				random_id = random_id,
+				message = message,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/phone.sendGroupCallEncryptedMessage"/></para></summary>
+		public static Task<bool> Phone_SendGroupCallEncryptedMessage(this Client client, InputGroupCallBase call, byte[] encrypted_message)
+			=> client.Invoke(new Phone_SendGroupCallEncryptedMessage
+			{
+				call = call,
+				encrypted_message = encrypted_message,
 			});
 
 		/// <summary>Get localization pack strings		<para>See <a href="https://corefork.telegram.org/method/langpack.getLangPack"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/langpack.getLangPack#possible-errors">details</a>)</para></summary>
@@ -8359,6 +8402,14 @@ namespace TL.Methods
 		public string mnc;
 	}
 
+	[TLDef(0x56E59F9C)]
+	public sealed partial class Auth_CheckPaidAuth : IMethod<Auth_SentCodeBase>
+	{
+		public string phone_number;
+		public string phone_code_hash;
+		public long form_id;
+	}
+
 	[TLDef(0xEC86017A)]
 	public sealed partial class Account_RegisterDevice : IMethod<bool>
 	{
@@ -9003,16 +9054,14 @@ namespace TL.Methods
 		public string[] codes;
 	}
 
-	[TLDef(0x7CEFA15D)]
+	[TLDef(0x684D214E)]
 	public sealed partial class Account_UpdateColor : IMethod<bool>
 	{
 		public Flags flags;
-		[IfFlag(2)] public int color;
-		[IfFlag(0)] public long background_emoji_id;
+		[IfFlag(2)] public PeerColorBase color;
 
 		[Flags] public enum Flags : uint
 		{
-			has_background_emoji_id = 0x1,
 			for_profile = 0x2,
 			has_color = 0x4,
 		}
@@ -9256,10 +9305,10 @@ namespace TL.Methods
 		public long hash;
 	}
 
-	[TLDef(0xFE74EF9F)]
+	[TLDef(0xE42CE9C9)]
 	public sealed partial class Account_GetUniqueGiftChatThemes : IMethod<Account_ChatThemes>
 	{
-		public int offset;
+		public string offset;
 		public int limit;
 		public long hash;
 	}
@@ -9303,6 +9352,13 @@ namespace TL.Methods
 	{
 		public InputUserBase id;
 		public InputDocument[] documents;
+	}
+
+	[TLDef(0xFC533372)]
+	public sealed partial class Users_SuggestBirthday : IMethod<UpdatesBase>
+	{
+		public InputUserBase id;
+		public Birthday birthday;
 	}
 
 	[TLDef(0x7ADC669D)]
@@ -9436,7 +9492,7 @@ namespace TL.Methods
 		public bool enabled;
 	}
 
-	[TLDef(0xE8F463D0)]
+	[TLDef(0xD9BA2E54)]
 	public sealed partial class Contacts_AddContact : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -9444,10 +9500,12 @@ namespace TL.Methods
 		public string first_name;
 		public string last_name;
 		public string phone;
+		[IfFlag(1)] public TextWithEntities note;
 
 		[Flags] public enum Flags : uint
 		{
 			add_phone_privacy_exception = 0x1,
+			has_note = 0x2,
 		}
 	}
 
@@ -9526,6 +9584,13 @@ namespace TL.Methods
 	public sealed partial class Contacts_GetSponsoredPeers : IMethod<Contacts_SponsoredPeers>
 	{
 		public string q;
+	}
+
+	[TLDef(0x139F63FB)]
+	public sealed partial class Contacts_UpdateContactNote : IMethod<bool>
+	{
+		public InputUserBase id;
+		public TextWithEntities note;
 	}
 
 	[TLDef(0x63C66506)]
@@ -11991,6 +12056,98 @@ namespace TL.Methods
 		}
 	}
 
+	[TLDef(0x3BA47BFF)]
+	public sealed partial class Messages_GetForumTopics : IMethod<Messages_ForumTopics>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		[IfFlag(0)] public string q;
+		public DateTime offset_date;
+		public int offset_id;
+		public int offset_topic;
+		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			has_q = 0x1,
+		}
+	}
+
+	[TLDef(0xAF0A4A08)]
+	public sealed partial class Messages_GetForumTopicsByID : IMethod<Messages_ForumTopics>
+	{
+		public InputPeer peer;
+		public int[] topics;
+	}
+
+	[TLDef(0xCECC1134)]
+	public sealed partial class Messages_EditForumTopic : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int topic_id;
+		[IfFlag(0)] public string title;
+		[IfFlag(1)] public long icon_emoji_id;
+		[IfFlag(2)] public bool closed;
+		[IfFlag(3)] public bool hidden;
+
+		[Flags] public enum Flags : uint
+		{
+			has_title = 0x1,
+			has_icon_emoji_id = 0x2,
+			has_closed = 0x4,
+			has_hidden = 0x8,
+		}
+	}
+
+	[TLDef(0x175DF251)]
+	public sealed partial class Messages_UpdatePinnedForumTopic : IMethod<UpdatesBase>
+	{
+		public InputPeer peer;
+		public int topic_id;
+		public bool pinned;
+	}
+
+	[TLDef(0x0E7841F0)]
+	public sealed partial class Messages_ReorderPinnedForumTopics : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int[] order;
+
+		[Flags] public enum Flags : uint
+		{
+			force = 0x1,
+		}
+	}
+
+	[TLDef(0x2F98C3D5)]
+	public sealed partial class Messages_CreateForumTopic : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public string title;
+		[IfFlag(0)] public int icon_color;
+		[IfFlag(3)] public long icon_emoji_id;
+		public long random_id;
+		[IfFlag(2)] public InputPeer send_as;
+
+		[Flags] public enum Flags : uint
+		{
+			has_icon_color = 0x1,
+			has_send_as = 0x4,
+			has_icon_emoji_id = 0x8,
+			title_missing = 0x10,
+		}
+	}
+
+	[TLDef(0xD2816F10)]
+	public sealed partial class Messages_DeleteTopicHistory : IMethod<Messages_AffectedHistory>
+	{
+		public InputPeer peer;
+		public int top_msg_id;
+	}
+
 	[TLDef(0xEDD4882A)]
 	public sealed partial class Updates_GetState : IMethod<Updates_State> { }
 
@@ -12646,97 +12803,6 @@ namespace TL.Methods
 		public InputChannelBase channel;
 		public bool enabled;
 		public bool tabs;
-	}
-
-	[TLDef(0xF40C0224)]
-	public sealed partial class Channels_CreateForumTopic : IMethod<UpdatesBase>
-	{
-		public Flags flags;
-		public InputChannelBase channel;
-		public string title;
-		[IfFlag(0)] public int icon_color;
-		[IfFlag(3)] public long icon_emoji_id;
-		public long random_id;
-		[IfFlag(2)] public InputPeer send_as;
-
-		[Flags] public enum Flags : uint
-		{
-			has_icon_color = 0x1,
-			has_send_as = 0x4,
-			has_icon_emoji_id = 0x8,
-		}
-	}
-
-	[TLDef(0x0DE560D1)]
-	public sealed partial class Channels_GetForumTopics : IMethod<Messages_ForumTopics>
-	{
-		public Flags flags;
-		public InputChannelBase channel;
-		[IfFlag(0)] public string q;
-		public DateTime offset_date;
-		public int offset_id;
-		public int offset_topic;
-		public int limit;
-
-		[Flags] public enum Flags : uint
-		{
-			has_q = 0x1,
-		}
-	}
-
-	[TLDef(0xB0831EB9)]
-	public sealed partial class Channels_GetForumTopicsByID : IMethod<Messages_ForumTopics>
-	{
-		public InputChannelBase channel;
-		public int[] topics;
-	}
-
-	[TLDef(0xF4DFA185)]
-	public sealed partial class Channels_EditForumTopic : IMethod<UpdatesBase>
-	{
-		public Flags flags;
-		public InputChannelBase channel;
-		public int topic_id;
-		[IfFlag(0)] public string title;
-		[IfFlag(1)] public long icon_emoji_id;
-		[IfFlag(2)] public bool closed;
-		[IfFlag(3)] public bool hidden;
-
-		[Flags] public enum Flags : uint
-		{
-			has_title = 0x1,
-			has_icon_emoji_id = 0x2,
-			has_closed = 0x4,
-			has_hidden = 0x8,
-		}
-	}
-
-	[TLDef(0x6C2D9026)]
-	public sealed partial class Channels_UpdatePinnedForumTopic : IMethod<UpdatesBase>
-	{
-		public InputChannelBase channel;
-		public int topic_id;
-		public bool pinned;
-	}
-
-	[TLDef(0x34435F2D)]
-	public sealed partial class Channels_DeleteTopicHistory : IMethod<Messages_AffectedHistory>
-	{
-		public InputChannelBase channel;
-		public int top_msg_id;
-	}
-
-	[TLDef(0x2950A18F)]
-	public sealed partial class Channels_ReorderPinnedForumTopics : IMethod<UpdatesBase>
-	{
-		public Flags flags;
-		public InputChannelBase channel;
-		public int[] order;
-
-		[Flags] public enum Flags : uint
-		{
-			force = 0x1,
-		}
 	}
 
 	[TLDef(0x68F3E4EB)]
@@ -13551,6 +13617,8 @@ namespace TL.Methods
 			has_collection_id = 0x40,
 			exclude_upgradable = 0x80,
 			exclude_unupgradable = 0x100,
+			peer_color_available = 0x200,
+			exclude_hosted = 0x400,
 		}
 	}
 
@@ -13925,17 +13993,19 @@ namespace TL.Methods
 		public InputGroupCallBase call;
 	}
 
-	[TLDef(0x74BBB43D)]
+	[TLDef(0xE9723804)]
 	public sealed partial class Phone_ToggleGroupCallSettings : IMethod<UpdatesBase>
 	{
 		public Flags flags;
 		public InputGroupCallBase call;
 		[IfFlag(0)] public bool join_muted;
+		[IfFlag(2)] public bool messages_enabled;
 
 		[Flags] public enum Flags : uint
 		{
 			has_join_muted = 0x1,
 			reset_invite_hash = 0x2,
+			has_messages_enabled = 0x4,
 		}
 	}
 
@@ -14146,6 +14216,21 @@ namespace TL.Methods
 		public int sub_chain_id;
 		public int offset;
 		public int limit;
+	}
+
+	[TLDef(0x87893014)]
+	public sealed partial class Phone_SendGroupCallMessage : IMethod<bool>
+	{
+		public InputGroupCallBase call;
+		public long random_id;
+		public TextWithEntities message;
+	}
+
+	[TLDef(0xE5AFA56D)]
+	public sealed partial class Phone_SendGroupCallEncryptedMessage : IMethod<bool>
+	{
+		public InputGroupCallBase call;
+		public byte[] encrypted_message;
 	}
 
 	[TLDef(0xF2F2330A)]
