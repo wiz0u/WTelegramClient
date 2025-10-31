@@ -12,14 +12,16 @@ env:
 
 jobs:
   build:
+    permissions:
+      id-token: write  # enable GitHub OIDC token issuance for this job
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 100
+        fetch-depth: 30
     - name: Determine version
       run: |
-        git fetch --depth=100 --tags
+        git fetch --depth=30 --tags
         DESCR_TAG=$(git describe --tags)
         COMMITS=${DESCR_TAG#*-}
         COMMITS=${COMMITS%-*}
@@ -29,19 +31,32 @@ jobs:
         if [[ "$RELEASE_VERSION" > "$NEXT_VERSION" ]] then VERSION=$RELEASE_VERSION; else VERSION=$NEXT_VERSION; fi
         echo Last tag: $LAST_TAG · Next version: $NEXT_VERSION · Release version: $RELEASE_VERSION · Build version: $VERSION
         echo "VERSION=$VERSION" >> $GITHUB_ENV
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+
+    # - name: Setup .NET
+    #   uses: actions/setup-dotnet@v4
+    #   with:
+    #     dotnet-version: 8.0.x
     - name: Pack
-      run: dotnet pack $PROJECT_PATH --configuration $CONFIGURATION -p:Version=$VERSION "-p:ReleaseNotes=\"$RELEASE_NOTES\"" --output packages
+      run: |
+        RELEASE_NOTES=${RELEASE_NOTES//$'\n'/%0A}
+        RELEASE_NOTES=${RELEASE_NOTES//\"/%22}
+        RELEASE_NOTES=${RELEASE_NOTES//,/%2C}
+        RELEASE_NOTES=${RELEASE_NOTES//;/%3B}
+        dotnet pack $PROJECT_PATH --configuration $CONFIGURATION -p:Version=$VERSION -p:ReleaseNotes="$RELEASE_NOTES" --output packages
     # - name: Upload artifact
     #   uses: actions/upload-artifact@v4
     #   with:
     #     name: packages
     #     path: packages/*.nupkg
+
+    - name: NuGet login (OIDC → temp API key)
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: ${{ secrets.NUGET_USER }}
     - name: Nuget push
-      run: dotnet nuget push packages/*.nupkg --api-key ${{secrets.NUGETAPIKEY}} --skip-duplicate --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push packages/*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --skip-duplicate --source https://api.nuget.org/v3/index.json
+
     - name: Deployment Notification
       env:
         JSON: |

@@ -1477,7 +1477,7 @@ namespace WTelegram
 					writer.Write(0L);                       // int64 auth_key_id = 0 (Unencrypted)
 					writer.Write(msgId);                    // int64 message_id
 					writer.Write(0);                        // int32 message_data_length (to be patched)
-					Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_')}...");
+					Helpers.Log(1, $"{_dcSession.DcID}>Sending   {msg.GetType().Name.TrimEnd('_')}");
 					writer.WriteTLObject(msg);              // bytes message_data
 					BinaryPrimitives.WriteInt32LittleEndian(memStream.GetBuffer().AsSpan(20), (int)memStream.Length - 24);    // patch message_data_length
 				}
@@ -1629,7 +1629,7 @@ namespace WTelegram
 						got503 = true;
 						goto retry;
 					}
-					else if (code == 401 && message == "SESSION_REVOKED" && !IsMainDC) // need to renegociate alt-DC auth
+					else if (code == 401 && !IsMainDC && message is "SESSION_REVOKED" or "AUTH_KEY_UNREGISTERED") // need to renegociate alt-DC auth
 					{
 						lock (_session)
 						{
