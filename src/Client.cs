@@ -1125,7 +1125,7 @@ namespace WTelegram
 			{
 				try
 				{
-					var users = await this.Users_GetUsers(InputUser.Self); // this calls also reenable incoming Updates
+					var users = await this.Users_GetUsers(InputUser.Self); // this call also reenable incoming Updates
 					var self = users[0] as User;
 					if (self.id == long.Parse(botToken.Split(':')[0]))
 					{

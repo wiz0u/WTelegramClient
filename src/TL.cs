@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -48,6 +49,15 @@ namespace TL
 
 	public static class Serialization
 	{
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static byte[] ToBytes<T>(this T obj) where T : IObject
+		{
+			using var ms = new MemoryStream(384);
+			using var writer = new BinaryWriter(ms);
+			writer.WriteTLObject(obj);
+			return ms.ToArray();
+		}
+
 		public static void WriteTLObject<T>(this BinaryWriter writer, T obj) where T : IObject
 		{
 			if (obj == null) { writer.WriteTLNull(typeof(T)); return; }

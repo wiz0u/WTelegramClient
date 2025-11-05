@@ -247,10 +247,7 @@ namespace WTelegram
 			var rsaParam = rsa.ExportParameters(false);
 			if (rsaParam.Modulus[0] == 0) rsaParam.Modulus = rsaParam.Modulus[1..];
 			var publicKey = new RSAPublicKey { n = rsaParam.Modulus, e = rsaParam.Exponent };
-			using var memStream = new MemoryStream(280);
-			using (var writer = new BinaryWriter(memStream))
-				writer.WriteTLObject(publicKey);
-			var bareData = memStream.ToArray();
+			var bareData = publicKey.ToBytes();
 			var fingerprint = BinaryPrimitives.ReadInt64LittleEndian(sha1.ComputeHash(bareData, 4, bareData.Length - 4).AsSpan(12)); // 64 lower-order bits of SHA1
 			PublicKeys[fingerprint] = publicKey;
 			Helpers.Log(1, $"Loaded a public key with fingerprint {fingerprint:X}");

@@ -181,11 +181,11 @@ public class MTProtoGenerator : IIncrementalGenerator
 						break;
 					case "System.Collections.Generic.Dictionary<long, TL.User>":
 						readTL.AppendLine($"r.{member.Name} = reader.ReadTLDictionary<User>();");
-						writeTl.AppendLine($"writer.WriteTLVector({member.Name}.Values.ToArray());"); 
+						writeTl.AppendLine($"writer.WriteTLVector({member.Name}?.Values.ToArray());"); 
 						break;
 					case "System.Collections.Generic.Dictionary<long, TL.ChatBase>":
 						readTL.AppendLine($"r.{member.Name} = reader.ReadTLDictionary<ChatBase>();");
-						writeTl.AppendLine($"writer.WriteTLVector({member.Name}.Values.ToArray());");
+						writeTl.AppendLine($"writer.WriteTLVector({member.Name}?.Values.ToArray());");
 						break;
 					case "object":
 						readTL.AppendLine($"r.{member.Name} = reader.ReadTLObject();");
