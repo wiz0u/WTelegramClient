@@ -218,10 +218,10 @@ namespace TL
 			foreach (var msg in messages)
 			{
 				writer.Write(msg.msg_id);
-				writer.Write(msg.seq_no);
+				writer.Write(msg.seqno);
 				var patchPos = writer.BaseStream.Position;
 				writer.Write(0);												// patched below
-				if ((msg.seq_no & 1) != 0)
+				if ((msg.seqno & 1) != 0)
 					WTelegram.Helpers.Log(1, $"             → {msg.body.GetType().Name.TrimEnd('_'),-38} #{(short)msg.msg_id.GetHashCode():X4}");
 				else
 					WTelegram.Helpers.Log(1, $"             → {msg.body.GetType().Name.TrimEnd('_'),-38}");
@@ -464,10 +464,10 @@ namespace TL
 	}
 
 	[TLDef(0x5BB8E511)] //message#5bb8e511 msg_id:long seqno:int bytes:int body:Object = Message
-	public sealed partial class _Message(long msgId, int seqNo, IObject obj) : IObject
+	public sealed partial class _Message(long msgId, int seqno, IObject obj) : IObject
 	{
 		public long msg_id = msgId;
-		public int seq_no = seqNo;
+		public int seqno = seqno;
 		public int bytes;
 		public IObject body = obj;
 	}
