@@ -109,15 +109,13 @@ namespace TL
 		public Int128 new_nonce_hash3;
 	}
 
-	public enum DestroyAuthKeyRes : uint
-	{
-		///<summary>See <a href="https://corefork.telegram.org/constructor/destroy_auth_key_ok"/></summary>
-		Ok = 0xF660E1D4,
-		///<summary>See <a href="https://corefork.telegram.org/constructor/destroy_auth_key_none"/></summary>
-		None = 0x0A9F2259,
-		///<summary>See <a href="https://corefork.telegram.org/constructor/destroy_auth_key_fail"/></summary>
-		Fail = 0xEA109B13,
-	}
+	public abstract partial class DestroyAuthKeyRes : IObject { }
+	[TLDef(0xF660E1D4)] //destroy_auth_key_ok#f660e1d4 = DestroyAuthKeyRes
+	public sealed partial class DestroyAuthKeyOk : DestroyAuthKeyRes { }
+	[TLDef(0x0A9F2259)] //destroy_auth_key_none#0a9f2259 = DestroyAuthKeyRes
+	public sealed partial class DestroyAuthKeyNone : DestroyAuthKeyRes { }
+	[TLDef(0xEA109B13)] //destroy_auth_key_fail#ea109b13 = DestroyAuthKeyRes
+	public sealed partial class DestroyAuthKeyFail : DestroyAuthKeyRes { }
 
 	[TLDef(0x62D6B459)] //msgs_ack#62d6b459 msg_ids:Vector<long> = MsgsAck
 	public sealed partial class MsgsAck : IObject
@@ -327,12 +325,12 @@ namespace TL
 			});
 
 		public static Task<DestroyAuthKeyRes> DestroyAuthKey(this Client client)
-			=> client.InvokeBare(new DestroyAuthKey
+			=> client.Invoke(new DestroyAuthKey
 			{
 			});
 
 		public static Task<RpcDropAnswer> RpcDropAnswer(this Client client, long req_msg_id)
-			=> client.InvokeBare(new Methods.RpcDropAnswer
+			=> client.Invoke(new Methods.RpcDropAnswer
 			{
 				req_msg_id = req_msg_id,
 			});
@@ -357,7 +355,7 @@ namespace TL
 			});
 
 		public static Task<DestroySessionRes> DestroySession(this Client client, long session_id)
-			=> client.InvokeBare(new DestroySession
+			=> client.Invoke(new DestroySession
 			{
 				session_id = session_id,
 			});

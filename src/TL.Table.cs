@@ -41,7 +41,9 @@ namespace TL
 			[0x3BCBF734] = typeof(DhGenOk),
 			[0x46DC1FB9] = typeof(DhGenRetry),
 			[0xA69DAE02] = typeof(DhGenFail),
-			[0x7ABE77EC] = typeof(Methods.Ping),
+			[0xF660E1D4] = typeof(DestroyAuthKeyOk),
+			[0x0A9F2259] = typeof(DestroyAuthKeyNone),
+			[0xEA109B13] = typeof(DestroyAuthKeyFail),
 			[0x62D6B459] = typeof(MsgsAck),
 			[0xA7EFF811] = typeof(BadMsgNotification),
 			[0xEDAB447B] = typeof(BadServerSalt),
@@ -66,6 +68,7 @@ namespace TL
 			[0x37982646] = typeof(IpPortSecret),
 			[0x4679B65F] = typeof(AccessPointRule),
 			[0x5A592A6C] = typeof(Help_ConfigSimple),
+			[0x7ABE77EC] = typeof(Methods.Ping),
 			// from TL.SchemaExtensions:
 			[0x3FEDD339] = typeof(True),
 			[0xC4B9F9BB] = typeof(Error),
