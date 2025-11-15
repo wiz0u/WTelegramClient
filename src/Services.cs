@@ -56,7 +56,7 @@ namespace TL
 									prevUser.lang_code = user.lang_code;				// tdlib: updated if present ; tdesktop: ignored
 								prevUser.emoji_status = user.emoji_status;				// tdlib/tdesktop: updated
 								//prevUser.usernames = user.usernames;					// tdlib/tdesktop: not updated
-								if (user.stories_max_id > 0)
+								if (user.stories_max_id != null)
 									prevUser.stories_max_id = user.stories_max_id;		// tdlib: updated if > 0 ; tdesktop: not updated
 								prevUser.color = user.color;							// tdlib/tdesktop: updated
 								prevUser.profile_color = user.profile_color;			// tdlib/tdesktop: unimplemented yet
