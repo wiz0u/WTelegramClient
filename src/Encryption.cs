@@ -304,8 +304,8 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 			var output = new byte[input.Length];
 			var prevBytes = (byte[])aes_iv.Clone();
 			var span = MemoryMarshal.Cast<byte, long>(input);
-			var sout = MemoryMarshal.Cast<byte, long>(output);
-			var prev = MemoryMarshal.Cast<byte, long>(prevBytes);
+			var sout = MemoryMarshal.Cast<byte, long>(output.AsSpan());
+			var prev = MemoryMarshal.Cast<byte, long>(prevBytes.AsSpan());
 			if (!encrypt) { (prev[2], prev[0]) = (prev[0], prev[2]); (prev[3], prev[1]) = (prev[1], prev[3]); }
 			for (int i = 0, count = input.Length / 8; i < count;)
 			{
@@ -556,7 +556,7 @@ j4WcDuXc2CTHgH8gFTNhp/Y8/SpDOhvn9QIDAQAB
 		{
 			count = count + 15 & ~15;
 			var span = MemoryMarshal.Cast<byte, long>(buffer.AsSpan(offset, count));
-			var prev = MemoryMarshal.Cast<byte, long>(_prevBytes);
+			var prev = MemoryMarshal.Cast<byte, long>(_prevBytes.AsSpan());
 			for (offset = 0, count /= 8; offset < count;)
 			{
 				prev[0] ^= span[offset]; prev[1] ^= span[offset + 1];
