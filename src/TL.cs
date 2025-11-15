@@ -325,13 +325,14 @@ namespace TL
 		}
 
 		internal static void WriteTLStamp(this BinaryWriter writer, DateTime datetime)
-			=> writer.Write(datetime == DateTime.MaxValue ? int.MaxValue : (int)(datetime.ToUniversalTime().Ticks / 10000000 - 62135596800L));
+			=> writer.Write((int)Math.Min(Math.Max(datetime.ToUniversalTime().Ticks / 10000000 - 62135596800L, 0), int.MaxValue));
 
-		internal static DateTime ReadTLStamp(this BinaryReader reader)
+		internal static DateTime ReadTLStamp(this BinaryReader reader) => reader.ReadInt32() switch
 		{
-			int unixstamp = reader.ReadInt32();
-			return unixstamp == int.MaxValue ? DateTime.MaxValue : new((unixstamp + 62135596800L) * 10000000, DateTimeKind.Utc);
-		}
+			<= 0 => default,
+			int.MaxValue => DateTime.MaxValue,
+			int unixstamp => new((unixstamp + 62135596800L) * 10000000, DateTimeKind.Utc)
+		};
 
 		internal static void WriteTLString(this BinaryWriter writer, string str)
 		{
