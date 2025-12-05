@@ -27,8 +27,88 @@ namespace WTelegram
 		public static readonly JsonSerializerOptions JsonOptions = new() { IncludeFields = true, WriteIndented = true,
 #if NET8_0_OR_GREATER
 			TypeInfoResolver = JsonSerializer.IsReflectionEnabledByDefault ? null : WTelegramContext.Default,
+			Converters = { new TLJsonConverter(), new JsonStringEnumConverter() },
 #endif
-			IgnoreReadOnlyProperties = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+			IgnoreReadOnlyProperties = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault };
+
+#if NET8_0_OR_GREATER
+		public sealed class TLJsonConverter : JsonConverter<object>
+		{
+			public override bool CanConvert(Type typeToConvert)
+				=> typeToConvert.IsAbstract || typeToConvert == typeof(Dictionary<long, TL.User>) || typeToConvert == typeof(Dictionary<long, TL.ChatBase>);
+			public override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+			{
+				if (typeToConvert == typeof(Dictionary<long, TL.User>))
+				{
+					if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException("Expected array for users dictionary");
+					var users = new Dictionary<long, TL.User>();
+					while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+					{
+						var user = JsonSerializer.Deserialize<TL.User>(ref reader, options);
+						if (user != null) users[user.id] = user;
+					}
+					return users;
+				}
+				else if (typeToConvert == typeof(Dictionary<long, TL.ChatBase>))
+				{
+					if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException("Expected array for chats dictionary");
+					var chats = new Dictionary<long, TL.ChatBase>();
+					while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+					{
+						var chat = (TL.ChatBase)Read(ref reader, typeof(TL.ChatBase), options);
+						if (chat != null) chats[chat.ID] = chat;
+					}
+					return chats;
+				}
+				else if (reader.TokenType == JsonTokenType.Null)
+					return null;
+				else if (reader.TokenType == JsonTokenType.StartObject)
+				{
+					var typeReader = reader;
+					if (!typeReader.Read() || typeReader.TokenType != JsonTokenType.PropertyName || typeReader.GetString() != "$")
+						throw new JsonException("Expected $ type property");
+					if (!typeReader.Read() || typeReader.TokenType != JsonTokenType.String)
+						throw new JsonException("Invalid $ type property");
+					var type = typeReader.GetString();
+					var actualType = typeToConvert.Assembly.GetType("TL." + type);
+					if (!typeToConvert.IsAssignableFrom(actualType))
+						throw new JsonException($"Incompatible $ type: {type} -> {typeToConvert}");
+					return JsonSerializer.Deserialize(ref reader, actualType, options);
+				}
+				throw new JsonException($"Unexpected token type: {reader.TokenType}");
+			}
+			public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
+			{
+				if (value is Dictionary<long, TL.User> users)
+				{
+					writer.WriteStartArray();
+					foreach (var element in users.Values)
+						JsonSerializer.Serialize(writer, element, options);
+					writer.WriteEndArray();
+				}
+				else if (value is Dictionary<long, TL.ChatBase> chats)
+				{
+					writer.WriteStartArray();
+					foreach (var element in chats.Values)
+						Write(writer, element, options);
+					writer.WriteEndArray();
+				}
+				else if (value is null)
+					writer.WriteNullValue();
+				else
+				{
+					var actualType = value.GetType();
+					var jsonObject = JsonSerializer.SerializeToElement(value, actualType, options);
+					writer.WriteStartObject();
+					writer.WriteString("$", actualType.Name);
+					foreach (var property in jsonObject.EnumerateObject())
+						if (char.IsLower(property.Name[0]))
+							property.WriteTo(writer);
+					writer.WriteEndObject();
+				}
+			}
+		}
+#endif
 
 		private static readonly ConsoleColor[] LogLevelToColor = [ ConsoleColor.DarkGray, ConsoleColor.DarkCyan,
 			ConsoleColor.Cyan, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.Magenta, ConsoleColor.DarkBlue ];
