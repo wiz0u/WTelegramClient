@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 218;					// fetched 11/15/2025 21:06:24
+		public const int Version = 220;					// fetched 12/06/2025 13:11:05
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -219,7 +219,7 @@ namespace TL
 			[0x41B3E202] = typeof(MessageActionPaymentRefunded),
 			[0x45D5B021] = typeof(MessageActionGiftStars),
 			[0xB00C47A2] = typeof(MessageActionPrizeStars),
-			[0xDB596550] = typeof(MessageActionStarGift),
+			[0xEA2C31D3] = typeof(MessageActionStarGift),
 			[0x95728543] = typeof(MessageActionStarGiftUnique),
 			[0xAC1F1FCD] = typeof(MessageActionPaidMessagesRefunded),
 			[0x84B88578] = typeof(MessageActionPaidMessagesPrice),
@@ -231,6 +231,8 @@ namespace TL
 			[0x69F916F8] = typeof(MessageActionSuggestedPostRefund),
 			[0xA8A3C699] = typeof(MessageActionGiftTon),
 			[0x2C8F2A25] = typeof(MessageActionSuggestBirthday),
+			[0x774278D4] = typeof(MessageActionStarGiftPurchaseOffer),
+			[0x73ADA76B] = typeof(MessageActionStarGiftPurchaseOfferDeclined),
 			[0xD58A08C6] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0x2331B22D] = typeof(PhotoEmpty),
@@ -1020,7 +1022,7 @@ namespace TL
 			[0x50CC03D3] = typeof(WebPageAttributeStickerSet),
 			[0xCF6F6DB8] = typeof(WebPageAttributeUniqueStarGift),
 			[0x31CAD303] = typeof(WebPageAttributeStarGiftCollection),
-			[0x034986AB] = typeof(WebPageAttributeStarGiftAuction),
+			[0x01C641C2] = typeof(WebPageAttributeStarGiftAuction),
 			[0x4899484E] = typeof(Messages_VotesList),
 			[0xF568028A] = typeof(BankCardOpenUrl),
 			[0x3E24E573] = typeof(Payments_BankCardData),
@@ -1384,8 +1386,8 @@ namespace TL
 			[0x4BA3A95A] = typeof(MessageReactor),
 			[0x94CE852A] = typeof(StarsGiveawayOption),
 			[0x54236209] = typeof(StarsGiveawayWinnersOption),
-			[0x1B9A4D7F] = typeof(StarGift),
-			[0xB0BF741B] = typeof(StarGiftUnique),
+			[0x313A9547] = typeof(StarGift),
+			[0x569D64C9] = typeof(StarGiftUnique),
 			[0xA388A368] = null,//Payments_StarGiftsNotModified
 			[0x2ED82995] = typeof(Payments_StarGifts),
 			[0x7903E3D9] = typeof(MessageReportOption),
@@ -1414,7 +1416,7 @@ namespace TL
 			[0x315A4974] = typeof(Users_UsersSlice),
 			[0x416C56E8] = typeof(Payments_UniqueStarGift),
 			[0x8C9A88AC] = typeof(Messages_WebPagePreview),
-			[0x8983A452] = typeof(SavedStarGift),
+			[0xEAD6805E] = typeof(SavedStarGift),
 			[0x95F389B1] = typeof(Payments_SavedStarGifts),
 			[0x69279795] = typeof(InputSavedStarGiftUser),
 			[0xF101AA7F] = typeof(InputSavedStarGiftChat),
@@ -1468,17 +1470,28 @@ namespace TL
 			[0x711D692D] = typeof(RecentStory),
 			[0x310240CC] = typeof(AuctionBidLevel),
 			[0xFE333952] = null,//StarGiftAuctionStateNotModified
-			[0x5DB04F4B] = typeof(StarGiftAuctionState),
-			[0x7D967C3A] = typeof(StarGiftAuctionStateFinished),
+			[0x771A4E66] = typeof(StarGiftAuctionState),
+			[0x972DABBF] = typeof(StarGiftAuctionStateFinished),
 			[0x2EEED1C4] = typeof(StarGiftAuctionUserState),
-			[0x0E98E474] = typeof(Payments_StarGiftAuctionState),
-			[0xAB60E20B] = typeof(StarGiftAuctionAcquiredGift),
+			[0x6B39F4EC] = typeof(Payments_StarGiftAuctionState),
+			[0x42B00348] = typeof(StarGiftAuctionAcquiredGift),
 			[0x7D5BD1F0] = typeof(Payments_StarGiftAuctionAcquiredGifts),
 			[0xD31BC45D] = typeof(StarGiftActiveAuctionState),
 			[0xDB33DAD0] = null,//Payments_StarGiftActiveAuctionsNotModified
-			[0x97F187D8] = typeof(Payments_StarGiftActiveAuctions),
+			[0xAEF6ABBC] = typeof(Payments_StarGiftActiveAuctions),
 			[0x02E16C98] = typeof(InputStarGiftAuction),
 			[0x7AB58308] = typeof(InputStarGiftAuctionSlug),
+			[0x98613EBF] = typeof(Passkey),
+			[0xF8E0AA1C] = typeof(Account_Passkeys),
+			[0xE16B5CE1] = typeof(Account_PasskeyRegistrationOptions),
+			[0xE2037789] = typeof(Auth_PasskeyLoginOptions),
+			[0x3E63935C] = typeof(InputPasskeyResponseRegister),
+			[0xC31FC14A] = typeof(InputPasskeyResponseLogin),
+			[0x3C27B78F] = typeof(InputPasskeyCredentialPublicKey),
+			[0xAFF56398] = typeof(StarGiftBackground),
+			[0x3AAE0528] = typeof(StarGiftAuctionRound),
+			[0x0AA021E5] = typeof(StarGiftAuctionRoundExtendable),
+			[0x46C6E36F] = typeof(Payments_StarGiftUpgradeAttributes),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),

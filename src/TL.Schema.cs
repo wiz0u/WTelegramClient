@@ -2988,7 +2988,7 @@ namespace TL
 		}
 	}
 	/// <summary>You received a <a href="https://corefork.telegram.org/api/gifts">gift, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGift"/></para></summary>
-	[TLDef(0xDB596550)]
+	[TLDef(0xEA2C31D3)]
 	public sealed partial class MessageActionStarGift : MessageAction
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -3014,6 +3014,7 @@ namespace TL
 		/// <summary>For <a href="https://corefork.telegram.org/api/gifts#prepaying-for-someone-elses-upgrade">separate upgrades</a>, the identifier of the message with the gift whose upgrade was prepaid (only valid for the receiver of the service message).</summary>
 		[IfFlag(15)] public int gift_msg_id;
 		[IfFlag(18)] public Peer to_id;
+		[IfFlag(19)] public int gift_num;
 
 		[Flags] public enum Flags : uint
 		{
@@ -3050,6 +3051,8 @@ namespace TL
 			auction_acquired = 0x20000,
 			/// <summary>Field <see cref="to_id"/> has a value</summary>
 			has_to_id = 0x40000,
+			/// <summary>Field <see cref="gift_num"/> has a value</summary>
+			has_gift_num = 0x80000,
 		}
 	}
 	/// <summary>A <a href="https://corefork.telegram.org/api/gifts">gift »</a> was upgraded to a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGiftUnique"/></para></summary>
@@ -3107,6 +3110,7 @@ namespace TL
 			/// <summary>Field <see cref="drop_original_details_stars"/> has a value</summary>
 			has_drop_original_details_stars = 0x1000,
 			assigned = 0x2000,
+			from_offer = 0x4000,
 		}
 	}
 	/// <summary>Sent from peer A to B, indicates that A refunded all <a href="https://corefork.telegram.org/api/stars">stars</a> B previously paid to send messages to A, see <a href="https://corefork.telegram.org/api/paid-messages">here »</a> for more info on paid messages.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionPaidMessagesRefunded"/></para></summary>
@@ -3251,6 +3255,34 @@ namespace TL
 	public sealed partial class MessageActionSuggestBirthday : MessageAction
 	{
 		public Birthday birthday;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGiftPurchaseOffer"/></para></summary>
+	[TLDef(0x774278D4)]
+	public sealed partial class MessageActionStarGiftPurchaseOffer : MessageAction
+	{
+		public Flags flags;
+		public StarGiftBase gift;
+		public StarsAmountBase price;
+		public DateTime expires_at;
+
+		[Flags] public enum Flags : uint
+		{
+			accepted = 0x1,
+			declined = 0x2,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGiftPurchaseOfferDeclined"/></para></summary>
+	[TLDef(0x73ADA76B)]
+	public sealed partial class MessageActionStarGiftPurchaseOfferDeclined : MessageAction
+	{
+		public Flags flags;
+		public StarGiftBase gift;
+		public StarsAmountBase price;
+
+		[Flags] public enum Flags : uint
+		{
+			expired = 0x1,
+		}
 	}
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
@@ -14553,14 +14585,11 @@ namespace TL
 		public DocumentBase[] icons;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/webPageAttributeStarGiftAuction"/></para></summary>
-	[TLDef(0x034986AB)]
+	[TLDef(0x01C641C2)]
 	public sealed partial class WebPageAttributeStarGiftAuction : WebPageAttribute
 	{
 		public StarGiftBase gift;
 		public DateTime end_date;
-		public int center_color;
-		public int edge_color;
-		public int text_color;
 	}
 
 	/// <summary>How users voted in a poll		<para>See <a href="https://corefork.telegram.org/constructor/messages.votesList"/></para></summary>
@@ -20258,6 +20287,7 @@ namespace TL
 			stargift_drop_original_details = 0x4000000,
 			phonegroup_message = 0x8000000,
 			stargift_auction_bid = 0x10000000,
+			offer = 0x20000000,
 		}
 	}
 
@@ -20642,7 +20672,7 @@ namespace TL
 		public virtual Peer ReleasedBy => default;
 	}
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/gifts">star gift, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/starGift"/></para></summary>
-	[TLDef(0x1B9A4D7F)]
+	[TLDef(0x313A9547)]
 	public sealed partial class StarGift : StarGiftBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -20681,6 +20711,9 @@ namespace TL
 		[IfFlag(9)] public DateTime locked_until_date;
 		[IfFlag(11)] public string auction_slug;
 		[IfFlag(11)] public int gifts_per_round;
+		[IfFlag(11)] public DateTime auction_start_date;
+		[IfFlag(12)] public int upgrade_variants;
+		[IfFlag(13)] public StarGiftBackground background;
 
 		[Flags] public enum Flags : uint
 		{
@@ -20706,6 +20739,10 @@ namespace TL
 			has_locked_until_date = 0x200,
 			peer_color_available = 0x400,
 			auction = 0x800,
+			/// <summary>Field <see cref="upgrade_variants"/> has a value</summary>
+			has_upgrade_variants = 0x1000,
+			/// <summary>Field <see cref="background"/> has a value</summary>
+			has_background = 0x2000,
 		}
 
 		/// <summary>Identifier of the gift</summary>
@@ -20718,7 +20755,7 @@ namespace TL
 		public override Peer ReleasedBy => released_by;
 	}
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible star gift, see here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftUnique"/></para></summary>
-	[TLDef(0xB0BF741B)]
+	[TLDef(0x569D64C9)]
 	public sealed partial class StarGiftUnique : StarGiftBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -20755,10 +20792,12 @@ namespace TL
 		[IfFlag(8)] public long value_amount;
 		/// <summary>Currency for the gift's price.</summary>
 		[IfFlag(8)] public string value_currency;
+		[IfFlag(8)] public long value_usd_amount;
 		/// <summary>The current chat where the associated <a href="https://corefork.telegram.org/api/themes#chat-themes">chat theme</a> is installed, if any (gift-based themes can only be installed in one chat at a time).</summary>
 		[IfFlag(10)] public Peer theme_peer;
 		[IfFlag(11)] public PeerColorBase peer_color;
 		[IfFlag(12)] public Peer host_id;
+		[IfFlag(13)] public int offer_min_stars;
 
 		[Flags] public enum Flags : uint
 		{
@@ -20778,7 +20817,7 @@ namespace TL
 			require_premium = 0x40,
 			/// <summary>Whether the gift can be bought only using Toncoins.</summary>
 			resale_ton_only = 0x80,
-			/// <summary>Fields <see cref="value_amount"/> and <see cref="value_currency"/> have a value</summary>
+			/// <summary>Fields <see cref="value_amount"/>, <see cref="value_currency"/> and <see cref="value_usd_amount"/> have a value</summary>
 			has_value_amount = 0x100,
 			/// <summary>A chat theme associated to this gift is available, <a href="https://corefork.telegram.org/api/themes#chat-themes">see here »</a> for more info on how to use it.</summary>
 			theme_available = 0x200,
@@ -20788,6 +20827,8 @@ namespace TL
 			has_peer_color = 0x800,
 			/// <summary>Field <see cref="host_id"/> has a value</summary>
 			has_host_id = 0x1000,
+			/// <summary>Field <see cref="offer_min_stars"/> has a value</summary>
+			has_offer_min_stars = 0x2000,
 		}
 
 		/// <summary>Identifier of the collectible gift.</summary>
@@ -21228,7 +21269,7 @@ namespace TL
 	}
 
 	/// <summary>Represents a <a href="https://corefork.telegram.org/api/gifts">gift</a> owned by a peer.		<para>See <a href="https://corefork.telegram.org/constructor/savedStarGift"/></para></summary>
-	[TLDef(0x8983A452)]
+	[TLDef(0xEAD6805E)]
 	public sealed partial class SavedStarGift : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -21262,6 +21303,7 @@ namespace TL
 		/// <summary><a href="https://corefork.telegram.org/api/gifts#prepaying-for-someone-elses-upgrade">Hash to prepay for a gift upgrade separately »</a>.</summary>
 		[IfFlag(16)] public string prepaid_upgrade_hash;
 		[IfFlag(18)] public long drop_original_details_stars;
+		[IfFlag(19)] public int gift_num;
 
 		[Flags] public enum Flags : uint
 		{
@@ -21303,6 +21345,8 @@ namespace TL
 			upgrade_separate = 0x20000,
 			/// <summary>Field <see cref="drop_original_details_stars"/> has a value</summary>
 			has_drop_original_details_stars = 0x40000,
+			/// <summary>Field <see cref="gift_num"/> has a value</summary>
+			has_gift_num = 0x80000,
 		}
 	}
 
@@ -21946,7 +21990,6 @@ namespace TL
 		{
 			top = 0x1,
 			my = 0x2,
-			anonymous = 0x4,
 			has_peer_id = 0x8,
 		}
 	}
@@ -21994,7 +22037,7 @@ namespace TL
 		public virtual DateTime EndDate => default;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAuctionState"/></para></summary>
-	[TLDef(0x5DB04F4B)]
+	[TLDef(0x771A4E66)]
 	public sealed partial class StarGiftAuctionState : StarGiftAuctionStateBase
 	{
 		public int version;
@@ -22004,20 +22047,32 @@ namespace TL
 		public AuctionBidLevel[] bid_levels;
 		public long[] top_bidders;
 		public DateTime next_round_at;
+		public int last_gift_num;
 		public int gifts_left;
 		public int current_round;
 		public int total_rounds;
+		public StarGiftAuctionRound[] rounds;
 
 		public override DateTime StartDate => start_date;
 		public override DateTime EndDate => end_date;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAuctionStateFinished"/></para></summary>
-	[TLDef(0x7D967C3A)]
+	[TLDef(0x972DABBF)]
 	public sealed partial class StarGiftAuctionStateFinished : StarGiftAuctionStateBase
 	{
+		public Flags flags;
 		public DateTime start_date;
 		public DateTime end_date;
 		public long average_price;
+		[IfFlag(0)] public int listed_count;
+		[IfFlag(1)] public int fragment_listed_count;
+		[IfFlag(1)] public string fragment_listed_url;
+
+		[Flags] public enum Flags : uint
+		{
+			has_listed_count = 0x1,
+			has_fragment_listed_count = 0x2,
+		}
 
 		public override DateTime StartDate => start_date;
 		public override DateTime EndDate => end_date;
@@ -22042,18 +22097,21 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.starGiftAuctionState"/></para></summary>
-	[TLDef(0x0E98E474)]
-	public sealed partial class Payments_StarGiftAuctionState : IObject
+	[TLDef(0x6B39F4EC)]
+	public sealed partial class Payments_StarGiftAuctionState : IObject, IPeerResolver
 	{
 		public StarGiftBase gift;
 		public StarGiftAuctionStateBase state;
 		public StarGiftAuctionUserState user_state;
 		public int timeout;
 		public Dictionary<long, User> users;
+		public Dictionary<long, ChatBase> chats;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAuctionAcquiredGift"/></para></summary>
-	[TLDef(0xAB60E20B)]
+	[TLDef(0x42B00348)]
 	public sealed partial class StarGiftAuctionAcquiredGift : IObject
 	{
 		public Flags flags;
@@ -22063,11 +22121,13 @@ namespace TL
 		public int round;
 		public int pos;
 		[IfFlag(1)] public TextWithEntities message;
+		[IfFlag(2)] public int gift_num;
 
 		[Flags] public enum Flags : uint
 		{
 			name_hidden = 0x1,
 			has_message = 0x2,
+			has_gift_num = 0x4,
 		}
 	}
 
@@ -22093,11 +22153,14 @@ namespace TL
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.starGiftActiveAuctions"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/payments.starGiftActiveAuctionsNotModified">payments.starGiftActiveAuctionsNotModified</a></remarks>
-	[TLDef(0x97F187D8)]
-	public sealed partial class Payments_StarGiftActiveAuctions : IObject
+	[TLDef(0xAEF6ABBC)]
+	public sealed partial class Payments_StarGiftActiveAuctions : IObject, IPeerResolver
 	{
 		public StarGiftActiveAuctionState[] auctions;
 		public Dictionary<long, User> users;
+		public Dictionary<long, ChatBase> chats;
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputStarGiftAuction"/></para></summary>
@@ -22113,5 +22176,106 @@ namespace TL
 	public sealed partial class InputStarGiftAuctionSlug : InputStarGiftAuctionBase
 	{
 		public string slug;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/passkey"/></para></summary>
+	[TLDef(0x98613EBF)]
+	public sealed partial class Passkey : IObject
+	{
+		public Flags flags;
+		public string id;
+		public string name;
+		public DateTime date;
+		[IfFlag(0)] public long software_emoji_id;
+		[IfFlag(1)] public DateTime last_usage_date;
+
+		[Flags] public enum Flags : uint
+		{
+			has_software_emoji_id = 0x1,
+			has_last_usage_date = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.passkeys"/></para></summary>
+	[TLDef(0xF8E0AA1C)]
+	public sealed partial class Account_Passkeys : IObject
+	{
+		public Passkey[] passkeys;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/account.passkeyRegistrationOptions"/></para></summary>
+	[TLDef(0xE16B5CE1)]
+	public sealed partial class Account_PasskeyRegistrationOptions : IObject
+	{
+		public DataJSON options;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.passkeyLoginOptions"/></para></summary>
+	[TLDef(0xE2037789)]
+	public sealed partial class Auth_PasskeyLoginOptions : IObject
+	{
+		public DataJSON options;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputPasskeyResponse"/></para></summary>
+	public abstract partial class InputPasskeyResponse : IObject
+	{
+		public DataJSON client_data;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputPasskeyResponseRegister"/></para></summary>
+	[TLDef(0x3E63935C, inheritBefore = true)]
+	public sealed partial class InputPasskeyResponseRegister : InputPasskeyResponse
+	{
+		public byte[] attestation_data;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputPasskeyResponseLogin"/></para></summary>
+	[TLDef(0xC31FC14A, inheritBefore = true)]
+	public sealed partial class InputPasskeyResponseLogin : InputPasskeyResponse
+	{
+		public byte[] authenticator_data;
+		public byte[] signature;
+		public string user_handle;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputPasskeyCredential"/></para></summary>
+	public abstract partial class InputPasskeyCredential : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputPasskeyCredentialPublicKey"/></para></summary>
+	[TLDef(0x3C27B78F)]
+	public sealed partial class InputPasskeyCredentialPublicKey : InputPasskeyCredential
+	{
+		public string id;
+		public string raw_id;
+		public InputPasskeyResponse response;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftBackground"/></para></summary>
+	[TLDef(0xAFF56398)]
+	public sealed partial class StarGiftBackground : IObject
+	{
+		public int center_color;
+		public int edge_color;
+		public int text_color;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAuctionRound"/></para></summary>
+	[TLDef(0x3AAE0528)]
+	public partial class StarGiftAuctionRound : IObject
+	{
+		public int num;
+		public int duration;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAuctionRoundExtendable"/></para></summary>
+	[TLDef(0x0AA021E5, inheritBefore = true)]
+	public sealed partial class StarGiftAuctionRoundExtendable : StarGiftAuctionRound
+	{
+		public int extend_top;
+		public int extend_window;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.starGiftUpgradeAttributes"/></para></summary>
+	[TLDef(0x46C6E36F)]
+	public sealed partial class Payments_StarGiftUpgradeAttributes : IObject
+	{
+		public StarGiftAttribute[] attributes;
 	}
 }

@@ -396,6 +396,24 @@ namespace TL
 				form_id = form_id,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.initPasskeyLogin"/></para></summary>
+		public static Task<Auth_PasskeyLoginOptions> Auth_InitPasskeyLogin(this Client client, int api_id, string api_hash)
+			=> client.Invoke(new Auth_InitPasskeyLogin
+			{
+				api_id = api_id,
+				api_hash = api_hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.finishPasskeyLogin"/></para></summary>
+		public static Task<Auth_AuthorizationBase> Auth_FinishPasskeyLogin(this Client client, InputPasskeyCredential credential, int? from_dc_id = null, long? from_auth_key_id = null)
+			=> client.Invoke(new Auth_FinishPasskeyLogin
+			{
+				flags = (Auth_FinishPasskeyLogin.Flags)((from_dc_id != null ? 0x1 : 0) | (from_auth_key_id != null ? 0x1 : 0)),
+				credential = credential,
+				from_dc_id = from_dc_id ?? default,
+				from_auth_key_id = from_auth_key_id ?? default,
+			});
+
 		/// <summary>Register device to receive <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>		<para>See <a href="https://corefork.telegram.org/method/account.registerDevice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.registerDevice#possible-errors">details</a>)</para></summary>
 		/// <param name="no_muted">Avoid receiving (silent and invisible background) notifications. Useful to save battery.</param>
 		/// <param name="token_type">Device token type, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
@@ -1510,6 +1528,32 @@ namespace TL
 				hash = hash,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.initPasskeyRegistration"/></para></summary>
+		public static Task<Account_PasskeyRegistrationOptions> Account_InitPasskeyRegistration(this Client client)
+			=> client.Invoke(new Account_InitPasskeyRegistration
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.registerPasskey"/></para></summary>
+		public static Task<Passkey> Account_RegisterPasskey(this Client client, InputPasskeyCredential credential)
+			=> client.Invoke(new Account_RegisterPasskey
+			{
+				credential = credential,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.getPasskeys"/></para></summary>
+		public static Task<Account_Passkeys> Account_GetPasskeys(this Client client)
+			=> client.Invoke(new Account_GetPasskeys
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/account.deletePasskey"/></para></summary>
+		public static Task<bool> Account_DeletePasskey(this Client client, string id)
+			=> client.Invoke(new Account_DeletePasskey
+			{
+				id = id,
+			});
+
 		/// <summary>Returns basic user info according to their identifiers.		<para>See <a href="https://corefork.telegram.org/method/users.getUsers"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/users.getUsers#possible-errors">details</a>)</para></summary>
 		/// <param name="id">List of user identifiers</param>
 		public static Task<UserBase[]> Users_GetUsers(this Client client, params InputUserBase[] id)
@@ -2089,10 +2133,10 @@ namespace TL
 		/// <param name="video_timestamp">Start playing the video at the specified timestamp (seconds).</param>
 		/// <param name="allow_paid_stars">For <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>, specifies the amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> the user has agreed to pay in order to send the message.</param>
 		/// <param name="suggested_post">Used to <a href="https://corefork.telegram.org/api/suggested-posts">suggest a post to a channel, see here »</a> for more info on the full flow.</param>
-		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, int? video_timestamp = null, long? allow_paid_stars = null, InputReplyTo reply_to = null, SuggestedPost suggested_post = null, int? schedule_repeat_period = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false)
+		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, int? video_timestamp = null, long? allow_paid_stars = null, InputReplyTo reply_to = null, SuggestedPost suggested_post = null, int? schedule_repeat_period = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false)
 			=> client.Invoke(new Messages_ForwardMessages
 			{
-				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (video_timestamp != null ? 0x100000 : 0) | (allow_paid_stars != null ? 0x200000 : 0) | (reply_to != null ? 0x400000 : 0) | (suggested_post != null ? 0x800000 : 0) | (schedule_repeat_period != null ? 0x1000000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
+				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (video_timestamp != null ? 0x100000 : 0) | (allow_paid_stars != null ? 0x200000 : 0) | (reply_to != null ? 0x400000 : 0) | (suggested_post != null ? 0x800000 : 0) | (schedule_repeat_period != null ? 0x1000000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
 				from_peer = from_peer,
 				id = id,
 				random_id = random_id,
@@ -2103,6 +2147,7 @@ namespace TL
 				schedule_repeat_period = schedule_repeat_period ?? default,
 				send_as = send_as,
 				quick_reply_shortcut = quick_reply_shortcut,
+				effect = effect ?? default,
 				video_timestamp = video_timestamp ?? default,
 				allow_paid_stars = allow_paid_stars ?? default,
 				suggested_post = suggested_post,
@@ -6804,6 +6849,34 @@ namespace TL
 				hash = hash,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.resolveStarGiftOffer"/></para></summary>
+		public static Task<UpdatesBase> Payments_ResolveStarGiftOffer(this Client client, int offer_msg_id, bool decline = false)
+			=> client.Invoke(new Payments_ResolveStarGiftOffer
+			{
+				flags = (Payments_ResolveStarGiftOffer.Flags)(decline ? 0x1 : 0),
+				offer_msg_id = offer_msg_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.sendStarGiftOffer"/></para></summary>
+		public static Task<UpdatesBase> Payments_SendStarGiftOffer(this Client client, InputPeer peer, string slug, StarsAmountBase price, int duration, long random_id, long? allow_paid_stars = null)
+			=> client.Invoke(new Payments_SendStarGiftOffer
+			{
+				flags = (Payments_SendStarGiftOffer.Flags)(allow_paid_stars != null ? 0x1 : 0),
+				peer = peer,
+				slug = slug,
+				price = price,
+				duration = duration,
+				random_id = random_id,
+				allow_paid_stars = allow_paid_stars ?? default,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftUpgradeAttributes"/></para></summary>
+		public static Task<Payments_StarGiftUpgradeAttributes> Payments_GetStarGiftUpgradeAttributes(this Client client, long gift_id)
+			=> client.Invoke(new Payments_GetStarGiftUpgradeAttributes
+			{
+				gift_id = gift_id,
+			});
+
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
 		/// <param name="masks">Whether this is a mask stickerset</param>
 		/// <param name="emojis">Whether this is a <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a> stickerset.</param>
@@ -8489,6 +8562,27 @@ namespace TL.Methods
 		public long form_id;
 	}
 
+	[TLDef(0x518AD0B7)]
+	public sealed partial class Auth_InitPasskeyLogin : IMethod<Auth_PasskeyLoginOptions>
+	{
+		public int api_id;
+		public string api_hash;
+	}
+
+	[TLDef(0x9857AD07)]
+	public sealed partial class Auth_FinishPasskeyLogin : IMethod<Auth_AuthorizationBase>
+	{
+		public Flags flags;
+		public InputPasskeyCredential credential;
+		[IfFlag(0)] public int from_dc_id;
+		[IfFlag(0)] public long from_auth_key_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_from_dc_id = 0x1,
+		}
+	}
+
 	[TLDef(0xEC86017A)]
 	public sealed partial class Account_RegisterDevice : IMethod<bool>
 	{
@@ -9392,6 +9486,24 @@ namespace TL.Methods
 		public long hash;
 	}
 
+	[TLDef(0x429547E8)]
+	public sealed partial class Account_InitPasskeyRegistration : IMethod<Account_PasskeyRegistrationOptions> { }
+
+	[TLDef(0x55B41FD6)]
+	public sealed partial class Account_RegisterPasskey : IMethod<Passkey>
+	{
+		public InputPasskeyCredential credential;
+	}
+
+	[TLDef(0xEA1F0C52)]
+	public sealed partial class Account_GetPasskeys : IMethod<Account_Passkeys> { }
+
+	[TLDef(0xF5B5563F)]
+	public sealed partial class Account_DeletePasskey : IMethod<bool>
+	{
+		public string id;
+	}
+
 	[TLDef(0x0D91A548)]
 	public sealed partial class Users_GetUsers : IMethod<UserBase[]>
 	{
@@ -9877,7 +9989,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x41D41ADE)]
+	[TLDef(0x13704A7C)]
 	public sealed partial class Messages_ForwardMessages : IMethod<UpdatesBase>
 	{
 		public Flags flags;
@@ -9891,6 +10003,7 @@ namespace TL.Methods
 		[IfFlag(24)] public int schedule_repeat_period;
 		[IfFlag(13)] public InputPeer send_as;
 		[IfFlag(17)] public InputQuickReplyShortcutBase quick_reply_shortcut;
+		[IfFlag(18)] public long effect;
 		[IfFlag(20)] public int video_timestamp;
 		[IfFlag(21)] public long allow_paid_stars;
 		[IfFlag(23)] public SuggestedPost suggested_post;
@@ -9907,6 +10020,7 @@ namespace TL.Methods
 			has_send_as = 0x2000,
 			noforwards = 0x4000,
 			has_quick_reply_shortcut = 0x20000,
+			has_effect = 0x40000,
 			allow_paid_floodskip = 0x80000,
 			has_video_timestamp = 0x100000,
 			has_allow_paid_stars = 0x200000,
@@ -13852,6 +13966,41 @@ namespace TL.Methods
 	public sealed partial class Payments_GetStarGiftActiveAuctions : IMethod<Payments_StarGiftActiveAuctions>
 	{
 		public long hash;
+	}
+
+	[TLDef(0xE9CE781C)]
+	public sealed partial class Payments_ResolveStarGiftOffer : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public int offer_msg_id;
+
+		[Flags] public enum Flags : uint
+		{
+			decline = 0x1,
+		}
+	}
+
+	[TLDef(0x8FB86B41)]
+	public sealed partial class Payments_SendStarGiftOffer : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public string slug;
+		public StarsAmountBase price;
+		public int duration;
+		public long random_id;
+		[IfFlag(0)] public long allow_paid_stars;
+
+		[Flags] public enum Flags : uint
+		{
+			has_allow_paid_stars = 0x1,
+		}
+	}
+
+	[TLDef(0x6D038B58)]
+	public sealed partial class Payments_GetStarGiftUpgradeAttributes : IMethod<Payments_StarGiftUpgradeAttributes>
+	{
+		public long gift_id;
 	}
 
 	[TLDef(0x9021AB67)]
