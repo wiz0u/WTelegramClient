@@ -871,6 +871,7 @@ namespace WTelegram
 		{
 			_cts = new();
 			IPEndPoint endpoint = null;
+			bool needMigrate = false;
 			byte[] preamble, secret = null;
 			int dcId = _dcSession?.DcID ?? 0;
 			if (dcId == 0) dcId = 2;
@@ -943,6 +944,7 @@ namespace WTelegram
 						{
 							endpoint = GetDefaultEndpoint(out defaultDc); // re-ask callback for an address
 							if (!triedEndpoints.Add(endpoint)) throw;
+							needMigrate = _dcSession.DataCenter.id == _session.MainDC && defaultDc != _session.MainDC;
 							_dcSession.Client = null;
 							// is it address for a known DCSession?
 							_dcSession = _session.DCSessions.Values.FirstOrDefault(dcs => dcs.EndPoint.Equals(endpoint));
@@ -1001,6 +1003,7 @@ namespace WTelegram
 						_session.DCSessions[TLConfig.this_dc] = _dcSession;
 					}
 					if (_session.MainDC == 0) _session.MainDC = TLConfig.this_dc;
+					else if (needMigrate) await MigrateToDC(_session.MainDC);
 				}
 			}
 			finally
