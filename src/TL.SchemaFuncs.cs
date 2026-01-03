@@ -4857,6 +4857,22 @@ namespace TL
 				top_msg_id = top_msg_id,
 			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getEmojiGameInfo"/></para></summary>
+		public static Task<Messages_EmojiGameInfo> Messages_GetEmojiGameInfo(this Client client)
+			=> client.Invoke(new Messages_GetEmojiGameInfo
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.summarizeText"/></para></summary>
+		public static Task<TextWithEntities> Messages_SummarizeText(this Client client, InputPeer peer, int id, string to_lang = null)
+			=> client.Invoke(new Messages_SummarizeText
+			{
+				flags = (Messages_SummarizeText.Flags)(to_lang != null ? 0x1 : 0),
+				peer = peer,
+				id = id,
+				to_lang = to_lang,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -12347,6 +12363,23 @@ namespace TL.Methods
 	{
 		public InputPeer peer;
 		public int top_msg_id;
+	}
+
+	[TLDef(0xFB7E8CA7)]
+	public sealed partial class Messages_GetEmojiGameInfo : IMethod<Messages_EmojiGameInfo> { }
+
+	[TLDef(0x9D4104E2)]
+	public sealed partial class Messages_SummarizeText : IMethod<TextWithEntities>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int id;
+		[IfFlag(0)] public string to_lang;
+
+		[Flags] public enum Flags : uint
+		{
+			has_to_lang = 0x1,
+		}
 	}
 
 	[TLDef(0xEDD4882A)]

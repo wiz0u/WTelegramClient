@@ -528,6 +528,14 @@ namespace TL
 		/// <summary>The todo list.</summary>
 		public TodoList todo;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputMediaStakeDice"/></para></summary>
+	[TLDef(0xF3A9244A)]
+	public sealed partial class InputMediaStakeDice : InputMedia
+	{
+		public string game_hash;
+		public long ton_amount;
+		public byte[] client_seed;
+	}
 
 	/// <summary>Defines a new group profile photo.		<para>See <a href="https://corefork.telegram.org/type/InputChatPhoto"/></para>		<para>Derived classes: <see cref="InputChatUploadedPhoto"/>, <see cref="InputChatPhoto"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/inputChatPhotoEmpty">inputChatPhotoEmpty</a></remarks>
@@ -1816,7 +1824,7 @@ namespace TL
 		public override Peer Peer => peer_id;
 	}
 	/// <summary>A message		<para>See <a href="https://corefork.telegram.org/constructor/message"/></para></summary>
-	[TLDef(0xB92F76CF)]
+	[TLDef(0x9CB490E9)]
 	public sealed partial class Message : MessageBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1882,6 +1890,7 @@ namespace TL
 		/// <summary>Used to <a href="https://corefork.telegram.org/api/suggested-posts">suggest a post to a channel, see here »</a> for more info on the full flow.</summary>
 		[IfFlag(39)] public SuggestedPost suggested_post;
 		[IfFlag(42)] public int schedule_repeat_period;
+		[IfFlag(43)] public string summary_from_language;
 
 		[Flags] public enum Flags : uint
 		{
@@ -1969,6 +1978,8 @@ namespace TL
 			paid_suggested_post_ton = 0x200,
 			/// <summary>Field <see cref="schedule_repeat_period"/> has a value</summary>
 			has_schedule_repeat_period = 0x400,
+			/// <summary>Field <see cref="summary_from_language"/> has a value</summary>
+			has_summary_from_language = 0x800,
 		}
 
 		/// <summary>ID of the message</summary>
@@ -2264,13 +2275,21 @@ namespace TL
 		public PollResults results;
 	}
 	/// <summary><a href="https://corefork.telegram.org/api/dice">Dice-based animated sticker</a>		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaDice"/></para></summary>
-	[TLDef(0x3F7EE58B)]
+	[TLDef(0x08CBEC07)]
 	public sealed partial class MessageMediaDice : MessageMedia
 	{
+		public Flags flags;
 		/// <summary><a href="https://corefork.telegram.org/api/dice">Dice value</a></summary>
 		public int value;
 		/// <summary>The emoji, for now 🏀, 🎲 and 🎯 are supported</summary>
 		public string emoticon;
+		[IfFlag(0)] public Messages_EmojiGameOutcome game_outcome;
+
+		[Flags] public enum Flags : uint
+		{
+			/// <summary>Field <see cref="game_outcome"/> has a value</summary>
+			has_game_outcome = 0x1,
+		}
 	}
 	/// <summary>Represents a forwarded <a href="https://corefork.telegram.org/api/stories">story</a> or a story mention.		<para>See <a href="https://corefork.telegram.org/constructor/messageMediaStory"/></para></summary>
 	[TLDef(0x68CB6283)]
@@ -6322,6 +6341,12 @@ namespace TL
 	{
 		public long gift_id;
 		public StarGiftAuctionUserState user_state;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateEmojiGameInfo"/></para></summary>
+	[TLDef(0xFB9C547A)]
+	public sealed partial class UpdateEmojiGameInfo : Update
+	{
+		public Messages_EmojiGameInfo info;
 	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
@@ -22247,6 +22272,12 @@ namespace TL
 		public string raw_id;
 		public InputPasskeyResponse response;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputPasskeyCredentialFirebasePNV"/></para></summary>
+	[TLDef(0x5B1CCB28)]
+	public sealed partial class InputPasskeyCredentialFirebasePNV : InputPasskeyCredential
+	{
+		public string pnv_token;
+	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftBackground"/></para></summary>
 	[TLDef(0xAFF56398)]
@@ -22277,5 +22308,36 @@ namespace TL
 	public sealed partial class Payments_StarGiftUpgradeAttributes : IObject
 	{
 		public StarGiftAttribute[] attributes;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.emojiGameOutcome"/></para></summary>
+	[TLDef(0xDA2AD647)]
+	public sealed partial class Messages_EmojiGameOutcome : IObject
+	{
+		public byte[] seed;
+		public long stake_ton_amount;
+		public long ton_amount;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/messages.EmojiGameInfo"/></para></summary>
+	public abstract partial class Messages_EmojiGameInfo : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.emojiGameUnavailable"/></para></summary>
+	[TLDef(0x59E65335)]
+	public sealed partial class Messages_EmojiGameUnavailable : Messages_EmojiGameInfo { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messages.emojiGameDiceInfo"/></para></summary>
+	[TLDef(0x44E56023)]
+	public sealed partial class Messages_EmojiGameDiceInfo : Messages_EmojiGameInfo
+	{
+		public Flags flags;
+		public string game_hash;
+		public long prev_stake;
+		public int current_streak;
+		public int[] params_;
+		[IfFlag(0)] public int plays_left;
+
+		[Flags] public enum Flags : uint
+		{
+			has_plays_left = 0x1,
+		}
 	}
 }

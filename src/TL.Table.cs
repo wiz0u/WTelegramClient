@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 220;					// fetched 12/06/2025 13:11:05
+		public const int Version = 221;					// fetched 01/03/2026 17:38:29
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -107,6 +107,7 @@ namespace TL
 			[0xC21B8849] = typeof(InputMediaWebPage),
 			[0xC4103386] = typeof(InputMediaPaidMedia),
 			[0x9FC55FDE] = typeof(InputMediaTodo),
+			[0xF3A9244A] = typeof(InputMediaStakeDice),
 			[0x1CA48F57] = null,//InputChatPhotoEmpty
 			[0xBDCDAEC0] = typeof(InputChatUploadedPhoto),
 			[0x8953AD37] = typeof(InputChatPhoto),
@@ -152,7 +153,7 @@ namespace TL
 			[0x37C1011C] = null,//ChatPhotoEmpty
 			[0x1C6E1C11] = typeof(ChatPhoto),
 			[0x90A6CA84] = typeof(MessageEmpty),
-			[0xB92F76CF] = typeof(Message),
+			[0x9CB490E9] = typeof(Message),
 			[0x7A800E0A] = typeof(MessageService),
 			[0x3DED6320] = null,//MessageMediaEmpty
 			[0x695150D7] = typeof(MessageMediaPhoto),
@@ -166,7 +167,7 @@ namespace TL
 			[0xF6A548D3] = typeof(MessageMediaInvoice),
 			[0xB940C666] = typeof(MessageMediaGeoLive),
 			[0x4BD6E798] = typeof(MessageMediaPoll),
-			[0x3F7EE58B] = typeof(MessageMediaDice),
+			[0x08CBEC07] = typeof(MessageMediaDice),
 			[0x68CB6283] = typeof(MessageMediaStory),
 			[0xAA073BEB] = typeof(MessageMediaGiveaway),
 			[0xCEAA3EA1] = typeof(MessageMediaGiveawayResults),
@@ -448,6 +449,7 @@ namespace TL
 			[0x3E85E92C] = typeof(UpdateDeleteGroupCallMessages),
 			[0x48E246C2] = typeof(UpdateStarGiftAuctionState),
 			[0xDC58F31E] = typeof(UpdateStarGiftAuctionUserState),
+			[0xFB9C547A] = typeof(UpdateEmojiGameInfo),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -1488,10 +1490,14 @@ namespace TL
 			[0x3E63935C] = typeof(InputPasskeyResponseRegister),
 			[0xC31FC14A] = typeof(InputPasskeyResponseLogin),
 			[0x3C27B78F] = typeof(InputPasskeyCredentialPublicKey),
+			[0x5B1CCB28] = typeof(InputPasskeyCredentialFirebasePNV),
 			[0xAFF56398] = typeof(StarGiftBackground),
 			[0x3AAE0528] = typeof(StarGiftAuctionRound),
 			[0x0AA021E5] = typeof(StarGiftAuctionRoundExtendable),
 			[0x46C6E36F] = typeof(Payments_StarGiftUpgradeAttributes),
+			[0xDA2AD647] = typeof(Messages_EmojiGameOutcome),
+			[0x59E65335] = typeof(Messages_EmojiGameUnavailable),
+			[0x44E56023] = typeof(Messages_EmojiGameDiceInfo),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
