@@ -32,12 +32,17 @@ namespace TL
 							{   // update previously full user from min user:
 								// see https://github.com/tdlib/td/blob/master/td/telegram/UserManager.cpp#L2689
 								// and https://github.com/telegramdesktop/tdesktop/blob/dev/Telegram/SourceFiles/data/data_session.cpp#L515
-								const User.Flags updated_flags = (User.Flags)0x5DAFE000;
-								const User.Flags2 updated_flags2 = (User.Flags2)0x711;
+								const User.Flags updated_flags = User.Flags.deleted | User.Flags.bot | User.Flags.bot_chat_history |
+									User.Flags.bot_nochats | User.Flags.verified | User.Flags.restricted | User.Flags.has_bot_inline_placeholder |
+									User.Flags.bot_inline_geo | User.Flags.support | User.Flags.scam | User.Flags.fake | User.Flags.bot_attach_menu |
+									User.Flags.premium | User.Flags.has_emoji_status;
+								const User.Flags2 updated_flags2 = User.Flags2.has_usernames | User.Flags2.stories_unavailable |
+									User.Flags2.has_color | User.Flags2.has_profile_color | User.Flags2.contact_require_premium |
+									User.Flags2.bot_business | User.Flags2.bot_has_main_app | User.Flags2.bot_forum_view;
 								// tdlib updated flags: deleted | bot | bot_chat_history | bot_nochats | verified | bot_inline_geo
 								//  | support | scam | fake | bot_attach_menu | premium
 								// tdesktop non-updated flags:    bot | bot_chat_history | bot_nochats | bot_attach_menu
-								// updated flags2:    stories_unavailable (tdlib) | contact_require_premium (tdesktop)
+								// updated flags2:    stories_unavailable | main_app | bot_business | bot_forum_view (tdlib) | contact_require_premium (tdesktop)
 								prevUser.flags = (prevUser.flags & ~updated_flags) | (user.flags & updated_flags);
 								prevUser.flags2 = (prevUser.flags2 & ~updated_flags2) | (user.flags2 & updated_flags2);
 								prevUser.first_name ??= user.first_name;				// tdlib: not updated ; tdesktop: updated only if unknown
