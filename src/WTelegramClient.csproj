@@ -28,7 +28,7 @@ $(ReleaseNotes)</Description>
     <PackageTags>Telegram;MTProto;Client;Api;UserBot</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>$(ReleaseNotes)</PackageReleaseNotes>
-    <NoWarn>NETSDK1138;CS0419;CS1573;CS1591</NoWarn>
+    <NoWarn>NETSDK1138;CS0419;CS1573;CS1591;CA1850</NoWarn>
     <DefineConstants>TRACE;OBFUSCATION;MTPG</DefineConstants>
     <!--<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>-->
   </PropertyGroup>

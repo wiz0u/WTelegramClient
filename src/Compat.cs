@@ -75,7 +75,7 @@ namespace WTelegram
 static class Convert
 {
 	internal static string ToHexString(byte[] data) => BitConverter.ToString(data).Replace("-", "");
-	internal static byte[] FromHexString(string hex) => Enumerable.Range(0, hex.Length / 2).Select(i => System.Convert.ToByte(hex.Substring(i * 2, 2), 16)).ToArray();
+	internal static byte[] FromHexString(string hex) => [.. Enumerable.Range(0, hex.Length / 2).Select(i => System.Convert.ToByte(hex.Substring(i * 2, 2), 16))];
 }
 public class RandomNumberGenerator
 {

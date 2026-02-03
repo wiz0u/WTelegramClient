@@ -391,7 +391,9 @@ namespace WTelegram
 								_reactorReconnects = 0;
 						if (_reactorReconnects == 0)
 							throw;
+#pragma warning disable CA2016
 						await Task.Delay(5000);
+#pragma warning restore CA2016
 						if (_networkStream == null) return; // Dispose has been called in-between
 						await ConnectAsync(); // start a new reactor after 5 secs
 						lock (_pendingRpcs) // retry all pending requests
