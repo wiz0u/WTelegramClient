@@ -3308,10 +3308,10 @@ namespace TL
 		/// <param name="button_id">ID of the login button</param>
 		/// <param name="url">URL used for <a href="https://corefork.telegram.org/api/url-authorization#link-url-authorization">link URL authorization, click here for more info »</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/urlAuthResultDefault">urlAuthResultDefault</a></returns>
-		public static Task<UrlAuthResult> Messages_AcceptUrlAuth(this Client client, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null, bool write_allowed = false)
+		public static Task<UrlAuthResult> Messages_AcceptUrlAuth(this Client client, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null, bool write_allowed = false, bool share_phone_number = false)
 			=> client.Invoke(new Messages_AcceptUrlAuth
 			{
-				flags = (Messages_AcceptUrlAuth.Flags)((peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0) | (write_allowed ? 0x1 : 0)),
+				flags = (Messages_AcceptUrlAuth.Flags)((peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0) | (write_allowed ? 0x1 : 0) | (share_phone_number ? 0x8 : 0)),
 				peer = peer,
 				msg_id = msg_id ?? default,
 				button_id = button_id ?? default,
@@ -5914,6 +5914,13 @@ namespace TL
 				tab = tab,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/channels.getFutureCreatorAfterLeave"/></para></summary>
+		public static Task<UserBase> Channels_GetFutureCreatorAfterLeave(this Client client, InputChannelBase channel)
+			=> client.Invoke(new Channels_GetFutureCreatorAfterLeave
+			{
+				channel = channel,
+			});
+
 		/// <summary>Sends a custom request; for bots only		<para>See <a href="https://corefork.telegram.org/method/bots.sendCustomRequest"/> [bots: ✓ users: ✗]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.sendCustomRequest#possible-errors">details</a>)</para></summary>
 		/// <param name="custom_method">The method name</param>
 		/// <param name="params_">JSON-serialized method parameters</param>
@@ -6743,10 +6750,10 @@ namespace TL
 		/// <param name="attributes">Optionally filter gifts with the specified attributes. If no attributes of a specific type are specified, all attributes of that type are allowed.</param>
 		/// <param name="offset">Offset for pagination. If not equal to an empty string, <see cref="Payments_ResaleStarGifts"/>.<c>counters</c> will not be set to avoid returning the counters every time a new page is fetched.</param>
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
-		public static Task<Payments_ResaleStarGifts> Payments_GetResaleStarGifts(this Client client, long gift_id, string offset, int limit = int.MaxValue, long? attributes_hash = null, StarGiftAttributeId[] attributes = null, bool sort_by_price = false, bool sort_by_num = false)
+		public static Task<Payments_ResaleStarGifts> Payments_GetResaleStarGifts(this Client client, long gift_id, string offset, int limit = int.MaxValue, long? attributes_hash = null, StarGiftAttributeId[] attributes = null, bool sort_by_price = false, bool sort_by_num = false, bool for_craft = false)
 			=> client.Invoke(new Payments_GetResaleStarGifts
 			{
-				flags = (Payments_GetResaleStarGifts.Flags)((attributes_hash != null ? 0x1 : 0) | (attributes != null ? 0x8 : 0) | (sort_by_price ? 0x2 : 0) | (sort_by_num ? 0x4 : 0)),
+				flags = (Payments_GetResaleStarGifts.Flags)((attributes_hash != null ? 0x1 : 0) | (attributes != null ? 0x8 : 0) | (sort_by_price ? 0x2 : 0) | (sort_by_num ? 0x4 : 0) | (for_craft ? 0x10 : 0)),
 				attributes_hash = attributes_hash ?? default,
 				gift_id = gift_id,
 				attributes = attributes,
@@ -6891,6 +6898,22 @@ namespace TL
 			=> client.Invoke(new Payments_GetStarGiftUpgradeAttributes
 			{
 				gift_id = gift_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getCraftStarGifts"/></para></summary>
+		public static Task<Payments_SavedStarGifts> Payments_GetCraftStarGifts(this Client client, long gift_id, string offset, int limit = int.MaxValue)
+			=> client.Invoke(new Payments_GetCraftStarGifts
+			{
+				gift_id = gift_id,
+				offset = offset,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.craftStarGift"/></para></summary>
+		public static Task<UpdatesBase> Payments_CraftStarGift(this Client client, params InputSavedStarGift[] stargift)
+			=> client.Invoke(new Payments_CraftStarGift
+			{
+				stargift = stargift,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -11060,6 +11083,7 @@ namespace TL.Methods
 			write_allowed = 0x1,
 			has_peer = 0x2,
 			has_url = 0x4,
+			share_phone_number = 0x8,
 		}
 	}
 
@@ -13190,6 +13214,12 @@ namespace TL.Methods
 		public ProfileTab tab;
 	}
 
+	[TLDef(0xA00918AF)]
+	public sealed partial class Channels_GetFutureCreatorAfterLeave : IMethod<UserBase>
+	{
+		public InputChannelBase channel;
+	}
+
 	[TLDef(0xAA2769ED)]
 	public sealed partial class Bots_SendCustomRequest : IMethod<DataJSON>
 	{
@@ -13911,6 +13941,7 @@ namespace TL.Methods
 			sort_by_price = 0x2,
 			sort_by_num = 0x4,
 			has_attributes = 0x8,
+			for_craft = 0x10,
 		}
 	}
 
@@ -14034,6 +14065,20 @@ namespace TL.Methods
 	public sealed partial class Payments_GetStarGiftUpgradeAttributes : IMethod<Payments_StarGiftUpgradeAttributes>
 	{
 		public long gift_id;
+	}
+
+	[TLDef(0xFD05DD00)]
+	public sealed partial class Payments_GetCraftStarGifts : IMethod<Payments_SavedStarGifts>
+	{
+		public long gift_id;
+		public string offset;
+		public int limit;
+	}
+
+	[TLDef(0xB0F9684F)]
+	public sealed partial class Payments_CraftStarGift : IMethod<UpdatesBase>
+	{
+		public InputSavedStarGift[] stargift;
 	}
 
 	[TLDef(0x9021AB67)]
