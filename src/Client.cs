@@ -1584,7 +1584,7 @@ namespace WTelegram
 		/// <typeparam name="T">Expected type of the returned object</typeparam>
 		/// <param name="query">TL method structure</param>
 		/// <returns>Wait for the reply and return the resulting object, or throws an RpcException if an error was replied</returns>
-		public async Task<T> Invoke<T>(IMethod<T> query)
+		public virtual async Task<T> Invoke<T>(IMethod<T> query)
 		{
 			if (_dcSession.withoutUpdates && query is not IMethod<Pong> and not IMethod<FutureSalts>)
 				query = new TL.Methods.InvokeWithoutUpdates<T> { query = query };
