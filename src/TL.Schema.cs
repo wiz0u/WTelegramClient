@@ -2732,7 +2732,7 @@ namespace TL
 	[TLDef(0xEBBCA3CB)]
 	public sealed partial class MessageActionChatJoinedByRequest : MessageAction { }
 	/// <summary>Data from an opened <a href="https://corefork.telegram.org/api/bots/webapps">reply keyboard bot mini app</a> was relayed to the bot that owns it (bot side service message).		<para>See <a href="https://corefork.telegram.org/constructor/messageActionWebViewDataSentMe"/></para></summary>
-	[TLDef(0x47DD8079, inheritBefore = true)]
+	[TLDef(0x47DD8079, inheritAt = 0)]
 	public sealed partial class MessageActionWebViewDataSentMe : MessageActionWebViewDataSent
 	{
 		/// <summary>Relayed data.</summary>
@@ -4401,7 +4401,7 @@ namespace TL
 	}
 
 	/// <summary>Affected part of communication history with the user or in a chat.		<para>See <a href="https://corefork.telegram.org/constructor/messages.affectedHistory"/></para></summary>
-	[TLDef(0xB45C69D1, inheritBefore = true)]
+	[TLDef(0xB45C69D1, inheritAt = 0)]
 	public partial class Messages_AffectedHistory : Messages_AffectedMessages
 	{
 		/// <summary>If a parameter contains positive value, it is necessary to repeat the method call using the given value; during the proceeding of all the history the value itself shall gradually decrease</summary>
@@ -4531,7 +4531,7 @@ namespace TL
 		}
 	}
 	/// <summary>The user is preparing a message in a group; typing, recording, uploading, etc. This update is valid for 6 seconds. If no further updates of this kind are received after 6 seconds, it should be considered that the user stopped doing whatever they were doing		<para>See <a href="https://corefork.telegram.org/constructor/updateChatUserTyping"/></para></summary>
-	[TLDef(0x83487AF0, inheritBefore = true)]
+	[TLDef(0x83487AF0, inheritAt = 0)]
 	public sealed partial class UpdateChatUserTyping : UpdateChat
 	{
 		/// <summary>Peer that started typing (can be the chat itself, in case of anonymous admins).</summary>
@@ -4547,14 +4547,14 @@ namespace TL
 		public ChatParticipantsBase participants;
 	}
 	/// <summary>Contact status update.		<para>See <a href="https://corefork.telegram.org/constructor/updateUserStatus"/></para></summary>
-	[TLDef(0xE5BDF8DE, inheritBefore = true)]
+	[TLDef(0xE5BDF8DE, inheritAt = 0)]
 	public sealed partial class UpdateUserStatus : UpdateUser
 	{
 		/// <summary>New status</summary>
 		public UserStatus status;
 	}
 	/// <summary>Changes the user's first name, last name and username.		<para>See <a href="https://corefork.telegram.org/constructor/updateUserName"/></para></summary>
-	[TLDef(0xA7848924, inheritBefore = true)]
+	[TLDef(0xA7848924, inheritAt = 0)]
 	public sealed partial class UpdateUserName : UpdateUser
 	{
 		/// <summary>New first name. Corresponds to the new value of <strong>real_first_name</strong> field of the <see cref="UserFull"/>.</summary>
@@ -4625,7 +4625,7 @@ namespace TL
 		public DateTime date;
 	}
 	/// <summary>New group member.		<para>See <a href="https://corefork.telegram.org/constructor/updateChatParticipantAdd"/></para></summary>
-	[TLDef(0x3DDA5451, inheritBefore = true)]
+	[TLDef(0x3DDA5451, inheritAt = 0)]
 	public sealed partial class UpdateChatParticipantAdd : UpdateChat
 	{
 		/// <summary>ID of the new member</summary>
@@ -4638,7 +4638,7 @@ namespace TL
 		public int version;
 	}
 	/// <summary>A member has left the group.		<para>See <a href="https://corefork.telegram.org/constructor/updateChatParticipantDelete"/></para></summary>
-	[TLDef(0xE32F3D77, inheritBefore = true)]
+	[TLDef(0xE32F3D77, inheritAt = 0)]
 	public sealed partial class UpdateChatParticipantDelete : UpdateChat
 	{
 		/// <summary>ID of the user</summary>
@@ -4699,7 +4699,7 @@ namespace TL
 		public PrivacyRule[] rules;
 	}
 	/// <summary>A user's phone number was changed		<para>See <a href="https://corefork.telegram.org/constructor/updateUserPhone"/></para></summary>
-	[TLDef(0x05492A13, inheritBefore = true)]
+	[TLDef(0x05492A13, inheritAt = 0)]
 	public sealed partial class UpdateUserPhone : UpdateUser
 	{
 		/// <summary>New phone number</summary>
@@ -4861,7 +4861,7 @@ namespace TL
 		public override void SetPTS(int new_pts, int new_pts_count) => (pts, pts_count) = (new_pts, new_pts_count);
 	}
 	/// <summary>The view counter of a message in a channel has changed		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelMessageViews"/></para></summary>
-	[TLDef(0xF226AC08, inheritBefore = true)]
+	[TLDef(0xF226AC08, inheritAt = 0)]
 	public sealed partial class UpdateChannelMessageViews : UpdateChannel
 	{
 		/// <summary>ID of the message</summary>
@@ -4870,7 +4870,7 @@ namespace TL
 		public int views;
 	}
 	/// <summary>Admin permissions of a user in a <a href="https://corefork.telegram.org/api/channel#basic-groups">basic group</a> were changed		<para>See <a href="https://corefork.telegram.org/constructor/updateChatParticipantAdmin"/></para></summary>
-	[TLDef(0xD7CA61A2, inheritBefore = true)]
+	[TLDef(0xD7CA61A2, inheritAt = 0)]
 	public sealed partial class UpdateChatParticipantAdmin : UpdateChat
 	{
 		/// <summary>ID of the (de)admined user</summary>
@@ -5254,7 +5254,7 @@ namespace TL
 	[TLDef(0x7084A7BE)]
 	public sealed partial class UpdateContactsReset : Update { }
 	/// <summary>The history of a <a href="https://corefork.telegram.org/api/channel">channel/supergroup</a> was hidden.		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelAvailableMessages"/></para></summary>
-	[TLDef(0xB23FC698, inheritBefore = true)]
+	[TLDef(0xB23FC698, inheritAt = 0)]
 	public sealed partial class UpdateChannelAvailableMessages : UpdateChannel
 	{
 		/// <summary>Identifier of a maximum unavailable message in a channel due to hidden history.</summary>
@@ -5437,7 +5437,7 @@ namespace TL
 		public byte[] data;
 	}
 	/// <summary>The forward counter of a message in a channel has changed		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelMessageForwards"/></para></summary>
-	[TLDef(0xD29A27F4, inheritBefore = true)]
+	[TLDef(0xD29A27F4, inheritAt = 0)]
 	public sealed partial class UpdateChannelMessageForwards : UpdateChannel
 	{
 		/// <summary>ID of the message</summary>
@@ -5836,7 +5836,7 @@ namespace TL
 	[TLDef(0xFB4C496C)]
 	public sealed partial class UpdateReadFeaturedEmojiStickers : Update { }
 	/// <summary>The <a href="https://corefork.telegram.org/api/emoji-status">emoji status</a> of a certain user has changed		<para>See <a href="https://corefork.telegram.org/constructor/updateUserEmojiStatus"/></para></summary>
-	[TLDef(0x28373599, inheritBefore = true)]
+	[TLDef(0x28373599, inheritAt = 0)]
 	public sealed partial class UpdateUserEmojiStatus : UpdateUser
 	{
 		/// <summary>New <a href="https://corefork.telegram.org/api/emoji-status">emoji status</a></summary>
@@ -5946,7 +5946,7 @@ namespace TL
 		public override void SetPTS(int new_qts, int _) => qts = new_qts;
 	}
 	/// <summary>Users may also choose to display messages from all topics as if they were sent to a normal group, using a "View as messages" setting in the local client.<br/>This setting only affects the current account, and is synced to other logged in sessions using the <see cref="SchemaExtensions.Channels_ToggleViewForumAsMessages">Channels_ToggleViewForumAsMessages</see> method; invoking this method will update the value of the <c>view_forum_as_messages</c> flag of <see cref="ChannelFull"/> or <see cref="Dialog"/> and emit an <see cref="UpdateChannelViewForumAsMessages"/>.		<para>See <a href="https://corefork.telegram.org/constructor/updateChannelViewForumAsMessages"/></para></summary>
-	[TLDef(0x07B68920, inheritBefore = true)]
+	[TLDef(0x07B68920, inheritAt = 0)]
 	public sealed partial class UpdateChannelViewForumAsMessages : UpdateChannel
 	{
 		/// <summary>The new value of the toggle.</summary>
@@ -6080,7 +6080,7 @@ namespace TL
 		public MessageBase message;
 	}
 	/// <summary>One or more messages in a <a href="https://corefork.telegram.org/api/business#quick-reply-shortcuts">quick reply shortcut »</a> were deleted.		<para>See <a href="https://corefork.telegram.org/constructor/updateDeleteQuickReplyMessages"/></para></summary>
-	[TLDef(0x566FE7CD, inheritBefore = true)]
+	[TLDef(0x566FE7CD, inheritAt = 0)]
 	public sealed partial class UpdateDeleteQuickReplyMessages : UpdateDeleteQuickReply
 	{
 		/// <summary>IDs of the deleted messages.</summary>
@@ -7272,7 +7272,7 @@ namespace TL
 		public DateTime date;
 	}
 	/// <summary>Message with a file enclosure sent to a protected chat		<para>See <a href="https://corefork.telegram.org/constructor/messages.sentEncryptedFile"/></para></summary>
-	[TLDef(0x9493FF32, inheritBefore = true)]
+	[TLDef(0x9493FF32, inheritAt = 0)]
 	public sealed partial class Messages_SentEncryptedFile : Messages_SentEncryptedMessage
 	{
 		/// <summary>Attached file</summary>
@@ -9026,28 +9026,28 @@ namespace TL
 	[TLDef(0x28A20571)]
 	public sealed partial class MessageEntityCode : MessageEntity { }
 	/// <summary>Message entity representing a preformatted <c>codeblock</c>, allowing the user to specify a programming language for the codeblock.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityPre"/></para></summary>
-	[TLDef(0x73924BE0, inheritBefore = true)]
+	[TLDef(0x73924BE0, inheritAt = 0)]
 	public sealed partial class MessageEntityPre : MessageEntity
 	{
 		/// <summary>Programming language of the code</summary>
 		public string language;
 	}
 	/// <summary>Message entity representing a <a href="https://google.com">text url</a>: for in-text urls like <a href="https://google.com">https://google.com</a> use <see cref="MessageEntityUrl"/>.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityTextUrl"/></para></summary>
-	[TLDef(0x76A6D327, inheritBefore = true)]
+	[TLDef(0x76A6D327, inheritAt = 0)]
 	public sealed partial class MessageEntityTextUrl : MessageEntity
 	{
 		/// <summary>The actual URL</summary>
 		public string url;
 	}
 	/// <summary>Message entity representing a <a href="https://corefork.telegram.org/api/mentions">user mention</a>: for <em>creating</em> a mention use <see cref="InputMessageEntityMentionName"/>.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityMentionName"/></para></summary>
-	[TLDef(0xDC7B1140, inheritBefore = true)]
+	[TLDef(0xDC7B1140, inheritAt = 0)]
 	public sealed partial class MessageEntityMentionName : MessageEntity
 	{
 		/// <summary>Identifier of the user that was mentioned</summary>
 		public long user_id;
 	}
 	/// <summary>Message entity that can be used to create a user <a href="https://corefork.telegram.org/api/mentions">user mention</a>: received mentions use the <see cref="MessageEntityMentionName"/>, instead.		<para>See <a href="https://corefork.telegram.org/constructor/inputMessageEntityMentionName"/></para></summary>
-	[TLDef(0x208E68C9, inheritBefore = true)]
+	[TLDef(0x208E68C9, inheritAt = 0)]
 	public sealed partial class InputMessageEntityMentionName : MessageEntity
 	{
 		/// <summary>Identifier of the user that was mentioned</summary>
@@ -9072,7 +9072,7 @@ namespace TL
 	[TLDef(0x32CA960F)]
 	public sealed partial class MessageEntitySpoiler : MessageEntity { }
 	/// <summary>Represents a custom emoji.<br/>Note that this entity must wrap exactly one regular emoji (the one contained in <see cref="DocumentAttributeCustomEmoji"/>.<c>alt</c>) in the related text, otherwise the server will ignore it.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityCustomEmoji"/></para></summary>
-	[TLDef(0xC8CF05F8, inheritBefore = true)]
+	[TLDef(0xC8CF05F8, inheritAt = 0)]
 	public sealed partial class MessageEntityCustomEmoji : MessageEntity
 	{
 		/// <summary>Document ID of the <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji</a>, use <see cref="SchemaExtensions.Messages_GetCustomEmojiDocuments">Messages_GetCustomEmojiDocuments</see> to fetch the emoji animation and the actual emoji it represents.</summary>
@@ -12993,28 +12993,28 @@ namespace TL
 	[TLDef(0x46E1D13D)]
 	public sealed partial class RecentMeUrlUnknown : RecentMeUrl { }
 	/// <summary>Recent t.me link to a user		<para>See <a href="https://corefork.telegram.org/constructor/recentMeUrlUser"/></para></summary>
-	[TLDef(0xB92C09E2, inheritBefore = true)]
+	[TLDef(0xB92C09E2, inheritAt = 0)]
 	public sealed partial class RecentMeUrlUser : RecentMeUrl
 	{
 		/// <summary>User ID</summary>
 		public long user_id;
 	}
 	/// <summary>Recent t.me link to a chat		<para>See <a href="https://corefork.telegram.org/constructor/recentMeUrlChat"/></para></summary>
-	[TLDef(0xB2DA71D2, inheritBefore = true)]
+	[TLDef(0xB2DA71D2, inheritAt = 0)]
 	public sealed partial class RecentMeUrlChat : RecentMeUrl
 	{
 		/// <summary>Chat ID</summary>
 		public long chat_id;
 	}
 	/// <summary>Recent t.me invite link to a chat		<para>See <a href="https://corefork.telegram.org/constructor/recentMeUrlChatInvite"/></para></summary>
-	[TLDef(0xEB49081D, inheritBefore = true)]
+	[TLDef(0xEB49081D, inheritAt = 0)]
 	public sealed partial class RecentMeUrlChatInvite : RecentMeUrl
 	{
 		/// <summary>Chat invitation</summary>
 		public ChatInviteBase chat_invite;
 	}
 	/// <summary>Recent t.me stickerset installation URL		<para>See <a href="https://corefork.telegram.org/constructor/recentMeUrlStickerSet"/></para></summary>
-	[TLDef(0xBC0A57DC, inheritBefore = true)]
+	[TLDef(0xBC0A57DC, inheritAt = 0)]
 	public sealed partial class RecentMeUrlStickerSet : RecentMeUrl
 	{
 		/// <summary>Stickerset</summary>
@@ -13881,14 +13881,14 @@ namespace TL
 		public string num;
 	}
 	/// <summary>Ordered list of text items		<para>See <a href="https://corefork.telegram.org/constructor/pageListOrderedItemText"/></para></summary>
-	[TLDef(0x5E068047, inheritBefore = true)]
+	[TLDef(0x5E068047, inheritAt = 0)]
 	public sealed partial class PageListOrderedItemText : PageListOrderedItem
 	{
 		/// <summary>Text</summary>
 		public RichText text;
 	}
 	/// <summary>Ordered list of <a href="https://instantview.telegram.org">IV</a> blocks		<para>See <a href="https://corefork.telegram.org/constructor/pageListOrderedItemBlocks"/></para></summary>
-	[TLDef(0x98DD8936, inheritBefore = true)]
+	[TLDef(0x98DD8936, inheritAt = 0)]
 	public sealed partial class PageListOrderedItemBlocks : PageListOrderedItem
 	{
 		/// <summary>Item contents</summary>
@@ -15864,7 +15864,7 @@ namespace TL
 	}
 
 	/// <summary>Messages found and affected by changes		<para>See <a href="https://corefork.telegram.org/constructor/messages.affectedFoundMessages"/></para></summary>
-	[TLDef(0xEF8D3E6C, inheritBefore = true)]
+	[TLDef(0xEF8D3E6C, inheritAt = 0)]
 	public sealed partial class Messages_AffectedFoundMessages : Messages_AffectedHistory
 	{
 		/// <summary>Affected message IDs</summary>
@@ -16077,7 +16077,7 @@ namespace TL
 	[TLDef(0x3FD863D1)]
 	public sealed partial class BotCommandScopePeerAdmins : BotCommandScopePeer { }
 	/// <summary>The specified bot commands will be valid only for a specific user in the specified <a href="https://corefork.telegram.org/api/channel">group or supergroup</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botCommandScopePeerUser"/></para></summary>
-	[TLDef(0x0A1321F3, inheritBefore = true)]
+	[TLDef(0x0A1321F3, inheritAt = 0)]
 	public sealed partial class BotCommandScopePeerUser : BotCommandScopePeer
 	{
 		/// <summary>The user</summary>
@@ -17366,7 +17366,7 @@ namespace TL
 		public string email;
 	}
 	/// <summary>The email was verified correctly, and a login code was just sent to it.		<para>See <a href="https://corefork.telegram.org/constructor/account.emailVerifiedLogin"/></para></summary>
-	[TLDef(0xE1BB0D61, inheritBefore = true)]
+	[TLDef(0xE1BB0D61, inheritAt = 0)]
 	public sealed partial class Account_EmailVerifiedLogin : Account_EmailVerified
 	{
 		/// <summary>Info about the sent <a href="https://corefork.telegram.org/api/auth">login code</a></summary>
@@ -22484,13 +22484,13 @@ namespace TL
 		public DataJSON client_data;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputPasskeyResponseRegister"/></para></summary>
-	[TLDef(0x3E63935C, inheritBefore = true)]
+	[TLDef(0x3E63935C, inheritAt = 0)]
 	public sealed partial class InputPasskeyResponseRegister : InputPasskeyResponse
 	{
 		public byte[] attestation_data;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputPasskeyResponseLogin"/></para></summary>
-	[TLDef(0xC31FC14A, inheritBefore = true)]
+	[TLDef(0xC31FC14A, inheritAt = 0)]
 	public sealed partial class InputPasskeyResponseLogin : InputPasskeyResponse
 	{
 		public byte[] authenticator_data;
@@ -22532,7 +22532,7 @@ namespace TL
 		public int duration;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAuctionRoundExtendable"/></para></summary>
-	[TLDef(0x0AA021E5, inheritBefore = true)]
+	[TLDef(0x0AA021E5, inheritAt = 0)]
 	public sealed partial class StarGiftAuctionRoundExtendable : StarGiftAuctionRound
 	{
 		public int extend_top;

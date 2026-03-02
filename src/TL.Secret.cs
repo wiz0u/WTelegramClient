@@ -571,7 +571,7 @@ namespace TL
 		}
 
 		/// <summary>Message entity representing a <a href="https://corefork.telegram.org/api/mentions">user mention</a>: for <em>creating</em> a mention use <see cref="InputMessageEntityMentionName"/>.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityMentionName"/></para></summary>
-		[TLDef(0x352DCA58, inheritBefore = true)]
+		[TLDef(0x352DCA58, inheritAt = 0)]
 		public sealed partial class MessageEntityMentionName : MessageEntity
 		{
 			/// <summary>Identifier of the user that was mentioned</summary>

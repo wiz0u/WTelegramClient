@@ -112,11 +112,12 @@ public class MTProtoGenerator : IIncrementalGenerator
 				.AppendLine("\t\t{")
 				.AppendLine($"\t\t\twriter.Write(0x{id:X8});");
 			var members = symbol.GetMembers().ToList();
+			int inheritIndex = 0;
 			for (var parent = symbol.BaseType; parent != object_; parent = parent.BaseType)
 			{
-				var inheritBefore = (bool?)tldef.NamedArguments.FirstOrDefault(k => k.Key == "inheritBefore").Value.Value ?? false;
-				if (inheritBefore) members.InsertRange(0, parent.GetMembers());
-				else members.AddRange(parent.GetMembers());
+				var inheritAt = (int?)tldef.NamedArguments.FirstOrDefault(k => k.Key == "inheritAt").Value.Value ?? -1;
+				if (inheritAt >= 0) members.InsertRange(inheritIndex += inheritAt, parent.GetMembers());
+				else { inheritIndex = members.Count; members.AddRange(parent.GetMembers()); }
 				tldef = parent.GetAttributes().FirstOrDefault(a => a.AttributeClass == tlDefAttribute);
 			}
 			foreach (var member in members.OfType<IFieldSymbol>())

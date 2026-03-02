@@ -24,7 +24,7 @@ namespace TL
 	public sealed class TLDefAttribute(uint ctorNb) : Attribute
 	{
 		public readonly uint CtorNb = ctorNb;
-		public bool inheritBefore;
+		public int inheritAt = -1;
 	}
 
 	[AttributeUsage(AttributeTargets.Field)]
@@ -68,8 +68,7 @@ namespace TL
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var ctorNb = tlDef.CtorNb;
 			writer.Write(ctorNb);
-			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
-			if (tlDef.inheritBefore) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
+			var fields = GetTLFields(type, tlDef);
 			ulong flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
@@ -98,8 +97,7 @@ namespace TL
 			if (type == null) return null; // nullable ctor (class meaning is associated with null)
 			var tlDef = type.GetCustomAttribute<TLDefAttribute>();
 			var obj = Activator.CreateInstance(type, true);
-			IEnumerable<FieldInfo> fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
-			if (tlDef.inheritBefore) fields = fields.GroupBy(f => f.DeclaringType).Reverse().SelectMany(g => g);
+			var fields = GetTLFields(type, tlDef);
 			ulong flags = 0;
 			IfFlagAttribute ifFlag;
 			foreach (var field in fields)
@@ -115,6 +113,16 @@ namespace TL
 #endif
 		}
 
+#if !MTPG
+		static IEnumerable<FieldInfo> GetTLFields(Type type, TLDefAttribute tlDef)
+		{
+			if (!(tlDef?.inheritAt >= 0)) return type.GetFields(BindingFlags.Instance | BindingFlags.Public);
+			var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+			if (type.IsAbstract || type.BaseType == typeof(IObject)) return fields;
+			var subfields = GetTLFields(type.BaseType, type.BaseType.GetCustomAttribute<TLDefAttribute>());
+			return fields.Take(tlDef.inheritAt).Concat(subfields).Concat(fields.Skip(tlDef.inheritAt));
+		}
+#else
 		public static IMethod<X> ReadTLMethod<X>(this BinaryReader reader)
 		{
 			uint ctorNb = reader.ReadUInt32();
@@ -125,6 +133,7 @@ namespace TL
 				method = new BoolMethod { query = method };
 			return (IMethod<X>)method;
 		}
+#endif
 
 		internal static void WriteTLValue(this BinaryWriter writer, object value, Type valueType)
 		{
@@ -490,6 +499,10 @@ namespace TL
 	public sealed class BoolMethod : IMethod<object>
 	{
 		public IObject query;
+#if MTPG
 		public void WriteTL(BinaryWriter writer) => query.WriteTL(writer);
+#else
+		public void WriteTL(BinaryWriter writer) => writer.WriteTLObject(query);
+#endif
 	}
 }
