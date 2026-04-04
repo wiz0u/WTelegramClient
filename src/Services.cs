@@ -581,12 +581,8 @@ namespace TL
 		public static string Escape(string text)
 			=> text?.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 
-		internal static string DateFormat(MessageEntityFormattedDate.Flags flags) => flags.HasFlag(MessageEntityFormattedDate.Flags.relative) ? "r" :
-			((flags & MessageEntityFormattedDate.Flags.day_of_week) != 0 ? "w" : "") +
-			((flags & MessageEntityFormattedDate.Flags.short_date) != 0 ? "d" : "") +
-			((flags & MessageEntityFormattedDate.Flags.long_date) != 0 ? "D" : "") +
-			((flags & MessageEntityFormattedDate.Flags.short_time) != 0 ? "t" : "") +
-			((flags & MessageEntityFormattedDate.Flags.long_time) != 0 ? "T" : "");
+		internal static string DateFormat(MessageEntityFormattedDate.Flags flags)
+			=> string.Concat("rtTdDw".Where((c, i) => ((int)flags & (1 << i)) != 0));
 
 		internal static MessageEntityFormattedDate.Flags DateFlags(string format)
 			=> (MessageEntityFormattedDate.Flags)format.Sum(c => 1 << "rtTdDw".IndexOf(c));

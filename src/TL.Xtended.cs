@@ -326,7 +326,7 @@ namespace TL
 	partial class MessageMediaPoll			{ public override InputMedia ToInputMedia() => new InputMediaPoll { poll = poll,
 		solution = results.solution, solution_entities = results.solution_entities,
 		solution_media = results.solution_media.ToInputMedia(), attached_media = attached_media.ToInputMedia(),
-		correct_answers = results.results?.Where(pav => pav.flags.HasFlag(PollAnswerVoters.Flags.correct)).Select(pav => (int)pav.option[0]).ToArray(), 
+		correct_answers = results.results?.Select((pav, i) => pav.flags.HasFlag(PollAnswerVoters.Flags.correct) ? i : -1).Where(i => i >= 0).ToArray(),
 		flags = (results.results != null ? InputMediaPoll.Flags.has_correct_answers : 0) | (results.solution != null ? InputMediaPoll.Flags.has_solution : 0)
 			| (results.solution_media != null ? InputMediaPoll.Flags.has_solution_media : 0) | (attached_media != null ? InputMediaPoll.Flags.has_attached_media : 0) }; }
 	partial class MessageMediaDice			{ public override InputMedia ToInputMedia() => new InputMediaDice { emoticon = emoticon }; }
