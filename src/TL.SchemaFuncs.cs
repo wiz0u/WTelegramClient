@@ -2193,7 +2193,7 @@ namespace TL
 		/// <param name="id">IDs of messages to report</param>
 		/// <param name="option">Menu option, intially empty</param>
 		/// <param name="message">Comment for report moderation</param>
-		public static Task<ReportResult> Messages_Report(this Client client, InputPeer peer, int[] id, byte[] option, string message)
+		public static Task<ReportResult> Messages_Report(this Client client, InputPeer peer, int[] id, string option, string message)
 			=> client.Invoke(new Messages_Report
 			{
 				peer = peer,
@@ -3210,7 +3210,7 @@ namespace TL
 		/// <param name="peer">The chat where the poll was sent</param>
 		/// <param name="msg_id">The message ID of the poll</param>
 		/// <param name="options">The options that were chosen</param>
-		public static Task<UpdatesBase> Messages_SendVote(this Client client, InputPeer peer, int msg_id, params byte[][] options)
+		public static Task<UpdatesBase> Messages_SendVote(this Client client, InputPeer peer, int msg_id, params string[] options)
 			=> client.Invoke(new Messages_SendVote
 			{
 				peer = peer,
@@ -3395,7 +3395,7 @@ namespace TL
 		/// <param name="option">Get only results for the specified poll <c>option</c></param>
 		/// <param name="offset">Offset for results, taken from the <c>next_offset</c> field of <see cref="Messages_VotesList"/>, initially an empty string. <br/>Note: if no more results are available, the method call will return an empty <c>next_offset</c>; thus, avoid providing the <c>next_offset</c> returned in <see cref="Messages_VotesList"/> if it is empty, to avoid an infinite loop.</param>
 		/// <param name="limit">Number of results to return</param>
-		public static Task<Messages_VotesList> Messages_GetPollVotes(this Client client, InputPeer peer, int id, int limit = int.MaxValue, byte[] option = null, string offset = null)
+		public static Task<Messages_VotesList> Messages_GetPollVotes(this Client client, InputPeer peer, int id, int limit = int.MaxValue, string option = null, string offset = null)
 			=> client.Invoke(new Messages_GetPollVotes
 			{
 				flags = (Messages_GetPollVotes.Flags)((option != null ? 0x1 : 0) | (offset != null ? 0x2 : 0)),
@@ -4644,7 +4644,7 @@ namespace TL
 		/// <summary>Report a <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message »</a>, see <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">here »</a> for more info on the full flow.		<para>See <a href="https://corefork.telegram.org/method/messages.reportSponsoredMessage"/></para></summary>
 		/// <param name="random_id">The ad's unique ID.</param>
 		/// <param name="option">Chosen report option, initially an empty string, see <a href="https://corefork.telegram.org/api/sponsored-messages#reporting-sponsored-messages">here »</a> for more info on the full flow.</param>
-		public static Task<Channels_SponsoredMessageReportResult> Messages_ReportSponsoredMessage(this Client client, byte[] random_id, byte[] option)
+		public static Task<Channels_SponsoredMessageReportResult> Messages_ReportSponsoredMessage(this Client client, byte[] random_id, string option)
 			=> client.Invoke(new Messages_ReportSponsoredMessage
 			{
 				random_id = random_id,
@@ -4984,7 +4984,7 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.deletePollAnswer"/> [bots: ✓]</para></summary>
-		public static Task<UpdatesBase> Messages_DeletePollAnswer(this Client client, InputPeer peer, int msg_id, byte[] option)
+		public static Task<UpdatesBase> Messages_DeletePollAnswer(this Client client, InputPeer peer, int msg_id, string option)
 			=> client.Invoke(new Messages_DeletePollAnswer
 			{
 				peer = peer,
@@ -8162,7 +8162,7 @@ namespace TL
 		/// <param name="id">IDs of the stories to report.</param>
 		/// <param name="option">Menu option, intially empty</param>
 		/// <param name="message">Comment for report moderation</param>
-		public static Task<ReportResult> Stories_Report(this Client client, InputPeer peer, int[] id, byte[] option, string message)
+		public static Task<ReportResult> Stories_Report(this Client client, InputPeer peer, int[] id, string option, string message)
 			=> client.Invoke(new Stories_Report
 			{
 				peer = peer,
@@ -10261,7 +10261,7 @@ namespace TL.Methods
 	{
 		public InputPeer peer;
 		public int[] id;
-		public byte[] option;
+		public string option;
 		public string message;
 	}
 
@@ -11157,7 +11157,7 @@ namespace TL.Methods
 	{
 		public InputPeer peer;
 		public int msg_id;
-		public byte[][] options;
+		public string[] options;
 	}
 
 	[TLDef(0xEDA3E33B)]
@@ -11307,7 +11307,7 @@ namespace TL.Methods
 		public Flags flags;
 		public InputPeer peer;
 		public int id;
-		[IfFlag(0)] public byte[] option;
+		[IfFlag(0)] public string option;
 		[IfFlag(1)] public string offset;
 		public int limit;
 
@@ -12372,7 +12372,7 @@ namespace TL.Methods
 	public sealed partial class Messages_ReportSponsoredMessage : IMethod<Channels_SponsoredMessageReportResult>
 	{
 		public byte[] random_id;
-		public byte[] option;
+		public string option;
 	}
 
 	[TLDef(0x3D6CE850)]
@@ -12684,7 +12684,7 @@ namespace TL.Methods
 	{
 		public InputPeer peer;
 		public int msg_id;
-		public byte[] option;
+		public string option;
 	}
 
 	[TLDef(0x43286CF2)]
@@ -15345,7 +15345,7 @@ namespace TL.Methods
 	{
 		public InputPeer peer;
 		public int[] id;
-		public byte[] option;
+		public string option;
 		public string message;
 	}
 

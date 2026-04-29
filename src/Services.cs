@@ -226,7 +226,7 @@ namespace TL
 									{
 										offset = textUrl.offset, length = textUrl.length,
 										date = new DateTime((long.Parse(idxFormat < 0 ? textUrl.url[15..] : textUrl.url[15..idxFormat]) + 62135596800L) * 10000000, DateTimeKind.Utc),
-										flags = idxFormat < 0 ? 0 : HtmlText.DateFlags(textUrl.url[(idxFormat + 8)..])
+										flags = idxFormat < 0 ? 0 : HtmlText.ToDateFlags(textUrl.url[(idxFormat + 8)..])
 									};
 								break;
 							}
@@ -307,7 +307,7 @@ namespace TL
 							else if (nextEntity is MessageEntityCustomEmoji mecu)
 								closing.md = $"](tg://emoji?id={mecu.document_id})";
 							else if (nextEntity is MessageEntityFormattedDate mefd)
-								closing.md = $"](tg://time?unix={((DateTimeOffset)mefd.date).ToUnixTimeSeconds()}{(mefd.flags == 0 ? null : $"&format={HtmlText.DateFormat(mefd.flags)}")})";
+								closing.md = $"](tg://time?unix={((DateTimeOffset)mefd.date).ToUnixTimeSeconds()}{(mefd.flags == 0 ? null : $"&format={mefd.flags.ToDateFormat()}")})";
 						}
 						else if (nextEntity is MessageEntityBlockquote mebq)
 						{ inBlockQuote = true; if (lastCh is not '\n' and not '\0') md = "\n>";
@@ -461,7 +461,7 @@ namespace TL
 								{
 									offset = offset, length = -1,
 									date = new DateTime((long.Parse(tag[14..end]) + 62135596800L) * 10000000, DateTimeKind.Utc),
-									flags = string.Compare(tag, end + 1, " format=", 0, 8) == 0 ? DateFlags(tag[(end + 10)..^1]) : 0
+									flags = string.Compare(tag, end + 1, " format=", 0, 8) == 0 ? ToDateFlags(tag[(end + 10)..^1]) : 0
 								});
 							break;
 					}
@@ -540,7 +540,7 @@ namespace TL
 						else if (nextEntity is MessageEntityBlockquote { flags: MessageEntityBlockquote.Flags.collapsed })
 							tag = "<blockquote expandable>";
 						else if (nextEntity is MessageEntityFormattedDate mefd)
-							tag = $"<tg-time unix=\"{((DateTimeOffset)mefd.date).ToUnixTimeSeconds()}\"{(mefd.flags == 0 ? null : $" format=\"{DateFormat(mefd.flags)}\"")}>";
+							tag = $"<tg-time unix=\"{((DateTimeOffset)mefd.date).ToUnixTimeSeconds()}\"{(mefd.flags == 0 ? null : $" format=\"{mefd.flags.ToDateFormat()}\"")}>";
 						else
 							tag = $"<{tag}>";
 						int index = ~closings.BinarySearch(closing, Comparer<(int, string)>.Create((x, y) => x.Item1.CompareTo(y.Item1) | 1));
@@ -581,10 +581,10 @@ namespace TL
 		public static string Escape(string text)
 			=> text?.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 
-		internal static string DateFormat(MessageEntityFormattedDate.Flags flags)
+		public static string ToDateFormat(this MessageEntityFormattedDate.Flags flags)
 			=> string.Concat("rtTdDw".Where((c, i) => ((int)flags & (1 << i)) != 0));
 
-		internal static MessageEntityFormattedDate.Flags DateFlags(string format)
-			=> (MessageEntityFormattedDate.Flags)format.Sum(c => 1 << "rtTdDw".IndexOf(c));
+		public static MessageEntityFormattedDate.Flags ToDateFlags(string dateTimeFormat)
+			=> (MessageEntityFormattedDate.Flags)dateTimeFormat.Sum(c => 1 << "rtTdDw".IndexOf(c));
 	}
 }

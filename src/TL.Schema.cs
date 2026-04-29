@@ -5501,7 +5501,7 @@ namespace TL
 		/// <summary>The peer that voted in the poll</summary>
 		public Peer peer;
 		/// <summary>Chosen option(s)</summary>
-		public byte[][] options;
+		public string[] options;
 		public int[] positions;
 		/// <summary>New <strong>qts</strong> value, see <a href="https://corefork.telegram.org/api/updates">updates »</a> for more info.</summary>
 		public int qts;
@@ -14063,7 +14063,7 @@ namespace TL
 		/// <summary>Textual representation of the answer (only <a href="https://corefork.telegram.org/api/premium">Premium</a> users can use <a href="https://corefork.telegram.org/api/custom-emoji">custom emoji entities</a> here).</summary>
 		public TextWithEntities text;
 		/// <summary>The param that has to be passed to <see cref="SchemaExtensions.Messages_SendVote">Messages_SendVote</see>.</summary>
-		public byte[] option;
+		public string option;
 		[IfFlag(0)] public MessageMedia media;
 		[IfFlag(1)] public Peer added_by;
 		[IfFlag(1)] public DateTime date;
@@ -14144,7 +14144,7 @@ namespace TL
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The param that has to be passed to <see cref="SchemaExtensions.Messages_SendVote">Messages_SendVote</see>.</summary>
-		public byte[] option;
+		public string option;
 		/// <summary>How many users voted for this option</summary>
 		[IfFlag(2)] public int voters;
 		[IfFlag(2)] public Peer[] recent_voters;
@@ -15624,7 +15624,7 @@ namespace TL
 		[IfFlag(10)] public int quote_offset;
 		/// <summary>Can be set to reply to the specified item of a <a href="https://corefork.telegram.org/api/todo">todo list »</a>.</summary>
 		[IfFlag(11)] public int todo_item_id;
-		[IfFlag(12)] public byte[] poll_option;
+		[IfFlag(12)] public string poll_option;
 
 		[Flags] public enum Flags : uint
 		{
@@ -18235,7 +18235,7 @@ namespace TL
 		/// <summary>Peer ID</summary>
 		public Peer peer;
 		/// <summary>The option chosen by the peer</summary>
-		public byte[] option;
+		public string option;
 		/// <summary>When did the peer cast the vote</summary>
 		public DateTime date;
 
@@ -18265,7 +18265,7 @@ namespace TL
 		/// <summary>Peer ID</summary>
 		public Peer peer;
 		/// <summary>Options chosen by the peer</summary>
-		public byte[][] options;
+		public string[] options;
 		/// <summary>When did the peer cast their votes</summary>
 		public DateTime date;
 
@@ -18625,7 +18625,7 @@ namespace TL
 		[IfFlag(5)] public InputPeer monoforum_peer_id;
 		/// <summary>Can be set to reply to the specified item of a <a href="https://corefork.telegram.org/api/todo">todo list »</a>.</summary>
 		[IfFlag(6)] public int todo_item_id;
-		[IfFlag(7)] public byte[] poll_option;
+		[IfFlag(7)] public string poll_option;
 
 		[Flags] public enum Flags : uint
 		{
@@ -20410,7 +20410,7 @@ namespace TL
 		/// <summary>Localized description of the option.</summary>
 		public string text;
 		/// <summary>Option identifier to pass to <see cref="SchemaExtensions.Messages_ReportSponsoredMessage">Messages_ReportSponsoredMessage</see>.</summary>
-		public byte[] option;
+		public string option;
 	}
 
 	/// <summary>Status of the method call used to report a <a href="https://corefork.telegram.org/api/sponsored-messages">sponsored message »</a>.		<para>See <a href="https://corefork.telegram.org/type/channels.SponsoredMessageReportResult"/></para>		<para>Derived classes: <see cref="Channels_SponsoredMessageReportResultChooseOption"/>, <see cref="Channels_SponsoredMessageReportResultAdsHidden"/>, <see cref="Channels_SponsoredMessageReportResultReported"/></para></summary>
@@ -21279,7 +21279,7 @@ namespace TL
 		/// <summary>Option title</summary>
 		public string text;
 		/// <summary>Option identifier: if the user selects this option, re-invoke <see cref="SchemaExtensions.Messages_Report">Messages_Report</see>, passing this option to <c>option</c></summary>
-		public byte[] option;
+		public string option;
 	}
 
 	/// <summary>Represents a report menu or result		<para>See <a href="https://corefork.telegram.org/type/ReportResult"/></para>		<para>Derived classes: <see cref="ReportResultChooseOption"/>, <see cref="ReportResultAddComment"/>, <see cref="ReportResultReported"/></para></summary>
@@ -21300,7 +21300,7 @@ namespace TL
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
 		/// <summary>The <see cref="SchemaExtensions.Messages_Report">Messages_Report</see> method must be re-invoked, passing this option to <c>option</c></summary>
-		public byte[] option;
+		public string option;
 
 		[Flags] public enum Flags : uint
 		{
