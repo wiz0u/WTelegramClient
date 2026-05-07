@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 224;					// fetched 04/01/2026 00:30:44
+		public const int Version = 225;					// fetched 05/07/2026 15:19:44
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -153,7 +153,7 @@ namespace TL
 			[0x37C1011C] = null,//ChatPhotoEmpty
 			[0x1C6E1C11] = typeof(ChatPhoto),
 			[0x90A6CA84] = typeof(MessageEmpty),
-			[0x3AE56482] = typeof(Message),
+			[0x95EF6F2B] = typeof(Message),
 			[0x7A800E0A] = typeof(MessageService),
 			[0x3DED6320] = null,//MessageMediaEmpty
 			[0xE216EB63] = typeof(MessageMediaPhoto),
@@ -255,7 +255,7 @@ namespace TL
 			[0xB2A2F663] = typeof(GeoPoint),
 			[0x5E002502] = typeof(Auth_SentCode),
 			[0x2390FE44] = typeof(Auth_SentCodeSuccess),
-			[0xE0955A3C] = typeof(Auth_SentCodePaymentRequired),
+			[0xF8827EBF] = typeof(Auth_SentCodePaymentRequired),
 			[0x2EA2C0D4] = typeof(Auth_Authorization),
 			[0x44747E9A] = typeof(Auth_AuthorizationSignUpRequired),
 			[0xB434E2B8] = typeof(Auth_ExportedAuthorization),
@@ -461,6 +461,8 @@ namespace TL
 			[0xAC072444] = typeof(UpdateStarGiftCraftFail),
 			[0xBD8367B9] = typeof(UpdateChatParticipantRank),
 			[0x4880ED9A] = typeof(UpdateManagedBot),
+			[0xCDD4093D] = typeof(UpdateBotGuestChatQuery),
+			[0x8C0F91FB] = typeof(UpdateAiComposeTones),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -991,7 +993,7 @@ namespace TL
 			[0x01EB3758] = typeof(Help_UserInfo),
 			[0x4B7D786A] = typeof(PollAnswer),
 			[0x199FED96] = typeof(InputPollAnswer),
-			[0xB8425BE9] = typeof(Poll),
+			[0x966E2DBF] = typeof(Poll),
 			[0x3645230A] = typeof(PollAnswerVoters),
 			[0xBA7BB15E] = typeof(PollResults),
 			[0xF041E250] = typeof(ChatOnlines),
@@ -1042,6 +1044,7 @@ namespace TL
 			[0xCF6F6DB8] = typeof(WebPageAttributeUniqueStarGift),
 			[0x31CAD303] = typeof(WebPageAttributeStarGiftCollection),
 			[0x01C641C2] = typeof(WebPageAttributeStarGiftAuction),
+			[0x7781FE18] = typeof(WebPageAttributeAiComposeTone),
 			[0x4899484E] = typeof(Messages_VotesList),
 			[0xF568028A] = typeof(BankCardOpenUrl),
 			[0x3E24E573] = typeof(Payments_BankCardData),
@@ -1181,7 +1184,7 @@ namespace TL
 			[0xF9A2A6CB] = typeof(InputStorePaymentStarsTopup),
 			[0x1D741EF7] = typeof(InputStorePaymentStarsGift),
 			[0x751F08FA] = typeof(InputStorePaymentStarsGiveaway),
-			[0x9BB2636D] = typeof(InputStorePaymentAuthCode),
+			[0x3FC18057] = typeof(InputStorePaymentAuthCode),
 			[0x88F8F21B] = typeof(PaymentFormMethod),
 			[0x2DE11AAE] = null,//EmojiStatusEmpty
 			[0xE7FF068A] = typeof(EmojiStatus),
@@ -1526,6 +1529,16 @@ namespace TL
 			[0x3C60B621] = typeof(Bots_ExportedBotToken),
 			[0xF13BBCD7] = typeof(Bots_RequestedButton),
 			[0x90D7ADFA] = typeof(Messages_ComposedMessageWithAI),
+			[0x2999BEED] = typeof(Stats_PollStats),
+			[0x1FE9A9BF] = typeof(InputAiComposeToneDefault),
+			[0x0773C080] = typeof(InputAiComposeToneID),
+			[0x1FA01357] = typeof(InputAiComposeToneSlug),
+			[0xCFF63EA9] = typeof(AiComposeTone),
+			[0x9BAD6414] = typeof(AiComposeToneDefault),
+			[0xC1F46103] = null,//Aicompose_TonesNotModified
+			[0x6C9D0EFE] = typeof(Aicompose_Tones),
+			[0xF1D628EC] = typeof(AiComposeToneExample),
+			[0xDD1FBF93] = typeof(Bots_AccessSettings),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
@@ -1666,6 +1679,7 @@ namespace TL
 			[typeof(InputChatThemeBase)]             = 0x83268483, //inputChatThemeEmpty
 			[typeof(StarGiftAuctionStateBase)]       = 0xFE333952, //starGiftAuctionStateNotModified
 			[typeof(Payments_StarGiftActiveAuctions)]= 0xDB33DAD0, //payments.starGiftActiveAuctionsNotModified
+			[typeof(Aicompose_Tones)]                = 0xC1F46103, //aicompose.tonesNotModified
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}

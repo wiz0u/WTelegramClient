@@ -1746,10 +1746,10 @@ namespace TL
 		/// <param name="limit">Maximum number of results to return, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
 		/// <param name="hash"><a href="https://corefork.telegram.org/api/offsets#hash-generation">Hash used for caching, for more info click here</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/contacts.topPeersNotModified">contacts.topPeersNotModified</a></returns>
-		public static Task<Contacts_TopPeersBase> Contacts_GetTopPeers(this Client client, int offset = default, int limit = int.MaxValue, long hash = default, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false, bool bots_app = false)
+		public static Task<Contacts_TopPeersBase> Contacts_GetTopPeers(this Client client, int offset = default, int limit = int.MaxValue, long hash = default, bool correspondents = false, bool bots_pm = false, bool bots_inline = false, bool phone_calls = false, bool forward_users = false, bool forward_chats = false, bool groups = false, bool channels = false, bool bots_app = false, bool bots_guestchat = false)
 			=> client.Invoke(new Contacts_GetTopPeers
 			{
-				flags = (Contacts_GetTopPeers.Flags)((correspondents ? 0x1 : 0) | (bots_pm ? 0x2 : 0) | (bots_inline ? 0x4 : 0) | (phone_calls ? 0x8 : 0) | (forward_users ? 0x10 : 0) | (forward_chats ? 0x20 : 0) | (groups ? 0x400 : 0) | (channels ? 0x8000 : 0) | (bots_app ? 0x10000 : 0)),
+				flags = (Contacts_GetTopPeers.Flags)((correspondents ? 0x1 : 0) | (bots_pm ? 0x2 : 0) | (bots_inline ? 0x4 : 0) | (phone_calls ? 0x8 : 0) | (forward_users ? 0x10 : 0) | (forward_chats ? 0x20 : 0) | (groups ? 0x400 : 0) | (channels ? 0x8000 : 0) | (bots_app ? 0x10000 : 0) | (bots_guestchat ? 0x20000 : 0)),
 				offset = offset,
 				limit = limit,
 				hash = hash,
@@ -1791,7 +1791,7 @@ namespace TL
 		/// <param name="first_name">First name</param>
 		/// <param name="last_name">Last name</param>
 		/// <param name="phone">User's phone number, may be omitted to simply add the user to the contact list, without a phone number.</param>
-		/// <param name="note">A private note for this contact, only visible to us; see <a href="https://corefork.telegram.org/api/profile#private-notes-for-contacts">here »</a> for more info on contact notes.</param>
+		/// <param name="note">A private note for this contact, only visible to us; see <a href="https://corefork.telegram.org/api/contacts#private-notes-for-contacts">here »</a> for more info on contact notes.</param>
 		public static Task<UpdatesBase> Contacts_AddContact(this Client client, InputUserBase id, string first_name, string last_name, string phone, TextWithEntities note = null, bool add_phone_privacy_exception = false)
 			=> client.Invoke(new Contacts_AddContact
 			{
@@ -1892,7 +1892,7 @@ namespace TL
 				q = q,
 			});
 
-		/// <summary>Update the private note associated to a contact; see <a href="https://corefork.telegram.org/api/profile#private-notes-for-contacts">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/contacts.updateContactNote"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.updateContactNote#possible-errors">details</a>)</para></summary>
+		/// <summary>Update the private note associated to a contact; see <a href="https://corefork.telegram.org/api/contacts#private-notes-for-contacts">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/contacts.updateContactNote"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/contacts.updateContactNote#possible-errors">details</a>)</para></summary>
 		/// <param name="id">The contact.</param>
 		/// <param name="note">The note.</param>
 		public static Task<bool> Contacts_UpdateContactNote(this Client client, InputUserBase id, TextWithEntities note)
@@ -4919,7 +4919,10 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.editChatParticipantRank"/> [bots: ✓]</para></summary>
+		/// <summary>Edit a group participant's <a href="https://corefork.telegram.org/api/rank">tag »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.editChatParticipantRank"/> [bots: ✓]</para></summary>
+		/// <param name="peer">The basic group/supergroup.</param>
+		/// <param name="participant">The participant.</param>
+		/// <param name="rank">The new tag.</param>
 		public static Task<UpdatesBase> Messages_EditChatParticipantRank(this Client client, InputPeer peer, InputPeer participant, string rank)
 			=> client.Invoke(new Messages_EditChatParticipantRank
 			{
@@ -4948,14 +4951,13 @@ namespace TL
 		/// <param name="emojify">If set, adds emojis to the message</param>
 		/// <param name="text">The message</param>
 		/// <param name="translate_to_lang">If set, translates the message to the specified language</param>
-		/// <param name="change_tone">If set, rephrases the message using the specified <a href="https://corefork.telegram.org/method/messages.composeMessageWithAI#ai-compose-tones">tone »</a></param>
-		public static Task<Messages_ComposedMessageWithAI> Messages_ComposeMessageWithAI(this Client client, TextWithEntities text, string translate_to_lang = null, string change_tone = null, bool proofread = false, bool emojify = false)
+		public static Task<Messages_ComposedMessageWithAI> Messages_ComposeMessageWithAI(this Client client, TextWithEntities text, string translate_to_lang = null, InputAiComposeTone tone = null, bool proofread = false, bool emojify = false)
 			=> client.Invoke(new Messages_ComposeMessageWithAI
 			{
-				flags = (Messages_ComposeMessageWithAI.Flags)((translate_to_lang != null ? 0x2 : 0) | (change_tone != null ? 0x4 : 0) | (proofread ? 0x1 : 0) | (emojify ? 0x8 : 0)),
+				flags = (Messages_ComposeMessageWithAI.Flags)((translate_to_lang != null ? 0x2 : 0) | (tone != null ? 0x4 : 0) | (proofread ? 0x1 : 0) | (emojify ? 0x8 : 0)),
 				text = text,
 				translate_to_lang = translate_to_lang,
-				change_tone = change_tone,
+				tone = tone,
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.reportReadMetrics"/> [bots: ✓]</para></summary>
@@ -5017,6 +5019,42 @@ namespace TL
 				peer = peer,
 				top_msg_id = top_msg_id ?? default,
 			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setBotGuestChatResult"/></para></summary>
+		public static Task<bool> Messages_SetBotGuestChatResult(this Client client, long query_id, InputBotInlineResultBase result)
+			=> client.Invoke(new Messages_SetBotGuestChatResult
+			{
+				query_id = query_id,
+				result = result,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.deleteParticipantReactions"/></para></summary>
+		public static Task<bool> Messages_DeleteParticipantReactions(this Client client, InputPeer peer, InputPeer participant)
+			=> client.Invoke(new Messages_DeleteParticipantReactions
+			{
+				peer = peer,
+				participant = participant,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.deleteParticipantReaction"/></para></summary>
+		public static Task<UpdatesBase> Messages_DeleteParticipantReaction(this Client client, InputPeer peer, int msg_id, InputPeer participant)
+			=> client.Invoke(new Messages_DeleteParticipantReaction
+			{
+				peer = peer,
+				msg_id = msg_id,
+				participant = participant,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getPersonalChannelHistory"/></para></summary>
+		public static Task<Messages_MessagesBase> Messages_GetPersonalChannelHistory(this Client client, InputUserBase user_id, int limit = int.MaxValue, int max_id = default, int min_id = default, long hash = default)
+			=> client.Invoke(new Messages_GetPersonalChannelHistory
+			{
+				user_id = user_id,
+				limit = limit,
+				max_id = max_id,
+				min_id = min_id,
+				hash = hash,
+			});
 
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
@@ -5537,7 +5575,7 @@ namespace TL
 		/// <param name="channel">The <a href="https://corefork.telegram.org/api/channel">supergroup/channel</a>.</param>
 		/// <param name="user_id">The ID of the user whose admin rights should be modified</param>
 		/// <param name="admin_rights">The admin rights</param>
-		/// <param name="rank">Indicates the role (rank) of the admin in the group: just an arbitrary string</param>
+		/// <param name="rank">Indicates the role (rank) of the admin in the group: just an arbitrary string. If the flag is not set, the rank is left unchanged.</param>
 		public static Task<UpdatesBase> Channels_EditAdmin(this Client client, InputChannelBase channel, InputUserBase user_id, ChatAdminRights admin_rights, string rank = null)
 			=> client.Invoke(new Channels_EditAdmin
 			{
@@ -6405,6 +6443,22 @@ namespace TL
 				webapp_req_id = webapp_req_id,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.getAccessSettings"/></para></summary>
+		public static Task<Bots_AccessSettings> Bots_GetAccessSettings(this Client client, InputUserBase bot)
+			=> client.Invoke(new Bots_GetAccessSettings
+			{
+				bot = bot,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.editAccessSettings"/></para></summary>
+		public static Task<bool> Bots_EditAccessSettings(this Client client, InputUserBase bot, InputUserBase[] add_users = null, bool restricted = false)
+			=> client.Invoke(new Bots_EditAccessSettings
+			{
+				flags = (Bots_EditAccessSettings.Flags)((add_users != null ? 0x2 : 0) | (restricted ? 0x1 : 0)),
+				bot = bot,
+				add_users = add_users,
+			});
+
 		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
 		/// <param name="invoice">Invoice</param>
 		/// <param name="theme_params"><a href="https://corefork.telegram.org/api/bots/webapps#theme-parameters">Theme parameters »</a></param>
@@ -7017,7 +7071,9 @@ namespace TL
 				gift_id = gift_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftAuctionState"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarGiftAuctionState#possible-errors">details</a>)</para></summary>
+		/// <summary>Returns info about a <a href="https://corefork.telegram.org/api/auctions">collectible gift auction »</a>; also subscribes the user to auction updates, see <a href="https://corefork.telegram.org/api/auctions">here »</a> for more info on the full flow.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftAuctionState"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarGiftAuctionState#possible-errors">details</a>)</para></summary>
+		/// <param name="auction">Either the ID of the gift linked to the auction, or an <a href="https://corefork.telegram.org/api/links#auction-links">auction deep link slug »</a>.</param>
+		/// <param name="version">Initially <c>0</c>, then set to the returned <see cref="StarGiftAuctionState"/>.<c>version</c>, to avoid refetching results if they haven't changed.</param>
 		public static Task<Payments_StarGiftAuctionState> Payments_GetStarGiftAuctionState(this Client client, InputStarGiftAuctionBase auction, int version)
 			=> client.Invoke(new Payments_GetStarGiftAuctionState
 			{
@@ -7025,14 +7081,16 @@ namespace TL
 				version = version,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftAuctionAcquiredGifts"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarGiftAuctionAcquiredGifts#possible-errors">details</a>)</para></summary>
+		/// <summary>Fetches all the gifts that the current user won in an <a href="https://corefork.telegram.org/api/auctions">auction</a>.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftAuctionAcquiredGifts"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarGiftAuctionAcquiredGifts#possible-errors">details</a>)</para></summary>
+		/// <param name="gift_id">The gift ID linked to the auction.</param>
 		public static Task<Payments_StarGiftAuctionAcquiredGifts> Payments_GetStarGiftAuctionAcquiredGifts(this Client client, long gift_id)
 			=> client.Invoke(new Payments_GetStarGiftAuctionAcquiredGifts
 			{
 				gift_id = gift_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftActiveAuctions"/></para></summary>
+		/// <summary>Fetches all currently active <a href="https://corefork.telegram.org/api/auctions">gift auctions</a> <strong>where the user has placed a bid</strong>.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftActiveAuctions"/></para></summary>
+		/// <param name="hash">Hash generated <a href="https://corefork.telegram.org/api/auctions">as specified here »</a></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/payments.starGiftActiveAuctionsNotModified">payments.starGiftActiveAuctionsNotModified</a></returns>
 		public static Task<Payments_StarGiftActiveAuctions> Payments_GetStarGiftActiveAuctions(this Client client, long hash = default)
 			=> client.Invoke(new Payments_GetStarGiftActiveAuctions
@@ -7852,6 +7910,15 @@ namespace TL
 				limit = limit,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/stats.getPollStats"/></para></summary>
+		public static Task<Stats_PollStats> Stats_GetPollStats(this Client client, InputPeer peer, int msg_id, bool dark = false)
+			=> client.Invoke(new Stats_GetPollStats
+			{
+				flags = (Stats_GetPollStats.Flags)(dark ? 0x1 : 0),
+				peer = peer,
+				msg_id = msg_id,
+			});
+
 		/// <summary>Export a <a href="https://corefork.telegram.org/api/folders">folder »</a>, creating a <a href="https://corefork.telegram.org/api/links#chat-folder-links">chat folder deep link »</a>.		<para>See <a href="https://corefork.telegram.org/method/chatlists.exportChatlistInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/chatlists.exportChatlistInvite#possible-errors">details</a>)</para></summary>
 		/// <param name="chatlist">The folder to export</param>
 		/// <param name="title">An optional name for the link</param>
@@ -8475,6 +8542,67 @@ namespace TL
 			=> client.Invoke(new Fragment_GetCollectibleInfo
 			{
 				collectible = collectible,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/aicompose.createTone"/></para></summary>
+		public static Task<AiComposeToneBase> Aicompose_CreateTone(this Client client, long emoji_id, string title, string prompt, bool display_author = false)
+			=> client.Invoke(new Aicompose_CreateTone
+			{
+				flags = (Aicompose_CreateTone.Flags)(display_author ? 0x1 : 0),
+				emoji_id = emoji_id,
+				title = title,
+				prompt = prompt,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/aicompose.updateTone"/></para></summary>
+		public static Task<AiComposeToneBase> Aicompose_UpdateTone(this Client client, InputAiComposeTone tone, bool? display_author = default, long? emoji_id = null, string title = null, string prompt = null)
+			=> client.Invoke(new Aicompose_UpdateTone
+			{
+				flags = (Aicompose_UpdateTone.Flags)((display_author != default ? 0x1 : 0) | (emoji_id != null ? 0x2 : 0) | (title != null ? 0x4 : 0) | (prompt != null ? 0x8 : 0)),
+				tone = tone,
+				display_author = display_author ?? default,
+				emoji_id = emoji_id ?? default,
+				title = title,
+				prompt = prompt,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/aicompose.saveTone"/></para></summary>
+		public static Task<bool> Aicompose_SaveTone(this Client client, InputAiComposeTone tone, bool unsave)
+			=> client.Invoke(new Aicompose_SaveTone
+			{
+				tone = tone,
+				unsave = unsave,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/aicompose.deleteTone"/></para></summary>
+		public static Task<bool> Aicompose_DeleteTone(this Client client, InputAiComposeTone tone)
+			=> client.Invoke(new Aicompose_DeleteTone
+			{
+				tone = tone,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/aicompose.getTone"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/aicompose.tonesNotModified">aicompose.tonesNotModified</a></returns>
+		public static Task<Aicompose_Tones> Aicompose_GetTone(this Client client, InputAiComposeTone tone)
+			=> client.Invoke(new Aicompose_GetTone
+			{
+				tone = tone,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/aicompose.getTones"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/aicompose.tonesNotModified">aicompose.tonesNotModified</a></returns>
+		public static Task<Aicompose_Tones> Aicompose_GetTones(this Client client, long hash = default)
+			=> client.Invoke(new Aicompose_GetTones
+			{
+				hash = hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/aicompose.getToneExample"/></para></summary>
+		public static Task<AiComposeToneExample> Aicompose_GetToneExample(this Client client, InputAiComposeTone tone, int num)
+			=> client.Invoke(new Aicompose_GetToneExample
+			{
+				tone = tone,
+				num = num,
 			});
 	}
 }
@@ -9875,6 +10003,7 @@ namespace TL.Methods
 			groups = 0x400,
 			channels = 0x8000,
 			bots_app = 0x10000,
+			bots_guestchat = 0x20000,
 		}
 	}
 
@@ -12640,19 +12769,19 @@ namespace TL.Methods
 		public string match_code;
 	}
 
-	[TLDef(0xFD426AFE)]
+	[TLDef(0xDAECC589)]
 	public sealed partial class Messages_ComposeMessageWithAI : IMethod<Messages_ComposedMessageWithAI>
 	{
 		public Flags flags;
 		public TextWithEntities text;
 		[IfFlag(1)] public string translate_to_lang;
-		[IfFlag(2)] public string change_tone;
+		[IfFlag(2)] public InputAiComposeTone tone;
 
 		[Flags] public enum Flags : uint
 		{
 			proofread = 0x1,
 			has_translate_to_lang = 0x2,
-			has_change_tone = 0x4,
+			has_tone = 0x4,
 			emojify = 0x8,
 		}
 	}
@@ -12716,6 +12845,38 @@ namespace TL.Methods
 		{
 			has_top_msg_id = 0x1,
 		}
+	}
+
+	[TLDef(0x052B08DB)]
+	public sealed partial class Messages_SetBotGuestChatResult : IMethod<bool>
+	{
+		public long query_id;
+		public InputBotInlineResultBase result;
+	}
+
+	[TLDef(0xA0B80CF8)]
+	public sealed partial class Messages_DeleteParticipantReactions : IMethod<bool>
+	{
+		public InputPeer peer;
+		public InputPeer participant;
+	}
+
+	[TLDef(0xE3B7F82C)]
+	public sealed partial class Messages_DeleteParticipantReaction : IMethod<UpdatesBase>
+	{
+		public InputPeer peer;
+		public int msg_id;
+		public InputPeer participant;
+	}
+
+	[TLDef(0x55FB0996)]
+	public sealed partial class Messages_GetPersonalChannelHistory : IMethod<Messages_MessagesBase>
+	{
+		public InputUserBase user_id;
+		public int limit;
+		public int max_id;
+		public int min_id;
+		public long hash;
 	}
 
 	[TLDef(0xEDD4882A)]
@@ -13805,6 +13966,26 @@ namespace TL.Methods
 	{
 		public InputUserBase bot;
 		public string webapp_req_id;
+	}
+
+	[TLDef(0x213853A3)]
+	public sealed partial class Bots_GetAccessSettings : IMethod<Bots_AccessSettings>
+	{
+		public InputUserBase bot;
+	}
+
+	[TLDef(0x31813CD8)]
+	public sealed partial class Bots_EditAccessSettings : IMethod<bool>
+	{
+		public Flags flags;
+		public InputUserBase bot;
+		[IfFlag(1)] public InputUserBase[] add_users;
+
+		[Flags] public enum Flags : uint
+		{
+			restricted = 0x1,
+			has_add_users = 0x2,
+		}
 	}
 
 	[TLDef(0x37148DBB)]
@@ -15092,6 +15273,19 @@ namespace TL.Methods
 		public int limit;
 	}
 
+	[TLDef(0xC27DFA68)]
+	public sealed partial class Stats_GetPollStats : IMethod<Stats_PollStats>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public int msg_id;
+
+		[Flags] public enum Flags : uint
+		{
+			dark = 0x1,
+		}
+	}
+
 	[TLDef(0x8472478E)]
 	public sealed partial class Chatlists_ExportChatlistInvite : IMethod<Chatlists_ExportedChatlistInvite>
 	{
@@ -15614,5 +15808,70 @@ namespace TL.Methods
 	public sealed partial class Fragment_GetCollectibleInfo : IMethod<Fragment_CollectibleInfo>
 	{
 		public InputCollectible collectible;
+	}
+
+	[TLDef(0x4AA83913)]
+	public sealed partial class Aicompose_CreateTone : IMethod<AiComposeToneBase>
+	{
+		public Flags flags;
+		public long emoji_id;
+		public string title;
+		public string prompt;
+
+		[Flags] public enum Flags : uint
+		{
+			display_author = 0x1,
+		}
+	}
+
+	[TLDef(0x903BCF59)]
+	public sealed partial class Aicompose_UpdateTone : IMethod<AiComposeToneBase>
+	{
+		public Flags flags;
+		public InputAiComposeTone tone;
+		[IfFlag(0)] public bool display_author;
+		[IfFlag(1)] public long emoji_id;
+		[IfFlag(2)] public string title;
+		[IfFlag(3)] public string prompt;
+
+		[Flags] public enum Flags : uint
+		{
+			has_display_author = 0x1,
+			has_emoji_id = 0x2,
+			has_title = 0x4,
+			has_prompt = 0x8,
+		}
+	}
+
+	[TLDef(0x1782CBB1)]
+	public sealed partial class Aicompose_SaveTone : IMethod<bool>
+	{
+		public InputAiComposeTone tone;
+		public bool unsave;
+	}
+
+	[TLDef(0xDD39316A)]
+	public sealed partial class Aicompose_DeleteTone : IMethod<bool>
+	{
+		public InputAiComposeTone tone;
+	}
+
+	[TLDef(0xB2E8BA03)]
+	public sealed partial class Aicompose_GetTone : IMethod<Aicompose_Tones>
+	{
+		public InputAiComposeTone tone;
+	}
+
+	[TLDef(0xABD59201)]
+	public sealed partial class Aicompose_GetTones : IMethod<Aicompose_Tones>
+	{
+		public long hash;
+	}
+
+	[TLDef(0xD1B4AB14)]
+	public sealed partial class Aicompose_GetToneExample : IMethod<AiComposeToneExample>
+	{
+		public InputAiComposeTone tone;
+		public int num;
 	}
 }
