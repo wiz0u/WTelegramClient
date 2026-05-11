@@ -325,7 +325,7 @@ namespace TL
 		flags = (period != 0 ? InputMediaGeoLive.Flags.has_period : 0) | (flags.HasFlag(Flags.has_heading) ? InputMediaGeoLive.Flags.has_heading : 0) | (flags.HasFlag(Flags.has_proximity_notification_radius) ? InputMediaGeoLive.Flags.has_proximity_notification_radius : 0) }; }
 	partial class MessageMediaPoll			{ public override InputMedia ToInputMedia() => new InputMediaPoll { poll = poll,
 		solution = results.solution, solution_entities = results.solution_entities,
-		solution_media = results.solution_media.ToInputMedia(), attached_media = attached_media.ToInputMedia(),
+		solution_media = results.solution_media?.ToInputMedia(), attached_media = attached_media?.ToInputMedia(),
 		correct_answers = results.results?.Select((pav, i) => pav.flags.HasFlag(PollAnswerVoters.Flags.correct) ? i : -1).Where(i => i >= 0).ToArray(),
 		flags = (results.results != null ? InputMediaPoll.Flags.has_correct_answers : 0) | (results.solution != null ? InputMediaPoll.Flags.has_solution : 0)
 			| (results.solution_media != null ? InputMediaPoll.Flags.has_solution_media : 0) | (attached_media != null ? InputMediaPoll.Flags.has_attached_media : 0) }; }
@@ -336,8 +336,8 @@ namespace TL
 	{
 		public abstract long ID { get; }
 		protected abstract InputPhoto ToInputPhoto();
-		public static implicit operator InputPhoto(PhotoBase photo) => photo.ToInputPhoto();
-		public static implicit operator InputMediaPhoto(PhotoBase photo) => photo.ToInputPhoto();
+		public static implicit operator InputPhoto(PhotoBase photo) => photo?.ToInputPhoto();
+		public static implicit operator InputMediaPhoto(PhotoBase photo) => photo?.ToInputPhoto();
 	}
 	partial class PhotoEmpty
 	{
@@ -425,7 +425,7 @@ namespace TL
 		public static implicit operator InputNotifyPeerBase(UserBase user) => new InputNotifyPeer { peer = user };
 	}
 
-	partial class WallPaperBase					{ public static implicit operator InputWallPaperBase(WallPaperBase wp) => wp.ToInputWallPaper();
+	partial class WallPaperBase					{ public static implicit operator InputWallPaperBase(WallPaperBase wp) => wp?.ToInputWallPaper();
 												  protected abstract InputWallPaperBase ToInputWallPaper(); }
 	partial class WallPaper						{ protected override InputWallPaperBase ToInputWallPaper() => new InputWallPaper { id = id, access_hash = access_hash }; }
 	partial class WallPaperNoFile				{ protected override InputWallPaperBase ToInputWallPaper() => new InputWallPaperNoFile { id = id }; }
@@ -517,8 +517,8 @@ namespace TL
 	{
 		public abstract long ID { get; }
 		protected abstract InputDocument ToInputDocument();
-		public static implicit operator InputDocument(DocumentBase document) => document.ToInputDocument();
-		public static implicit operator InputMediaDocument(DocumentBase document) => document.ToInputDocument();
+		public static implicit operator InputDocument(DocumentBase document) => document?.ToInputDocument();
+		public static implicit operator InputMediaDocument(DocumentBase document) => document?.ToInputDocument();
 	}
 	partial class DocumentEmpty
 	{
