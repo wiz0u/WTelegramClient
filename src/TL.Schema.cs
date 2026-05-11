@@ -1099,7 +1099,7 @@ namespace TL
 			call_active = 0x800000,
 			/// <summary>Whether there's anyone in the group call</summary>
 			call_not_empty = 0x1000000,
-			/// <summary>Whether this group is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a>, thus does not allow forwarding messages from it</summary>
+			/// <summary>Whether this group is <a href="https://telegram.org/blog/content-protection-delete-by-date-and-more">protected</a>, thus does not allow forwarding messages from it</summary>
 			noforwards = 0x2000000,
 		}
 
@@ -1219,7 +1219,7 @@ namespace TL
 			fake = 0x2000000,
 			/// <summary>Whether this <a href="https://corefork.telegram.org/api/channel">supergroup</a> is a gigagroup<br/>Changes to this flag should invalidate the local <see cref="ChannelFull"/> cache for this channel/supergroup ID, see <a href="https://corefork.telegram.org/api/peers#full-info-database">here »</a> for more info.</summary>
 			gigagroup = 0x4000000,
-			/// <summary>Whether this channel or group is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a>, thus does not allow forwarding messages from it</summary>
+			/// <summary>Whether this channel or group is <a href="https://telegram.org/blog/content-protection-delete-by-date-and-more">protected</a>, thus does not allow forwarding messages from it</summary>
 			noforwards = 0x8000000,
 			/// <summary>Whether a user needs to join the supergroup before they can send messages: can be false only for <a href="https://corefork.telegram.org/api/discussion">discussion groups »</a>, toggle using <see cref="SchemaExtensions.Channels_ToggleJoinToSend">Channels_ToggleJoinToSend</see><br/>Changes to this flag should invalidate the local <see cref="ChannelFull"/> cache for this channel/supergroup ID, see <a href="https://corefork.telegram.org/api/peers#full-info-database">here »</a> for more info.</summary>
 			join_to_send = 0x10000000,
@@ -1991,7 +1991,7 @@ namespace TL
 			pinned = 0x1000000,
 			/// <summary>Field <see cref="ttl_period"/> has a value</summary>
 			has_ttl_period = 0x2000000,
-			/// <summary>Whether this message is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a> and thus cannot be forwarded; clients should also prevent users from saving attached media (i.e. videos should only be streamed, photos should be kept in RAM, et cetera).</summary>
+			/// <summary>Whether this message is <a href="https://telegram.org/blog/content-protection-delete-by-date-and-more">protected</a> and thus cannot be forwarded; clients should also prevent users from saving attached media (i.e. videos should only be streamed, photos should be kept in RAM, et cetera).</summary>
 			noforwards = 0x4000000,
 			/// <summary>If set, any eventual webpage preview will be shown on top of the message instead of at the bottom.</summary>
 			invert_media = 0x8000000,
@@ -2817,6 +2817,7 @@ namespace TL
 		public string currency;
 		/// <summary>Price of the gift in the smallest units of the currency (integer, not float/double). For example, for a price of <c>US$ 1.45</c> pass <c>amount = 145</c>. See the exp parameter in <a href="https://corefork.telegram.org/bots/payments/currencies.json">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</summary>
 		public long amount;
+		/// <summary>Duration of the gifted Telegram Premium subscription, in days.</summary>
 		public int days;
 		/// <summary>If the gift was bought using a cryptocurrency, the cryptocurrency name.</summary>
 		[IfFlag(0)] public string crypto_currency;
@@ -2921,6 +2922,7 @@ namespace TL
 		public Flags flags;
 		/// <summary>Identifier of the channel/supergroup that created the gift code <a href="https://corefork.telegram.org/api/giveaways">either directly or through a giveaway</a>: if we import this giftcode link, we will also automatically <a href="https://corefork.telegram.org/api/boost">boost</a> this channel/supergroup.</summary>
 		[IfFlag(1)] public Peer boost_peer;
+		/// <summary>Duration of the gifted Telegram Premium subscription, in days.</summary>
 		public int days;
 		/// <summary>Slug of the <a href="https://corefork.telegram.org/api/links#premium-giftcode-links">Telegram Premium giftcode link</a></summary>
 		public string slug;
@@ -3165,6 +3167,7 @@ namespace TL
 		[IfFlag(10)] public DateTime can_resell_at;
 		/// <summary>If set, the <see cref="StarGiftAttributeOriginalDetails"/> attribute of this gift may be removed by paying the specified amount of stars, see <a href="https://corefork.telegram.org/api/gifts#dropping-the-original-details-of-an-upgraded-gift">here »</a> for the full flow.</summary>
 		[IfFlag(12)] public long drop_original_details_stars;
+		/// <summary>If set, this gift can be used for <a href="https://corefork.telegram.org/api/gifts#crafting-collectible-gifts">crafting »</a> only starting from the specified unixtime.</summary>
 		[IfFlag(15)] public DateTime can_craft_at;
 
 		[Flags] public enum Flags : uint
@@ -3195,10 +3198,13 @@ namespace TL
 			prepaid_upgrade = 0x800,
 			/// <summary>Field <see cref="drop_original_details_stars"/> has a value</summary>
 			has_drop_original_details_stars = 0x1000,
+			/// <summary>This collectible gift was assigned from the <a href="https://corefork.telegram.org/api/gifts#withdraw-a-collectible-gift-to-the-ton-blockchain">TON blockchain »</a>.</summary>
 			assigned = 0x2000,
+			/// <summary>This collectible gift was transferred after a <a href="https://corefork.telegram.org/api/gifts#collectible-gift-purchase-offers">purchase offer »</a> was accepted.</summary>
 			from_offer = 0x4000,
 			/// <summary>Field <see cref="can_craft_at"/> has a value</summary>
 			has_can_craft_at = 0x8000,
+			/// <summary>This collectible gift was obtained by <a href="https://corefork.telegram.org/api/gifts#crafting-collectible-gifts">crafting »</a>.</summary>
 			craft = 0x10000,
 		}
 	}
@@ -3346,33 +3352,41 @@ namespace TL
 		/// <summary>The suggested birthday.</summary>
 		public Birthday birthday;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGiftPurchaseOffer"/></para></summary>
+	/// <summary>Contains an offer to purchase a <a href="https://corefork.telegram.org/api/gifts#collectible-gift-purchase-offers">collectible gift »</a>, see <a href="https://corefork.telegram.org/api/gifts#collectible-gift-purchase-offers">here »</a> for the full flow.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGiftPurchaseOffer"/></para></summary>
 	[TLDef(0x774278D4)]
 	public sealed partial class MessageActionStarGiftPurchaseOffer : MessageAction
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>The collectible gift the offer is about.</summary>
 		public StarGiftBase gift;
+		/// <summary>Offered price.</summary>
 		public StarsAmountBase price;
+		/// <summary>Offer expiration date (UNIX timestamp): if the owner doesn't act before this date, the offer will expire and the buyer will be refunded automatically.</summary>
 		public DateTime expires_at;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>If set, the gift owner accepted this offer.</summary>
 			accepted = 0x1,
+			/// <summary>If set, the gift owner declined this offer.</summary>
 			declined = 0x2,
 		}
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGiftPurchaseOfferDeclined"/></para></summary>
+	/// <summary>A <a href="https://corefork.telegram.org/api/gifts#collectible-gift-purchase-offers">collectible gift purchase offer »</a> was declined, or the offer expired, see <a href="https://corefork.telegram.org/api/gifts#collectible-gift-purchase-offers">here »</a> for the full flow.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGiftPurchaseOfferDeclined"/></para></summary>
 	[TLDef(0x73ADA76B)]
 	public sealed partial class MessageActionStarGiftPurchaseOfferDeclined : MessageAction
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>The collectible gift the declined or expired offer was about.</summary>
 		public StarGiftBase gift;
+		/// <summary>Offered price that is refunded automatically to the buyer.</summary>
 		public StarsAmountBase price;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>If set, the owner didn't act before the <see cref="MessageActionStarGiftPurchaseOffer"/>.<c>expires_at</c> deadline and the offer expired automatically; otherwise, the owner explicitly declined the offer.</summary>
 			expired = 0x1,
 		}
 	}
@@ -3388,24 +3402,29 @@ namespace TL
 	{
 		public long new_creator_id;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionNoForwardsToggle"/></para></summary>
+	/// <summary>Emitted only in private chats when enabling or disabling <a href="https://corefork.telegram.org/api/content-protection#for-users">content protection »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionNoForwardsToggle"/></para></summary>
 	[TLDef(0xBF7D6572)]
 	public sealed partial class MessageActionNoForwardsToggle : MessageAction
 	{
+		/// <summary>Previous protection status (if true, the chat was protected). May be equal to <c>new_value</c> when replying to requests, see <a href="https://corefork.telegram.org/api/content-protection#for-users">here »</a> for more info on the full flow.</summary>
 		public bool prev_value;
+		/// <summary>New protection status.</summary>
 		public bool new_value;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionNoForwardsRequest"/></para></summary>
+	/// <summary>Emitted only in private chats if the other side requested to disable <a href="https://corefork.telegram.org/api/content-protection#for-users">content protection »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionNoForwardsRequest"/></para></summary>
 	[TLDef(0x3E2793BA)]
 	public sealed partial class MessageActionNoForwardsRequest : MessageAction
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
+		/// <summary>Previous protection status.</summary>
 		public bool prev_value;
+		/// <summary>New requested protection status.</summary>
 		public bool new_value;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>If set, this request was accepted or rejected by the other user and thus cannot be used anymore.</summary>
 			expired = 0x1,
 		}
 	}
@@ -4255,7 +4274,9 @@ namespace TL
 			has_saved_music = 0x200000,
 			/// <summary>Field <see cref="note"/> has a value</summary>
 			has_note = 0x400000,
+			/// <summary>If set, <a href="https://corefork.telegram.org/api/content-protection#for-users">content protection »</a> was enabled in this private chat by us.</summary>
 			noforwards_my_enabled = 0x800000,
+			/// <summary>If set, <a href="https://corefork.telegram.org/api/content-protection#for-users">content protection »</a> was enabled in this private chat by this user.</summary>
 			noforwards_peer_enabled = 0x1000000,
 			/// <summary>Field <see cref="bot_manager_id"/> has a value</summary>
 			has_bot_manager_id = 0x2000000,
@@ -18468,7 +18489,7 @@ namespace TL
 			close_friends = 0x100,
 			/// <summary>Full information about this story was omitted for space and performance reasons; use <see cref="SchemaExtensions.Stories_GetStoriesByID">Stories_GetStoriesByID</see> to fetch full info about this story when and if needed.</summary>
 			min = 0x200,
-			/// <summary>Whether this story is <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">protected</a> and thus cannot be forwarded; clients should also prevent users from saving attached media (i.e. videos should only be streamed, photos should be kept in RAM, et cetera).</summary>
+			/// <summary>Whether this story is <a href="https://telegram.org/blog/content-protection-delete-by-date-and-more">protected</a> and thus cannot be forwarded; clients should also prevent users from saving attached media (i.e. videos should only be streamed, photos should be kept in RAM, et cetera).</summary>
 			noforwards = 0x400,
 			/// <summary>Indicates whether the story was edited.</summary>
 			edited = 0x800,
@@ -18988,6 +19009,7 @@ namespace TL
 		[IfFlag(0)] public long to_id;
 		/// <summary>Creation date of the gift code.</summary>
 		public DateTime date;
+		/// <summary>Duration of the gifted Telegram Premium subscription, in days.</summary>
 		public int days;
 		/// <summary>When was the giftcode imported, if it was imported.</summary>
 		[IfFlag(1)] public DateTime used_date;
@@ -20772,6 +20794,7 @@ namespace TL
 			phonegroup_message = 0x8000000,
 			/// <summary>Represents payment for placing a <a href="https://corefork.telegram.org/api/auctions">collectible gift auction bid »</a>.</summary>
 			stargift_auction_bid = 0x10000000,
+			/// <summary>Represents payment for a <a href="https://corefork.telegram.org/api/gifts#collectible-gift-purchase-offers">collectible gift purchase offer »</a>.</summary>
 			offer = 0x20000000,
 		}
 	}
@@ -21200,7 +21223,9 @@ namespace TL
 		[IfFlag(11)] public int gifts_per_round;
 		/// <summary>Always set for gifts that can be bought on <a href="https://corefork.telegram.org/api/auctions">auctions »</a>, contains the UNIX timestamp indicating when will the auction start (or when the auction started, if it points to the past).</summary>
 		[IfFlag(11)] public DateTime auction_start_date;
+		/// <summary>Total number of possible <a href="https://corefork.telegram.org/api/gifts#listing-all-possible-collectible-variants">collectible variants »</a> for this gift type.</summary>
 		[IfFlag(12)] public int upgrade_variants;
+		/// <summary>Default background palette for this gift type, used when rendering gift cards and previews before a specific collectible backdrop is chosen.</summary>
 		[IfFlag(13)] public StarGiftBackground background;
 
 		[Flags] public enum Flags : uint
@@ -21225,6 +21250,7 @@ namespace TL
 			limited_per_user = 0x100,
 			/// <summary>Field <see cref="locked_until_date"/> has a value</summary>
 			has_locked_until_date = 0x200,
+			/// <summary>If set, collectible gifts of this type may be used to generate a <a href="https://corefork.telegram.org/api/colors#collectible-message-palettes">message color palette and pattern »</a>.</summary>
 			peer_color_available = 0x400,
 			/// <summary>If set, this is a collectible gift that can only be bought through a <a href="https://corefork.telegram.org/api/auctions">collectible gift auction »</a>.</summary>
 			auction = 0x800,
@@ -21249,9 +21275,9 @@ namespace TL
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
-		/// <summary>Identifier of the collectible gift.</summary>
+		/// <summary>Unique identifier of this collectible gift.</summary>
 		public long id;
-		/// <summary>Unique ID of the gift.</summary>
+		/// <summary>ID of the regular gift from which this gift was upgraded (all collectible gifts upgraded from the same gift will have the same <c>gift_id</c>, with different attributes).</summary>
 		public long gift_id;
 		/// <summary>Collectible title.</summary>
 		public string title;
@@ -21277,16 +21303,21 @@ namespace TL
 		[IfFlag(4)] public StarsAmountBase[] resell_amount;
 		/// <summary>This gift was released by the specified peer.</summary>
 		[IfFlag(5)] public Peer released_by;
-		/// <summary>Price of the gift.</summary>
+		/// <summary>Estimated price of the gift.</summary>
 		[IfFlag(8)] public long value_amount;
-		/// <summary>Currency for the gift's price.</summary>
+		/// <summary>Currency for the gift's estimated price.</summary>
 		[IfFlag(8)] public string value_currency;
+		/// <summary>Estimated price of the gift in USD cents.</summary>
 		[IfFlag(8)] public long value_usd_amount;
 		/// <summary>The current chat where the associated <a href="https://corefork.telegram.org/api/themes#chat-themes">chat theme</a> is installed, if any (gift-based themes can only be installed in one chat at a time).</summary>
 		[IfFlag(10)] public Peer theme_peer;
+		/// <summary>Can contain a <a href="https://corefork.telegram.org/api/colors#collectible-message-palettes">collectible message palette »</a>.</summary>
 		[IfFlag(11)] public PeerColorBase peer_color;
+		/// <summary>If set, the gift is currently hosted on the specified user or channel profile even though ownership belongs to a TON wallet. The owner may transfer, resell or export the gift, while the host or owner may show it on the profile, use it as a theme/status and add it to a collection.</summary>
 		[IfFlag(12)] public Peer host_id;
+		/// <summary>If set, you can <a href="https://corefork.telegram.org/api/gifts#collectible-gift-purchase-offers">send a purchase offer for this gift »</a>: the minimum offer price is specified in this flag.</summary>
 		[IfFlag(13)] public int offer_min_stars;
+		/// <summary>Success probability, per 1000, contributed by this gift when it is used for <a href="https://corefork.telegram.org/api/gifts#crafting-collectible-gifts">crafting »</a>.</summary>
 		[IfFlag(16)] public int craft_chance_permille;
 
 		[Flags] public enum Flags : uint
@@ -21319,13 +21350,15 @@ namespace TL
 			has_host_id = 0x1000,
 			/// <summary>Field <see cref="offer_min_stars"/> has a value</summary>
 			has_offer_min_stars = 0x2000,
+			/// <summary>This gift was already used as an ingredient for <a href="https://corefork.telegram.org/api/gifts#crafting-collectible-gifts">crafting another collectible gift »</a>.</summary>
 			burned = 0x4000,
+			/// <summary>This collectible gift was obtained by <a href="https://corefork.telegram.org/api/gifts#crafting-collectible-gifts">crafting »</a>, not by upgrading a regular gift.</summary>
 			crafted = 0x8000,
 			/// <summary>Field <see cref="craft_chance_permille"/> has a value</summary>
 			has_craft_chance_permille = 0x10000,
 		}
 
-		/// <summary>Identifier of the collectible gift.</summary>
+		/// <summary>Unique identifier of this collectible gift.</summary>
 		public override long ID => id;
 		/// <summary>Total number of gifts of the same type that can be upgraded or were already upgraded to a collectible gift.</summary>
 		public override int AvailabilityTotal => availability_total;
@@ -21654,10 +21687,12 @@ namespace TL
 		public string name;
 		/// <summary>The <a href="https://corefork.telegram.org/api/stickers">sticker</a> representing the upgraded gift</summary>
 		public DocumentBase document;
+		/// <summary>Rarity of this model.</summary>
 		public StarGiftAttributeRarityBase rarity;
 
 		[Flags] public enum Flags : uint
 		{
+			/// <summary>This model is reserved for <a href="https://corefork.telegram.org/api/gifts#crafting-collectible-gifts">crafting »</a>, and should be filtered out from regular upgrade previews.</summary>
 			crafted = 0x1,
 		}
 	}
@@ -21669,6 +21704,7 @@ namespace TL
 		public string name;
 		/// <summary>The symbol</summary>
 		public DocumentBase document;
+		/// <summary>Rarity of this pattern.</summary>
 		public StarGiftAttributeRarityBase rarity;
 	}
 	/// <summary>The backdrop of a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeBackdrop"/></para></summary>
@@ -21687,6 +21723,7 @@ namespace TL
 		public int pattern_color;
 		/// <summary>Color of the text on the backdrop in RGB24 format.</summary>
 		public int text_color;
+		/// <summary>Rarity of this backdrop.</summary>
 		public StarGiftAttributeRarityBase rarity;
 	}
 	/// <summary>Info about the sender, receiver and message attached to the original <a href="https://corefork.telegram.org/api/gifts">gift »</a>, before it was upgraded to a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeOriginalDetails"/></para></summary>
@@ -21804,7 +21841,9 @@ namespace TL
 		[IfFlag(16)] public string prepaid_upgrade_hash;
 		/// <summary>If set, the <see cref="StarGiftAttributeOriginalDetails"/> attribute of this gift may be removed by paying the specified amount of stars, see <a href="https://corefork.telegram.org/api/gifts#dropping-the-original-details-of-an-upgraded-gift">here »</a> for the full flow.</summary>
 		[IfFlag(18)] public long drop_original_details_stars;
+		/// <summary>Collectible number assigned to the gift, if already known.</summary>
 		[IfFlag(19)] public int gift_num;
+		/// <summary>If set, this gift can be used for <a href="https://corefork.telegram.org/api/gifts#crafting-collectible-gifts">crafting »</a> only starting from the specified unixtime.</summary>
 		[IfFlag(20)] public DateTime can_craft_at;
 
 		[Flags] public enum Flags : uint
@@ -22011,6 +22050,7 @@ namespace TL
 			disallow_unique_stargifts = 0x4,
 			/// <summary>Disallow the reception of <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">gifted Telegram Premium subscriptions »</a>.</summary>
 			disallow_premium_gifts = 0x8,
+			/// <summary>Disallow the reception of gifts sent by channels.</summary>
 			disallow_stargifts_from_channels = 0x10,
 		}
 	}
@@ -22684,6 +22724,7 @@ namespace TL
 		public int pos;
 		/// <summary>Optional message that attached with the gift, passed when making the bid.</summary>
 		[IfFlag(1)] public TextWithEntities message;
+		/// <summary>If set, the collectible number of the won gift among all collectibles of the same type.</summary>
 		[IfFlag(2)] public int gift_num;
 
 		[Flags] public enum Flags : uint
@@ -22850,12 +22891,15 @@ namespace TL
 		public string pnv_token;
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftBackground"/></para></summary>
+	/// <summary>Contains the default background palette of a <a href="https://corefork.telegram.org/api/gifts#listing-all-possible-collectible-variants">gift type »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftBackground"/></para></summary>
 	[TLDef(0xAFF56398)]
 	public sealed partial class StarGiftBackground : IObject
 	{
+		/// <summary>Center color of the background palette, in RGB24 format.</summary>
 		public int center_color;
+		/// <summary>Edge color of the background palette, in RGB24 format.</summary>
 		public int edge_color;
+		/// <summary>Text color to use on top of the background palette, in RGB24 format.</summary>
 		public int text_color;
 	}
 
@@ -22882,6 +22926,7 @@ namespace TL
 	[TLDef(0x46C6E36F)]
 	public sealed partial class Payments_StarGiftUpgradeAttributes : IObject
 	{
+		/// <summary>Full list of possible attributes that may be assigned when gifts of the specified type are turned into <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gifts »</a>.</summary>
 		public StarGiftAttribute[] attributes;
 	}
 
@@ -22920,22 +22965,23 @@ namespace TL
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/type/StarGiftAttributeRarity"/></para>		<para>Derived classes: <see cref="StarGiftAttributeRarity"/>, <see cref="StarGiftAttributeRarityUncommon"/>, <see cref="StarGiftAttributeRarityRare"/>, <see cref="StarGiftAttributeRarityEpic"/>, <see cref="StarGiftAttributeRarityLegendary"/></para></summary>
 	public abstract partial class StarGiftAttributeRarityBase : IObject { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeRarity"/></para></summary>
+	/// <summary>Exact rarity value for a collectible gift attribute.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeRarity"/></para></summary>
 	[TLDef(0x36437737)]
 	public sealed partial class StarGiftAttributeRarity : StarGiftAttributeRarityBase
 	{
+		/// <summary>Probability of this attribute, in permille</summary>
 		public int permille;
 	}
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeRarityUncommon"/></para></summary>
+	/// <summary>Represents uncommon collectible gift attribute rarity.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeRarityUncommon"/></para></summary>
 	[TLDef(0xDBCE6389)]
 	public sealed partial class StarGiftAttributeRarityUncommon : StarGiftAttributeRarityBase { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeRarityRare"/></para></summary>
+	/// <summary>Represents rare collectible gift attribute rarity.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeRarityRare"/></para></summary>
 	[TLDef(0xF08D516B)]
 	public sealed partial class StarGiftAttributeRarityRare : StarGiftAttributeRarityBase { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeRarityEpic"/></para></summary>
+	/// <summary>Represents epic collectible gift attribute rarity.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeRarityEpic"/></para></summary>
 	[TLDef(0x78FBF3A8)]
 	public sealed partial class StarGiftAttributeRarityEpic : StarGiftAttributeRarityBase { }
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeRarityLegendary"/></para></summary>
+	/// <summary>Represents legendary collectible gift attribute rarity.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftAttributeRarityLegendary"/></para></summary>
 	[TLDef(0xCEF7E7A8)]
 	public sealed partial class StarGiftAttributeRarityLegendary : StarGiftAttributeRarityBase { }
 

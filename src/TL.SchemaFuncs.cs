@@ -2052,7 +2052,7 @@ namespace TL
 		/// <param name="silent">Send this message silently (no notifications for the receivers)</param>
 		/// <param name="background">Send this message as background message</param>
 		/// <param name="clear_draft">Clear the draft field</param>
-		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
+		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/content-protection-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="invert_media">If set, any eventual webpage preview will be shown on top of the message instead of at the bottom.</param>
 		/// <param name="allow_paid_floodskip">Bots only: if set, allows sending up to 1000 messages per second, ignoring <a href="https://corefork.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.</param>
@@ -2092,7 +2092,7 @@ namespace TL
 		/// <param name="silent">Send message silently (no notification should be triggered)</param>
 		/// <param name="background">Send message in background</param>
 		/// <param name="clear_draft">Clear the draft</param>
-		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
+		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/content-protection-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="invert_media">If set, any eventual webpage preview will be shown on top of the message instead of at the bottom.</param>
 		/// <param name="allow_paid_floodskip">Bots only: if set, allows sending up to 1000 messages per second, ignoring <a href="https://corefork.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.</param>
@@ -2136,7 +2136,7 @@ namespace TL
 		/// <param name="with_my_score">When forwarding games, whether to include your score in the game</param>
 		/// <param name="drop_author">Whether to forward messages without quoting the original author</param>
 		/// <param name="drop_media_captions">Whether to strip captions from media</param>
-		/// <param name="noforwards">Only for bots, disallows further re-forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
+		/// <param name="noforwards">Only for bots, disallows further re-forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/content-protection-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="allow_paid_floodskip">Bots only: if set, allows sending up to 1000 messages per second, ignoring <a href="https://corefork.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.</param>
 		/// <param name="from_peer">Source of messages</param>
 		/// <param name="id">IDs of messages</param>
@@ -3109,7 +3109,7 @@ namespace TL
 		/// <param name="silent">Whether to send the album silently (no notification triggered)</param>
 		/// <param name="background">Send in background?</param>
 		/// <param name="clear_draft">Whether to clear <a href="https://corefork.telegram.org/api/drafts">drafts</a></param>
-		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> enabled</param>
+		/// <param name="noforwards">Only for bots, disallows forwarding and saving of the messages, even if the destination chat doesn't have <a href="https://telegram.org/blog/content-protection-delete-by-date-and-more">content protection</a> enabled</param>
 		/// <param name="update_stickersets_order">Whether to move used stickersets to top, <a href="https://corefork.telegram.org/api/stickers#recent-stickersets">see here for more info on this flag »</a></param>
 		/// <param name="invert_media">If set, any eventual webpage preview will be shown on top of the message instead of at the bottom.</param>
 		/// <param name="allow_paid_floodskip">Bots only: if set, allows sending up to 1000 messages per second, ignoring <a href="https://corefork.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.</param>
@@ -3774,9 +3774,10 @@ namespace TL
 				link = link,
 			});
 
-		/// <summary>Enable or disable <a href="https://telegram.org/blog/protected-content-delete-by-date-and-more">content protection</a> on a channel or chat		<para>See <a href="https://corefork.telegram.org/method/messages.toggleNoForwards"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.toggleNoForwards#possible-errors">details</a>)</para></summary>
+		/// <summary>Enable or disable <a href="https://corefork.telegram.org/api/content-protection">content protection</a> on a channel, group or private chat.		<para>See <a href="https://corefork.telegram.org/method/messages.toggleNoForwards"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.toggleNoForwards#possible-errors">details</a>)</para></summary>
 		/// <param name="peer">The chat or channel</param>
 		/// <param name="enabled">Enable or disable content protection</param>
+		/// <param name="request_msg_id">Used only inside private chats to accept or refuse a request to disable content protection, see <a href="https://corefork.telegram.org/api/content-protection#for-users">here »</a> for more info on the full flow.</param>
 		public static Task<UpdatesBase> Messages_ToggleNoForwards(this Client client, InputPeer peer, bool enabled, int? request_msg_id = null)
 			=> client.Invoke(new Messages_ToggleNoForwards
 			{
@@ -5021,7 +5022,7 @@ namespace TL
 			}, peer is InputPeerChannel ipc ? ipc.channel_id : 0);
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setBotGuestChatResult"/></para></summary>
-		public static Task<bool> Messages_SetBotGuestChatResult(this Client client, long query_id, InputBotInlineResultBase result)
+		public static Task<InputBotInlineMessageIDBase> Messages_SetBotGuestChatResult(this Client client, long query_id, InputBotInlineResultBase result)
 			=> client.Invoke(new Messages_SetBotGuestChatResult
 			{
 				query_id = query_id,
@@ -7098,7 +7099,9 @@ namespace TL
 				hash = hash,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.resolveStarGiftOffer"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.resolveStarGiftOffer#possible-errors">details</a>)</para></summary>
+		/// <summary>Accept or decline a previously received <a href="https://corefork.telegram.org/api/gifts#collectible-gift-purchase-offers">collectible gift purchase offer »</a>, see <a href="https://corefork.telegram.org/api/gifts#collectible-gift-purchase-offers">here »</a> for the full flow.		<para>See <a href="https://corefork.telegram.org/method/payments.resolveStarGiftOffer"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.resolveStarGiftOffer#possible-errors">details</a>)</para></summary>
+		/// <param name="decline">If set, declines the offer; otherwise, accepts it.</param>
+		/// <param name="offer_msg_id">Identifier of the <see cref="MessageActionStarGiftPurchaseOffer"/> service message describing the offer to act upon.</param>
 		public static Task<UpdatesBase> Payments_ResolveStarGiftOffer(this Client client, int offer_msg_id, bool decline = false)
 			=> client.Invoke(new Payments_ResolveStarGiftOffer
 			{
@@ -7106,8 +7109,13 @@ namespace TL
 				offer_msg_id = offer_msg_id,
 			});
 
-		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.sendStarGiftOffer"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.sendStarGiftOffer#possible-errors">details</a>)</para></summary>
-		/// <param name="random_id"> <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
+		/// <summary>Send an offer to purchase a <a href="https://corefork.telegram.org/api/gifts#collectible-gift-purchase-offers">collectible gift »</a>, see <a href="https://corefork.telegram.org/api/gifts#collectible-gift-purchase-offers">here »</a> for the full flow.		<para>See <a href="https://corefork.telegram.org/method/payments.sendStarGiftOffer"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.sendStarGiftOffer#possible-errors">details</a>)</para></summary>
+		/// <param name="peer">Owner of the collectible gift: equal to <see cref="StarGiftUnique"/>.<c>owner_id</c>.</param>
+		/// <param name="slug">Identifier of the collectible gift: equal to <see cref="StarGiftUnique"/>.<c>slug</c>.</param>
+		/// <param name="price">Offer price, in stars or TON.</param>
+		/// <param name="duration">Duration of the offer, in seconds: must be one of <c>21600</c>, <c>43200</c>, <c>86400</c>, <c>129600</c>, <c>172800</c>, or <c>259200</c>; can also be <c>120</c> in test mode.</param>
+		/// <param name="random_id">Random 64-bit identifier used to avoid sending the same offer twice in case of network issues. <para>You can use <see cref="WTelegram.Helpers.RandomLong"/></para></param>
+		/// <param name="allow_paid_stars">If the destination peer has <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a> enabled, specifies the amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> the sending user has agreed to pay in order to send the offer (in addition to the amount for the offer itself, contained in <c>price</c>).</param>
 		public static Task<UpdatesBase> Payments_SendStarGiftOffer(this Client client, InputPeer peer, string slug, StarsAmountBase price, int duration, long random_id, long? allow_paid_stars = null)
 			=> client.Invoke(new Payments_SendStarGiftOffer
 			{
@@ -12847,8 +12855,8 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x052B08DB)]
-	public sealed partial class Messages_SetBotGuestChatResult : IMethod<bool>
+	[TLDef(0xB8F106E3)]
+	public sealed partial class Messages_SetBotGuestChatResult : IMethod<InputBotInlineMessageIDBase>
 	{
 		public long query_id;
 		public InputBotInlineResultBase result;
