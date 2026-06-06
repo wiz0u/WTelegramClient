@@ -244,7 +244,7 @@ namespace WTelegram
 					var (update, updates, own, stamp) = _pending[0];
 					if (stamp > now)
 					{
-						_recoveringGaps = Task.Delay(stamp - now).ContinueWith(RecoverGaps, _scheduler);
+						_recoveringGaps = Task.Delay((int)Math.Ceiling((stamp - now).TotalMilliseconds)).ContinueWith(RecoverGaps, _scheduler);
 						return;
 					}
 					var (mbox_id, pts, pts_count) = update.GetMBox();
