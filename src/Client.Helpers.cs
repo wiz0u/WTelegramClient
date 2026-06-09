@@ -822,7 +822,8 @@ namespace WTelegram
 					try
 					{
 						var res = await this.Channels_JoinChannel(channel);
-						chat = res.Chats[channel.id];
+						if (res is Messages_ChatInviteJoinResultOk { updates.Chats: { } resChats })
+							chat = resChats[channel.id];
 					}
 					catch (RpcException ex) when (ex.Code == 400 && ex.Message == "INVITE_REQUEST_SENT") { }
 				return chat;
@@ -832,7 +833,8 @@ namespace WTelegram
 				try
 				{
 					var res = await this.Messages_ImportChatInvite(hash);
-					if (res.Chats.Values.FirstOrDefault() is ChatBase chat) return chat;
+					if (res is Messages_ChatInviteJoinResultOk { updates.Chats: { } resChats })
+						if (resChats.Values.FirstOrDefault() is ChatBase chat) return chat;
 				}
 				catch (RpcException ex) when (ex.Code == 400 && ex.Message == "INVITE_REQUEST_SENT") { }
 			switch (chatInvite)

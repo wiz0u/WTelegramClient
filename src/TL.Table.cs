@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 225;					// fetched 05/11/2026 10:41:04
+		public const int Version = 227;					// fetched 06/09/2026 14:47:17
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -144,7 +144,7 @@ namespace TL
 			[0x1C32B11C] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
 			[0x2633421B] = typeof(ChatFull),
-			[0xE4E0B29D] = typeof(ChannelFull),
+			[0xA04E8D3A] = typeof(ChannelFull),
 			[0x38E79FDE] = typeof(ChatParticipant),
 			[0xE1F867B8] = typeof(ChatParticipantCreator),
 			[0x0360D5D2] = typeof(ChatParticipantAdmin),
@@ -153,7 +153,7 @@ namespace TL
 			[0x37C1011C] = null,//ChatPhotoEmpty
 			[0x1C6E1C11] = typeof(ChatPhoto),
 			[0x90A6CA84] = typeof(MessageEmpty),
-			[0x95EF6F2B] = typeof(Message),
+			[0x7600B9D3] = typeof(Message),
 			[0x7A800E0A] = typeof(MessageService),
 			[0x3DED6320] = null,//MessageMediaEmpty
 			[0xE216EB63] = typeof(MessageMediaPhoto),
@@ -401,7 +401,7 @@ namespace TL
 			[0x0B783982] = typeof(UpdateGroupCallConnection),
 			[0x4D712F2E] = typeof(UpdateBotCommands),
 			[0x7063C3DB] = typeof(UpdatePendingJoinRequests),
-			[0x11DFA986] = typeof(UpdateBotChatInviteRequester),
+			[0x7CB34D79] = typeof(UpdateBotChatInviteRequester),
 			[0x1E297BFA] = typeof(UpdateMessageReactions),
 			[0x17B7A20B] = typeof(UpdateAttachMenuBots),
 			[0x1592B79D] = typeof(UpdateWebViewResultSent),
@@ -463,6 +463,10 @@ namespace TL
 			[0x4880ED9A] = typeof(UpdateManagedBot),
 			[0xCDD4093D] = typeof(UpdateBotGuestChatQuery),
 			[0x8C0F91FB] = typeof(UpdateAiComposeTones),
+			[0xBDAC7E70] = typeof(UpdateJoinChatWebViewDecision),
+			[0xB22083A6] = typeof(UpdateNewBotConnection),
+			[0xC39A2ADE] = typeof(UpdateWebBrowserSettings),
+			[0x140502D1] = typeof(UpdateWebBrowserException),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
 			[0x00F49CA0] = typeof(Updates_Difference),
@@ -533,6 +537,8 @@ namespace TL
 			[0x25972BCB] = typeof(SendMessageEmojiInteraction),
 			[0xB665902E] = typeof(SendMessageEmojiInteractionSeen),
 			[0x376D975C] = typeof(SendMessageTextDraftAction),
+			[0xE2B23B51] = typeof(InputSendMessageRichMessageDraftAction),
+			[0xA2CB24F9] = typeof(SendMessageRichMessageDraftAction),
 			[0xB3134D9D] = typeof(Contacts_Found),
 			[0x0D09E07B] = typeof(InputPrivacyValueAllowContacts),
 			[0x184B35CE] = typeof(InputPrivacyValueAllowAll),
@@ -693,6 +699,7 @@ namespace TL
 			[0x4B425864] = typeof(InputBotInlineMessageGame),
 			[0xD7E78225] = typeof(InputBotInlineMessageMediaInvoice),
 			[0xBDDCC510] = typeof(InputBotInlineMessageMediaWebPage),
+			[0xB43DF56C] = typeof(InputBotInlineMessageRichMessage),
 			[0x88BF9319] = typeof(InputBotInlineResult),
 			[0xA8D864A7] = typeof(InputBotInlineResultPhoto),
 			[0xFFF8FDC4] = typeof(InputBotInlineResultDocument),
@@ -704,6 +711,7 @@ namespace TL
 			[0x18D1CDC2] = typeof(BotInlineMessageMediaContact),
 			[0x354A9B09] = typeof(BotInlineMessageMediaInvoice),
 			[0x809AD9A6] = typeof(BotInlineMessageMediaWebPage),
+			[0x0A617E7B] = typeof(BotInlineMessageRichMessage),
 			[0x11965F3A] = typeof(BotInlineResult),
 			[0x17DB940B] = typeof(BotInlineMediaResult),
 			[0xE021F2F6] = typeof(Messages_BotResults),
@@ -732,7 +740,7 @@ namespace TL
 			[0x70B772A8] = typeof(Contacts_TopPeers),
 			[0xB52C939D] = typeof(Contacts_TopPeersDisabled),
 			[0x1B0C841A] = typeof(DraftMessageEmpty),
-			[0x96EAA5EB] = typeof(DraftMessage),
+			[0x60FE3294] = typeof(DraftMessage),
 			[0xC6DC0C66] = typeof(Messages_FeaturedStickersNotModified),
 			[0xBE382906] = typeof(Messages_FeaturedStickers),
 			[0x0B17F890] = null,//Messages_RecentStickersNotModified
@@ -768,6 +776,19 @@ namespace TL
 			[0x1CCB966A] = typeof(TextPhone),
 			[0x081CCF4F] = typeof(TextImage),
 			[0x35553762] = typeof(TextAnchor),
+			[0x9D2EAC97] = typeof(TextMath),
+			[0xA26156C0] = typeof(TextCustomEmoji),
+			[0x4C2A5D62] = typeof(TextSpoiler),
+			[0xCD24CF44] = typeof(TextMention),
+			[0x519524EA] = typeof(TextHashtag),
+			[0x02FF29D3] = typeof(TextBotCommand),
+			[0x7B9E1801] = typeof(TextCashtag),
+			[0xAC6A83AA] = typeof(TextAutoUrl),
+			[0xC556A45D] = typeof(TextAutoEmail),
+			[0x24C26789] = typeof(TextAutoPhone),
+			[0xB956812D] = typeof(TextBankCard),
+			[0x01A9FBFC] = typeof(TextMentionName),
+			[0xA5B45E2B] = typeof(TextDate),
 			[0x13567E8A] = typeof(PageBlockUnsupported),
 			[0x70ABC3FD] = typeof(PageBlockTitle),
 			[0x8FFA9A1F] = typeof(PageBlockSubtitle),
@@ -793,10 +814,20 @@ namespace TL
 			[0x804361EA] = typeof(PageBlockAudio),
 			[0x1E148390] = typeof(PageBlockKicker),
 			[0xBF4DEA82] = typeof(PageBlockTable),
-			[0x9A8AE1E1] = typeof(PageBlockOrderedList),
+			[0x1FD6F6C1] = typeof(PageBlockOrderedList),
 			[0x76768BED] = typeof(PageBlockDetails),
 			[0x16115A96] = typeof(PageBlockRelatedArticles),
 			[0xA44F3EF6] = typeof(PageBlockMap),
+			[0xBAFF072F] = typeof(PageBlockHeading1),
+			[0x096B2AEC] = typeof(PageBlockHeading2),
+			[0x67E731AD] = typeof(PageBlockHeading3),
+			[0xB532772B] = typeof(PageBlockHeading4),
+			[0xDBBE6C6A] = typeof(PageBlockHeading5),
+			[0x682A41A9] = typeof(PageBlockHeading6),
+			[0x59080C20] = typeof(PageBlockMath),
+			[0x3C29A3E2] = typeof(PageBlockThinking),
+			[0x574B617F] = typeof(InputPageBlockMap),
+			[0x0E6E47C4] = typeof(PageBlockBlockquoteBlocks),
 			[0x85E42301] = typeof(PhoneCallDiscardReasonMissed),
 			[0xE095C1A0] = typeof(PhoneCallDiscardReasonDisconnect),
 			[0x57ADC690] = typeof(PhoneCallDiscardReasonHangup),
@@ -982,10 +1013,10 @@ namespace TL
 			[0x34566B6A] = typeof(PageTableCell),
 			[0xE0C0C5E5] = typeof(PageTableRow),
 			[0x6F747657] = typeof(PageCaption),
-			[0xB92FB6CD] = typeof(PageListItemText),
-			[0x25E073FC] = typeof(PageListItemBlocks),
-			[0x5E068047] = typeof(PageListOrderedItemText),
-			[0x98DD8936] = typeof(PageListOrderedItemBlocks),
+			[0x2F58683C] = typeof(PageListItemText),
+			[0x63CA67AA] = typeof(PageListItemBlocks),
+			[0x15031189] = typeof(PageListOrderedItemText),
+			[0x8FF2D5F0] = typeof(PageListOrderedItemBlocks),
 			[0xB390DC08] = typeof(PageRelatedArticle),
 			[0x98657F0D] = typeof(Page),
 			[0x8C05F1C9] = typeof(Help_SupportName),
@@ -1348,7 +1379,7 @@ namespace TL
 			[0x01190CF1] = typeof(InputQuickReplyShortcutId),
 			[0xC68D6695] = typeof(Messages_QuickReplies),
 			[0x5F91EB5B] = null,//Messages_QuickRepliesNotModified
-			[0xCD64636C] = typeof(ConnectedBot),
+			[0x033ED001] = typeof(ConnectedBot),
 			[0x17D7F87B] = typeof(Account_ConnectedBots),
 			[0x2AD93719] = typeof(Messages_DialogFilters),
 			[0x6C8E1E06] = typeof(Birthday),
@@ -1539,6 +1570,19 @@ namespace TL
 			[0x6C9D0EFE] = typeof(Aicompose_Tones),
 			[0xF1D628EC] = typeof(AiComposeToneExample),
 			[0xDD1FBF93] = typeof(Bots_AccessSettings),
+			[0x445663A7] = typeof(Messages_ChatInviteJoinResultOk),
+			[0x2F51C337] = typeof(Messages_ChatInviteJoinResultWebView),
+			[0xAE152A69] = typeof(JoinChatBotResultApproved),
+			[0x0EFA0194] = typeof(JoinChatBotResultDeclined),
+			[0x98A3A840] = typeof(JoinChatBotResultQueued),
+			[0xD6E3B813] = typeof(JoinChatBotResultWebView),
+			[0x933CA597] = typeof(WebDomainException),
+			[0xC31C8F4E] = null,//Account_WebBrowserSettingsNotModified
+			[0x79EB8CB3] = typeof(Account_WebBrowserSettings),
+			[0xBAF39D8B] = typeof(RichMessage),
+			[0xE4C449FC] = typeof(InputRichMessage),
+			[0xD4EAB551] = typeof(InputRichMessageHTML),
+			[0x09AC8186] = typeof(InputRichMessageMarkdown),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
@@ -1680,6 +1724,7 @@ namespace TL
 			[typeof(StarGiftAuctionStateBase)]       = 0xFE333952, //starGiftAuctionStateNotModified
 			[typeof(Payments_StarGiftActiveAuctions)]= 0xDB33DAD0, //payments.starGiftActiveAuctionsNotModified
 			[typeof(Aicompose_Tones)]                = 0xC1F46103, //aicompose.tonesNotModified
+			[typeof(Account_WebBrowserSettings)]     = 0xC31C8F4E, //account.webBrowserSettingsNotModified
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}
