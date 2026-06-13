@@ -6415,7 +6415,7 @@ namespace TL
 		public int sub_chain_id;
 		/// <summary>Blocks.</summary>
 		public byte[][] blocks;
-		/// <summary>Offset of the next block.</summary>
+		/// <summary>Height of the block located <em>after</em> the last block in <c>blocks</c>.</summary>
 		public int next_offset;
 	}
 	/// <summary>Incoming messages in a <a href="https://corefork.telegram.org/api/monoforum">monoforum topic</a> were read		<para>See <a href="https://corefork.telegram.org/constructor/updateReadMonoForumInbox"/></para></summary>
@@ -23589,29 +23589,26 @@ namespace TL
 		}
 	}
 
-	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/richMessage"/></para></summary>
-	[TLDef(0xBAF39D8B)]
-	public sealed partial class RichMessage : IObject
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputRichFile"/></para></summary>
+	public abstract partial class InputRichFile : IObject
 	{
-		public Flags flags;
-		public PageBlock[] blocks;
-		public PhotoBase[] photos;
-		public DocumentBase[] documents;
-
-		[Flags] public enum Flags : uint
-		{
-			rtl = 0x1,
-			part = 0x2,
-		}
+		public string id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputRichFilePhoto"/></para></summary>
+	[TLDef(0x9B00622B, inheritAt = 0)]
+	public sealed partial class InputRichFilePhoto : InputRichFile
+	{
+		public InputPhoto photo;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputRichFileDocument"/></para></summary>
+	[TLDef(0x83281DBD, inheritAt = 0)]
+	public sealed partial class InputRichFileDocument : InputRichFile
+	{
+		public InputDocument document;
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputRichMessage"/></para></summary>
-	public abstract partial class InputRichMessageBase : IObject
-	{
-		public abstract InputPhoto[] Photos { get; set; }
-		public abstract InputDocument[] Documents { get; set; }
-		public abstract InputUserBase[] Users { get; set; }
-	}
+	public abstract partial class InputRichMessageBase : IObject { }
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputRichMessage"/></para></summary>
 	[TLDef(0xE4C449FC)]
 	public sealed partial class InputRichMessage : InputRichMessageBase
@@ -23630,55 +23627,51 @@ namespace TL
 			has_documents = 0x8,
 			has_users = 0x10,
 		}
-
-		public override InputPhoto[] Photos { get => photos; set => photos = value; }
-		public override InputDocument[] Documents { get => documents; set => documents = value; }
-		public override InputUserBase[] Users { get => users; set => users = value; }
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputRichMessageHTML"/></para></summary>
-	[TLDef(0xD4EAB551)]
+	[TLDef(0xDACB836A)]
 	public sealed partial class InputRichMessageHTML : InputRichMessageBase
 	{
 		public Flags flags;
 		public string html;
-		[IfFlag(2)] public InputPhoto[] photos;
-		[IfFlag(3)] public InputDocument[] documents;
-		[IfFlag(4)] public InputUserBase[] users;
+		[IfFlag(2)] public InputRichFile[] files;
 
 		[Flags] public enum Flags : uint
 		{
 			rtl = 0x1,
 			noautolink = 0x2,
-			has_photos = 0x4,
-			has_documents = 0x8,
-			has_users = 0x10,
+			has_files = 0x4,
 		}
-
-		public override InputPhoto[] Photos { get => photos; set => photos = value; }
-		public override InputDocument[] Documents { get => documents; set => documents = value; }
-		public override InputUserBase[] Users { get => users; set => users = value; }
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputRichMessageMarkdown"/></para></summary>
-	[TLDef(0x09AC8186)]
+	[TLDef(0x004B572C)]
 	public sealed partial class InputRichMessageMarkdown : InputRichMessageBase
 	{
 		public Flags flags;
 		public string markdown;
-		[IfFlag(2)] public InputPhoto[] photos;
-		[IfFlag(3)] public InputDocument[] documents;
-		[IfFlag(4)] public InputUserBase[] users;
+		[IfFlag(2)] public InputRichFile[] files;
 
 		[Flags] public enum Flags : uint
 		{
 			rtl = 0x1,
 			noautolink = 0x2,
-			has_photos = 0x4,
-			has_documents = 0x8,
-			has_users = 0x10,
+			has_files = 0x4,
 		}
+	}
 
-		public override InputPhoto[] Photos { get => photos; set => photos = value; }
-		public override InputDocument[] Documents { get => documents; set => documents = value; }
-		public override InputUserBase[] Users { get => users; set => users = value; }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/richMessage"/></para></summary>
+	[TLDef(0xBAF39D8B)]
+	public sealed partial class RichMessage : IObject
+	{
+		public Flags flags;
+		public PageBlock[] blocks;
+		public PhotoBase[] photos;
+		public DocumentBase[] documents;
+
+		[Flags] public enum Flags : uint
+		{
+			rtl = 0x1,
+			part = 0x2,
+		}
 	}
 }

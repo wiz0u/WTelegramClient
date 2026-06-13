@@ -7487,10 +7487,10 @@ namespace TL
 		/// <param name="muted">If set, the user will be muted by default upon joining.</param>
 		/// <param name="video_stopped">If set, the user's video will be disabled by default upon joining.</param>
 		/// <param name="call">The group call</param>
-		/// <param name="join_as">Join the group call, presenting yourself as the specified user/channel</param>
-		/// <param name="invite_hash">The invitation hash from the <a href="https://corefork.telegram.org/api/links#video-chat-livestream-links">invite link »</a>, if provided allows speaking in a livestream or muted group chat.</param>
-		/// <param name="public_key">For conference calls, your public key.</param>
-		/// <param name="block">The <a href="https://corefork.telegram.org/api/end-to-end/group-calls">block containing an appropriate e2e.chain.changeSetGroupState event</a>.</param>
+		/// <param name="join_as">Join the group call, presenting yourself as the specified user/channel (<a href="https://corefork.telegram.org/api/group-calls#video-chatslivestreams">video chats/livestreams »</a> only, must be equal to <see cref="InputPeerSelf"/> when joining <a href="https://corefork.telegram.org/api/group-calls#live-stories">live stories »</a> or <a href="https://corefork.telegram.org/api/group-calls#conference-calls">conference calls »</a>).</param>
+		/// <param name="invite_hash">The invitation hash from the <a href="https://corefork.telegram.org/api/links#video-chat-livestream-links">invite link »</a>, if provided allows speaking in a livestream or muted group call (<a href="https://corefork.telegram.org/api/group-calls#video-chatslivestreams">video chats/livestreams »</a> only, cannot be used by <a href="https://corefork.telegram.org/api/group-calls#live-stories">live stories »</a> or <a href="https://corefork.telegram.org/api/group-calls#conference-calls">conference calls »</a>).</param>
+		/// <param name="public_key">For <a href="https://corefork.telegram.org/api/group-calls#conference-calls">conference calls »</a> only, your public key.</param>
+		/// <param name="block">The <a href="https://corefork.telegram.org/api/end-to-end/group-calls">block containing an appropriate e2e.chain.changeSetGroupState event</a>, only for <a href="https://corefork.telegram.org/api/group-calls#conference-calls">conference calls »</a>.</param>
 		/// <param name="params_">WebRTC parameters</param>
 		public static Task<UpdatesBase> Phone_JoinGroupCall(this Client client, InputGroupCallBase call, InputPeer join_as, DataJSON params_, string invite_hash = null, Int256? public_key = null, byte[] block = null, bool muted = false, bool video_stopped = false)
 			=> client.Invoke(new Phone_JoinGroupCall
@@ -7514,8 +7514,8 @@ namespace TL
 				source = source,
 			});
 
-		/// <summary>Invite a set of users to a <a href="https://corefork.telegram.org/api/group-calls">group call</a>.		<para>See <a href="https://corefork.telegram.org/method/phone.inviteToGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.inviteToGroupCall#possible-errors">details</a>)</para></summary>
-		/// <param name="call">The group call</param>
+		/// <summary>Invite a set of users to a <a href="https://corefork.telegram.org/api/group-calls#video-chatslivestreams">video chat/livestream »</a>; cannot be used for <a href="https://corefork.telegram.org/api/group-calls#live-stories">live stories »</a> or <a href="https://corefork.telegram.org/api/group-calls#conference-calls">conference calls »</a>.		<para>See <a href="https://corefork.telegram.org/method/phone.inviteToGroupCall"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.inviteToGroupCall#possible-errors">details</a>)</para></summary>
+		/// <param name="call">The <a href="https://corefork.telegram.org/api/group-calls#video-chatslivestreams">video chat/livestream »</a></param>
 		/// <param name="users">The users to invite.</param>
 		public static Task<UpdatesBase> Phone_InviteToGroupCall(this Client client, InputGroupCallBase call, params InputUserBase[] users)
 			=> client.Invoke(new Phone_InviteToGroupCall
@@ -7638,9 +7638,9 @@ namespace TL
 				peer = peer,
 			});
 
-		/// <summary>Get an <a href="https://corefork.telegram.org/api/links#video-chat-livestream-links">invite link</a> for a group call or livestream		<para>See <a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite#possible-errors">details</a>)</para></summary>
-		/// <param name="can_self_unmute">For livestreams or muted group chats, if set, users that join using this link will be able to speak without explicitly requesting permission by (for example by raising their hand).</param>
-		/// <param name="call">The group call</param>
+		/// <summary>Get an <a href="https://corefork.telegram.org/api/links#video-chat-livestream-links">invite link</a> for a <a href="https://corefork.telegram.org/api/group-calls#video-chatslivestreams">video chat/livestream »</a>; cannot be used for <a href="https://corefork.telegram.org/api/group-calls#live-stories">live stories »</a> or <a href="https://corefork.telegram.org/api/group-calls#conference-calls">conference calls »</a>.		<para>See <a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite"/></para>		<para>Possible <see cref="RpcException"/> codes: 400,403 (<a href="https://corefork.telegram.org/method/phone.exportGroupCallInvite#possible-errors">details</a>)</para></summary>
+		/// <param name="can_self_unmute">For livestreams or muted group chats, if set, users that join using this link will be able to speak without explicitly requesting permission, for example by raising their hand.</param>
+		/// <param name="call">The <a href="https://corefork.telegram.org/api/group-calls#video-chatslivestreams">video chat/livestream »</a></param>
 		public static Task<Phone_ExportedGroupCallInvite> Phone_ExportGroupCallInvite(this Client client, InputGroupCallBase call, bool can_self_unmute = false)
 			=> client.Invoke(new Phone_ExportGroupCallInvite
 			{
@@ -7786,11 +7786,11 @@ namespace TL
 				msg_id = msg_id,
 			});
 
-		/// <summary>Fetch the blocks of a <a href="https://corefork.telegram.org/api/end-to-end/group-calls">conference blockchain »</a>.		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallChainBlocks"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.getGroupCallChainBlocks#possible-errors">details</a>)</para></summary>
+		/// <summary>Fetch the blocks of a <a href="https://corefork.telegram.org/api/end-to-end/group-calls">conference blockchain »</a>, returns an <see cref="UpdateGroupCallChainBlocks"/> to be handled as <a href="https://corefork.telegram.org/api/end-to-end/group-calls#handling-updates">specifiede here »</a>.		<para>See <a href="https://corefork.telegram.org/method/phone.getGroupCallChainBlocks"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/phone.getGroupCallChainBlocks#possible-errors">details</a>)</para></summary>
 		/// <param name="call">The conference.</param>
 		/// <param name="sub_chain_id">Subchain ID.</param>
-		/// <param name="offset">Offset for pagination.</param>
-		/// <param name="limit">Maximum number of blocks to return in this call, <a href="https://corefork.telegram.org/api/offsets">see pagination</a></param>
+		/// <param name="offset">Start fetching blocks starting from the specified height.</param>
+		/// <param name="limit">Maximum number of blocks to return in this call, <a href="https://corefork.telegram.org/api/offsets">see pagination</a>, max 100.</param>
 		public static Task<UpdatesBase> Phone_GetGroupCallChainBlocks(this Client client, InputGroupCallBase call, int sub_chain_id, int offset = default, int limit = int.MaxValue)
 			=> client.Invoke(new Phone_GetGroupCallChainBlocks
 			{

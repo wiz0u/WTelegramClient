@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 227;					// fetched 06/09/2026 14:47:17
+		public const int Version = 227;					// fetched 06/12/2026 00:35:17
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -1579,10 +1579,12 @@ namespace TL
 			[0x933CA597] = typeof(WebDomainException),
 			[0xC31C8F4E] = null,//Account_WebBrowserSettingsNotModified
 			[0x79EB8CB3] = typeof(Account_WebBrowserSettings),
-			[0xBAF39D8B] = typeof(RichMessage),
+			[0x9B00622B] = typeof(InputRichFilePhoto),
+			[0x83281DBD] = typeof(InputRichFileDocument),
 			[0xE4C449FC] = typeof(InputRichMessage),
-			[0xD4EAB551] = typeof(InputRichMessageHTML),
-			[0x09AC8186] = typeof(InputRichMessageMarkdown),
+			[0xDACB836A] = typeof(InputRichMessageHTML),
+			[0x004B572C] = typeof(InputRichMessageMarkdown),
+			[0xBAF39D8B] = typeof(RichMessage),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
