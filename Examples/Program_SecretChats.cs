@@ -39,6 +39,7 @@ namespace WTelegramClientTest
 /photo filename.jpg Send a JPEG photo
 /read               Mark active discussion as read
 /users              List collected users and their IDs
+/typing             Send a 'User is typing' action
 Type a command, or a message to send to the active secret chat:");
 			do
 			{
@@ -64,6 +65,7 @@ Type a command, or a message to send to the active secret chat:");
 							var sent = await Secrets.SendMessage(ActiveChat.ChatId, new TL.Layer73.DecryptedMessage { random_id = Helpers.RandomLong(),
 								media = media, flags = TL.Layer73.DecryptedMessage.Flags.has_media }, file: file);
 						}
+						else if (line == "/typing") { await Client.Messages_SetEncryptedTyping(ActiveChat.Peer, true); }
 						else Console.WriteLine("Unrecognized command");
 					}
 					else if (ActiveChat == null) Console.WriteLine("No active secret chat");

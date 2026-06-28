@@ -126,7 +126,7 @@ or start typing the call arguments to see a tooltip displaying their description
 The Telegram [API object classes](https://corefork.telegram.org/schema) are defined in the `TL` namespace,
 and the [API functions](https://corefork.telegram.org/methods) are available as async methods of `Client`.
 
-Below is an example of calling the [messages.getAllChats](https://corefork.telegram.org/method/messages.getAllChats) API function,
+Below is an example of calling the `Messages_GetAllChats` API method,
 enumerating the various groups/channels the user is in, and then using `client.SendMessageAsync` helper function to easily send a message:
 ```csharp
 using TL;

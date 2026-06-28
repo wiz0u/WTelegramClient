@@ -66,7 +66,7 @@ Some TL methods only applies to private `Chat`, some only applies to `Channel` a
 The `access_hash` must usually be provided within the `Input...` structure you pass in argument to an API method (`InputPeer`, `InputChannel`, `InputUser`, etc...).  
 
 You obtain the `access_hash` through TL **description structures** like `Channel`, `User`, `Photo`, `Document` that you receive through updates
-or when you query them through API methods like `Messages_GetAllChats`, `Messages_GetAllDialogs`, `Contacts_ResolveUsername`, etc...  
+or when you query them through API methods like `Messages_GetAllDialogs`, `Contacts_ResolveUsername`, etc...  
 
 You can use the [`UserOrChat` and `CollectUsersChats` methods](EXAMPLES.md#collect-users-chats) to help you in obtaining/collecting
 the description structures you receive via API calls or updates.
@@ -177,7 +177,7 @@ There can be several reasons why `chats.chats` doesn't contain the chat you expe
 Private messages with a user are not called "chats". See [Terminology in ReadMe](README.md#terminology).  
 To obtain the list of users (as well as chats and channels) the logged-in user is currenly engaged in a discussion with, you should [use the API method `Messages_GetAllDialogs`](EXAMPLES.md#list-dialogs)
 - The currently logged-in user account has not joined this particular chat.  
-API method [`Messages_GetAllChats`](https://corefork.telegram.org/method/messages.getAllChats) will only return those chat groups/channels the user is in, not all Telegram chat groups.  
+API method `Messages_GetAllChats` will only return those chat groups/channels the user is in, not all Telegram chat groups.  
 If you're looking for other Telegram groups/channels/users, try API methods [`Contacts_ResolveUsername`](EXAMPLES.md#msg-by-name) or `Contacts_Search`
 - You're trying to use a Bot API (or TDLib) numerical ID, like -1001234567890  
 Telegram Client API don't use these kind of IDs for chats. Remove the -100 prefix and try again with the rest (1234567890).
