@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 228;					// fetched 08/04/2026 23:17:51
+		public const int Version = 229;					// fetched 08/26/2026 00:30:42
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -224,7 +224,7 @@ namespace TL
 			[0x45D5B021] = typeof(MessageActionGiftStars),
 			[0xB00C47A2] = typeof(MessageActionPrizeStars),
 			[0xEA2C31D3] = typeof(MessageActionStarGift),
-			[0xE6C31522] = typeof(MessageActionStarGiftUnique),
+			[0x7E1C1187] = typeof(MessageActionStarGiftUnique),
 			[0xAC1F1FCD] = typeof(MessageActionPaidMessagesRefunded),
 			[0x84B88578] = typeof(MessageActionPaidMessagesPrice),
 			[0x2FFE2F7A] = typeof(MessageActionConferenceCall),
@@ -245,6 +245,7 @@ namespace TL
 			[0x399674DC] = typeof(MessageActionPollDeleteAnswer),
 			[0x16605E3E] = typeof(MessageActionManagedBotCreated),
 			[0x5D20BAE8] = typeof(MessageActionChangeCommunity),
+			[0x4A8BFE80] = typeof(MessageActionChatJoinedViaCommunity),
 			[0xFC89F7F3] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0xF78A0973] = typeof(DialogCommunity),
@@ -476,7 +477,7 @@ namespace TL
 			[0x20BCBBA1] = typeof(UpdateNewEphemeralMessage),
 			[0x56DBFCF8] = typeof(UpdateDeleteEphemeralMessages),
 			[0x4BBB8F01] = typeof(UpdateEditEphemeralMessage),
-			[0x9B380762] = typeof(UpdateEphemeralBotCallbackQuery),
+			[0x7C1079D6] = typeof(UpdateEphemeralBotCallbackQuery),
 			[0x6C0D8E23] = typeof(UpdateBotStarsSubscription),
 			[0xA56C2A3E] = typeof(Updates_State),
 			[0x5D75A138] = typeof(Updates_DifferenceEmpty),
@@ -548,9 +549,10 @@ namespace TL
 			[0xB05AC6B1] = typeof(SendMessageChooseStickerAction),
 			[0x25972BCB] = typeof(SendMessageEmojiInteraction),
 			[0xB665902E] = typeof(SendMessageEmojiInteractionSeen),
-			[0x376D975C] = typeof(SendMessageTextDraftAction),
-			[0xE2B23B51] = typeof(InputSendMessageRichMessageDraftAction),
-			[0xA2CB24F9] = typeof(SendMessageRichMessageDraftAction),
+			[0x3630B85A] = typeof(SendMessageTextDraftAction),
+			[0xA937C7BE] = typeof(InputSendMessageRichMessageDraftAction),
+			[0x52564893] = typeof(SendMessageRichMessageDraftAction),
+			[0xFBF902B0] = typeof(SendMessageStopDraftAction),
 			[0xB3134D9D] = typeof(Contacts_Found),
 			[0x0D09E07B] = typeof(InputPrivacyValueAllowContacts),
 			[0x184B35CE] = typeof(InputPrivacyValueAllowAll),
@@ -625,29 +627,12 @@ namespace TL
 			[0xD3F924EB] = null,//Messages_StickerSetNotModified
 			[0x9852D6D2] = typeof(BotCommand),
 			[0x4D8A0299] = typeof(BotInfo),
-			[0x7D170CFF] = typeof(KeyboardButton),
-			[0xD80C25EC] = typeof(KeyboardButtonUrl),
-			[0xE62BC960] = typeof(KeyboardButtonCallback),
-			[0x417EFD8F] = typeof(KeyboardButtonRequestPhone),
-			[0xAA40F94D] = typeof(KeyboardButtonRequestGeoLocation),
-			[0x991399FC] = typeof(KeyboardButtonSwitchInline),
-			[0x89C590F9] = typeof(KeyboardButtonGame),
-			[0x3FA53905] = typeof(KeyboardButtonBuy),
-			[0xF51006F9] = typeof(KeyboardButtonUrlAuth),
-			[0x68013E72] = typeof(InputKeyboardButtonUrlAuth),
-			[0x7A11D782] = typeof(KeyboardButtonRequestPoll),
-			[0x7D5E07C7] = typeof(InputKeyboardButtonUserProfile),
-			[0xC0FD5D09] = typeof(KeyboardButtonUserProfile),
-			[0xE846B1A0] = typeof(KeyboardButtonWebView),
-			[0xE15C4370] = typeof(KeyboardButtonSimpleWebView),
-			[0x5B0F15F5] = typeof(KeyboardButtonRequestPeer),
-			[0x02B78156] = typeof(InputKeyboardButtonRequestPeer),
-			[0xBCC4AF10] = typeof(KeyboardButtonCopy),
+			[0x2F67A72F] = typeof(KeyboardButton),
 			[0x77608B83] = typeof(KeyboardButtonRow),
 			[0xA03E5B85] = typeof(ReplyKeyboardHide),
 			[0x86B40B08] = typeof(ReplyKeyboardForceReply),
 			[0x85DD99D1] = typeof(ReplyKeyboardMarkup),
-			[0x48A30254] = typeof(ReplyInlineMarkup),
+			[0xB2B15770] = typeof(ReplyInlineMarkup),
 			[0xBB92BA95] = typeof(MessageEntityUnknown),
 			[0xFA04579D] = typeof(MessageEntityMention),
 			[0x6F635B0D] = typeof(MessageEntityHashtag),
@@ -802,6 +787,7 @@ namespace TL
 			[0x01A9FBFC] = typeof(TextMentionName),
 			[0xA5B45E2B] = typeof(TextDate),
 			[0x9686CB50] = typeof(TextDiff),
+			[0xAFC79CD6] = typeof(TextButton),
 			[0x13567E8A] = typeof(PageBlockUnsupported),
 			[0x70ABC3FD] = typeof(PageBlockTitle),
 			[0x8FFA9A1F] = typeof(PageBlockSubtitle),
@@ -814,7 +800,7 @@ namespace TL
 			[0xDB20B188] = typeof(PageBlockDivider),
 			[0xCE0D37B0] = typeof(PageBlockAnchor),
 			[0xE4E88011] = typeof(PageBlockList),
-			[0x263D7C26] = typeof(PageBlockBlockquote),
+			[0x66D1670B] = typeof(PageBlockBlockquote),
 			[0x4F4456D3] = typeof(PageBlockPullquote),
 			[0x1759C560] = typeof(PageBlockPhoto),
 			[0x7C8FE7B6] = typeof(PageBlockVideo),
@@ -841,6 +827,8 @@ namespace TL
 			[0x3C29A3E2] = typeof(PageBlockThinking),
 			[0x574B617F] = typeof(InputPageBlockMap),
 			[0x0E6E47C4] = typeof(PageBlockBlockquoteBlocks),
+			[0x6D640318] = typeof(PageBlockButtonRow),
+			[0x38FA3BA3] = typeof(PageBlockDocument),
 			[0x85E42301] = typeof(PhoneCallDiscardReasonMissed),
 			[0xE095C1A0] = typeof(PhoneCallDiscardReasonDisconnect),
 			[0x57ADC690] = typeof(PhoneCallDiscardReasonHangup),
@@ -1215,7 +1203,7 @@ namespace TL
 			[0x4A5F5BD9] = typeof(InputInvoiceStarGiftTransfer),
 			[0xDABAB2EF] = typeof(InputInvoicePremiumGiftStars),
 			[0xF4997E42] = typeof(InputInvoiceBusinessBotTransferStars),
-			[0xC39F5324] = typeof(InputInvoiceStarGiftResale),
+			[0xE9B0C658] = typeof(InputInvoiceStarGiftResale),
 			[0x9A0B48B8] = typeof(InputInvoiceStarGiftPrepaidUpgrade),
 			[0x3E77F614] = typeof(InputInvoicePremiumAuthCode),
 			[0x0923D8D1] = typeof(InputInvoiceStarGiftDropOriginalDetails),
@@ -1605,10 +1593,36 @@ namespace TL
 			[0x76141EBD] = typeof(CommunityPeer),
 			[0x7BEAFA85] = typeof(CommunityPeerRequest),
 			[0x2244AFAD] = typeof(Communities_PeerLinkRequests),
-			[0xD9C6DC1A] = typeof(EphemeralMessage),
+			[0xDD27BEE9] = typeof(EphemeralMessage),
 			[0x8D78512A] = typeof(Communities_ParticipantJoinedChats),
 			[0x4203998F] = typeof(Messages_TranslatedRichMessage),
 			[0x4C4537C8] = typeof(Messages_ComposedRichMessageWithAI),
+			[0xC9DD90E9] = null,//ButtonTypeDefault
+			[0xDF3D36F9] = typeof(ButtonTypeRequestPhone),
+			[0x9BEEE140] = typeof(ButtonTypeRequestGeoLocation),
+			[0xAACFFF84] = typeof(ButtonTypeRequestPoll),
+			[0x4F58A237] = typeof(ButtonTypeRequestPeer),
+			[0x3FE268FE] = typeof(InputButtonTypeRequestPeer),
+			[0xC01A597A] = typeof(ButtonTypeSimpleWebView),
+			[0xECA4F8D4] = typeof(InlineButtonTypeUrl),
+			[0xBFD02DA2] = typeof(InlineButtonTypeUrlAuth),
+			[0x9961BCB4] = typeof(InputInlineButtonTypeUrlAuth),
+			[0x3BCAB5B4] = typeof(InlineButtonTypeWebView),
+			[0x2955BC38] = typeof(InlineButtonTypeCallback),
+			[0x5CD3709D] = typeof(InlineButtonTypeGame),
+			[0x48BAD7A5] = typeof(InlineButtonTypeBuy),
+			[0x93773FF5] = typeof(InlineButtonTypeSwitchInline),
+			[0x3FA33FCF] = typeof(InlineButtonTypeUserProfile),
+			[0x53F3CE5A] = typeof(InputInlineButtonTypeUserProfile),
+			[0xB41D3272] = typeof(InlineButtonTypeCopy),
+			[0xA438619D] = typeof(InlineButtonTypeDisabled),
+			[0x11C1A322] = typeof(KeyboardInlineButton),
+			[0x19420AF6] = typeof(KeyboardInlineButtonRow),
+			[0x03C610BD] = typeof(RichButtonStyle),
+			[0x692A5488] = typeof(PageButton),
+			[0x59FFDB31] = null,//Ephemeral_WelcomeMessagesNotModified
+			[0x104FC872] = typeof(Ephemeral_WelcomeMessages),
+			[0xDF5AC00C] = typeof(Auth_FirebasePnvIntent),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
@@ -1751,6 +1765,8 @@ namespace TL
 			[typeof(Payments_StarGiftActiveAuctions)]= 0xDB33DAD0, //payments.starGiftActiveAuctionsNotModified
 			[typeof(Aicompose_Tones)]                = 0xC1F46103, //aicompose.tonesNotModified
 			[typeof(Account_WebBrowserSettings)]     = 0xC31C8F4E, //account.webBrowserSettingsNotModified
+			[typeof(ButtonType)]                     = 0xC9DD90E9, //buttonTypeDefault
+			[typeof(Ephemeral_WelcomeMessages)]      = 0x59FFDB31, //ephemeral.welcomeMessagesNotModified
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}

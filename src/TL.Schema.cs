@@ -1483,6 +1483,7 @@ namespace TL
 			translations_disabled = 0x80000,
 			/// <summary>Field <see cref="reactions_limit"/> has a value</summary>
 			has_reactions_limit = 0x100000,
+			has_welcome_messages = 0x200000,
 		}
 
 		/// <summary>ID of the chat</summary>
@@ -1734,6 +1735,7 @@ namespace TL
 			has_main_tab = 0x400000,
 			/// <summary>Field <see cref="guard_bot_id"/> has a value</summary>
 			has_guard_bot_id = 0x800000,
+			has_welcome_messages = 0x1000000,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -3250,7 +3252,7 @@ namespace TL
 		}
 	}
 	/// <summary>A <a href="https://corefork.telegram.org/api/gifts">gift »</a> was upgraded to a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionStarGiftUnique"/></para></summary>
-	[TLDef(0xE6C31522)]
+	[TLDef(0x7E1C1187)]
 	public sealed partial class MessageActionStarGiftUnique : MessageAction
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -3277,6 +3279,7 @@ namespace TL
 		[IfFlag(12)] public long drop_original_details_stars;
 		/// <summary>If set, this gift can be used for <a href="https://corefork.telegram.org/api/gifts#crafting-collectible-gifts">crafting »</a> only starting from the specified unixtime.</summary>
 		[IfFlag(15)] public DateTime can_craft_at;
+		[IfFlag(18)] public TextWithEntities message;
 
 		[Flags] public enum Flags : uint
 		{
@@ -3314,6 +3317,9 @@ namespace TL
 			has_can_craft_at = 0x8000,
 			/// <summary>This collectible gift was obtained by <a href="https://corefork.telegram.org/api/gifts#crafting-collectible-gifts">crafting »</a>.</summary>
 			craft = 0x10000,
+			name_hidden = 0x20000,
+			/// <summary>Field <see cref="message"/> has a value</summary>
+			has_message = 0x40000,
 		}
 	}
 	/// <summary>Sent from peer A to B, indicates that A refunded all <a href="https://corefork.telegram.org/api/stars">stars</a> B previously paid to send messages to A, see <a href="https://corefork.telegram.org/api/paid-messages">here »</a> for more info on paid messages.		<para>See <a href="https://corefork.telegram.org/constructor/messageActionPaidMessagesRefunded"/></para></summary>
@@ -3570,6 +3576,12 @@ namespace TL
 		{
 			has_community_id = 0x1,
 		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionChatJoinedViaCommunity"/></para></summary>
+	[TLDef(0x4A8BFE80)]
+	public sealed partial class MessageActionChatJoinedViaCommunity : MessageAction
+	{
+		public long community_id;
 	}
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
@@ -6818,15 +6830,23 @@ namespace TL
 		public EphemeralMessage message;
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateEphemeralBotCallbackQuery"/></para></summary>
-	[TLDef(0x9B380762)]
+	[TLDef(0x7C1079D6)]
 	public sealed partial class UpdateEphemeralBotCallbackQuery : Update
 	{
+		public Flags flags;
 		public long query_id;
 		public long user_id;
-		public Peer peer;
+		[IfFlag(0)] public Peer peer;
 		public int msg_id;
 		public byte[] data;
+		[IfFlag(1)] public long chat_instance;
 		public EphemeralMessage message;
+
+		[Flags] public enum Flags : uint
+		{
+			has_peer = 0x1,
+			has_chat_instance = 0x2,
+		}
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateBotStarsSubscription"/></para></summary>
 	[TLDef(0x6C0D8E23)]
@@ -7952,27 +7972,54 @@ namespace TL
 		public string emoticon;
 	}
 	/// <summary>Used by bots to implement <a href="https://corefork.telegram.org/api/bots/ai#live-response-streaming">live message streaming »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/sendMessageTextDraftAction"/></para></summary>
-	[TLDef(0x376D975C)]
+	[TLDef(0x3630B85A)]
 	public sealed partial class SendMessageTextDraftAction : SendMessageAction
 	{
+		public Flags flags;
 		/// <summary>Live draft ID: used by graphical clients to slightly change the rendering behavior, see <a href="https://corefork.telegram.org/api/bots/ai#live-response-streaming">here »</a> for more info. See <a href="https://corefork.telegram.org/api/updates#updatemessageid-updates">here »</a> for more info on random ID deduplication and updateMessageID mapping.</summary>
 		public long random_id;
 		/// <summary>The contents of the live draft.</summary>
 		public TextWithEntities text;
+
+		[Flags] public enum Flags : uint
+		{
+			can_stop = 0x1,
+			keep_on_stop = 0x2,
+		}
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputSendMessageRichMessageDraftAction"/></para></summary>
-	[TLDef(0xE2B23B51)]
+	[TLDef(0xA937C7BE)]
 	public sealed partial class InputSendMessageRichMessageDraftAction : SendMessageAction
 	{
+		public Flags flags;
 		public long random_id;
 		public InputRichMessageBase rich_message;
+
+		[Flags] public enum Flags : uint
+		{
+			can_stop = 0x1,
+			keep_on_stop = 0x2,
+		}
 	}
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/sendMessageRichMessageDraftAction"/></para></summary>
-	[TLDef(0xA2CB24F9)]
+	[TLDef(0x52564893)]
 	public sealed partial class SendMessageRichMessageDraftAction : SendMessageAction
 	{
+		public Flags flags;
 		public long random_id;
 		public RichMessage rich_message;
+
+		[Flags] public enum Flags : uint
+		{
+			can_stop = 0x1,
+			keep_on_stop = 0x2,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/sendMessageStopDraftAction"/></para></summary>
+	[TLDef(0xFBF902B0)]
+	public sealed partial class SendMessageStopDraftAction : SendMessageAction
+	{
+		public long random_id;
 	}
 
 	/// <summary>Users found by name substring and auxiliary data.		<para>See <a href="https://corefork.telegram.org/constructor/contacts.found"/></para></summary>
@@ -9001,17 +9048,9 @@ namespace TL
 		}
 	}
 
-	/// <summary>Bot or inline keyboard buttons		<para>See <a href="https://corefork.telegram.org/type/KeyboardButton"/></para>		<para>Derived classes: <see cref="KeyboardButton"/>, <see cref="KeyboardButtonUrl"/>, <see cref="KeyboardButtonCallback"/>, <see cref="KeyboardButtonRequestPhone"/>, <see cref="KeyboardButtonRequestGeoLocation"/>, <see cref="KeyboardButtonSwitchInline"/>, <see cref="KeyboardButtonGame"/>, <see cref="KeyboardButtonBuy"/>, <see cref="KeyboardButtonUrlAuth"/>, <see cref="InputKeyboardButtonUrlAuth"/>, <see cref="KeyboardButtonRequestPoll"/>, <see cref="InputKeyboardButtonUserProfile"/>, <see cref="KeyboardButtonUserProfile"/>, <see cref="KeyboardButtonWebView"/>, <see cref="KeyboardButtonSimpleWebView"/>, <see cref="KeyboardButtonRequestPeer"/>, <see cref="InputKeyboardButtonRequestPeer"/>, <see cref="KeyboardButtonCopy"/></para></summary>
-	public abstract partial class KeyboardButtonBase : IObject
-	{
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		public virtual KeyboardButtonStyle Style => default;
-		/// <summary>Button text</summary>
-		public virtual string Text => default;
-	}
 	/// <summary>Bot keyboard button		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButton"/></para></summary>
-	[TLDef(0x7D170CFF)]
-	public partial class KeyboardButton : KeyboardButtonBase
+	[TLDef(0x2F67A72F)]
+	public sealed partial class KeyboardButton : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
 		public Flags flags;
@@ -9019,283 +9058,13 @@ namespace TL
 		[IfFlag(10)] public KeyboardButtonStyle style;
 		/// <summary>Button text</summary>
 		public string text;
+		public ButtonType type;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Field <see cref="style"/> has a value</summary>
 			has_style = 0x400,
 		}
-
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		public override KeyboardButtonStyle Style => style;
-		/// <summary>Button text</summary>
-		public override string Text => text;
-	}
-	/// <summary>URL button		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonUrl"/></para></summary>
-	[TLDef(0xD80C25EC, inheritAt = 0)]
-	public sealed partial class KeyboardButtonUrl : KeyboardButton
-	{
-		/// <summary>URL</summary>
-		public string url;
-	}
-	/// <summary>Callback button		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonCallback"/></para></summary>
-	[TLDef(0xE62BC960)]
-	public sealed partial class KeyboardButtonCallback : KeyboardButtonBase
-	{
-		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
-		public Flags flags;
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		[IfFlag(10)] public KeyboardButtonStyle style;
-		/// <summary>Button text</summary>
-		public string text;
-		/// <summary>Callback data</summary>
-		public byte[] data;
-
-		[Flags] public enum Flags : uint
-		{
-			/// <summary>Whether the user should verify his identity by entering his <a href="https://corefork.telegram.org/api/srp">2FA SRP parameters</a> to the <see cref="SchemaExtensions.Messages_GetBotCallbackAnswer">Messages_GetBotCallbackAnswer</see> method. NOTE: telegram and the bot WILL NOT have access to the plaintext password, thanks to <a href="https://corefork.telegram.org/api/srp">SRP</a>. This button is mainly used by the official <a href="https://t.me/botfather">@botfather</a> bot, for verifying the user's identity before transferring ownership of a bot to another user.</summary>
-			requires_password = 0x1,
-			/// <summary>Field <see cref="style"/> has a value</summary>
-			has_style = 0x400,
-		}
-
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		public override KeyboardButtonStyle Style => style;
-		/// <summary>Button text</summary>
-		public override string Text => text;
-	}
-	/// <summary>Button to request a user's phone number		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRequestPhone"/></para></summary>
-	[TLDef(0x417EFD8F)]
-	public sealed partial class KeyboardButtonRequestPhone : KeyboardButton
-	{
-	}
-	/// <summary>Button to request a user's geolocation		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRequestGeoLocation"/></para></summary>
-	[TLDef(0xAA40F94D)]
-	public sealed partial class KeyboardButtonRequestGeoLocation : KeyboardButton
-	{
-	}
-	/// <summary>Button to switch the user to inline mode		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonSwitchInline"/></para></summary>
-	[TLDef(0x991399FC)]
-	public sealed partial class KeyboardButtonSwitchInline : KeyboardButtonBase
-	{
-		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
-		public Flags flags;
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		[IfFlag(10)] public KeyboardButtonStyle style;
-		/// <summary>Button label</summary>
-		public string text;
-		/// <summary>The inline query to use</summary>
-		public string query;
-		/// <summary>Filter to use when selecting chats.</summary>
-		[IfFlag(1)] public InlineQueryPeerType[] peer_types;
-
-		[Flags] public enum Flags : uint
-		{
-			/// <summary>If set, pressing the button will insert the bot's username and the specified inline <c>query</c> in the current chat's input field.</summary>
-			same_peer = 0x1,
-			/// <summary>Field <see cref="peer_types"/> has a value</summary>
-			has_peer_types = 0x2,
-			/// <summary>Field <see cref="style"/> has a value</summary>
-			has_style = 0x400,
-		}
-
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		public override KeyboardButtonStyle Style => style;
-		/// <summary>Button label</summary>
-		public override string Text => text;
-	}
-	/// <summary>Button to start a game		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonGame"/></para></summary>
-	[TLDef(0x89C590F9)]
-	public sealed partial class KeyboardButtonGame : KeyboardButton
-	{
-	}
-	/// <summary>Button to buy a product		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonBuy"/></para></summary>
-	[TLDef(0x3FA53905)]
-	public sealed partial class KeyboardButtonBuy : KeyboardButton
-	{
-	}
-	/// <summary>Button to request a user to authorize via URL using <a href="https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots">Seamless Telegram Login</a>. When the user clicks on such a button, <see cref="SchemaExtensions.Messages_RequestUrlAuth">Messages_RequestUrlAuth</see> should be called, providing the <c>button_id</c> and the ID of the container message. The returned <see cref="UrlAuthResultRequest"/> object will contain more details about the authorization request (<c>request_write_access</c> if the bot would like to send messages to the user along with the username of the bot which will be used for user authorization). Finally, the user can choose to call <see cref="SchemaExtensions.Messages_AcceptUrlAuth">Messages_AcceptUrlAuth</see> to get a <see cref="UrlAuthResultAccepted"/> with the URL to open instead of the <c>url</c> of this constructor, or a <see langword="null"/>, in which case the <c>url</c> of this constructor must be opened, instead. If the user refuses the authorization request but still wants to open the link, the <c>url</c> of this constructor must be used.		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonUrlAuth"/></para></summary>
-	[TLDef(0xF51006F9)]
-	public sealed partial class KeyboardButtonUrlAuth : KeyboardButtonBase
-	{
-		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
-		public Flags flags;
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		[IfFlag(10)] public KeyboardButtonStyle style;
-		/// <summary>Button label</summary>
-		public string text;
-		/// <summary>New text of the button in forwarded messages.</summary>
-		[IfFlag(0)] public string fwd_text;
-		/// <summary>An HTTP URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in <a href="https://corefork.telegram.org/widgets/login#receiving-authorization-data">Receiving authorization data</a>.<br/><br/><strong>NOTE</strong>: Services must <strong>always</strong> check the hash of the received data to verify the authentication and the integrity of the data as described in <a href="https://corefork.telegram.org/widgets/login#checking-authorization">Checking authorization</a>.</summary>
-		public string url;
-		/// <summary>ID of the button to pass to <see cref="SchemaExtensions.Messages_RequestUrlAuth">Messages_RequestUrlAuth</see></summary>
-		public int button_id;
-
-		[Flags] public enum Flags : uint
-		{
-			/// <summary>Field <see cref="fwd_text"/> has a value</summary>
-			has_fwd_text = 0x1,
-			/// <summary>Field <see cref="style"/> has a value</summary>
-			has_style = 0x400,
-		}
-
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		public override KeyboardButtonStyle Style => style;
-		/// <summary>Button label</summary>
-		public override string Text => text;
-	}
-	/// <summary>Button to request a user to <see cref="SchemaExtensions.Messages_AcceptUrlAuth">Messages_AcceptUrlAuth</see> via URL using <a href="https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots">Seamless Telegram Login</a>.		<para>See <a href="https://corefork.telegram.org/constructor/inputKeyboardButtonUrlAuth"/></para></summary>
-	[TLDef(0x68013E72)]
-	public sealed partial class InputKeyboardButtonUrlAuth : KeyboardButtonBase
-	{
-		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
-		public Flags flags;
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		[IfFlag(10)] public KeyboardButtonStyle style;
-		/// <summary>Button text</summary>
-		public string text;
-		/// <summary>New text of the button in forwarded messages.</summary>
-		[IfFlag(1)] public string fwd_text;
-		/// <summary>An HTTP URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in <a href="https://corefork.telegram.org/widgets/login#receiving-authorization-data">Receiving authorization data</a>.<br/>NOTE: You must always check the hash of the received data to verify the authentication and the integrity of the data as described in <a href="https://corefork.telegram.org/widgets/login#checking-authorization">Checking authorization</a>.</summary>
-		public string url;
-		/// <summary>Username of a bot, which will be used for user authorization. See <a href="https://corefork.telegram.org/widgets/login#setting-up-a-bot">Setting up a bot</a> for more details. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See <a href="https://corefork.telegram.org/widgets/login#linking-your-domain-to-the-bot">Linking your domain to the bot</a> for more details.</summary>
-		public InputUserBase bot;
-
-		[Flags] public enum Flags : uint
-		{
-			/// <summary>Set this flag to request the permission for your bot to send messages to the user.</summary>
-			request_write_access = 0x1,
-			/// <summary>Field <see cref="fwd_text"/> has a value</summary>
-			has_fwd_text = 0x2,
-			/// <summary>Field <see cref="style"/> has a value</summary>
-			has_style = 0x400,
-		}
-
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		public override KeyboardButtonStyle Style => style;
-		/// <summary>Button text</summary>
-		public override string Text => text;
-	}
-	/// <summary>Button to request a poll from the user		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRequestPoll"/></para></summary>
-	[TLDef(0x7A11D782)]
-	public sealed partial class KeyboardButtonRequestPoll : KeyboardButtonBase
-	{
-		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
-		public Flags flags;
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		[IfFlag(10)] public KeyboardButtonStyle style;
-		/// <summary>If set, only quiz polls can be sent</summary>
-		[IfFlag(0)] public bool quiz;
-		/// <summary>Button text</summary>
-		public string text;
-
-		[Flags] public enum Flags : uint
-		{
-			/// <summary>Field <see cref="quiz"/> has a value</summary>
-			has_quiz = 0x1,
-			/// <summary>Field <see cref="style"/> has a value</summary>
-			has_style = 0x400,
-		}
-
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		public override KeyboardButtonStyle Style => style;
-		/// <summary>Button text</summary>
-		public override string Text => text;
-	}
-	/// <summary>Button that links directly to a user profile		<para>See <a href="https://corefork.telegram.org/constructor/inputKeyboardButtonUserProfile"/></para></summary>
-	[TLDef(0x7D5E07C7)]
-	public sealed partial class InputKeyboardButtonUserProfile : KeyboardButtonBase
-	{
-		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
-		public Flags flags;
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		[IfFlag(10)] public KeyboardButtonStyle style;
-		/// <summary>Button text</summary>
-		public string text;
-		/// <summary>User ID</summary>
-		public InputUserBase user_id;
-
-		[Flags] public enum Flags : uint
-		{
-			/// <summary>Field <see cref="style"/> has a value</summary>
-			has_style = 0x400,
-		}
-
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		public override KeyboardButtonStyle Style => style;
-		/// <summary>Button text</summary>
-		public override string Text => text;
-	}
-	/// <summary>Button that links directly to a user profile		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonUserProfile"/></para></summary>
-	[TLDef(0xC0FD5D09, inheritAt = 0)]
-	public sealed partial class KeyboardButtonUserProfile : KeyboardButton
-	{
-		/// <summary>User ID</summary>
-		public long user_id;
-	}
-	/// <summary>Button to open a <a href="https://corefork.telegram.org/api/bots/webapps">bot mini app</a> using <see cref="SchemaExtensions.Messages_RequestWebView">Messages_RequestWebView</see>, sending over user information after user confirmation.		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonWebView"/></para></summary>
-	[TLDef(0xE846B1A0, inheritAt = 0)]
-	public partial class KeyboardButtonWebView : KeyboardButton
-	{
-		/// <summary><a href="https://corefork.telegram.org/api/bots/webapps">Web app url</a></summary>
-		public string url;
-	}
-	/// <summary>Button to open a <a href="https://corefork.telegram.org/api/bots/webapps">bot mini app</a> using <see cref="SchemaExtensions.Messages_RequestSimpleWebView">Messages_RequestSimpleWebView</see>, without sending user information to the web app.		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonSimpleWebView"/></para></summary>
-	[TLDef(0xE15C4370)]
-	public sealed partial class KeyboardButtonSimpleWebView : KeyboardButtonWebView
-	{
-	}
-	/// <summary>Prompts the user to select and share one or more peers with the bot using <see cref="SchemaExtensions.Messages_SendBotRequestedPeer">Messages_SendBotRequestedPeer</see>		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRequestPeer"/></para></summary>
-	[TLDef(0x5B0F15F5, inheritAt = 0)]
-	public sealed partial class KeyboardButtonRequestPeer : KeyboardButton
-	{
-		/// <summary>Button ID, to be passed to <see cref="SchemaExtensions.Messages_SendBotRequestedPeer">Messages_SendBotRequestedPeer</see>.</summary>
-		public int button_id;
-		/// <summary>Filtering criteria to use for the peer selection list shown to the user. <br/>The list should display all existing peers of the specified type, and should also offer an option for the user to create and immediately use one or more (up to <c>max_quantity</c>) peers of the specified type, if needed.</summary>
-		public RequestPeerType peer_type;
-		/// <summary>Maximum number of peers that can be chosen.</summary>
-		public int max_quantity;
-	}
-	/// <summary>Prompts the user to select and share one or more peers with the bot using <see cref="SchemaExtensions.Messages_SendBotRequestedPeer">Messages_SendBotRequestedPeer</see>.		<para>See <a href="https://corefork.telegram.org/constructor/inputKeyboardButtonRequestPeer"/></para></summary>
-	[TLDef(0x02B78156)]
-	public sealed partial class InputKeyboardButtonRequestPeer : KeyboardButtonBase
-	{
-		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
-		public Flags flags;
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		[IfFlag(10)] public KeyboardButtonStyle style;
-		/// <summary>Button text</summary>
-		public string text;
-		/// <summary>Button ID, to be passed to <see cref="SchemaExtensions.Messages_SendBotRequestedPeer">Messages_SendBotRequestedPeer</see>.</summary>
-		public int button_id;
-		/// <summary>Filtering criteria to use for the peer selection list shown to the user. <br/>The list should display all existing peers of the specified type, and should also offer an option for the user to create and immediately use one or more (up to <c>max_quantity</c>) peers of the specified type, if needed.</summary>
-		public RequestPeerType peer_type;
-		/// <summary>Maximum number of peers that can be chosen.</summary>
-		public int max_quantity;
-
-		[Flags] public enum Flags : uint
-		{
-			/// <summary>Set this flag to request the peer's name.</summary>
-			name_requested = 0x1,
-			/// <summary>Set this flag to request the peer's <c>@username</c> (if any).</summary>
-			username_requested = 0x2,
-			/// <summary>Set this flag to request the peer's photo (if any).</summary>
-			photo_requested = 0x4,
-			/// <summary>Field <see cref="style"/> has a value</summary>
-			has_style = 0x400,
-		}
-
-		/// <summary>Button style, see <a href="https://corefork.telegram.org/api/bots/buttons#button-styles">here »</a> for more info on button styles.</summary>
-		public override KeyboardButtonStyle Style => style;
-		/// <summary>Button text</summary>
-		public override string Text => text;
-	}
-	/// <summary>Clipboard button		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonCopy"/></para></summary>
-	[TLDef(0xBCC4AF10, inheritAt = 0)]
-	public sealed partial class KeyboardButtonCopy : KeyboardButton
-	{
-		/// <summary>The text that will be copied to the clipboard</summary>
-		public string copy_text;
 	}
 
 	/// <summary>Inline keyboard row		<para>See <a href="https://corefork.telegram.org/constructor/keyboardButtonRow"/></para></summary>
@@ -9303,7 +9072,7 @@ namespace TL
 	public sealed partial class KeyboardButtonRow : IObject
 	{
 		/// <summary>Bot or inline keyboard buttons</summary>
-		public KeyboardButtonBase[] buttons;
+		public KeyboardButton[] buttons;
 	}
 
 	/// <summary>Reply markup for bot and inline keyboards		<para>See <a href="https://corefork.telegram.org/type/ReplyMarkup"/></para>		<para>Derived classes: <see cref="ReplyKeyboardHide"/>, <see cref="ReplyKeyboardForceReply"/>, <see cref="ReplyKeyboardMarkup"/>, <see cref="ReplyInlineMarkup"/></para></summary>
@@ -9363,14 +9132,21 @@ namespace TL
 			has_placeholder = 0x8,
 			/// <summary>Requests clients to always show the keyboard when the regular keyboard is hidden.</summary>
 			persistent = 0x10,
+			force_reply = 0x20,
 		}
 	}
 	/// <summary>Represents an inline keyboard		<para>See <a href="https://corefork.telegram.org/constructor/replyInlineMarkup"/></para></summary>
-	[TLDef(0x48A30254)]
+	[TLDef(0xB2B15770)]
 	public sealed partial class ReplyInlineMarkup : ReplyMarkup
 	{
+		public Flags flags;
 		/// <summary>Bot or inline keyboard rows</summary>
-		public KeyboardButtonRow[] rows;
+		public KeyboardInlineButtonRow[] rows;
+
+		[Flags] public enum Flags : uint
+		{
+			force_reply = 0x20,
+		}
 	}
 
 	/// <summary>Message entities, representing styled text in a message		<para>See <a href="https://corefork.telegram.org/type/MessageEntity"/></para>		<para>Derived classes: <see cref="MessageEntityUnknown"/>, <see cref="MessageEntityMention"/>, <see cref="MessageEntityHashtag"/>, <see cref="MessageEntityBotCommand"/>, <see cref="MessageEntityUrl"/>, <see cref="MessageEntityEmail"/>, <see cref="MessageEntityBold"/>, <see cref="MessageEntityItalic"/>, <see cref="MessageEntityCode"/>, <see cref="MessageEntityPre"/>, <see cref="MessageEntityTextUrl"/>, <see cref="MessageEntityUnderline"/>, <see cref="MessageEntityStrike"/>, <see cref="MessageEntityBlockquote"/>, <see cref="MessageEntitySpoiler"/>, <see cref="MessageEntityCustomEmoji"/>, <see cref="MessageEntityMentionName"/>, <see cref="InputMessageEntityMentionName"/>, <see cref="MessageEntityPhone"/>, <see cref="MessageEntityCashtag"/>, <see cref="MessageEntityBankCard"/>, <see cref="MessageEntityFormattedDate"/>, <see cref="MessageEntityDiffInsert"/>, <see cref="MessageEntityDiffReplace"/>, <see cref="MessageEntityDiffDelete"/></para></summary>
@@ -11528,6 +11304,20 @@ namespace TL
 		public RichText text;
 		public RichText old_text;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/textButton"/></para></summary>
+	[TLDef(0xAFC79CD6)]
+	public sealed partial class TextButton : RichText
+	{
+		public Flags flags;
+		public RichText text;
+		public InlineButtonType type;
+		[IfFlag(0)] public RichButtonStyle style;
+
+		[Flags] public enum Flags : uint
+		{
+			has_style = 0x1,
+		}
+	}
 
 	/// <summary>Represents an <a href="https://instantview.telegram.org">instant view page element</a>		<para>See <a href="https://corefork.telegram.org/type/PageBlock"/></para>		<para>Derived classes: <see cref="PageBlockUnsupported"/>, <see cref="PageBlockTitle"/>, <see cref="PageBlockSubtitle"/>, <see cref="PageBlockAuthorDate"/>, <see cref="PageBlockHeader"/>, <see cref="PageBlockSubheader"/>, <see cref="PageBlockParagraph"/>, <see cref="PageBlockPreformatted"/>, <see cref="PageBlockFooter"/>, <see cref="PageBlockDivider"/>, <see cref="PageBlockAnchor"/>, <see cref="PageBlockList"/>, <see cref="PageBlockBlockquote"/>, <see cref="PageBlockPullquote"/>, <see cref="PageBlockPhoto"/>, <see cref="PageBlockVideo"/>, <see cref="PageBlockCover"/>, <see cref="PageBlockEmbed"/>, <see cref="PageBlockEmbedPost"/>, <see cref="PageBlockCollage"/>, <see cref="PageBlockSlideshow"/>, <see cref="PageBlockChannel"/>, <see cref="PageBlockAudio"/>, <see cref="PageBlockKicker"/>, <see cref="PageBlockTable"/>, <see cref="PageBlockOrderedList"/>, <see cref="PageBlockDetails"/>, <see cref="PageBlockRelatedArticles"/>, <see cref="PageBlockMap"/></para></summary>
 	public abstract partial class PageBlock : IObject { }
@@ -11612,13 +11402,19 @@ namespace TL
 		public PageListItem[] items;
 	}
 	/// <summary>Quote (equivalent to the HTML <c>&lt;blockquote&gt;</c>)		<para>See <a href="https://corefork.telegram.org/constructor/pageBlockBlockquote"/></para></summary>
-	[TLDef(0x263D7C26)]
+	[TLDef(0x66D1670B)]
 	public sealed partial class PageBlockBlockquote : PageBlock
 	{
+		public Flags flags;
 		/// <summary>Quote contents</summary>
 		public RichText text;
 		/// <summary>Caption</summary>
 		public RichText caption;
+
+		[Flags] public enum Flags : uint
+		{
+			collapsed = 0x1,
+		}
 	}
 	/// <summary>Pullquote		<para>See <a href="https://corefork.telegram.org/constructor/pageBlockPullquote"/></para></summary>
 	[TLDef(0x4F4456D3)]
@@ -11790,6 +11586,7 @@ namespace TL
 			bordered = 0x1,
 			/// <summary>Is the table striped?</summary>
 			striped = 0x2,
+			compact = 0x4,
 		}
 	}
 	/// <summary>Ordered list of IV blocks		<para>See <a href="https://corefork.telegram.org/constructor/pageBlockOrderedList"/></para></summary>
@@ -11916,6 +11713,27 @@ namespace TL
 	{
 		public PageBlock[] blocks;
 		public RichText caption;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/pageBlockButtonRow"/></para></summary>
+	[TLDef(0x6D640318)]
+	public sealed partial class PageBlockButtonRow : PageBlock
+	{
+		public Flags flags;
+		public PageButton[] buttons;
+
+		[Flags] public enum Flags : uint
+		{
+			align_left = 0x1,
+			align_center = 0x2,
+			align_right = 0x4,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/pageBlockDocument"/></para></summary>
+	[TLDef(0x38FA3BA3)]
+	public sealed partial class PageBlockDocument : PageBlock
+	{
+		public long document_id;
+		public PageCaption caption;
 	}
 
 	/// <summary>Why was the phone call discarded?		<para>See <a href="https://corefork.telegram.org/type/PhoneCallDiscardReason"/></para>		<para>Derived classes: <see cref="PhoneCallDiscardReasonMissed"/>, <see cref="PhoneCallDiscardReasonDisconnect"/>, <see cref="PhoneCallDiscardReasonHangup"/>, <see cref="PhoneCallDiscardReasonBusy"/>, <see cref="PhoneCallDiscardReasonMigrateConferenceCall"/></para></summary>
@@ -14925,6 +14743,7 @@ namespace TL
 			/// <summary>If set, allows the admin to modify the <a href="https://corefork.telegram.org/api/rank">member tag »</a> of any user.</summary>
 			manage_ranks = 0x40000,
 			manage_linked_peers = 0x80000,
+			manage_welcome_messages = 0x100000,
 		}
 	}
 
@@ -17698,7 +17517,7 @@ namespace TL
 		public long stars;
 	}
 	/// <summary>Used to buy a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift</a> currently up on resale, see <a href="https://corefork.telegram.org/api/gifts#reselling-collectible-gifts">here</a> for more info on the full flow.		<para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceStarGiftResale"/></para></summary>
-	[TLDef(0xC39F5324)]
+	[TLDef(0xE9B0C658)]
 	public sealed partial class InputInvoiceStarGiftResale : InputInvoice
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -17707,11 +17526,15 @@ namespace TL
 		public string slug;
 		/// <summary>The receiver of the gift.</summary>
 		public InputPeer to_id;
+		[IfFlag(1)] public TextWithEntities message;
 
 		[Flags] public enum Flags : uint
 		{
 			/// <summary>Buy the gift using TON.</summary>
 			ton = 0x1,
+			/// <summary>Field <see cref="message"/> has a value</summary>
+			has_message = 0x2,
+			show_name = 0x4,
 		}
 	}
 	/// <summary><a href="https://corefork.telegram.org/api/gifts#prepaying-for-someone-elses-upgrade">Separately prepay for the upgrade of a gift »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/inputInvoiceStarGiftPrepaidUpgrade"/></para></summary>
@@ -24086,13 +23909,13 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/ephemeralMessage"/></para></summary>
-	[TLDef(0xD9C6DC1A)]
+	[TLDef(0xDD27BEE9)]
 	public sealed partial class EphemeralMessage : IObject
 	{
 		public Flags flags;
 		public int id;
 		public Peer from_id;
-		public Peer peer_id;
+		[IfFlag(9)] public Peer peer_id;
 		public long receiver_id;
 		[IfFlag(1)] public int top_msg_id;
 		public DateTime date;
@@ -24101,6 +23924,9 @@ namespace TL
 		[IfFlag(3)] public MessageMedia media;
 		[IfFlag(4)] public ReplyMarkup reply_markup;
 		[IfFlag(6)] public MessageReplyHeaderBase reply_to;
+		[IfFlag(8)] public RichMessage rich_message;
+		[IfFlag(10)] public long chat_instance;
+		[IfFlag(11)] public int anchor_msg_id;
 
 		[Flags] public enum Flags : uint
 		{
@@ -24109,7 +23935,14 @@ namespace TL
 			has_entities = 0x4,
 			has_media = 0x8,
 			has_reply_markup = 0x10,
+			welcome_template = 0x20,
 			has_reply_to = 0x40,
+			invert_media = 0x80,
+			has_rich_message = 0x100,
+			has_peer_id = 0x200,
+			has_chat_instance = 0x400,
+			has_anchor_msg_id = 0x800,
+			noforwards = 0x1000,
 		}
 	}
 
@@ -24137,5 +23970,229 @@ namespace TL
 	public sealed partial class Messages_ComposedRichMessageWithAI : IObject
 	{
 		public RichMessage result;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/ButtonType"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/buttonTypeDefault">buttonTypeDefault</a></remarks>
+	public abstract partial class ButtonType : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/buttonTypeRequestPhone"/></para></summary>
+	[TLDef(0xDF3D36F9)]
+	public sealed partial class ButtonTypeRequestPhone : ButtonType { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/buttonTypeRequestGeoLocation"/></para></summary>
+	[TLDef(0x9BEEE140)]
+	public sealed partial class ButtonTypeRequestGeoLocation : ButtonType { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/buttonTypeRequestPoll"/></para></summary>
+	[TLDef(0xAACFFF84)]
+	public sealed partial class ButtonTypeRequestPoll : ButtonType
+	{
+		public Flags flags;
+		[IfFlag(0)] public bool quiz;
+
+		[Flags] public enum Flags : uint
+		{
+			has_quiz = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/buttonTypeRequestPeer"/></para></summary>
+	[TLDef(0x4F58A237)]
+	public sealed partial class ButtonTypeRequestPeer : ButtonType
+	{
+		public Flags flags;
+		public int button_id;
+		public RequestPeerType peer_type;
+		public int max_quantity;
+
+		[Flags] public enum Flags : uint
+		{
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputButtonTypeRequestPeer"/></para></summary>
+	[TLDef(0x3FE268FE)]
+	public sealed partial class InputButtonTypeRequestPeer : ButtonType
+	{
+		public Flags flags;
+		public int button_id;
+		public RequestPeerType peer_type;
+		public int max_quantity;
+
+		[Flags] public enum Flags : uint
+		{
+			name_requested = 0x1,
+			username_requested = 0x2,
+			photo_requested = 0x4,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/buttonTypeSimpleWebView"/></para></summary>
+	[TLDef(0xC01A597A)]
+	public sealed partial class ButtonTypeSimpleWebView : ButtonType
+	{
+		public string url;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InlineButtonType"/></para></summary>
+	public abstract partial class InlineButtonType : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inlineButtonTypeUrl"/></para></summary>
+	[TLDef(0xECA4F8D4)]
+	public sealed partial class InlineButtonTypeUrl : InlineButtonType
+	{
+		public string url;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inlineButtonTypeUrlAuth"/></para></summary>
+	[TLDef(0xBFD02DA2)]
+	public sealed partial class InlineButtonTypeUrlAuth : InlineButtonType
+	{
+		public Flags flags;
+		[IfFlag(0)] public string fwd_text;
+		public string url;
+		public int button_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_fwd_text = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputInlineButtonTypeUrlAuth"/></para></summary>
+	[TLDef(0x9961BCB4)]
+	public sealed partial class InputInlineButtonTypeUrlAuth : InlineButtonType
+	{
+		public Flags flags;
+		[IfFlag(1)] public string fwd_text;
+		public string url;
+		[IfFlag(2)] public InputUserBase bot;
+
+		[Flags] public enum Flags : uint
+		{
+			request_write_access = 0x1,
+			has_fwd_text = 0x2,
+			has_bot = 0x4,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inlineButtonTypeWebView"/></para></summary>
+	[TLDef(0x3BCAB5B4)]
+	public sealed partial class InlineButtonTypeWebView : InlineButtonType
+	{
+		public string url;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inlineButtonTypeCallback"/></para></summary>
+	[TLDef(0x2955BC38)]
+	public sealed partial class InlineButtonTypeCallback : InlineButtonType
+	{
+		public Flags flags;
+		public byte[] data;
+
+		[Flags] public enum Flags : uint
+		{
+			requires_password = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inlineButtonTypeGame"/></para></summary>
+	[TLDef(0x5CD3709D)]
+	public sealed partial class InlineButtonTypeGame : InlineButtonType { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inlineButtonTypeBuy"/></para></summary>
+	[TLDef(0x48BAD7A5)]
+	public sealed partial class InlineButtonTypeBuy : InlineButtonType { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inlineButtonTypeSwitchInline"/></para></summary>
+	[TLDef(0x93773FF5)]
+	public sealed partial class InlineButtonTypeSwitchInline : InlineButtonType
+	{
+		public Flags flags;
+		public string query;
+		[IfFlag(1)] public InlineQueryPeerType[] peer_types;
+
+		[Flags] public enum Flags : uint
+		{
+			same_peer = 0x1,
+			has_peer_types = 0x2,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inlineButtonTypeUserProfile"/></para></summary>
+	[TLDef(0x3FA33FCF)]
+	public sealed partial class InlineButtonTypeUserProfile : InlineButtonType
+	{
+		public long user_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputInlineButtonTypeUserProfile"/></para></summary>
+	[TLDef(0x53F3CE5A)]
+	public sealed partial class InputInlineButtonTypeUserProfile : InlineButtonType
+	{
+		public InputUserBase user_id;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inlineButtonTypeCopy"/></para></summary>
+	[TLDef(0xB41D3272)]
+	public sealed partial class InlineButtonTypeCopy : InlineButtonType
+	{
+		public string copy_text;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inlineButtonTypeDisabled"/></para></summary>
+	[TLDef(0xA438619D)]
+	public sealed partial class InlineButtonTypeDisabled : InlineButtonType { }
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/keyboardInlineButton"/></para></summary>
+	[TLDef(0x11C1A322)]
+	public sealed partial class KeyboardInlineButton : IObject
+	{
+		public Flags flags;
+		[IfFlag(10)] public KeyboardButtonStyle style;
+		public string text;
+		public InlineButtonType type;
+
+		[Flags] public enum Flags : uint
+		{
+			has_style = 0x400,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/keyboardInlineButtonRow"/></para></summary>
+	[TLDef(0x19420AF6)]
+	public sealed partial class KeyboardInlineButtonRow : IObject
+	{
+		public KeyboardInlineButton[] buttons;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/richButtonStyle"/></para></summary>
+	[TLDef(0x03C610BD)]
+	public sealed partial class RichButtonStyle : IObject
+	{
+		public Flags flags;
+
+		[Flags] public enum Flags : uint
+		{
+			bg_primary = 0x1,
+			bg_danger = 0x2,
+			bg_success = 0x4,
+			link = 0x8,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/pageButton"/></para></summary>
+	[TLDef(0x692A5488)]
+	public sealed partial class PageButton : IObject
+	{
+		public Flags flags;
+		public RichText text;
+		public InlineButtonType type;
+		[IfFlag(0)] public RichButtonStyle style;
+
+		[Flags] public enum Flags : uint
+		{
+			has_style = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/ephemeral.welcomeMessages"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/ephemeral.welcomeMessagesNotModified">ephemeral.welcomeMessagesNotModified</a></remarks>
+	[TLDef(0x104FC872)]
+	public sealed partial class Ephemeral_WelcomeMessages : IObject
+	{
+		public long hash;
+		public EphemeralMessage[] messages;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.firebasePnvIntent"/></para></summary>
+	[TLDef(0xDF5AC00C)]
+	public sealed partial class Auth_FirebasePnvIntent : IObject
+	{
+		public string nonce;
+		public string digital_credential_payload;
 	}
 }

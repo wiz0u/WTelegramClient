@@ -13,8 +13,8 @@
     <PackageId>WTelegramClient</PackageId>
     <Authors>Wizou</Authors>
     <VersionPrefix>0.0.0</VersionPrefix>
-    <VersionSuffix>layer.228</VersionSuffix>
-    <Description>Telegram Client API (MTProto) library written 100% in C# and .NET Standard | Latest API layer: 228
+    <VersionSuffix>layer.229</VersionSuffix>
+    <Description>Telegram Client API (MTProto) library written 100% in C# and .NET Standard | Latest API layer: 229
 
 Release Notes:
 $(ReleaseNotes)</Description>

@@ -422,6 +422,30 @@ namespace TL
 				from_auth_key_id = from_auth_key_id ?? default,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.initFirebasePnvLogin"/></para></summary>
+		public static Task<Auth_FirebasePnvIntent> Auth_InitFirebasePnvLogin(this Client client, int api_id, string api_hash)
+			=> client.Invoke(new Auth_InitFirebasePnvLogin
+			{
+				api_id = api_id,
+				api_hash = api_hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.finishFirebasePnvLogin"/></para></summary>
+		public static Task<Auth_AuthorizationBase> Auth_FinishFirebasePnvLogin(this Client client, string google_token)
+			=> client.Invoke(new Auth_FinishFirebasePnvLogin
+			{
+				google_token = google_token,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.firebasePnvSignUp"/></para></summary>
+		public static Task<Auth_AuthorizationBase> Auth_FirebasePnvSignUp(this Client client, string first_name, string last_name, bool no_joined_notifications = false)
+			=> client.Invoke(new Auth_FirebasePnvSignUp
+			{
+				flags = (Auth_FirebasePnvSignUp.Flags)(no_joined_notifications ? 0x1 : 0),
+				first_name = first_name,
+				last_name = last_name,
+			});
+
 		/// <summary>Register device to receive <a href="https://corefork.telegram.org/api/push-updates">PUSH notifications</a>		<para>See <a href="https://corefork.telegram.org/method/account.registerDevice"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/account.registerDevice#possible-errors">details</a>)</para></summary>
 		/// <param name="no_muted">Avoid receiving (silent and invisible background) notifications. Useful to save battery.</param>
 		/// <param name="token_type">Device token type, see <a href="https://corefork.telegram.org/api/push-updates#subscribing-to-notifications">PUSH updates</a> for the possible values.</param>
@@ -2194,10 +2218,10 @@ namespace TL
 		/// <param name="video_timestamp">Start playing the video at the specified timestamp (seconds).</param>
 		/// <param name="allow_paid_stars">For <a href="https://corefork.telegram.org/api/paid-messages">paid messages »</a>, specifies the amount of <a href="https://corefork.telegram.org/api/stars">Telegram Stars</a> the user has agreed to pay in order to send the message.</param>
 		/// <param name="suggested_post">Used to <a href="https://corefork.telegram.org/api/suggested-posts">suggest a post to a channel, see here »</a> for more info on the full flow.</param>
-		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, int? video_timestamp = null, long? allow_paid_stars = null, InputReplyTo reply_to = null, SuggestedPost suggested_post = null, int? schedule_repeat_period = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false)
+		public static Task<UpdatesBase> Messages_ForwardMessages(this Client client, InputPeer from_peer, int[] id, long[] random_id, InputPeer to_peer, int? top_msg_id = null, DateTime? schedule_date = null, InputPeer send_as = null, InputQuickReplyShortcutBase quick_reply_shortcut = null, long? effect = null, int? video_timestamp = null, long? allow_paid_stars = null, InputReplyTo reply_to = null, SuggestedPost suggested_post = null, int? schedule_repeat_period = null, bool silent = false, bool background = false, bool with_my_score = false, bool drop_author = false, bool drop_media_captions = false, bool noforwards = false, bool allow_paid_floodskip = false, bool from_ephemeral = false)
 			=> client.Invoke(new Messages_ForwardMessages
 			{
-				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (video_timestamp != null ? 0x100000 : 0) | (allow_paid_stars != null ? 0x200000 : 0) | (reply_to != null ? 0x400000 : 0) | (suggested_post != null ? 0x800000 : 0) | (schedule_repeat_period != null ? 0x1000000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (allow_paid_floodskip ? 0x80000 : 0)),
+				flags = (Messages_ForwardMessages.Flags)((top_msg_id != null ? 0x200 : 0) | (schedule_date != null ? 0x400 : 0) | (send_as != null ? 0x2000 : 0) | (quick_reply_shortcut != null ? 0x20000 : 0) | (effect != null ? 0x40000 : 0) | (video_timestamp != null ? 0x100000 : 0) | (allow_paid_stars != null ? 0x200000 : 0) | (reply_to != null ? 0x400000 : 0) | (suggested_post != null ? 0x800000 : 0) | (schedule_repeat_period != null ? 0x1000000 : 0) | (silent ? 0x20 : 0) | (background ? 0x40 : 0) | (with_my_score ? 0x100 : 0) | (drop_author ? 0x800 : 0) | (drop_media_captions ? 0x1000 : 0) | (noforwards ? 0x4000 : 0) | (allow_paid_floodskip ? 0x80000 : 0) | (from_ephemeral ? 0x2000000 : 0)),
 				from_peer = from_peer,
 				id = id,
 				random_id = random_id,
@@ -6572,7 +6596,7 @@ namespace TL
 		/// <summary>Bots may use this method to prepare a peer request button for a <a href="https://corefork.telegram.org/api/bots/webapps">Mini App</a>, see <a href="https://corefork.telegram.org/api/bots/buttons#requesting-peers-via-mini-apps">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/bots.requestWebViewButton"/> [bots: ✓ users: ✗]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.requestWebViewButton#possible-errors">details</a>)</para></summary>
 		/// <param name="user_id">The user that will use the prepared button in the Mini App</param>
 		/// <param name="button">The button to prepare, an <see cref="InputKeyboardButtonRequestPeer"/> of any <see cref="RequestPeerType"/></param>
-		public static Task<Bots_RequestedButton> Bots_RequestWebViewButton(this Client client, InputUserBase user_id, KeyboardButtonBase button)
+		public static Task<Bots_RequestedButton> Bots_RequestWebViewButton(this Client client, InputUserBase user_id, KeyboardButton button)
 			=> client.Invoke(new Bots_RequestWebViewButton
 			{
 				user_id = user_id,
@@ -6582,7 +6606,7 @@ namespace TL
 		/// <summary>Fetch the peer request button a bot prepared for a <a href="https://corefork.telegram.org/api/bots/webapps">Mini App</a> with <see cref="Bots_RequestWebViewButton">Bots_RequestWebViewButton</see>, invoked when the Mini App emits a <a href="https://corefork.telegram.org/api/web-events#web-app-request-chat"><c>web_app_request_chat</c></a> event, see <a href="https://corefork.telegram.org/api/bots/buttons#requesting-peers-via-mini-apps">here »</a> for more info.		<para>See <a href="https://corefork.telegram.org/method/bots.getRequestedWebViewButton"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.getRequestedWebViewButton#possible-errors">details</a>)</para></summary>
 		/// <param name="bot">The bot that owns the Mini App</param>
 		/// <param name="webapp_req_id">The Mini App request ID, taken from the <a href="https://corefork.telegram.org/api/web-events#web-app-request-chat"><c>web_app_request_chat</c></a> event's <c>req_id</c></param>
-		public static Task<KeyboardButtonBase> Bots_GetRequestedWebViewButton(this Client client, InputUserBase bot, string webapp_req_id)
+		public static Task<KeyboardButton> Bots_GetRequestedWebViewButton(this Client client, InputUserBase bot, string webapp_req_id)
 			=> client.Invoke(new Bots_GetRequestedWebViewButton
 			{
 				bot = bot,
@@ -8902,10 +8926,10 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/ephemeral.sendMessage"/></para></summary>
-		public static Task<UpdatesBase> Ephemeral_SendMessage(this Client client, InputPeer peer, InputUserBase receiver_id, string message, long random_id, long? query_id = null, MessageEntity[] entities = null, InputMedia media = null, ReplyMarkup reply_markup = null, InputRichMessageBase rich_message = null, InputReplyTo reply_to = null)
+		public static Task<UpdatesBase> Ephemeral_SendMessage(this Client client, InputPeer peer, InputUserBase receiver_id, string message, long random_id, long? query_id = null, MessageEntity[] entities = null, InputMedia media = null, ReplyMarkup reply_markup = null, InputRichMessageBase rich_message = null, InputReplyTo reply_to = null, bool invert_media = false, bool welcome = false, bool anchor = false, bool noforwards = false)
 			=> client.Invoke(new Ephemeral_SendMessage
 			{
-				flags = (Ephemeral_SendMessage.Flags)((query_id != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (media != null ? 0x4 : 0) | (reply_markup != null ? 0x8 : 0) | (rich_message != null ? 0x10 : 0) | (reply_to != null ? 0x20 : 0)),
+				flags = (Ephemeral_SendMessage.Flags)((peer != null ? 0x100 : 0) | (query_id != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (media != null ? 0x4 : 0) | (reply_markup != null ? 0x8 : 0) | (rich_message != null ? 0x10 : 0) | (reply_to != null ? 0x20 : 0) | (invert_media ? 0x40 : 0) | (welcome ? 0x80 : 0) | (anchor ? 0x200 : 0) | (noforwards ? 0x400 : 0)),
 				peer = peer,
 				receiver_id = receiver_id,
 				query_id = query_id ?? default,
@@ -8922,6 +8946,7 @@ namespace TL
 		public static Task<bool> Ephemeral_DeleteMessage(this Client client, InputPeer peer, InputUserBase receiver_id, int id)
 			=> client.Invoke(new Ephemeral_DeleteMessage
 			{
+				flags = (Ephemeral_DeleteMessage.Flags)(peer != null ? 0x1 : 0),
 				peer = peer,
 				receiver_id = receiver_id,
 				id = id,
@@ -8948,10 +8973,10 @@ namespace TL
 			});
 
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/ephemeral.editMessage"/></para></summary>
-		public static Task<UpdatesBase> Ephemeral_EditMessage(this Client client, InputPeer peer, InputUserBase receiver_id, int id, string message = null, MessageEntity[] entities = null, ReplyMarkup reply_markup = null, InputMedia media = null)
+		public static Task<UpdatesBase> Ephemeral_EditMessage(this Client client, InputPeer peer, InputUserBase receiver_id, int id, string message = null, MessageEntity[] entities = null, ReplyMarkup reply_markup = null, InputMedia media = null, InputRichMessageBase rich_message = null, bool invert_media = false, bool welcome = false)
 			=> client.Invoke(new Ephemeral_EditMessage
 			{
-				flags = (Ephemeral_EditMessage.Flags)((message != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (reply_markup != null ? 0x4 : 0) | (media != null ? 0x8 : 0)),
+				flags = (Ephemeral_EditMessage.Flags)((peer != null ? 0x80 : 0) | (message != null ? 0x1 : 0) | (entities != null ? 0x2 : 0) | (reply_markup != null ? 0x4 : 0) | (media != null ? 0x8 : 0) | (rich_message != null ? 0x10 : 0) | (invert_media ? 0x20 : 0) | (welcome ? 0x40 : 0)),
 				peer = peer,
 				receiver_id = receiver_id,
 				id = id,
@@ -8959,6 +8984,31 @@ namespace TL
 				media = media,
 				entities = entities,
 				reply_markup = reply_markup,
+				rich_message = rich_message,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/ephemeral.deleteWelcomeMessage"/></para></summary>
+		public static Task<bool> Ephemeral_DeleteWelcomeMessage(this Client client, InputPeer peer, int id)
+			=> client.Invoke(new Ephemeral_DeleteWelcomeMessage
+			{
+				peer = peer,
+				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/ephemeral.deleteAllWelcomeMessages"/></para></summary>
+		public static Task<bool> Ephemeral_DeleteAllWelcomeMessages(this Client client, InputPeer peer)
+			=> client.Invoke(new Ephemeral_DeleteAllWelcomeMessages
+			{
+				peer = peer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/ephemeral.getWelcomeMessages"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/ephemeral.welcomeMessagesNotModified">ephemeral.welcomeMessagesNotModified</a></returns>
+		public static Task<Ephemeral_WelcomeMessages> Ephemeral_GetWelcomeMessages(this Client client, InputPeer peer, long hash = default)
+			=> client.Invoke(new Ephemeral_GetWelcomeMessages
+			{
+				peer = peer,
+				hash = hash,
 			});
 	}
 }
@@ -9278,6 +9328,32 @@ namespace TL.Methods
 		[Flags] public enum Flags : uint
 		{
 			has_from_dc_id = 0x1,
+		}
+	}
+
+	[TLDef(0x777DF37A)]
+	public sealed partial class Auth_InitFirebasePnvLogin : IMethod<Auth_FirebasePnvIntent>
+	{
+		public int api_id;
+		public string api_hash;
+	}
+
+	[TLDef(0x2C85094C)]
+	public sealed partial class Auth_FinishFirebasePnvLogin : IMethod<Auth_AuthorizationBase>
+	{
+		public string google_token;
+	}
+
+	[TLDef(0x783F6B56)]
+	public sealed partial class Auth_FirebasePnvSignUp : IMethod<Auth_AuthorizationBase>
+	{
+		public Flags flags;
+		public string first_name;
+		public string last_name;
+
+		[Flags] public enum Flags : uint
+		{
+			no_joined_notifications = 0x1,
 		}
 	}
 
@@ -10776,6 +10852,7 @@ namespace TL.Methods
 			has_reply_to = 0x400000,
 			has_suggested_post = 0x800000,
 			has_schedule_repeat_period = 0x1000000,
+			from_ephemeral = 0x2000000,
 		}
 	}
 
@@ -14438,11 +14515,11 @@ namespace TL.Methods
 	public sealed partial class Bots_RequestWebViewButton : IMethod<Bots_RequestedButton>
 	{
 		public InputUserBase user_id;
-		public KeyboardButtonBase button;
+		public KeyboardButton button;
 	}
 
 	[TLDef(0xBF25B7F3)]
-	public sealed partial class Bots_GetRequestedWebViewButton : IMethod<KeyboardButtonBase>
+	public sealed partial class Bots_GetRequestedWebViewButton : IMethod<KeyboardButton>
 	{
 		public InputUserBase bot;
 		public string webapp_req_id;
@@ -16460,11 +16537,11 @@ namespace TL.Methods
 		public InputPeer participant;
 	}
 
-	[TLDef(0x68CBD09F)]
+	[TLDef(0xBA8D5F35)]
 	public sealed partial class Ephemeral_SendMessage : IMethod<UpdatesBase>
 	{
 		public Flags flags;
-		public InputPeer peer;
+		[IfFlag(8)] public InputPeer peer;
 		public InputUserBase receiver_id;
 		[IfFlag(0)] public long query_id;
 		public string message;
@@ -16483,15 +16560,26 @@ namespace TL.Methods
 			has_reply_markup = 0x8,
 			has_rich_message = 0x10,
 			has_reply_to = 0x20,
+			invert_media = 0x40,
+			welcome = 0x80,
+			has_peer = 0x100,
+			anchor = 0x200,
+			noforwards = 0x400,
 		}
 	}
 
-	[TLDef(0xA3C0D511)]
+	[TLDef(0x92F6E797)]
 	public sealed partial class Ephemeral_DeleteMessage : IMethod<bool>
 	{
-		public InputPeer peer;
+		public Flags flags;
+		[IfFlag(0)] public InputPeer peer;
 		public InputUserBase receiver_id;
 		public int id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_peer = 0x1,
+		}
 	}
 
 	[TLDef(0x8704F2BF)]
@@ -16517,17 +16605,18 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x13F250EE)]
+	[TLDef(0xCF9C725B)]
 	public sealed partial class Ephemeral_EditMessage : IMethod<UpdatesBase>
 	{
 		public Flags flags;
-		public InputPeer peer;
+		[IfFlag(7)] public InputPeer peer;
 		public InputUserBase receiver_id;
 		public int id;
 		[IfFlag(0)] public string message;
 		[IfFlag(3)] public InputMedia media;
 		[IfFlag(1)] public MessageEntity[] entities;
 		[IfFlag(2)] public ReplyMarkup reply_markup;
+		[IfFlag(4)] public InputRichMessageBase rich_message;
 
 		[Flags] public enum Flags : uint
 		{
@@ -16535,6 +16624,30 @@ namespace TL.Methods
 			has_entities = 0x2,
 			has_reply_markup = 0x4,
 			has_media = 0x8,
+			has_rich_message = 0x10,
+			invert_media = 0x20,
+			welcome = 0x40,
+			has_peer = 0x80,
 		}
+	}
+
+	[TLDef(0xE882A9E1)]
+	public sealed partial class Ephemeral_DeleteWelcomeMessage : IMethod<bool>
+	{
+		public InputPeer peer;
+		public int id;
+	}
+
+	[TLDef(0x734F9721)]
+	public sealed partial class Ephemeral_DeleteAllWelcomeMessages : IMethod<bool>
+	{
+		public InputPeer peer;
+	}
+
+	[TLDef(0xDB9AC18D)]
+	public sealed partial class Ephemeral_GetWelcomeMessages : IMethod<Ephemeral_WelcomeMessages>
+	{
+		public InputPeer peer;
+		public long hash;
 	}
 }
