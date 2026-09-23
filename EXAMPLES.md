@@ -232,7 +232,7 @@ InputPeer peer = chats.chats[1234567890]; // the chat we want
 const string videoPath = @"C:\...\video.mp4";
 const string thumbnailPath = @"C:\...\thumbnail.jpg";
 
-// Extract video information using FFMpegCore or similar library
+// Extract video information using Xabe.FFmpeg or similar library
 var mediaInfo = await FFmpeg.GetMediaInfo(videoPath);
 var videoStream = mediaInfo.VideoStreams.FirstOrDefault();
 int width = videoStream?.Width ?? 0;
@@ -257,7 +257,7 @@ if (thumbnailPath != null)
 // Send the media message
 await client.SendMessageAsync(peer, "caption", media);
 ```
-*Note: This example requires FFMpegCore NuGet package for video metadata extraction. You can also manually set width, height, and duration if you know the video properties.*
+*Note: This example requires Xabe.FFmpeg NuGet package for video metadata extraction. You can also manually set width, height, and duration if you know the video properties.*
 
 <a name="album"></a>
 ## Send a grouped media album using photos from various sources
