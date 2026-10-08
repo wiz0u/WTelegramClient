@@ -3583,6 +3583,42 @@ namespace TL
 	{
 		public long community_id;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionGramTransfer"/></para></summary>
+	[TLDef(0x9329EA33)]
+	public sealed partial class MessageActionGramTransfer : MessageAction
+	{
+		public Flags flags;
+		public long amount;
+		public string peer_address;
+		public string transaction_id;
+		[IfFlag(0)] public string comment;
+
+		[Flags] public enum Flags : uint
+		{
+			has_comment = 0x1,
+			comment_encrypted = 0x2,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionWalletTonConnectRequest"/></para></summary>
+	[TLDef(0x69B8C4BF)]
+	public sealed partial class MessageActionWalletTonConnectRequest : MessageAction
+	{
+		public Flags flags;
+		public long session_id;
+		public DateTime expires;
+		[IfFlag(0)] public string topic;
+		[IfFlag(1)] public string trace_id;
+		[IfFlag(4)] public string dapp_name;
+
+		[Flags] public enum Flags : uint
+		{
+			has_topic = 0x1,
+			has_trace_id = 0x2,
+			accepted = 0x4,
+			declined = 0x8,
+			has_dapp_name = 0x10,
+		}
+	}
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
 	public abstract partial class DialogBase : IObject
@@ -6867,6 +6903,53 @@ namespace TL
 		public override (long, int, int) GetMBox() => (-1, qts, 1);
 		public override void SetPTS(int new_qts, int _) => qts = new_qts;
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateWalletState"/></para></summary>
+	[TLDef(0x6AC3F2AA)]
+	public sealed partial class UpdateWalletState : Update
+	{
+		public WalletStateBase state;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateSentWalletTransaction"/></para></summary>
+	[TLDef(0xB1434D4A)]
+	public sealed partial class UpdateSentWalletTransaction : Update
+	{
+		public Flags flags;
+		public string msg_hash;
+		[IfFlag(1)] public WalletTransaction transaction;
+
+		[Flags] public enum Flags : uint
+		{
+			gasless = 0x1,
+			has_transaction = 0x2,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateWalletGaslessInfo"/></para></summary>
+	[TLDef(0xA8AE1CAC)]
+	public sealed partial class UpdateWalletGaslessInfo : Update
+	{
+		public Flags flags;
+		public int left;
+		public DateTime reset_at;
+		public long min_amount;
+		public string relayer_address;
+
+		[Flags] public enum Flags : uint
+		{
+			available = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateWalletTonConnectSession"/></para></summary>
+	[TLDef(0x50A38E0E)]
+	public sealed partial class UpdateWalletTonConnectSession : Update
+	{
+		public TonConnectSession session;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/updateWalletTonConnectPendingDisconnect"/></para></summary>
+	[TLDef(0xD1EE8199)]
+	public sealed partial class UpdateWalletTonConnectPendingDisconnect : Update
+	{
+		public long[] session_ids;
+	}
 
 	/// <summary>Updates state.		<para>See <a href="https://corefork.telegram.org/constructor/updates.state"/></para></summary>
 	[TLDef(0xA56C2A3E)]
@@ -8358,7 +8441,7 @@ namespace TL
 		{
 			/// <summary>Whether this custom emoji can be sent by non-Premium users</summary>
 			free = 0x1,
-			/// <summary>Whether the color of this TGS custom emoji should be changed to the text color when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context.</summary>
+			/// <summary>Whether the color of this custom emoji should be changed to the text color when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context.</summary>
 			text_color = 0x2,
 		}
 	}
@@ -9288,6 +9371,9 @@ namespace TL
 	/// <summary>Represents an diff deletion: render it by simply <u>underlining</u> the specified section and coloring it in red, see <a href="https://corefork.telegram.org/api/entities#diff-entities">here »</a> for more info on how to render diff entities.		<para>See <a href="https://corefork.telegram.org/constructor/messageEntityDiffDelete"/></para></summary>
 	[TLDef(0x0652C1C5)]
 	public sealed partial class MessageEntityDiffDelete : MessageEntity { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageEntityTonAddress"/></para></summary>
+	[TLDef(0xFDABBFCD)]
+	public sealed partial class MessageEntityTonAddress : MessageEntity { }
 
 	/// <summary>Represents a channel		<para>See <a href="https://corefork.telegram.org/type/InputChannel"/></para>		<para>Derived classes: <see cref="InputChannel"/>, <see cref="InputChannelFromMessage"/></para></summary>
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/inputChannelEmpty">inputChannelEmpty</a></remarks>
@@ -11317,6 +11403,12 @@ namespace TL
 		{
 			has_style = 0x1,
 		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/textTonAddress"/></para></summary>
+	[TLDef(0x3CD2A36A)]
+	public sealed partial class TextTonAddress : RichText
+	{
+		public RichText text;
 	}
 
 	/// <summary>Represents an <a href="https://instantview.telegram.org">instant view page element</a>		<para>See <a href="https://corefork.telegram.org/type/PageBlock"/></para>		<para>Derived classes: <see cref="PageBlockUnsupported"/>, <see cref="PageBlockTitle"/>, <see cref="PageBlockSubtitle"/>, <see cref="PageBlockAuthorDate"/>, <see cref="PageBlockHeader"/>, <see cref="PageBlockSubheader"/>, <see cref="PageBlockParagraph"/>, <see cref="PageBlockPreformatted"/>, <see cref="PageBlockFooter"/>, <see cref="PageBlockDivider"/>, <see cref="PageBlockAnchor"/>, <see cref="PageBlockList"/>, <see cref="PageBlockBlockquote"/>, <see cref="PageBlockPullquote"/>, <see cref="PageBlockPhoto"/>, <see cref="PageBlockVideo"/>, <see cref="PageBlockCover"/>, <see cref="PageBlockEmbed"/>, <see cref="PageBlockEmbedPost"/>, <see cref="PageBlockCollage"/>, <see cref="PageBlockSlideshow"/>, <see cref="PageBlockChannel"/>, <see cref="PageBlockAudio"/>, <see cref="PageBlockKicker"/>, <see cref="PageBlockTable"/>, <see cref="PageBlockOrderedList"/>, <see cref="PageBlockDetails"/>, <see cref="PageBlockRelatedArticles"/>, <see cref="PageBlockMap"/></para></summary>
@@ -18153,6 +18245,8 @@ namespace TL
 			editable = 0x1,
 			/// <summary>Whether the username is active.</summary>
 			active = 0x2,
+			deletable = 0x4,
+			expired = 0x8,
 		}
 	}
 
@@ -22111,7 +22205,7 @@ namespace TL
 	}
 
 	/// <summary>Info about the current <a href="https://corefork.telegram.org/api/bots/verification">verifier bot »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botVerifierSettings"/></para></summary>
-	[TLDef(0xB0CD6617)]
+	[TLDef(0xA12AEFFF)]
 	public sealed partial class BotVerifierSettings : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -22121,7 +22215,7 @@ namespace TL
 		/// <summary>The name of the organization that provides the verification</summary>
 		public string company;
 		/// <summary>An optional default description for the verification</summary>
-		[IfFlag(0)] public string custom_description;
+		[IfFlag(0)] public TextWithEntities custom_description;
 
 		[Flags] public enum Flags : uint
 		{
@@ -22133,7 +22227,7 @@ namespace TL
 	}
 
 	/// <summary>Describes a <a href="https://corefork.telegram.org/api/bots/verification">bot verification icon »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/botVerification"/></para></summary>
-	[TLDef(0xF93CD45C)]
+	[TLDef(0xF72E0ED9)]
 	public sealed partial class BotVerification : IObject
 	{
 		/// <summary>ID of the bot that verified this peer</summary>
@@ -22141,7 +22235,7 @@ namespace TL
 		/// <summary>Verification icon</summary>
 		public long icon;
 		/// <summary>Verification description</summary>
-		public string description;
+		public TextWithEntities description;
 	}
 
 	/// <summary>An attribute of a <a href="https://corefork.telegram.org/api/gifts#collectible-gifts">collectible gift »</a>.		<para>See <a href="https://corefork.telegram.org/type/StarGiftAttribute"/></para>		<para>Derived classes: <see cref="StarGiftAttributeModel"/>, <see cref="StarGiftAttributePattern"/>, <see cref="StarGiftAttributeBackdrop"/>, <see cref="StarGiftAttributeOriginalDetails"/></para></summary>
@@ -23369,13 +23463,6 @@ namespace TL
 		/// <summary>Registration or login response.</summary>
 		public InputPasskeyResponse response;
 	}
-	/// <summary>Alternative <a href="https://corefork.telegram.org/api/passkeys">passkey</a> credential that proves ownership of the account's phone number through a Firebase Phone Number Verification (PNV) token, used on official apps where a full WebAuthn <see cref="InputPasskeyCredentialPublicKey">public-key passkey</see> cannot be created, in a way similar to <a href="https://corefork.telegram.org/api/auth">Firebase SMS authentication »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/inputPasskeyCredentialFirebasePNV"/></para></summary>
-	[TLDef(0x5B1CCB28)]
-	public sealed partial class InputPasskeyCredentialFirebasePNV : InputPasskeyCredential
-	{
-		/// <summary>Firebase Phone Number Verification token attesting that the user controls the phone number associated with the account.</summary>
-		public string pnv_token;
-	}
 
 	/// <summary>Contains the default background palette of a <a href="https://corefork.telegram.org/api/gifts#listing-all-possible-collectible-variants">gift type »</a>.		<para>See <a href="https://corefork.telegram.org/constructor/starGiftBackground"/></para></summary>
 	[TLDef(0xAFF56398)]
@@ -24186,6 +24273,483 @@ namespace TL
 	{
 		public long hash;
 		public EphemeralMessage[] messages;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/currencyRate"/></para></summary>
+	[TLDef(0x30D9743C)]
+	public sealed partial class CurrencyRate : IObject
+	{
+		public string currency;
+		public double rate;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.currencyRates"/></para></summary>
+	[TLDef(0xBBCCE4C2)]
+	public sealed partial class Payments_CurrencyRates : IObject
+	{
+		public CurrencyRate[] rates;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/toncenter.apiResponse"/></para></summary>
+	[TLDef(0xAC8DFE19)]
+	public sealed partial class Toncenter_ApiResponse : IObject
+	{
+		public DataJSON response;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/toncenter.streamingUrl"/></para></summary>
+	[TLDef(0x19887601)]
+	public sealed partial class Toncenter_StreamingUrl : IObject
+	{
+		public string url;
+		public DateTime expires;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/onrampMethodAvailability"/></para></summary>
+	[TLDef(0x9EC8C6A8)]
+	public sealed partial class OnrampMethodAvailability : IObject
+	{
+		public Flags flags;
+		public string payment_method;
+
+		[Flags] public enum Flags : uint
+		{
+			available = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/onrampProviderInfo"/></para></summary>
+	[TLDef(0x0DC27582)]
+	public sealed partial class OnrampProviderInfo : IObject
+	{
+		public Flags flags;
+		public string id;
+		public string name;
+		public string[] crypto_currencies;
+
+		[Flags] public enum Flags : uint
+		{
+			supports_base_currencies = 0x1,
+			supports_limits = 0x2,
+			supports_quote = 0x4,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/onrampAvailability"/></para></summary>
+	[TLDef(0xF9C84973)]
+	public sealed partial class OnrampAvailability : IObject
+	{
+		public Flags flags;
+		public string country_code;
+		[IfFlag(2)] public string state;
+		public OnrampMethodAvailability[] methods;
+
+		[Flags] public enum Flags : uint
+		{
+			allowed = 0x1,
+			buy_allowed = 0x2,
+			has_state = 0x4,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/onrampLimits"/></para></summary>
+	[TLDef(0x7BE2677E)]
+	public sealed partial class OnrampLimits : IObject
+	{
+		public string base_currency;
+		public string base_min_amount;
+		public string base_max_amount;
+		public string crypto_min_amount;
+		public string crypto_max_amount;
+		public string payment_method;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/onrampQuote"/></para></summary>
+	[TLDef(0x7A8011E9)]
+	public sealed partial class OnrampQuote : IObject
+	{
+		public string base_currency;
+		public string base_amount;
+		public string crypto_currency;
+		public string crypto_amount;
+		public string crypto_price;
+		public string fee_amount;
+		public string extra_fee_amount;
+		public string network_fee_amount;
+		public string total_amount;
+		public string payment_method;
+		public DateTime expires_date;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/onrampSession"/></para></summary>
+	[TLDef(0xD1E42E24)]
+	public sealed partial class OnrampSession : IObject
+	{
+		public string provider;
+		public string session_id;
+		public string url;
+		public DateTime expires_date;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/WalletState"/></para></summary>
+	public abstract partial class WalletStateBase : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletStateEmpty"/></para></summary>
+	[TLDef(0x9CB9B2EC)]
+	public sealed partial class WalletStateEmpty : WalletStateBase
+	{
+		public Flags flags;
+
+		[Flags] public enum Flags : uint
+		{
+			creating = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletState"/></para></summary>
+	[TLDef(0x95C5346B)]
+	public sealed partial class WalletState : WalletStateBase
+	{
+		public Flags flags;
+		public string address;
+		public byte[] public_key;
+		public long balance;
+
+		[Flags] public enum Flags : uint
+		{
+			backup_enabled = 0x1,
+			can_export_phrase = 0x2,
+			can_enable_backup = 0x4,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletUserAddress"/></para></summary>
+	[TLDef(0xFE78EECC)]
+	public sealed partial class WalletUserAddress : IObject
+	{
+		public Flags flags;
+		[IfFlag(0)] public long user_id;
+		public string address;
+		public byte[] public_key;
+
+		[Flags] public enum Flags : uint
+		{
+			has_user_id = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.userAddresses"/></para></summary>
+	[TLDef(0x928E7B55)]
+	public sealed partial class Wallet_UserAddresses : IObject
+	{
+		public WalletUserAddress[] addresses;
+		public Dictionary<long, User> users;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/WalletTransactionPeer"/></para></summary>
+	public abstract partial class WalletTransactionPeer : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletTransactionPeerUser"/></para></summary>
+	[TLDef(0xD4EA706D)]
+	public sealed partial class WalletTransactionPeerUser : WalletTransactionPeer
+	{
+		public Flags flags;
+		public long user_id;
+		public string address;
+		[IfFlag(0)] public string domain;
+
+		[Flags] public enum Flags : uint
+		{
+			has_domain = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletTransactionPeerAddress"/></para></summary>
+	[TLDef(0x062CC1BC)]
+	public sealed partial class WalletTransactionPeerAddress : WalletTransactionPeer
+	{
+		public Flags flags;
+		public string address;
+		[IfFlag(0)] public string domain;
+
+		[Flags] public enum Flags : uint
+		{
+			has_domain = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletTransactionPeerOnramp"/></para></summary>
+	[TLDef(0xE595186E)]
+	public sealed partial class WalletTransactionPeerOnramp : WalletTransactionPeer
+	{
+		public Flags flags;
+		public string address;
+		[IfFlag(0)] public string domain;
+		public string provider_name;
+
+		[Flags] public enum Flags : uint
+		{
+			has_domain = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletTransactionPeerUnsupported"/></para></summary>
+	[TLDef(0x728BED5A)]
+	public sealed partial class WalletTransactionPeerUnsupported : WalletTransactionPeer { }
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletTransaction"/></para></summary>
+	[TLDef(0x952DC143)]
+	public sealed partial class WalletTransaction : IObject
+	{
+		public Flags flags;
+		public string id;
+		public long amount;
+		public long fee;
+		public DateTime date;
+		public WalletTransactionPeer peer;
+		[IfFlag(3)] public string comment;
+		[IfFlag(4)] public string tx_hash;
+		[IfFlag(7)] public Wallet_NftItem nft;
+
+		[Flags] public enum Flags : uint
+		{
+			incoming = 0x1,
+			gasless = 0x2,
+			failed = 0x4,
+			has_comment = 0x8,
+			has_tx_hash = 0x10,
+			key_change = 0x20,
+			comment_encrypted = 0x40,
+			has_nft = 0x80,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.transactions"/></para></summary>
+	[TLDef(0x4322D5A5)]
+	public sealed partial class Wallet_Transactions : IObject, IPeerResolver
+	{
+		public Flags flags;
+		public long balance;
+		public WalletTransaction[] transactions;
+		[IfFlag(0)] public string next_offset;
+		public Dictionary<long, ChatBase> chats;
+		public Dictionary<long, User> users;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
+		}
+		/// <summary>returns a <see cref="User"/> or <see cref="ChatBase"/> for the given Peer</summary>
+		public IPeerInfo UserOrChat(Peer peer) => peer?.UserOrChat(users, chats);
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.secretPhraseParts"/></para></summary>
+	[TLDef(0xE6D0EF01)]
+	public sealed partial class Wallet_SecretPhraseParts : IObject
+	{
+		public string token;
+		public int[] dcs;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.encryptedSecretPhrasePart"/></para></summary>
+	[TLDef(0x18E82537)]
+	public sealed partial class Wallet_EncryptedSecretPhrasePart : IObject
+	{
+		public byte[] data;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.holderDc"/></para></summary>
+	[TLDef(0xF9D612EF)]
+	public sealed partial class Wallet_HolderDc : IObject
+	{
+		public int dc;
+		public byte[] public_key;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.proofChallenge"/></para></summary>
+	[TLDef(0x99E41707)]
+	public sealed partial class Wallet_ProofChallenge : IObject
+	{
+		public string payload;
+		public DateTime expires;
+		public string domain;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletOwnershipProof"/></para></summary>
+	[TLDef(0x60BCCB0D)]
+	public sealed partial class WalletOwnershipProof : IObject
+	{
+		public int timestamp;
+		public byte[] signature;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/InputWalletReplacement"/></para></summary>
+	public abstract partial class InputWalletReplacement : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputWalletNew"/></para></summary>
+	[TLDef(0x63A440DC)]
+	public sealed partial class InputWalletNew : InputWalletReplacement { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputWalletImported"/></para></summary>
+	[TLDef(0x66A66A3B)]
+	public sealed partial class InputWalletImported : InputWalletReplacement
+	{
+		public Flags flags;
+		public byte[] public_key;
+		[IfFlag(0)] public byte[] anchor_public_key;
+		public WalletOwnershipProof proof;
+
+		[Flags] public enum Flags : uint
+		{
+			has_anchor_public_key = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/tonConnectManifest"/></para></summary>
+	[TLDef(0x12229264)]
+	public sealed partial class TonConnectManifest : IObject
+	{
+		public Flags flags;
+		public string url;
+		public string name;
+		[IfFlag(0)] public WebDocumentBase icon;
+
+		[Flags] public enum Flags : uint
+		{
+			has_icon = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/tonConnectSession"/></para></summary>
+	[TLDef(0x126556C6)]
+	public sealed partial class TonConnectSession : IObject
+	{
+		public Flags flags;
+		public long id;
+		public string dapp_client_id;
+		[IfFlag(3)] public string client_id;
+		public byte[] nonce;
+		[IfFlag(4)] public TonConnectManifest manifest;
+		[IfFlag(5)] public int manifest_error;
+		public DateTime date;
+
+		[Flags] public enum Flags : uint
+		{
+			pending = 0x1,
+			closing = 0x2,
+			closed = 0x4,
+			has_client_id = 0x8,
+			has_manifest = 0x10,
+			has_manifest_error = 0x20,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.tonConnectChallenge"/></para></summary>
+	[TLDef(0x4BC89693)]
+	public sealed partial class Wallet_TonConnectChallenge : IObject
+	{
+		public byte[] challenge;
+		public long event_id;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/tonConnectNextEventId"/></para></summary>
+	[TLDef(0x582464E3)]
+	public sealed partial class TonConnectNextEventId : IObject
+	{
+		public long event_id;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/tonConnectRequest"/></para></summary>
+	[TLDef(0xA15F8513)]
+	public sealed partial class TonConnectRequest : IObject
+	{
+		public Flags flags;
+		public long session_id;
+		public int msg_id;
+		public byte[] body;
+		public DateTime expires;
+		[IfFlag(0)] public string topic;
+		[IfFlag(1)] public string trace_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_topic = 0x1,
+			has_trace_id = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.tonConnectPending"/></para></summary>
+	[TLDef(0x85C0F124)]
+	public sealed partial class Wallet_TonConnectPending : IObject
+	{
+		public TonConnectSession session;
+		public TonConnectRequest[] requests;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.tonConnectSessions"/></para></summary>
+	[TLDef(0x0E1F6896)]
+	public sealed partial class Wallet_TonConnectSessions : IObject
+	{
+		public TonConnectSession[] sessions;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.existingBalance"/></para></summary>
+	[TLDef(0xBDE90A8D)]
+	public sealed partial class Wallet_ExistingBalance : IObject
+	{
+		public Flags flags;
+		public string url;
+
+		[Flags] public enum Flags : uint
+		{
+			has_balance = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.nftAttribute"/></para></summary>
+	[TLDef(0x4C1EF10E)]
+	public sealed partial class Wallet_NftAttribute : IObject
+	{
+		public string trait_type;
+		public string value;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.nftItem"/></para></summary>
+	[TLDef(0x3441FD1C)]
+	public sealed partial class Wallet_NftItem : IObject
+	{
+		public Flags flags;
+		[IfFlag(0)] public string collection_address;
+		public string address;
+		public string owner_address;
+		public string index;
+		[IfFlag(1)] public string name;
+		[IfFlag(2)] public string description;
+		[IfFlag(3)] public WebDocumentBase image;
+		[IfFlag(4)] public WebDocumentBase image_small;
+		[IfFlag(5)] public WebDocumentBase content_url;
+		[IfFlag(6)] public WebDocumentBase lottie;
+		[IfFlag(7)] public Wallet_NftAttribute[] attributes;
+		[IfFlag(8)] public DataJSON extra;
+
+		[Flags] public enum Flags : uint
+		{
+			has_collection_address = 0x1,
+			has_name = 0x2,
+			has_description = 0x4,
+			has_image = 0x8,
+			has_image_small = 0x10,
+			has_content_url = 0x20,
+			has_lottie = 0x40,
+			has_attributes = 0x80,
+			has_extra = 0x100,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.nftItems"/></para></summary>
+	[TLDef(0x794D486F)]
+	public sealed partial class Wallet_NftItems : IObject
+	{
+		public Flags flags;
+		public Wallet_NftItem[] items;
+		[IfFlag(0)] public string next_offset;
+
+		[Flags] public enum Flags : uint
+		{
+			has_next_offset = 0x1,
+		}
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/auth.firebasePnvIntent"/></para></summary>

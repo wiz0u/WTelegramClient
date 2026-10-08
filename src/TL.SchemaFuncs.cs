@@ -422,10 +422,19 @@ namespace TL
 				from_auth_key_id = from_auth_key_id ?? default,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.cancelWebTokenAuthorization"/></para></summary>
+		public static Task<bool> Auth_CancelWebTokenAuthorization(this Client client, string web_auth_token)
+			=> client.Invoke(new Auth_CancelWebTokenAuthorization
+			{
+				web_auth_token = web_auth_token,
+			});
+
 		/// <summary><para>See <a href="https://corefork.telegram.org/method/auth.initFirebasePnvLogin"/></para></summary>
-		public static Task<Auth_FirebasePnvIntent> Auth_InitFirebasePnvLogin(this Client client, int api_id, string api_hash)
+		public static Task<Auth_FirebasePnvIntent> Auth_InitFirebasePnvLogin(this Client client, int api_id, string api_hash, long[] except_ids = null)
 			=> client.Invoke(new Auth_InitFirebasePnvLogin
 			{
+				flags = (Auth_InitFirebasePnvLogin.Flags)(except_ids != null ? 0x1 : 0),
+				except_ids = except_ids,
 				api_id = api_id,
 				api_hash = api_hash,
 			});
@@ -6544,7 +6553,7 @@ namespace TL
 		/// <param name="bot">Must <strong>not</strong> be set if invoked by a bot, <strong>must</strong> be set to the ID of an owned bot if invoked by a user.</param>
 		/// <param name="peer">The peer to verify</param>
 		/// <param name="custom_description">Custom description for the verification, the UTF-8 length limit for this field is contained in <a href="https://corefork.telegram.org/api/config#bot-verification-description-length-limit">bot_verification_description_length_limit »</a>. <br/>If not set, <c>Was verified by organization "organization_name"</c> will be used as description.</param>
-		public static Task<bool> Bots_SetCustomVerification(this Client client, InputPeer peer, InputUserBase bot = null, string custom_description = null, bool enabled = false)
+		public static Task<bool> Bots_SetCustomVerification(this Client client, InputPeer peer, InputUserBase bot = null, TextWithEntities custom_description = null, bool enabled = false)
 			=> client.Invoke(new Bots_SetCustomVerification
 			{
 				flags = (Bots_SetCustomVerification.Flags)((bot != null ? 0x1 : 0) | (custom_description != null ? 0x4 : 0) | (enabled ? 0x2 : 0)),
@@ -6563,9 +6572,10 @@ namespace TL
 
 		/// <summary>Check whether a username is available and valid for use when <a href="https://corefork.telegram.org/api/bots/managed-bots#creating-a-managed-bot">creating a managed bot »</a>.		<para>See <a href="https://corefork.telegram.org/method/bots.checkUsername"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/bots.checkUsername#possible-errors">details</a>)</para></summary>
 		/// <param name="username">Username to check; only letters, digits and underscores are allowed, must end in <c>bot</c>, and the full username must be 5–32 characters long</param>
-		public static Task<bool> Bots_CheckUsername(this Client client, string username)
+		public static Task<bool> Bots_CheckUsername(this Client client, string username, bool additional = false)
 			=> client.Invoke(new Bots_CheckUsername
 			{
+				flags = (Bots_CheckUsername.Flags)(additional ? 0x1 : 0),
 				username = username,
 			});
 
@@ -6639,6 +6649,22 @@ namespace TL
 			{
 				query_id = query_id,
 				result = result,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.addUsername"/></para></summary>
+		public static Task<bool> Bots_AddUsername(this Client client, InputUserBase bot, string username)
+			=> client.Invoke(new Bots_AddUsername
+			{
+				bot = bot,
+				username = username,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/bots.removeUsername"/></para></summary>
+		public static Task<bool> Bots_RemoveUsername(this Client client, InputUserBase bot, string username)
+			=> client.Invoke(new Bots_RemoveUsername
+			{
+				bot = bot,
+				username = username,
 			});
 
 		/// <summary>Get a payment form		<para>See <a href="https://corefork.telegram.org/method/payments.getPaymentForm"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400,403,406 (<a href="https://corefork.telegram.org/method/payments.getPaymentForm#possible-errors">details</a>)</para></summary>
@@ -7339,6 +7365,80 @@ namespace TL
 			=> client.Invoke(new Payments_CraftStarGift
 			{
 				stargift = stargift,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getCurrencyRates"/></para></summary>
+		public static Task<Payments_CurrencyRates> Payments_GetCurrencyRates(this Client client)
+			=> client.Invoke(new Payments_GetCurrencyRates
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getOnrampProviders"/></para></summary>
+		public static Task<OnrampProviderInfo[]> Payments_GetOnrampProviders(this Client client, string crypto_currency = null)
+			=> client.Invoke(new Payments_GetOnrampProviders
+			{
+				flags = (Payments_GetOnrampProviders.Flags)(crypto_currency != null ? 0x1 : 0),
+				crypto_currency = crypto_currency,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getOnrampBaseCurrencies"/></para></summary>
+		public static Task<string[]> Payments_GetOnrampBaseCurrencies(this Client client, string provider, string crypto_currency)
+			=> client.Invoke(new Payments_GetOnrampBaseCurrencies
+			{
+				provider = provider,
+				crypto_currency = crypto_currency,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getOnrampAvailability"/></para></summary>
+		public static Task<OnrampAvailability> Payments_GetOnrampAvailability(this Client client, string provider, string crypto_currency, string base_currency = null)
+			=> client.Invoke(new Payments_GetOnrampAvailability
+			{
+				flags = (Payments_GetOnrampAvailability.Flags)(base_currency != null ? 0x1 : 0),
+				provider = provider,
+				crypto_currency = crypto_currency,
+				base_currency = base_currency,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getOnrampLimits"/></para></summary>
+		public static Task<OnrampLimits> Payments_GetOnrampLimits(this Client client, string provider, string crypto_currency, string base_currency, string payment_method = null)
+			=> client.Invoke(new Payments_GetOnrampLimits
+			{
+				flags = (Payments_GetOnrampLimits.Flags)(payment_method != null ? 0x1 : 0),
+				provider = provider,
+				crypto_currency = crypto_currency,
+				base_currency = base_currency,
+				payment_method = payment_method,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.getOnrampQuote"/></para></summary>
+		public static Task<OnrampQuote> Payments_GetOnrampQuote(this Client client, string provider, string crypto_currency, string base_currency, string base_amount = null, string crypto_amount = null, string payment_method = null)
+			=> client.Invoke(new Payments_GetOnrampQuote
+			{
+				flags = (Payments_GetOnrampQuote.Flags)((base_amount != null ? 0x1 : 0) | (crypto_amount != null ? 0x2 : 0) | (payment_method != null ? 0x4 : 0)),
+				provider = provider,
+				crypto_currency = crypto_currency,
+				base_currency = base_currency,
+				base_amount = base_amount,
+				crypto_amount = crypto_amount,
+				payment_method = payment_method,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.createOnrampSession"/></para></summary>
+		public static Task<OnrampSession> Payments_CreateOnrampSession(this Client client, string provider, string crypto_currency, string address, string payment_method = null, string base_currency = null, string base_amount = null, string memo = null, string theme = null, string success_return_url = null, string fail_return_url = null, string crypto_amount = null)
+			=> client.Invoke(new Payments_CreateOnrampSession
+			{
+				flags = (Payments_CreateOnrampSession.Flags)((payment_method != null ? 0x1 : 0) | (base_currency != null ? 0x2 : 0) | (base_amount != null ? 0x4 : 0) | (memo != null ? 0x8 : 0) | (theme != null ? 0x10 : 0) | (success_return_url != null ? 0x20 : 0) | (fail_return_url != null ? 0x40 : 0) | (crypto_amount != null ? 0x80 : 0)),
+				provider = provider,
+				crypto_currency = crypto_currency,
+				address = address,
+				payment_method = payment_method,
+				base_currency = base_currency,
+				base_amount = base_amount,
+				memo = memo,
+				theme = theme,
+				success_return_url = success_return_url,
+				fail_return_url = fail_return_url,
+				crypto_amount = crypto_amount,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -9010,6 +9110,228 @@ namespace TL
 				peer = peer,
 				hash = hash,
 			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/toncenter.performApiRequest"/></para></summary>
+		public static Task<Toncenter_ApiResponse> Toncenter_PerformApiRequest(this Client client, string endpoint, string query = null, string payload = null, bool post = false)
+			=> client.Invoke(new Toncenter_PerformApiRequest
+			{
+				flags = (Toncenter_PerformApiRequest.Flags)((query != null ? 0x2 : 0) | (payload != null ? 0x4 : 0) | (post ? 0x1 : 0)),
+				endpoint = endpoint,
+				query = query,
+				payload = payload,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/toncenter.getStreamingUrl"/></para></summary>
+		public static Task<Toncenter_StreamingUrl> Toncenter_GetStreamingUrl(this Client client)
+			=> client.Invoke(new Toncenter_GetStreamingUrl
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.getState"/></para></summary>
+		public static Task<WalletStateBase> Wallet_GetState(this Client client)
+			=> client.Invoke(new Wallet_GetState
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.getUserAddresses"/></para></summary>
+		public static Task<Wallet_UserAddresses> Wallet_GetUserAddresses(this Client client, InputUserBase[] id, string[] addresses, bool force = false)
+			=> client.Invoke(new Wallet_GetUserAddresses
+			{
+				flags = (Wallet_GetUserAddresses.Flags)(force ? 0x1 : 0),
+				id = id,
+				addresses = addresses,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.getTransactions"/></para></summary>
+		public static Task<Wallet_Transactions> Wallet_GetTransactions(this Client client, string offset, int limit = int.MaxValue, bool inbound = false, bool outbound = false)
+			=> client.Invoke(new Wallet_GetTransactions
+			{
+				flags = (Wallet_GetTransactions.Flags)((inbound ? 0x1 : 0) | (outbound ? 0x2 : 0)),
+				offset = offset,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.getTransactionsByIDs"/></para></summary>
+		public static Task<Wallet_Transactions> Wallet_GetTransactionsByIDs(this Client client, params string[] id)
+			=> client.Invoke(new Wallet_GetTransactionsByIDs
+			{
+				id = id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.getTransactionsByMsgHash"/></para></summary>
+		public static Task<Wallet_Transactions> Wallet_GetTransactionsByMsgHash(this Client client, params string[] msg_hash)
+			=> client.Invoke(new Wallet_GetTransactionsByMsgHash
+			{
+				msg_hash = msg_hash,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.exportSecretPhrase"/></para></summary>
+		public static Task<Wallet_SecretPhraseParts> Wallet_ExportSecretPhrase(this Client client, InputCheckPasswordSRP password = null)
+			=> client.Invoke(new Wallet_ExportSecretPhrase
+			{
+				flags = (Wallet_ExportSecretPhrase.Flags)(password != null ? 0x1 : 0),
+				password = password,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.fetchEncryptedSecretPhrasePart"/></para></summary>
+		public static Task<Wallet_EncryptedSecretPhrasePart> Wallet_FetchEncryptedSecretPhrasePart(this Client client, string token, byte[] public_key)
+			=> client.Invoke(new Wallet_FetchEncryptedSecretPhrasePart
+			{
+				token = token,
+				public_key = public_key,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.replaceWallet"/></para></summary>
+		public static Task<WalletStateBase> Wallet_ReplaceWallet(this Client client, InputWalletReplacement wallet, InputCheckPasswordSRP password = null)
+			=> client.Invoke(new Wallet_ReplaceWallet
+			{
+				flags = (Wallet_ReplaceWallet.Flags)(password != null ? 0x1 : 0),
+				wallet = wallet,
+				password = password,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.disableBackup"/></para></summary>
+		public static Task<WalletStateBase> Wallet_DisableBackup(this Client client, InputCheckPasswordSRP password = null, byte[] new_public_key = null, WalletOwnershipProof proof = null)
+			=> client.Invoke(new Wallet_DisableBackup
+			{
+				flags = (Wallet_DisableBackup.Flags)((password != null ? 0x1 : 0) | (new_public_key != null ? 0x2 : 0) | (proof != null ? 0x4 : 0)),
+				password = password,
+				new_public_key = new_public_key,
+				proof = proof,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.getBackupHolderDcs"/></para></summary>
+		public static Task<Wallet_HolderDc[]> Wallet_GetBackupHolderDcs(this Client client)
+			=> client.Invoke(new Wallet_GetBackupHolderDcs
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.enableBackup"/></para></summary>
+		public static Task<WalletStateBase> Wallet_EnableBackup(this Client client, byte[][] parts, byte[] new_public_key = null, WalletOwnershipProof proof = null)
+			=> client.Invoke(new Wallet_EnableBackup
+			{
+				flags = (Wallet_EnableBackup.Flags)((new_public_key != null ? 0x2 : 0) | (proof != null ? 0x4 : 0)),
+				parts = parts,
+				new_public_key = new_public_key,
+				proof = proof,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.getProofChallenge"/></para></summary>
+		public static Task<Wallet_ProofChallenge> Wallet_GetProofChallenge(this Client client)
+			=> client.Invoke(new Wallet_GetProofChallenge
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.sendTransfer"/></para></summary>
+		public static Task<UpdatesBase> Wallet_SendTransfer(this Client client, byte[] data_normal, InputUserBase user_id, long random_id, byte[] data_gasless = null)
+			=> client.Invoke(new Wallet_SendTransfer
+			{
+				flags = (Wallet_SendTransfer.Flags)(data_gasless != null ? 0x1 : 0),
+				data_normal = data_normal,
+				data_gasless = data_gasless,
+				user_id = user_id,
+				random_id = random_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.getGaslessInfo"/></para></summary>
+		public static Task<UpdatesBase> Wallet_GetGaslessInfo(this Client client)
+			=> client.Invoke(new Wallet_GetGaslessInfo
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.getExistingWaltBalance"/></para></summary>
+		public static Task<Wallet_ExistingBalance> Wallet_GetExistingWaltBalance(this Client client)
+			=> client.Invoke(new Wallet_GetExistingWaltBalance
+			{
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.getNfts"/></para></summary>
+		public static Task<Wallet_NftItems> Wallet_GetNfts(this Client client, string offset, int limit = int.MaxValue)
+			=> client.Invoke(new Wallet_GetNfts
+			{
+				offset = offset,
+				limit = limit,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.tonConnectCreateSession"/></para></summary>
+		public static Task<TonConnectSession> Wallet_TonConnectCreateSession(this Client client, string dapp_client_id, string manifest_url)
+			=> client.Invoke(new Wallet_TonConnectCreateSession
+			{
+				dapp_client_id = dapp_client_id,
+				manifest_url = manifest_url,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.tonConnectRegisterKey"/></para></summary>
+		public static Task<Wallet_TonConnectChallenge> Wallet_TonConnectRegisterKey(this Client client, long session_id, string client_id)
+			=> client.Invoke(new Wallet_TonConnectRegisterKey
+			{
+				session_id = session_id,
+				client_id = client_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.tonConnectSubmitConnectResult"/></para></summary>
+		public static Task<bool> Wallet_TonConnectSubmitConnectResult(this Client client, long session_id, byte[] challenge_answer, byte[] body, string trace_id = null, bool error = false)
+			=> client.Invoke(new Wallet_TonConnectSubmitConnectResult
+			{
+				flags = (Wallet_TonConnectSubmitConnectResult.Flags)((trace_id != null ? 0x2 : 0) | (error ? 0x1 : 0)),
+				session_id = session_id,
+				challenge_answer = challenge_answer,
+				body = body,
+				trace_id = trace_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.tonConnectGetPending"/></para></summary>
+		public static Task<Wallet_TonConnectPending> Wallet_TonConnectGetPending(this Client client, string dapp_client_id = null, long? session_id = null)
+			=> client.Invoke(new Wallet_TonConnectGetPending
+			{
+				flags = (Wallet_TonConnectGetPending.Flags)((dapp_client_id != null ? 0x1 : 0) | (session_id != null ? 0x2 : 0)),
+				dapp_client_id = dapp_client_id,
+				session_id = session_id ?? default,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.tonConnectClaimRequest"/></para></summary>
+		public static Task<bool> Wallet_TonConnectClaimRequest(this Client client, long session_id, int msg_id, string app_request_id, byte[] challenge_answer = null, bool declined = false)
+			=> client.Invoke(new Wallet_TonConnectClaimRequest
+			{
+				flags = (Wallet_TonConnectClaimRequest.Flags)((challenge_answer != null ? 0x1 : 0) | (declined ? 0x2 : 0)),
+				session_id = session_id,
+				msg_id = msg_id,
+				app_request_id = app_request_id,
+				challenge_answer = challenge_answer,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.tonConnectSubmitResponse"/></para></summary>
+		public static Task<bool> Wallet_TonConnectSubmitResponse(this Client client, long session_id, int msg_id, byte[] body, string trace_id = null)
+			=> client.Invoke(new Wallet_TonConnectSubmitResponse
+			{
+				flags = (Wallet_TonConnectSubmitResponse.Flags)(trace_id != null ? 0x1 : 0),
+				session_id = session_id,
+				msg_id = msg_id,
+				body = body,
+				trace_id = trace_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.tonConnectNextEventId"/></para></summary>
+		public static Task<TonConnectNextEventId> Wallet_TonConnectNextEventId(this Client client, long session_id)
+			=> client.Invoke(new Wallet_TonConnectNextEventId
+			{
+				session_id = session_id,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.tonConnectCloseSession"/></para></summary>
+		public static Task<bool> Wallet_TonConnectCloseSession(this Client client, long session_id, byte[] body = null)
+			=> client.Invoke(new Wallet_TonConnectCloseSession
+			{
+				flags = (Wallet_TonConnectCloseSession.Flags)(body != null ? 0x1 : 0),
+				session_id = session_id,
+				body = body,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.tonConnectGetSessions"/></para></summary>
+		public static Task<Wallet_TonConnectSessions> Wallet_TonConnectGetSessions(this Client client)
+			=> client.Invoke(new Wallet_TonConnectGetSessions
+			{
+			});
 	}
 }
 
@@ -9331,11 +9653,24 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x777DF37A)]
+	[TLDef(0x490DADA1)]
+	public sealed partial class Auth_CancelWebTokenAuthorization : IMethod<bool>
+	{
+		public string web_auth_token;
+	}
+
+	[TLDef(0x644F15C0)]
 	public sealed partial class Auth_InitFirebasePnvLogin : IMethod<Auth_FirebasePnvIntent>
 	{
+		public Flags flags;
+		[IfFlag(0)] public long[] except_ids;
 		public int api_id;
 		public string api_hash;
+
+		[Flags] public enum Flags : uint
+		{
+			has_except_ids = 0x1,
+		}
 	}
 
 	[TLDef(0x2C85094C)]
@@ -14462,13 +14797,13 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x8B89DFBD)]
+	[TLDef(0xF4946757)]
 	public sealed partial class Bots_SetCustomVerification : IMethod<bool>
 	{
 		public Flags flags;
 		[IfFlag(0)] public InputUserBase bot;
 		public InputPeer peer;
-		[IfFlag(2)] public string custom_description;
+		[IfFlag(2)] public TextWithEntities custom_description;
 
 		[Flags] public enum Flags : uint
 		{
@@ -14484,10 +14819,16 @@ namespace TL.Methods
 		public InputUserBase bot;
 	}
 
-	[TLDef(0x87F2219B)]
+	[TLDef(0xE3AC4C61)]
 	public sealed partial class Bots_CheckUsername : IMethod<bool>
 	{
+		public Flags flags;
 		public string username;
+
+		[Flags] public enum Flags : uint
+		{
+			additional = 0x1,
+		}
 	}
 
 	[TLDef(0xE5B17F2B)]
@@ -14550,6 +14891,20 @@ namespace TL.Methods
 	{
 		public long query_id;
 		public JoinChatBotResult result;
+	}
+
+	[TLDef(0x3501C08A)]
+	public sealed partial class Bots_AddUsername : IMethod<bool>
+	{
+		public InputUserBase bot;
+		public string username;
+	}
+
+	[TLDef(0xC704147D)]
+	public sealed partial class Bots_RemoveUsername : IMethod<bool>
+	{
+		public InputUserBase bot;
+		public string username;
 	}
 
 	[TLDef(0x37148DBB)]
@@ -15170,6 +15525,105 @@ namespace TL.Methods
 	public sealed partial class Payments_CraftStarGift : IMethod<UpdatesBase>
 	{
 		public InputSavedStarGift[] stargift;
+	}
+
+	[TLDef(0xD35983E8)]
+	public sealed partial class Payments_GetCurrencyRates : IMethod<Payments_CurrencyRates> { }
+
+	[TLDef(0x3F3E00DC)]
+	public sealed partial class Payments_GetOnrampProviders : IMethod<OnrampProviderInfo[]>
+	{
+		public Flags flags;
+		[IfFlag(0)] public string crypto_currency;
+
+		[Flags] public enum Flags : uint
+		{
+			has_crypto_currency = 0x1,
+		}
+	}
+
+	[TLDef(0x1C8BEDF3)]
+	public sealed partial class Payments_GetOnrampBaseCurrencies : IMethod<string[]>
+	{
+		public string provider;
+		public string crypto_currency;
+	}
+
+	[TLDef(0x2EC29951)]
+	public sealed partial class Payments_GetOnrampAvailability : IMethod<OnrampAvailability>
+	{
+		public Flags flags;
+		public string provider;
+		public string crypto_currency;
+		[IfFlag(0)] public string base_currency;
+
+		[Flags] public enum Flags : uint
+		{
+			has_base_currency = 0x1,
+		}
+	}
+
+	[TLDef(0x80E851FD)]
+	public sealed partial class Payments_GetOnrampLimits : IMethod<OnrampLimits>
+	{
+		public Flags flags;
+		public string provider;
+		public string crypto_currency;
+		public string base_currency;
+		[IfFlag(0)] public string payment_method;
+
+		[Flags] public enum Flags : uint
+		{
+			has_payment_method = 0x1,
+		}
+	}
+
+	[TLDef(0xE06645FA)]
+	public sealed partial class Payments_GetOnrampQuote : IMethod<OnrampQuote>
+	{
+		public Flags flags;
+		public string provider;
+		public string crypto_currency;
+		public string base_currency;
+		[IfFlag(0)] public string base_amount;
+		[IfFlag(1)] public string crypto_amount;
+		[IfFlag(2)] public string payment_method;
+
+		[Flags] public enum Flags : uint
+		{
+			has_base_amount = 0x1,
+			has_crypto_amount = 0x2,
+			has_payment_method = 0x4,
+		}
+	}
+
+	[TLDef(0xA2197CF6)]
+	public sealed partial class Payments_CreateOnrampSession : IMethod<OnrampSession>
+	{
+		public Flags flags;
+		public string provider;
+		public string crypto_currency;
+		public string address;
+		[IfFlag(0)] public string payment_method;
+		[IfFlag(1)] public string base_currency;
+		[IfFlag(2)] public string base_amount;
+		[IfFlag(3)] public string memo;
+		[IfFlag(4)] public string theme;
+		[IfFlag(5)] public string success_return_url;
+		[IfFlag(6)] public string fail_return_url;
+		[IfFlag(7)] public string crypto_amount;
+
+		[Flags] public enum Flags : uint
+		{
+			has_payment_method = 0x1,
+			has_base_currency = 0x2,
+			has_base_amount = 0x4,
+			has_memo = 0x8,
+			has_theme = 0x10,
+			has_success_return_url = 0x20,
+			has_fail_return_url = 0x40,
+			has_crypto_amount = 0x80,
+		}
 	}
 
 	[TLDef(0x9021AB67)]
@@ -16650,4 +17104,259 @@ namespace TL.Methods
 		public InputPeer peer;
 		public long hash;
 	}
+
+	[TLDef(0x8D7BDD61)]
+	public sealed partial class Toncenter_PerformApiRequest : IMethod<Toncenter_ApiResponse>
+	{
+		public Flags flags;
+		public string endpoint;
+		[IfFlag(1)] public string query;
+		[IfFlag(2)] public string payload;
+
+		[Flags] public enum Flags : uint
+		{
+			post = 0x1,
+			has_query = 0x2,
+			has_payload = 0x4,
+		}
+	}
+
+	[TLDef(0xCDAF63C7)]
+	public sealed partial class Toncenter_GetStreamingUrl : IMethod<Toncenter_StreamingUrl> { }
+
+	[TLDef(0xAB83B33A)]
+	public sealed partial class Wallet_GetState : IMethod<WalletStateBase> { }
+
+	[TLDef(0x5275DFDD)]
+	public sealed partial class Wallet_GetUserAddresses : IMethod<Wallet_UserAddresses>
+	{
+		public Flags flags;
+		public InputUserBase[] id;
+		public string[] addresses;
+
+		[Flags] public enum Flags : uint
+		{
+			force = 0x1,
+		}
+	}
+
+	[TLDef(0xA8830A83)]
+	public sealed partial class Wallet_GetTransactions : IMethod<Wallet_Transactions>
+	{
+		public Flags flags;
+		public string offset;
+		public int limit;
+
+		[Flags] public enum Flags : uint
+		{
+			inbound = 0x1,
+			outbound = 0x2,
+		}
+	}
+
+	[TLDef(0x811CEAB6)]
+	public sealed partial class Wallet_GetTransactionsByIDs : IMethod<Wallet_Transactions>
+	{
+		public string[] id;
+	}
+
+	[TLDef(0xA6BB795D)]
+	public sealed partial class Wallet_GetTransactionsByMsgHash : IMethod<Wallet_Transactions>
+	{
+		public string[] msg_hash;
+	}
+
+	[TLDef(0x9077C9AC)]
+	public sealed partial class Wallet_ExportSecretPhrase : IMethod<Wallet_SecretPhraseParts>
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputCheckPasswordSRP password;
+
+		[Flags] public enum Flags : uint
+		{
+			has_password = 0x1,
+		}
+	}
+
+	[TLDef(0xF53925CF)]
+	public sealed partial class Wallet_FetchEncryptedSecretPhrasePart : IMethod<Wallet_EncryptedSecretPhrasePart>
+	{
+		public string token;
+		public byte[] public_key;
+	}
+
+	[TLDef(0xD8C72EEC)]
+	public sealed partial class Wallet_ReplaceWallet : IMethod<WalletStateBase>
+	{
+		public Flags flags;
+		public InputWalletReplacement wallet;
+		[IfFlag(0)] public InputCheckPasswordSRP password;
+
+		[Flags] public enum Flags : uint
+		{
+			has_password = 0x1,
+		}
+	}
+
+	[TLDef(0x0B0BF0DA)]
+	public sealed partial class Wallet_DisableBackup : IMethod<WalletStateBase>
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputCheckPasswordSRP password;
+		[IfFlag(1)] public byte[] new_public_key;
+		[IfFlag(2)] public WalletOwnershipProof proof;
+
+		[Flags] public enum Flags : uint
+		{
+			has_password = 0x1,
+			has_new_public_key = 0x2,
+			has_proof = 0x4,
+		}
+	}
+
+	[TLDef(0xD179D494)]
+	public sealed partial class Wallet_GetBackupHolderDcs : IMethod<Wallet_HolderDc[]> { }
+
+	[TLDef(0x4500C525)]
+	public sealed partial class Wallet_EnableBackup : IMethod<WalletStateBase>
+	{
+		public Flags flags;
+		public byte[][] parts;
+		[IfFlag(1)] public byte[] new_public_key;
+		[IfFlag(2)] public WalletOwnershipProof proof;
+
+		[Flags] public enum Flags : uint
+		{
+			has_new_public_key = 0x2,
+			has_proof = 0x4,
+		}
+	}
+
+	[TLDef(0x2025E697)]
+	public sealed partial class Wallet_GetProofChallenge : IMethod<Wallet_ProofChallenge> { }
+
+	[TLDef(0xD9E5D9E2)]
+	public sealed partial class Wallet_SendTransfer : IMethod<UpdatesBase>
+	{
+		public Flags flags;
+		public byte[] data_normal;
+		[IfFlag(0)] public byte[] data_gasless;
+		public InputUserBase user_id;
+		public long random_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_data_gasless = 0x1,
+		}
+	}
+
+	[TLDef(0x742DF0A1)]
+	public sealed partial class Wallet_GetGaslessInfo : IMethod<UpdatesBase> { }
+
+	[TLDef(0x691F4360)]
+	public sealed partial class Wallet_GetExistingWaltBalance : IMethod<Wallet_ExistingBalance> { }
+
+	[TLDef(0x8C12F3A4)]
+	public sealed partial class Wallet_GetNfts : IMethod<Wallet_NftItems>
+	{
+		public string offset;
+		public int limit;
+	}
+
+	[TLDef(0xCC931046)]
+	public sealed partial class Wallet_TonConnectCreateSession : IMethod<TonConnectSession>
+	{
+		public string dapp_client_id;
+		public string manifest_url;
+	}
+
+	[TLDef(0x338BCF1C)]
+	public sealed partial class Wallet_TonConnectRegisterKey : IMethod<Wallet_TonConnectChallenge>
+	{
+		public long session_id;
+		public string client_id;
+	}
+
+	[TLDef(0xC2C00779)]
+	public sealed partial class Wallet_TonConnectSubmitConnectResult : IMethod<bool>
+	{
+		public Flags flags;
+		public long session_id;
+		public byte[] challenge_answer;
+		public byte[] body;
+		[IfFlag(1)] public string trace_id;
+
+		[Flags] public enum Flags : uint
+		{
+			error = 0x1,
+			has_trace_id = 0x2,
+		}
+	}
+
+	[TLDef(0x11AEE065)]
+	public sealed partial class Wallet_TonConnectGetPending : IMethod<Wallet_TonConnectPending>
+	{
+		public Flags flags;
+		[IfFlag(0)] public string dapp_client_id;
+		[IfFlag(1)] public long session_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_dapp_client_id = 0x1,
+			has_session_id = 0x2,
+		}
+	}
+
+	[TLDef(0x66B57B41)]
+	public sealed partial class Wallet_TonConnectClaimRequest : IMethod<bool>
+	{
+		public Flags flags;
+		public long session_id;
+		public int msg_id;
+		public string app_request_id;
+		[IfFlag(0)] public byte[] challenge_answer;
+
+		[Flags] public enum Flags : uint
+		{
+			has_challenge_answer = 0x1,
+			declined = 0x2,
+		}
+	}
+
+	[TLDef(0xFAC67D3C)]
+	public sealed partial class Wallet_TonConnectSubmitResponse : IMethod<bool>
+	{
+		public Flags flags;
+		public long session_id;
+		public int msg_id;
+		public byte[] body;
+		[IfFlag(0)] public string trace_id;
+
+		[Flags] public enum Flags : uint
+		{
+			has_trace_id = 0x1,
+		}
+	}
+
+	[TLDef(0x775D7244)]
+	public sealed partial class Wallet_TonConnectNextEventId : IMethod<TonConnectNextEventId>
+	{
+		public long session_id;
+	}
+
+	[TLDef(0xD63F61CE)]
+	public sealed partial class Wallet_TonConnectCloseSession : IMethod<bool>
+	{
+		public Flags flags;
+		public long session_id;
+		[IfFlag(0)] public byte[] body;
+
+		[Flags] public enum Flags : uint
+		{
+			has_body = 0x1,
+		}
+	}
+
+	[TLDef(0xA7FFB56E)]
+	public sealed partial class Wallet_TonConnectGetSessions : IMethod<Wallet_TonConnectSessions> { }
 }
