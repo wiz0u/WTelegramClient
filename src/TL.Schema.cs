@@ -15168,7 +15168,7 @@ namespace TL
 	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/urlAuthResultDefault">urlAuthResultDefault</a></remarks>
 	public abstract partial class UrlAuthResult : IObject { }
 	/// <summary>Details about the authorization request, for more info <a href="https://corefork.telegram.org/api/url-authorization">click here »</a>		<para>See <a href="https://corefork.telegram.org/constructor/urlAuthResultRequest"/></para></summary>
-	[TLDef(0x3CD623EC)]
+	[TLDef(0xBDCA6167)]
 	public sealed partial class UrlAuthResultRequest : UrlAuthResult
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -15191,6 +15191,8 @@ namespace TL
 		[IfFlag(4)] public long user_id_hint;
 		/// <summary>Can only be set if <c>is_app</c> is set and the app is verified; must replace <c>domain</c> in the confirmation prompt when present</summary>
 		[IfFlag(7)] public string verified_app_name;
+		[IfFlag(9)] public long tc_session_id;
+		[IfFlag(10)] public string tc_client_id;
 
 		[Flags] public enum Flags : uint
 		{
@@ -15210,6 +15212,11 @@ namespace TL
 			is_app = 0x40,
 			/// <summary>Field <see cref="verified_app_name"/> has a value</summary>
 			has_verified_app_name = 0x80,
+			request_wallet = 0x100,
+			/// <summary>Field <see cref="tc_session_id"/> has a value</summary>
+			has_tc_session_id = 0x200,
+			/// <summary>Field <see cref="tc_client_id"/> has a value</summary>
+			has_tc_client_id = 0x400,
 		}
 	}
 	/// <summary>Details about an accepted authorization request, for more info <a href="https://corefork.telegram.org/api/url-authorization">click here »</a>		<para>See <a href="https://corefork.telegram.org/constructor/urlAuthResultAccepted"/></para></summary>
@@ -24758,5 +24765,15 @@ namespace TL
 	{
 		public string nonce;
 		public string digital_credential_payload;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputTonConnectOauthSession"/></para></summary>
+	[TLDef(0x629F66CE)]
+	public sealed partial class InputTonConnectOauthSession : IObject
+	{
+		public long session_id;
+		public byte[] challenge_answer;
+		public byte[] body;
+		public WalletOwnershipProof proof;
 	}
 }

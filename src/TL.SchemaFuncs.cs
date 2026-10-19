@@ -3413,15 +3413,16 @@ namespace TL
 		/// <param name="url">URL used for <a href="https://corefork.telegram.org/api/url-authorization#link-url-authorization">link URL authorization, click here for more info »</a></param>
 		/// <param name="match_code">If <see cref="UrlAuthResultRequest"/>.<c>match_codes</c> was set, the emoji or code selected by the user from the provided list; must always be provided when <c>match_codes</c> is set, even if <c>match_codes_first</c> was set and the code was already validated via <see cref="Messages_CheckUrlAuthMatchCode">Messages_CheckUrlAuthMatchCode</see></param>
 		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/urlAuthResultDefault">urlAuthResultDefault</a></returns>
-		public static Task<UrlAuthResult> Messages_AcceptUrlAuth(this Client client, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null, string match_code = null, bool write_allowed = false, bool share_phone_number = false)
+		public static Task<UrlAuthResult> Messages_AcceptUrlAuth(this Client client, InputPeer peer = null, int? msg_id = null, int? button_id = null, string url = null, string match_code = null, InputTonConnectOauthSession tonconnect_session = null, bool write_allowed = false, bool share_phone_number = false)
 			=> client.Invoke(new Messages_AcceptUrlAuth
 			{
-				flags = (Messages_AcceptUrlAuth.Flags)((peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0) | (match_code != null ? 0x10 : 0) | (write_allowed ? 0x1 : 0) | (share_phone_number ? 0x8 : 0)),
+				flags = (Messages_AcceptUrlAuth.Flags)((peer != null ? 0x2 : 0) | (msg_id != null ? 0x2 : 0) | (button_id != null ? 0x2 : 0) | (url != null ? 0x4 : 0) | (match_code != null ? 0x10 : 0) | (tonconnect_session != null ? 0x20 : 0) | (write_allowed ? 0x1 : 0) | (share_phone_number ? 0x8 : 0)),
 				peer = peer,
 				msg_id = msg_id ?? default,
 				button_id = button_id ?? default,
 				url = url,
 				match_code = match_code,
+				tonconnect_session = tonconnect_session,
 			});
 
 		/// <summary>Should be called after the user hides the <a href="https://corefork.telegram.org/api/action-bar">report spam/add as contact bar</a> of a new chat, effectively prevents the user from executing the actions specified in the <a href="https://corefork.telegram.org/api/action-bar">action bar »</a>.		<para>See <a href="https://corefork.telegram.org/method/messages.hidePeerSettingsBar"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.hidePeerSettingsBar#possible-errors">details</a>)</para></summary>
@@ -12202,7 +12203,7 @@ namespace TL.Methods
 		}
 	}
 
-	[TLDef(0x67A3F0DE)]
+	[TLDef(0x18DD4E92)]
 	public sealed partial class Messages_AcceptUrlAuth : IMethod<UrlAuthResult>
 	{
 		public Flags flags;
@@ -12211,6 +12212,7 @@ namespace TL.Methods
 		[IfFlag(1)] public int button_id;
 		[IfFlag(2)] public string url;
 		[IfFlag(4)] public string match_code;
+		[IfFlag(5)] public InputTonConnectOauthSession tonconnect_session;
 
 		[Flags] public enum Flags : uint
 		{
@@ -12219,6 +12221,7 @@ namespace TL.Methods
 			has_url = 0x4,
 			share_phone_number = 0x8,
 			has_match_code = 0x10,
+			has_tonconnect_session = 0x20,
 		}
 	}
 

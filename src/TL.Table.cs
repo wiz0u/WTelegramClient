@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 230;					// fetched 10/08/2026 20:18:11
+		public const int Version = 231;					// fetched 10/19/2026 17:34:33
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -1061,7 +1061,7 @@ namespace TL
 			[0xFBD2C296] = typeof(InputFolderPeer),
 			[0xE9BAA668] = typeof(FolderPeer),
 			[0xE844EBFF] = typeof(Messages_SearchCounter),
-			[0x3CD623EC] = typeof(UrlAuthResultRequest),
+			[0xBDCA6167] = typeof(UrlAuthResultRequest),
 			[0x623A8FA0] = typeof(UrlAuthResultAccepted),
 			[0xA9D6DB1F] = null,//UrlAuthResultDefault
 			[0xBFB5AD8B] = null,//ChannelLocationEmpty
@@ -1669,6 +1669,7 @@ namespace TL
 			[0x3441FD1C] = typeof(Wallet_NftItem),
 			[0x794D486F] = typeof(Wallet_NftItems),
 			[0xDF5AC00C] = typeof(Auth_FirebasePnvIntent),
+			[0x629F66CE] = typeof(InputTonConnectOauthSession),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
