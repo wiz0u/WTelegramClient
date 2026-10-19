@@ -1328,12 +1328,12 @@ namespace WTelegram
 		}
 
 		/// <summary>Login via QR code</summary>
-		/// <param name="qrDisplay">Callback to display the login url as QR code to the user (<a href="https://www.nuget.org/packages/QRCoder/">QRCoder library</a> can help you)</param>
+		/// <param name="qrDisplay">Callback to display the login url as QR code to the user (<a href="https://www.nuget.org/packages/QRCoder/">QRCoder library</a> can help you), with expiration time</param>
 		/// <param name="except_ids">(optional) To prevent logging as these user ids</param>
 		/// <param name="logoutFirst">If session is already connected to a user, this method will first log out.<br/>You can also check property <see cref="UserId"/> before calling this method.</param>
 		/// <param name="ct">If you need to abort the method before login is completed</param>
 		/// <returns>Detail about the logged-in user</returns>
-		public async Task<User> LoginWithQRCode(Action<string> qrDisplay, long[] except_ids = null, bool logoutFirst = true, CancellationToken ct = default)
+		public async Task<User> LoginWithQRCode(Action<string, DateTime> qrDisplay, long[] except_ids = null, bool logoutFirst = true, CancellationToken ct = default)
 		{
 			await ConnectAsync();
 			if (logoutFirst && _session.UserId != 0) // a user is already logged-in
@@ -1355,7 +1355,7 @@ namespace WTelegram
 						case Auth_LoginToken lt:
 							var url = "tg://login?token=" + System.Convert.ToBase64String(lt.token).Replace('/', '_').Replace('+', '-');
 							Helpers.Log(3, $"Waiting for this QR code login to be accepted: " + url);
-							qrDisplay(url);
+							qrDisplay(url, lt.expires);
 							if (lt.expires - DateTime.UtcNow is { Ticks: >= 0 } delay)
 								await Task.WhenAny(Task.Delay(delay, ct), tcs.Task);
 							break;
