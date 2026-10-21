@@ -6,7 +6,7 @@ namespace TL
 {
 	public static partial class Layer
 	{
-		public const int Version = 231;					// fetched 10/19/2026 17:34:33
+		public const int Version = 232;					// fetched 10/21/2026 05:43:21
 		internal const int SecretChats = 144;
 		internal const int MTProto2 = 73;
 		internal const uint VectorCtor = 0x1CB5C415;
@@ -141,12 +141,12 @@ namespace TL
 			[0x29562865] = typeof(ChatEmpty),
 			[0x41CBF256] = typeof(Chat),
 			[0x6592A1A7] = typeof(ChatForbidden),
-			[0xD49F34C6] = typeof(Channel),
+			[0x7AD15240] = typeof(Channel),
 			[0x17D493D5] = typeof(ChannelForbidden),
 			[0xFD3CDAB8] = typeof(CommunityForbidden),
 			[0x65EFE954] = typeof(Community),
 			[0x2633421B] = typeof(ChatFull),
-			[0xA04E8D3A] = typeof(ChannelFull),
+			[0xC4C4DD40] = typeof(ChannelFull),
 			[0xCBB7A507] = typeof(CommunityFull),
 			[0x38E79FDE] = typeof(ChatParticipant),
 			[0xE1F867B8] = typeof(ChatParticipantCreator),
@@ -248,6 +248,7 @@ namespace TL
 			[0x4A8BFE80] = typeof(MessageActionChatJoinedViaCommunity),
 			[0x9329EA33] = typeof(MessageActionGramTransfer),
 			[0x69B8C4BF] = typeof(MessageActionWalletTonConnectRequest),
+			[0xC1D2F1C6] = typeof(MessageActionNoPaidMessagesTokenUsed),
 			[0xFC89F7F3] = typeof(Dialog),
 			[0x71BD134C] = typeof(DialogFolder),
 			[0xF78A0973] = typeof(DialogCommunity),
@@ -278,7 +279,7 @@ namespace TL
 			[0xF47741F7] = typeof(PeerSettings),
 			[0xA437C3ED] = typeof(WallPaper),
 			[0xE0804116] = typeof(WallPaperNoFile),
-			[0x06CBE645] = typeof(UserFull),
+			[0xB90C2AFD] = typeof(UserFull),
 			[0x145ADE0B] = typeof(Contact),
 			[0xC13E3C50] = typeof(ImportedContact),
 			[0x16D9703B] = typeof(ContactStatus),
@@ -1119,7 +1120,7 @@ namespace TL
 			[0x455B853D] = typeof(MessageViews),
 			[0xB6C4F543] = typeof(Messages_MessageViews),
 			[0xA6341782] = typeof(Messages_DiscussionMessage),
-			[0x1B97DD66] = typeof(MessageReplyHeader),
+			[0xDDB5AB75] = typeof(MessageReplyHeader),
 			[0x0E5AF939] = typeof(MessageReplyStoryHeader),
 			[0x83D60FC2] = typeof(MessageReplies),
 			[0xE8FD8014] = typeof(PeerBlocked),
@@ -1311,7 +1312,7 @@ namespace TL
 			[0xBD74CF49] = typeof(StoryViewPublicRepost),
 			[0x59D78FC5] = typeof(Stories_StoryViewsList),
 			[0xDE9EED1D] = typeof(Stories_StoryViews),
-			[0x3BD4B7C2] = typeof(InputReplyToMessage),
+			[0x75C1AD70] = typeof(InputReplyToMessage),
 			[0x5881323A] = typeof(InputReplyToStory),
 			[0x69D66C45] = typeof(InputReplyToMonoForum),
 			[0x4119B95E] = typeof(InputReplyToEphemeralMessage),
@@ -1648,6 +1649,8 @@ namespace TL
 			[0x062CC1BC] = typeof(WalletTransactionPeerAddress),
 			[0xE595186E] = typeof(WalletTransactionPeerOnramp),
 			[0x728BED5A] = typeof(WalletTransactionPeerUnsupported),
+			[0x54E70C31] = typeof(WalletTransactionPeerChannel),
+			[0xF4729499] = typeof(WalletTransactionPeerTelegramGift),
 			[0x952DC143] = typeof(WalletTransaction),
 			[0x4322D5A5] = typeof(Wallet_Transactions),
 			[0xE6D0EF01] = typeof(Wallet_SecretPhraseParts),
@@ -1666,10 +1669,22 @@ namespace TL
 			[0x0E1F6896] = typeof(Wallet_TonConnectSessions),
 			[0xBDE90A8D] = typeof(Wallet_ExistingBalance),
 			[0x4C1EF10E] = typeof(Wallet_NftAttribute),
-			[0x3441FD1C] = typeof(Wallet_NftItem),
+			[0x173DFAF3] = typeof(Wallet_NftItem),
 			[0x794D486F] = typeof(Wallet_NftItems),
 			[0xDF5AC00C] = typeof(Auth_FirebasePnvIntent),
 			[0x629F66CE] = typeof(InputTonConnectOauthSession),
+			[0x695DD042] = typeof(ExportedNoPaidMessagesToken),
+			[0x95ACE84F] = null,//ShareThemeDefault
+			[0x64B334E1] = typeof(ShareThemeEmojiBackdrop),
+			[0xEBECE66D] = typeof(ShareThemeGift),
+			[0x3FB92B5B] = typeof(InputShareThemeGift),
+			[0x45C1D652] = typeof(ShareThemeBackdropOption),
+			[0x7A3F6DFF] = null,//ShareThemeBackdropsNotModified
+			[0xAAEADCE0] = typeof(ShareThemeBackdrops),
+			[0x57DF45A7] = typeof(InputWalletCardSticker),
+			[0xF3010CBA] = typeof(Wallet_CardSticker),
+			[0x8ED043B1] = typeof(Wallet_Card),
+			[0x725BB4EB] = typeof(Payments_StarGiftDepositPayload),
 			// from TL.Secret:
 			[0x6ABD9782] = typeof(Layer143.DecryptedMessageMediaDocument),
 			[0x020DF5D0] = typeof(Layer101.MessageEntityBlockquote),
@@ -1814,6 +1829,8 @@ namespace TL
 			[typeof(Account_WebBrowserSettings)]     = 0xC31C8F4E, //account.webBrowserSettingsNotModified
 			[typeof(ButtonType)]                     = 0xC9DD90E9, //buttonTypeDefault
 			[typeof(Ephemeral_WelcomeMessages)]      = 0x59FFDB31, //ephemeral.welcomeMessagesNotModified
+			[typeof(ShareTheme)]                     = 0x95ACE84F, //shareThemeDefault
+			[typeof(ShareThemeBackdrops)]            = 0x7A3F6DFF, //shareThemeBackdropsNotModified
 			[typeof(DecryptedMessageMedia)]          = 0x089F5C4A, //decryptedMessageMediaEmpty
 		};
 	}

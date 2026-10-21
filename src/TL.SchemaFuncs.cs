@@ -1976,6 +1976,21 @@ namespace TL
 				note = note,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.exportNoPaidMessagesToken"/></para></summary>
+		public static Task<ExportedNoPaidMessagesToken> Contacts_ExportNoPaidMessagesToken(this Client client, bool revoke = false, bool temporary = false)
+			=> client.Invoke(new Contacts_ExportNoPaidMessagesToken
+			{
+				flags = (Contacts_ExportNoPaidMessagesToken.Flags)((revoke ? 0x1 : 0) | (temporary ? 0x2 : 0)),
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/contacts.importNoPaidMessagesToken"/></para></summary>
+		public static Task<UserBase> Contacts_ImportNoPaidMessagesToken(this Client client, InputUserBase user_id, string token)
+			=> client.Invoke(new Contacts_ImportNoPaidMessagesToken
+			{
+				user_id = user_id,
+				token = token,
+			});
+
 		/// <summary><para>⚠ <b>This method is only for basic Chat</b>. See <see href="https://wiz0u.github.io/WTelegramClient/#terminology">Terminology</see> in the README to understand what this means<br/>Search for a similar method name starting with <c>Channels_</c> if you're dealing with a <see cref="Channel"/></para>		Returns the list of messages by their IDs.		<para>See <a href="https://corefork.telegram.org/method/messages.getMessages"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/messages.getMessages#possible-errors">details</a>)</para></summary>
 		/// <param name="id">Message ID list</param>
 		public static Task<Messages_MessagesBase> Messages_GetMessages(this Client client, params InputMessage[] id)
@@ -5222,6 +5237,22 @@ namespace TL
 				platform = platform,
 			});
 
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.setShareTheme"/></para></summary>
+		public static Task<bool> Messages_SetShareTheme(this Client client, InputPeer peer, ShareTheme theme)
+			=> client.Invoke(new Messages_SetShareTheme
+			{
+				peer = peer,
+				theme = theme,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/messages.getShareThemeBackdrops"/></para></summary>
+		/// <returns>a <c>null</c> value means <a href="https://corefork.telegram.org/constructor/shareThemeBackdropsNotModified">shareThemeBackdropsNotModified</a></returns>
+		public static Task<ShareThemeBackdrops> Messages_GetShareThemeBackdrops(this Client client, int hash = default)
+			=> client.Invoke(new Messages_GetShareThemeBackdrops
+			{
+				hash = hash,
+			});
+
 		/// <summary>Returns a current state of updates.		<para>See <a href="https://corefork.telegram.org/method/updates.getState"/> [bots: ✓]</para></summary>
 		public static Task<Updates_State> Updates_GetState(this Client client)
 			=> client.Invoke(new Updates_GetState
@@ -7139,12 +7170,12 @@ namespace TL
 
 		/// <summary>Convert a <a href="https://corefork.telegram.org/api/gifts">collectible gift »</a> to an NFT on the TON blockchain.		<para>See <a href="https://corefork.telegram.org/method/payments.getStarGiftWithdrawalUrl"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.getStarGiftWithdrawalUrl#possible-errors">details</a>)</para></summary>
 		/// <param name="stargift">The collectible gift to export.</param>
-		/// <param name="password">The current user's 2FA password, passed as <a href="https://corefork.telegram.org/api/srp">specified here »</a>.</param>
-		public static Task<Payments_StarGiftWithdrawalUrl> Payments_GetStarGiftWithdrawalUrl(this Client client, InputSavedStarGift stargift, InputCheckPasswordSRP password)
+		public static Task<Payments_StarGiftWithdrawalUrl> Payments_GetStarGiftWithdrawalUrl(this Client client, InputSavedStarGift stargift, byte[] tmp_password)
 			=> client.Invoke(new Payments_GetStarGiftWithdrawalUrl
 			{
+				flags = 0,
 				stargift = stargift,
-				password = password,
+				tmp_password = tmp_password,
 			});
 
 		/// <summary>Enables or disables the reception of notifications every time a <a href="https://corefork.telegram.org/api/gifts">gift »</a> is received by the specified channel, can only be invoked by admins with <c>post_messages</c> <see cref="ChatAdminRights">admin rights</see>.		<para>See <a href="https://corefork.telegram.org/method/payments.toggleChatStarGiftNotifications"/></para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/payments.toggleChatStarGiftNotifications#possible-errors">details</a>)</para></summary>
@@ -7440,6 +7471,40 @@ namespace TL
 				success_return_url = success_return_url,
 				fail_return_url = fail_return_url,
 				crypto_amount = crypto_amount,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.withdrawStarGift"/></para></summary>
+		public static Task<bool> Payments_WithdrawStarGift(this Client client, InputSavedStarGift stargift, byte[] tmp_password, bool keep_on_profile = false)
+			=> client.Invoke(new Payments_WithdrawStarGift
+			{
+				flags = (Payments_WithdrawStarGift.Flags)(keep_on_profile ? 0x1 : 0),
+				stargift = stargift,
+				tmp_password = tmp_password,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.depositStarGift"/></para></summary>
+		public static Task<Payments_StarGiftDepositPayload> Payments_DepositStarGift(this Client client, InputPeer peer, string slug, bool hide_sender = false)
+			=> client.Invoke(new Payments_DepositStarGift
+			{
+				flags = (Payments_DepositStarGift.Flags)(hide_sender ? 0x1 : 0),
+				peer = peer,
+				slug = slug,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.displayStarGift"/></para></summary>
+		public static Task<bool> Payments_DisplayStarGift(this Client client, string slug, InputPeer peer = null)
+			=> client.Invoke(new Payments_DisplayStarGift
+			{
+				flags = (Payments_DisplayStarGift.Flags)(peer != null ? 0x1 : 0),
+				peer = peer,
+				slug = slug,
+			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/payments.deleteStarGift"/></para></summary>
+		public static Task<bool> Payments_DeleteStarGift(this Client client, InputSavedStarGift stargift)
+			=> client.Invoke(new Payments_DeleteStarGift
+			{
+				stargift = stargift,
 			});
 
 		/// <summary>Create a stickerset.		<para>See <a href="https://corefork.telegram.org/method/stickers.createStickerSet"/> [bots: ✓]</para>		<para>Possible <see cref="RpcException"/> codes: 400 (<a href="https://corefork.telegram.org/method/stickers.createStickerSet#possible-errors">details</a>)</para></summary>
@@ -9333,6 +9398,15 @@ namespace TL
 			=> client.Invoke(new Wallet_TonConnectGetSessions
 			{
 			});
+
+		/// <summary><para>See <a href="https://corefork.telegram.org/method/wallet.setCardStickers"/></para></summary>
+		public static Task<Wallet_Card> Wallet_SetCardStickers(this Client client, InputWalletCardSticker[] stickers, string bg_nft_address = null)
+			=> client.Invoke(new Wallet_SetCardStickers
+			{
+				flags = (Wallet_SetCardStickers.Flags)(bg_nft_address != null ? 0x1 : 0),
+				stickers = stickers,
+				bg_nft_address = bg_nft_address,
+			});
 	}
 }
 
@@ -10941,6 +11015,25 @@ namespace TL.Methods
 	{
 		public InputUserBase id;
 		public TextWithEntities note;
+	}
+
+	[TLDef(0x83C586AE)]
+	public sealed partial class Contacts_ExportNoPaidMessagesToken : IMethod<ExportedNoPaidMessagesToken>
+	{
+		public Flags flags;
+
+		[Flags] public enum Flags : uint
+		{
+			revoke = 0x1,
+			temporary = 0x2,
+		}
+	}
+
+	[TLDef(0x35A7C6CA)]
+	public sealed partial class Contacts_ImportNoPaidMessagesToken : IMethod<UserBase>
+	{
+		public InputUserBase user_id;
+		public string token;
 	}
 
 	[TLDef(0x63C66506)]
@@ -13765,6 +13858,19 @@ namespace TL.Methods
 		}
 	}
 
+	[TLDef(0x698A9B1A)]
+	public sealed partial class Messages_SetShareTheme : IMethod<bool>
+	{
+		public InputPeer peer;
+		public ShareTheme theme;
+	}
+
+	[TLDef(0xF4599EF2)]
+	public sealed partial class Messages_GetShareThemeBackdrops : IMethod<ShareThemeBackdrops>
+	{
+		public int hash;
+	}
+
 	[TLDef(0xEDD4882A)]
 	public sealed partial class Updates_GetState : IMethod<Updates_State> { }
 
@@ -15341,11 +15447,16 @@ namespace TL.Methods
 		public InputSavedStarGift[] stargift;
 	}
 
-	[TLDef(0xD06E93A8)]
+	[TLDef(0xC8CA817B)]
 	public sealed partial class Payments_GetStarGiftWithdrawalUrl : IMethod<Payments_StarGiftWithdrawalUrl>
 	{
+		public Flags flags;
 		public InputSavedStarGift stargift;
-		public InputCheckPasswordSRP password;
+		public byte[] tmp_password;
+
+		[Flags] public enum Flags : uint
+		{
+		}
 	}
 
 	[TLDef(0x60EAEFA1)]
@@ -15627,6 +15738,51 @@ namespace TL.Methods
 			has_fail_return_url = 0x40,
 			has_crypto_amount = 0x80,
 		}
+	}
+
+	[TLDef(0xEC2030AE)]
+	public sealed partial class Payments_WithdrawStarGift : IMethod<bool>
+	{
+		public Flags flags;
+		public InputSavedStarGift stargift;
+		public byte[] tmp_password;
+
+		[Flags] public enum Flags : uint
+		{
+			keep_on_profile = 0x1,
+		}
+	}
+
+	[TLDef(0xC0A2EA9F)]
+	public sealed partial class Payments_DepositStarGift : IMethod<Payments_StarGiftDepositPayload>
+	{
+		public Flags flags;
+		public InputPeer peer;
+		public string slug;
+
+		[Flags] public enum Flags : uint
+		{
+			hide_sender = 0x1,
+		}
+	}
+
+	[TLDef(0x4AA5F0FE)]
+	public sealed partial class Payments_DisplayStarGift : IMethod<bool>
+	{
+		public Flags flags;
+		[IfFlag(0)] public InputPeer peer;
+		public string slug;
+
+		[Flags] public enum Flags : uint
+		{
+			has_peer = 0x1,
+		}
+	}
+
+	[TLDef(0x3CDAF8AA)]
+	public sealed partial class Payments_DeleteStarGift : IMethod<bool>
+	{
+		public InputSavedStarGift stargift;
 	}
 
 	[TLDef(0x9021AB67)]
@@ -17362,4 +17518,17 @@ namespace TL.Methods
 
 	[TLDef(0xA7FFB56E)]
 	public sealed partial class Wallet_TonConnectGetSessions : IMethod<Wallet_TonConnectSessions> { }
+
+	[TLDef(0x068509AC)]
+	public sealed partial class Wallet_SetCardStickers : IMethod<Wallet_Card>
+	{
+		public Flags flags;
+		public InputWalletCardSticker[] stickers;
+		[IfFlag(0)] public string bg_nft_address;
+
+		[Flags] public enum Flags : uint
+		{
+			has_bg_nft_address = 0x1,
+		}
+	}
 }

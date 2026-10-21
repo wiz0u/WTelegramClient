@@ -1138,7 +1138,7 @@ namespace TL
 		public override string Title => title;
 	}
 	/// <summary>Channel/supergroup info		<para>See <a href="https://corefork.telegram.org/constructor/channel"/></para></summary>
-	[TLDef(0xD49F34C6)]
+	[TLDef(0x7AD15240)]
 	public sealed partial class Channel : ChatBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1188,6 +1188,7 @@ namespace TL
 		/// <summary>For channels with associated <a href="https://corefork.telegram.org/api/monoforum">monoforums</a>, the <a href="https://corefork.telegram.org/api/monoforum">monoforum</a> ID. For <a href="https://corefork.telegram.org/api/monoforum">Monoforums</a>, the ID of the associated channel.</summary>
 		[IfFlag(50)] public long linked_monoforum_id;
 		[IfFlag(52)] public long linked_community_id;
+		[IfFlag(54)] public int pinned_msg_id;
 
 		[Flags] public enum Flags : uint
 		{
@@ -1285,6 +1286,9 @@ namespace TL
 			forum_tabs = 0x80000,
 			/// <summary>Field <see cref="linked_community_id"/> has a value</summary>
 			has_linked_community_id = 0x100000,
+			in_news = 0x200000,
+			/// <summary>Field <see cref="pinned_msg_id"/> has a value</summary>
+			has_pinned_msg_id = 0x400000,
 		}
 
 		/// <summary>ID of the channel, see <a href="https://corefork.telegram.org/api/peers#peer-id">here »</a> for more info and the available ID range.</summary>
@@ -1520,7 +1524,7 @@ namespace TL
 		public override int ReactionsLimit => reactions_limit;
 	}
 	/// <summary>Full info about a <a href="https://corefork.telegram.org/api/channel#channels">channel</a>, <a href="https://corefork.telegram.org/api/channel#supergroups">supergroup</a> or <a href="https://corefork.telegram.org/api/channel#gigagroups">gigagroup</a>.		<para>See <a href="https://corefork.telegram.org/constructor/channelFull"/></para></summary>
-	[TLDef(0xA04E8D3A)]
+	[TLDef(0xC4C4DD40)]
 	public sealed partial class ChannelFull : ChatFullBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -1618,6 +1622,7 @@ namespace TL
 		/// <summary>The main tab for the channel's profile, see <a href="https://corefork.telegram.org/api/profile#tabs">here »</a> for more info.</summary>
 		[IfFlag(54)] public ProfileTab main_tab;
 		[IfFlag(55)] public long guard_bot_id;
+		[IfFlag(57)] public ShareTheme share_theme;
 
 		[Flags] public enum Flags : uint
 		{
@@ -1736,6 +1741,8 @@ namespace TL
 			/// <summary>Field <see cref="guard_bot_id"/> has a value</summary>
 			has_guard_bot_id = 0x800000,
 			has_welcome_messages = 0x1000000,
+			/// <summary>Field <see cref="share_theme"/> has a value</summary>
+			has_share_theme = 0x2000000,
 		}
 
 		/// <summary>ID of the channel</summary>
@@ -3619,6 +3626,9 @@ namespace TL
 			has_dapp_name = 0x10,
 		}
 	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/messageActionNoPaidMessagesTokenUsed"/></para></summary>
+	[TLDef(0xC1D2F1C6)]
+	public sealed partial class MessageActionNoPaidMessagesTokenUsed : MessageAction { }
 
 	/// <summary>Chat info.		<para>See <a href="https://corefork.telegram.org/type/Dialog"/></para>		<para>Derived classes: <see cref="Dialog"/>, <see cref="DialogFolder"/></para></summary>
 	public abstract partial class DialogBase : IObject
@@ -4283,7 +4293,7 @@ namespace TL
 	}
 
 	/// <summary>Extended user info		<para>See <a href="https://corefork.telegram.org/constructor/userFull"/></para></summary>
-	[TLDef(0x06CBE645)]
+	[TLDef(0xB90C2AFD)]
 	public sealed partial class UserFull : IObject
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -4366,6 +4376,8 @@ namespace TL
 		[IfFlag(54)] public TextWithEntities note;
 		/// <summary>If this user is a <a href="https://corefork.telegram.org/api/bots/managed-bots">managed bot »</a>, the ID of the user or manager bot that manages it.</summary>
 		[IfFlag(57)] public long bot_manager_id;
+		[IfFlag(51)] public Wallet_Card wallet_card;
+		[IfFlag(59)] public ShareTheme share_theme;
 
 		[Flags] public enum Flags : uint
 		{
@@ -4463,6 +4475,8 @@ namespace TL
 			has_stars_rating = 0x20000,
 			/// <summary>Fields <see cref="stars_my_pending_rating"/> and <see cref="stars_my_pending_rating_date"/> have a value</summary>
 			has_stars_my_pending_rating = 0x40000,
+			/// <summary>Field <see cref="wallet_card"/> has a value</summary>
+			has_wallet_card = 0x80000,
 			/// <summary>Field <see cref="main_tab"/> has a value</summary>
 			has_main_tab = 0x100000,
 			/// <summary>Field <see cref="saved_music"/> has a value</summary>
@@ -4477,6 +4491,8 @@ namespace TL
 			has_bot_manager_id = 0x2000000,
 			/// <summary>If set, this user uses an unofficial Telegram client, and messages sent to them may be less secure; clients should display a warning in the user's profile.</summary>
 			unofficial_security_risk = 0x4000000,
+			/// <summary>Field <see cref="share_theme"/> has a value</summary>
+			has_share_theme = 0x8000000,
 		}
 	}
 
@@ -16213,7 +16229,7 @@ namespace TL
 	/// <summary>Reply information		<para>See <a href="https://corefork.telegram.org/type/MessageReplyHeader"/></para>		<para>Derived classes: <see cref="MessageReplyHeader"/>, <see cref="MessageReplyStoryHeader"/></para></summary>
 	public abstract partial class MessageReplyHeaderBase : IObject { }
 	/// <summary>Message replies and <a href="https://corefork.telegram.org/api/threads">thread</a> information		<para>See <a href="https://corefork.telegram.org/constructor/messageReplyHeader"/></para></summary>
-	[TLDef(0x1B97DD66)]
+	[TLDef(0xDDB5AB75)]
 	public sealed partial class MessageReplyHeader : MessageReplyHeaderBase
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -16238,6 +16254,7 @@ namespace TL
 		[IfFlag(11)] public int todo_item_id;
 		/// <summary>If the message is a <a href="https://corefork.telegram.org/api/poll#replying-to-poll-options">reply to a specific poll answer option »</a>, the <c>option</c> bytes of the answer the reply is directed at.</summary>
 		[IfFlag(12)] public string poll_option;
+		[IfFlag(14)] public RichText[] quote_rich;
 
 		[Flags] public enum Flags : uint
 		{
@@ -16268,6 +16285,8 @@ namespace TL
 			/// <summary>Field <see cref="poll_option"/> has a value</summary>
 			has_poll_option = 0x1000,
 			reply_to_ephemeral = 0x2000,
+			/// <summary>Field <see cref="quote_rich"/> has a value</summary>
+			has_quote_rich = 0x4000,
 		}
 	}
 	/// <summary>Represents a reply to a <a href="https://corefork.telegram.org/api/stories">story</a>		<para>See <a href="https://corefork.telegram.org/constructor/messageReplyStoryHeader"/></para></summary>
@@ -19247,7 +19266,7 @@ namespace TL
 	/// <summary>Contains info about a message or story to reply to.		<para>See <a href="https://corefork.telegram.org/type/InputReplyTo"/></para>		<para>Derived classes: <see cref="InputReplyToMessage"/>, <see cref="InputReplyToStory"/>, <see cref="InputReplyToMonoForum"/></para></summary>
 	public abstract partial class InputReplyTo : IObject { }
 	/// <summary>Reply to a message.		<para>See <a href="https://corefork.telegram.org/constructor/inputReplyToMessage"/></para></summary>
-	[TLDef(0x3BD4B7C2)]
+	[TLDef(0x75C1AD70)]
 	public sealed partial class InputReplyToMessage : InputReplyTo
 	{
 		/// <summary>Extra bits of information, use <c>flags.HasFlag(...)</c> to test for those</summary>
@@ -19270,6 +19289,7 @@ namespace TL
 		[IfFlag(6)] public int todo_item_id;
 		/// <summary>If set, sends the message as a <a href="https://corefork.telegram.org/api/poll#replying-to-poll-options">reply to a specific poll answer option »</a>, containing the <c>option</c> bytes of the desired answer.</summary>
 		[IfFlag(7)] public string poll_option;
+		[IfFlag(8)] public RichText[] quote_rich;
 
 		[Flags] public enum Flags : uint
 		{
@@ -19289,6 +19309,8 @@ namespace TL
 			has_todo_item_id = 0x40,
 			/// <summary>Field <see cref="poll_option"/> has a value</summary>
 			has_poll_option = 0x80,
+			/// <summary>Field <see cref="quote_rich"/> has a value</summary>
+			has_quote_rich = 0x100,
 		}
 	}
 	/// <summary>Reply to a story.		<para>See <a href="https://corefork.telegram.org/constructor/inputReplyToStory"/></para></summary>
@@ -24497,6 +24519,31 @@ namespace TL
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletTransactionPeerUnsupported"/></para></summary>
 	[TLDef(0x728BED5A)]
 	public sealed partial class WalletTransactionPeerUnsupported : WalletTransactionPeer { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletTransactionPeerChannel"/></para></summary>
+	[TLDef(0x54E70C31)]
+	public sealed partial class WalletTransactionPeerChannel : WalletTransactionPeer
+	{
+		public Flags flags;
+		public long channel_id;
+		public string address;
+		[IfFlag(0)] public string domain;
+
+		[Flags] public enum Flags : uint
+		{
+			has_domain = 0x1,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletTransactionPeerTelegramGift"/></para></summary>
+	[TLDef(0xF4729499)]
+	public sealed partial class WalletTransactionPeerTelegramGift : WalletTransactionPeer
+	{
+		public Flags flags;
+
+		[Flags] public enum Flags : uint
+		{
+			own_profile = 0x1,
+		}
+	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/walletTransaction"/></para></summary>
 	[TLDef(0x952DC143)]
@@ -24714,7 +24761,7 @@ namespace TL
 	}
 
 	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.nftItem"/></para></summary>
-	[TLDef(0x3441FD1C)]
+	[TLDef(0x173DFAF3)]
 	public sealed partial class Wallet_NftItem : IObject
 	{
 		public Flags flags;
@@ -24730,6 +24777,7 @@ namespace TL
 		[IfFlag(6)] public WebDocumentBase lottie;
 		[IfFlag(7)] public Wallet_NftAttribute[] attributes;
 		[IfFlag(8)] public DataJSON extra;
+		[IfFlag(9)] public StarGiftBase gift;
 
 		[Flags] public enum Flags : uint
 		{
@@ -24742,6 +24790,7 @@ namespace TL
 			has_lottie = 0x40,
 			has_attributes = 0x80,
 			has_extra = 0x100,
+			has_gift = 0x200,
 		}
 	}
 
@@ -24775,5 +24824,113 @@ namespace TL
 		public byte[] challenge_answer;
 		public byte[] body;
 		public WalletOwnershipProof proof;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/exportedNoPaidMessagesToken"/></para></summary>
+	[TLDef(0x695DD042)]
+	public sealed partial class ExportedNoPaidMessagesToken : IObject
+	{
+		public Flags flags;
+		public string token;
+		public string url;
+		[IfFlag(0)] public DateTime expires;
+
+		[Flags] public enum Flags : uint
+		{
+			has_expires = 0x1,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/type/ShareTheme"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/shareThemeDefault">shareThemeDefault</a></remarks>
+	public abstract partial class ShareTheme : IObject { }
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/shareThemeEmojiBackdrop"/></para></summary>
+	[TLDef(0x64B334E1)]
+	public sealed partial class ShareThemeEmojiBackdrop : ShareTheme
+	{
+		public Flags flags;
+		[IfFlag(0)] public int backdrop_id;
+		[IfFlag(1)] public Reaction[] emojis;
+
+		[Flags] public enum Flags : uint
+		{
+			has_backdrop_id = 0x1,
+			has_emojis = 0x2,
+		}
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/shareThemeGift"/></para></summary>
+	[TLDef(0xEBECE66D)]
+	public sealed partial class ShareThemeGift : ShareTheme
+	{
+		public StarGiftBase stargift;
+	}
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputShareThemeGift"/></para></summary>
+	[TLDef(0x3FB92B5B)]
+	public sealed partial class InputShareThemeGift : ShareTheme
+	{
+		public InputSavedStarGift stargift;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/shareThemeBackdropOption"/></para></summary>
+	[TLDef(0x45C1D652)]
+	public sealed partial class ShareThemeBackdropOption : IObject
+	{
+		public int backdrop_id;
+		public string name;
+		public int center_color;
+		public int edge_color;
+		public int pattern_color;
+		public int text_color;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/shareThemeBackdrops"/></para></summary>
+	/// <remarks>a <see langword="null"/> value means <a href="https://corefork.telegram.org/constructor/shareThemeBackdropsNotModified">shareThemeBackdropsNotModified</a></remarks>
+	[TLDef(0xAAEADCE0)]
+	public sealed partial class ShareThemeBackdrops : IObject
+	{
+		public int hash;
+		public ShareThemeBackdropOption[] backdrops;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/inputWalletCardSticker"/></para></summary>
+	[TLDef(0x57DF45A7)]
+	public sealed partial class InputWalletCardSticker : IObject
+	{
+		public MediaAreaCoordinates coordinates;
+		public string nft_address;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.cardSticker"/></para></summary>
+	[TLDef(0xF3010CBA)]
+	public sealed partial class Wallet_CardSticker : IObject
+	{
+		public MediaAreaCoordinates coordinates;
+		public Wallet_NftItem nft;
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/wallet.card"/></para></summary>
+	[TLDef(0x8ED043B1)]
+	public sealed partial class Wallet_Card : IObject
+	{
+		public Flags flags;
+		[IfFlag(0)] public Wallet_CardSticker[] stickers;
+		[IfFlag(1)] public Wallet_NftItem bg_nft_item;
+		public string address;
+		public long balance;
+
+		[Flags] public enum Flags : uint
+		{
+			has_stickers = 0x1,
+			has_bg_nft_item = 0x2,
+		}
+	}
+
+	/// <summary><para>See <a href="https://corefork.telegram.org/constructor/payments.starGiftDepositPayload"/></para></summary>
+	[TLDef(0x725BB4EB)]
+	public sealed partial class Payments_StarGiftDepositPayload : IObject
+	{
+		public string nft_address;
+		public byte[] payload;
+		public long amount;
 	}
 }
