@@ -314,7 +314,7 @@ So you can either:
     - Build your code in RELEASE mode
     - Modify your config callback to reply to "server_address" with the IP address of Telegram production servers (as found on your API development tools)
 
-2) Did you call `Login` or `LoginUserIfNeeded` succesfully?  
+2) Did you call `Login` or `LoginUserIfNeeded` successfully?  
 If you don't complete authentication as a user (or bot), you have access to a very limited subset of Telegram APIs.  
 Make sure your calls succeed and don't throw an exception.
 
